@@ -60,7 +60,7 @@ The {@link module:engine/view/document~Document#event:clipboardInput `view.Docum
 
 * Handle pasted or dropped files (that you can retrieve from the `dataTransfer`).
 
-	Handling file upload requires, however, a lot more than reading {@link module:engine/view/datatransfer~DataTransfer#files `dataTransfer.files`} so for a complete code example, check the source code of plugins like [`ImageUploadEditing`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/src/imageupload/imageuploadediting.js).
+	Handling file upload requires, however, a lot more than reading {@link module:engine/view/datatransfer~DataTransfer#files `dataTransfer.files`} so for a complete code example, check the source code of plugins like [`ImageUploadEditing`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/src/imageupload/imageuploadediting.ts).
 * Change the type of data that the clipboard feature reads from the clipboard. For instance, you may want to use `application/rtf` if it is present in the `dataTransfer` (and ignore `text/html` in that case).
 
 	```js
@@ -127,18 +127,16 @@ You can use the knowledge from the previous sections to create a complete plugin
 If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to get a better understanding of what happens in the code below.
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Command, Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
-import plainTextToHtml from '@ckeditor/ckeditor5-clipboard/src/utils/plaintexttohtml';
+import { plainTextToHtml } from '@ckeditor/ckeditor5-clipboard';
 
 class PastePlainText extends Plugin {
 	static get pluginName() {

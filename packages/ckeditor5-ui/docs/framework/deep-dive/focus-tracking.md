@@ -64,7 +64,7 @@ editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) =>
 } );
 ```
 
-Click the editable area of the editor and then click somewhere else &mdash; the `isFocused` property will change its value when you do that. The same will also happen if you run an editor with {@link framework/custom-editor-creator **multiple editing roots**} and navigate across them.
+Click the editable area of the editor and then click somewhere else &mdash; the `isFocused` property will change its value when you do that. The same will also happen if you run an editor with {@link examples/builds/multi-root-editor **multiple editing roots**} and navigate across them.
 
 To spice things up even more, you should also know `isFocused` will change when you focus any {@link framework/tutorials/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/images-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
 
@@ -111,7 +111,7 @@ Here are the focus layers that play a role in the navigation and a brief overvie
 
 {@img assets/img/framework-deep-dive-focus-toolbar-nav-layers.png 1019 The image showing the focus layers used during navigation.}
 
-1. The root of the focus tree is the {@link module:editor-classic/classiceditorui~ClassicEditorUI} class. It creates a [global focus tracker](#a-note-about-the-global-focus-tracker) for the entire editor (you can access it via {@link module:core/editor/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}).
+1. The root of the focus tree is the {@link module:editor-classic/classiceditorui~ClassicEditorUI} class. It creates a [global focus tracker](#a-note-about-the-global-focus-tracker) for the entire editor (you can access it via {@link module:ui/editorui/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}).
 2. When editing text, you can hit the <kbd>Alt</kbd>+<kbd>F10</kbd> keystroke to focus the main editor toolbar, which is the second focus layer.
 	* The {@link module:ui/toolbar/toolbarview~ToolbarView} component brings a focus tracker that keeps an eye on its children so that when a user navigates across the toolbar using the keyboard arrows, it is clear which item is focused.
 	* Toolbars also use a [focus cycler](#using-the-focuscycler-class) to provide continuous navigation. For instance, navigating to the next item when the last one is focused brings the focus back to the beginning of the toolbar.
@@ -188,7 +188,7 @@ Any UI {@link framework/architecture/ui-library#views view} can be focusable. To
 </info-box>
 
 ```js
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import { View } from '@ckeditor/ckeditor5-ui';
 
 class MyListItemView extends View {
 	constructor( locale, text ) {
@@ -218,7 +218,7 @@ class MyListItemView extends View {
 If a view has many focusable children (e.g. a list), the `focus()` method should focus the first child:
 
 ```js
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import { View } from '@ckeditor/ckeditor5-ui';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -265,7 +265,7 @@ Focus trackers listen to DOM `focus` and `blur` events coming from elements they
 
 #### A note about the global focus tracker
 
-Each editor instance has a **global focus tracker** that can be accessed via {@link module:core/editor/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}. It is a special instance that glues all the pieces of the user interface together (including the editing root) and stores the focus state of the **entire editor instance**.
+Each editor instance has a **global focus tracker** that can be accessed via {@link module:ui/editorui/editorui~EditorUI#focusTracker `editor.ui.focusTracker`}. It is a special instance that glues all the pieces of the user interface together (including the editing root) and stores the focus state of the **entire editor instance**.
 
 You can **always** listen to the global focus tracker and tell if the user is using the UI:
 
@@ -290,8 +290,8 @@ The continuity of editor focus is maintained **only** when the global focus trac
 Take a look at the following example of a list that has multiple items, a classic use case for a focus tracker:
 
 ```js
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import { View } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -363,10 +363,8 @@ The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows r
 But in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
 
 ```js
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 
 export default class MyListView extends View {
 	constructor( locale ) {
@@ -409,10 +407,8 @@ Each focus cycler instance works together with a [focus tracker](#using-the-focu
 Take a look at the example list class using focus cycler, keystroke handler and focus tracker instances together to enable the keyboard navigation. First, all the helpers must be created:
 
 ```js
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -507,10 +503,8 @@ class MyListView extends View {
 The complete code of a list class that hosts multiple item views and supports the keyboard navigation across them (when it gets focused) looks as follows:
 
 ```js
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -669,7 +663,7 @@ And here are the steps of the scenario:
 
 There are 3 focus tracker instances at play in the scenario:
 
-1. The {@link module:core/editor/editorui~EditorUI#focusTracker `EditorUI#focusTracker`} (the ["global" focus tracker](#a-note-about-the-global-focus-tracker)),
+1. The {@link module:ui/editorui/editorui~EditorUI#focusTracker `EditorUI#focusTracker`} (the ["global" focus tracker](#a-note-about-the-global-focus-tracker)),
 2. The {@link module:link/ui/linkactionsview~LinkActionsView#focusTracker `LinkActionsView#focusTracker`},
 3. The {@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}.
 
@@ -679,8 +673,8 @@ Let's see how they react to the user actions (states were recorded **after** eac
 	<thead>
 		<tr>
 			<th rowspan="2">Step</th>
-			<th colspan="2">{@link module:core/editor/editorui~EditorUI#focusTracker  `EditorUI#focusTracker`}</th>
-			<th colspan="2">{@link module:link/ui/linkactionsview~LinkActionsView#focusTracker  `LinkActionsView#focusTracker`}</th>
+			<th colspan="2">{@link module:ui/editorui/editorui~EditorUI#focusTracker `EditorUI#focusTracker`}</th>
+			<th colspan="2">{@link module:link/ui/linkactionsview~LinkActionsView#focusTracker `LinkActionsView#focusTracker`}</th>
 			<th colspan="2">{@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}</th>
 		</tr>
 		<tr>

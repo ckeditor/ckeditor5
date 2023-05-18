@@ -7,7 +7,7 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-/* import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist'; */
+/* import { DocumentList } from '@ckeditor/ckeditor5-list'; */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-lists-document' ), {
@@ -15,23 +15,10 @@ ClassicEditor
 		extraPlugins: [ DocumentList, DocumentListProperties, ImageResize ],
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'|',
-				'numberedList',
-				'bulletedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'link',
-				'uploadImage',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {
@@ -54,7 +41,9 @@ ClassicEditor
 		},
 		list: {
 			properties: {
-				styles: true
+				styles: true,
+				startIndex: true,
+				reversed: true
 			}
 		},
 		cloudServices: CS_CONFIG

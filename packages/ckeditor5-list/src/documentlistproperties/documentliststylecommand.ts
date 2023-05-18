@@ -22,7 +22,7 @@ import { getListTypeFromListStyleType } from './utils/style';
  */
 export default class DocumentListStyleCommand extends Command {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	declare public value: string | null;
 

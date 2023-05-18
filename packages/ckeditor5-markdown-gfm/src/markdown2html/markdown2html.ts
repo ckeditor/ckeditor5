@@ -4,7 +4,7 @@
  */
 
 /**
- * @module markdown-gfm/markdown2html
+ * @module markdown-gfm/markdown2html/markdown2html
  */
 
 import { marked } from 'marked';

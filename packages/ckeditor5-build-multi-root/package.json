@@ -1,0 +1,80 @@
+{
+  "name": "@ckeditor/ckeditor5-build-multi-root",
+  "version": "37.1.0",
+  "description": "The multi-root editor build of CKEditor 5 – the best browser-based rich text editor.",
+  "keywords": [
+    "ckeditor5-build",
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "wysiwyg",
+    "rich text",
+    "editor",
+    "html",
+    "contentEditable",
+    "editing",
+    "operational transformation",
+    "ot",
+    "collaboration",
+    "collaborative",
+    "real-time",
+    "framework"
+  ],
+  "main": "./build/ckeditor.js",
+  "types": "./build/ckeditor.d.ts",
+  "files": [
+    "build",
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
+  ],
+  "dependencies": {
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^37.1.0",
+    "@ckeditor/ckeditor5-autoformat": "^37.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "^37.1.0",
+    "@ckeditor/ckeditor5-block-quote": "^37.1.0",
+    "@ckeditor/ckeditor5-ckbox": "^37.1.0",
+    "@ckeditor/ckeditor5-ckfinder": "^37.1.0",
+    "@ckeditor/ckeditor5-cloud-services": "^37.1.0",
+    "@ckeditor/ckeditor5-easy-image": "^37.1.0",
+    "@ckeditor/ckeditor5-editor-multi-root": "^37.1.0",
+    "@ckeditor/ckeditor5-essentials": "^37.1.0",
+    "@ckeditor/ckeditor5-heading": "^37.1.0",
+    "@ckeditor/ckeditor5-image": "^37.1.0",
+    "@ckeditor/ckeditor5-indent": "^37.1.0",
+    "@ckeditor/ckeditor5-link": "^37.1.0",
+    "@ckeditor/ckeditor5-list": "^37.1.0",
+    "@ckeditor/ckeditor5-media-embed": "^37.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^37.1.0",
+    "@ckeditor/ckeditor5-paste-from-office": "^37.1.0",
+    "@ckeditor/ckeditor5-table": "^37.1.0",
+    "@ckeditor/ckeditor5-typing": "^37.1.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-core": "^37.1.0",
+    "@ckeditor/ckeditor5-dev-translations": "^37.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^37.1.0",
+    "terser-webpack-plugin": "^4.2.3",
+    "typescript": "^4.8.4",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-build-multi-root"
+  },
+  "scripts": {
+    "build": "webpack --mode production",
+    "postbuild": "tsc -p ./tsconfig.types.json",
+    "preversion": "npm run build"
+  }
+}

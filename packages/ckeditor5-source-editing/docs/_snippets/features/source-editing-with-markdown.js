@@ -10,25 +10,13 @@ ClassicEditor
 		extraPlugins: [ Markdown ],
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'uploadImage',
-				'blockQuote',
-				'insertTable',
-				'mediaEmbed',
-				'|',
-				'undo',
-				'redo',
-				'|',
-				'sourceEditing'
-			],
-			shouldNotGroupWhenFull: true
+				'undo', 'redo',
+				'|', 'sourceEditing',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
@@ -76,7 +64,10 @@ ClassicEditor
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.label && item.label === 'Source' ),
 			text: 'Switch to the source mode to edit the Markdown source.',
-			editor
+			editor,
+			tippyOptions: {
+				placement: 'bottom-start'
+			}
 		} );
 	} )
 	.catch( err => {

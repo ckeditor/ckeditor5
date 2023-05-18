@@ -1,10 +1,10 @@
+/*
+ * The configuration is used when releasing all CKEditor 5 packages (from the `packages/` directory).
+ */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "sourceMap": false,
-    "declaration": false
-  },
-  "include": [
-    "./typings/"
-  ]
+    "declaration": true
+  }
 }

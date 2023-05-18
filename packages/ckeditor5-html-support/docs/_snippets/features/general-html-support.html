@@ -1,20 +1,49 @@
 <div id="snippet-general-html-support">
-	<h2 data-i18n-context="title">General HTML support</h2>
-
-	<p data-i18n-context="description">The special editing <abbr title="General HTML Support">GHS</abbr> feature is enabled in this editor and configured to support all HTML features. This configuration will work similarly to <a href="https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent">allowedContent: true</a> option from CKEditor 4.</p>
-
-	<div style="color: red; padding: 10px; text-align: center; border: solid 3px red">
-		<p data-i18n-context="experimental-note">This is a feature in constant development.</p>
-
-		<details data-i18n-context="experimental-note">
-			<summary>Read more</summary>
-
-			<p>While already stable, the General HTML support feature is <strong>still being developed and expanded</strong>.</p>
-		</details>
+	<h2>HTML playground</h2>
+	<div id="cke5-source-code-demo">
+		<article>
+			<p data-foo="bar">
+				A sample paragraph with a <strong>data attribute</strong>.
+			</p>
+			<hr>
+			<section>
+				<h3>Responsive column layout</h3>
+				<div class="columns" style="gap:10px">
+					<div class="column" style="border: 1px solid orange">
+						<figure class="image">
+							<img src="https://ckeditor.com/assets/images/ckdemo/html-source-editing/html.png"/>
+							<figcaption><abbr title="HyperText Markup Language">HTML</abbr></figcaption>
+						</figure>
+					</div>
+					<div class="column" style="border: 1px dotted blue">
+						<figure class="image">
+							<img src="https://ckeditor.com/assets/images/ckdemo/html-source-editing/css.png"/>
+							<figcaption><abbr title="Cascading Style Sheets">CSS</abbr></figcaption>
+						</figure>
+					</div>
+					<div class="column" style="border: 1px dashed olive">
+						<figure class="image">
+							<img src="https://ckeditor.com/assets/images/ckdemo/html-source-editing/js.png"/>
+							<figcaption><abbr title="JavaScript">JS</abbr></figcaption>
+						</figure>
+					</div>
+				</div>
+			</section>
+			<hr>
+			<aside>
+				<h3>HTML-related features</h3>
+				<ul>
+					<li>
+						<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html">HTML embed</a>
+					</li>
+					<li>
+						<a href="https://ckeditor.com/docs/ckeditor5/latest/features/style.html">Styles</a>
+					</li>
+					<li>
+						<a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/html-comments.html">HTML comment element</a>
+					</li>
+				</ul>
+			</aside>
+		</article>
 	</div>
-
-	<p>Use the source editing mode to add some features not yet covered by official plugins, like &lt;span&gt; or more &lt;div&gt; tags, and see them rendered in the document.</p>
-
-	<p>If you'd like to learn how to create more restricted rules for the allowed content, read the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html#configuration">configuration section</a> and see the examples.</p>
-
 </div>

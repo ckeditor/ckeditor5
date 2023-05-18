@@ -7,7 +7,14 @@
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-heading-buttons' ), {
-		toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', '|', 'undo', 'redo' ],
+		toolbar: {
+			items: [
+				'undo', 'redo', '|', 'paragraph', 'heading1', 'heading2', 'heading3',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
 		heading: {
 			options: [
 				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },

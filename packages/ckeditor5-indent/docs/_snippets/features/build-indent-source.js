@@ -5,11 +5,11 @@
 
 /* globals window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import { Code } from '@ckeditor/ckeditor5-basic-styles';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( Indent );
 ClassicEditor.builtinPlugins.push( IndentBlock );

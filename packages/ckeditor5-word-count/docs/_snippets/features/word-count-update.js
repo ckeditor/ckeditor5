@@ -5,6 +5,8 @@
 
 /* global window, document, console, BalloonEditor */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
 const maxCharacters = 120;
 const container = document.querySelector( '.demo-update' );
 const progressCircle = document.querySelector( '.demo-update__chart__circle' );
@@ -19,26 +21,14 @@ sendButton.addEventListener( 'click', () => {
 
 BalloonEditor
 	.create( document.querySelector( '#demo-update__editor' ), {
+		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'link',
-				'|',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

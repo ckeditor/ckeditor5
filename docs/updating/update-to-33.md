@@ -180,7 +180,7 @@ editor.conversion.for( 'downcast' ).elementToElement( {
 	Please note that the new syntax is available both in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers.
 </info-box>
 
-### New downcast converters for the {@link features/table table feature}
+### New downcast converters for the {@link features/tables table feature}
 
 The conversion brought by the {@link module:table/tableediting~TableEditing} plugin has been refined in this version and now relies heavily on the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} downcast conversion helper.
 

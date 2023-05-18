@@ -18,11 +18,11 @@ The easiest way to set up your project is to grab the starter files from our [Gi
 
 The editor has already been created in the `app.js` file with some basic plugins. All you need to do, is clone the repository, run the `npm install` command, and you can start coding right away.
 
-The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run the build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly). At this stage, you can move to the {@link framework/creating-simple-plugin-timestamp#creating-a-plugin Creating a plugin section} of this guide. 
+The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run the build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly). At this stage, you can move to the {@link framework/creating-simple-plugin-timestamp#creating-a-plugin Creating a plugin section} of this guide.
 
 ### DIY path with setting up the environment from the scratch
 
-If you want to set up the project yourself, you should follow the steps listed in {@link framework/quick-start#lets-start the Let's start section} of the Quick Start guide. 
+If you want to set up the project yourself, you should follow the steps listed in {@link framework/quick-start#lets-start the Let's start section} of the Quick Start guide.
 
 When this is done, you need to install the following dependencies that will be necessary to proceed:
 ```bash
@@ -46,13 +46,12 @@ We are going to write the whole plugin in your base `app.js` file. It should loo
 ```js
 // app.js
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -91,7 +90,7 @@ Now you just need to build your application using the command below.
 ```bash
 ./node_modules/.bin/webpack --mode development
 ```
-After opening the `index.html` in the browser, you should be able to see the working editor ready for plugin development. 
+After opening the `index.html` in the browser, you should be able to see the working editor ready for plugin development.
 
 ## Creating a plugin
 
@@ -100,15 +99,14 @@ All features in the CKEditor 5 are powered by plugins. In order to create our cu
 We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it into the editor's plugins array.
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 class Timestamp extends Plugin {
     init() {
@@ -147,7 +145,7 @@ We also need to register our button in the editor's UI `componentFactory`, so it
 ```js
 // Imports from the previous example
 // ...
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 class Timestamp extends Plugin {
 	init() {

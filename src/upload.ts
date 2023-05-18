@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module ckeditor5/upload
+ * @module ckeditor5/upload
  */
 
 export * from '@ckeditor/ckeditor5-upload';

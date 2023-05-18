@@ -9,7 +9,7 @@
 
 /* globals setTimeout, clearTimeout */
 
-import { Plugin, type Editor, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import {
 	LiveRange,
@@ -18,16 +18,17 @@ import {
 	type Element,
 	type Position,
 	type Range,
-	type ViewDocumentMouseEvent,
+	type ViewDocumentMouseDownEvent,
+	type ViewDocumentMouseUpEvent,
 	type ViewElement,
 	type ViewRange
 } from '@ckeditor/ckeditor5-engine';
 
-import { Widget, isWidget } from '@ckeditor/ckeditor5-widget';
+import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
 import { env, uid, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
-import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ClipboardOutputEvent } from './clipboardpipeline';
+import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ViewDocumentClipboardOutputEvent } from './clipboardpipeline';
 import ClipboardObserver, {
 	type ViewDocumentDragEndEvent,
 	type ViewDocumentDragEnterEvent,
@@ -167,8 +168,8 @@ export default class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ClipboardPipeline, Widget ];
+	public static get requires() {
+		return [ ClipboardPipeline, Widget ] as const;
 	}
 
 	/**
@@ -264,7 +265,9 @@ export default class DragDrop extends Plugin {
 
 				// Disable toolbars so they won't obscure the drop area.
 				if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-					editor.plugins.get( 'WidgetToolbarRepository' ).forceDisabled( 'dragDrop' );
+					const widgetToolbarRepository: WidgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+
+					widgetToolbarRepository.forceDisabled( 'dragDrop' );
 				}
 			}
 
@@ -291,7 +294,7 @@ export default class DragDrop extends Plugin {
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
 			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
 
-			viewDocument.fire<ClipboardOutputEvent>( 'clipboardOutput', {
+			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 				dataTransfer: data.dataTransfer,
 				content,
 				method: 'dragstart'
@@ -354,7 +357,7 @@ export default class DragDrop extends Plugin {
 				}
 			}
 
-			/* istanbul ignore else */
+			/* istanbul ignore else -- @preserve */
 			if ( targetRange ) {
 				this._updateDropMarkerThrottled( targetRange );
 			}
@@ -381,7 +384,7 @@ export default class DragDrop extends Plugin {
 			// the target lands on the marker itself.
 			this._removeDropMarker();
 
-			/* istanbul ignore if */
+			/* istanbul ignore if -- @preserve */
 			if ( !targetRange ) {
 				this._finalizeDragging( false );
 				evt.stop();
@@ -457,7 +460,7 @@ export default class DragDrop extends Plugin {
 
 		// Add the 'draggable' attribute to the widget while pressing the selection handle.
 		// This is required for widgets to be draggable. In Chrome it will enable dragging text nodes.
-		this.listenTo<ViewDocumentMouseEvent>( viewDocument, 'mousedown', ( evt, data ) => {
+		this.listenTo<ViewDocumentMouseDownEvent>( viewDocument, 'mousedown', ( evt, data ) => {
 			// The lack of data can be caused by editor tests firing fake mouse events. This should not occur
 			// in real-life scenarios but this greatly simplifies editor tests that would otherwise fail a lot.
 			if ( env.isAndroid || !data ) {
@@ -496,7 +499,7 @@ export default class DragDrop extends Plugin {
 		} );
 
 		// Remove the draggable attribute in case no dragging started (only mousedown + mouseup).
-		this.listenTo<ViewDocumentMouseEvent>( viewDocument, 'mouseup', () => {
+		this.listenTo<ViewDocumentMouseUpEvent>( viewDocument, 'mouseup', () => {
 			if ( !env.isAndroid ) {
 				this._clearDraggableAttributesDelayed();
 			}
@@ -608,7 +611,9 @@ export default class DragDrop extends Plugin {
 		this._clearDraggableAttributes();
 
 		if ( editor.plugins.has( 'WidgetToolbarRepository' ) ) {
-			editor.plugins.get( 'WidgetToolbarRepository' ).clearForceDisabled( 'dragDrop' );
+			const widgetToolbarRepository: WidgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+
+			widgetToolbarRepository.clearForceDisabled( 'dragDrop' );
 		}
 
 		this._draggingUid = '';
@@ -768,7 +773,7 @@ function findDropTargetRangeOnAncestorObject( editor: Editor, element: Element )
 		currentElement = currentElement.parent as Element | null;
 	}
 
-	/* istanbul ignore next */
+	/* istanbul ignore next -- @preserve */
 	return null;
 }
 
@@ -858,10 +863,4 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 	}
 
 	return null;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ DragDrop.pluginName ]: DragDrop;
-	}
 }

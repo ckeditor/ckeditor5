@@ -10,6 +10,15 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#snippet-presentational-image-style-default' ), {
 		removePlugins: [ 'LinkImage', 'AutoImage', 'imageCaption' ],
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
 		image: {
 			resizeUnit: '%',
 			resizeOptions: [

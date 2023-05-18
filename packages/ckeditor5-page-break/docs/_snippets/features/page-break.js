@@ -5,10 +5,12 @@
 
 /* globals window, document, console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( Alignment );
 ClassicEditor.builtinPlugins.push( PageBreak );
@@ -17,27 +19,10 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-page-break' ), {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'alignment',
-				'|',
-				'pageBreak',
-				'blockQuote',
-				'link',
-				'uploadImage',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'pageBreak',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

@@ -45,7 +45,7 @@ describe( 'utils', () => {
 					}
 				],
 				columns: 2,
-				removeButtonTooltip: 'Remove Color'
+				removeButtonLabel: 'Remove Color'
 			} );
 
 			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );

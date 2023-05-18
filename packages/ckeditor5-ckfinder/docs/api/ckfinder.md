@@ -10,7 +10,7 @@ This package implements the {@link features/ckfinder CKFinder feature}. This fea
 
 ## Demo
 
-Check out the {@link features/ckfinder#demo demos} in the integration guide.
+Check out the {@link features/ckfinder#demos demos} in the integration guide.
 
 ## Documentation
 

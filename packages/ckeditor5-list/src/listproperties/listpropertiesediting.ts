@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesediting
  */
 
-import { Plugin, type Editor, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import type {
 	DiffItem,
@@ -45,8 +45,8 @@ export default class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ListEditing ];
+	public static get requires() {
+		return [ ListEditing ] as const;
 	}
 
 	/**
@@ -372,8 +372,13 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 function upcastListItemAttributes( attributeStrategies: Array<AttributeStrategy> ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on<UpcastElementEvent>( 'element:li', ( evt, data, conversionApi ) => {
+			// https://github.com/ckeditor/ckeditor5/issues/13858
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const listParent = data.viewItem.parent as ViewElement;
-			const listItem = data.modelRange!.start.nodeAfter || data.modelRange!.end.nodeBefore;
+			const listItem = data.modelRange.start.nodeAfter || data.modelRange.end.nodeBefore;
 
 			for ( const strategy of attributeStrategies ) {
 				if ( strategy.appliesToListItem( listItem! ) ) {
@@ -830,10 +835,4 @@ function getItemFromChange( change: DiffItem ) {
 	}
 
 	return null;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
-	}
 }

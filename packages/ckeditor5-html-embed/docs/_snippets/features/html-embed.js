@@ -5,10 +5,12 @@
 
 /* globals window, document, location, console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( HtmlEmbed );
 ClassicEditor.builtinPlugins.push( CodeBlock );
@@ -79,26 +81,10 @@ ClassicEditor
 		initialData,
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'htmlEmbed',
-				'codeBlock',
-				'blockQuote',
-				'link',
-				'uploadImage',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'htmlEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

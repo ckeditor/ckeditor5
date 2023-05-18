@@ -5,15 +5,11 @@ category: features
 
 {@snippet features/build-text-alignment-source}
 
-The alignment feature enables support for text alignment. You can use it to align your content to left, right and center or to justify it.
-
-<info-box info>
-	The alignment feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
+The alignment feature lets you align your content to the left or right as well as center or justify it.
 
 ## Demo
 
-Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/align-right.svg Text alignment} to apply desired alignment to a paragraph.
+Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/align-right.svg Text alignment} to change the alignment of the element.
 
 {@snippet features/text-alignment}
 
@@ -21,20 +17,11 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Related features
-
-There are more CKEditor 5 features that can help you organize your content:
-* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
-* {@link features/headings Headings} &ndash; Split your content into logical sections.
-* {@link features/indent Block indentation} &ndash; Organize your content into visually separated blocks, indent crucial paragraphs, etc.
-* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in the rich-text content.
-* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
-
 ## Configuring alignment options
 
 ### Defining available options
 
-It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
+It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`.
 
 <info-box>
 	Note that the `'left'` option should always be included for the <abbr title="left–to–right">LTR</abbr> content. Similarly, the `'right'` option should always be included for the <abbr title="right-to-left">RTL</abbr> content. Learn more about {@link features/ui-language#setting-the-language-of-the-content configuring language of the editor content}.
@@ -63,7 +50,7 @@ ClassicEditor
 By default, alignment is set inline using the `text-align` CSS property. If you wish the feature to output more semantic content that uses classes instead of inline styles, you can specify class names by using the `className` property in `config.alignment.options` and style them by using a stylesheet.
 
 <info-box>
-	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignment~AlignmentConfig#options `config.alignment.options`}.
+	Once you decide to use classes for the alignment, you must define `className` for **all** alignment entries in {@link module:alignment/alignmentconfig~AlignmentConfig#options `config.alignment.options`}.
 </info-box>
 
 The following configuration will set `.my-align-left` and `.my-align-right` to left and right alignment, respectively.
@@ -104,6 +91,10 @@ ClassicEditor
 
 ## Installation
 
+<info-box info>
+	The alignment feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
+
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-alignment`](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment) package:
 
 ```bash
@@ -113,7 +104,7 @@ npm install --save @ckeditor/ckeditor5-alignment
 And add it to your plugin list and toolbar configuration:
 
 ```js
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -128,6 +119,15 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
+## Related features
+
+CKEditor 5 has more features that can help you organize your content:
+* {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
+* {@link features/headings Headings} &ndash; Split your content into logical sections.
+* {@link features/indent Block indentation} &ndash; Organize your content into visually separated blocks, indent crucial paragraphs, etc.
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in the rich-text content.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
+
 ## Common API
 
 The {@link module:alignment/alignment~Alignment} plugin registers:
@@ -135,7 +135,7 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 * Dropdown: `'alignment'`.
 * Buttons: `'alignment:left'`, `'alignment:right'`, `'alignment:center'`, `'alignment:justify'`.
 
-	The number of options and their names are based on the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option).
+	The number of options and their names are based on the {@link module:alignment/alignmentconfig~AlignmentConfig#options `alignment.options`} configuration option).
 
 * Command: `'alignment'`:
 
@@ -157,4 +157,4 @@ Block elements such as `<p>` with the `align` attribute are accepted by the plug
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-alignment).

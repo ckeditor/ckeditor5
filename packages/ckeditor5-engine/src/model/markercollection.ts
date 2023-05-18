@@ -279,9 +279,9 @@ export interface MarkerData {
 }
 
 /**
- * `Marker` is a continuous parts of model (like a range), is named and represent some kind of information about marked
- * part of model document. In contrary to {@link module:engine/model/node~Node nodes}, which are building blocks of
- * model document tree, markers are not stored directly in document tree but in
+ * `Marker` is a continuous part of the model (like a range), is named and represents some kind of information about the
+ * marked part of the model document. In contrary to {@link module:engine/model/node~Node nodes}, which are building blocks of
+ * the model document tree, markers are not stored directly in the document tree but in the
  * {@link module:engine/model/model~Model#markers model markers' collection}. Still, they are document data, by giving
  * additional meaning to the part of a model document between marker start and marker end.
  *
@@ -521,9 +521,9 @@ export type { Marker };
  * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
  *
  * @see module:engine/model/liverange~LiveRange#event:change:range
- * @eventName change:range
+ * @eventName ~Marker#change:range
  */
-export type MarkerCollectionChangeRangeEvent = LiveRangeChangeRangeEvent;
+export type MarkerChangeRangeEvent = LiveRangeChangeRangeEvent;
 
 /**
  * Fired whenever change on {@link module:engine/model/document~Document} is done inside {@link ~Marker#_liveRange marker range}.
@@ -534,19 +534,19 @@ export type MarkerCollectionChangeRangeEvent = LiveRangeChangeRangeEvent;
  * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
  *
  * @see module:engine/model/liverange~LiveRange#event:change:content
- * @eventName change:content
+ * @eventName ~Marker#change:content
  */
 export type MarkerCollectionChangeContentEvent = LiveRangeChangeContentEvent;
 
 /**
  * Describes `change:range` or `change:content` event.
  */
-export type MarkerCollectionChangeEvent = LiveRangeChangeEvent;
+export type MarkerChangeEvent = LiveRangeChangeEvent;
 
 /**
  * Fired whenever marker is added, updated or removed from `MarkerCollection`.
  *
- * @eventName update
+ * @eventName ~MarkerCollection#update
  * @param marker Updated Marker.
  * @param oldRange Marker range before the update. When is not defined it
  * means that marker is just added.

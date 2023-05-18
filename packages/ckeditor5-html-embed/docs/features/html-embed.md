@@ -6,9 +6,21 @@ menu-title: HTML embed
 
 # HTML embed
 
-The HTML embed feature allows embedding an arbitrary HTML snippet in the editor. The feature is targeted at more advanced users who want to directly interact with HTML fragments.
+The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.
 
-This feature can be used to embed any HTML code and bypass the CKEditor 5's filtering mechanisms. Thanks to that it is possible to enrich content produced by CKEditor 5 with fragments of HTML that are not supported by any other CKEditor 5 feature.
+## Demo
+
+Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the "Preview editor data" button under the editor to preview the editor content, including the embedded HTML.
+
+{@snippet features/html-embed}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+</info-box>
+
+## Additional feature information
+
+This feature lets you embed any HTML code and bypass CKEditor 5's filtering mechanisms. You can use it to enrich content produced by CKEditor 5 with fragments of HTML that are not supported by any other CKEditor 5 feature.
 
 Some examples of content that can be embedded thanks to the HTML embed feature:
 
@@ -19,7 +31,7 @@ Some examples of content that can be embedded thanks to the HTML embed feature:
 * HTML snippets produced by external tools (for example, reports or charts).
 * Interactive content that requires a combination of rich HTML and scripts.
 
-It is recommended to use the {@link features/media-embed media embed} feature for embeddable media that are supported by this feature. The HTML embed feature can be used to handle remaining content.
+It is recommended to use the {@link features/media-embed media embed} feature for embeddable media that are supported by this feature. The HTML embed feature can be used to handle the remaining content.
 
 <info-box warning>
 	Read the [Security](#security) section before installing this plugin.
@@ -27,28 +39,11 @@ It is recommended to use the {@link features/media-embed media embed} feature fo
 	Incorrect configuration may **lead to security issues**.
 </info-box>
 
-<info-box info>
-	The HTML embed feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
-
-## Demo
-
-Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including the embedded HTML.
-
-{@snippet features/html-embed}
-
-<info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
-</info-box>
-
-## Related features
-
-CKEditor 5 supports a wider range of embed and code features, including:
-
-* {@link features/media-embed Media embed} &ndash; Insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
-* {@link features/code-blocks Code blocks} &ndash; Insert longer, multiline listings of pre-formatted code with a programming language assigned.
-
 ## Installation
+
+<info-box info>
+	The HTML embed feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed) package:
 
@@ -59,7 +54,7 @@ npm install --save @ckeditor/ckeditor5-html-embed
 And add it to your plugin list configuration:
 
 ```js
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -78,9 +73,9 @@ ClassicEditor
 
 ### Content previews
 
-The feature is by default configured to not show previews of the HTML snippets. The previews can be enabled by setting the {@link module:html-embed/htmlembed~HtmlEmbedConfig#showPreviews `config.htmlEmbed.showPreviews`} option to `true`.
+The feature is by default configured to not show previews of the HTML snippets. The previews can be enabled by setting the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#showPreviews `config.htmlEmbed.showPreviews`} option to `true`.
 
-However, by showing previews of the embedded HTML snippets, you expose the users of your system to the **risk of executing malicious JavaScript code inside the editor**. Therefore, it is highly recommended to plug some HTML sanitizer that will strip the malicious code from the created snippets before rendering their previews. The sanitizer can be plugged by defining the {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option.
+However, by showing previews of the embedded HTML snippets, you expose the users of your system to the **risk of executing malicious JavaScript code inside the editor**. Therefore, it is highly recommended to plug some HTML sanitizer that will strip the malicious code from the created snippets before rendering their previews. The sanitizer can be plugged by defining the {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option.
 
 ```js
 ClassicEditor
@@ -126,7 +121,7 @@ In some cases, advanced users can be instructed to never paste HTML code from un
 
 #### Sanitizer
 
-The {@link module:html-embed/htmlembed~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option allows plugging an external sanitizer.
+The {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option allows plugging an external sanitizer.
 
 Some popular JavaScript libraries that can be used include [`sanitize-html`](https://www.npmjs.com/package/sanitize-html) and [`DOMPurify`](https://www.npmjs.com/package/dompurify).
 
@@ -134,7 +129,14 @@ The default settings of these libraries usually strip all potentially malicious 
 
 #### CSP
 
-In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as stylesheets, images and fonts.
+In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as stylesheets, images, and fonts.
+
+## Related features
+
+CKEditor 5 supports a wider range of embed and code features, including:
+
+* {@link features/media-embed Media embed} &ndash; Insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
+* {@link features/code-blocks Code blocks} &ndash; Insert longer, multiline listings of pre-formatted code with a programming language assigned.
 
 ## Common API
 
@@ -161,4 +163,4 @@ editor.execute( 'htmlEmbed', '<b>New content.</b>' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-embed](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-embed).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-embed](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-embed).

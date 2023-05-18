@@ -11,18 +11,13 @@ import { Command } from '@ckeditor/ckeditor5-core';
 import { getCopyOnEnterAttributes } from './utils';
 
 import type {
-	DocumentSelection,
-	Model,
-	Schema,
 	Element,
 	Position,
 	Writer
 } from '@ckeditor/ckeditor5-engine';
 
 /**
- * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> keystroke.
- *
- * @extends module:core/command~Command
+ * Enter command used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> keystroke.
  */
 export default class EnterCommand extends Command {
 	/**
@@ -38,20 +33,24 @@ export default class EnterCommand extends Command {
 	/**
 	 * Splits a block where the document selection is placed, in the way how the <kbd>Enter</kbd> key is expected to work:
 	 *
-	 *		<p>Foo[]bar</p>   ->   <p>Foo</p><p>[]bar</p>
-	 *		<p>Foobar[]</p>   ->   <p>Foobar</p><p>[]</p>
-	 *		<p>Fo[ob]ar</p>   ->   <p>Fo</p><p>[]ar</p>
+	 * ```
+	 * <p>Foo[]bar</p>   ->   <p>Foo</p><p>[]bar</p>
+	 * <p>Foobar[]</p>   ->   <p>Foobar</p><p>[]</p>
+	 * <p>Fo[ob]ar</p>   ->   <p>Fo</p><p>[]ar</p>
+	 * ```
 	 *
 	 * In some cases, the split will not happen:
 	 *
-	 *        // The selection parent is a limit element:
-	 *        <figcaption>A[bc]d</figcaption>   ->   <figcaption>A[]d</figcaption>
+	 * ```
+	 * // The selection parent is a limit element:
+	 * <figcaption>A[bc]d</figcaption>   ->   <figcaption>A[]d</figcaption>
 	 *
-	 *        // The selection spans over multiple elements:
-	 *        <h>x[x</h><p>y]y<p>   ->   <h>x</h><p>[]y</p>
+	 * // The selection spans over multiple elements:
+	 * <h>x[x</h><p>y]y<p>   ->   <h>x</h><p>[]y</p>
+	 * ```
 	 *
 	 * @param writer Writer to use when performing the enter action.
-	 * @returns `true` if a block was split, `false` otherwise.
+	 * @returns Boolean indicating if the block was split.
 	 */
 	public enterBlock( writer: Writer ): boolean {
 		const model = this.editor.model;
@@ -110,6 +109,11 @@ export default class EnterCommand extends Command {
 	}
 }
 
+/**
+ * Fired after the the {@link module:enter/entercommand~EnterCommand} is finished executing.
+ *
+ * @eventName ~EnterCommand#afterExecute
+ */
 export type EnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';
 	args: [ { writer: Writer } ];
@@ -117,5 +121,5 @@ export type EnterCommandAfterExecuteEvent = {
 
 function splitBlock( writer: Writer, splitPos: Position ): void {
 	writer.split( splitPos );
-	writer.setSelection( splitPos.parent.nextSibling, 0 );
+	writer.setSelection( splitPos.parent.nextSibling!, 0 );
 }

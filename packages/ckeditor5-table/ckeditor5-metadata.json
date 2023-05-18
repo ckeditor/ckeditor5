@@ -4,7 +4,7 @@
 			"name": "Table",
 			"className": "Table",
 			"description": "Adds table creation and editing tools that help content authors bring tabular data into their documents.",
-			"docs": "features/table.html",
+			"docs": "features/tables/tables.html",
 			"path": "src/table.js",
 			"uiComponents": [
 				{
@@ -66,7 +66,7 @@
 			"name": "Table cell properties",
 			"className": "TableCellProperties",
 			"description": "Adds the ability to style individual table cells.",
-			"docs": "features/table.html#table-and-cell-styling-tools",
+			"docs": "features/tables/tables-styling.html",
 			"path": "src/tablecellproperties",
 			"requires": [
 				"Table",
@@ -105,7 +105,7 @@
 			"name": "Table properties",
 			"className": "TableProperties",
 			"description": "Adds the ability to style entire tables.",
-			"docs": "features/table.html#table-and-cell-styling-tools",
+			"docs": "features/tables/tables-styling.html",
 			"path": "src/tableproperties",
 			"requires": [
 				"Table",
@@ -144,7 +144,7 @@
 			"name": "Table toolbar",
 			"className": "TableToolbar",
 			"description": "Creates configurable toolbars for both the table feature and table content. They show up when the table widget or the content inside a table cell are selected.",
-			"docs": "features/table.html#toolbars",
+			"docs": "features/tables/tables.html#toolbars",
 			"path": "src/tabletoolbar.js",
 			"requires": [
 				"Table"
@@ -158,7 +158,7 @@
 			"name": "Table caption",
 			"className": "TableCaption",
 			"description": "Adds support for table captions, which inform the reader about the content of the table. Using captions is also beneficial from the accessibility point of view.",
-			"docs": "features/table.html#table-caption",
+			"docs": "features/tables/tables-caption.html",
 			"path": "src/tablecaption.js",
 			"requires": [
 				"Table"
@@ -174,7 +174,7 @@
 			"name": "Table column resize",
 			"className": "TableColumnResize",
 			"description": "Adds support for table column resize, which allows to set the width of each column in a table using a resize handle.",
-			"docs": "features/table.html#table-column-resize",
+			"docs": "features/tables/tables-resize.html",
 			"path": "src/tablecolumnresize.js",
 			"requires": [
 				"Table"

@@ -5,21 +5,13 @@ modified_at: 2022-08-29
 
 # Undo/Redo
 
-The undo features lets the user withdraw recent changes done to the editor content, as well as bring them back again. All operations are remembered and organized into batches, that can later be easily undone or redone. By utilizing the batches approach, the feature is capable of selectively reverting past changes, not just the latest ones. This allows handling asynchronous actions such as image uploads without blocking the user from editing the document in the meantime.
-
-The selective undo is heavily used in {@link features/real-time-collaboration real-time collaboration} environments. In such scenario, a specific user should only be able to revert their changes, while keeping the changes made by other users intact (unless there is an editing conflict). By omitting some changes and going down the stack, it is possible to only revert selected changes.
-
-The feature supports both toolbar buttons and {@link features/keyboard-support keyboard shortcuts} for convenient and easy operation.
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
+The undo feature lets you withdraw recent changes to your content as well as bring them back. You can also selectively revert past changes, not just the latest ones.
 
 ## Demo
 
-Use the demo below to try out the undo and redo mechanism. Play around the content, try to introduce some changes and then use the toolbar buttons to undo {@icon @ckeditor/ckeditor5-undo/theme/icons/undo.svg Undo} or redo {@icon @ckeditor/ckeditor5-undo/theme/icons/redo.svg Redo} these.
+Use the demo below to try out the undo and redo mechanism. Play around with the content. Try introducing some changes and then use the toolbar buttons to undo {@icon @ckeditor/ckeditor5-undo/theme/icons/undo.svg Undo} or redo {@icon @ckeditor/ckeditor5-undo/theme/icons/redo.svg Redo} them.
 
-Alternatively, utilize the well-known keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Z</kbd> (it would be <kbd>Cmd</kbd> + <kbd>Z</kbd> on Mac) for undo. For a redo you can use either <kbd>Ctrl</kbd> + <kbd>Y</kbd> or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> (respectively with <kbd>Cmd</kbd> on Mac).
+Alternatively, use the well-known keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Z</kbd> (this would be <kbd>Cmd</kbd> + <kbd>Z</kbd> on Mac) for undo. For redo, you can use either <kbd>Ctrl</kbd> + <kbd>Y</kbd> or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> (respectively with <kbd>Cmd</kbd> on Mac).
 
 {@snippet features/undo-redo}
 
@@ -27,10 +19,22 @@ Alternatively, utilize the well-known keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Z
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
+## Additional feature information
+
+All operations of the undo feature are remembered and organized into batches that can later be easily undone or redone. Thanks to this approach, the feature can selectively revert past changes, not just the latest ones. This allows handling asynchronous actions such as image uploads without blocking the user from editing the document in the meantime.
+
+The selective undo is heavily used in {@link features/real-time-collaboration real-time collaboration} environments. In such a scenario, a specific user should only be able to revert their changes, while keeping the changes made by other users intact (unless there is an editing conflict). By omitting some changes and going down the stack, it is possible to only revert selected changes.
+
+The feature supports both toolbar buttons and {@link features/keyboard-support keyboard shortcuts} for convenient and easy operation.
+
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds (loaded by the {@link module:essentials/essentials~Essentials} plugin). The installation instructions are for developers interested in building their own, custom rich text editor or willing to configure the toolbar button.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds} (loaded by the {@link module:essentials/essentials~Essentials} plugin). The installation instructions are for developers interested in building their own, custom rich text editor or willing to configure the toolbar button.
+</info-box>
+
+<info-box info>
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-undo`](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo) package:
@@ -42,7 +46,7 @@ npm install --save @ckeditor/ckeditor5-undo
 Then add the `Undo` plugin to your plugin list and to the toolbar:
 
 ```js
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import { Undo } from '@ckeditor/ckeditor5-undo';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -93,4 +97,4 @@ The {@link module:undo/undoui~UndoUI} feature introduces the `undo` and `redo` b
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-undo](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-undo).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-undo](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-undo).

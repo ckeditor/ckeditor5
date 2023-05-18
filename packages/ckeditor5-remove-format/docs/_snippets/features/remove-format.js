@@ -5,29 +5,22 @@
 
 /* globals ClassicEditor, console, window, document */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'bold',
-				'italic',
-				'underline',
-				'strikethrough',
-				'code',
-				'subscript',
-				'superscript',
-				'|',
-				'fontSize',
-				'fontFamily',
-				'|',
-				'alignment',
-				'link',
-				'|',
-				'undo',
-				'redo',
-				'|',
-				'removeformat'
-			]
+				'undo', 'redo', '|', 'heading',
+				'|', 'fontSize', 'fontFamily',
+				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript',
+				'|', 'removeformat',
+				'-', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'alignment',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			],
+			shouldNotGroupWhenFull: true
 		},
 		ui: {
 			viewportOffset: {

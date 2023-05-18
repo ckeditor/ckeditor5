@@ -7,7 +7,7 @@ badges: [ premium ]
 
 # Easy Image integration
 
-The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) feature takes care of handling images with a strong focus on the end–user experience. Its goal is to make the image upload as effortless and intuitive as possible. Unlike the {@link features/ckbox CKBox} feature, which is a full-fledged file manager, Easy Image concentrates on upload only.
+The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) is an intuitive tool for uploading images. Unlike the {@link features/ckbox CKBox} feature, which is a full-fledged file manager, Easy Image concentrates on upload only.
 
 <info-box info>
 	This is a premium feature and you need a license for it on top of your CKEditor 5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
@@ -17,17 +17,9 @@ The [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) featu
 	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
-Easy Image is part of the CKEditor Cloud Services. It is a <abbr title="Software as a service">SaaS</abbr> product which:
-
-* securely uploads images,
-* takes care of rescaling and [optimizing them](https://ckeditor.com/docs/cs/latest/guides/easy-image/service-details.html#image-processing) as well as providing [various image sizes](#responsive-images) (responsive images), <!-- absolute link -->
-* delivers uploaded images through a blazing-fast CDN.
-
-All that with virtually zero server setup.
-
 ## Demo
 
-The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
+The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor}. It is configured to use the Easy Image service provided by CKEditor Cloud Services.
 
 {@snippet build-classic-source}
 
@@ -37,12 +29,22 @@ The demo below uses the {@link installation/getting-started/predefined-builds#cl
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
+## Additional feature information
+
+Easy Image is part of the CKEditor Cloud Services. It is a <abbr title="Software as a service">SaaS</abbr> product which:
+
+* securely uploads images,
+* takes care of rescaling and [optimizing them](https://ckeditor.com/docs/cs/latest/guides/easy-image/service-details.html#image-processing) as well as providing [various image sizes](#responsive-images) (responsive images), <!-- absolute link -->
+* delivers uploaded images through a blazing-fast CDN.
+
+All that with virtually zero server setup.
+
 ## Configuration
 
 To make enabling image upload in CKEditor 5 a breeze, by default all builds include the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin}. It integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
 
 1. Follow the [Easy Image &mdash; Quick start guide](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) to set up an account.
-2. Configure CKEditor 5 (see {@link module:cloud-services/cloudservices~CloudServicesConfig `CloudServicesConfig`}):
+2. Configure CKEditor 5 (see {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `CloudServicesConfig`}):
 
 	```js
 	ClassicEditor
@@ -58,7 +60,7 @@ To make enabling image upload in CKEditor 5 a breeze, by default all builds incl
 
 This is all. At this point, image upload will be automatically enabled in your application.
 
-If you are having troubles with setting up Easy Image, please [contact us](https://ckeditor.com/contact/).
+If you are having trouble with setting up Easy Image, please [contact us](https://ckeditor.com/contact/).
 
 ### Configuring allowed file types
 
@@ -69,7 +71,7 @@ The allowed file types that can be uploaded should actually be configured in two
 
 #### Client-side configuration
 
-Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
 
 By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files. This corresponds with file formats supported by Easy Image, but you can modify the list to limit the number of allowed image types.
 
@@ -96,7 +98,7 @@ Responsive images have two main advantages over the "traditional" image delivery
 
 Responsive images delivered by the Easy Image service are transparent to your application. Once uploaded, the image appears in the editor content as a "regular" image but with some additional attributes like the `srcset`.
 
-The `srcset` attribute specifies the image variants dedicated for the various screen sizes for the web browser to choose from (360px, 720px, 1080px, 1440px, etc.). For instance the `image.jpg` file  uploaded by the user will have the following markup:
+The `srcset` attribute specifies the image variants dedicated for the various screen sizes for the web browser to choose from (360px, 720px, 1080px, 1440px, etc.). For instance, the `image.jpg` file  uploaded by the user will have the following markup:
 
 ```html
 <figure class="image">
@@ -132,8 +134,8 @@ npm install --save @ckeditor/ckeditor5-easy-image
 Then add {@link module:easy-image/easyimage~EasyImage} to your plugin list and [configure](#configuration) the feature. For instance:
 
 ```js
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Image } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -162,4 +164,4 @@ See the {@link features/images-overview Image feature} guide to find out more ab
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-easy-image).

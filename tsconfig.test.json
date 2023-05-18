@@ -1,0 +1,23 @@
+/*
+ * The configuration is used when executing automated and manual tests.
+ */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Do not emit any JS file as these TypeScript files are just passed through webpack.
+    // Automated tests have a single entry point.
+    // See: https://github.com/ckeditor/ckeditor5/issues/12111.
+    "noEmit": false,
+    // Do not emit any file when couldn't compile a TS file.
+    // Otherwise, karma prints an error on the top of the output log and then, execute tests.
+    // It might give a false positive results. Tests are OK while something could not be compiled.
+    // In such a case we would like to throw an error.
+    "noEmitOnError": false
+  },
+  "include": [
+    "./typings/",
+    "./packages/*/src/augmentation.ts",
+    "./external/ckeditor5-internal/packages/*/src/augmentation.ts",
+    "./external/collaboration-features/packages/*/src/augmentation.ts"
+  ]
+}

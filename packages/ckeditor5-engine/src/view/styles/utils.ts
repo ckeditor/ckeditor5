@@ -52,16 +52,15 @@ const COLOR_NAMES = new Set( [
 /**
  * Checks if string contains [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) CSS value.
  *
- *		isColor( '#f00' );						// true
- *		isColor( '#AA00BB33' );					// true
- *		isColor( 'rgb(0, 0, 250)' );			// true
- *		isColor( 'hsla(240, 100%, 50%, .7)' );	// true
- *		isColor( 'deepskyblue' );				// true
+ * ```ts
+ * isColor( '#f00' );						// true
+ * isColor( '#AA00BB33' );					// true
+ * isColor( 'rgb(0, 0, 250)' );				// true
+ * isColor( 'hsla(240, 100%, 50%, .7)' );	// true
+ * isColor( 'deepskyblue' );				// true
+ * ```
  *
  * **Note**: It does not support CSS Level 4 whitespace syntax, system colors and radius values for HSL colors.
- *
- * @param {String} string
- * @returns {Boolean}
  */
 export function isColor( string: string ): boolean {
 	// As far as I was able to test checking some pre-conditions is faster than joining each test with ||.
@@ -85,9 +84,6 @@ const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double
 
 /**
  * Checks if string contains [line style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) CSS value.
- *
- * @param {String} string
- * @returns {Boolean}
  */
 export function isLineStyle( string: string ): boolean {
 	return lineStyleValues.includes( string );
@@ -97,9 +93,6 @@ const lengthRegExp = /^([+-]?[0-9]*([.][0-9]+)?(px|cm|mm|in|pc|pt|ch|em|ex|rem|v
 
 /**
  * Checks if string contains [length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) CSS value.
- *
- * @param {String} string
- * @returns {Boolean}
  */
 export function isLength( string: string ): boolean {
 	return lengthRegExp.test( string );
@@ -109,9 +102,6 @@ const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*([.][0-9]+)?%$/;
 
 /**
  * Checks if string contains [percentage](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage) CSS value.
- *
- * @param {String} string
- * @returns {Boolean}
  */
 export function isPercentage( string: string ): boolean {
 	return PERCENTAGE_VALUE_REGEXP.test( string );
@@ -121,9 +111,6 @@ const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-r
 
 /**
  * Checks if string contains [background repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat) CSS value.
- *
- * @param {String} string
- * @returns {Boolean}
  */
 export function isRepeat( string: string ): boolean {
 	return repeatValues.includes( string );
@@ -133,9 +120,6 @@ const positionValues = [ 'center', 'top', 'bottom', 'left', 'right' ];
 
 /**
  * Checks if string contains [background position](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position) CSS value.
- *
- * @param {String} string
- * @returns {Boolean}
  */
 export function isPosition( string: string ): boolean {
 	return positionValues.includes( string );
@@ -145,9 +129,6 @@ const attachmentValues = [ 'fixed', 'scroll', 'local' ];
 
 /**
  * Checks if string contains [background attachment](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment) CSS value.
- *
- * @param {String} string
- * @returns {Boolean}
  */
 export function isAttachment( string: string ): boolean {
 	return attachmentValues.includes( string );
@@ -157,16 +138,13 @@ const urlRegExp = /^url\(/;
 
 /**
  * Checks if string contains [URL](https://developer.mozilla.org/en-US/docs/Web/CSS/url) CSS value.
- *
- * @param {String} string
- * @returns {Boolean}
  */
 export function isURL( string: string ): boolean {
 	return urlRegExp.test( string );
 }
 
 /**
- * TODO: Docs
+ * Parses box sides as individual values.
  */
 export function getBoxSidesValues( value: string = '' ): BoxSides {
 	if ( value === '' ) {
@@ -187,10 +165,9 @@ export function getBoxSidesValues( value: string = '' ): BoxSides {
  * Default reducer for CSS properties that concerns edges of a box
  * [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notations:
  *
- *		stylesProcessor.setReducer( 'padding', getBoxSidesValueReducer( 'padding' ) );
- *
- * @param {String} styleShorthand
- * @returns {Function}
+ * ```ts
+ * stylesProcessor.setReducer( 'padding', getBoxSidesValueReducer( 'padding' ) );
+ * ```
  */
 export function getBoxSidesValueReducer( styleShorthand: string ) {
 	return ( value: StyleValue ): Array<PropertyDescriptor> => {
@@ -226,11 +203,10 @@ export function getBoxSidesValueReducer( styleShorthand: string ) {
  * Returns a [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notation
  * of a CSS property value.
  *
- *		getBoxSidesShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
- *		// will return '1px 1px 2px'
- *
- * @param {module:engine/view/stylesmap~BoxSides} styleShorthand
- * @returns {String}
+ * ```ts
+ * getBoxSidesShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
+ * // will return '1px 1px 2px'
+ * ```
  */
 export function getBoxSidesShorthandValue( { top, right, bottom, left }: BoxSides ): string {
 	const out = [];
@@ -251,10 +227,9 @@ export function getBoxSidesShorthandValue( { top, right, bottom, left }: BoxSide
 /**
  * Creates a normalizer for a [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) 1-to-4 value.
  *
- *		stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
- *
- * @param {String} shorthand
- * @returns {Function}
+ * ```ts
+ * stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
+ * ```
  */
 export function getPositionShorthandNormalizer( shorthand: string ) {
 	return ( value: string ): { path: string; value: BoxSides } => {
@@ -268,11 +243,10 @@ export function getPositionShorthandNormalizer( shorthand: string ) {
 /**
  * Parses parts of a 1-to-4 value notation - handles some CSS values with spaces (like RGB()).
  *
- *		getShorthandValues( 'red blue RGB(0, 0, 0)');
- *		// will return [ 'red', 'blue', 'RGB(0, 0, 0)' ]
- *
- * @param {String} string
- * @returns {Array.<String>}
+ * ```ts
+ * getShorthandValues( 'red blue RGB(0, 0, 0)');
+ * // will return [ 'red', 'blue', 'RGB(0, 0, 0)' ]
+ * ```
  */
 export function getShorthandValues( string: string ): Array<string> {
 	return string

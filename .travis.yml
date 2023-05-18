@@ -15,6 +15,7 @@ node_js:
 - lts/*
 cache: false
 before_install:
+- export PUPPETEER_CACHE_DIR=$( pwd )/node_modules/.cache/puppeteer
 - export START_TIME=$( date +%s )
 - export COVERALLS_SERVICE_JOB_ID=$( TRAVIS_JOB_ID )
 - export COVERALLS_SERVICE_NAME="CKEditor5 code coverage"

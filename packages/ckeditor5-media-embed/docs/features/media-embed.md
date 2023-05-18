@@ -8,15 +8,11 @@ modified_at: 2021-10-08
 
 # Media embed
 
-The media embed feature brings support for inserting embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
+The media embed feature lets you insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 
 ## Demo
 
-You can use the Insert media button in the toolbar {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Insert media} to embed media like in the following examples. You can also paste the media URL directly into the editor content and it will be [automatically embedded](#automatic-media-embed-on-paste).
+You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Insert media} to embed media. You can also paste a media URL directly into the editor content, and it will be [automatically embedded](#automatic-media-embed-on-paste). Try both approaches with the following URLs:
 
 * <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
 * <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
@@ -31,7 +27,7 @@ You can use the Insert media button in the toolbar {@icon @ckeditor/ckeditor5-me
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
+	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-media-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed) package:
@@ -40,10 +36,10 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-media-embe
 npm install --save @ckeditor/ckeditor5-media-embed
 ```
 
-Then add `MediaEmbed` to your plugin list and {@link module:media-embed/mediaembed~MediaEmbedConfig configure} the feature (if needed):
+Then add `MediaEmbed` to your plugin list and {@link module:media-embed/mediaembedconfig~MediaEmbedConfig configure} the feature (if needed):
 
 ```js
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -102,7 +98,7 @@ The above limitations can be overcome with the help of proxy services like Ifram
 
 ### Data output format
 
-The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`} option.
+The data output format of the feature can be configured using the {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`} option.
 
 <info-box info>
 	This option does not change how the media are displayed inside the editor &mdash; the previewable ones will still be displayed with previews. It only affects the output data (see below).
@@ -118,7 +114,7 @@ By default, the media embed feature outputs semantic `<oembed url="...">` tags f
 </figure>
 ```
 
-Further customization of the semantic data output can be done through the {@link module:media-embed/mediaembed~MediaEmbedConfig#elementName `config.mediaEmbed.elementName`} configuration. As an example, if `elementName` is set to `o-embed`:
+Further customization of the semantic data output can be done through the {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#elementName `config.mediaEmbed.elementName`} configuration. As an example, if `elementName` is set to `o-embed`:
 
 ```html
 <figure class="media">
@@ -177,11 +173,11 @@ Names of providers **without previews**:
 
 #### Extending media providers
 
-To extend the default list of providers, use {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
+To extend the default list of providers, use {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
 
 #### Removing media providers
 
-To remove certain providers, use {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders `config.mediaEmbed.removeProviders`}.
+To remove certain providers, use {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#removeProviders `config.mediaEmbed.removeProviders`}.
 
 For instance, to leave only the previewable providers, configure this feature as follows:
 
@@ -200,7 +196,7 @@ ClassicEditor
 
 #### Overriding media providers
 
-To override the default providers, use {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and define your set according to the {@link module:media-embed/mediaembed~MediaEmbedProvider provider syntax}:
+To override the default providers, use {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and define your set according to the {@link module:media-embed/mediaembedconfig~MediaEmbedProvider provider syntax}:
 
 ```js
 ClassicEditor
@@ -216,7 +212,7 @@ ClassicEditor
 					// To be defined only if the media are previewable:
 					html: match => '...'
 				},
-				// More providers. 
+				// More providers.
 				// ...
 			]
 		}
@@ -225,13 +221,13 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-You can take inspiration from the default configuration of this feature which you can find in: [https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js)
+You can take inspiration from the default configuration of this feature which you can find in: [https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.ts](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.ts)
 
 ## Using external services for preview
 
 To get around the limitations of showing media embed previews, you can use services like [Iframely](https://iframely.com/) - this will allow having a rich preview of the content inside CKEditor 5. By inserting an Iframely-hosted `<iframe>`, you are able to preview the content from hundreds of media providers.
 
-Follow the [Iframely integration with CKEditor 5](https://iframely.com/docs/ckeditor) page for a detailed explanation. You can also check the final result in the demo below (keep in mind that if you are using ad blocking software, it might also block the previews inside the editor):
+Follow the [Iframely integration with CKEditor 5](https://iframely.com/docs/ckeditor) page for a detailed explanation. You can also check the final result in the demo below. (Keep in mind that if you are using ad-blocking software, it might also block the previews inside the editor.)
 
 {@snippet features/media-embed-preview}
 

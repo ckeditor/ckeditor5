@@ -8,17 +8,24 @@
  */
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
-import type { LoadedPlugins, PluginConstructor, PluginInterface } from './plugin';
+import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginInterface } from './plugin';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
- *
- * @mixes module:utils/emittermixin~EmitterMixin
  */
-export default class PluginCollection<TContext extends object> extends EmitterMixin() {
+export default class PluginCollection<TContext extends object> extends EmitterMixin() implements Iterable<PluginEntry<TContext>> {
 	private _context: TContext;
-	private _plugins: Map<PluginConstructor<TContext> | string, PluginInterface>;
+
+	private _plugins = new Map<PluginConstructor<TContext> | string, PluginInterface>();
+
+	/**
+	 * A map of plugin constructors that can be retrieved by their names.
+	 */
 	private _availablePlugins: Map<string, PluginConstructor<TContext>>;
+
+	/**
+	 * Map of {@link module:core/contextplugin~ContextPlugin context plugins} which can be retrieved by their constructors or instances.
+	 */
 	private _contextPlugins: Map<PluginConstructor<TContext> | PluginInterface, PluginConstructor<TContext> | PluginInterface>;
 
 	/**
@@ -26,39 +33,20 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	 * Allows loading and initializing plugins and their dependencies.
 	 * Allows providing a list of already loaded plugins. These plugins will not be destroyed along with this collection.
 	 *
-	 * @param {module:core/editor/editor~Editor|module:core/context~Context} context
-	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
+	 * @param availablePlugins Plugins (constructors) which the collection will be able to use
 	 * when {@link module:core/plugincollection~PluginCollection#init} is used with the plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
-	 * @param {Iterable.<Array>} contextPlugins A list of already initialized plugins represented by a
-	 * `[ PluginConstructor, pluginInstance ]` pair.
+	 * @param contextPlugins A list of already initialized plugins represented by a `[ PluginConstructor, pluginInstance ]` pair.
 	 */
 	constructor(
 		context: TContext,
 		availablePlugins: Iterable<PluginConstructor<TContext>> = [],
-		contextPlugins: Iterable<[ PluginConstructor<TContext>, PluginInterface ]> = []
+		contextPlugins: Iterable<PluginEntry<TContext>> = []
 	) {
 		super();
 
-		/**
-		 * @protected
-		 * @type {module:core/editor/editor~Editor|module:core/context~Context}
-		 */
 		this._context = context;
-
-		/**
-		 * @protected
-		 * @type {Map}
-		 */
-		this._plugins = new Map();
-
-		/**
-		 * A map of plugin constructors that can be retrieved by their names.
-		 *
-		 * @protected
-		 * @type {Map.<String|Function,Function>}
-		 */
 		this._availablePlugins = new Map();
 
 		for ( const PluginConstructor of availablePlugins ) {
@@ -67,12 +55,6 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			}
 		}
 
-		/**
-		 * Map of {@link module:core/contextplugin~ContextPlugin context plugins} which can be retrieved by their constructors or instances.
-		 *
-		 * @protected
-		 * @type {Map<Function,Function>}
-		 */
 		this._contextPlugins = new Map();
 
 		for ( const [ PluginConstructor, pluginInstance ] of contextPlugins ) {
@@ -90,10 +72,8 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	 * Iterable interface.
 	 *
 	 * Returns `[ PluginConstructor, pluginInstance ]` pairs.
-	 *
-	 * @returns {Iterable.<Array>}
 	 */
-	public* [ Symbol.iterator ](): IterableIterator<[ PluginConstructor<TContext>, PluginInterface ]> {
+	public* [ Symbol.iterator ](): IterableIterator<PluginEntry<TContext>> {
 		for ( const entry of this._plugins ) {
 			if ( typeof entry[ 0 ] == 'function' ) {
 				yield entry as any;
@@ -101,27 +81,29 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		}
 	}
 
+	public get<TConstructor extends PluginClassConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
+	public get<TName extends string>( key: TName ): PluginsMap[ TName ];
+
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
-	 *		// Check if 'Clipboard' plugin was loaded.
-	 *		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
-	 *			// Get clipboard plugin instance
-	 *			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+	 * ```ts
+	 * // Check if 'Clipboard' plugin was loaded.
+	 * if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
+	 * 	// Get clipboard plugin instance
+	 * 	const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 	 *
-	 *			this.listenTo( clipboard, 'inputTransformation', ( evt, data ) => {
-	 *				// Do something on clipboard input.
-	 *			} );
-	 *		}
+	 * 	this.listenTo( clipboard, 'inputTransformation', ( evt, data ) => {
+	 * 		// Do something on clipboard input.
+	 * 	} );
+	 * }
+	 * ```
 	 *
 	 * **Note**: This method will throw an error if a plugin is not loaded. Use `{@link #has editor.plugins.has()}`
 	 * to check if a plugin is available.
 	 *
-	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
-	 * @returns {module:core/plugin~PluginInterface}
+	 * @param key The plugin constructor or {@link module:core/plugin~PluginStaticMembers#pluginName name}.
 	 */
-	public get<TConstructor extends PluginConstructor<TContext>>( key: TConstructor ): InstanceType<TConstructor>;
-	public get<TName extends string>( key: TName ): PluginsMap[ TName ];
 	public get( key: PluginConstructor<TContext> | string ): PluginInterface {
 		const plugin = this._plugins.get( key );
 
@@ -144,7 +126,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * to check if a plugin was loaded.
 			 *
 			 * @error plugincollection-plugin-not-loaded
-			 * @param {String} plugin The name of the plugin which is not loaded.
+			 * @param plugin The name of the plugin which is not loaded.
 			 */
 			throw new CKEditorError( 'plugincollection-plugin-not-loaded', this._context, { plugin: pluginName } );
 		}
@@ -155,16 +137,17 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	/**
 	 * Checks if a plugin is loaded.
 	 *
-	 *		// Check if the 'Clipboard' plugin was loaded.
-	 *		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
-	 *			// Now use the clipboard plugin instance:
-	 *			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+	 * ```ts
+	 * // Check if the 'Clipboard' plugin was loaded.
+	 * if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
+	 * 	// Now use the clipboard plugin instance:
+	 * 	const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 	 *
-	 *			// ...
-	 *		}
+	 * 	// ...
+	 * }
+	 * ```
 	 *
-	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
-	 * @returns {Boolean}
+	 * @param key The plugin constructor or {@link module:core/plugin~PluginStaticMembers#pluginName name}.
 	 */
 	public has( key: PluginConstructor<TContext> | string ): boolean {
 		return this._plugins.has( key );
@@ -173,24 +156,23 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	/**
 	 * Initializes a set of plugins and adds them to the collection.
 	 *
-	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
-	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}.
-	 * @param {Array.<String|Function>} [pluginsToRemove] Names of the plugins or plugin constructors
+	 * @param plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
+	 * or {@link module:core/plugin~PluginStaticMembers#pluginName plugin names}.
+	 * @param pluginsToRemove Names of the plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
-	 * @param {Array.<Function>} [pluginsSubstitutions] An array of {@link module:core/plugin~PluginInterface plugin constructors}
+	 * @param pluginsSubstitutions An array of {@link module:core/plugin~PluginInterface plugin constructors}
 	 * that will be used to replace plugins of the same names that were passed in `plugins` or that are in their dependency tree.
 	 * A useful option for replacing built-in plugins while creating tests (for mocking their APIs). Plugins that will be replaced
 	 * must follow these rules:
 	 *   * The new plugin must be a class.
 	 *   * The new plugin must be named.
 	 *   * Both plugins must not depend on other plugins.
-	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
-	 * and available in the collection.
+	 * @returns A promise which gets resolved once all plugins are loaded and available in the collection.
 	 */
 	public init(
-		plugins: Array<PluginConstructor<TContext> | string>,
-		pluginsToRemove: Array<PluginConstructor<TContext> | string> = [],
-		pluginsSubstitutions: Array<PluginConstructor<TContext>> = []
+		plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
+		pluginsToRemove: ReadonlyArray<PluginConstructor<TContext> | string> = [],
+		pluginsSubstitutions: ReadonlyArray<PluginConstructor<TContext>> = []
 	): Promise<LoadedPlugins> {
 		// Plugin initialization procedure consists of 2 main steps:
 		// 1) collecting all available plugin constructors,
@@ -233,12 +215,12 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		function isContextPlugin(
 			plugin: PluginConstructor<TContext> | string | null
 		): plugin is PluginConstructor<TContext> & { isContextPlugin: true } {
-			return isPluginConstructor( plugin ) && plugin.isContextPlugin;
+			return isPluginConstructor( plugin ) && !!plugin.isContextPlugin;
 		}
 
 		function isPluginRemoved(
 			plugin: PluginConstructor<TContext> | string,
-			pluginsToRemove: Array<PluginConstructor<TContext> | string>
+			pluginsToRemove: ReadonlyArray<PluginConstructor<TContext> | string>
 		) {
 			return pluginsToRemove.some( removedPlugin => {
 				if ( removedPlugin === plugin ) {
@@ -264,7 +246,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		}
 
 		function findAvailablePluginConstructors(
-			plugins: Array<PluginConstructor<TContext> | string>,
+			plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
 			processed = new Set<PluginConstructor<TContext>>()
 		) {
 			plugins.forEach( plugin => {
@@ -289,7 +271,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		}
 
 		function getPluginConstructors(
-			plugins: Array<PluginConstructor<TContext> | string>,
+			plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
 			processed = new Set<PluginConstructor<TContext>>()
 		) {
 			return plugins
@@ -316,7 +298,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 		}
 
 		function validatePlugins(
-			plugins: Array<PluginConstructor<TContext> | string>,
+			plugins: ReadonlyArray<PluginConstructor<TContext> | string>,
 			parentPluginConstructor: PluginConstructor<TContext> | null = null
 		) {
 			plugins
@@ -358,11 +340,11 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 				 *
 				 * Soft requirements were introduced in version 26.0.0. If you happen to stumble upon this error
 				 * when upgrading to version 26.0.0, read also the
-				 * {@glink updating/migration-to-26 Migration to 26.0.0} guide.
+				 * {@glink updating/guides/update-to-26 Migration to 26.0.0} guide.
 				 *
 				 * @error plugincollection-soft-required
-				 * @param {String} missingPlugin The name of the required plugin.
-				 * @param {String} requiredBy The name of the plugin that requires the other plugin.
+				 * @param missingPlugin The name of the required plugin.
+				 * @param requiredBy The name of the plugin that requires the other plugin.
 				 */
 				throw new CKEditorError(
 					'plugincollection-soft-required',
@@ -391,7 +373,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * {@glink installation/advanced/alternative-setups/integrating-from-source-webpack "Building from source"}.
 			 *
 			 * @error plugincollection-plugin-not-found
-			 * @param {String} plugin The name of the plugin which could not be loaded.
+			 * @param plugin The name of the plugin which could not be loaded.
 			 */
 			throw new CKEditorError(
 				'plugincollection-plugin-not-found',
@@ -421,8 +403,8 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * editor API.
 			 *
 			 * @error plugincollection-context-required
-			 * @param {String} plugin The name of the required plugin.
-			 * @param {String} requiredBy The name of the parent plugin.
+			 * @param plugin The name of the required plugin.
+			 * @param requiredBy The name of the parent plugin.
 			 */
 			throw new CKEditorError(
 				'plugincollection-context-required',
@@ -447,8 +429,8 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
 			 *
 			 * @error plugincollection-required
-			 * @param {String} plugin The name of the required plugin.
-			 * @param {String} requiredBy The name of the parent plugin.
+			 * @param plugin The name of the required plugin.
+			 * @param requiredBy The name of the parent plugin.
 			 */
 			throw new CKEditorError(
 				'plugincollection-required',
@@ -457,11 +439,11 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			);
 		}
 
-		function loadPlugins( pluginConstructors: Array<PluginConstructor<TContext>> ) {
+		function loadPlugins( pluginConstructors: ReadonlyArray<PluginConstructor<TContext>> ) {
 			return pluginConstructors.map( PluginConstructor => {
 				let pluginInstance = that._contextPlugins.get( PluginConstructor ) as ( PluginInterface | undefined );
 
-				pluginInstance = pluginInstance || new PluginConstructor( context );
+				pluginInstance = pluginInstance || new ( PluginConstructor as PluginClassConstructor<TContext> )( context );
 
 				that._add( PluginConstructor, pluginInstance );
 
@@ -469,7 +451,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			} );
 		}
 
-		function initPlugins( pluginInstances: Array<PluginInterface>, method: 'init' | 'afterInit' ) {
+		function initPlugins( pluginInstances: ReadonlyArray<PluginInterface>, method: 'init' | 'afterInit' ) {
 			return pluginInstances.reduce<Promise<unknown>>( ( promise, plugin ) => {
 				if ( !plugin[ method ] ) {
 					return promise;
@@ -483,13 +465,12 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			}, Promise.resolve() );
 		}
 
-		// Replaces plugin constructors with the specified set of plugins.
-		//
-		// @param {Array.<Function>} pluginConstructors
-		// @param {Array.<Function>} pluginsSubstitutions
+		/**
+		 * Replaces plugin constructors with the specified set of plugins.
+		 */
 		function substitutePlugins(
 			pluginConstructors: Array<PluginConstructor<TContext>>,
-			pluginsSubstitutions: Array<PluginConstructor<TContext>>
+			pluginsSubstitutions: ReadonlyArray<PluginConstructor<TContext>>
 		) {
 			for ( const pluginItem of pluginsSubstitutions ) {
 				if ( typeof pluginItem != 'function' ) {
@@ -500,6 +481,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 					 */
 					throw new CKEditorError( 'plugincollection-replace-plugin-invalid-type', null, { pluginItem } );
 				}
+
 				const pluginName = pluginItem.pluginName;
 
 				if ( !pluginName ) {
@@ -567,8 +549,6 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 
 	/**
 	 * Destroys all loaded plugins.
-	 *
-	 * @returns {Promise}
 	 */
 	public destroy(): Promise<unknown> {
 		const promises: Array<unknown> = [];
@@ -585,9 +565,8 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	/**
 	 * Adds the plugin to the collection. Exposed mainly for testing purposes.
 	 *
-	 * @protected
-	 * @param {Function} PluginConstructor The plugin constructor.
-	 * @param {module:core/plugin~PluginInterface} plugin The instance of the plugin.
+	 * @param PluginConstructor The plugin constructor.
+	 * @param plugin The instance of the plugin.
 	 */
 	private _add( PluginConstructor: PluginConstructor<TContext>, plugin: PluginInterface ) {
 		this._plugins.set( PluginConstructor, plugin );
@@ -600,7 +579,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 
 		if ( this._plugins.has( pluginName ) ) {
 			/**
-			 * Two plugins with the same {@link module:core/plugin~PluginInterface.pluginName} were loaded.
+			 * Two plugins with the same {@link module:core/plugin~PluginStaticMembers#pluginName} were loaded.
 			 * This will lead to runtime conflicts between these plugins.
 			 *
 			 * In practice, this warning usually means that new plugins were added to an existing CKEditor 5 build.
@@ -625,9 +604,9 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 			 * Read more about {@glink installation/plugins/installing-plugins Installing plugins}.
 			 *
 			 * @error plugincollection-plugin-name-conflict
-			 * @param {String} pluginName The duplicated plugin name.
-			 * @param {Function} plugin1 The first plugin constructor.
-			 * @param {Function} plugin2 The second plugin constructor.
+			 * @param pluginName The duplicated plugin name.
+			 * @param plugin1 The first plugin constructor.
+			 * @param plugin2 The second plugin constructor.
 			 */
 			throw new CKEditorError(
 				'plugincollection-plugin-name-conflict',
@@ -640,6 +619,32 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 	}
 }
 
+/**
+ * A `[ PluginConstructor, pluginInstance ]` pair.
+ */
+export type PluginEntry<TContext> = [ PluginConstructor<TContext>, PluginInterface ];
+
+/**
+ * Helper type that maps plugin names to their types.
+ * It is meant to be extended with module augmentation.
+ *
+ * ```ts
+ * class MyPlugin extends Plugin {
+ * 	public static pluginName(): 'MyPlugin' {
+ * 		return 'MyPlugin';
+ * 	}
+ * }
+ *
+ * declare module '@ckeditor/ckeditor5-core' {
+ * 	interface PluginsMap {
+ * 		[ MyPlugin.pluginName ]: MyPlugin;
+ * 	}
+ * }
+ *
+ * // Returns `MyPlugin`.
+ * const myPlugin = editor.plugins.get( 'MyPlugin' );
+ * ```
+ */
 export interface PluginsMap {
 	[ name: string ]: PluginInterface;
 }

@@ -5,13 +5,14 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import { Strikethrough, Code } from '@ckeditor/ckeditor5-basic-styles';
+import { TodoList } from '@ckeditor/ckeditor5-list';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autoformat' ), {
@@ -24,27 +25,10 @@ ClassicEditor
 		] ),
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'strikethrough',
-				'code',
-				'link',
-				'|',
-				'bulletedList',
-				'numberedList',
-				'todolist',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'codeBlock',
-				'horizontalLine',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code',
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock', 'horizontalLine',
+				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
 			]
 		},
 		ui: {

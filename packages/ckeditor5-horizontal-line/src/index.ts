@@ -10,3 +10,6 @@
 export { default as HorizontalLine } from './horizontalline';
 export { default as HorizontalLineEditing } from './horizontallineediting';
 export { default as HorizontalLineUI } from './horizontallineui';
+export type { default as HorizontalLineCommand } from './horizontallinecommand';
+
+import './augmentation';

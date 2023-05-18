@@ -20,10 +20,19 @@ Check out the {@link installation/getting-started/predefined-builds#installation
 
 ```js
 
-import BalloonEditor from '@ckeditor/ckeditor5-build-balloon/src/ckeditor';
+import BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
 
 BalloonEditor
 	.create( document.querySelector( '#snippet-balloon-editor' ), {
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
 		cloudServices: {
 			// All predefined builds include the Easy Image feature.
 			// Provide correct configuration values to use it.

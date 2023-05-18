@@ -29,112 +29,66 @@ import type Editor from './editor/editor';
  *
  * By default, commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
  * but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled.
- *
- * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Command extends ObservableMixin() {
+	/**
+	 * The editor on which this command will be used.
+	 */
 	public readonly editor: Editor;
 
+	/**
+	 * The value of the command. A given command class should define what it represents for it.
+	 *
+	 * For example, the `'bold'` command's value indicates whether the selection starts in a bolded text.
+	 * And the value of the `'link'` command may be an object with link details.
+	 *
+	 * It is possible for a command to have no value (e.g. for stateless actions such as `'uploadImage'`).
+	 *
+	 * A given command class should control this value by overriding the {@link #refresh `refresh()`} method.
+	 *
+	 * @observable
+	 * @readonly
+	 */
 	declare public value: unknown;
+
+	/**
+	 * Flag indicating whether a command is enabled or disabled.
+	 * A disabled command will do nothing when executed.
+	 *
+	 * A given command class should control this value by overriding the {@link #refresh `refresh()`} method.
+	 *
+	 * It is possible to disable a command "from outside" using {@link #forceDisabled} method.
+	 *
+	 * @observable
+	 * @readonly
+	 */
 	declare public isEnabled: boolean;
 
+	/**
+	 * A flag indicating whether a command execution changes the editor data or not.
+	 *
+	 * @see #affectsData
+	 */
 	private _affectsData: boolean;
+
+	/**
+	 * Holds identifiers for {@link #forceDisabled} mechanism.
+	 */
 	private readonly _disableStack: Set<string>;
 
 	/**
 	 * Creates a new `Command` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
+	 * @param editor The editor on which this command will be used.
 	 */
 	constructor( editor: Editor ) {
 		super();
 
-		/**
-		 * The editor on which this command will be used.
-		 *
-		 * @readonly
-		 * @member {module:core/editor/editor~Editor}
-		 */
 		this.editor = editor;
-
-		/**
-		 * The value of the command. A given command class should define what it represents for it.
-		 *
-		 * For example, the `'bold'` command's value indicates whether the selection starts in a bolded text.
-		 * And the value of the `'link'` command may be an object with link details.
-		 *
-		 * It is possible for a command to have no value (e.g. for stateless actions such as `'uploadImage'`).
-		 *
-		 * A given command class should control this value by overriding the {@link #refresh `refresh()`} method.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member #value
-		 */
 		this.set( 'value', undefined );
-
-		/**
-		 * Flag indicating whether a command is enabled or disabled.
-		 * A disabled command will do nothing when executed.
-		 *
-		 * A given command class should control this value by overriding the {@link #refresh `refresh()`} method.
-		 *
-		 * It is possible to disable a command "from outside". For instance, in your integration you may want to disable
-		 * a certain set of commands for the time being. To do that, you can use the fact that `isEnabled` is observable
-		 * and it fires the `set:isEnabled` event every time anyone tries to modify its value:
-		 *
-		 *		function disableCommand( cmd ) {
-		 *			cmd.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
-		 *
-		 *			cmd.isEnabled = false;
-		 *
-		 *			// Make it possible to enable the command again.
-		 *			return () => {
-		 *				cmd.off( 'set:isEnabled', forceDisable );
-		 *				cmd.refresh();
-		 *			};
-		 *
-		 *			function forceDisable( evt ) {
-		 *				evt.return = false;
-		 *				evt.stop();
-		 *			}
-		 *		}
-		 *
-		 *		// Usage:
-		 *
-		 *		// Disabling the command.
-		 *		const enableBold = disableCommand( editor.commands.get( 'bold' ) );
-		 *
-		 *		// Enabling the command again.
-		 *		enableBold();
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #isEnabled
-		 */
 		this.set( 'isEnabled', false );
 
-		/**
-		 * A flag indicating whether a command execution changes the editor data or not.
-		 *
-		 * Commands with `affectsData` set to `false` will not be automatically disabled in
-		 * the {@link module:core/editor/editor~Editor#isReadOnly read-only mode} and
-		 * {@glink features/read-only#related-features other editor modes} with restricted user write permissions.
-		 *
-		 * **Note:** You do not have to set it for your every command. It is `true` by default.
-		 *
-		 * @readonly
-		 * @default true
-		 * @member {Boolean} #affectsData
-		 */
 		this._affectsData = true;
-
-		/**
-		 * Holds identifiers for {@link #forceDisabled} mechanism.
-		 *
-		 * @type {Set.<String>}
-		 * @private
-		 */
 		this._disableStack = new Set();
 
 		this.decorate( 'execute' );
@@ -160,6 +114,17 @@ export default class Command extends ObservableMixin() {
 		} );
 	}
 
+	/**
+	 * A flag indicating whether a command execution changes the editor data or not.
+	 *
+	 * Commands with `affectsData` set to `false` will not be automatically disabled in
+	 * the {@link module:core/editor/editor~Editor#isReadOnly read-only mode} and
+	 * {@glink features/read-only#related-features other editor modes} with restricted user write permissions.
+	 *
+	 * **Note:** You do not have to set it for your every command. It is `true` by default.
+	 *
+	 * @default true
+	 */
 	public get affectsData(): boolean {
 		return this._affectsData;
 	}
@@ -188,32 +153,38 @@ export default class Command extends ObservableMixin() {
 	 *
 	 * Disabling and enabling a command:
 	 *
-	 *		command.isEnabled; // -> true
-	 *		command.forceDisabled( 'MyFeature' );
-	 *		command.isEnabled; // -> false
-	 *		command.clearForceDisabled( 'MyFeature' );
-	 *		command.isEnabled; // -> true
+	 * ```ts
+	 * command.isEnabled; // -> true
+	 * command.forceDisabled( 'MyFeature' );
+	 * command.isEnabled; // -> false
+	 * command.clearForceDisabled( 'MyFeature' );
+	 * command.isEnabled; // -> true
+	 * ```
 	 *
 	 * Command disabled by multiple features:
 	 *
-	 *		command.forceDisabled( 'MyFeature' );
-	 *		command.forceDisabled( 'OtherFeature' );
-	 *		command.clearForceDisabled( 'MyFeature' );
-	 *		command.isEnabled; // -> false
-	 *		command.clearForceDisabled( 'OtherFeature' );
-	 *		command.isEnabled; // -> true
+	 * ```ts
+	 * command.forceDisabled( 'MyFeature' );
+	 * command.forceDisabled( 'OtherFeature' );
+	 * command.clearForceDisabled( 'MyFeature' );
+	 * command.isEnabled; // -> false
+	 * command.clearForceDisabled( 'OtherFeature' );
+	 * command.isEnabled; // -> true
+	 * ```
 	 *
 	 * Multiple disabling with the same identifier is redundant:
 	 *
-	 *		command.forceDisabled( 'MyFeature' );
-	 *		command.forceDisabled( 'MyFeature' );
-	 *		command.clearForceDisabled( 'MyFeature' );
-	 *		command.isEnabled; // -> true
+	 * ```ts
+	 * command.forceDisabled( 'MyFeature' );
+	 * command.forceDisabled( 'MyFeature' );
+	 * command.clearForceDisabled( 'MyFeature' );
+	 * command.isEnabled; // -> true
+	 * ```
 	 *
 	 * **Note:** some commands or algorithms may have more complex logic when it comes to enabling or disabling certain commands,
 	 * so the command might be still disabled after {@link #clearForceDisabled} was used.
 	 *
-	 * @param {String} id Unique identifier for disabling. Use the same id when {@link #clearForceDisabled enabling back} the command.
+	 * @param id Unique identifier for disabling. Use the same id when {@link #clearForceDisabled enabling back} the command.
 	 */
 	public forceDisabled( id: string ): void {
 		this._disableStack.add( id );
@@ -227,7 +198,7 @@ export default class Command extends ObservableMixin() {
 	/**
 	 * Clears forced disable previously set through {@link #forceDisabled}. See {@link #forceDisabled}.
 	 *
-	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
+	 * @param id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
 	 */
 	public clearForceDisabled( id: string ): void {
 		this._disableStack.delete( id );
@@ -262,24 +233,25 @@ export default class Command extends ObservableMixin() {
 	public destroy(): void {
 		this.stopListening();
 	}
-
-	/**
-	 * Event fired by the {@link #execute} method. The command action is a listener to this event so it's
-	 * possible to change/cancel the behavior of the command by listening to this event.
-	 *
-	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
-	 *
-	 * **Note:** This event is fired even if command is disabled. However, it is automatically blocked
-	 * by a high priority listener in order to prevent command execution.
-	 *
-	 * @event execute
-	 */
 }
 
-// Helper function that forces command to be disabled.
+/**
+ * Helper function that forces command to be disabled.
+ */
 function forceDisable( evt: EventInfo<string, boolean> ) {
 	evt.return = false;
 	evt.stop();
 }
 
+/**
+ * Event fired by the {@link module:core/command~Command#execute} method. The command action is a listener to this event so it's
+ * possible to change/cancel the behavior of the command by listening to this event.
+ *
+ * See {@link module:utils/observablemixin~Observable#decorate} for more information and samples.
+ *
+ * **Note:** This event is fired even if command is disabled. However, it is automatically blocked
+ * by a high priority listener in order to prevent command execution.
+ *
+ * @eventName ~Command#execute
+ */
 export type CommandExecuteEvent = DecoratedMethodEvent<Command, 'execute'>;

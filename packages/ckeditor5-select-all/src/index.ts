@@ -10,3 +10,6 @@
 export { default as SelectAll } from './selectall';
 export { default as SelectAllEditing } from './selectallediting';
 export { default as SelectAllUI } from './selectallui';
+export type { default as SelectAllCommand } from './selectallcommand';
+
+import './augmentation';

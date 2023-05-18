@@ -6,10 +6,10 @@
 /* globals console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { TodoList } from '@ckeditor/ckeditor5-list';
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( TodoList );
 
@@ -18,20 +18,10 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'bulletedList',
-				'numberedList',
-				'todoList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'link',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
 		ui: {

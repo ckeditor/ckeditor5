@@ -4,7 +4,7 @@
  */
 
 /**
- *  @module ckeditor5/engine
+ * @module ckeditor5/engine
  */
 
 export * from '@ckeditor/ckeditor5-engine';

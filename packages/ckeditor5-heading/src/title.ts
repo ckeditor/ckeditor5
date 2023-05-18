@@ -7,7 +7,7 @@
  * @module heading/title
  */
 
-import { Plugin, type Editor, type ElementApi, type PluginDependencies } from 'ckeditor5/src/core';
+import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core';
 import { first, type GetCallback } from 'ckeditor5/src/utils';
 import {
 	DowncastWriter,
@@ -55,8 +55,8 @@ export default class Title extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ 'Paragraph' ];
+	public static get requires() {
+		return [ 'Paragraph' ] as const;
 	}
 
 	/**
@@ -386,7 +386,7 @@ export default class Title extends Plugin {
 
 				if ( selectedElements.length === 1 && selectedElements[ 0 ].is( 'element', 'title-content' ) ) {
 					const firstBodyElement = model.document.getRoot()!.getChild( 1 );
-					writer.setSelection( firstBodyElement, 0 );
+					writer.setSelection( firstBodyElement!, 0 );
 					cancel();
 				}
 			} );
@@ -409,7 +409,7 @@ export default class Title extends Plugin {
 				const body = root.getChild( 1 );
 
 				if ( selectedElement === body && selectionPosition.isAtStart ) {
-					writer.setSelection( title.getChild( 0 ), 0 );
+					writer.setSelection( title.getChild( 0 )!, 0 );
 					cancel();
 				}
 			} );
@@ -574,18 +574,3 @@ export interface TitleConfig {
 	placeholder?: string;
 }
 
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ Title.pluginName ]: Title;
-	}
-
-	interface EditorConfig {
-
-		/**
-		 * The configuration of the {@link module:heading/title~Title title feature}.
-		 *
-		 * Read more in {@link module:heading/title~TitleConfig}.
-		 */
-		title?: TitleConfig;
-	}
-}

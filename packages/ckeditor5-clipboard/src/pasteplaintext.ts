@@ -7,9 +7,9 @@
  * @module clipboard/pasteplaintext
  */
 
-import { Plugin, type PluginDependencies } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import type { DocumentFragment, Schema, ViewDocumentKeyEvent } from '@ckeditor/ckeditor5-engine';
+import type { DocumentFragment, Schema, ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 
 import ClipboardObserver from './clipboardobserver';
 import ClipboardPipeline, { type ClipboardContentInsertionEvent } from './clipboardpipeline';
@@ -30,8 +30,8 @@ export default class PastePlainText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependencies {
-		return [ ClipboardPipeline ];
+	public static get requires() {
+		return [ ClipboardPipeline ] as const;
 	}
 
 	/**
@@ -48,7 +48,7 @@ export default class PastePlainText extends Plugin {
 
 		view.addObserver( ClipboardObserver );
 
-		this.listenTo<ViewDocumentKeyEvent>( viewDocument, 'keydown', ( evt, data ) => {
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
 			shiftPressed = data.shiftKey;
 		} );
 
@@ -100,10 +100,4 @@ function isPlainTextFragment( documentFragment: DocumentFragment, schema: Schema
 	}
 
 	return Array.from( child.getAttributeKeys() ).length == 0;
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ PastePlainText.pluginName ]: PastePlainText;
-	}
 }

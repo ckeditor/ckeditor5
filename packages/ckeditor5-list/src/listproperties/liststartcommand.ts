@@ -16,7 +16,7 @@ import { getSelectedListItems } from '../list/utils';
  */
 export default class ListStartCommand extends Command {
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	declare public value: number | null;
 

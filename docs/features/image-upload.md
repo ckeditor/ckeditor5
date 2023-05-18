@@ -29,7 +29,7 @@ Read our comprehensive blog post about [Managing images with CKEditor 5](https:/
 
 ## Demo
 
-The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows you to {@link features/images-inserting paste image URLs directly}:
+The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor Classic editor}. It is configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which lets you {@link features/images-inserting paste image URLs directly}.
 
 {@snippet build-classic-source}
 
@@ -94,9 +94,3 @@ The {@link features/base64-upload-adapter Base64 upload feature} converts images
 CKEditor 5 provides an open API that allows you to develop your own upload adapters. Tailored to your project, a custom adapter will allow you to take **full control** over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
 
 {@link framework/deep-dive/upload-adapter **Learn how to develop your own upload adapter for CKEditor 5**}.
-
-## Inserting images via URL
-
-CKEditor 5 supports inserting images into the document via pasting URLs. These may be pasted both into the image insertion dialog or, thanks to the `AutoImage` function, directly into the content.
-
-{@link features/images-inserting **Learn how to paste images into CKEditor 5 using URLs**}.

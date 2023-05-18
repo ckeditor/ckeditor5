@@ -6,21 +6,11 @@ category: features
 
 {@snippet features/build-code-block-source}
 
-The code block feature allows inserting and editing blocks of pre–formatted code into the WYSIWYG editor. Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
-
-Code blocks is a perfect feature to present programming- or software-related issues in an accessible, attractive form that is easily readable. A great tool for education, support documents or training content, it visually presents code listings, snippets or software elements.
-
-<info-box>
-	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
-</info-box>
-
-<info-box info>
-	The code block feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
+The code block feature lets you insert and edit blocks of pre-formatted code. It is perfect for presenting programming-related content in an attractive, easy-to-read form.
 
 ## Demo
 
-Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just press <kbd>Enter</kbd> three times.
+Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start a line with `` ``` ``, and the {@link features/autoformat autoformatting feature} will format it as a code block. To add a paragraph under a code block, simply press <kbd>Enter</kbd> three times.
 
 {@snippet features/code-block}
 
@@ -28,13 +18,7 @@ Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/ic
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Related features
-
-Here are some CKEditor 5 features that you may find helpfully similar:
-* {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
-* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
+Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
 ## Configuring code block languages
 
@@ -44,7 +28,7 @@ Each code block can be assigned a programming language. The language of the code
 <pre><code class="language-javascript">window.alert( 'Hello world!' )</code></pre>
 ```
 
-It is possible to configure which languages are available to the users. You can use the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and HTML):
+It is possible to configure which languages are available to the users. You can use the {@link module:code-block/codeblockconfig~CodeBlockConfig#languages `codeBlock.languages`} configuration and define your own languages. For example, the following editor supports only two languages (CSS and HTML):
 
 ```js
 ClassicEditor
@@ -89,14 +73,14 @@ ClassicEditor
 ```
 
 <info-box>
-	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from the data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblock~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (the `language-plaintext` CSS class).
+	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from the data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (the `language-plaintext` CSS class).
 </info-box>
 
 ### Integration with code highlighters
 
 Although live code block highlighting ***is impossible when editing*** in CKEditor 5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (e.g. in blog posts, messages, etc.).
 
-The code language {@link module:code-block/codeblock~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
+The code language {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Please refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
 
 ## Tips and tweaks
 
@@ -122,11 +106,11 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 {@img assets/img/code-blocks-outdent-indent.gif 770 The animation shows changing indentation inside code blocks in CKEditor 5 rich text editor.}
 
 <info-box>
-	The indentation created this way can be changed. Use the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`\t`) character.
+	The indentation created this way can be changed. Use the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration to choose some other character (or characters) of your preference (e.g. four spaces). By default, the indentation changes by a single tab (`\t`) character.
 </info-box>
 
 <info-box>
-	You can disable the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
+	You can disable the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
 </info-box>
 
 ### Preserving line indentation
@@ -137,6 +121,10 @@ To speed up the editing, when typing in a code block, the indentation of the cur
 
 ## Installation
 
+<info-box info>
+	The code block feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
+
 To add the code blocks feature to your rich-text editor, install the [`@ckeditor/ckeditor5-code-block`](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block) package:
 
 ```
@@ -146,7 +134,7 @@ npm install --save @ckeditor/ckeditor5-code-block
 Then add it to your plugin list and the toolbar configuration:
 
 ```js
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -159,6 +147,18 @@ ClassicEditor
 
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+</info-box>
+
+## Related features
+
+Here are some CKEditor 5 features that you may find helpfully similar:
+* {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
+* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
+* {@link features/autoformat Autoformatting} &ndash; Format the content on the go with Markdown code.
+
+<info-box>
+	If you would like to use inline code formatting in your WYSIWYG editor, check out the {@link features/basic-styles basic text styles feature} with its support for inline `<code>` element.
 </info-box>
 
 ## Common API
@@ -176,7 +176,7 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 	editor.execute( 'codeBlock', { language: 'css' } );
 	```
 
-	When executing the command, you can use languages defined by the {@link module:code-block/codeblock~CodeBlockConfig#languages `codeBlock.languages`} configuration. The default list of languages is as follows:
+	When executing the command, you can use languages defined by the {@link module:code-block/codeblockconfig~CodeBlockConfig#languages `codeBlock.languages`} configuration. The default list of languages is as follows:
 
 	```js
 	codeBlock.languages: [
@@ -208,8 +208,8 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
 	Both commands are used by the <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes as described in the [section about indentation](#changing-line-indentation):
 
-	* The `'indentCodeBlock'` command is enabled when the selection is anchored anywhere in the code block and it allows increasing the indentation of the lines of code. The indentation character (sequence) is configurable using the {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration.
-	* The `'outdentCodeBlock'` command is enabled when the indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from these lines, as configured by {@link module:code-block/codeblock~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
+	* The `'indentCodeBlock'` command is enabled when the selection is anchored anywhere in the code block and it allows increasing the indentation of the lines of code. The indentation character (sequence) is configurable using the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`} configuration.
+	* The `'outdentCodeBlock'` command is enabled when the indentation of any code lines within the selection can be decreased. Executing it will remove the indentation character (sequence) from these lines, as configured by {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
@@ -217,4 +217,4 @@ The {@link module:code-block/codeblock~CodeBlock} plugin registers:
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-code-block).

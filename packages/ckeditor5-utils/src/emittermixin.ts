@@ -11,6 +11,7 @@ import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities, { type PriorityString } from './priorities';
 import insertToPriorityArray from './inserttopriorityarray';
+import type { Constructor, Mixed } from './mix';
 
 // To check if component is loaded more than once.
 import './version';
@@ -42,12 +43,7 @@ const defaultEmitterClass = EmitterMixin( Object );
  *
  * @label EXTENDS
  */
-export default function EmitterMixin<Base extends abstract new ( ...args: Array<any> ) => object>(
-	base: Base
-): {
-	new ( ...args: ConstructorParameters<Base> ): InstanceType<Base> & Emitter;
-	prototype: InstanceType<Base> & Emitter;
-};
+export default function EmitterMixin<Base extends Constructor>( base: Base ): Mixed<Base, Emitter>;
 
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
@@ -72,7 +68,7 @@ export default function EmitterMixin(): {
 	prototype: Emitter;
 };
 
-export default function EmitterMixin( base?: abstract new( ...args: Array<any> ) => object ): unknown {
+export default function EmitterMixin( base?: Constructor ): unknown {
 	if ( !base ) {
 		return defaultEmitterClass;
 	}
@@ -278,7 +274,7 @@ export default function EmitterMixin( base?: abstract new( ...args: Array<any> )
 				return eventInfo.return;
 			} catch ( err ) {
 				// @if CK_DEBUG // throw err;
-				/* istanbul ignore next */
+				/* istanbul ignore next -- @preserve */
 				CKEditorError.rethrowUnexpectedError( err as Error, this );
 			}
 		}
@@ -388,7 +384,7 @@ export default function EmitterMixin( base?: abstract new( ...args: Array<any> )
 /**
  * Emitter/listener interface.
  *
- * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~EmitterMixin} mixin.
+ * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~Emitter} mixin.
  *
  * ```ts
  * class MyClass extends EmitterMixin() {

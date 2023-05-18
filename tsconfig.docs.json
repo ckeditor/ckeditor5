@@ -1,10 +1,13 @@
+/*
+ * The configuration is used when building docs (snippets adapter and content styles generator).
+ * This configuration is NOT used when building API docs using typedoc. See `tsconfig.typedoc.json`.
+ */
 {
   "extends": "./tsconfig.json",
   "include": [
-    "./packages/*/src/**/*.ts",
-    "./typings/"
-  ],
-  "exclude": [
-    "node_modules"
+    "./typings/",
+    "./packages/*/src/augmentation.ts",
+    "./external/ckeditor5-internal/packages/*/src/augmentation.ts",
+    "./external/collaboration-features/packages/*/src/augmentation.ts"
   ]
 }

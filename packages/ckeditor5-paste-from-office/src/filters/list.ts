@@ -261,7 +261,11 @@ function findListMarkerNode( element: ViewElement ): ViewText | null {
 			continue;
 		}
 
-		const textNodeOrElement = childNode.getChild( 0 )!;
+		const textNodeOrElement = childNode.getChild( 0 );
+
+		if ( !textNodeOrElement ) {
+			continue;
+		}
 
 		// If already found the marker element, use it.
 		if ( textNodeOrElement.is( '$text' ) ) {
@@ -271,7 +275,7 @@ function findListMarkerNode( element: ViewElement ): ViewText | null {
 		return ( textNodeOrElement as any ).getChild( 0 );
 	}
 
-	/* istanbul ignore next */
+	/* istanbul ignore next -- @preserve */
 	return null;
 }
 

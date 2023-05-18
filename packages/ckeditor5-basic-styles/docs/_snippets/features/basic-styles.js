@@ -11,7 +11,10 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-basic-styles' ), {
 		toolbar: {
 			items: [
-				'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', '|', 'removeFormat', '|', 'undo', 'redo'
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', '|', 'removeFormat',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

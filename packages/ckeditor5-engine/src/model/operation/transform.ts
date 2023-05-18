@@ -9,6 +9,7 @@ import RenameOperation from './renameoperation';
 import MarkerOperation from './markeroperation';
 import MoveOperation from './moveoperation';
 import RootAttributeOperation from './rootattributeoperation';
+import RootOperation from './rootoperation';
 import MergeOperation from './mergeoperation';
 import SplitOperation from './splitoperation';
 import NoOperation from './nooperation';
@@ -104,7 +105,7 @@ export function transform( a: Operation, b: Operation, context: TransformationCo
 		a = a.clone();
 
 		return transformationFunction( a, b, context );
-	} catch ( e ) {
+	} catch ( e: any ) {
 		// @if CK_DEBUG // console.warn( 'Error during operation transformation!', e.message );
 		// @if CK_DEBUG // console.warn( 'Transformed operation', a );
 		// @if CK_DEBUG // console.warn( 'Operation transformed by', b );
@@ -1969,6 +1970,16 @@ setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, conte
 		} else {
 			a.oldValue = b.newValue;
 		}
+	}
+
+	return [ a ];
+} );
+
+// -----------------------
+
+setTransformation( RootOperation, RootOperation, ( a, b, context ) => {
+	if ( a.rootName === b.rootName && a.isAdd === b.isAdd && !context.bWasUndone ) {
+		return [ new NoOperation( 0 ) ];
 	}
 
 	return [ a ];

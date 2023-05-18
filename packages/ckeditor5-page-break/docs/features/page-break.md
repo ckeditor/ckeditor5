@@ -5,17 +5,11 @@ menu-title: Page break
 
 # Page break
 
-The page break feature provides a possibility to insert a page break into the rich-text editor. This is useful in paged editing scenarios where you want to have more control over the final structure of the document that is printed, [exported to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) or [to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html).
-
-The page break feature is further complemented by the {@link features/pagination pagination feature} that allows you to see where page breaks would be after the document is exported to PDF or to Word.
-
-<info-box info>
-	The Page break feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. See the [installation](#installation) section to learn how to enable it in your editor.
-</info-box>
+The page break feature lets you insert page breaks into your content. This gives you more control over the final structure of a document that is printed or [exported to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html) or [Word](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html).
 
 ## Demo
 
-Use the Insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg Insert page break} to see the feature in action. Use the **Open print preview** the button below the editor in order to preview the content.
+Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg Insert page break} to see the feature in action. Use the "Open print preview" button below the editor to preview the content.
 
 {@snippet features/page-break}
 
@@ -23,15 +17,11 @@ Use the Insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/t
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
-## Related features
-
-Here are some useful CKEditor 5 features that you can use together with the page break plugin for an all-around paged editing experience:
-
-* The {@link features/pagination pagination feature} allows you to see where page breaks would be after the document is [exported to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) or [to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html).
-* The [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) feature will allow you to generate editable, paged `.docx` files out of your editor-created content.
-* The [export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) feature will allow you to generate portable, paged PDF files out of your editor-created content.
-
 ## Installation
+
+<info-box info>
+	The Page break feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+</info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-page-break`](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break) package:
 
@@ -42,7 +32,7 @@ npm install --save @ckeditor/ckeditor5-page-break
 And add it to your plugin list configuration:
 
 ```js
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -56,6 +46,14 @@ ClassicEditor
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
+
+## Related features
+
+Here are some useful CKEditor 5 features that you can use together with the page break plugin for an all-around paged editing experience:
+
+* The {@link features/pagination pagination feature} allows you to see where page breaks would be after the document is [exported to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html) or [to Word](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html).
+* The [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html) feature will allow you to generate editable, paged `.docx` files out of your editor-created content.
+* The [export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html) feature will allow you to generate portable, paged PDF files out of your editor-created content.
 
 ## Common API
 
@@ -77,4 +75,4 @@ editor.execute( 'pageBreak' );
 
 ## Contribute
 
-The source code of the feature is available on GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-page-break](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-page-break).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-page-break](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-page-break).

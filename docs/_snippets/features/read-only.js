@@ -12,26 +12,11 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'exportPdf',
-				'exportWord',
-				'|',
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'numberedList',
-				'bulletedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'uploadImage',
-				'blockQuote',
-				'insertTable',
-				'findAndReplace',
-				'undo',
-				'redo'
+				'exportPdf', 'exportWord', 'findAndReplace',
+				'|', 'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {
