@@ -11,7 +11,6 @@
 
 const { glob } = require( 'glob' );
 const { promises: { readFile } } = require( 'fs' );
-const chalk = require( 'chalk' );
 const semver = require( 'semver' );
 const { normalizeTrim } = require( 'upath' );
 const isCKEditor5Package = require( './isckeditor5package' );
@@ -38,10 +37,12 @@ module.exports = async function validateDependenciesVersions( { packagesDirector
 	] ) );
 
 	if ( errors.length ) {
-		throw new Error( 'Found version mismatches for specified packages:\n' + errors.join( '\n' ) );
-	}
+		const error = new Error( `Found version mismatches for specified packages (${ errors.length }).` );
+		error.details = errors.slice( 0, 10 );
+		error.details.push( `...${ errors.length - 10 } more items` );
 
-	console.log( chalk.green.bold( '✨ All released packages\' versions and their dependencies are valid.' ) );
+		throw error;
+	}
 };
 
 /**
@@ -51,7 +52,7 @@ module.exports = async function validateDependenciesVersions( { packagesDirector
  */
 function validatePackageMatchVersion( version, pkgJson ) {
 	return pkgJson.version !== version ?
-		[ `${ pkgJson.name }: Package version is expected to be ${ version }, but is ${ pkgJson.version }.` ] :
+		[ `${ pkgJson.name }: package version is expected to be "${ version }", but is "${ pkgJson.version }".` ] :
 		[];
 }
 
@@ -72,7 +73,7 @@ function validateDependenciesMatchVersion( version, pkgJson ) {
 		const semverMinVersion = semver.minVersion( depVersion ).version;
 
 		return semverMinVersion !== version ?
-			[ ...accum, `${ pkgJson.name }: ${ depName } is expected to be ${ version }, but is ${ semverMinVersion }.` ] :
+			[ ...accum, `${ pkgJson.name }: "${ depName }" is expected to be "${ version }", but is "${ semverMinVersion }".` ] :
 			accum;
 	}, [] );
 }

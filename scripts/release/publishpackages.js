@@ -12,6 +12,7 @@
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { provideToken } = require( '@ckeditor/ckeditor5-dev-release-tools/lib/utils/cli' );
 const { Listr } = require( 'listr2' );
+const validateDependenciesVersions = require( './utils/validatedependenciesversions' );
 
 // const parseArguments = require( './utils/parsearguments' );
 // const cliArguments = parseArguments( process.argv.slice( 2 ) );
@@ -20,6 +21,7 @@ const { Listr } = require( 'listr2' );
 
 const latestVersion = releaseTools.getLastFromChangelog();
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
+const RELEASE_DIRECTORY = 'release';
 
 const taskOptions = {
 	rendererOptions: {
@@ -33,8 +35,10 @@ const tasks = new Listr( [
 	{
 		title: 'Validating CKEditor 5 packages.',
 		task: () => {
-			// TODO: Integrate a script created in #13973.
-			return Promise.resolve();
+			return validateDependenciesVersions( {
+				packagesDirectory: RELEASE_DIRECTORY,
+				version: latestVersion
+			} );
 		}
 	},
 	{
