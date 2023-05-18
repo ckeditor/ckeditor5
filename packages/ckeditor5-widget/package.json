@@ -10,6 +10,7 @@
     "ckeditor5-dll"
   ],
   "main": "src/index.ts",
+  "type": "module",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^37.1.0",
     "@ckeditor/ckeditor5-engine": "^37.1.0",
