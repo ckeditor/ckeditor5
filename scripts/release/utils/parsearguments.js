@@ -24,13 +24,15 @@ module.exports = function parseArguments( cliArguments ) {
 		],
 
 		string: [
-			'packages'
+			'packages',
+			'npm-tag'
 		],
 
 		default: {
 			nightly: false,
 			concurrency: require( 'os' ).cpus().length / 2,
-			packages: null
+			packages: null,
+			'npm-tag': 'staging'
 		}
 	};
 
@@ -39,6 +41,9 @@ module.exports = function parseArguments( cliArguments ) {
 	if ( typeof options.packages === 'string' ) {
 		options.packages = options.packages.split( ',' );
 	}
+
+	options.npmTag = options[ 'npm-tag' ];
+	delete options[ 'npm-tag' ];
 
 	return options;
 };
@@ -49,6 +54,8 @@ module.exports = function parseArguments( cliArguments ) {
  * @property {Boolean} nightly
  *
  * @property {Number} concurrency
+ *
+ * @property {String} [npmTag='staging']
  *
  * @property {Array.<String>|null} packages
  */
