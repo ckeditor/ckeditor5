@@ -397,7 +397,14 @@ HelpjuiceEditor.defaultConfig = {
 				attributes: true
 			}
 		],
-		disallow: [ /* HTML features to disallow */ ]
+		disallow: [
+			{
+				name: 'ul'
+			},
+			{
+				name: 'ol'
+			}
+		]
 	},
 	link: {
 		decorators: {
