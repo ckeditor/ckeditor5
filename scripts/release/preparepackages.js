@@ -9,6 +9,7 @@
 
 'use strict';
 
+const path = require( 'path' );
 const { EventEmitter } = require( 'events' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { Listr } = require( 'listr2' );
@@ -20,6 +21,7 @@ const isCKEditor5Package = require( './utils/isckeditor5package' );
 const compileTypeScriptCallback = require( './utils/compiletypescriptcallback' );
 const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
+const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
@@ -110,9 +112,17 @@ const tasks = new Listr( [
 				},
 				{
 					title: 'Preparing "ckeditor5-build-*" builds.',
-					task: () => {
-						// TODO: Waits for #14177.
-						return Promise.resolve();
+					task: ( ctx, task ) => {
+						return releaseTools.executeInParallel( {
+							packagesDirectory: PACKAGES_DIRECTORY,
+							packagesDirectoryFilter: packageDirectory => {
+								return path.basename( packageDirectory ).startsWith( 'ckeditor5-build-' );
+							},
+							signal: abortController.signal,
+							listrTask: task,
+							taskToExecute: buildCKEditor5BuildsCallback,
+							concurrency: 2
+						} );
 					}
 				},
 				{
@@ -181,6 +191,7 @@ const tasks = new Listr( [
 				files: [
 					'package.json',
 					`${ PACKAGES_DIRECTORY }/*/package.json`,
+					`${ PACKAGES_DIRECTORY }/ckeditor5-build-*/build/**`,
 					...ctx.updatedFiles
 				]
 			} );
