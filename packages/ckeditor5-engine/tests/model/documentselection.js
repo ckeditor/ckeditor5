@@ -1415,6 +1415,31 @@ describe( 'DocumentSelection', () => {
 				selection._restoreGravity( overrideGravityUid );
 			} );
 		} );
+
+		// #14106
+		describe( 'doesn\'t ignores inline object elements while reading surrounding attributes', () => {
+			beforeEach( () => {
+				model.schema.register( 'imageInline', {
+					inheritAllFrom: '$inlineObject'
+				} );
+			} );
+
+			it( 'should inherit attributes from a node before an inline object element', () => {
+				setData( model, '<p><$text bold="true">Foo Bar.</$text><imageInline></imageInline>[]</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'should not inherit attributes from a node after an inline object element (override gravity)', () => {
+				setData( model, '<p>[]<imageInline></imageInline><$text bold="true">Foo Bar.</$text></p>' );
+
+				const overrideGravityUid = selection._overrideGravity();
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
+
+				selection._restoreGravity( overrideGravityUid );
+			} );
+		} );
 	} );
 
 	describe( '_overrideGravity()', () => {

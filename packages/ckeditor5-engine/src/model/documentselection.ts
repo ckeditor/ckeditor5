@@ -1166,7 +1166,8 @@ class LiveSelection extends Selection {
 			if ( !this.isGravityOverridden && !attrs ) {
 				let node = nodeBefore;
 
-				while ( node && !schema.isInline( node ) && !attrs ) {
+				// Skip inline elements (eg. soft break) that are not objects (eg. inline image or MathType)
+				while ( node && ( !schema.isInline( node ) || schema.isObject( node ) ) && !attrs ) {
 					node = node.previousSibling;
 					attrs = getAttrsIfCharacter( node! );
 				}
@@ -1176,7 +1177,8 @@ class LiveSelection extends Selection {
 			if ( !attrs ) {
 				let node = nodeAfter;
 
-				while ( node && !schema.isInline( node ) && !attrs ) {
+				// Skip inline elements (eg. soft break) that are not objects (eg. inline image or MathType)
+				while ( node && ( !schema.isInline( node ) || schema.isObject( node ) ) && !attrs ) {
 					node = node.nextSibling;
 					attrs = getAttrsIfCharacter( node! );
 				}
