@@ -118,7 +118,7 @@
     "eslint": "^7.19.0",
     "eslint-config-ckeditor5": "^4.2.1",
     "fs-extra": "^11.1.1",
-    "glob": "^7.1.6",
+    "glob": "^10.2.5",
     "http-server": "^14.1.1",
     "husky": "^8.0.2",
     "is-relative-url": "^3.0.0",

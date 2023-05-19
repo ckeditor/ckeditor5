@@ -9,7 +9,7 @@
 
 const fs = require( 'fs/promises' );
 const upath = require( 'upath' );
-const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
+const ROOT_DIRECTORY = upath.join( __dirname, '..', '..', '..' );
 
 /**
  * Updates CKEditor 5 version and release date references in several places.
