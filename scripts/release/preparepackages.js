@@ -121,7 +121,7 @@ const tasks = new Listr( [
 							signal: abortController.signal,
 							listrTask: task,
 							taskToExecute: buildCKEditor5BuildsCallback,
-							concurrency: cliArguments.concurrency
+							concurrency: 2
 						} );
 					}
 				},
@@ -191,6 +191,7 @@ const tasks = new Listr( [
 				files: [
 					'package.json',
 					`${ PACKAGES_DIRECTORY }/*/package.json`,
+					`${ PACKAGES_DIRECTORY }/ckeditor5-build-*/build/**`,
 					...ctx.updatedFiles
 				]
 			} );
