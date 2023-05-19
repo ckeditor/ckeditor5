@@ -1,71 +1,88 @@
 Changelog
 =========
 
-## [38.0.0](https://github.com/ckeditor/ckeditor5/compare/v37.1.0...v38.0.0) (2023-05-19)
+## [38.0.0](https://github.com/ckeditor/ckeditor5/compare/v37.1.0...v38.0.0) (2023-05-22)
 
 ### Release highlights
 
-<!-- TODO: Add a link to the blog post. -->
+#### "Powered by CKEditor" logo
+
+From version v38.0.0 onwards, all open-source installations of CKEditor (using it under the GPL terms) will carry a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. This new logo links directly to the [CKEditor website](https://ckeditor.com/) to strengthen the awareness of who’s powering and modernizing their rich text editor.
+
+This change does not affect customers with commercial licenses. You can reach out to our Technical Support team using [this form](https://ckeditor.com/contact/), if you have any questions.
+
+You can read more about this change in the [announcement on GitHub](https://github.com/ckeditor/ckeditor5/issues/14082), the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-38.html), and the [Managing the "Powered by CKEditor" logo guide](https://ckeditor.com/docs/ckeditor5/latest/support/managing-ckeditor-logo.html).
+
+#### Color picker
+
+Until v38.0.0, users were only able to choose from predefined colors in features like font color, font background color, table border color, etc. Starting from v38.0.0, they can also use a color picker to choose any possible color.
+
+The color picker is now available in the font color and font background color features. In the upcoming versions (next month), it will be added to the table-related color features.
+
+If you're interested in keeping the old behavior where the user can choose only from predefined colors, check out the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-38.html).
+
+### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+
+* Introduced the "Powered by CKEditor" logo.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: Color picker is now added by default to the font colors dropdowns allowing to chose any color. In places where users should use a limited number of colors, it is possible to disable color picker using a configuration option.
-* Changed the look of the buttons in comments and suggestions annotations. Previously the buttons to add a comment, a reply or save the edited comments were represented by icons. Now they are buttons with text labels.
-* Introduced new values for `trackFormatChanges` config parameter. Previously possible values were `true` or `false`. New possible values are `'always'`, `'default'` (old `true`) and `'never'` (old `false`). Please update your configuration accordingly.
+* **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: Color picker is now added by default to the font color and font background color dropdowns. Thanks to it, users can apply any color through these features. In places where users should use a limited number of colors, it is possible to disable the color picker using a configuration option.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced new values for the `trackFormatChanges` configuration parameter. Previously possible values were `true` or `false`. New possible values are: `'always'`, `'default'` (the old `true`), and `'never'` (the old `false`). Please update your configuration accordingly.
+* Changed the look of the buttons in the comments and suggestions annotations. Previously, the buttons to add a comment, add a reply, or save the edited comment were represented by icons. Now they are proper buttons with text labels.
 
 ### Features
 
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Experimental support for block drag & drop. Closes [#14033](https://github.com/ckeditor/ckeditor5/issues/14033). ([commit](https://github.com/ckeditor/ckeditor5/commit/44cb8cb9b090feb4797a73a65cde1cfd97b48035))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Introduced experimental support for block drag & drop. Closes [#14033](https://github.com/ckeditor/ckeditor5/issues/14033). ([commit](https://github.com/ckeditor/ckeditor5/commit/44cb8cb9b090feb4797a73a65cde1cfd97b48035))
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Added support for resolved comment threads imported from Word.
-* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: Introduced `MultiRootEditor#disableRoot()` and `enableRoot()` that allows to switch only a particular root to a read-only state. ([commit](https://github.com/ckeditor/ckeditor5/commit/4e28b171d5a517c2d91a3e38504c12d4c869ba69))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `Model#canEditAt( selectable )` method that checks whether given `selectable` is at an editable place in the model. It should be used instead of `Editor#isReadOnly` in multi-root integrations as it acknowledges the roots read-only state. ([commit](https://github.com/ckeditor/ckeditor5/commit/4e28b171d5a517c2d91a3e38504c12d4c869ba69))
-* **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: Introduced the color picker feature for font colors. Closes [#10988](https://github.com/ckeditor/ckeditor5/issues/10988). ([commit](https://github.com/ckeditor/ckeditor5/commit/23227a6725aacf8e37d4c5d64d724a30decaf354))
-* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: The styles dropdown applies link styles only to the whole link. Closes [#11709](https://github.com/ckeditor/ckeditor5/issues/11709). ([commit](https://github.com/ckeditor/ckeditor5/commit/f23d002bcc3288e4c500353bec4d44f054f516ef))
-* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Add custom styling support for td, th, caption and figcaption elements. Closes [#13777](https://github.com/ckeditor/ckeditor5/issues/13777). ([commit](https://github.com/ckeditor/ckeditor5/commit/92b418d05f9a1f5608b5356dbc6c1573be04f415))
-* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Added support for the Document Lists. Closes [#11590](https://github.com/ckeditor/ckeditor5/issues/11590), [#12668](https://github.com/ckeditor/ckeditor5/issues/12668). ([commit](https://github.com/ckeditor/ckeditor5/commit/f4ddda86ecbb762565a90a7ba8a9fa5290796803))
-* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: The `<figure>` element can be styled. See [#11590](https://github.com/ckeditor/ckeditor5/issues/11590). ([commit](https://github.com/ckeditor/ckeditor5/commit/f4ddda86ecbb762565a90a7ba8a9fa5290796803))
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Add more granular changes tracking ([#5226](git+https://github.com/cksource/collaboration-features/issues/5226)).
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced new config parameter `mergeNestedSuggestions: boolean` (default `true`). Introduced new values for `trackFormatChanges` config parameter. Please see the API reference.
+* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: Introduced the `MultiRootEditor#disableRoot()` and `MultiRootEditor#enableRoot()` methods that allow switching only a particular root to a read-only state. ([commit](https://github.com/ckeditor/ckeditor5/commit/4e28b171d5a517c2d91a3e38504c12d4c869ba69))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `Model#canEditAt( selectable )` method that checks whether a given `selectable` is in an editable place in the model. It should be used instead of `Editor#isReadOnly` in multi-root integrations as it acknowledges the root's read-only state. ([commit](https://github.com/ckeditor/ckeditor5/commit/4e28b171d5a517c2d91a3e38504c12d4c869ba69))
+* **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: Introduced the color picker feature for font and font background colors. Closes [#10988](https://github.com/ckeditor/ckeditor5/issues/10988). ([commit](https://github.com/ckeditor/ckeditor5/commit/23227a6725aacf8e37d4c5d64d724a30decaf354))
+* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: The styles dropdown now applies link styles only to the entire link. Closes [#11709](https://github.com/ckeditor/ckeditor5/issues/11709). ([commit](https://github.com/ckeditor/ckeditor5/commit/f23d002bcc3288e4c500353bec4d44f054f516ef))
+* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Added custom styling support for the `<td>`, `<th>`, `<caption>`, and `<figcaption>` elements. Closes [#13777](https://github.com/ckeditor/ckeditor5/issues/13777). ([commit](https://github.com/ckeditor/ckeditor5/commit/92b418d05f9a1f5608b5356dbc6c1573be04f415))
+* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Added support for the document lists feature. Closes [#11590](https://github.com/ckeditor/ckeditor5/issues/11590), [#12668](https://github.com/ckeditor/ckeditor5/issues/12668). ([commit](https://github.com/ckeditor/ckeditor5/commit/f4ddda86ecbb762565a90a7ba8a9fa5290796803))
+* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: The `<figure>` element can now be styled. See [#11590](https://github.com/ckeditor/ckeditor5/issues/11590). ([commit](https://github.com/ckeditor/ckeditor5/commit/f4ddda86ecbb762565a90a7ba8a9fa5290796803))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Added more granular changes tracking.
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced a new configuration parameter: `mergeNestedSuggestions: boolean` (default `true`). Introduced new values for the `trackFormatChanges` configuration parameter. See the API reference for more details.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Introduced the color picker view. See [#10988](https://github.com/ckeditor/ckeditor5/issues/10988). ([commit](https://github.com/ckeditor/ckeditor5/commit/23227a6725aacf8e37d4c5d64d724a30decaf354))
 
 ### Bug fixes
 
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Mentions dropdown was appearing behind the comments archive dropdown panel and was unaccessible.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed error thrown when a resolved comment thread was received in a particular scenario.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comments archive panel will now be correctly visible when comments archive is opened from various toolbars.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment thread `attributes` are now correctly returned in `CommentsRepository#getCommentThreads()`.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The mentions dropdown no longer appears behind the comments archive dropdown panel and is now accessible.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed an error thrown when a resolved comment thread was received in a particular scenario.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The comments archive panel is now correctly visible when the comments archive is opened from various toolbars.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The comment thread `attributes` are now correctly returned in `CommentsRepository#getCommentThreads()`.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed the comment thread input area which was incorrectly displayed or hidden in particular cases.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed editor crash when a comment was added to a comment thread imported from Word file.
-* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Add `licenseKey` property to `EditorConfig` interface. Closes [#13906](https://github.com/ckeditor/ckeditor5/issues/13906). ([commit](https://github.com/ckeditor/ckeditor5/commit/7e3e93c52fea343c3c850c4b9bcdcb97529f1bf6))
-* **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)**: Document outline and Table of contents features should now support Multi-root editor.
-* **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)**: Document outline and Table of contents should not display placeholders for empty headings by default.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed the editor crash when a comment was added to a comment thread imported from a Word file.
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Added the `licenseKey` property to the `EditorConfig` interface. Closes [#13906](https://github.com/ckeditor/ckeditor5/issues/13906). ([commit](https://github.com/ckeditor/ckeditor5/commit/7e3e93c52fea343c3c850c4b9bcdcb97529f1bf6))
+* **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)**: The document outline and table of contents features should now support the multi-root editor.
+* **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)**: The document outline and table of contents features should not display placeholders for empty headings by default.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: TypeScript should suggest `editingDowncast` and `dataDowncast` in `conversion.for`. Closes [#13750](https://github.com/ckeditor/ckeditor5/issues/13750). ([commit](https://github.com/ckeditor/ckeditor5/commit/51e1b17955538db3c64bc97ee071f8199e99bcd7))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Editor should not crash when a custom element with an invalid attribute name is pasted. Closes [#13841](https://github.com/ckeditor/ckeditor5/issues/13841). ([commit](https://github.com/ckeditor/ckeditor5/commit/2389d304c3a178a8ffcab26d86c97bbc98c44b0e))
-* **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: Screen readers should now announce the selected option in dropdown lists for font size, font family, and heading features. Closes [#13250](https://github.com/ckeditor/ckeditor5/issues/13250). ([commit](https://github.com/ckeditor/ckeditor5/commit/2fe4416c313d568fb41db1904fd80061b36bb957))
-* **[heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading)**: Screen readers should now announce the selected option in dropdown lists for font size, font family, and heading features. Closes [#13250](https://github.com/ckeditor/ckeditor5/issues/13250). ([commit](https://github.com/ckeditor/ckeditor5/commit/2fe4416c313d568fb41db1904fd80061b36bb957))
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Fix editor crashes when pasting table from Google Sheets. Closes [#13876](https://github.com/ckeditor/ckeditor5/issues/13876). ([commit](https://github.com/ckeditor/ckeditor5/commit/2abd9ff7c404f1f6c32e64c68dcde13d07177d8d))
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Remove HTML classes from paragraph created after pressing enter in heading. Closes [#11578](https://github.com/ckeditor/ckeditor5/issues/11578). ([commit](https://github.com/ckeditor/ckeditor5/commit/77091ec981a98a0d02291f9da23ef3e5bcdf9d8b))
-* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Fix width of tables pasted from Google Sheets. Closes [#13746](https://github.com/ckeditor/ckeditor5/issues/13746). ([commit](https://github.com/ckeditor/ckeditor5/commit/2abd9ff7c404f1f6c32e64c68dcde13d07177d8d))
-* **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Fixed editor crashing when a legacy revision (pre v37.1.0) was restored.
-* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Remove Format feature should also remove styles. Closes [#11580](https://github.com/ckeditor/ckeditor5/issues/11580). ([commit](https://github.com/ckeditor/ckeditor5/commit/ca522536ef0a1a3500af30e1736e2a8b91c1dd31))
-* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: Preserve classes of removed style if other active styles also use them. Closes [#11748](https://github.com/ckeditor/ckeditor5/issues/11748). ([commit](https://github.com/ckeditor/ckeditor5/commit/823c7ffa934890b8116f29bab961e4b20306d217))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Remove comment with both `CK_DEBUG` and `istanbul` that breaks `vite` integration. See [#13922](https://github.com/ckeditor/ckeditor5/issues/13922). ([commit](https://github.com/ckeditor/ckeditor5/commit/ce9b09c631bbdd8afe304573f1e9ef5dd94fc1d4))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Table column resize plugin should not crash anymore when used in multi-root editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/df9aeba026352c9600e31a182c3b7008e2c588bd))
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fix removing format with format painter.
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `mousedown` event should not be canceled on UI button press so it could be dragged. See [#14033](https://github.com/ckeditor/ckeditor5/issues/14033). ([commit](https://github.com/ckeditor/ckeditor5/commit/44cb8cb9b090feb4797a73a65cde1cfd97b48035))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The toolbar should not disappear when clicked on the toolbar separator. The toolbar view should be focusable the same as dropdown panel views. Closes [#12172](https://github.com/ckeditor/ckeditor5/issues/12172). ([commit](https://github.com/ckeditor/ckeditor5/commit/44cb8cb9b090feb4797a73a65cde1cfd97b48035))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Select all (Ctrl+A) should now be enabled by default in input field placed in dropdown panel. Closes [#13982](https://github.com/ckeditor/ckeditor5/issues/13982). ([commit](https://github.com/ckeditor/ckeditor5/commit/78466837d66f43ae6609030af05f6a294aec19f8))
-* Screen readers should announce the selected option in dropdown lists for code-block, language, image (resize options), special characters (categories), and table (border style) features. Closes [#13748](https://github.com/ckeditor/ckeditor5/issues/13748). ([commit](https://github.com/ckeditor/ckeditor5/commit/40533f7e672ce020e4d20db043bca07f91b586d3))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The editor should not crash when a custom element with an invalid attribute name is pasted. Closes [#13841](https://github.com/ckeditor/ckeditor5/issues/13841). ([commit](https://github.com/ckeditor/ckeditor5/commit/2389d304c3a178a8ffcab26d86c97bbc98c44b0e))
+* **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: Screen readers should now announce the selected option in dropdown lists for the font size, font family, and heading features. Closes [#13250](https://github.com/ckeditor/ckeditor5/issues/13250). ([commit](https://github.com/ckeditor/ckeditor5/commit/2fe4416c313d568fb41db1904fd80061b36bb957))
+* **[heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading)**: Screen readers should now announce the selected option in dropdown lists for the font size, font family, and heading features. Closes [#13250](https://github.com/ckeditor/ckeditor5/issues/13250). ([commit](https://github.com/ckeditor/ckeditor5/commit/2fe4416c313d568fb41db1904fd80061b36bb957))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Fixed the editor crash when pasting a table from Google Sheets. Closes [#13876](https://github.com/ckeditor/ckeditor5/issues/13876). ([commit](https://github.com/ckeditor/ckeditor5/commit/2abd9ff7c404f1f6c32e64c68dcde13d07177d8d))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: HTML classes from a paragraph created after pressing the <kbd>Enter</kbd> key in a heading are now removed. Closes [#11578](https://github.com/ckeditor/ckeditor5/issues/11578). ([commit](https://github.com/ckeditor/ckeditor5/commit/77091ec981a98a0d02291f9da23ef3e5bcdf9d8b))
+* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Fixed the width of tables pasted from Google Sheets. Closes [#13746](https://github.com/ckeditor/ckeditor5/issues/13746). ([commit](https://github.com/ckeditor/ckeditor5/commit/2abd9ff7c404f1f6c32e64c68dcde13d07177d8d))
+* **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: Fixed the editor crash when a legacy revision (created using the editor in version 37.1.0 or older) was restored.
+* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: The remove format feature should also remove styles. Closes [#11580](https://github.com/ckeditor/ckeditor5/issues/11580). ([commit](https://github.com/ckeditor/ckeditor5/commit/ca522536ef0a1a3500af30e1736e2a8b91c1dd31))
+* **[style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style)**: The classes of the removed style are now preserved if other active styles also use them. Closes [#11748](https://github.com/ckeditor/ckeditor5/issues/11748). ([commit](https://github.com/ckeditor/ckeditor5/commit/823c7ffa934890b8116f29bab961e4b20306d217))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Removed comments with both `CK_DEBUG` and `istanbul` that break the Vite integration. See [#13922](https://github.com/ckeditor/ckeditor5/issues/13922). ([commit](https://github.com/ckeditor/ckeditor5/commit/ce9b09c631bbdd8afe304573f1e9ef5dd94fc1d4))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed the integration of the remove format and format painter features.
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `mousedown` event should not be canceled on a UI button press so it can be dragged. See [#14033](https://github.com/ckeditor/ckeditor5/issues/14033). ([commit](https://github.com/ckeditor/ckeditor5/commit/44cb8cb9b090feb4797a73a65cde1cfd97b48035))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The toolbar should not disappear when the toolbar separator is clicked. The toolbar view should be focusable the same as the dropdown panel views. Closes [#12172](https://github.com/ckeditor/ckeditor5/issues/12172). ([commit](https://github.com/ckeditor/ckeditor5/commit/44cb8cb9b090feb4797a73a65cde1cfd97b48035))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Select all (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd>) should now be enabled by default in an input field placed in a dropdown panel. Closes [#13982](https://github.com/ckeditor/ckeditor5/issues/13982). ([commit](https://github.com/ckeditor/ckeditor5/commit/78466837d66f43ae6609030af05f6a294aec19f8))
+* Screen readers should announce the selected option in dropdown lists for the code block, language, image (resize options), special characters (categories), and table (border style) features. Closes [#13748](https://github.com/ckeditor/ckeditor5/issues/13748). ([commit](https://github.com/ckeditor/ckeditor5/commit/40533f7e672ce020e4d20db043bca07f91b586d3))
 
 ### Other changes
 
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Changed annotations buttons style from icons to labelled buttons.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comments archive header is now fixed at the top of the dropdown panel.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Change export type to export for ckeditor5-image plugins. Closes [#13868](https://github.com/ckeditor/ckeditor5/issues/13868). ([commit](https://github.com/ckeditor/ckeditor5/commit/5b3f519043571335e6c1ec579c68a94d506e8d0e))
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Changed annotations buttons style from icons to labelled buttons.
-* Introduced the Powered by CKEditor5 logo. ([commit](https://github.com/ckeditor/ckeditor5/commit/383ea8aefab9575edee969581527daa1561e7e07))
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Changed the comments annotation button styles from icons to labeled buttons.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The comments archive header is now fixed at the top of the dropdown panel.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Changed the export type to export for plugins in the [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package. Closes [#13868](https://github.com/ckeditor/ckeditor5/issues/13868). ([commit](https://github.com/ckeditor/ckeditor5/commit/5b3f519043571335e6c1ec579c68a94d506e8d0e))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Changed the track changes annotation button styles from icons to labeled buttons.
 * Optimized icons. ([commit](https://github.com/ckeditor/ckeditor5/commit/a7a99509c30183e4c1ed474d7da758551c575f99))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/08682f5ac50097cf41a804e689c9355bb6dc16de), [commit](https://github.com/ckeditor/ckeditor5/commit/fdbbe4ef80917291c0d69ffe6831c976dd6da924))
+* Introduced the "Powered by CKEditor" logo. ([commit](https://github.com/ckeditor/ckeditor5/commit/383ea8aefab9575edee969581527daa1561e7e07))
 
 ### Released packages
 

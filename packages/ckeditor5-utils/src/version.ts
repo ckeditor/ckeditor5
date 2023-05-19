@@ -16,7 +16,7 @@ const version = '38.0.0';
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2023, 4, 19 );
+export const releaseDate = new Date( 2023, 4, 22 );
 
 /* istanbul ignore next -- @preserve */
 const windowOrGlobal = typeof window === 'object' ? window : global;
