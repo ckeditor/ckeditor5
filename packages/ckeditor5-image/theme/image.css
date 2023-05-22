@@ -28,7 +28,9 @@
 			max-width: 100%;
 
 			/* Make sure the image is never smaller than the parent container (See: https://github.com/ckeditor/ckeditor5/issues/9300). */
-			min-width: 100%
+			min-width: 100%;
+
+			height: auto;
 		}
 	}
 
@@ -60,6 +62,8 @@
 
 			/* Prevents overflowing the editing root boundaries when an inline image is very wide. */
 			max-width: 100%;
+
+			height: auto;
 		}
 	}
 }
