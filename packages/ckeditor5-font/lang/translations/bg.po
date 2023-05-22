@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Bulgarian (https://www.transifex.com/ckeditor/teams/11143/bg/)\n"
+"Language-Team: Bulgarian (https://app.transifex.com/ckeditor/teams/11143/bg/)\n"
 "Language: bg\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -55,3 +55,7 @@ msgstr "Цвят на шрифтовия фон"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "Цвят на документа"
+
+msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
+msgid "Accept"
+msgstr ""

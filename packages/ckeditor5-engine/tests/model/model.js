@@ -728,6 +728,22 @@ describe( 'Model', () => {
 					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar[x]</paragraph>' );
 				} );
 			} );
+
+			it( 'should be able to insert content at given root', () => {
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+				setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					writer.insertText( 'abc', paragraph, 0 );
+
+					const affectedRange = model.insertContent( paragraph, doc.getRoot() );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]abc</paragraph>' );
+					expect( stringify( root, affectedRange ) ).to.equal( '[<paragraph>abc</paragraph>]' );
+				} );
+			} );
 		} );
 	} );
 
@@ -1339,6 +1355,20 @@ describe( 'Model', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 6 ), ModelPosition._createAt( root, 7 ) );
 
 			expect( model.hasContent( range ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'canEditAt()', () => {
+		it( 'should return true if model document is not in read-only mode', () => {
+			model.document.isReadOnly = false;
+
+			expect( model.canEditAt( model.document.selection ) ).to.be.true;
+		} );
+
+		it( 'should return fasle if model document is not in read-only mode', () => {
+			model.document.isReadOnly = true;
+
+			expect( model.canEditAt( model.document.selection ) ).to.be.false;
 		} );
 	} );
 

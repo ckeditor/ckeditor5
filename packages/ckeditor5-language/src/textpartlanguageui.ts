@@ -35,7 +35,7 @@ export default class TextPartLanguageUI extends Plugin {
 		const options = editor.config.get( 'language.textPartLanguage' )!;
 		const defaultTitle = t( 'Choose language' );
 		const removeTitle = t( 'Remove language' );
-		const dropdownTooltip = t( 'Language' );
+		const accessibleLabel = t( 'Language' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'textPartLanguage', locale => {
@@ -64,6 +64,7 @@ export default class TextPartLanguageUI extends Plugin {
 					model: new Model( {
 						label: option.title,
 						languageCode: option.languageCode,
+						role: 'menuitemradio',
 						textDirection: option.textDirection,
 						withText: true
 					} )
@@ -79,12 +80,17 @@ export default class TextPartLanguageUI extends Plugin {
 			}
 
 			const dropdownView = createDropdown( locale );
-			addListToDropdown( dropdownView, itemDefinitions );
+			addListToDropdown( dropdownView, itemDefinitions, {
+				ariaLabel: accessibleLabel,
+				role: 'menu'
+			} );
 
 			dropdownView.buttonView.set( {
+				ariaLabel: accessibleLabel,
+				ariaLabelledBy: undefined,
 				isOn: false,
 				withText: true,
-				tooltip: dropdownTooltip
+				tooltip: accessibleLabel
 			} );
 
 			dropdownView.extendTemplate( {

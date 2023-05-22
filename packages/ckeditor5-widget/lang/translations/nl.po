@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Dutch (https://www.transifex.com/ckeditor/teams/11143/nl/)\n"
+"Language-Team: Dutch (https://app.transifex.com/ckeditor/teams/11143/nl/)\n"
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

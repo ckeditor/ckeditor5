@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (https://www.transifex.com/ckeditor/teams/11143/pt/)\n"
+"Language-Team: Portuguese (https://app.transifex.com/ckeditor/teams/11143/pt/)\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 

@@ -248,14 +248,12 @@ describe( 'BlockToolbar', () => {
 				expect( blockToolbar.panelView.isVisible ).to.be.false;
 			} );
 
-			it( 'should hide the panel on toolbar blur', () => {
-				blockToolbar.toolbarView.focusTracker.isFocused = true;
-
+			it( 'should hide the panel on button hide', () => {
 				blockToolbar.buttonView.fire( 'execute' );
 
 				expect( blockToolbar.panelView.isVisible ).to.be.true;
 
-				blockToolbar.toolbarView.focusTracker.isFocused = false;
+				blockToolbar.buttonView.fire( 'execute' );
 
 				expect( blockToolbar.panelView.isVisible ).to.be.false;
 			} );
@@ -338,44 +336,29 @@ describe( 'BlockToolbar', () => {
 
 			describe( 'mousedown event', () => {
 				// https://github.com/ckeditor/ckeditor5/issues/12184
-				it( 'should call preventDefault to avoid stealing the focus', () => {
+				it( 'should not call preventDefault to not block dragstart', () => {
 					const ret = blockToolbar.buttonView.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-					expect( ret ).to.false;
+					expect( ret ).to.true;
 				} );
 
 				// https://github.com/ckeditor/ckeditor5/issues/12115
 				describe( 'in Safari', () => {
-					let view, stub, spy;
+					let view, stub;
 
 					beforeEach( () => {
 						stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
 						view = blockToolbar.buttonView;
-						spy = sinon.spy( blockToolbar.toolbarView, 'focus' );
 					} );
 
 					afterEach( () => {
 						stub.resetBehavior();
 					} );
 
-					it( 'should focus the toolbar when it shows up', () => {
-						blockToolbar.panelView.isVisible = true;
-						view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
-
-						expect( spy.callCount ).to.equal( 1 );
-					} );
-
-					it( 'should not focus the toolbar when it hides', () => {
-						blockToolbar.panelView.isVisible = false;
-						view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
-
-						expect( spy.callCount ).to.equal( 0 );
-					} );
-
-					it( 'should also preventDefault the event', () => {
+					it( 'should not preventDefault the event', () => {
 						const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-						expect( ret ).to.false;
+						expect( ret ).to.true;
 					} );
 				} );
 			} );

@@ -46,16 +46,20 @@ export default class FontSizeUI extends Plugin {
 		const options = this._getLocalizedOptions();
 
 		const command: FontSizeCommand = editor.commands.get( FONT_SIZE )!;
+		const accessibleLabel = t( 'Font Size' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_SIZE, locale => {
 			const dropdownView = createDropdown( locale );
 
-			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ) );
+			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ), {
+				role: 'menu',
+				ariaLabel: accessibleLabel
+			} );
 
 			// Create dropdown model.
 			dropdownView.buttonView.set( {
-				label: t( 'Font Size' ),
+				label: accessibleLabel,
 				icon: fontSizeIcon,
 				tooltip: true
 			} );
@@ -129,6 +133,7 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 				commandParam: option.model,
 				label: option.title,
 				class: 'ck-fontsize-option',
+				role: 'menuitemradio',
 				withText: true
 			} )
 		};

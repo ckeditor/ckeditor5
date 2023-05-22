@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Esperanto (https://www.transifex.com/ckeditor/teams/11143/eo/)\n"
+"Language-Team: Esperanto (https://app.transifex.com/ckeditor/teams/11143/eo/)\n"
 "Language: eo\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -110,4 +110,8 @@ msgstr ""
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
+msgstr ""
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
 msgstr ""

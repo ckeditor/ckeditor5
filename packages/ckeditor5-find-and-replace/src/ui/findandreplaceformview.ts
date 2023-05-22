@@ -725,16 +725,6 @@ export default class FindAndReplaceFormView extends View {
 		this._keystrokes.set( 'arrowleft', stopPropagation );
 		this._keystrokes.set( 'arrowup', stopPropagation );
 		this._keystrokes.set( 'arrowdown', stopPropagation );
-
-		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-		// of the DropdownView#panelView. This blocking prevents the native select all on Ctrl+A.
-		this.listenTo( this._findInputView.element!, 'selectstart', ( evt, domEvt ) => {
-			domEvt.stopPropagation();
-		}, { priority: 'high' } );
-
-		this.listenTo( this._replaceInputView.element!, 'selectstart', ( evt, domEvt ) => {
-			domEvt.stopPropagation();
-		}, { priority: 'high' } );
 	}
 
 	/**

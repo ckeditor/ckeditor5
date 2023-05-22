@@ -466,14 +466,51 @@ export interface EditorConfig {
 	 * (e.g. the top menu). Thanks to setting the UI viewport offset the toolbar and other contextual balloons will not be positioned
 	 * underneath or above the page's UI.
 	 *
-	 * ```ts
-	 * ui: {
-	 * 	viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
-	 * }
-	 * ```
+	 * 	```ts
+	 * 	ui: {
+	 * 		viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
+	 * 	}
+	 * 	```
 	 *
 	 * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding
-	 * {@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+	 * 	{@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+	 *
+	 * * **`ui.poweredBy`** &ndash; The configuration of the project logo displayed over editor's editing are in open-source integrations.
+	 * It allows customizing the position of the logo to minimize the risk of collision with editor content
+	 * and UI.
+	 *
+	 * 	The following configuration properties are supported:
+	 *
+	 * 	* **`position`** &ndash; Position of the project's logo (default: `'border'`).
+	 * 		* When `'inside'` the logo will be displayed within the boundaries of the editing area.
+	 * 		* When `'border'` the logo will be displayed over the bottom border of the editing area.
+	 *
+	 * 	* **`side`** (`'left'` or `'right'`, default: `'right'`) &ndash; Allows choosing the side of the editing area the
+	 * 	logo will be displayed to.
+	 *
+	 * 		**Note**: If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
+	 * 		language, the side switches to `'left'` by default.
+	 *
+	 * 	* **`label`** (default: `'Powered by'`) &ndash; Allows changing the label displayed next to the project's logo.
+	 *
+	 * 		**Note**: Set the value to `null` to display the logo without a text.
+	 *
+	 * 	* **`verticalOffset`** (default: `5`) &ndash; The vertical distance the logo can be moved away from its default position.
+	 *
+	 * 		**Note**: If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
+	 *
+	 * 	* **`horizontalOffset`** (default: `5`) &ndash; The horizontal distance between the side of the editing root and the
+	 * 	nearest side of the logo.
+	 *
+	 * 	```ts
+	 * 	ui: {
+	 * 		poweredBy: {
+	 * 			position: 'border',
+	 * 			side: 'left',
+	 * 			verticalOffset: 2,
+	 * 			horizontalOffset: 30
+	 * 		}
+	 * 	}
 	 */
 	ui?: UiConfig;
 
@@ -488,6 +525,14 @@ export interface EditorConfig {
 	 * {@glink features/html/html-embed HTML embed} features.
 	 */
 	updateSourceElementOnDestroy?: boolean;
+
+	/**
+	 * The license key for the CKEditor 5 premium features.
+	 *
+	 * If you do not have a key yet, please [contact us](https://ckeditor.com/contact/) or
+	 * [order a trial](https://orders.ckeditor.com/trial/premium-features).
+	 */
+	licenseKey?: string;
 }
 
 /**
@@ -552,5 +597,53 @@ export interface UiConfig {
 		left?: number;
 		right?: number;
 		top?: number;
+	};
+
+	poweredBy?: {
+
+		/**
+		 * Position of the project's logo.
+		 *
+		 * * When `'inside'` the logo will be displayed within the boundaries of the editing area.
+		 * * When `'border'` the logo will be displayed over the bottom border of the editing area.
+		 *
+		 * @default 'border'
+		 */
+		position: 'inside' | 'border';
+
+		/**
+		 * Allows choosing the side of the editing area the logo will be displayed to.
+		 *
+		 * **Note:** If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
+		 * language, the side switches to `'left'` by default.
+		 *
+		 * @default 'right'
+		 */
+		side: 'left' | 'right';
+
+		/**
+		 * Allows changing the label displayed next to the CKEditor logo.
+		 *
+		 * **Note:** Set the value to `null` to hide the label.
+		 *
+		 * @default 'Powered by'
+		 */
+		label: string | null;
+
+		/**
+		 * The vertical distance the logo can be moved away from its default position.
+		 *
+		 * **Note:** If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
+		 *
+		 * @default 5
+		 */
+		verticalOffset: number;
+
+		/**
+		 * The horizontal distance between the side of the editing root and the nearest side of the logo.
+		 *
+		 * @default 5
+		 */
+		horizontalOffset: number;
 	};
 }

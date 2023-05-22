@@ -13,9 +13,15 @@ import type {
 	Element,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement } from 'ckeditor5/src/engine';
+	ViewElement,
+	ModelPostFixer,
+	Model
+} from 'ckeditor5/src/engine';
+
 import { Plugin } from 'ckeditor5/src/core';
-import { setViewAttributes, type GHSViewAttributes } from '../conversionutils';
+import type { TableUtils } from '@ckeditor/ckeditor5-table';
+
+import { updateViewAttributes, type GHSViewAttributes } from '../utils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { getDescendantElement } from './integrationutils';
 
@@ -50,6 +56,7 @@ export default class TableElementSupport extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
+		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 
 		dataFilter.on<DataFilterRegisterEvent>( 'register:figure', ( ) => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
@@ -72,9 +79,42 @@ export default class TableElementSupport extends Plugin {
 			conversion.for( 'upcast' ).add( viewToModelTableAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewTableAttributeConverter() );
 
+			editor.model.document.registerPostFixer( createHeadingRowsPostFixer( editor.model, tableUtils ) );
+
 			evt.stop();
 		} );
 	}
+}
+
+/**
+ * Creates a model post-fixer for thead and tbody GHS related attributes.
+ */
+function createHeadingRowsPostFixer( model: Model, tableUtils: TableUtils ): ModelPostFixer {
+	return writer => {
+		const changes = model.document.differ.getChanges();
+		let wasFixed = false;
+
+		for ( const change of changes ) {
+			if ( change.type != 'attribute' || change.attributeKey != 'headingRows' ) {
+				continue;
+			}
+
+			const table = change.range.start.nodeAfter as Element;
+			const hasTHeadAttributes = table.getAttribute( 'htmlTheadAttributes' );
+			const hasTBodyAttributes = table.getAttribute( 'htmlTbodyAttributes' );
+
+			if ( hasTHeadAttributes && !change.attributeNewValue ) {
+				writer.removeAttribute( 'htmlTheadAttributes', table );
+				wasFixed = true;
+			}
+			else if ( hasTBodyAttributes && change.attributeNewValue == tableUtils.getRows( table ) ) {
+				writer.removeAttribute( 'htmlTbodyAttributes', table );
+				wasFixed = true;
+			}
+		}
+
+		return wasFixed;
+	};
 }
 
 /**
@@ -86,6 +126,10 @@ export default class TableElementSupport extends Plugin {
 function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const viewTableElement = data.viewItem;
 
 			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
@@ -150,14 +194,25 @@ function modelToViewTableAttributeConverter() {
 
 		function addAttributeConversionDispatcherHandler( elementName: string, attributeName: string ) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ attributeName }:table`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 					return;
 				}
 
 				const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement!, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue as GHSViewAttributes, viewElement! );
+				if ( !viewElement ) {
+					return;
+				}
+
+				conversionApi.consumable.consume( data.item, evt.name );
+
+				updateViewAttributes(
+					conversionApi.writer,
+					data.attributeOldValue as GHSViewAttributes,
+					data.attributeNewValue as GHSViewAttributes,
+					viewElement!
+				);
 			} );
 		}
 	};

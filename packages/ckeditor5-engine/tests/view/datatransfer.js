@@ -247,6 +247,21 @@ describe( 'DataTransfer', () => {
 		} );
 	} );
 
+	describe( '#setDragImage()', () => {
+		it( 'should call the native data transfer', () => {
+			const spy = sinon.spy();
+			const dt = new DataTransfer( {
+				setDragImage( element, x, y ) {
+					spy( element, x, y );
+				}
+			} );
+
+			dt.setDragImage( 'foo', 123, 789 );
+
+			expect( spy.calledWithExactly( 'foo', 123, 789 ) ).to.be.true;
+		} );
+	} );
+
 	describe( '#isCanceled', () => {
 		it( 'should return true if native data transfer dropEffect is equal "none" and mozUserCancelled is not set', () => {
 			const dt = new DataTransfer( {

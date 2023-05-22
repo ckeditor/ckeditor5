@@ -23,11 +23,9 @@ import DocumentListElementSupport from './integrations/documentlist';
 import CustomElementSupport from './integrations/customelement';
 import type { DataSchemaInlineElementDefinition } from './dataschema';
 import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
-import type { GHSViewAttributes } from './conversionutils';
+import { modifyGhsAttribute } from './utils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
-
-type LimitedSelectable = Exclude<Selectable, Iterable<Range> | null>;
 
 /**
  * The General HTML Support feature.
@@ -77,19 +75,19 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * Returns a GHS model attribute name related to a given view element name.
 	 *
+	 * @internal
 	 * @param viewElementName A view element name.
 	 */
-	private getGhsAttributeNameForElement( viewElementName: string ): string {
+	public getGhsAttributeNameForElement( viewElementName: string ): string {
 		const dataSchema = this.editor.plugins.get( 'DataSchema' );
 		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
 
-		if (
-			definitions &&
-			definitions.length &&
-			( definitions[ 0 ] as DataSchemaInlineElementDefinition ).isInline &&
-			!definitions[ 0 ].isObject
-		) {
-			return definitions[ 0 ].model;
+		const inlineDefinition = definitions.find( definition => (
+			( definition as DataSchemaInlineElementDefinition ).isInline && !definitions[ 0 ].isObject
+		) );
+
+		if ( inlineDefinition ) {
+			return inlineDefinition.model;
 		}
 
 		return 'htmlAttributes';
@@ -103,7 +101,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to add.
 	 * @param selectable The selection or element to update.
 	 */
-	public addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ): void {
+	public addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: Selectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -126,7 +124,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	public removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: LimitedSelectable ): void {
+	public removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: Selectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -148,7 +146,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param attributes The object with attributes to set.
 	 * @param selectable The selection or element to update.
 	 */
-	private setModelHtmlAttributes( viewElementName: string, attributes: Record<string, unknown>, selectable: LimitedSelectable ) {
+	private setModelHtmlAttributes( viewElementName: string, attributes: Record<string, unknown>, selectable: Selectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -170,7 +168,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param attributeName The attribute name (or names) to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	private removeModelHtmlAttributes( viewElementName: string, attributeName: ArrayOrItem<string>, selectable: LimitedSelectable ) {
+	private removeModelHtmlAttributes( viewElementName: string, attributeName: ArrayOrItem<string>, selectable: Selectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -192,7 +190,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param styles The object with styles to set.
 	 * @param selectable The selection or element to update.
 	 */
-	private setModelHtmlStyles( viewElementName: string, styles: Record<string, string>, selectable: LimitedSelectable ) {
+	private setModelHtmlStyles( viewElementName: string, styles: Record<string, string>, selectable: Selectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -214,7 +212,7 @@ export default class GeneralHtmlSupport extends Plugin {
 	 * @param properties The style (or styles list) to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	private removeModelHtmlStyles( viewElementName: string, properties: ArrayOrItem<string>, selectable: LimitedSelectable ) {
+	private removeModelHtmlStyles( viewElementName: string, properties: ArrayOrItem<string>, selectable: Selectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -235,10 +233,14 @@ export default class GeneralHtmlSupport extends Plugin {
  */
 function* getItemsToUpdateGhsAttribute(
 	model: Model,
-	selectable: LimitedSelectable,
+	selectable: Selectable,
 	ghsAttributeName: string
 ): IterableIterator<Item | DocumentSelection> {
-	if ( selectable.is( 'documentSelection' ) && selectable.isCollapsed ) {
+	if ( !selectable ) {
+		return;
+	}
+
+	if ( !( Symbol.iterator in selectable ) && selectable.is( 'documentSelection' ) && selectable.isCollapsed ) {
 		if ( model.schema.checkAttributeInSelection( selectable, ghsAttributeName ) ) {
 			yield selectable;
 		}
@@ -254,10 +256,17 @@ function* getItemsToUpdateGhsAttribute(
  */
 function getValidRangesForSelectable(
 	model: Model,
-	selectable: LimitedSelectable,
+	selectable: NonNullable<Selectable>,
 	ghsAttributeName: string
 ): Iterable<Range> {
-	if ( selectable.is( 'node' ) || selectable.is( '$text' ) || selectable.is( '$textProxy' ) ) {
+	if (
+		!( Symbol.iterator in selectable ) &&
+		(
+			selectable.is( 'node' ) ||
+			selectable.is( '$text' ) ||
+			selectable.is( '$textProxy' )
+		)
+	) {
 		if ( model.schema.checkAttribute( selectable, ghsAttributeName ) ) {
 			return [ model.createRangeOn( selectable ) ];
 		} else {
@@ -265,65 +274,5 @@ function getValidRangesForSelectable(
 		}
 	} else {
 		return model.schema.getValidRanges( model.createSelection( selectable ).getRanges(), ghsAttributeName );
-	}
-}
-
-interface CallbackMap {
-	classes: ( t: Set<string> ) => void;
-	attributes: ( t: Map<string, unknown> ) => void;
-	styles: ( t: Map<string, string> ) => void;
-}
-
-/**
- * Updates a GHS attribute on a specified item.
- * @param callback That receives a map or set as an argument and should modify it (add or remove entries).
- */
-function modifyGhsAttribute<T extends keyof GHSViewAttributes>(
-	writer: Writer,
-	item: Item | DocumentSelection,
-	ghsAttributeName: string,
-	subject: T,
-	callback: CallbackMap[T]
-) {
-	const oldValue = item.getAttribute( ghsAttributeName ) as Record<string, any>;
-	const newValue: Record<string, any> = {};
-
-	for ( const kind of [ 'attributes', 'styles', 'classes' ] as Array<T> ) {
-		// Properties other than `subject` should be assigned from `oldValue`.
-		if ( kind != subject ) {
-			if ( oldValue && oldValue[ kind ] ) {
-				newValue[ kind ] = oldValue[ kind ];
-			}
-			continue;
-		}
-		// `callback` should be applied on property [`subject`].
-		if ( subject == 'classes' ) {
-			const values = new Set<string>( oldValue && oldValue.classes || [] );
-			( callback as CallbackMap['classes'] )( values );
-			if ( values.size ) {
-				newValue[ kind ] = Array.from( values ) as GHSViewAttributes[T];
-			}
-			continue;
-		}
-
-		const values = new Map<string, unknown>( Object.entries( oldValue && oldValue[ kind ] || {} ) );
-		( callback as CallbackMap['attributes'] )( values );
-		if ( values.size ) {
-			newValue[ kind ] = Object.fromEntries( values ) as GHSViewAttributes[T];
-		}
-	}
-
-	if ( Object.keys( newValue ).length ) {
-		if ( item.is( 'documentSelection' ) ) {
-			writer.setSelectionAttribute( ghsAttributeName, newValue );
-		} else {
-			writer.setAttribute( ghsAttributeName, newValue, item );
-		}
-	} else if ( oldValue ) {
-		if ( item.is( 'documentSelection' ) ) {
-			writer.removeSelectionAttribute( ghsAttributeName );
-		} else {
-			writer.removeAttribute( ghsAttributeName, item );
-		}
 	}
 }
