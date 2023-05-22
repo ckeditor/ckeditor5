@@ -61,8 +61,16 @@
 	}
 
 	&[class*="position_border"] {
-		border: var(--ck-focus-ring);
-		border-color: var(--ck-powered-by-border-color);
+		outline: var(--ck-focus-ring);
+		outline-color: var(--ck-powered-by-border-color);
+	}
+
+	&[class*="position_border-side_right"] {
+		transform: translateX(-1px);
+	}
+
+	&[class*="position_border-side_left"] {
+		transform: translateX(1px);
 	}
 }
 
