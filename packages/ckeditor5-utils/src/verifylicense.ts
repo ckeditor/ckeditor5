@@ -28,9 +28,9 @@ export default function verifyLicense( token: string | undefined ): VerifiedKeyS
 	// in this thread: https://github.com/ckeditor/ckeditor5/issues/14082.
 	//
 	// We firmly believe in the values behind creating open-source software, even when that
-	// means keeping the license verification logic open for everyone to see (and modify).
+	// means keeping the license verification logic open for everyone to see.
 	//
-	// We kindly ask you to be thoughtful and understanding.
+	// Please keep this code intact. Thank you for your understanding.
 
 	function oldTokenCheck( token: string ): VerifiedKeyStatus {
 		if ( token.match( /^[a-zA-Z0-9+/=$]+$/g ) && ( token.length >= 40 && token.length <= 255 ) ) {
