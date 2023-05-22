@@ -279,6 +279,10 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 			template.on.mousedown = bind.to( () => {
 				this._focusDelayed!();
 			} );
+
+			template.on.mouseup = bind.to( () => {
+				this._focusDelayed!.cancel();
+			} );
 		}
 
 		this.setTemplate( template );
