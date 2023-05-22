@@ -18,7 +18,7 @@ import {
 	View,
 	ViewCollection,
 	ColorPickerView,
-	ColorPaletteIcon,
+	icons as uiIcons,
 	type ColorDefinition,
 	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
@@ -623,7 +623,7 @@ class ColorGridsPageView extends View {
 		this.colorPickerButtonView.set( {
 			label: this._colorPickerLabel,
 			withText: true,
-			icon: ColorPaletteIcon,
+			icon: uiIcons.colorPaletteIcon,
 			class: 'ck-color-table__color-picker'
 		} );
 
