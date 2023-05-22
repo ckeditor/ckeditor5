@@ -6,7 +6,7 @@
 /**
  * @module list/documentlist/documentlistseparator
  */
- 
+
 import type { GetCallback } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
