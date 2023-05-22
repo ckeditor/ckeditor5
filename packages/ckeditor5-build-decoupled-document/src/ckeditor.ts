@@ -14,7 +14,7 @@ import {
 	FontSize,
 	FontFamily,
 	FontColor,
-	FontBackgroundColor,
+	FontBackgroundColor
 } from '@ckeditor/ckeditor5-font';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -23,6 +23,8 @@ import {
 	Italic,
 	Strikethrough,
 	Underline,
+	Superscript,
+	Subscript
 } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -36,7 +38,7 @@ import {
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
-	PictureEditing,
+	PictureEditing
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -47,6 +49,9 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 import ClickObserver from '../../ckeditor5-engine/src/view/observer/clickobserver';
 import { GeneralHtmlSupport } from '../../ckeditor5-html-support/src/index';
@@ -101,11 +106,17 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Table,
 		TableToolbar,
 		TextTransformation,
+		Superscript,
+		Subscript,
+		FindAndReplace,
+		RemoveFormat,
+		SourceEditing,
 		Iframe,
 		ScratchBlocks,
 		ContentTemplates,
 		Exercise,
 		Modal,
+
 	];
 
 	public static override defaultConfig = {
@@ -122,6 +133,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'italic',
 				'underline',
 				'strikethrough',
+				'subscript',
+				'superscript',
 				'|',
 				'alignment',
 				'|',
@@ -132,7 +145,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'indent',
 				'|',
 				'link',
-				'blockquote',
 				'uploadImage',
 				'insertTable',
 				'mediaEmbed',
@@ -140,12 +152,18 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'undo',
 				'redo',
 				'|',
+				'sourceEditing',
+				'removeFormat',
+				'|',
+				'style',
+				'|',
 				'iframe',
 				'scratchBlocks',
 				'contentTemplates',
 				'exercise',
 				'modal',
 			],
+
 		},
 		image: {
 			resizeUnit: 'px' as const,
@@ -155,21 +173,21 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative',
-			],
+				'imageTextAlternative'
+			]
 		},
 		table: {
-			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
 		},
 		list: {
 			properties: {
 				styles: true,
 				startIndex: true,
-				reversed: true,
-			},
+				reversed: true
+			}
 		},
 
 		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en',
+		language: 'en'
 	};
 }
