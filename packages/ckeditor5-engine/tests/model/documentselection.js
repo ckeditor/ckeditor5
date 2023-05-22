@@ -44,6 +44,10 @@ describe( 'DocumentSelection', () => {
 		selection = doc.selection;
 		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
+		model.schema.extend( '$text', {
+			allowAttributes: 'bold'
+		} );
+
 		model.schema.register( 'widget', {
 			isObject: true
 		} );
@@ -1417,27 +1421,33 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		// #14106
-		describe( 'doesn\'t ignores inline object elements while reading surrounding attributes', () => {
+		describe( 'reads surrounding attributes from inline object elements', () => {
 			beforeEach( () => {
 				model.schema.register( 'imageInline', {
 					inheritAllFrom: '$inlineObject'
 				} );
 			} );
 
-			it( 'should inherit attributes from a node before an inline object element', () => {
-				setData( model, '<p><$text bold="true">Foo Bar.</$text><imageInline></imageInline>[]</p>' );
+			it( 'inherits attributes from a node before', () => {
+				setData( model, '<p><$text bold="true">Foo Bar.</$text><imageInline bold="true"></imageInline>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 			} );
 
-			it( 'should not inherit attributes from a node after an inline object element (override gravity)', () => {
-				setData( model, '<p>[]<imageInline></imageInline><$text bold="true">Foo Bar.</$text></p>' );
+			it( 'inherits attributes from a node after (override gravity)', () => {
+				setData( model, '<p>[]<imageInline bold="true"></imageInline><$text bold="true">Foo Bar.</$text></p>' );
 
 				const overrideGravityUid = selection._overrideGravity();
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 
 				selection._restoreGravity( overrideGravityUid );
+			} );
+
+			it( 'inherits attributes from <imageInline>, even without any text before it', () => {
+				setData( model, '<p><imageInline bold="true"></imageInline>[]</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 			} );
 		} );
 	} );
