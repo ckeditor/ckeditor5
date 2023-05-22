@@ -399,7 +399,7 @@ npm install --save @ckeditor/ckeditor5-font
 Then add it to your plugin list and the toolbar configuration:
 
 ```js
-import Font from '@ckeditor/ckeditor5-font/src/font';
+import { Font } from '@ckeditor/ckeditor5-font';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -413,7 +413,7 @@ ClassicEditor
 You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
 
 ```js
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
+import { FontFamily } from '@ckeditor/ckeditor5-font';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

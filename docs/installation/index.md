@@ -38,7 +38,7 @@ Learn how to install a custom CKEditor 5 build easily with the use of {@link ins
 
 ## Integration with frameworks
 
-Get to know the supported {@link installation/frameworks/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor 5 with your software.
+Get to know the supported {@link installation/integrations/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor 5 with your software.
 
 ## Advanced installation concepts
 
@@ -159,7 +159,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 		},
 
 		'quiz-resolution-usingFrameworks': {
-			content: 'Based on your answers, you should check out official {@link installation/frameworks/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out official {@link installation/integrations/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 

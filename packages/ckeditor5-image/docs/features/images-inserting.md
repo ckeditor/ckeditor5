@@ -29,7 +29,7 @@ To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core
 Using the URL of an image, the user may easily paste it into the editor. In order to enable this option, install the `ImageInsert` plugin and add the `insertImage` toolbar item to the toolbar (it replaces the standard `uploadImage` button).
 
 ```js
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
+import { ImageInsert } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -55,7 +55,7 @@ You can paste an image URL directly into the editor content, and it will be auto
 The {@link module:image/autoimage~AutoImage} plugin recognizes image links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Accepted image extensions are: `jpg`, `jpeg`, `png`, `gif`, and `ico`. Use the following code to enable the plugin in your editor. There is no toolbar configuration for this feature.
 
 ```js
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
+import { AutoImage } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

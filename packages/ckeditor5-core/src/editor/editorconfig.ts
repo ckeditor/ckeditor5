@@ -481,7 +481,7 @@ export interface EditorConfig {
 	 *
 	 * 	The following configuration properties are supported:
 	 *
-	 * 	* **`position`** &ndash; Position of the project's logo (default: `'inside'`).
+	 * 	* **`position`** &ndash; Position of the project's logo (default: `'border'`).
 	 * 		* When `'inside'` the logo will be displayed within the boundaries of the editing area.
 	 * 		* When `'border'` the logo will be displayed over the bottom border of the editing area.
 	 *
@@ -490,6 +490,10 @@ export interface EditorConfig {
 	 *
 	 * 		**Note**: If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
 	 * 		language, the side switches to `'left'` by default.
+	 *
+	 * 	* **`label`** (default: `'Powered by'`) &ndash; Allows changing the label displayed next to the project's logo.
+	 *
+	 * 		**Note**: Set the value to `null` to display the logo without a text.
 	 *
 	 * 	* **`verticalOffset`** (default: `5`) &ndash; The vertical distance the logo can be moved away from its default position.
 	 *
@@ -603,7 +607,7 @@ export interface UiConfig {
 		 * * When `'inside'` the logo will be displayed within the boundaries of the editing area.
 		 * * When `'border'` the logo will be displayed over the bottom border of the editing area.
 		 *
-		 * @default 'inside'
+		 * @default 'border'
 		 */
 		position: 'inside' | 'border';
 
@@ -616,6 +620,15 @@ export interface UiConfig {
 		 * @default 'right'
 		 */
 		side: 'left' | 'right';
+
+		/**
+		 * Allows changing the label displayed next to the CKEditor logo.
+		 *
+		 * **Note:** Set the value to `null` to hide the label.
+		 *
+		 * @default 'Powered by'
+		 */
+		label: string | null;
 
 		/**
 		 * The vertical distance the logo can be moved away from its default position.

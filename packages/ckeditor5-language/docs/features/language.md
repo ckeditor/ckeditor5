@@ -63,7 +63,7 @@ npm install --save @ckeditor/ckeditor5-language
 And add it to your plugin list configuration:
 
 ```js
-import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
+import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

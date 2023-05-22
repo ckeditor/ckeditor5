@@ -107,7 +107,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `List` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import List from '@ckeditor/ckeditor5-list/src/list';
+import { List } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -133,7 +133,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `ListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
 
 ```js
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
+import { ListProperties } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

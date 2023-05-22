@@ -30,8 +30,7 @@ You can define a new special characters category using the {@link module:special
 For example, the following plugin adds the "Emoji" category to the special characters dropdown.
 
 ```js
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
+import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
 
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
@@ -75,8 +74,7 @@ Below you can see a demo based on the example shown above. Use the special chara
 By using the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} function you can also add new special characters to an existing category.
 
 ```js
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
+import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
 
 function SpecialCharactersExtended( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
@@ -124,9 +122,7 @@ By default, the `@ckeditor/ckeditor5-special-characters` package provides specia
 For example, you can limit the categories to "Mathematical" and "Currency" only by picking the {@link module:special-characters/specialcharactersmathematical~SpecialCharactersMathematical} and {@link module:special-characters/specialcharacterscurrency~SpecialCharactersCurrency} plugins, like so:
 
 ```js
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency';
-import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical';
+import { SpecialCharacters, SpecialCharactersCurrency, SpecialCharactersMathematical } from '@ckeditor/ckeditor5-special-characters';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -186,9 +182,9 @@ And add it to your plugin list configuration:
 
 ```js
 // Core plugin that provides the API for the management of special characters and their categories.
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import { SpecialCharacters } from '@ckeditor/ckeditor5-special-characters';
 // A plugin that combines a basic set of special characters.
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
+import { SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
