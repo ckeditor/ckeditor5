@@ -63,6 +63,7 @@ import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index';
 import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index';
 // @ts-ignore
 import { Exercise } from './plugins/exercise/index';
+import { StyledLink } from './plugins/styledLink/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -112,7 +113,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Iframe,
 		ScratchBlocks,
 		ContentTemplates,
-		Exercise
+		Exercise,
+		StyledLink
 	];
 
 	public static override defaultConfig = {
@@ -156,7 +158,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'iframe',
 				'scratchBlocks',
 				'contentTemplates',
-				'exercise'
+				'exercise',
+				'styledLink'
 			]
 		},
 		image: {
@@ -171,7 +174,11 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 			]
 		},
 		table: {
-			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
 		},
 		list: {
 			properties: {

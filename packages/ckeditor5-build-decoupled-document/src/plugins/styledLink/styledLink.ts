@@ -2,7 +2,11 @@ import { Plugin } from 'ckeditor5/src/core';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import icon from './icon.svg';
 
-export default class Exercise extends Plugin {
+export default class StyledLink extends Plugin {
+	public static get pluginName(): 'StyledLink' {
+		return 'StyledLink';
+	}
+
 	public init(): void {
 		const editor = this.editor;
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -15,7 +19,7 @@ export default class Exercise extends Plugin {
 			const button = new ButtonView();
 
 			button.set( {
-				label: 'Exercise',
+				label: 'Styled Link',
 				withText: false,
 				icon
 			} );
