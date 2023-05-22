@@ -1228,7 +1228,7 @@ function getTextAttributes( node: Item | null, schema: Schema ): Iterable<[strin
 		return null;
 	}
 
-	// Skip inline elements (such as `<softBreak>`) that are not objects (such as `<imageInline>` or `<mathml>`).
+	// Stop on inline elements (such as `<softBreak>`) that are not objects (such as `<imageInline>` or `<mathml>`).
 	if ( !schema.isObject( node ) ) {
 		return [];
 	}
