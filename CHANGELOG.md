@@ -11,7 +11,7 @@ From version v38.0.0 onwards, all open-source installations of CKEditor (using i
 
 This change does not affect customers with commercial licenses. You can reach out to our Technical Support team using [this form](https://ckeditor.com/contact/), if you have any questions.
 
-You can read more about this change in the [announcement on GitHub](https://github.com/ckeditor/ckeditor5/issues/14082), the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-38.html), and the [Managing the "Powered by CKEditor" logo guide](https://ckeditor.com/docs/ckeditor5/latest/support/managing-ckeditor-logo.html).
+You can read more about this change in the [announcement on GitHub](https://github.com/ckeditor/ckeditor5/issues/14082), the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-38.html), and the [Managing the "Powered by CKEditor" logo guide](https://ckeditor.com/docs/ckeditor5/latest/support/licensing/managing-ckeditor-logo.html).
 
 #### Color picker
 
