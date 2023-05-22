@@ -313,6 +313,10 @@ After you sign up, you will find in the customer dashboard the full code snippet
 
 You may disable any features available in the superbuild using the {@link installation/getting-started/configuration#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
 
+## TypeScript support
+
+CKEditor 5 is a TypeScript project. Starting from the v37.0.0 release, it offers native type definitions. Check out our {@link installation/working-with-typescript dedicated guide} to read more about TypeScript support.
+
 <info-box hint>
 **What's next?**
 
