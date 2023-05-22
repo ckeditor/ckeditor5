@@ -1434,8 +1434,8 @@ describe( 'DocumentSelection', () => {
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 			} );
 
-			it( 'inherits attributes from a node after (override gravity)', () => {
-				setData( model, '<p>[]<imageInline bold="true"></imageInline><$text bold="true">Foo Bar.</$text></p>' );
+			it( 'inherits attributes from a node after with override gravity', () => {
+				setData( model, '<p><$text>Foo Bar.</$text>[]<imageInline bold="true"></imageInline></p>' );
 
 				const overrideGravityUid = selection._overrideGravity();
 
