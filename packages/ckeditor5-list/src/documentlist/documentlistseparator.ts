@@ -4,12 +4,13 @@
  */
 
 /**
- * @module list/documentlist/documentlistutils
+ * @module list/documentlist/documentlistseparator
  */
+ 
 import type { GetCallback } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
-import type {	UpcastElementEvent, ViewElement } from 'ckeditor5/src/engine';
+import type { UpcastElementEvent, ViewElement } from 'ckeditor5/src/engine';
 
 export default class DocumentListSeparator extends Plugin {
 	/**
@@ -32,18 +33,18 @@ export default class DocumentListSeparator extends Plugin {
 		} );
 
 		editor.conversion.for( 'upcast' )
-			// Add `listSeparator` element between similar list elements on upcast
+			// Add `listSeparator` element between similar list elements on upcast.
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:ol', listSeparatorUpcastConverter() );
 				dispatcher.on<UpcastElementEvent>( 'element:ul', listSeparatorUpcastConverter() );
 			} )
-			// View to model transformation
+			// View to model transformation.
 			.elementToElement( {
 				model: 'listSeparator',
 				view: 'ck-list-separator'
 			} );
 
-		// `listSeparator` should exist in view, but be invisible (hidden)
+		// The `listSeparator` element should exist in the view, but should be invisible (hidden).
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'listSeparator',
 			view: {
@@ -52,7 +53,7 @@ export default class DocumentListSeparator extends Plugin {
 			}
 		} );
 
-		// `listSeparator` should not exist in output data
+		// The `listSeparator` element should not exist in output data.
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'listSeparator',
 			view: ( modelElement, conversionApi ) => {
