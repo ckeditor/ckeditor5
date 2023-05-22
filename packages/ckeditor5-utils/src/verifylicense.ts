@@ -21,6 +21,17 @@ export type VerifiedKeyStatus = 'VALID' | 'INVALID';
  * @returns String that represents the state of given `token` parameter.
  */
 export default function verifyLicense( token: string | undefined ): VerifiedKeyStatus {
+	// This function implements naive and partial license key check mechanism,
+	// used only to decide whether to show or hide the "Powered by CKEditor" logo.
+	//
+	// You can read the reasoning behind showing the logo to unlicensed (GPL) users
+	// in this thread: https://github.com/ckeditor/ckeditor5/issues/14082.
+	//
+	// We firmly believe in the values behind creating open-source software, even when that
+	// means keeping the license verification logic open for everyone to see.
+	//
+	// Please keep this code intact. Thank you for your understanding.
+
 	function oldTokenCheck( token: string ): VerifiedKeyStatus {
 		if ( token.match( /^[a-zA-Z0-9+/=$]+$/g ) && ( token.length >= 40 && token.length <= 255 ) ) {
 			return 'VALID';
