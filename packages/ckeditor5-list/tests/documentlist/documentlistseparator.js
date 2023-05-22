@@ -64,10 +64,10 @@ describe( 'DocumentListSeparator', () => {
 		it( 'inserts "listSeparator" element between two "ul" lists in model', () => {
 			editor.setData(
 				'<ul>' +
-				'<li>One</li>' +
+					'<li>One</li>' +
 				'</ul>' +
 				'<ul>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ul>'
 			);
 
@@ -81,10 +81,10 @@ describe( 'DocumentListSeparator', () => {
 		it( 'inserts "listSeparator" element between two "ol" lists in model', () => {
 			editor.setData(
 				'<ol>' +
-				'<li>One</li>' +
+					'<li>One</li>' +
 				'</ol>' +
 				'<ol>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ol>'
 			);
 
@@ -98,10 +98,10 @@ describe( 'DocumentListSeparator', () => {
 		it( 'doesn\'t insert "listSeparator" element between two different lists in model', () => {
 			editor.setData(
 				'<ol>' +
-				'<li>One</li>' +
+					'<li>One</li>' +
 				'</ol>' +
 				'<ul>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ul>'
 			);
 
@@ -147,20 +147,20 @@ describe( 'DocumentListSeparator', () => {
 		it( 'inserts a "div.ck-list-separator" between two "ul" lists in view', () => {
 			editor.setData(
 				'<ul>' +
-				'<li>One</li>' +
+					'<li>One</li>' +
 				'</ul>' +
 				'<ul>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ul>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul>' +
-				'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
+					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ul>' +
 				'<div class="ck-hidden ck-list-separator"></div>' +
 				'<ul>' +
-				'<li><span class="ck-list-bogus-paragraph">Two</span></li>' +
+					'<li><span class="ck-list-bogus-paragraph">Two</span></li>' +
 				'</ul>'
 			);
 		} );
@@ -168,20 +168,20 @@ describe( 'DocumentListSeparator', () => {
 		it( 'inserts a "div.ck-list-separator" between two "ol" lists in view', () => {
 			editor.setData(
 				'<ol>' +
-				'<li>One</li>' +
+					'<li>One</li>' +
 				'</ol>' +
 				'<ol>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ol>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ol>' +
-				'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
+					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ol>' +
 				'<div class="ck-hidden ck-list-separator"></div>' +
 				'<ol>' +
-				'<li><span class="ck-list-bogus-paragraph">Two</span></li>' +
+					'<li><span class="ck-list-bogus-paragraph">Two</span></li>' +
 				'</ol>'
 			);
 		} );
@@ -189,19 +189,19 @@ describe( 'DocumentListSeparator', () => {
 		it( 'doesn\'t insert a "div.ck-list-separator" between two different lists in view', () => {
 			editor.setData(
 				'<ol>' +
-				'<li>One</li>' +
+					'<li>One</li>' +
 				'</ol>' +
 				'<ul>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ul>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ol>' +
-				'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
+					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ol>' +
 				'<ul>' +
-				'<li><span class="ck-list-bogus-paragraph">Two</span></li>' +
+					'<li><span class="ck-list-bogus-paragraph">Two</span></li>' +
 				'</ul>'
 			);
 		} );
@@ -209,11 +209,12 @@ describe( 'DocumentListSeparator', () => {
 
 	describe( 'dataDowncast', () => {
 		it( 'doesn\'t insert anything between two "ul" lists in output data', () => {
-			const data = '<ul>' +
-				'<li>One</li>' +
+			const data =
+				'<ul>' +
+					'<li>One</li>' +
 				'</ul>' +
 				'<ul>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ul>';
 
 			editor.setData( data );
@@ -222,11 +223,12 @@ describe( 'DocumentListSeparator', () => {
 		} );
 
 		it( 'doesn\'t insert anything between two "ol" lists in output data', () => {
-			const data = '<ol>' +
-				'<li>One</li>' +
+			const data =
+				'<ol>' +
+					'<li>One</li>' +
 				'</ol>' +
 				'<ol>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ol>';
 
 			editor.setData( data );
@@ -235,11 +237,12 @@ describe( 'DocumentListSeparator', () => {
 		} );
 
 		it( 'doesn\'t insert anything between two different lists in output data', () => {
-			const data = '<ol>' +
-				'<li>One</li>' +
+			const data =
+				'<ol>' +
+					'<li>One</li>' +
 				'</ol>' +
 				'<ul>' +
-				'<li>Two</li>' +
+					'<li>Two</li>' +
 				'</ul>';
 
 			editor.setData( data );
