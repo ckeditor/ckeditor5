@@ -21,6 +21,10 @@ The color picker is now available in the font color and font background color fe
 
 If you're interested in keeping the old behavior where the user can choose only from predefined colors, check out the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-38.html).
 
+#### Styles
+
+The latest update allows users to [apply styling](https://ckeditor.com/docs/ckeditor5/latest/features/style.html) to tables and their elements, as well as to lists and their items (`DocumentList` plugin). We've also fixed the behavior for links, so styles now only apply to the entire link. In addition, we've implemented a few bug fixes to address prior inconsistencies and issues.
+
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * Introduced the "Powered by CKEditor" logo.
