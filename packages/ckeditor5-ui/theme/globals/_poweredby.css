@@ -16,7 +16,7 @@
 .ck.ck-balloon-panel.ck-powered-by-balloon {
 	--ck-border-radius: var(--ck-powered-by-border-radius);
 
-	border: 0;
+	border: 1px solid transparent;
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
@@ -61,16 +61,8 @@
 	}
 
 	&[class*="position_border"] {
-		outline: var(--ck-focus-ring);
-		outline-color: var(--ck-powered-by-border-color);
-	}
-
-	&[class*="position_border-side_right"] {
-		transform: translateX(-1px);
-	}
-
-	&[class*="position_border-side_left"] {
-		transform: translateX(1px);
+		border: var(--ck-focus-ring);
+		border-color: var(--ck-powered-by-border-color);
 	}
 }
 
