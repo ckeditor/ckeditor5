@@ -17,6 +17,8 @@ const parseArguments = require( './utils/parsearguments' );
 const { RELEASE_DIRECTORY } = require( './utils/constants' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
+
+// TODO: If nightly: generate a version number. See: #14179.
 const latestVersion = releaseTools.getLastFromChangelog();
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
 
