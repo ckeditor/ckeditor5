@@ -6,9 +6,7 @@
 /* globals window */
 
 import { Code, Underline, Strikethrough, Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
-import { ImageCaption } from '@ckeditor/ckeditor5-image';
 import { IndentBlock } from '@ckeditor/ckeditor5-indent';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
@@ -16,6 +14,9 @@ import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -37,7 +38,11 @@ ClassicEditor.builtinPlugins.push(
 	Subscript,
 	Alignment,
 	ImageCaption,
-	LinkImage
+	LinkImage,
+	PictureEditing,
+	ImageResize,
+	AutoImage,
+	CKBox
 );
 
 ClassicEditor.defaultConfig = {

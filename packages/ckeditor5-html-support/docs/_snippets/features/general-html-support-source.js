@@ -9,11 +9,13 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import { Code } from '@ckeditor/ckeditor5-basic-styles';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { ImageUpload } from '@ckeditor/ckeditor5-image';
+import { ImageUpload, PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { GeneralHtmlSupport, HtmlComment } from '@ckeditor/ckeditor5-html-support';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
@@ -23,7 +25,12 @@ ClassicEditor.builtinPlugins.push(
 	Code,
 	EasyImage,
 	ImageUpload,
-	SourceEditing
+	SourceEditing,
+	PictureEditing,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	CKBox
 );
 
 ClassicEditor.defaultConfig = {
