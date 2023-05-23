@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import { Strikethrough, Code } from '@ckeditor/ckeditor5-basic-styles';
+import { Strikethrough, Code, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
@@ -24,6 +24,7 @@ ClassicEditor
 			CodeBlock,
 			HorizontalLine,
 			Strikethrough,
+			Underline,
 			TodoList,
 			PictureEditing,
 			ImageResize,
