@@ -14,7 +14,7 @@
 
 # A list of icons that should not NOT be cleaned up. Their internal structure should not be changed
 # because, for instance, CSS animations may depend on it.
-BLACKLIST=("return-arrow.svg")
+BLACKLIST=("return-arrow.svg", "project-logo.svg")
 
 for i in "$@"
 do

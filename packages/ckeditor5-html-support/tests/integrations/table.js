@@ -5,10 +5,13 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { priorities } from 'ckeditor5/src/utils';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
@@ -370,6 +373,201 @@ describe( 'TableElementSupport', () => {
 		expect( editor.getData() ).to.equal( expectedHtml );
 	} );
 
+	it( 'should allow enabling only tbody attributes', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: 'tbody',
+			styles: 'color'
+		} ] );
+
+		editor.setData(
+			'<figure class="table" style="color:red;">' +
+				'<table style="color:red;">' +
+					'<thead style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<th style="color:red;">1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<td style="color:red;">2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="1" ' +
+					'htmlTbodyAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						color: 'red'
+					}
+				}
+			}
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table">' +
+				'<table>' +
+					'<thead>' +
+						'<tr>' +
+							'<th>1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody style="color:red;">' +
+						'<tr>' +
+							'<td>2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+	} );
+
+	it( 'should allow enabling only thead attributes', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: 'thead',
+			styles: 'color'
+		} ] );
+
+		editor.setData(
+			'<figure class="table" style="color:red;">' +
+				'<table style="color:red;">' +
+					'<thead style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<th style="color:red;">1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<td style="color:red;">2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="1" ' +
+					'htmlTheadAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						color: 'red'
+					}
+				}
+			}
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table">' +
+				'<table>' +
+					'<thead style="color:red;">' +
+						'<tr>' +
+							'<th>1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+	} );
+
+	it( 'should allow enabling only figure attributes', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: 'figure',
+			styles: 'color'
+		} ] );
+
+		editor.setData(
+			'<figure class="table" style="color:red;">' +
+				'<table style="color:red;">' +
+					'<thead style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<th style="color:red;">1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody style="color:red;">' +
+						'<tr style="color:red;">' +
+							'<td style="color:red;">2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="1" ' +
+					'htmlFigureAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						color: 'red'
+					}
+				}
+			}
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table" style="color:red;">' +
+				'<table>' +
+					'<thead>' +
+						'<tr>' +
+							'<th>1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+	} );
+
 	it( 'should disallow attributes', () => {
 		dataFilter.loadAllowedConfig( [ {
 			name: /^(figure|table|tbody|thead|tr|th|td)$/,
@@ -571,6 +769,121 @@ describe( 'TableElementSupport', () => {
 							'<td>2.1</td>' +
 							'<td>2.2</td>' +
 							'<td>2.3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+	} );
+
+	it( 'should allow attributes modification', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			classes: true
+		} ] );
+
+		editor.setData(
+			'<figure class="table foo-figure">' +
+				'<table class="foobar foo-table">' +
+					'<thead class="foobar foo-thead">' +
+						'<tr class="foobar foo-tr">' +
+							'<th class="foobar foo-th">a</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody class="foobar foo-tbody">' +
+						'<tr class="foobar foo-tr">' +
+							'<td class="foobar foo-td">b</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		model.change( () => {
+			const htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
+			const root = editor.model.document.getRoot();
+
+			htmlSupport.addModelHtmlClass( 'figure', 'added-figure', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'figure', 'foo-figure', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.addModelHtmlClass( 'table', 'added-table', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'table', 'foo-table', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.addModelHtmlClass( 'thead', 'added-thead', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'thead', 'foo-thead', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.addModelHtmlClass( 'tbody', 'added-tbody', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'tbody', 'foo-tbody', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.addModelHtmlClass( 'tr', 'added-tr', root.getNodeByPath( [ 0, 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'tr', 'foo-tr', root.getNodeByPath( [ 0, 0 ] ) );
+			htmlSupport.addModelHtmlClass( 'th', 'added-th', root.getNodeByPath( [ 0, 0, 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'th', 'foo-th', root.getNodeByPath( [ 0, 0, 0 ] ) );
+			htmlSupport.addModelHtmlClass( 'td', 'added-td', root.getNodeByPath( [ 0, 1, 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'td', 'foo-td', root.getNodeByPath( [ 0, 1, 0 ] ) );
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table added-figure">' +
+				'<table class="foobar added-table">' +
+					'<thead class="foobar added-thead">' +
+						'<tr class="foobar added-tr">' +
+							'<th class="foobar added-th">a</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody class="foobar added-tbody">' +
+						'<tr class="foobar foo-tr">' +
+							'<td class="foobar added-td">b</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+	} );
+
+	it( 'should allow removing attributes', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			classes: true
+		} ] );
+
+		editor.setData(
+			'<figure class="table foobar">' +
+				'<table class="foobar">' +
+					'<thead class="foobar">' +
+						'<tr class="foobar">' +
+							'<th class="foobar">a</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody class="foobar">' +
+						'<tr class="foobar">' +
+							'<td class="foobar">b</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		model.change( () => {
+			const htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
+			const root = editor.model.document.getRoot();
+
+			htmlSupport.removeModelHtmlClass( 'figure', 'foobar', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'table', 'foobar', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'thead', 'foobar', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'tbody', 'foobar', root.getNodeByPath( [ 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'tr', 'foobar', root.getNodeByPath( [ 0, 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'th', 'foobar', root.getNodeByPath( [ 0, 0, 0 ] ) );
+			htmlSupport.removeModelHtmlClass( 'td', 'foobar', root.getNodeByPath( [ 0, 1, 0 ] ) );
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table">' +
+				'<table>' +
+					'<thead>' +
+						'<tr>' +
+							'<th>a</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr class="foobar">' +
+							'<td>b</td>' +
 						'</tr>' +
 					'</tbody>' +
 				'</table>' +
@@ -988,6 +1301,57 @@ describe( 'TableElementSupport', () => {
 		await editor.destroy();
 	} );
 
+	// https://github.com/ckeditor/ckeditor5/issues/13876
+	it( 'should not throw error when pasting table inside the custom element', async () => {
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [
+				Typing,
+				Paragraph,
+				ClipboardPipeline,
+				Table,
+				TableCaption,
+				TableColumnResize,
+				GeneralHtmlSupport
+			],
+			htmlSupport: {
+				allow: [
+					{
+						name: /^.*$/,
+						styles: true,
+						attributes: true,
+						classes: true
+					}
+				]
+			}
+		} );
+
+		setData( editor.model, '<paragraph>[]</paragraph>' );
+
+		pasteHtml( editor,
+			'<custom-element>' +
+				'<table dir="ltr">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>Foo</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</custom-element>'
+		);
+
+		expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+			'<paragraph>' +
+				'<htmlCustomElement ' +
+					'htmlContent="<custom-element><table dir="ltr"><tbody><tr><td>Foo</td></tr></tbody></table></custom-element>" ' +
+					'htmlElementName="custom-element"' +
+				'>' +
+				'</htmlCustomElement>' +
+			'</paragraph>'
+		);
+
+		await editor.destroy();
+	} );
+
 	it( 'should upcast GHS attributes at the low priority (feature attribute converter at low + 1 priority)', () => {
 		dataFilter.loadAllowedConfig( [ {
 			name: /.*/,
@@ -1203,6 +1567,132 @@ describe( 'TableElementSupport', () => {
 
 		expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
 		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+	} );
+
+	it( 'should remove htmlTheadAttributes if table does not have thead', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true
+		} ] );
+
+		editor.setData(
+			'<figure class="table">' +
+				'<table>' +
+					'<thead data-foo="head">' +
+						'<tr>' +
+							'<th>1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody data-bar="body">' +
+						'<tr>' +
+							'<td>2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="1" htmlTbodyAttributes="(1)" htmlTheadAttributes="(2)">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						'data-bar': 'body'
+					}
+				},
+				2: {
+					attributes: {
+						'data-foo': 'head'
+					}
+				}
+			}
+		} );
+
+		model.change( writer => {
+			writer.removeAttribute( 'headingRows', model.document.getRoot().getChild( 0 ) );
+		} );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlTbodyAttributes="(1)">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						'data-bar': 'body'
+					}
+				}
+			}
+		} );
+	} );
+
+	it( 'should remove htmlTbodyAttributes if table does not have tbody', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true
+		} ] );
+
+		editor.setData(
+			'<figure class="table">' +
+				'<table>' +
+					'<thead data-foo="head">' +
+						'<tr>' +
+							'<th>1</th>' +
+						'</tr>' +
+					'</thead>' +
+					'<tbody data-bar="body">' +
+						'<tr>' +
+							'<td>2</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="1" htmlTbodyAttributes="(1)" htmlTheadAttributes="(2)">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						'data-bar': 'body'
+					}
+				},
+				2: {
+					attributes: {
+						'data-foo': 'head'
+					}
+				}
+			}
+		} );
+
+		model.change( writer => {
+			writer.setAttribute( 'headingRows', 2, model.document.getRoot().getChild( 0 ) );
+		} );
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table headingRows="2" htmlTheadAttributes="(1)">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					attributes: {
+						'data-foo': 'head'
+					}
+				}
+			}
+		} );
 	} );
 
 	describe( 'TableCaption', () => {
@@ -1591,3 +2081,19 @@ describe( 'TableElementSupport', () => {
 		} );
 	} );
 } );
+
+function pasteHtml( editor, html ) {
+	editor.editing.view.document.fire( 'paste', {
+		dataTransfer: createDataTransfer( { 'text/html': html } ),
+		stopPropagation() { },
+		preventDefault() { }
+	} );
+}
+
+function createDataTransfer( data ) {
+	return {
+		getData( type ) {
+			return data[ type ];
+		}
+	};
+}

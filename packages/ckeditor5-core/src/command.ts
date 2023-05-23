@@ -65,6 +65,18 @@ export default class Command extends ObservableMixin() {
 	declare public isEnabled: boolean;
 
 	/**
+	 * A flag indicating whether a command's `isEnabled` state should be changed depending on where the document
+	 * selection is placed.
+	 *
+	 * By default, it is set to `true`. If the document selection is placed in a
+	 * {@link module:engine/model/model~Model#canEditAt non-editable} place (such as non-editable root), the command becomes disabled.
+	 *
+	 * The flag should be changed to `false` in a concrete command's constructor if the command should not change its `isEnabled`
+	 * accordingly to the document selection.
+	 */
+	protected _isEnabledBasedOnSelection: boolean;
+
+	/**
 	 * A flag indicating whether a command execution changes the editor data or not.
 	 *
 	 * @see #affectsData
@@ -89,29 +101,39 @@ export default class Command extends ObservableMixin() {
 		this.set( 'isEnabled', false );
 
 		this._affectsData = true;
+		this._isEnabledBasedOnSelection = true;
 		this._disableStack = new Set();
 
 		this.decorate( 'execute' );
 
-		// By default every command is refreshed when changes are applied to the model.
+		// By default, every command is refreshed when changes are applied to the model.
 		this.listenTo( this.editor.model.document, 'change', () => {
 			this.refresh();
 		} );
+
+		this.listenTo<ObservableChangeEvent<boolean>>( editor, 'change:isReadOnly', () => {
+			this.refresh();
+		} );
+
+		// By default, commands are disabled if the selection is in non-editable place or editor is in read-only mode.
+		this.on<ObservableSetEvent<boolean>>( 'set:isEnabled', evt => {
+			if ( !this.affectsData ) {
+				return;
+			}
+
+			// Checking `editor.isReadOnly` is needed for all commands that have `_isEnabledBasedOnSelection == false`.
+			// E.g. undo does not base on selection, but affects data and should be disabled when the editor is in read-only mode.
+			if ( editor.isReadOnly || this._isEnabledBasedOnSelection && !editor.model.canEditAt( editor.model.document.selection ) ) {
+				evt.return = false;
+				evt.stop();
+			}
+		}, { priority: 'highest' } );
 
 		this.on<CommandExecuteEvent>( 'execute', evt => {
 			if ( !this.isEnabled ) {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
-
-		// By default commands are disabled when the editor is in read-only mode.
-		this.listenTo<ObservableChangeEvent<boolean>>( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value && this.affectsData ) {
-				this.forceDisabled( 'readOnlyMode' );
-			} else {
-				this.clearForceDisabled( 'readOnlyMode' );
-			}
-		} );
 	}
 
 	/**

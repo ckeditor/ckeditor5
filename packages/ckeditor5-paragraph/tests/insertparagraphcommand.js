@@ -44,6 +44,15 @@ describe( 'InsertParagraphCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><heading1>foo</heading1>' );
 		} );
 
+		it( 'should not execute when selection is in non-editable place', () => {
+			setData( model, '<heading1>foo[]</heading1>' );
+
+			model.document.isReadOnly = true;
+			command.execute( { position: model.createPositionBefore( root.getChild( 0 ) ) } );
+
+			expect( getData( model ) ).to.equal( '<heading1>foo[]</heading1>' );
+		} );
+
 		it( 'should split ancestors down to a limit where a paragraph is allowed', () => {
 			setData( model, '<allowP><disallowP>foo</disallowP></allowP>' );
 

@@ -20,6 +20,7 @@ describe( 'ListItemView', () => {
 		it( 'creates element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-list__item' ) ).to.be.true;
+			expect( view.element.role ).to.equal( 'presentation' );
 		} );
 
 		it( 'creates view#children collection', () => {

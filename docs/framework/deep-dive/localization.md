@@ -126,10 +126,10 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 class FileRepository {
 	// More methods.
 	// ...
-	
+
 	updatePendingAction() {
 		const pendingActions = this.editor.plugins.get( PendingActions );
-		
+
 		const t = this.editor.t;
 		const getMessage = value => t( 'Upload in progress (%0%).', value ); // Upload in progress (12%).
 
@@ -241,6 +241,31 @@ msgstr "Alinear a la izquierda"
 </info-box>
 
 To build and configure a localized editor, follow the steps from the {@link features/ui-language Setting the UI language guide}.
+
+## Re-using translations from other packages
+
+If you want to re-use a *message* that already exists in another package, you should use the method `t()` on a `Locale` instance with a changed name instead of [using `t()` as a function](#writing-a-localizable-ui). This is because using `t()` as a method on the `Locale` is not processed by a static code analyzer. Therefore, it allows to use *messages* already translated in other packages.
+
+We use this approach already in the {@link features/collaboration collaboration features} and the {@link features/slash-commands slash commands feature}. You can find an example from the {@link module:slash-command/slashcommandconfig~SlashCommandConfig#getDefaultCommands list of default commands} that we used in the slash commands feature below. Please note the difference between using `t()` and `translateVariableKey()`. `translateVariableKey( 'Block quote' )` will re-use a translation from another package whilst `t( 'Create a block quote' )` will be processed by a static code analyzer. As a result we make sure that the translation for the `title` is taken from the {@link features/block-quote block quote} feature where the *message* "Block quote" is already translated. But for the `description` we create a new translation.
+
+```ts
+public getDefaultCommands() {
+	const t = this.editor.t;
+	const translateVariableKey = this.editor.locale.t;
+
+	return [
+		{
+			id: 'blockQuote',
+			commandName: 'blockQuote',
+			icon: icons.quote,
+			title: translateVariableKey( 'Block quote' ),
+			description: t( 'Create a block quote' )
+		},
+		// More command definitions
+		// ...
+	]
+}
+```
 
 ## Known limitations
 

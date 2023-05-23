@@ -74,6 +74,8 @@ describe( 'HeadingUI', () => {
 			expect( dropdown.buttonView.isOn ).to.be.false;
 			expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
+			expect( dropdown.buttonView.ariaLabel ).to.equal( 'Heading' );
+			expect( dropdown.buttonView.ariaLabelledBy ).to.be.undefined;
 		} );
 
 		it( 'should execute format command on model execute event for paragraph', () => {
@@ -292,6 +294,18 @@ describe( 'HeadingUI', () => {
 					true,
 					false
 				] );
+			} );
+		} );
+
+		describe( 'listview', () => {
+			it( 'should have properties set', () => {
+				// Trigger lazy init.
+				dropdown.isOpen = true;
+
+				const listView = dropdown.listView;
+
+				expect( listView.element.role ).to.equal( 'menu' );
+				expect( listView.element.ariaLabel ).to.equal( 'Heading' );
 			} );
 		} );
 	} );

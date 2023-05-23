@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import DataSchema from '../dataschema';
-import { updateViewAttributes, type GHSViewAttributes } from '../conversionutils';
+import { updateViewAttributes, type GHSViewAttributes } from '../utils';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
@@ -150,7 +150,8 @@ function modelToViewMediaAttributeConverter( mediaElementName: string ) {
 					conversionApi.writer,
 					attributeOldValue as GHSViewAttributes,
 					attributeNewValue as GHSViewAttributes,
-					viewElement! );
+					viewElement!
+				);
 			} );
 		}
 	};

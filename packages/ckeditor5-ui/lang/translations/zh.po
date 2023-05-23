@@ -12,13 +12,13 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
+"Language-Team: Chinese (Taiwan) (https://app.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
-msgstr "豐富文字編輯器"
+msgstr "富文本編輯器"
 
 msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
 msgid "Editor editing area: %0"
@@ -111,3 +111,7 @@ msgstr "編輯器區塊內容工具列"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "編輯器關聯式工具列"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

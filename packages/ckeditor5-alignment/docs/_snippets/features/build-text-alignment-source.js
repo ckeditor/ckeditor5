@@ -5,11 +5,21 @@
 
 /* globals window */
 
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( Alignment );
+ClassicEditor.builtinPlugins.push(
+	PictureEditing,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	Alignment,
+	CKBox
+);
 
 window.ClassicEditor = ClassicEditor;

@@ -49,6 +49,7 @@ import TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand';
 import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection, resizePlugin;
@@ -854,6 +855,25 @@ describe( 'TableColumnResizeEditing', () => {
 
 			resizePlugin._isResizingAllowed = false;
 
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+		} );
+
+		it( 'cancels resizing if resizing is not allowed during mousemove', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+			model.document.isReadOnly = true;
+
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
 			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
 
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -2787,6 +2807,34 @@ describe( 'TableColumnResizeEditing', () => {
 						'</tbody>' +
 					'</table>'
 				);
+			} );
+		} );
+
+		describe( 'multi-root editor integration', () => {
+			let multiRoot, tableColumnPlugin;
+
+			beforeEach( async () => {
+				multiRoot = await MultiRootEditor
+					.create( {
+						foo: document.createElement( 'div' ),
+						bar: document.createElement( 'div' )
+					}, {
+						plugins: [
+							Paragraph, Table, TableColumnResize, Paragraph, WidgetResize
+						]
+					} );
+				tableColumnPlugin = multiRoot.plugins.get( 'TableColumnResizeEditing' );
+			} );
+
+			afterEach( async () => {
+				multiRoot.destroy();
+			} );
+
+			it( 'change of _isResizingAllowed should affect all roots', async () => {
+				tableColumnPlugin._isResizingAllowed = false;
+
+				expect( multiRoot.editing.view.document.getRoot( 'foo' ).hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
+				expect( multiRoot.editing.view.document.getRoot( 'bar' ).hasClass( 'ck-column-resize_disabled' ) ).to.equal( true );
 			} );
 		} );
 	} );

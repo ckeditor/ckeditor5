@@ -11,6 +11,7 @@
 
 import ComponentFactory from '../componentfactory';
 import TooltipManager from '../tooltipmanager';
+import PoweredBy from './poweredby';
 
 import type EditorUIView from './editoruiview';
 import type ToolbarView from '../toolbar/toolbarview';
@@ -50,6 +51,11 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * Manages the tooltips displayed on mouseover and focus across the UI.
 	 */
 	public readonly tooltipManager: TooltipManager;
+
+	/**
+	 * A helper that enables the "powered by" feature in the editor and renders a link to the project's webpage.
+	 */
+	public readonly poweredBy: PoweredBy;
 
 	/**
 	 * Indicates the UI is ready. Set `true` after {@link #event:ready} event is fired.
@@ -120,6 +126,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 		this.componentFactory = new ComponentFactory( editor );
 		this.focusTracker = new FocusTracker();
 		this.tooltipManager = new TooltipManager( editor );
+		this.poweredBy = new PoweredBy( editor );
 
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
@@ -167,6 +174,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 
 		this.focusTracker.destroy();
 		this.tooltipManager.destroy( this.editor );
+		this.poweredBy.destroy();
 
 		// Clean–up the references to the CKEditor instance stored in the native editable DOM elements.
 		for ( const domElement of this._editableElementsMap.values() ) {

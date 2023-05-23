@@ -78,6 +78,15 @@ export default class Document extends EmitterMixin() {
 	public readonly differ: Differ;
 
 	/**
+	 * Defines whether the document is in a read-only mode.
+	 *
+	 * The user should not be able to change the data of a document that is read-only.
+	 *
+	 * @readonly
+	 */
+	public isReadOnly: boolean;
+
+	/**
 	 * Post-fixer callbacks registered to the model document.
 	 */
 	private readonly _postFixers: Set<ModelPostFixer>;
@@ -99,6 +108,7 @@ export default class Document extends EmitterMixin() {
 		this.selection = new DocumentSelection( this );
 		this.roots = new Collection( { idProperty: 'rootName' } );
 		this.differ = new Differ( model.markers );
+		this.isReadOnly = false;
 
 		this._postFixers = new Set();
 		this._hasSelectionChangedFromTheLastChangeBlock = false;

@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Indonesian (https://www.transifex.com/ckeditor/teams/11143/id/)\n"
+"Language-Team: Indonesian (https://app.transifex.com/ckeditor/teams/11143/id/)\n"
 "Language: id\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -111,3 +111,7 @@ msgstr "Bilah alat konten blok editor"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "Bilah alat kontekstual editor"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

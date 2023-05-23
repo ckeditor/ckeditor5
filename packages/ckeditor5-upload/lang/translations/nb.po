@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Norwegian Bokmål (https://www.transifex.com/ckeditor/teams/11143/nb/)\n"
+"Language-Team: Norwegian Bokmål (https://app.transifex.com/ckeditor/teams/11143/nb/)\n"
 "Language: nb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

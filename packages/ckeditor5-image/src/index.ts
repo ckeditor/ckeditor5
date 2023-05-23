@@ -31,14 +31,14 @@ export { default as ImageUploadEditing, type ImageUploadCompleteEvent } from './
 export { default as ImageUploadProgress } from './imageupload/imageuploadprogress';
 export { default as ImageUploadUI } from './imageupload/imageuploadui';
 export { default as PictureEditing } from './pictureediting';
+export { default as ImageBlock } from './imageblock';
+export { default as ImageInline } from './imageinline';
+export { default as ImageInsertViaUrl } from './imageinsertviaurl';
+export { default as ImageUtils } from './imageutils';
+export { default as ImageBlockEditing } from './image/imageblockediting';
+export { default as ImageCaptionUI } from './imagecaption/imagecaptionui';
 
 export type { ImageConfig } from './imageconfig';
-export type { default as ImageBlock } from './imageblock';
-export type { default as ImageInline } from './imageinline';
-export type { default as ImageInsertViaUrl } from './imageinsertviaurl';
-export type { default as ImageUtils } from './imageutils';
-export type { default as ImageBlockEditing } from './image/imageblockediting';
-export type { default as ImageCaptionUI } from './imagecaption/imagecaptionui';
 export type { default as ImageTypeCommand } from './image/imagetypecommand';
 export type { default as InsertImageCommand } from './image/insertimagecommand';
 export type { default as ReplaceImageSourceCommand } from './image/replaceimagesourcecommand';

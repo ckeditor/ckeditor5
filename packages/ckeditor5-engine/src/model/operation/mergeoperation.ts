@@ -15,6 +15,7 @@ import { _move } from './utils';
 
 import type Document from '../document';
 import type Element from '../element';
+import type { Selectable } from '../selection';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -102,6 +103,21 @@ export default class MergeOperation extends Operation {
 		const end = this.sourcePosition.getShiftedBy( Number.POSITIVE_INFINITY );
 
 		return new Range( this.sourcePosition, end );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		const mergedElement = this.sourcePosition.parent as Element;
+
+		return [
+			Range._createOn( mergedElement ),
+
+			// These could be positions but `Selectable` type only supports `Iterable<Range>`.
+			Range._createFromPositionAndShift( this.targetPosition, 0 ),
+			Range._createFromPositionAndShift( this.graveyardPosition, 0 )
+		];
 	}
 
 	/**

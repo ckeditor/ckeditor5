@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Catalan (https://www.transifex.com/ckeditor/teams/11143/ca/)\n"
+"Language-Team: Catalan (https://app.transifex.com/ckeditor/teams/11143/ca/)\n"
 "Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -55,3 +55,7 @@ msgstr "Color de fons del tipus de lletra"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "Colors del document"
+
+msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
+msgid "Accept"
+msgstr ""

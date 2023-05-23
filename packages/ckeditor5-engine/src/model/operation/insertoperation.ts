@@ -14,6 +14,7 @@ import MoveOperation from './moveoperation';
 import { _insert, _normalizeNodes, type NodeSet } from './utils';
 import Text from '../text';
 import Element from '../element';
+import type { Selectable } from '../selection';
 
 import type Document from '../document';
 
@@ -73,6 +74,13 @@ export default class InsertOperation extends Operation {
 	 */
 	public get howMany(): number {
 		return this.nodes.maxOffset;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		return this.position.clone();
 	}
 
 	/**

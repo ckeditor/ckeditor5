@@ -15,10 +15,12 @@ import {
 	type EditorConfig,
 	type EditorReadyEvent
 } from 'ckeditor5/src/core';
+
 import {
 	CKEditorError,
 	getDataFromElement,
-	setDataInElement
+	setDataInElement,
+	type CollectionAddEvent
 } from 'ckeditor5/src/utils';
 
 import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
@@ -27,7 +29,12 @@ import MultiRootEditorUI from './multirooteditorui';
 import MultiRootEditorUIView from './multirooteditoruiview';
 
 import { isElement as _isElement } from 'lodash-es';
-import { type RootElement, type Writer } from 'ckeditor5/src/engine';
+import {
+	type RootElement,
+	type ViewRootEditableElement,
+	type Writer,
+	type ModelCanEditAtEvent
+} from 'ckeditor5/src/engine';
 
 /**
  * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.
@@ -77,6 +84,11 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	private readonly _registeredRootsAttributesKeys = new Set<string>();
 
 	/**
+	 * A set of lock IDs for enabling or disabling particular root.
+	 */
+	private readonly _readOnlyRootLocks = new Map<string, Set<symbol | string>>();
+
+	/**
 	 * Creates an instance of the multi-root editor.
 	 *
 	 * **Note:** Do not use the constructor to create editor instances. Use the static
@@ -121,6 +133,28 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				secureSourceElement( this, sourceElementsOrData[ rootName ] as HTMLElement );
 			}
 		}
+
+		this.editing.view.document.roots.on<CollectionAddEvent<ViewRootEditableElement>>( 'add', ( evt, viewRoot ) => {
+			// Here we change the standard binding of readOnly flag by adding
+			// additional constraint that multi-root has (enabling / disabling particular root).
+			viewRoot.unbind( 'isReadOnly' );
+			viewRoot.bind( 'isReadOnly' ).to( this.editing.view.document, 'isReadOnly', isReadOnly => {
+				return isReadOnly || this._readOnlyRootLocks.has( viewRoot.rootName );
+			} );
+
+			// Hacky solution to nested editables.
+			// Nested editables should be managed each separately and do not base on view document or view root.
+			viewRoot.on( 'change:isReadOnly', ( evt, prop, value ) => {
+				const viewRange = this.editing.view.createRangeIn( viewRoot );
+
+				for ( const viewItem of viewRange.getItems() ) {
+					if ( viewItem.is( 'editableElement' ) ) {
+						viewItem.unbind( 'isReadOnly' );
+						viewItem.isReadOnly = value;
+					}
+				}
+			} );
+		} );
 
 		for ( const rootName of rootNames ) {
 			// Create root and `UIView` element for each editable container.
@@ -194,6 +228,34 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				}
 			}
 		} );
+
+		// Overwrite `Model#canEditAt()` decorated method.
+		// Check if the provided selection is inside a read-only root. If so, return `false`.
+		this.listenTo<ModelCanEditAtEvent>( this.model, 'canEditAt', ( evt, [ selection ] ) => {
+			// Skip empty selections.
+			if ( !selection ) {
+				return;
+			}
+
+			let selectionInReadOnlyRoot = false;
+
+			for ( const range of selection.getRanges() ) {
+				const rootName = range.root.rootName!;
+
+				if ( this._readOnlyRootLocks.has( rootName ) ) {
+					selectionInReadOnlyRoot = true;
+
+					break;
+				}
+			}
+
+			// If selection is in read-only root, return `false` and prevent further processing.
+			// Otherwise, allow for other callbacks (or default callback) to evaluate.
+			if ( selectionInReadOnlyRoot ) {
+				evt.return = false;
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -479,6 +541,96 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		}
 
 		return rootsAttributes;
+	}
+
+	/**
+	 * Switches given editor root to the read-only mode.
+	 *
+	 * In contrary to {@link module:core/editor/editor~Editor#enableReadOnlyMode `enableReadOnlyMode()`}, which switches the whole editor
+	 * to the read-only mode, this method turns only a particular root to the read-only mode. This can be useful when you want to prevent
+	 * editing only a part of the editor content.
+	 *
+	 * When you switch a root to the read-only mode, you need provide a unique identifier (`lockId`) that will identify this request. You
+	 * will need to provide the same `lockId` when you will want to
+	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#enableRoot re-enable} the root.
+	 *
+	 * ```ts
+	 * const model = editor.model;
+	 * const myRoot = model.document.getRoot( 'myRoot' );
+	 *
+	 * editor.disableRoot( 'myRoot', 'my-lock' );
+	 * model.canEditAt( myRoot ); // `false`
+	 *
+	 * editor.disableRoot( 'myRoot', 'other-lock' );
+	 * editor.disableRoot( 'myRoot', 'other-lock' ); // Multiple locks with the same ID have no effect.
+	 * model.canEditAt( myRoot ); // `false`
+	 *
+	 * editor.enableRoot( 'myRoot', 'my-lock' );
+	 * model.canEditAt( myRoot ); // `false`
+	 *
+	 * editor.enableRoot( 'myRoot', 'other-lock' );
+	 * model.canEditAt( myRoot ); // `true`
+	 * ```
+	 *
+	 * See also {@link module:core/editor/editor~Editor#enableReadOnlyMode `Editor#enableReadOnlyMode()`} and
+	 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#enableRoot `MultiRootEditor#enableRoot()`}.
+	 *
+	 * @param rootName Name of the root to switch to read-only mode.
+	 * @param lockId A unique ID for setting the editor to the read-only state.
+	 */
+	public disableRoot( rootName: string, lockId: string | symbol ): void {
+		if ( rootName == '$graveyard' ) {
+			/**
+			 * You cannot disable the `$graveyard` root.
+			 *
+			 * @error multi-root-editor-cannot-disable-graveyard-root
+			 */
+			throw new CKEditorError( 'multi-root-editor-cannot-disable-graveyard-root', this );
+		}
+
+		const locksForGivenRoot = this._readOnlyRootLocks.get( rootName );
+
+		if ( locksForGivenRoot ) {
+			locksForGivenRoot.add( lockId );
+		} else {
+			this._readOnlyRootLocks.set( rootName, new Set( [ lockId ] ) );
+
+			const editableRootElement = this.editing.view.document.getRoot( rootName )!;
+
+			editableRootElement.isReadOnly = true;
+
+			// Since one of the roots has changed read-only state, we need to refresh all commands that affect data.
+			Array.from( this.commands.commands() ).forEach( command => command.affectsData && command.refresh() );
+		}
+	}
+
+	/**
+	 * Removes given read-only lock from the given root.
+	 *
+	 * See {@link module:editor-multi-root/multirooteditor~MultiRootEditor#disableRoot `disableRoot()`}.
+	 *
+	 * @param rootName Name of the root to switch back from the read-only mode.
+	 * @param lockId A unique ID for setting the editor to the read-only state.
+	 */
+	public enableRoot( rootName: string, lockId: string | symbol ): void {
+		const locksForGivenRoot = this._readOnlyRootLocks.get( rootName );
+
+		if ( !locksForGivenRoot || !locksForGivenRoot.has( lockId ) ) {
+			return;
+		}
+
+		if ( locksForGivenRoot.size === 1 ) {
+			this._readOnlyRootLocks.delete( rootName );
+
+			const editableRootElement = this.editing.view.document.getRoot( rootName )!;
+
+			editableRootElement.isReadOnly = this.isReadOnly;
+
+			// Since one of the roots has changed read-only state, we need to refresh all commands that affect data.
+			Array.from( this.commands.commands() ).forEach( command => command.affectsData && command.refresh() );
+		} else {
+			locksForGivenRoot.delete( lockId );
+		}
 	}
 
 	/**

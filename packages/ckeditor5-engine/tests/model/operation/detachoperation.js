@@ -27,6 +27,11 @@ describe( 'DetachOperation', () => {
 		expect( op.type ).to.equal( 'detach' );
 	} );
 
+	it( 'should return null on affectedSelectable', () => {
+		const op = new DetachOperation( Position._createBefore( element ), 1 );
+		expect( op.affectedSelectable ).to.equal( null );
+	} );
+
 	it( 'should remove given element from parent', () => {
 		const op = new DetachOperation( Position._createBefore( element ), 1 );
 
