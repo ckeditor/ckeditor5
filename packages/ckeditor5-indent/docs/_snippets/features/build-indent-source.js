@@ -7,12 +7,13 @@
 
 import { Code } from '@ckeditor/ckeditor5-basic-styles';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( Indent );
-ClassicEditor.builtinPlugins.push( IndentBlock );
-ClassicEditor.builtinPlugins.push( Code );
+ClassicEditor.builtinPlugins.push( Indent, IndentBlock, Code, PictureEditing, ImageResize, AutoImage, LinkImage, CKBox );
 
 window.ClassicEditor = ClassicEditor;
