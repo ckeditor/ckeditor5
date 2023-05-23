@@ -5,11 +5,15 @@ Changelog
 
 ### Release highlights
 
-<!-- TODO: Add a link to the blog post. -->
+This is a patch release that resolves an incorrect import issue that resulted in a ["Cannot find module" error when using CKEditor 5 in a TypeScript environment](https://github.com/ckeditor/ckeditor5/issues/14205).
+
+Due to that and the [CKEditor 5 versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html), we released all packages once again.
+
+Check out the highlights of the original [v38.0.0 release](https://github.com/ckeditor/ckeditor5/releases/tag/v38.0.0).
 
 ### Bug fixes
 
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Fixed way how code exports the `colorPaletteIcon` icon, which could result with a broken build. Closes [#14205](https://github.com/ckeditor/ckeditor5/issues/14205). ([commit](https://github.com/ckeditor/ckeditor5/commit/42001f77e84f5d453e81cbcc3ebf69972a90ad8d))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Fixed how the code exports the `colorPaletteIcon` icon, which could result with a broken build. Closes [#14205](https://github.com/ckeditor/ckeditor5/issues/14205). ([commit](https://github.com/ckeditor/ckeditor5/commit/42001f77e84f5d453e81cbcc3ebf69972a90ad8d))
 
 ### Released packages
 
