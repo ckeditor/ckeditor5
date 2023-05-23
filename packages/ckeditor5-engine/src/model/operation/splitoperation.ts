@@ -16,6 +16,7 @@ import { _insert, _move } from './utils';
 import type Document from '../document';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import type { Selectable } from '../selection';
 
 /**
  * Operation to split {@link module:engine/model/element~Element an element} at given
@@ -107,6 +108,23 @@ export default class SplitOperation extends Operation {
 		const end = this.splitPosition.getShiftedBy( Number.POSITIVE_INFINITY );
 
 		return new Range( this.splitPosition, end );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public get affectedSelectable(): Selectable {
+		// These could be positions but `Selectable` type only supports `Iterable<Range>`.
+		const ranges = [
+			Range._createFromPositionAndShift( this.splitPosition, 0 ),
+			Range._createFromPositionAndShift( this.insertionPosition, 0 )
+		];
+
+		if ( this.graveyardPosition ) {
+			ranges.push( Range._createFromPositionAndShift( this.graveyardPosition, 0 ) );
+		}
+
+		return ranges;
 	}
 
 	/**

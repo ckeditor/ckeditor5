@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals Event, document */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ButtonView from '../../src/button/buttonview';
@@ -218,6 +218,18 @@ describe( 'ButtonView', () => {
 			} );
 		} );
 
+		describe( 'role', () => {
+			it( 'is not initially set ', () => {
+				expect( view.element.attributes.role ).to.equal( undefined );
+			} );
+
+			it( 'reacts on view#role', () => {
+				view.role = 'foo';
+
+				expect( view.element.attributes.role.value ).to.equal( 'foo' );
+			} );
+		} );
+
 		describe( 'text', () => {
 			it( 'is not initially set ', () => {
 				expect( view.element.textContent ).to.equal( '' );
@@ -247,6 +259,12 @@ describe( 'ButtonView', () => {
 				expect( view.element.attributes[ 'aria-labelledby' ].value )
 					.to.equal( view.element.lastChild.id )
 					.to.match( /^ck-editor__aria-label_\w+$/ );
+			} );
+
+			it( '-labelledby reacts to #ariaLabelledBy', () => {
+				view.ariaLabelledBy = 'foo';
+				expect( view.element.attributes[ 'aria-labelledby' ].value )
+					.to.equal( 'foo' );
 			} );
 
 			it( '-disabled reacts to #isEnabled', () => {
@@ -279,6 +297,22 @@ describe( 'ButtonView', () => {
 				view.isOn = false;
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
 			} );
+
+			it( '-checked reacts on #isOn', () => {
+				view.isOn = true;
+				expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
+
+				view.isOn = false;
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+			} );
+
+			it( '-label reacts on #ariaLabel', () => {
+				view.ariaLabel = undefined;
+				expect( view.element.hasAttribute( 'aria-label' ) ).to.be.false;
+
+				view.ariaLabel = 'Foo';
+				expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'Foo' );
+			} );
 		} );
 
 		describe( 'mousedown event', () => {
@@ -289,30 +323,44 @@ describe( 'ButtonView', () => {
 			} );
 
 			describe( 'in Safari', () => {
-				let view, stub;
+				let view, stub, clock;
 
 				beforeEach( () => {
 					stub = testUtils.sinon.stub( env, 'isSafari' ).value( true );
+					clock = testUtils.sinon.useFakeTimers();
 					view = new ButtonView( locale );
 					view.render();
 				} );
 
 				afterEach( () => {
 					stub.resetBehavior();
+					clock.restore();
 					view.destroy();
 				} );
 
 				it( 'the button is focused', () => {
 					const spy = sinon.spy( view.element, 'focus' );
 					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+					clock.tick( 0 );
 
 					expect( spy.callCount ).to.equal( 1 );
 				} );
 
-				it( 'the event is prevented', () => {
+				it( 'does not steal focus from other element if the focus already moved', () => {
+					const spy = sinon.spy( view.element, 'focus' );
+					view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+					view.element.dispatchEvent( new Event( 'mouseup', { cancelable: true } ) );
+
+					document.body.focus();
+					clock.tick( 0 );
+
+					expect( spy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'the event is not prevented', () => {
 					const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
 
-					expect( ret ).to.false;
+					expect( ret ).to.true;
 				} );
 			} );
 		} );

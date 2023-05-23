@@ -221,6 +221,18 @@ describe( 'ListView', () => {
 			expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'foo' );
 		} );
 	} );
+
+	describe( '#role', () => {
+		it( 'should be not set by default', () => {
+			expect( view.element.attributes.role ).to.be.undefined;
+		} );
+
+		it( 'should set role', () => {
+			view.role = 'foo';
+
+			expect( view.element.attributes.role.value ).to.equal( 'foo' );
+		} );
+	} );
 } );
 
 function focusable() {

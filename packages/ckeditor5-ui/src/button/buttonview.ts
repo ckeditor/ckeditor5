@@ -18,7 +18,9 @@ import {
 	env,
 	getEnvKeystrokeText,
 	uid,
-	type Locale
+	delay,
+	type Locale,
+	type DelayedFunc
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/button/button.css';
@@ -141,6 +143,26 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	declare public withKeystroke: boolean;
 
 	/**
+	 * @inheritDoc
+	 */
+	declare public role: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
+	declare public ariaChecked: boolean | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
+	declare public ariaLabel?: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
+	declare public ariaLabelledBy: string | undefined;
+
+	/**
 	 * Tooltip of the button bound to the template.
 	 *
 	 * @see #tooltip
@@ -149,6 +171,11 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	 * @observable
 	 */
 	declare public _tooltipString: string;
+
+	/**
+	 * Delayed focus function for focus handling in Safari.
+	 */
+	private _focusDelayed: DelayedFunc<() => void> | null = null;
 
 	/**
 	 * @inheritDoc
@@ -160,6 +187,9 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		const ariaLabelUid = uid();
 
 		// Implement the Button interface.
+		this.set( 'ariaChecked', undefined );
+		this.set( 'ariaLabel', undefined );
+		this.set( 'ariaLabelledBy', `ck-editor__aria-label_${ ariaLabelUid }` );
 		this.set( 'class', undefined );
 		this.set( 'labelStyle', undefined );
 		this.set( 'icon', undefined );
@@ -169,6 +199,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		this.set( 'isToggleable', false );
 		this.set( 'keystroke', undefined );
 		this.set( 'label', undefined );
+		this.set( 'role', undefined );
 		this.set( 'tabindex', -1 );
 		this.set( 'tooltip', false );
 		this.set( 'tooltipPosition', 's' );
@@ -177,7 +208,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		this.set( 'withKeystroke', false );
 
 		this.children = this.createCollection();
-		this.labelView = this._createLabelView( ariaLabelUid );
+		this.labelView = this._createLabelView();
 
 		this.iconView = new IconView();
 		this.iconView.extendTemplate( {
@@ -209,10 +240,13 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 					bind.if( 'withText', 'ck-button_with-text' ),
 					bind.if( 'withKeystroke', 'ck-button_with-keystroke' )
 				],
+				role: bind.to( 'role' ),
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				tabindex: bind.to( 'tabindex' ),
-				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
+				'aria-label': bind.to( 'ariaLabel' ),
+				'aria-labelledby': bind.to( 'ariaLabelledBy' ),
 				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
+				'aria-checked': bind.to( 'isOn' ),
 				'aria-pressed': bind.to( 'isOn', value => this.isToggleable ? String( !!value ) : false ),
 				'data-cke-tooltip-text': bind.to( '_tooltipString' ),
 				'data-cke-tooltip-position': bind.to( 'tooltipPosition' )
@@ -238,9 +272,16 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		// On Safari we have to force the focus on a button on click as it's the only browser
 		// that doesn't do that automatically. See #12115.
 		if ( env.isSafari ) {
-			template.on.mousedown = bind.to( evt => {
-				this.focus();
-				evt.preventDefault();
+			if ( !this._focusDelayed ) {
+				this._focusDelayed = delay( () => this.focus(), 0 );
+			}
+
+			template.on.mousedown = bind.to( () => {
+				this._focusDelayed!();
+			} );
+
+			template.on.mouseup = bind.to( () => {
+				this._focusDelayed!.cancel();
 			} );
 		}
 
@@ -273,11 +314,20 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	}
 
 	/**
-	 * Creates a label view instance and binds it with button attributes.
-	 *
-	 * @param ariaLabelUid The aria label UID.
+	 * @inheritDoc
 	 */
-	private _createLabelView( ariaLabelUid: string ) {
+	public override destroy(): void {
+		if ( this._focusDelayed ) {
+			this._focusDelayed.cancel();
+		}
+
+		super.destroy();
+	}
+
+	/**
+	 * Creates a label view instance and binds it with button attributes.
+	 */
+	private _createLabelView() {
 		const labelView = new View();
 		const bind = this.bindTemplate;
 
@@ -290,7 +340,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 					'ck-button__label'
 				],
 				style: bind.to( 'labelStyle' ),
-				id: `ck-editor__aria-label_${ ariaLabelUid }`
+				id: this.ariaLabelledBy
 			},
 
 			children: [

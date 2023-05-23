@@ -89,6 +89,12 @@ describe( 'InsertOperation', () => {
 		expect( root.getChild( 2 ).data ).to.equal( 'foo' );
 	} );
 
+	it( 'should return position on affectedSelectable', () => {
+		const pos = new Position( root, [ 1 ] );
+		const op = new InsertOperation( pos, 'bar',	doc.version );
+		expect( op.affectedSelectable ).to.deep.equal( pos );
+	} );
+
 	it( 'should insert between existing nodes', () => {
 		root._insertChild( 0, new Text( 'xy' ) );
 

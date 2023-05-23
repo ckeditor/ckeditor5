@@ -32,8 +32,7 @@
 		}
 
 		.ck.ck-content .fancy-table {
-			border-color: red;
-			border-style: dotted;
+			border: 3px dotted red;
 		}
 
 		.ck.ck-content blockquote.side-quote {
@@ -74,8 +73,27 @@
 		.ck.ck-content .colorful-cell {
 			background: hsl(300, 100%, 50%);
 			color: hsl(0, 0%, 100%);
-			border: 1px solid hsl(0, 0%, 0%);
+			border: 2px solid hsl(0, 0%, 0%);
 			padding: 5px;
+		}
+
+		.ck.ck-content .colorful-row > td {
+			background: hsl(161, 100%, 50%);
+			border: 2px solid hsl(0, 61%, 23%);
+		}
+
+		.ck.ck-content .table-head {
+			background: black;
+			color: white
+		}
+
+		.ck.ck-content .table-body {
+			background: #ffd580;
+		}
+
+		.ck.ck-content .fancy-caption {
+			font-style: italic;
+			font-weight: bold;
 		}
 
 		.ck.ck-content .vibrant-code {
@@ -109,17 +127,123 @@
 			color: hsl(0, 0%, 40%);
 		}
 
+		.ck.ck-content pre.fancy-code {
+			border: 0;
+			margin-left: 2em;
+			margin-right: 2em;
+			border-radius: 10px;
+		}
+
+		.ck.ck-content pre.fancy-code::before {
+			content: "";
+			display: block;
+			height: 13px;
+			background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+			margin-bottom: 8px;
+			background-repeat: no-repeat;
+		}
+
+		.ck.ck-content pre.fancy-code-dark {
+			background: #272822;
+			color: #fff;
+			box-shadow: 5px 5px 0 #0000001f;
+		}
+
+		.ck.ck-content pre.fancy-code-bright {
+			background: #dddfe0;
+			color: #000;
+			box-shadow: 5px 5px 0 #b3b3b3;
+		}
+
+		.ck.ck-content ol.fancy-list {
+			padding-left: 30px;
+		}
+		.ck.ck-content ol.fancy-list > li {
+			counter-increment: list;
+			list-style: none;
+			margin-bottom: 2.5em;
+			padding-left: 50px;
+		}
+
+		.ck.ck-content ol.fancy-list > li::before {
+			font-weight: bold;
+			font-size: 2em;
+			content: counter(list, decimal);
+			width: 50px;
+			height: 50px;
+			float: left;
+			margin: 5px 10px 0 -68px;
+			color: #fff;
+			background: #000;
+			clip-path: polygon(0 0, 100% 0, 100% 65%, 65% 100%, 0 100%);
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			shape-outside: ellipse();
+			font-family: 'Anton', cursive;
+		}
+
+		.ck.ck-content ol.fancy-list[style*="decimal"] > li::before {
+			content: counter(list, decimal);
+		}
+
+		.ck.ck-content ol.fancy-list[style*="decimal-leading-zero"] > li::before {
+			content: counter(list, decimal-leading-zero);
+		}
+
+		.ck.ck-content ol.fancy-list[style*="lower-roman"] > li::before {
+			content: counter(list, lower-roman);
+		}
+
+		.ck.ck-content ol.fancy-list[style*="upper-roman"] > li::before {
+			content: counter(list, upper-roman);
+		}
+
+		.ck.ck-content ol.fancy-list[style*="lower-latin"] > li::before {
+			content: counter(list, lower-latin);
+		}
+
+		.ck.ck-content ol.fancy-list[style*="upper-latin"] > li::before {
+			content: counter(list, upper-latin);
+		}
+
+		.ck.ck-content ol.fancy-list > li > h4,
+		.ck.ck-content ul.fancy-list > li > h4 {
+			font-family: 'Anton', cursive;
+			text-transform: uppercase;
+			font-size: 1.8em;
+			padding-top: 0;
+		}
+
+		.ck.ck-content ul.italic-list {
+			font-style: italic;
+		}
+
+		.ck.ck-content li.background-list-item {
+			background-color: #FFAE7F;
+		}
+
+		.ck.ck-content figure.figure-style {
+			outline: 4px solid #ff0000;
+		}
+
+		.ck.ck-content a.styled-link {
+			text-decoration-color: #00b0f0;
+			text-decoration-style: wavy;
+		}
 	</style>
+
 </head>
 
 <h2>Lots of styles: block + inline</h2>
 
 <div id="editor-full">
+	<p>foo <a class="styled-link" href="https://ckeditor.com">Link</a> bar <a href="#">another</a> one</p>
 	<h2>Heading 1</h2>
 	<p>Pa<span class="marker">ragrap</span>h</p>
 	<pre><code class="language-plaintext">Foobar</code></pre>
-	<figure class="table">
-		<table>
+	<figure class="table figure-style">
+		<table class="bold-table">
 			<tbody>
 				<tr><td>Foo</td><td>Bar</td><td>Baz</td></tr>
 				<tr><td>Foo</td><td>Bar</td><td>Baz</td></tr>
@@ -127,7 +251,7 @@
 			</tbody>
 		</table>
 	</figure>
-	<figure class="image">
+	<figure class="image figure-style">
 		<img src="sample.jpg" alt="bar">
 		<figcaption>Caption</figcaption>
 	</figure>
@@ -137,14 +261,7 @@
 		</p>
 	</blockquote>
 	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
-	<ul>
-		<li>UL List item 1</li>
-		<li>UL List item 2</li>
-	</ul>
-	<ol>
-		<li>OL List item 1</li>
-		<li>OL List item 2</li>
-	</ol>
+
 	<blockquote>
 		<p>Quote</p>
 		<ul>
@@ -153,6 +270,28 @@
 		</ul>
 		<p>Quote</p>
 	</blockquote>
+
+	<ol class="fancy-list">
+		<li class="background-list-item">
+			<h4>Gran Canaria, Spain</h4>
+			<p>Gran Canaria is a popular tourist destination. The island is often called “a miniature continent”. This is because it offers
+				a great variety of climates and landscapes, from golden sandy beaches through rocky ravines and white dunes to charming
+				villages. In the mid-2010s, over 3.5&nbsp;million tourists visited Gran Canaria each year.</p>
+		</li>
+		<li>
+			<h4>Florence, Italy</h4>
+			<p>Florence, established in 59&nbsp;BC by Julius Caesar himself got its name from two rivers that surrounded the settlement.
+				Thanks to centuries of history, the capital of Tuscany has plenty to offer to tourists hungry for sightseeing. Some of the
+				most interesting places to visit include:</p>
+			<ul class="italic-list" style="list-style-type:square;">
+				<li>Piazza della Signoria</li>
+				<li>Mercato Centrale and the San Lorenzo Market</li>
+				<li>Museum of Zoology and Natural History “La Specola”</li>
+			</ul>
+			<p>Florence is also regarded as one of the top 15 fashion capitals of the world.</p>
+		</li>
+	</ol>
+
 </div>
 
 <h2>Just a few inline styles</h2>

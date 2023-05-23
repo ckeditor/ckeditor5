@@ -217,6 +217,18 @@ describe( 'CodeBlockUI', () => {
 						return editor.destroy();
 					} );
 			} );
+
+			it( 'should have properties set', () => {
+				const dropdown = editor.ui.componentFactory.create( 'codeBlock' );
+
+				// Trigger list view creation (lazy init).
+				dropdown.isOpen = true;
+
+				const listView = dropdown.listView;
+
+				expect( listView.element.role ).to.equal( 'menu' );
+				expect( listView.element.ariaLabel ).to.equal( 'Insert code block' );
+			} );
 		} );
 
 		describe( 'button', () => {

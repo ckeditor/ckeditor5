@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Danish (https://www.transifex.com/ckeditor/teams/11143/da/)\n"
+"Language-Team: Danish (https://app.transifex.com/ckeditor/teams/11143/da/)\n"
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -111,3 +111,7 @@ msgstr "Redigeringskasse indholdsværktøjslinje"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "Kontekstuel værktøjslinje til redigeringsprogram"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

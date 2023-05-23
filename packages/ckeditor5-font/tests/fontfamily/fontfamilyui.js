@@ -254,5 +254,17 @@ describe( 'FontFamilyUI', () => {
 					} );
 			}
 		} );
+
+		describe( 'listview', () => {
+			it( 'should have properties set', () => {
+				// Trigger list view creation (lazy init).
+				dropdown.isOpen = true;
+
+				const listView = dropdown.listView;
+
+				expect( listView.element.role ).to.equal( 'menu' );
+				expect( listView.element.ariaLabel ).to.equal( 'Font Family' );
+			} );
+		} );
 	} );
 } );

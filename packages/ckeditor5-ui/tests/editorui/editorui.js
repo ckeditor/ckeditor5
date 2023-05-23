@@ -8,6 +8,7 @@ import EditorUI from '../../src/editorui/editorui';
 import ComponentFactory from '../../src/componentfactory';
 import ToolbarView from '../../src/toolbar/toolbarview';
 import TooltipManager from '../../src/tooltipmanager';
+import PoweredBy from '../../src/editorui/poweredby';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -47,6 +48,10 @@ describe( 'EditorUI', () => {
 
 		it( 'should create #tooltipManager', () => {
 			expect( ui.tooltipManager ).to.be.instanceOf( TooltipManager );
+		} );
+
+		it( 'should create #poweredBy', () => {
+			expect( ui.poweredBy ).to.be.instanceOf( PoweredBy );
 		} );
 
 		it( 'should have #element getter', () => {
@@ -160,6 +165,14 @@ describe( 'EditorUI', () => {
 
 			sinon.assert.calledOnce( destroySpy );
 			sinon.assert.calledWithExactly( destroySpy, editor );
+		} );
+
+		it( 'should destroy #poweredBy', () => {
+			const destroySpy = sinon.spy( ui.poweredBy, 'destroy' );
+
+			ui.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

@@ -575,6 +575,29 @@ describe( 'SourceEditing', () => {
 			expect( editor.model.document.history.getOperations().length ).to.equal( 5 );
 		} );
 	} );
+
+	describe( 'integration with EditorUI', () => {
+		it( 'should call EditorUI#update() on every DOM input event', () => {
+			const updateSpy = sinon.spy();
+
+			button.fire( 'execute' );
+
+			editor.ui.on( 'update', updateSpy );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			textarea.value = 'bar';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			sinon.assert.calledOnce( updateSpy );
+
+			textarea.value = 'barX';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			sinon.assert.calledTwice( updateSpy );
+		} );
+	} );
 } );
 
 describe( 'SourceEditing - integration with Markdown', () => {

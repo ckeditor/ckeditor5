@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Urdu (https://www.transifex.com/ckeditor/teams/11143/ur/)\n"
+"Language-Team: Urdu (https://app.transifex.com/ckeditor/teams/11143/ur/)\n"
 "Language: ur\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -55,3 +55,7 @@ msgstr "فانٹ کے پس منظر کا رنگ"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "دستاویز کے رنگ"
+
+msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
+msgid "Accept"
+msgstr ""

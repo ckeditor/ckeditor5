@@ -32,6 +32,9 @@ export default class InsertTextCommand extends Command {
 		super( editor );
 
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
+
+		// Since this command may execute on different selectable than selection, it should be checked directly in execute block.
+		this._isEnabledBasedOnSelection = false;
 	}
 
 	/**
@@ -70,6 +73,11 @@ export default class InsertTextCommand extends Command {
 			selection = options.selection;
 		} else if ( options.range ) {
 			selection = model.createSelection( options.range );
+		}
+
+		// Stop executing if selectable is in non-editable place.
+		if ( !model.canEditAt( selection ) ) {
+			return;
 		}
 
 		const resultRange = options.resultRange;

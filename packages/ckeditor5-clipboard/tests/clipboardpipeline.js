@@ -310,7 +310,8 @@ describe( 'ClipboardPipeline feature', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
 
 			viewDocument.fire( 'clipboardInput', {
-				dataTransfer: dataTransferMock
+				dataTransfer: dataTransferMock,
+				method: 'paste'
 			} );
 
 			sinon.assert.notCalled( spy );

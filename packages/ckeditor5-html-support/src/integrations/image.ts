@@ -16,7 +16,7 @@ import type {
 	ViewElement } from 'ckeditor5/src/engine';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../conversionutils';
+import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils';
 import { getDescendantElement } from './integrationutils';
 
 /**

@@ -11,6 +11,9 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 import StyleEditing from '../src/styleediting';
 import StyleCommand from '../src/stylecommand';
 import StyleUtils from '../src/styleutils';
+import DocumentListStyleSupport from '../src/integrations/documentlist';
+import TableStyleSupport from '../src/integrations/table';
+import LinkStyleSupport from '../src/integrations/link';
 
 describe( 'StyleEditing', () => {
 	let editor, editorElement;
@@ -68,8 +71,10 @@ describe( 'StyleEditing', () => {
 		expect( StyleEditing.pluginName ).to.equal( 'StyleEditing' );
 	} );
 
-	it( 'should soft-require the GHS plugin and require utils', () => {
-		expect( StyleEditing.requires ).to.deep.equal( [ 'GeneralHtmlSupport', StyleUtils ] );
+	it( 'should soft-require the GHS plugin, and require utils, and integrations', () => {
+		expect( StyleEditing.requires ).to.deep.equal( [
+			'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport, TableStyleSupport, LinkStyleSupport
+		] );
 	} );
 
 	it( 'should register the "style" command', () => {
