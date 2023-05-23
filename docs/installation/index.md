@@ -298,6 +298,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 		};
 	}
 </script>
+
 <style>
 div.quiz-pane h3 {
 	font-size: 1em;
@@ -369,10 +370,6 @@ div.quiz-pane[id="quiz-start"] p {
 	flex-direction: row;
 	flex-wrap: nowrap;
 	align-items: center;
-}
-
-.info-cta a{
-	float: right;
 }
 </style>
 -->
