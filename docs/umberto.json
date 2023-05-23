@@ -426,8 +426,8 @@
 							"name": "Annotations",
 							"id": "features-annotations",
 							"slug": "annotations",
-							"folded": true,
-							"order": 500
+							"order": 500,
+							"folded": true
 						}
 					]
 				},
