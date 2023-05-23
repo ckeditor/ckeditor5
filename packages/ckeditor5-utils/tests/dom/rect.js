@@ -684,6 +684,112 @@ describe( 'Rect', () => {
 
 			expect( new Rect( element ).getVisible() ).to.equal( null );
 		} );
+
+		it( 'should ignore a parent if target is an element with position: absolute', () => {
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			element.style.position = 'absolute';
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 50,
+				right: 150,
+				bottom: 150,
+				left: 50,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+		} );
+
+		it( 'should ignore all parents if target is an element with position: absolute', () => {
+			ancestorB.appendChild( ancestorA );
+			document.body.appendChild( ancestorB );
+
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			element.style.position = 'absolute';
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 50,
+				right: 150,
+				bottom: 150,
+				left: 50,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+				top: 200,
+				right: 300,
+				bottom: 300,
+				left: 200,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+		} );
+
+		it( 'should not ignore a parent if target is an element with position: absolute but parent has position: relative', () => {
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			element.style.position = 'absolute';
+			ancestorA.style.position = 'relative';
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 50,
+				right: 150,
+				bottom: 150,
+				left: 50,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 50,
+				right: 100,
+				bottom: 100,
+				left: 50,
+				width: 50,
+				height: 50
+			} );
+		} );
 	} );
 
 	describe( 'isEqual()', () => {

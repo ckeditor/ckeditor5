@@ -236,10 +236,19 @@ export default class Rect {
 	 * If there's no such visible rect, which is when the rect is limited by one or many of
 	 * the ancestors, `null` is returned.
 	 *
+	 * **Note**: This method does not consider the boundaries of the viewport (window).
+	 * To get a rect cropped by all ancestors and the viewport, use an intersection such as:
+	 *
+	 * ```ts
+	 * const visibleInViewportRect = new Rect( window ).getIntersection( new Rect( source ).getVisible() );
+	 * ```
+	 *
 	 * @returns A visible rect instance or `null`, if there's none.
 	 */
 	public getVisible(): Rect | null {
 		const source: RectSource & { parentNode?: Node | null; commonAncestorContainer?: Node | null } = this._source;
+		const isAbsolutelyPositionedSourceElement = source instanceof HTMLElement && getElementPosition( source ) == 'absolute';
+
 		let visibleRect = this.clone();
 
 		// There's no ancestor to crop <body> with the overflow.
@@ -248,6 +257,13 @@ export default class Rect {
 
 			// Check the ancestors all the way up to the <body>.
 			while ( parent && !isBody( parent ) ) {
+				// Skip parent if the target has `position: absolute` and the parent has position other than `relative`. In such case
+				// `overflow` does not apply and there's no chance of visual clipping https://github.com/ckeditor/ckeditor5/issues/14107.
+				if ( isAbsolutelyPositionedSourceElement && getElementPosition( parent as HTMLElement ) !== 'relative' ) {
+					parent = parent.parentNode;
+					continue;
+				}
+
 				const parentRect = new Rect( parent as HTMLElement );
 				const intersectionRect = visibleRect.getIntersection( parentRect );
 
@@ -461,4 +477,11 @@ function isDomElement( value: any ): value is Element {
 	// Note: earlier we used `isElement()` from lodash library, however that function is less performant because
 	// it makes complicated checks to make sure that given value is a DOM element.
 	return value !== null && typeof value === 'object' && value.nodeType === 1 && typeof value.getBoundingClientRect === 'function';
+}
+
+/**
+ * Returns the value of the `position` style of an `HTMLElement`.
+ */
+function getElementPosition( element: HTMLElement ) {
+	return element.ownerDocument.defaultView!.getComputedStyle( element ).position;
 }

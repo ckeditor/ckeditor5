@@ -111,7 +111,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 
 		/* istanbul ignore next -- @preserve */
 		if ( verifyLicense( editor.config.get( 'licenseKey' ) ) === 'VALID' ) {
-			return;
+			// return;
 		}
 
 		// No view means no body collection to append the powered by balloon to.

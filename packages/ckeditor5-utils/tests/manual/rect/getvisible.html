@@ -1,0 +1,73 @@
+<div class="parent" style="background: rgb(255, 196, 196);">
+	#1 parent: overflow: hidden;
+	<div class="child"  style="background: rgb(255, 0, 0); margin-left: 80px">
+		#1 child: position: static;
+	</div>
+</div>
+
+<br>
+
+<div class="parent" style="background: rgb(201, 255, 196);">
+	#2 parent: overflow: hidden;
+	<div class="child" style="position: absolute; top: 150px; left: 350px; background: rgb(34, 255, 0);">
+		#2 child: pos: absolute
+	</div>
+</div>
+
+<br>
+
+<div style="background: rgb(233, 255, 232); padding: 5px; margin-bottom: 100px">
+	#2a grandparent
+	<div class="parent" style="background: rgb(201, 255, 196);">
+		#2a parent: overflow: hidden;
+		<div class="child" style="position: absolute; top: 400px; left: 350px; background: rgb(34, 255, 0);">
+			#2a child: pos: absolute
+		</div>
+	</div>
+</div>
+
+<br>
+
+<div class="parent" style="position: relative; background: rgb(202, 196, 255);">
+	#3 parent: overflow: hidden + position: relative;
+	<div class="child" style="position: absolute; background: rgb(133, 113, 234); left: 350px;">
+		#3 child: pos: absolute
+	</div>
+</div>
+
+<br>
+
+<div class="parent" style="margin-top: 1200px; background: rgb(255, 241, 196);">
+	#4 parent: overflow: hidden (but off the visual viewport)
+	<div class="child" style="position: absolute; left: 200px; top: 750px; background: rgb(255, 179, 0);">
+		#4 child: pos: absolute
+	</div>
+</div>
+
+<br>
+
+<div class="parent" style="background: rgb(253, 196, 255);">
+	#5 parent: overflow: hidden (but off the visual viewport)
+	<div class="child" style="position: absolute; left: 500px; top: 1200px; background: rgb(255, 0, 238);">
+		#5 child: pos: absolute (but off the visual viewport like the parent)
+	</div>
+</div>
+
+<style>
+	.parent {
+		overflow: hidden;
+		height: 50px;
+		padding: 20px;
+		margin-bottom: 100px;
+		font-size: 12px;
+		padding: 5px;
+		box-sizing: border-box;
+	}
+
+	.child {
+		height: 100px;
+		width: 100px;
+		padding: 5px;
+		box-sizing: border-box;
+	}
+</style>
