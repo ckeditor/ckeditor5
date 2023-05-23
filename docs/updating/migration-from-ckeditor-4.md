@@ -14,7 +14,7 @@ This section of the documentation explains how to migrate to CKEditor 5.
 <info-box hint>
 	<strong>CKEditor 4 reaches its End of Life (EOL) in June 2023</strong>. From then on, it will receive no more updates, new features, bug fixes, and most importantly, security patches.
 
-	If you have an active CKEditor 4 subscription and need help, you can contact [our support team](https://ckeditor.com/contact/). If you are not ready to migrate yet, for a limited time we are offering a paid [Extended Support Model](https://ckeditor.com/ckeditor-4-support/) that will protect you against security vulnerabilities and/or breaking third-party API changes.
+	If you have an active CKEditor 4 subscription and need help, you can contact [our support team](https://ckeditor.com/contact/). If you are not ready to migrate yet, for a limited time we are offering a paid <strong>Extended Support Model</strong> that will protect you against security vulnerabilities and/or breaking third-party API changes.
 </info-box>
 
 When compared to its predecessor, CKEditor 5 should be considered **a totally new editor**. Every single aspect of it was redesigned &mdash; from installation, to integration, to features, to its data model, and finally to its API.
