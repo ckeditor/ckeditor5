@@ -16,7 +16,6 @@
 .ck.ck-balloon-panel.ck-powered-by-balloon {
 	--ck-border-radius: var(--ck-powered-by-border-radius);
 
-	border-color: var(--ck-powered-by-border-color);
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
@@ -61,7 +60,7 @@
 	}
 
 	&[class*="position_inside"] {
-		--ck-powered-by-border-color: transparent;
+		border-color: transparent;
 	}
 
 	&[class*="position_border"] {
