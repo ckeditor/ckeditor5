@@ -23,7 +23,7 @@ CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From edit
 </info-box>
 
 <info-box>
-	**Want to remove the "Powered by CKEditor" logo?** {@link updating/migration-from-ckeditor-4 Check the dedicated guide}
+	**Want to remove the "Powered by CKEditor" logo?** {@link support/managing-ckeditor-logo Check the dedicated guide}
 </info-box>
 </div>
 
