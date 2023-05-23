@@ -11,24 +11,27 @@ meta-description: Learn how to install, integrate, configure, and develop CKEdit
 CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
 
 <span class="navigation-hint_mobile">
-<info-box>
-	Use the **main menu button in the upper-left corner** to navigate through the documentation.
-</info-box>
+	<info-box>
+		Use the **main menu button in the upper-left corner** to navigate through the documentation.
+	</info-box>
 </span>
 
+<!-- the wrapper class should be transformed into an additional infobox class if we will want to use it on other pages-->
+<div class="info-cta">
 <info-box>
-	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
+	**Migrating from CKEditor 4?** {@link updating/migration-from-ckeditor-4 Check migration guide}
 </info-box>
 
-## Migrating from CKEditor 4
-
 <info-box>
-	CKEditor 4 reaches its End of Life (EOL) in June 2023. From then on, it will receive no more updates, new features, bug fixes, and most importantly, security patches.
-	
-	Take a look at the {@link updating/migration-from-ckeditor-4 Migration guide} to switch to CKEditor 5 now!
+	**Want to remove "Powered by CKEditor" logo?** {@link updating/migration-from-ckeditor-4 Check logo guide}
 </info-box>
+</div>
 
-<!-- If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, please refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration guide} for tips about such an installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration, too. -->
+<!--
+<info-box>
+    **Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
+</info-box>
+-->
 
 ## Start using CKEditor 5 instantly with CDN
 
@@ -57,6 +60,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
  * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
 
+<!--
 <script type="text/javascript">
 	const QUIZ_DEFAULT_HEADER = 'Installation method quiz';
 	const QUIZ_RESOLUTION_BUTTON_DEFINITIONS = [
@@ -294,7 +298,6 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 		};
 	}
 </script>
-
 <style>
 div.quiz-pane h3 {
 	font-size: 1em;
@@ -366,5 +369,22 @@ div.quiz-pane[id="quiz-start"] p {
 	flex-direction: row;
 	flex-wrap: nowrap;
 	align-items: center;
+}
+
+.info-cta a{
+	float: right;
+}
+</style>
+-->
+<style>
+.info-cta .info-box p{
+	display: flex;
+    justify-content: space-between;
+}
+
+@media only screen and (max-device-width: 960px) {
+	.info-cta .info-box p{
+		flex-direction: column;
+	}
 }
 </style>
