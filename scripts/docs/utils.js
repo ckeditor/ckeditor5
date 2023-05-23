@@ -5,8 +5,8 @@
 
 /* eslint-env node */
 
-const glob = require( 'glob' );
-const fs = require( 'fs' );
+const { glob } = require( 'glob' );
+const fs = require( 'fs/promises' );
 const path = require( 'path' );
 const { loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 
@@ -14,7 +14,6 @@ const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
 module.exports = {
 	getCkeditor5Plugins,
-	writeFile,
 	normalizePath,
 	addTypeScriptLoader
 };
@@ -71,7 +70,7 @@ async function getCkeditor5ModulePaths() {
  * @returns {Promise.<Boolean>}
  */
 function checkWhetherIsCKEditor5Plugin( modulePath ) {
-	return readFile( path.join( ROOT_DIRECTORY, modulePath ) )
+	return fs.readFile( path.join( ROOT_DIRECTORY, modulePath ), 'utf-8' )
 		.then( content => {
 			const pluginName = path.basename( modulePath.replace( /.[jt]s$/, '' ) );
 
@@ -81,43 +80,6 @@ function checkWhetherIsCKEditor5Plugin( modulePath ) {
 
 			return Promise.resolve( false );
 		} );
-}
-
-/**
- * Resolves the promise with the content of the file saved under the `filePath` location.
- *
- * @param {String} filePath The path to fhe file.
- * @returns {Promise.<String>}
- */
-function readFile( filePath ) {
-	return new Promise( ( resolve, reject ) => {
-		fs.readFile( filePath, 'utf-8', ( err, content ) => {
-			if ( err ) {
-				return reject( err );
-			}
-
-			return resolve( content );
-		} );
-	} );
-}
-
-/**
- * Saves the `data` value to the file saved under the `filePath` location.
- *
- * @param {String} filePath The path to fhe file.
- * @param {String} data The content to save.
- * @returns {Promise.<String>}
- */
-function writeFile( filePath, data ) {
-	return new Promise( ( resolve, reject ) => {
-		fs.writeFile( filePath, data, err => {
-			if ( err ) {
-				return reject( err );
-			}
-
-			return resolve();
-		} );
-	} );
 }
 
 /**
