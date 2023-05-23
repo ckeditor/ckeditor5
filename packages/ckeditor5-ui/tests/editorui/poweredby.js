@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, window, HTMLElement */
+/* global document, Event, window, HTMLElement, getComputedStyle  */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import EditorUI from '../../src/editorui/editorui';
@@ -905,6 +905,24 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 		} );
+	} );
+
+	it( 'should have lower z-index than regular balloon', () => {
+		focusEditor( editor );
+
+		const balloonView = new BalloonPanelView();
+		balloonView.render();
+
+		const zIndexOfPoweredByBalloon = Number( getComputedStyle( editor.ui.poweredBy._balloonView.element ).zIndex );
+
+		document.body.appendChild( balloonView.element );
+
+		const zIndexOfRegularBalloon = Number( getComputedStyle( balloonView.element ).zIndex );
+
+		expect( zIndexOfPoweredByBalloon ).to.be.lessThan( zIndexOfRegularBalloon );
+
+		balloonView.element.remove();
+		balloonView.destroy();
 	} );
 
 	async function createEditor( element, config = { plugins: [ SourceEditing ] } ) {
