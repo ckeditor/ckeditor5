@@ -7,13 +7,15 @@
 
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( Alignment );
-ClassicEditor.builtinPlugins.push( PageBreak );
+ClassicEditor.builtinPlugins.push( Alignment, PageBreak, PictureEditing, ImageResize, AutoImage, LinkImage, CKBox );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-page-break' ), {
