@@ -14,17 +14,11 @@ const { provideToken } = require( '@ckeditor/ckeditor5-dev-release-tools/lib/uti
 const { Listr } = require( 'listr2' );
 const validateDependenciesVersions = require( './utils/validatedependenciesversions' );
 const parseArguments = require( './utils/parsearguments' );
+const { RELEASE_DIRECTORY } = require( './utils/constants' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 const latestVersion = releaseTools.getLastFromChangelog();
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
-const RELEASE_DIRECTORY = 'release';
-
-const taskOptions = {
-	rendererOptions: {
-		collapseSubtasks: false
-	}
-};
 
 let githubToken;
 
@@ -47,7 +41,7 @@ const tasks = new Listr( [
 				npmTag: cliArguments.npmTag,
 				listrTask: task,
 				confirmationCallback: () => {
-					// TODO: Detect if CI/Nightly.
+					// TODO: If nightly: pass through. See: #14179.
 
 					return task.prompt( { type: 'Confirm', message: 'Do you want to continue?' } );
 				},
@@ -90,7 +84,8 @@ const tasks = new Listr( [
 			} );
 
 			task.output = `Release page: ${ releaseUrl }`;
-		}
+		},
+		skip: cliArguments.nightly
 	},
 	{
 		title: 'Pushing changes.',
@@ -99,9 +94,10 @@ const tasks = new Listr( [
 				releaseBranch: 'release',
 				version: latestVersion
 			} );
-		}
+		},
+		skip: cliArguments.nightly
 	}
-], taskOptions );
+] );
 
 ( async () => {
 	try {

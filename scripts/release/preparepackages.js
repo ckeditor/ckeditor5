@@ -22,6 +22,7 @@ const compileTypeScriptCallback = require( './utils/compiletypescriptcallback' )
 const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
+const { PACKAGES_DIRECTORY, RELEASE_DIRECTORY } = require( './utils/constants' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
@@ -29,10 +30,8 @@ const cliArguments = parseArguments( process.argv.slice( 2 ) );
 EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
 
 const abortController = new AbortController();
-const PACKAGES_DIRECTORY = 'packages';
-const RELEASE_DIRECTORY = 'release';
 
-// TODO: Nightly.
+// TODO: If nightly: generate a version number. See: #14179.
 const latestVersion = releaseTools.getLastFromChangelog();
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
 
@@ -198,7 +197,7 @@ const tasks = new Listr( [
 		},
 		skip: cliArguments.nightly
 	}
-], taskOptions );
+] );
 
 tasks.run()
 	.catch( err => {
