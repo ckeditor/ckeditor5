@@ -82,11 +82,11 @@ export default class ImageResizeEditing extends Plugin {
 
 	private _registerSchema(): void {
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: 'width' } );
+			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: 'resizedWidth' } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.editor.model.schema.extend( 'imageInline', { allowAttributes: 'width' } );
+			this.editor.model.schema.extend( 'imageInline', { allowAttributes: 'resizedWidth' } );
 		}
 	}
 
@@ -100,7 +100,7 @@ export default class ImageResizeEditing extends Plugin {
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
-			dispatcher.on( `attribute:width:${ imageType }`, ( evt, data, conversionApi ) => {
+			dispatcher.on( `attribute:resizedWidth:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
@@ -127,7 +127,7 @@ export default class ImageResizeEditing extends Plugin {
 					}
 				},
 				model: {
-					key: 'width',
+					key: 'resizedWidth',
 					value: ( viewElement: ViewElement ) => viewElement.getStyle( 'width' )
 				}
 			} );

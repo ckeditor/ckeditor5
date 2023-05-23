@@ -834,7 +834,7 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>f<imageInline src="/assets/sample.png" width="25%"></imageInline>[]oo</paragraph>'
+				'<paragraph>f<imageInline resizedWidth="25%" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
 			);
 		} );
 	} );

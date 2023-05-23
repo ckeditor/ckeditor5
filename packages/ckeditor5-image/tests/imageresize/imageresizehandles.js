@@ -192,7 +192,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const modelItem = editor.model.document.getRoot().getChild( 1 );
 
-				expect( modelItem.getAttribute( 'width' ), 'model width attribute' ).to.be.undefined;
+				expect( modelItem.getAttribute( 'resizedWidth' ), 'model width attribute' ).to.be.undefined;
 			} );
 		} );
 
@@ -283,7 +283,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'width' ) ).to.equal( '60px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '60px' );
 			} );
 		} );
 
@@ -367,7 +367,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'width' ) ).to.equal( '76px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '76px' );
 			} );
 
 			it( 'retains width after removing srcset', async () => {
@@ -652,7 +652,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const modelItem = editor.model.document.getRoot().getChild( 1 ).getChild( 0 );
 
-				expect( modelItem.getAttribute( 'width' ), 'model width attribute' ).to.be.undefined;
+				expect( modelItem.getAttribute( 'resizedWidth' ), 'model width attribute' ).to.be.undefined;
 			} );
 		} );
 
@@ -830,7 +830,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'width' ) ).to.equal( '76px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '76px' );
 			} );
 
 			it( 'retains width after removing srcset', async () => {
