@@ -39,13 +39,12 @@ npm install --save @ckeditor/ckeditor5-watchdog
 Then, change your `ClassicEditor.create()` call to `watchdog.create()` as follows:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 // Create a watchdog for the given editor type.
 const watchdog = new EditorWatchdog( ClassicEditor );
@@ -158,14 +157,13 @@ npm install --save @ckeditor/ckeditor5-watchdog
 And then change your editor and context initialization code:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Context from '@ckeditor/ckeditor5-core/src/context';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Context } from '@ckeditor/ckeditor5-core';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 // Create a context watchdog and pass the context class with optional watchdog configuration:
 const watchdog = new ContextWatchdog( Context, {

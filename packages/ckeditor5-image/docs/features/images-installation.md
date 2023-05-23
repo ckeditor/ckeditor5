@@ -18,12 +18,8 @@ npm install --save @ckeditor/ckeditor5-image
 Next add the {@link features/images-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
 
 ```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -131,13 +131,12 @@ The application entry point (`app.js`):
 ```js
 // app.js
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import Placeholder from './placeholder/placeholder';
 
@@ -191,7 +190,7 @@ The master (glue) plugin:
 ```js
 // placeholder/placeholder.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import PlaceholderEditing from './placeholderediting';
 import PlaceholderUI from './placeholderui';
@@ -208,7 +207,7 @@ The UI part (empty for now):
 ```js
 // placeholder/placeholderui.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class PlaceholderUI extends Plugin {
 	init() {
@@ -222,7 +221,7 @@ And the editing part (empty for now):
 ```js
 // placeholder/placeholderediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class PlaceholderEditing extends Plugin {
 	init() {
@@ -252,7 +251,7 @@ You will also use this opportunity to import the theme file (`theme/placeholder.
 ```js
 // placeholder/placeholderediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import './theme/placeholder.css';                                              // ADDED
 
@@ -293,11 +292,10 @@ The HTML structure (data output) of the converter will be a `<span>` with a `pla
 * {@link framework/deep-dive/conversion/downcast **Downcast conversion**}. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
 
 ```js
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // ADDED 2 imports
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
 import './theme/placeholder.css';
 
@@ -394,7 +392,7 @@ The {@link framework/architecture/core-editor-architecture#commands command} for
 ```js
 // placeholder/placeholdercommand.js
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 export default class PlaceholderCommand extends Command {
 	execute( { value } ) {
@@ -429,10 +427,8 @@ Import the created command and add it to the editor commands:
 ```js
 // placeholder/placeholderediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget, toWidget  } from '@ckeditor/ckeditor5-widget';
 
 import PlaceholderCommand from './placeholdercommand';                         // ADDED
 import './theme/placeholder.css';
@@ -503,17 +499,16 @@ Fortunately, CKEditor 5 {@link module:engine/conversion/mapper~Mapper#event:view
 ```js
 // placeholder/placeholderediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // MODIFIED
 import {
-	toWidget,
-	viewToModelPositionOutsideModelElement
-} from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+    Widget,
+    toWidget,
+    viewToModelPositionOutsideModelElement
+} from '@ckeditor/ckeditor5-widget';
 
 import PlaceholderCommand from './placeholdercommand';
-
 import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
@@ -561,12 +556,9 @@ In this tutorial, you will create a dropdown with a list of available placeholde
 ```js
 // placeholder/placeholderui.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 export default class PlaceholderUI extends Plugin {
 	init() {
@@ -631,13 +623,12 @@ Add the dropdown to the toolbar:
 ```js
 // app.js
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import Placeholder from './placeholder/placeholder';
 
@@ -755,22 +746,16 @@ You can see the placeholder widget implementation in action in the editor below.
 The following code snippet contains a complete implementation of the `Placeholder` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import Command from '@ckeditor/ckeditor5-core/src/command';
-
-import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Command, Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
+import { Model, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 class Placeholder extends Plugin {
 	static get requires() {

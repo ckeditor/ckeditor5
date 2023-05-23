@@ -482,7 +482,7 @@ npm install --save @ckeditor/ckeditor5-mention
 Then add `Mention` to your plugin list and {@link module:mention/mentionconfig~MentionConfig  configure} the feature:
 
 ```js
-import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+import { Mention } from '@ckeditor/ckeditor5-mention';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

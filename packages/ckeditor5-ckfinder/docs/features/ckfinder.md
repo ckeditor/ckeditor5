@@ -73,7 +73,7 @@ This feature can upload images automatically to the server (e.g. when the image 
 Assuming that the [CKFinder PHP server-side connector is installed](https://ckeditor.com/docs/ckfinder/ckfinder3-php/quickstart.html#quickstart_installation_folders) (available) under `https://example.com/ckfinder/`, use the following [quick upload](https://ckeditor.com/docs/ckfinder/ckfinder3-php/commands.html#command_quick_upload) command URL to enable the image upload:
 
 ```js
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -113,7 +113,7 @@ Then:
 	* You can define [`options.language`](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-language) to set the UI language of CKFinder. By default, it will be set to the UI language of the editor.
 
 ```js
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -145,7 +145,7 @@ You can change the way CKFinder opens using the {@link module:ckfinder/ckfinderc
 By default, the file manager opens as a modal. To open it in a new "pop-up" window, set the configuration value to `popup`:
 
 ```js
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -192,7 +192,7 @@ npm install --save @ckeditor/ckeditor5-ckfinder
 Then add {@link module:ckfinder/ckfinder~CKFinder} to your plugin list and [configure](#configuration) the feature (when necessary). For instance:
 
 ```js
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

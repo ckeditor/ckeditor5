@@ -65,9 +65,9 @@ npm install --save @ckeditor/ckeditor5-ui
 Add the `BlockToolbar` to your plugin list and configure the feature using the `blockToolbar` property:
 
 ```js
-import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
-import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
-import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
+import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
+import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
+import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
@@ -88,9 +88,9 @@ BalloonEditor
 You can also use the `shouldNotGroupWhenFull` option to prevent {@link module:core/editor/editorconfig~EditorConfig#toolbar automatic items grouping} in the block toolbar:
 
 ```js
-import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
-import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
-import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
+import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
+import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
+import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {

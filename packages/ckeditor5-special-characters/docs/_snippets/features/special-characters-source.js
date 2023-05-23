@@ -12,11 +12,14 @@ import {
 	SpecialCharactersMathematical
 } from '@ckeditor/ckeditor5-special-characters';
 import { Font } from '@ckeditor/ckeditor5-font';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( SpecialCharacters, Font );
+ClassicEditor.builtinPlugins.push( SpecialCharacters, Font, PictureEditing, ImageResize, AutoImage, LinkImage, CKBox );
 
 window.ClassicEditor = ClassicEditor;
 window.SpecialCharacters = SpecialCharacters;

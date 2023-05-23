@@ -5,41 +5,41 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Font from '@ckeditor/ckeditor5-font/src/font';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Font } from '@ckeditor/ckeditor5-font';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { Image,
+	ImageCaption,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	PictureEditing,
+	ImageResize,
+	AutoImage } from '@ckeditor/ckeditor5-image';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
-import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { UpcastWriter } from '@ckeditor/ckeditor5-engine';
+import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
+
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -233,7 +233,12 @@ ClassicEditor
 			Font,
 			Alignment,
 			HorizontalLine,
-			HCardEditing
+			HCardEditing,
+			PictureEditing,
+			ImageResize,
+			AutoImage,
+			LinkImage,
+			CKBox
 		],
 		toolbar: {
 			items: [

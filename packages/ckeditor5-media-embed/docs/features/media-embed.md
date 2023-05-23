@@ -39,7 +39,7 @@ npm install --save @ckeditor/ckeditor5-media-embed
 Then add `MediaEmbed` to your plugin list and {@link module:media-embed/mediaembedconfig~MediaEmbedConfig configure} the feature (if needed):
 
 ```js
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

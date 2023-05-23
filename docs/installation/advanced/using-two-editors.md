@@ -41,7 +41,7 @@ Once all the dependencies are installed, modify the webpack's entry point which 
 
 ```js
 // The editor creator to use.
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
 
 // ...
 
@@ -62,8 +62,8 @@ Let's make it export an object with two classes: `ClassicEditor` and `InlineEdit
 
 ```js
 // The editor creators to use.
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
+import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
+import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline';
 
 // ...
 

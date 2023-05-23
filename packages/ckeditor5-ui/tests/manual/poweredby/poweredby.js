@@ -90,3 +90,9 @@ createEditor( '#custom-side-inside', {
 createEditor( '#custom-side-on-border', {
 	side: 'left'
 } );
+createEditor( '#custom-label', {
+	label: 'Hello'
+} );
+createEditor( '#custom-label-empty', {
+	label: null
+} );

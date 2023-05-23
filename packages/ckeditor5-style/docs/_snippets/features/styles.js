@@ -5,23 +5,25 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import Style from '@ckeditor/ckeditor5-style/src/style';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { Style } from '@ckeditor/ckeditor5-style';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-styles' ), {
 		plugins: [
-			ArticlePluginSet, CloudServices,
+			ArticlePluginSet, CloudServices, EasyImage,
+			Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload,
 			Code, CodeBlock, Strikethrough, HorizontalLine, GeneralHtmlSupport, Style, Highlight
 		],
 		toolbar: {

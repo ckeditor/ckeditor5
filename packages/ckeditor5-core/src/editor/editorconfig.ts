@@ -491,6 +491,10 @@ export interface EditorConfig {
 	 * 		**Note**: If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
 	 * 		language, the side switches to `'left'` by default.
 	 *
+	 * 	* **`label`** (default: `'Powered by'`) &ndash; Allows changing the label displayed next to the project's logo.
+	 *
+	 * 		**Note**: Set the value to `null` to display the logo without a text.
+	 *
 	 * 	* **`verticalOffset`** (default: `5`) &ndash; The vertical distance the logo can be moved away from its default position.
 	 *
 	 * 		**Note**: If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
@@ -616,6 +620,15 @@ export interface UiConfig {
 		 * @default 'right'
 		 */
 		side: 'left' | 'right';
+
+		/**
+		 * Allows changing the label displayed next to the CKEditor logo.
+		 *
+		 * **Note:** Set the value to `null` to hide the label.
+		 *
+		 * @default 'Powered by'
+		 */
+		label: string | null;
 
 		/**
 		 * The vertical distance the logo can be moved away from its default position.

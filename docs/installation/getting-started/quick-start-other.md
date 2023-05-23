@@ -213,11 +213,10 @@ Based on these packages you can create a simple application.
 ```js
 // app.js
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -424,32 +423,31 @@ Every plugin that you want to include in the bundle should be added at this stag
 'use strict';
 
 // The editor creator to use.
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
 
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { EssentialsPlugin } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import CustomPlugin from 'ckeditor5-custom-package/src/customplugin';
-import OtherCustomPlugin from '../relative/path/to/some/othercustomplugin';
+import { CustomPlugin } from 'ckeditor5-custom-package';
+import { OtherCustomPlugin } from '../relative/path/to/some/othercustomplugin';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
-	EssentialsPlugin,
-	AutoformatPlugin,
-	BoldPlugin,
-	ItalicPlugin,
-	HeadingPlugin,
-	LinkPlugin,
-	ListPlugin,
-	ParagraphPlugin,
+	Essentials,
+	Autoformat,
+	Bold,
+	Italic,
+	Heading,
+	Link,
+	List,
+	Paragraph,
 
 	CustomPlugin,
 	OtherCustomPlugin
@@ -502,5 +500,5 @@ After your build is out, [ping us on Twitter](https://twitter.com/ckeditor)!
 
 Congratulations, you have just run your first CKEditor 5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
 
-P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/frameworks/overview Frameworks section}.
+P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
 </info-box>

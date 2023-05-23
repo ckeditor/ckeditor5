@@ -32,7 +32,7 @@ npm install --save @ckeditor/ckeditor5-horizontal-line
 And add it to your plugin list configuration:
 
 ```js
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

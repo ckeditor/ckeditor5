@@ -17,39 +17,32 @@ The ready–to–use builds of CKEditor like {@link examples/builds/classic-edit
 
 ```js
 // Basic classes to create an editor.
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
+import { Editor } from '@ckeditor/ckeditor5-core';
+import { ComponentFactory, EditorUI, EditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
+import { ElementReplacer, FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 // Interfaces to extend the basic Editor API.
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
+import { DataApiMixin, ElementApiMixin } from '@ckeditor/ckeditor5-core';
 
 // Helper function for adding interfaces to the Editor class.
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { mix } from '@ckeditor/ckeditor5-utils';
 
 // Helper function that gets the data from an HTML element that the Editor is attached to.
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+import { getDataFromElement } from '@ckeditor/ckeditor5-utils';
 
 // Helper function that binds the editor with an HTMLForm element.
-import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
+import { attachToForm } from '@ckeditor/ckeditor5-core';
 
 // Basic features that every editor should enable.
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoengine';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 // Basic features associated with the edited content.
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
-import UnderlineEditing from '@ckeditor/ckeditor5-basic-styles/src/underline/underlineediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/heading/headingediting';
+import { BoldEditing, ItalicEditing, UnderlineEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 ```
 
 <info-box info>

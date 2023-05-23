@@ -24,6 +24,7 @@ import type Element from './element';
 import type Item from './item';
 import type { default as Position, PositionOffset } from './position';
 import type Range from './range';
+import type Schema from './schema';
 
 import {
 	CKEditorError,
@@ -1153,12 +1154,12 @@ class LiveSelection extends Selection {
 			// When gravity is overridden then don't take node before into consideration.
 			if ( !this.isGravityOverridden ) {
 				// ...look at the node before caret and take attributes from it if it is a character node.
-				attrs = getAttrsIfCharacter( nodeBefore! );
+				attrs = getTextAttributes( nodeBefore, schema );
 			}
 
 			// 3. If not, look at the node after caret...
 			if ( !attrs ) {
-				attrs = getAttrsIfCharacter( nodeAfter! );
+				attrs = getTextAttributes( nodeAfter, schema );
 			}
 
 			// 4. If not, try to find the first character on the left, that is in the same node.
@@ -1166,9 +1167,9 @@ class LiveSelection extends Selection {
 			if ( !this.isGravityOverridden && !attrs ) {
 				let node = nodeBefore;
 
-				while ( node && !schema.isInline( node ) && !attrs ) {
+				while ( node && !attrs ) {
 					node = node.previousSibling;
-					attrs = getAttrsIfCharacter( node! );
+					attrs = getTextAttributes( node, schema );
 				}
 			}
 
@@ -1176,9 +1177,9 @@ class LiveSelection extends Selection {
 			if ( !attrs ) {
 				let node = nodeAfter;
 
-				while ( node && !schema.isInline( node ) && !attrs ) {
+				while ( node && !attrs ) {
 					node = node.nextSibling;
-					attrs = getAttrsIfCharacter( node! );
+					attrs = getTextAttributes( node, schema );
 				}
 			}
 
@@ -1211,14 +1212,37 @@ class LiveSelection extends Selection {
 /**
  * Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}.
  *
- * It takes model item, checks whether it is a text node (or text proxy) and, if so, returns it's attributes. If not, returns `null`.
+ * It checks if the passed model item is a text node (or text proxy) and, if so, returns it's attributes.
+ * If not, it checks if item is an inline object and does the same. Otherwise it returns `null`.
  */
-function getAttrsIfCharacter( node: Item ) {
+function getTextAttributes( node: Item | null, schema: Schema ): Iterable<[string, unknown]> | null {
+	if ( !node ) {
+		return null;
+	}
+
 	if ( node instanceof TextProxy || node instanceof Text ) {
 		return node.getAttributes();
 	}
 
-	return null;
+	if ( !schema.isInline( node ) ) {
+		return null;
+	}
+
+	// Stop on inline elements (such as `<softBreak>`) that are not objects (such as `<imageInline>` or `<mathml>`).
+	if ( !schema.isObject( node ) ) {
+		return [];
+	}
+
+	const attributes: Array<[string, unknown]> = [];
+
+	// Collect all attributes that can be applied to the text node.
+	for ( const [ key, value ] of node.getAttributes() ) {
+		if ( schema.checkAttribute( '$text', key ) ) {
+			attributes.push( [ key, value ] );
+		}
+	}
+
+	return attributes;
 }
 
 /**

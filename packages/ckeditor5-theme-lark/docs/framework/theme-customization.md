@@ -191,7 +191,7 @@ Alternatively, the style sheet can also be imported into a JavaScript file that 
 </info-box>
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 // To override the default styles, this file must be imported after ClassicEditor.
 import 'custom.css';

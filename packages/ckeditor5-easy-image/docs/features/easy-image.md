@@ -134,8 +134,8 @@ npm install --save @ckeditor/ckeditor5-easy-image
 Then add {@link module:easy-image/easyimage~EasyImage} to your plugin list and [configure](#configuration) the feature. For instance:
 
 ```js
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Image } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

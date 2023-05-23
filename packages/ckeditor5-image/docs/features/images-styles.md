@@ -148,7 +148,7 @@ See the result below:
 This set of buttons and styles is available by default in the predefined {@link installation/getting-started/predefined-builds#document-editor document editor build} and does not require any additional customization:
 
 ```js
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 
 DecoupledEditor.
 	.create( document.querySelector( '#editor' ) )

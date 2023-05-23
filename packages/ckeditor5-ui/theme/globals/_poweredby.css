@@ -5,8 +5,8 @@
 
 :root {
 	--ck-powered-by-line-height: 10px;
-	--ck-powered-by-padding-top: 2px;
-	--ck-powered-by-padding-left: 4px;
+	--ck-powered-by-padding-vertical: 2px;
+	--ck-powered-by-padding-horizontal: 4px;
 	--ck-powered-by-text-color: hsl(0, 0%, 31%);
 	--ck-powered-by-border-radius: var(--ck-border-radius);
 	--ck-powered-by-background: hsl(0, 0%, 100%);
@@ -16,7 +16,6 @@
 .ck.ck-balloon-panel.ck-powered-by-balloon {
 	--ck-border-radius: var(--ck-powered-by-border-radius);
 
-	border: 0;
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
@@ -31,7 +30,7 @@
 			opacity: .66;
 			filter: grayscale(80%);
 			line-height: var(--ck-powered-by-line-height);
-			padding: var(--ck-powered-by-padding-top) var(--ck-powered-by-padding-left);
+			padding: var(--ck-powered-by-padding-vertical) var(--ck-powered-by-padding-horizontal);
 		}
 
 		& .ck-powered-by__label {
@@ -60,8 +59,13 @@
 		}
 	}
 
+	&[class*="position_inside"] {
+		border-color: transparent;
+	}
+
 	&[class*="position_border"] {
 		border: var(--ck-focus-ring);
+		border-color: var(--ck-powered-by-border-color);
 	}
 }
 

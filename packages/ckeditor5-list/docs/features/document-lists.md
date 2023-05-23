@@ -7,7 +7,7 @@ modified_at: 2022-09-20
 
 {@snippet features/lists-source}
 
-# Document list
+# Document lists
 
 The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
 
@@ -48,7 +48,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `DocumentList` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist';
+import { DocumentList } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -70,7 +70,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `DocumentListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
 
 ```js
-import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties';
+import { DocumentListProperties } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -95,6 +95,28 @@ ClassicEditor
 <info-box warning>
 	The {@link module:list/documentlistproperties~DocumentListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
+
+## List merging
+
+By default, two lists of the same type (ordered and unordered) that are next to each other are merged together. This is done so that lists that visually appear to be one continuous list actually are, even if the user has accidentally created several of them.
+
+Unfortunately, in some cases this can be undesirable behavior. For example, two adjacent numbered lists, each with two items, will merge into a single list with the numbers 1 through 4.
+
+To prevent this behavior, enable the `AdjacentListsSupport` plugin.
+
+```js
+import AdjacentListsSupport from '@ckeditor/ckeditor5-list/src/documentlist/adjacentlistssupport.js';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			AdjacentListsSupport,
+			/* Other plugins */
+		],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ## Related features
 

@@ -9,6 +9,7 @@ import type {
 	DocumentListProperties,
 	DocumentListPropertiesEditing,
 	DocumentListPropertiesUtils,
+	AdjacentListsSupport,
 	DocumentListUtils,
 	ListConfig,
 	List,
@@ -56,6 +57,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ DocumentListPropertiesEditing.pluginName ]: DocumentListPropertiesEditing;
 		[ DocumentListPropertiesUtils.pluginName ]: DocumentListPropertiesUtils;
 		[ DocumentListUtils.pluginName ]: DocumentListUtils;
+		[ AdjacentListsSupport.pluginName ]: AdjacentListsSupport;
 		[ List.pluginName ]: List;
 		[ ListEditing.pluginName ]: ListEditing;
 		[ ListProperties.pluginName ]: ListProperties;
