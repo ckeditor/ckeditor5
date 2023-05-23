@@ -114,8 +114,6 @@ export default class ColorPickerView extends View {
 		} );
 
 		this.on( 'change:_hexColor', () => {
-			this.picker.setAttribute( 'color', this._hexColor );
-
 			// There has to be two way binding between properties.
 			// Extra precaution has to be taken to trigger change back only when the color really changes.
 			if ( convertColorToCommonHexFormat( this.color ) != convertColorToCommonHexFormat( this._hexColor ) ) {
