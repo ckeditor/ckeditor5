@@ -275,6 +275,22 @@ describe( 'ColorPickerView', () => {
 
 			expect( view.color ).to.equal( '#ff0000' );
 		} );
+
+		it( 'should not set any color directly to color picker component', () => {
+			const spy = sinon.spy( view.picker, 'setAttribute' );
+
+			const event = new CustomEvent( 'color-changed', {
+				detail: {
+					value: '#733232'
+				}
+			} );
+
+			view.picker.dispatchEvent( event );
+
+			clock.tick( 200 );
+
+			sinon.assert.notCalled( spy );
+		} );
 	} );
 
 	describe( 'focus()', () => {
