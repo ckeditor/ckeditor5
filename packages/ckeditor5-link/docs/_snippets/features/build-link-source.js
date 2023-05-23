@@ -5,15 +5,15 @@
 
 /* globals window */
 
-import { AutoLink } from '@ckeditor/ckeditor5-link';
+import { AutoLink, LinkImage } from '@ckeditor/ckeditor5-link';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-window.CKEditorPlugins = {
-	AutoLink
-};
+window.CKEditorPlugins = { AutoLink, PictureEditing, ImageResize, AutoImage, LinkImage, CKBox };
 
 window.ClassicEditor = ClassicEditor;
 window.CS_CONFIG = CS_CONFIG;
