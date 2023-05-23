@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-'use strict';
-
 /* eslint-env node */
+
+'use strict';
 
 const fs = require( 'fs' );
 const upath = require( 'upath' );
