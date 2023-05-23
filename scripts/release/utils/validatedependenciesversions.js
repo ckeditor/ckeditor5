@@ -37,7 +37,10 @@ module.exports = async function validateDependenciesVersions( { packagesDirector
 	if ( errors.length ) {
 		const error = new Error( `Found version mismatches for specified packages (${ errors.length }).` );
 		error.details = errors.slice( 0, 10 );
-		error.details.push( `...${ errors.length - 10 } more items` );
+
+		if ( errors.length > 10 ) {
+			error.details.push( `...${ errors.length - 10 } more item(s)` );
+		}
 
 		throw error;
 	}
