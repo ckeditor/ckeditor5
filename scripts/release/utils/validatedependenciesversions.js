@@ -19,8 +19,9 @@ const isCKEditor5Package = require( './isckeditor5package' );
  * @param {Object} options
  * @param {String} options.packagesDirectory Path to directory with packages to validate.
  * @param {String} options.version Version that all packages and their dependencies need to match.
+ * @param {Array.<String>} [options.skipPackages] Packages names that should not be validated.
  */
-module.exports = async function validateDependenciesVersions( { packagesDirectory, version } ) {
+module.exports = async function validateDependenciesVersions( { packagesDirectory, version, skipPackages = [] } ) {
 	const normalizedReleaseDirectory = normalizeTrim( packagesDirectory );
 	const globPattern = `${ normalizedReleaseDirectory }/*/package.json`;
 	const pkgJsonPaths = await glob( globPattern, { absolute: true, nodir: true } );
@@ -29,10 +30,12 @@ module.exports = async function validateDependenciesVersions( { packagesDirector
 		pkgJsonPaths.map( async pkgJsonPath => JSON.parse( await readFile( pkgJsonPath, 'utf8' ) ) )
 	);
 
-	const errors = pkgJsons.flatMap( pkgJson => ( [
-		...validatePackageMatchVersion( version, pkgJson ),
-		...validateDependenciesMatchVersion( version, pkgJson )
-	] ) );
+	const errors = pkgJsons
+		.filter( pkgJson => !skipPackages.includes( pkgJson.name ) )
+		.flatMap( pkgJson => ( [
+			...validatePackageMatchVersion( version, pkgJson ),
+			...validateDependenciesMatchVersion( version, pkgJson, skipPackages )
+		] ) );
 
 	if ( errors.length ) {
 		const error = new Error( `Found version mismatches for specified packages (${ errors.length }).` );
@@ -60,14 +63,16 @@ function validatePackageMatchVersion( version, pkgJson ) {
 /**
  * @param {String} version
  * @param {Object} pkgJson
+ * @param {Array.<String>} skipPackages
  * @returns {Array.<String>}
  */
-function validateDependenciesMatchVersion( version, pkgJson ) {
+function validateDependenciesMatchVersion( version, pkgJson, skipPackages ) {
 	const dependencies = pkgJson.dependencies || {};
 	const devDependencies = pkgJson.devDependencies || {};
 	const peerDependencies = pkgJson.peerDependencies || {};
 	const allDependencies = { ...dependencies, ...devDependencies, ...peerDependencies };
 	const ckeditor5Dependencies = Object.entries( allDependencies )
+		.filter( ( [ depName ] ) => !skipPackages.includes( depName ) )
 		.filter( ( [ depName ] ) => isCKEditor5Package( depName ) );
 
 	return ckeditor5Dependencies.reduce( ( accum, [ depName, depVersion ] ) => {
