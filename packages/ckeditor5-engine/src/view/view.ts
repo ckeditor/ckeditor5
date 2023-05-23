@@ -40,12 +40,14 @@ import {
 	CKEditorError,
 	ObservableMixin,
 	scrollViewportToShowTarget,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 
 type IfTrue<T> = T extends true ? true : never;
+type DomRange = globalThis.Range;
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -212,6 +214,8 @@ export default class View extends ObservableMixin() {
 		this.listenTo<ObservableChangeEvent>( this.document, 'change:isFocused', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
+
+		this.decorate( 'scrollToTheSelection' );
 	}
 
 	/**
@@ -418,15 +422,22 @@ export default class View extends ObservableMixin() {
 	} = {} ): void {
 		const range = this.document.selection.getFirstRange();
 
-		if ( range ) {
-			scrollViewportToShowTarget( {
-				target: this.domConverter.viewRangeToDom( range ),
-				viewportOffset,
-				ancestorOffset,
-				alignToTop,
-				forceScroll
-			} );
+		if ( !range ) {
+			return;
 		}
+
+		const options = {
+			target: this.domConverter.viewRangeToDom( range ),
+			// TODO: Separate top and bottom offsets.
+			viewportOffset,
+			ancestorOffset,
+			alignToTop,
+			forceScroll
+		};
+
+		this.fire<ViewBeforeScrollToTheSelectionEvent>( 'beforeScrollToTheSelection', options );
+
+		scrollViewportToShowTarget( options );
 	}
 
 	/**
@@ -776,3 +787,23 @@ export type ViewRenderEvent = {
 	name: 'render';
 	args: [];
 };
+
+/**
+ * TODO
+ */
+export type ViewScrollToTheSelectionEvent = DecoratedMethodEvent<View, 'scrollToTheSelection'>;
+
+/**
+ * TODO
+ */
+export type ViewBeforeScrollToTheSelectionEvent = {
+	name: 'beforeScrollToTheSelection';
+	args: [ {
+		target: DomRange;
+		viewportOffset: number;
+		ancestorOffset: number;
+		alignToTop?: boolean;
+		forceScroll?: boolean;
+	}];
+};
+

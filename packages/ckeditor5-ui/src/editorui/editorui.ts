@@ -20,11 +20,13 @@ import type { UIViewRenderEvent } from '../view';
 import {
 	ObservableMixin,
 	isVisible,
-	FocusTracker
+	FocusTracker,
+	type EventInfo
 } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine';
+import type { ViewBeforeScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine/src/view/view';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -122,6 +124,8 @@ export default abstract class EditorUI extends ObservableMixin() {
 	constructor( editor: Editor ) {
 		super();
 
+		const editingView = editor.editing.view;
+
 		this.editor = editor;
 		this.componentFactory = new ComponentFactory( editor );
 		this.focusTracker = new FocusTracker();
@@ -135,7 +139,9 @@ export default abstract class EditorUI extends ObservableMixin() {
 		} );
 
 		// Informs UI components that should be refreshed after layout change.
-		this.listenTo<ViewDocumentLayoutChangedEvent>( editor.editing.view.document, 'layoutChanged', () => this.update() );
+		this.listenTo<ViewDocumentLayoutChangedEvent>( editingView.document, 'layoutChanged', () => this.update() );
+		this.listenTo<ViewBeforeScrollToTheSelectionEvent>(
+			editingView, 'beforeScrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
 
 		this._initFocusTracking();
 	}
@@ -517,6 +523,24 @@ export default abstract class EditorUI extends ObservableMixin() {
 		toolbarView.focus();
 
 		return true;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param evt
+	 * @param data
+	 */
+	private _handleScrollToTheSelection(
+		evt: EventInfo<'beforeScrollToTheSelection'>,
+		data: ViewBeforeScrollToTheSelectionEvent[ 'args' ][ 0 ]
+	): void {
+		const viewportOffsetConfig = this.editor.config.get( 'ui.viewportOffset' );
+		const configuredTopOffset = viewportOffsetConfig && viewportOffsetConfig.top || 0;
+
+		data.viewportOffset += configuredTopOffset;
+
+		console.log( `EditorUI: making up for viewportOffset +${ configuredTopOffset }, total ${ data.viewportOffset }` );
 	}
 }
 

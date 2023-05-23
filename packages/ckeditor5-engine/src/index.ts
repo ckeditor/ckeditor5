@@ -183,7 +183,7 @@ export type {
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
 export type { ViewDocumentClickEvent } from './view/observer/clickobserver';
 export type { ViewDocumentSelectionChangeEvent } from './view/observer/selectionobserver';
-export type { ViewRenderEvent } from './view/view';
+export type { ViewRenderEvent, ViewScrollToTheSelectionEvent, ViewBeforeScrollToTheSelectionEvent } from './view/view';
 
 // View / Styles.
 export { StylesProcessor, type BoxSides } from './view/stylesmap';

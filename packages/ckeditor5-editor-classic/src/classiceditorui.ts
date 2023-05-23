@@ -9,8 +9,12 @@
 
 import type { Editor, ElementApi } from 'ckeditor5/src/core';
 import { EditorUI, normalizeToolbarConfig, type EditorUIReadyEvent } from 'ckeditor5/src/ui';
-import { enablePlaceholder } from 'ckeditor5/src/engine';
-import { ElementReplacer } from 'ckeditor5/src/utils';
+import {
+	enablePlaceholder,
+	type ViewBeforeScrollToTheSelectionEvent,
+	type ViewScrollToTheSelectionEvent
+} from 'ckeditor5/src/engine';
+import { ElementReplacer, Rect, type EventInfo } from 'ckeditor5/src/utils';
 import type ClassicEditorUIView from './classiceditoruiview';
 
 /**
@@ -32,6 +36,8 @@ export default class ClassicEditorUI extends EditorUI {
 	 */
 	private readonly _elementReplacer: ElementReplacer;
 
+	private _scrollToTheSelectionArgs: ViewScrollToTheSelectionEvent[ 'args' ][ 0 ] | null;
+
 	/**
 	 * Creates an instance of the classic editor UI class.
 	 *
@@ -44,6 +50,14 @@ export default class ClassicEditorUI extends EditorUI {
 		this.view = view;
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 		this._elementReplacer = new ElementReplacer();
+		this._scrollToTheSelectionArgs = null;
+
+		this.listenTo<ViewScrollToTheSelectionEvent>( editor.editing.view, 'scrollToTheSelection', ( evt, args ) => {
+			this._scrollToTheSelectionArgs = args;
+		} );
+
+		this.listenTo<ViewBeforeScrollToTheSelectionEvent>(
+			editor.editing.view, 'beforeScrollToTheSelection', this._handleScrollToTheSelectionWithStickyPanel.bind( this ) );
 	}
 
 	/**
@@ -163,6 +177,46 @@ export default class ClassicEditorUI extends EditorUI {
 				isDirectHost: false,
 				keepOnFocus: true
 			} );
+		}
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param evt
+	 * @param data
+	 */
+	private _handleScrollToTheSelectionWithStickyPanel(
+		evt: EventInfo<'beforeScrollToTheSelection'>,
+		data: ViewBeforeScrollToTheSelectionEvent[ 'args' ][ 0 ]
+	): void {
+		const wasPanelSticky = this.view.stickyPanel.isSticky;
+
+		if ( wasPanelSticky ) {
+			const stickyPanelHeight = new Rect( this.view.stickyPanel.element! ).height;
+
+			data.viewportOffset += stickyPanelHeight;
+
+			console.log( `ClassicEditorUI: making up for the sticky panel +${ stickyPanelHeight }, total ${ data.viewportOffset }` );
+		} else {
+			// Wait for (async) DOM scroll and then for the panel to become sticky (or not).
+			const onPanelStickyChange = () => {
+				if ( !this.view.stickyPanel.isSticky ) {
+					return;
+				}
+
+				console.log( 'ClassicEditorUI: Re-scrolling because the panel became sticky', ...this._scrollToTheSelectionArgs! );
+
+				this.editor.editing.view.scrollToTheSelection( ...this._scrollToTheSelectionArgs! );
+			};
+
+			this.listenTo( this.view.stickyPanel, 'change:isSticky', onPanelStickyChange );
+
+			// This works as a post-scroll-fixer because we cannot predict whether the panel will be sticky after scrolling or not.
+			// Listen for a short period of time only and if the toolbar does not become sticky very soon, cancel the listener.
+			setTimeout( () => {
+				this.stopListening( this.view.stickyPanel, 'change:isSticky', onPanelStickyChange );
+			}, 20 );
 		}
 	}
 }
