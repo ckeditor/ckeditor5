@@ -11,11 +11,11 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import { DocumentList, DocumentListProperties, DocumentListSeparator } from '../../src';
+import { DocumentList, DocumentListProperties, AdjacentListsSupport } from '../../src';
 
 import stubUid from './_utils/uid';
 
-describe( 'DocumentListSeparator', () => {
+describe( 'AdjacentListsSupport', () => {
 	let editorElement, editor, model, view;
 
 	testUtils.createSinonSandbox();
@@ -28,7 +28,7 @@ describe( 'DocumentListSeparator', () => {
 			plugins: [
 				Paragraph,
 				DocumentList,
-				DocumentListSeparator
+				AdjacentListsSupport
 			]
 		} );
 
@@ -49,11 +49,11 @@ describe( 'DocumentListSeparator', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( DocumentListSeparator.pluginName ).to.equal( 'DocumentListSeparator' );
+		expect( AdjacentListsSupport.pluginName ).to.equal( 'AdjacentListsSupport' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( DocumentListSeparator ) ).to.be.instanceOf( DocumentListSeparator );
+		expect( editor.plugins.get( AdjacentListsSupport ) ).to.be.instanceOf( AdjacentListsSupport );
 	} );
 
 	it( 'shoud set proper schema rules', () => {
@@ -252,7 +252,7 @@ describe( 'DocumentListSeparator', () => {
 	} );
 } );
 
-describe( 'DocumentListSeparator - integrations', () => {
+describe( 'AdjacentListsSupport - integrations', () => {
 	let editorElement, editor, model;
 
 	testUtils.createSinonSandbox();
@@ -266,7 +266,7 @@ describe( 'DocumentListSeparator - integrations', () => {
 				Paragraph,
 				DocumentList,
 				DocumentListProperties,
-				DocumentListSeparator
+				AdjacentListsSupport
 			]
 		} );
 

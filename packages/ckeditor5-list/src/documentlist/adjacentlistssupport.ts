@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/documentlist/documentlistseparator
+ * @module list/documentlist/adjacentlistssupport
  */
 
 import type { GetCallback } from 'ckeditor5/src/utils';
@@ -12,12 +12,12 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import type { UpcastElementEvent, ViewElement } from 'ckeditor5/src/engine';
 
-export default class DocumentListSeparator extends Plugin {
+export default class AdjacentListsSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DocumentListSeparator' {
-		return 'DocumentListSeparator';
+	public static get pluginName(): 'AdjacentListsSupport' {
+		return 'AdjacentListsSupport';
 	}
 
 	/**

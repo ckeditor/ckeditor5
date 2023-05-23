@@ -40,7 +40,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import DocumentList from '../../src/documentlist';
 import DocumentListProperties from '../../src/documentlistproperties';
-import DocumentListSeparator from '../../src/documentlist/documentlistseparator';
+import AdjacentListsSupport from '../../src/documentlist/adjacentlistssupport';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -51,7 +51,7 @@ ClassicEditor
 				AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
 				CloudServices, SourceEditing,
 				DocumentList,
-				DocumentListSeparator,
+				AdjacentListsSupport,
 				DocumentListProperties
 			],
 			toolbar: [
