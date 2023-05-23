@@ -122,12 +122,23 @@ describe( 'SpecialCharactersNavigationView', () => {
 				expect( groupDropdownView.buttonView.isOn ).to.be.true;
 				expect( groupDropdownView.buttonView.withText ).to.be.true;
 				expect( groupDropdownView.buttonView.tooltip ).to.equal( 'Character categories' );
+				expect( groupDropdownView.buttonView.ariaLabel ).to.equal( 'Character categories' );
+				expect( groupDropdownView.buttonView.ariaLabelledBy ).to.be.undefined;
 			} );
 
 			it( 'should have class "ck-dropdown__button_label-width_auto"', () => {
 				const element = groupDropdownView.buttonView.element;
 
 				expect( element.classList.contains( 'ck-dropdown__button_label-width_auto' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'character group list', () => {
+			it( 'should have properties set', () => {
+				const listView = groupDropdownView.listView;
+
+				expect( listView.element.role ).to.equal( 'menu' );
+				expect( listView.element.ariaLabel ).to.equal( 'Character categories' );
 			} );
 		} );
 

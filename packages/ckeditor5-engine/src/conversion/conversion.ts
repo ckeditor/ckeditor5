@@ -145,9 +145,9 @@ export default class Conversion {
 		this._createConversionHelpers( { name: alias, dispatchers: [ dispatcher ], isDowncast } );
 	}
 
-	public for( groupName: 'downcast' | `${ string }Downcast` ): DowncastHelpers;
-	public for( groupName: 'upcast' | `${ string }Upcast` ): UpcastHelpers;
-	public for( groupName: string ): DowncastHelpers | UpcastHelpers;
+	public for( groupName: 'downcast' | 'dataDowncast' | 'editingDowncast' ): DowncastHelpers;
+	public for( groupName: 'upcast' ): UpcastHelpers;
+	public for<T extends string>( groupName: T ): ConversionType<T>;
 
 	/**
 	 * Provides a chainable API to assign converters to a conversion dispatchers group.
@@ -712,3 +712,9 @@ function* _getUpcastDefinition( model: unknown, view: unknown, upcastAlso?: unkn
 		}
 	}
 }
+
+type ConversionType<T extends string> = T extends `${ string }Downcast`
+	? DowncastHelpers
+	: T extends `${ string }Upcast`
+		? UpcastHelpers
+		: DowncastHelpers | UpcastHelpers;

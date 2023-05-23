@@ -244,6 +244,10 @@ describe( 'table utils', () => {
 					false
 				] );
 			} );
+
+			it( 'should set role of a button for each style', () => {
+				expect( definitions.map( ( { model: { role } } ) => role ).every( item => item === 'menuitemradio' ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'fillToolbar()', () => {

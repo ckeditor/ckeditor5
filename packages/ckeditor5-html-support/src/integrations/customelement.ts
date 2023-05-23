@@ -14,7 +14,7 @@ import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor
 
 import DataSchema from '../dataschema';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { type GHSViewAttributes, setViewAttributes } from '../conversionutils';
+import { type GHSViewAttributes, setViewAttributes } from '../utils';
 
 /**
  * Provides the General HTML Support for custom elements (not registered in the {@link module:html-support/dataschema~DataSchema}).

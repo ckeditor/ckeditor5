@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Finnish (https://www.transifex.com/ckeditor/teams/11143/fi/)\n"
+"Language-Team: Finnish (https://app.transifex.com/ckeditor/teams/11143/fi/)\n"
 "Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

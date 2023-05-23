@@ -145,8 +145,11 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this.on<ObservableChangeEvent<boolean>>( 'change:_isResizingAllowed', ( evt, name, value ) => {
 			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
+			const classAction = value ? 'removeClass' : 'addClass';
 			editor.editing.view.change( writer => {
-				writer[ value ? 'removeClass' : 'addClass' ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot()! );
+				for ( const root of editor.editing.view.document.roots ) {
+					writer[ classAction ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot( root.rootName )! );
+				}
 			} );
 		} );
 	}
@@ -465,11 +468,16 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		domEventData.preventDefault();
-		eventInfo.stop();
-
 		const editor = this.editor;
 		const modelTable = editor.editing.mapper.toModelElement( target.findAncestor( 'figure' )! )!;
+
+		// Do not resize if table model is in non-editable place.
+		if ( !editor.model.canEditAt( modelTable ) ) {
+			return;
+		}
+
+		domEventData.preventDefault();
+		eventInfo.stop();
 
 		// The column widths are calculated upon mousedown to allow lazy applying the `columnWidths` attribute on the table.
 		const columnWidthsInPx = _calculateDomColumnWidths( modelTable, this._tableUtilsPlugin, editor );

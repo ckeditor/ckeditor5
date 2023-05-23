@@ -235,7 +235,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 				'aria-label': bind.to( 'ariaLabel' ),
 				style: {
 					maxWidth: bind.to( 'maxWidth' )
-				}
+				},
+				tabindex: -1
 			},
 
 			children: this.children,
@@ -254,6 +255,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 */
 	public override render(): void {
 		super.render();
+
+		this.focusTracker.add( this.element! );
 
 		// Children added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {

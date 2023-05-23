@@ -7,7 +7,7 @@
  * @module font/fontconfig
  */
 
-import type { ColorOption } from 'ckeditor5/src/ui';
+import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui';
 import type { MatcherPattern, ViewElementDefinition } from 'ckeditor5/src/engine';
 
 /**
@@ -153,6 +153,13 @@ export interface FontColorConfig {
 	 * ```
 	 */
 	columns?: number;
+
+	/**
+	 * Configuration of the color picker feature.
+	 *
+	 * If set to `false` the picker will not appear.
+	 */
+	colorPicker?: false | ColorPickerConfig;
 }
 
 /**

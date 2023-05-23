@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Romanian (https://www.transifex.com/ckeditor/teams/11143/ro/)\n"
+"Language-Team: Romanian (https://app.transifex.com/ckeditor/teams/11143/ro/)\n"
 "Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
@@ -55,3 +55,7 @@ msgstr "Culoarea de fundal a fontului"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "Culorile din document"
+
+msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
+msgid "Accept"
+msgstr ""

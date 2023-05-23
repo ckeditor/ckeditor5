@@ -51,7 +51,7 @@ import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinitio
 
 export default {
 	block: [
-		// Existing features
+		// Existing features.
 		{
 			model: 'codeBlock',
 			view: 'pre'
@@ -117,7 +117,7 @@ export default {
 			view: 'img'
 		},
 
-		// Compatibility features
+		// Compatibility features.
 		{
 			model: 'htmlP',
 			view: 'p',
@@ -514,103 +514,156 @@ export default {
 			}
 		}
 	] as Array<DataSchemaBlockElementDefinition>,
+
 	inline: [
+		// Existing features (attribute set on an existing model element).
+		{
+			model: 'htmlLiAttributes',
+			view: 'li',
+			appliesToBlock: true
+		},
+		{
+			model: 'htmlListAttributes',
+			view: 'ol',
+			appliesToBlock: true
+		},
+		{
+			model: 'htmlListAttributes',
+			view: 'ul',
+			appliesToBlock: true
+		},
+		{
+			model: 'htmlFigureAttributes',
+			view: 'figure',
+			appliesToBlock: 'table'
+		},
+		{
+			model: 'htmlTheadAttributes',
+			view: 'thead',
+			appliesToBlock: 'table'
+		},
+		{
+			model: 'htmlTbodyAttributes',
+			view: 'tbody',
+			appliesToBlock: 'table'
+		},
+		{
+			model: 'htmlFigureAttributes',
+			view: 'figure',
+			appliesToBlock: 'imageBlock'
+		},
+
+		// Compatibility features.
 		{
 			model: 'htmlAcronym',
 			view: 'acronym',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlTt',
 			view: 'tt',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlFont',
 			view: 'font',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlTime',
 			view: 'time',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlVar',
 			view: 'var',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlBig',
 			view: 'big',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlSmall',
 			view: 'small',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlSamp',
 			view: 'samp',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlQ',
 			view: 'q',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlOutput',
 			view: 'output',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlKbd',
 			view: 'kbd',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlBdi',
 			view: 'bdi',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlBdo',
 			view: 'bdo',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlAbbr',
 			view: 'abbr',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
@@ -673,7 +726,8 @@ export default {
 			view: 'del',
 			coupledAttribute: 'strikethrough',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		// TODO According to HTML-spec can behave as div-like element, although CKE4 only handles it as an inline element.
@@ -681,7 +735,8 @@ export default {
 			model: 'htmlIns',
 			view: 'ins',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
@@ -724,39 +779,44 @@ export default {
 			model: 'htmlMark',
 			view: 'mark',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlSpan',
 			view: 'span',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlCite',
 			view: 'cite',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlLabel',
 			view: 'label',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 		{
 			model: 'htmlDfn',
 			view: 'dfn',
 			attributeProperties: {
-				copyOnEnter: true
+				copyOnEnter: true,
+				isFormatting: true
 			}
 		},
 
-		// Objects
+		// Objects.
 		{
 			model: 'htmlObject',
 			view: 'object',

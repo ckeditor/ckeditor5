@@ -8,12 +8,15 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import type { MatcherPattern } from 'ckeditor5/src/engine';
-import type { DataFilter, DataSchema } from '@ckeditor/ckeditor5-html-support';
+import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import StyleCommand from './stylecommand';
-import StyleUtils, { type NormalizedStyleDefinitions } from './styleutils';
-import type { StyleConfig, StyleDefinition } from './styleconfig';
+import StyleUtils from './styleutils';
+import type { StyleConfig } from './styleconfig';
+
+import DocumentListStyleSupport from './integrations/documentlist';
+import TableStyleSupport from './integrations/table';
+import LinkStyleSupport from './integrations/link';
 
 /**
  * The style engine feature.
@@ -34,7 +37,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'GeneralHtmlSupport', StyleUtils ] as const;
+		return [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport, TableStyleSupport, LinkStyleSupport ] as const;
 	}
 
 	/**
@@ -49,29 +52,6 @@ export default class StyleEditing extends Plugin {
 
 		editor.commands.add( 'style', new StyleCommand( editor, normalizedStyleDefinitions ) );
 
-		this._configureGHSDataFilter( normalizedStyleDefinitions );
+		styleUtils.configureGHSDataFilter( normalizedStyleDefinitions );
 	}
-
-	/**
-	 * This is where the styles feature configures the GHS feature. This method translates normalized
-	 * {@link module:style/styleconfig~StyleDefinition style definitions} to
-	 * {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
-	 * {@link module:html-support/datafilter~DataFilter} plugin.
-	 */
-	private _configureGHSDataFilter( { block, inline }: NormalizedStyleDefinitions ): void {
-		const ghsDataFilter: DataFilter = this.editor.plugins.get( 'DataFilter' );
-
-		ghsDataFilter.loadAllowedConfig( block.map( normalizedStyleDefinitionToMatcherPattern ) );
-		ghsDataFilter.loadAllowedConfig( inline.map( normalizedStyleDefinitionToMatcherPattern ) );
-	}
-}
-
-/**
- * Translates a normalized style definition to a view matcher pattern.
- */
-function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherPattern {
-	return {
-		name: element,
-		classes
-	};
 }

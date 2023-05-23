@@ -98,6 +98,16 @@ describe( 'DeleteCommand', () => {
 			expect( unlockSpy.calledOnce ).to.be.true;
 		} );
 
+		it( 'should not execute when selection is in non-editable place', () => {
+			setData( model, '<paragraph>foo[]bar</paragraph>' );
+
+			model.document.isReadOnly = true;
+
+			editor.execute( 'delete' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
 		it( 'deletes previous character when selection is collapsed', () => {
 			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
