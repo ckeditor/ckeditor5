@@ -207,6 +207,23 @@ describe( 'ColorPickerView', () => {
 
 				sinon.assert.calledOnce( spy );
 			} );
+
+			it( 'should set color in color-picker component when its not visible', () => {
+				const spy = sinon.spy( view.picker, 'setAttribute' );
+				view.picker.style.display = 'none';
+
+				const event = new CustomEvent( 'color-changed', {
+					detail: {
+						value: '#733232'
+					}
+				} );
+
+				view.picker.dispatchEvent( event );
+
+				clock.tick( 200 );
+
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 
 		describe( 'should not update color property', () => {
