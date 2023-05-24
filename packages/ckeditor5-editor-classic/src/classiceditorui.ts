@@ -197,7 +197,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 			data.viewportOffset.top += stickyPanelHeight;
 
-			console.log( `ClassicEditorUI: making up for the sticky panel +${ stickyPanelHeight }, total`, data.viewportOffset );
+			// console.log( `ClassicEditorUI: making up for the sticky panel +${ stickyPanelHeight }, total`, data.viewportOffset );
 		} else {
 			// Wait for (async) DOM scroll and then for the panel to become sticky (or not).
 			const onPanelStickyChange = () => {
@@ -205,7 +205,7 @@ export default class ClassicEditorUI extends EditorUI {
 					return;
 				}
 
-				console.log( 'ClassicEditorUI: Re-scrolling because the panel became sticky', ...this._scrollToTheSelectionArgs! );
+				// console.log( 'ClassicEditorUI: Re-scrolling because the panel became sticky', ...this._scrollToTheSelectionArgs! );
 
 				this.editor.editing.view.scrollToTheSelection( ...this._scrollToTheSelectionArgs! );
 			};

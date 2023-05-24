@@ -420,11 +420,11 @@ export default class View extends ObservableMixin() {
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 	} = {} ): void {
-		console.group( 'View#scrollToTheSelection()' );
+		// console.group( 'View#scrollToTheSelection()' );
 		const range = this.document.selection.getFirstRange();
 
 		if ( !range ) {
-			console.groupEnd();
+			// console.groupEnd();
 			return;
 		}
 

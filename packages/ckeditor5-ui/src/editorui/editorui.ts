@@ -544,7 +544,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 		data.viewportOffset.top += configuredViewportOffset.top;
 		data.viewportOffset.bottom += configuredViewportOffset.bottom;
 
-		console.log( 'EditorUI: making up for viewportOffset +', configuredViewportOffset, 'total', data.viewportOffset );
+		// console.log( 'EditorUI: making up for viewportOffset +', configuredViewportOffset, 'total', data.viewportOffset );
 	}
 }
 
