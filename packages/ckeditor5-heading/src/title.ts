@@ -105,16 +105,16 @@ export default class Title extends Plugin {
 		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h2', dataViewModelH1Insertion, { priority: 'high' } );
 		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h3', dataViewModelH1Insertion, { priority: 'high' } );
 
-		// // Take care about correct `title` element structure.
+		// Take care about correct `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );
-		//
-		// // Create and take care of correct position of a `title` element.
+
+		// Create and take care of correct position of a `title` element.
 		model.document.registerPostFixer( writer => this._fixTitleElement( writer ) );
-		//
-		// // Create element for `Body` placeholder if it is missing.
+
+		// Create element for `Body` placeholder if it is missing.
 		model.document.registerPostFixer( writer => this._fixBodyElement( writer ) );
-		//
-		// // Prevent from adding extra at the end of the document.
+
+		// Prevent from adding extra at the end of the document.
 		model.document.registerPostFixer( writer => this._fixExtraParagraph( writer ) );
 
 		// Attach `Title` and `Body` placeholders to the empty title and/or content.
