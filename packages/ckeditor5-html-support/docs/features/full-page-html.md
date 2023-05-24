@@ -8,7 +8,7 @@ modified_at: 2023-05-15
 
 {@snippet features/general-html-support-source}
 
-By default, the editor filters out or replaces certain HTML tags. You can change the behavior using the Full Page HTML feature. It keeps the whole HTML page in the editor data. Unlike {@link features/general-html-support GHS}, which focuses on tags inside the content, this feature keeps the markup that's usually not visible to the user, like the wrapping `html` tag.
+The Full Page HTML feature allows you to preserve the whole HTML page in the editor data. With this plugin, you can enable certain HTML tags in your editor. But, unlike GHS, which focuses on tags inside the content, this feature keeps the markup that's usually not visible to the user, like the wrapping `<html></html>` tag.
 
 ## Demo
 
@@ -41,13 +41,9 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
-## Configuration
-
-The {@link module:html-support/fullpage~FullPage} plugin enables support for elements by default. To make it work, place it inside the `plugins` array. You don't need an extra configuration.
-
 ## Additional feature information
 
-Here are some examples of features you can enable by using this plugin:
+Here are some examples of tags you can enable by using this plugin:
 
 * The HTML doctype preamble: `<!DOCTYPE html>`
 * The HTML root element: `<html></html>`
@@ -59,6 +55,6 @@ Here are some examples of features you can enable by using this plugin:
 
 CKEditor 5 has other features related to HTML editing that you may want to check:
 
-* {@link features/general-html-support General HTML Support} &ndash; It lets you add elements, attributes, classes, and styles to the content elements and ensures this markup stays in the editor window and the output. Combining these two plugins allows you to edit the source of the whole HTML page.
-* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over content editing.
+* {@link features/general-html-support General HTML Support} &ndash; It lets you add elements, attributes, classes, and styles to the content elements and ensures this markup stays in the editor window and the output.
+* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.

@@ -7,7 +7,7 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import './general-html-support.css';
+import './full-page-html.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-full-page-html' ), {
