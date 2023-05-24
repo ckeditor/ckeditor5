@@ -1,9 +1,9 @@
 import { Command } from "@ckeditor/ckeditor5-core";
 
 export default class InsertEmbeddedIFrameCommand extends Command {
-	execute(url) {
+	execute({ url, height = '500px', width = '100%' }) {
 		this.editor.model.change(writer => {
-			const embeddedIFrame = writer.createElement('embeddedIFrame', { source: url })
+			const embeddedIFrame = writer.createElement('embeddedIFrame', { source: url, height: height, width: width })
 			this.editor.model.insertObject(embeddedIFrame);
 		});
 	}
