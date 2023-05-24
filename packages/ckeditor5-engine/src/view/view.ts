@@ -450,7 +450,7 @@ export default class View extends ObservableMixin() {
 
 		scrollViewportToShowTarget( options );
 
-		console.groupEnd();
+		// console.groupEnd();
 	}
 
 	/**
