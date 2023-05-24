@@ -18,9 +18,16 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { Image,
+	ImageCaption,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	PictureEditing,
+	ImageResize,
+	AutoImage } from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
-import { Link } from '@ckeditor/ckeditor5-link';
+import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -31,6 +38,8 @@ import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { UpcastWriter } from '@ckeditor/ckeditor5-engine';
 import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
+
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -224,7 +233,12 @@ ClassicEditor
 			Font,
 			Alignment,
 			HorizontalLine,
-			HCardEditing
+			HCardEditing,
+			PictureEditing,
+			ImageResize,
+			AutoImage,
+			LinkImage,
+			CKBox
 		],
 		toolbar: {
 			items: [
