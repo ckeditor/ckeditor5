@@ -65,6 +65,7 @@ import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-
 import { Exercise } from './plugins/exercise/index';
 // @ts-ignore
 import { Modal } from './plugins/modal';
+import { StyledLink } from './plugins/styledLink/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -116,7 +117,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		ContentTemplates,
 		Exercise,
 		Modal,
-
+		StyledLink
 	];
 
 	public static override defaultConfig = {
@@ -162,8 +163,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'contentTemplates',
 				'exercise',
 				'modal',
-			],
-
+				'styledLink'
+			]
 		},
 		image: {
 			resizeUnit: 'px' as const,
@@ -177,7 +178,11 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 			]
 		},
 		table: {
-			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
 		},
 		list: {
 			properties: {
