@@ -176,6 +176,37 @@ describe( 'ColorPickerView', () => {
 					} );
 				} );
 			} );
+
+			it( 'should not set any color directly to color-picker component', () => {
+				const spy = sinon.spy( view.picker, 'setAttribute' );
+
+				const event = new CustomEvent( 'color-changed', {
+					detail: {
+						value: '#733232'
+					}
+				} );
+
+				view.picker.dispatchEvent( event );
+
+				clock.tick( 200 );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should set color in color-picker component when change was caused by input', () => {
+				const spy = sinon.spy( view.picker, 'setAttribute' );
+
+				const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
+				view.color = '#000000';
+
+				fieldView.isFocused = true;
+				fieldView.value = '#ffffff';
+				fieldView.fire( 'input' );
+
+				clock.tick( 200 );
+
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 
 		describe( 'should not update color property', () => {
@@ -274,22 +305,6 @@ describe( 'ColorPickerView', () => {
 			clock.tick( 200 );
 
 			expect( view.color ).to.equal( '#ff0000' );
-		} );
-
-		it( 'should not set any color directly to color picker component', () => {
-			const spy = sinon.spy( view.picker, 'setAttribute' );
-
-			const event = new CustomEvent( 'color-changed', {
-				detail: {
-					value: '#733232'
-				}
-			} );
-
-			view.picker.dispatchEvent( event );
-
-			clock.tick( 200 );
-
-			sinon.assert.notCalled( spy );
 		} );
 	} );
 
