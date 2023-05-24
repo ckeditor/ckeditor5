@@ -527,7 +527,7 @@ export interface EditorConfig {
 	updateSourceElementOnDestroy?: boolean;
 
 	/**
-	 * The license key for the CKEditor 5 premium features.
+	 * The license key for the CKEditor 5 commercial license and the premium features.
 	 *
 	 * If you do not have a key yet, please [contact us](https://ckeditor.com/contact/) or
 	 * [order a trial](https://orders.ckeditor.com/trial/premium-features).
