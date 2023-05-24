@@ -535,12 +535,16 @@ export default abstract class EditorUI extends ObservableMixin() {
 		evt: EventInfo<'beforeScrollToTheSelection'>,
 		data: ViewBeforeScrollToTheSelectionEvent[ 'args' ][ 0 ]
 	): void {
-		const viewportOffsetConfig = this.editor.config.get( 'ui.viewportOffset' );
-		const configuredTopOffset = viewportOffsetConfig && viewportOffsetConfig.top || 0;
+		const configuredViewportOffset = {
+			top: 0,
+			bottom: 0,
+			...( this.editor.config.get( 'ui.viewportOffset' ) || {} )
+		};
 
-		data.viewportOffset += configuredTopOffset;
+		data.viewportOffset.top += configuredViewportOffset.top;
+		data.viewportOffset.bottom += configuredViewportOffset.bottom;
 
-		console.log( `EditorUI: making up for viewportOffset +${ configuredTopOffset }, total ${ data.viewportOffset }` );
+		console.log( 'EditorUI: making up for viewportOffset +', configuredViewportOffset, 'total', data.viewportOffset );
 	}
 }
 

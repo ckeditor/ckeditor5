@@ -415,15 +415,26 @@ export default class View extends ObservableMixin() {
 		viewportOffset = 20,
 		ancestorOffset = 20
 	}: {
-		readonly viewportOffset?: number;
+		readonly viewportOffset?: number | { top: number; bottom: number; left: number; right: number };
 		readonly ancestorOffset?: number;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 	} = {} ): void {
+		console.group( 'View#scrollToTheSelection()' );
 		const range = this.document.selection.getFirstRange();
 
 		if ( !range ) {
+			console.groupEnd();
 			return;
+		}
+
+		if ( typeof viewportOffset === 'number' ) {
+			viewportOffset = {
+				top: viewportOffset,
+				bottom: viewportOffset,
+				left: viewportOffset,
+				right: viewportOffset
+			};
 		}
 
 		const options = {
@@ -438,6 +449,8 @@ export default class View extends ObservableMixin() {
 		this.fire<ViewBeforeScrollToTheSelectionEvent>( 'beforeScrollToTheSelection', options );
 
 		scrollViewportToShowTarget( options );
+
+		console.groupEnd();
 	}
 
 	/**
@@ -800,7 +813,7 @@ export type ViewBeforeScrollToTheSelectionEvent = {
 	name: 'beforeScrollToTheSelection';
 	args: [ {
 		target: DomRange;
-		viewportOffset: number;
+		viewportOffset: { top: number; bottom: number };
 		ancestorOffset: number;
 		alignToTop?: boolean;
 		forceScroll?: boolean;

@@ -195,9 +195,9 @@ export default class ClassicEditorUI extends EditorUI {
 		if ( wasPanelSticky ) {
 			const stickyPanelHeight = new Rect( this.view.stickyPanel.element! ).height;
 
-			data.viewportOffset += stickyPanelHeight;
+			data.viewportOffset.top += stickyPanelHeight;
 
-			console.log( `ClassicEditorUI: making up for the sticky panel +${ stickyPanelHeight }, total ${ data.viewportOffset }` );
+			console.log( `ClassicEditorUI: making up for the sticky panel +${ stickyPanelHeight }, total`, data.viewportOffset );
 		} else {
 			// Wait for (async) DOM scroll and then for the panel to become sticky (or not).
 			const onPanelStickyChange = () => {
