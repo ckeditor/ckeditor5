@@ -25,6 +25,57 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+class JSONData extends Plugin {
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+	public init() {
+		const editor: any = this.editor;
+
+		// Override the data initialisation process - supports only direct JSON input.
+		editor.data.init = ( allRootsData: any ) => {
+			const parsedData = JSON.parse( allRootsData.trim() );
+
+			editor.model.enqueueChange( 'transparent', ( writer: any ) => {
+				const root = editor.model.document.getRoot( parsedData.root );
+
+				append( writer, root, parsedData.children );
+			} );
+		};
+
+		// Override stringify method used by `editor.getData()`.
+		editor.data.stringify = ( modelElementOrFragment: any ) => {
+			const data = {
+				// Supports only stringification of a root element.
+				root: modelElementOrFragment.toJSON(),
+				children: Array.from( modelElementOrFragment.getChildren() ).map( ( child: any ) => child.toJSON() )
+			};
+
+			return JSON.stringify( data );
+		};
+	}
+}
+
+/**
+ * Creates children from passed definitions.
+ *
+ * @param {module:engine/model/writer~Writer} writer
+ * @param {module:engine/model/element~Element} parentElement
+ * @param {Array.<Object>} childrenData
+ */
+function append( writer: any, parentElement: any, childrenData: any = [] ) {
+	for ( const child of childrenData ) {
+		if ( !child.name ) {
+			writer.appendText( child.data, child.attributes, parentElement );
+		} else {
+			const childElement = writer.createElement( child.name, child.attributes );
+
+			writer.append( childElement, parentElement );
+
+			append( writer, childElement, child.children );
+		}
+	}
+}
 
 export default class ClassicEditor extends ClassicEditorBase {
 	public static override builtinPlugins = [
@@ -53,7 +104,8 @@ export default class ClassicEditor extends ClassicEditorBase {
 		PictureEditing,
 		Table,
 		TableToolbar,
-		TextTransformation
+		TextTransformation,
+		JSONData
 	];
 
 	public static override defaultConfig = {
