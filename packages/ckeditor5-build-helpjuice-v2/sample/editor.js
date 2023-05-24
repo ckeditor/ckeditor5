@@ -61,6 +61,7 @@ ClassicEditor
 	.then(editor => {
 		const viewDocument = editor.editing.view.document;
 		window.editor = editor;
+		CKEditorInspector.attach(editor);
 
 		editor.listenTo( viewDocument, 'click', (event, data) => {
 			const modelElement = editor.editing.mapper.toModelElement(data.target);

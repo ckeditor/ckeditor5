@@ -1,0 +1,23 @@
+.hj-embedded-iframe-container iframe {
+	height: 100%;
+	width: 100%;
+}
+
+.ck-widget.hj-embedded-iframe-container:before {
+    background: #999;
+    border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+    color: var(--ck-color-base-background);
+    content: 'Embedded IFrame';
+    font-family: var(--ck-font-face);
+    font-size: var(--ck-font-size-tiny);
+    left: var(--ck-spacing-standard);
+    padding: calc(var(--ck-spacing-tiny) + var(--ck-html-embed-unfocused-outline-width)) var(--ck-spacing-small) var(--ck-spacing-tiny);
+    top: 0;
+    transition: background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
+	position: absolute;
+	z-index: 1;
+}
+
+.ck.ck-editor__editable:not(.ck-blurred) .ck-widget.hj-embedded-iframe-container.ck-widget_selected:before {
+	background: var(--ck-color-focus-border);
+}

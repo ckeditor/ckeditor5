@@ -55,6 +55,7 @@ import Comments from './plugins/comments/comments';
 import Glossary from './plugins/glossary/glossary';
 import CmdDelete from './plugins/cmddelete/cmddelete';
 import { FontFamily, FontSize, FontColor, FontBackgroundColor } from './plugins/font';
+import EmbeddedIFrame from './plugins/embeddediframe/embeddediframe';
 
 const { objectInline, objectLeft, objectRight, objectCenter } = icons;
 
@@ -133,7 +134,8 @@ HelpjuiceEditor.builtinPlugins = [
 	Strikethrough,
 	Subscript,
 	Superscript,
-	CmdDelete
+	CmdDelete,
+	EmbeddedIFrame
 ];
 
 function MentionCustomization( editor: any ) {
