@@ -482,6 +482,6 @@ function isDomElement( value: any ): value is Element {
 /**
  * Returns the value of the `position` style of an `HTMLElement`.
  */
-function getElementPosition( element: HTMLElement ) {
+function getElementPosition( element: HTMLElement ): string {
 	return element.ownerDocument.defaultView!.getComputedStyle( element ).position;
 }
