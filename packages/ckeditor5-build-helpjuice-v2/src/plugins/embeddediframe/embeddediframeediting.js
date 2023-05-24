@@ -1,6 +1,7 @@
 import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
 import Widget from "@ckeditor/ckeditor5-widget/src/widget";
 import InsertEmbeddedIFrameCommand from "./insertembeddediframecommand";
+import ResizeEmbeddedIFrameCommand from "./resizeembeddediframecommand";
 import { toWidget } from "@ckeditor/ckeditor5-widget";
 
 export default class EmbeddedIFrameEditing extends Plugin {
@@ -13,6 +14,7 @@ export default class EmbeddedIFrameEditing extends Plugin {
 		this._defineConverters();
 
 		this.editor.commands.add('insertEmbeddedIFrame', new InsertEmbeddedIFrameCommand(this.editor));
+		this.editor.commands.add('resizeEmbeddedIFrame', new ResizeEmbeddedIFrameCommand(this.editor));
 	}
 
 	_defineSchema() {
@@ -59,6 +61,7 @@ export default class EmbeddedIFrameEditing extends Plugin {
 				const wrapper = writer.createContainerElement('div', {
 					class: 'hj-embedded-iframe-container'
 				}, [element])
+				writer.setCustomProperty('embeddedIFrame', true, wrapper);
 
 				return toWidget(wrapper, writer, { label: 'Embedded IFrame' })
 			}
