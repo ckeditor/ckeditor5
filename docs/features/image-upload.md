@@ -31,7 +31,7 @@ Read our comprehensive blog post about [Managing images with CKEditor 5](https:/
 
 ## Demo
 
-The demo below uses the {@link installation/getting-started/predefined-builds#classic-editor classic editor}. It is configured to use {@link features/ckbox CKBox} for image upload and management. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
+The demo below is configured to use {@link features/ckbox CKBox} for image upload and management. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
 
 {@snippet features/ckbox}
 
@@ -39,7 +39,9 @@ The demo below uses the {@link installation/getting-started/predefined-builds#cl
 
 ### CKBox
 
-CKBox is a modern file uploader with a clean interface, automatic support for responsive images, and top-notch UX.
+CKBox is the most complete solution for not just image upload but also file management in CKEditor 5.
+
+It is a modern file uploader with a clean interface, automatic support for responsive images, and top-notch UX.
 
 {@img assets/img/ckbox.png 1067 CKBox, modern file upload and management tool with native CKEditor 5 integration}
 
@@ -53,7 +55,7 @@ With CKBox, users can upload files and categorize them into different groups. Th
 
 The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based file uploader with server-side connectors (PHP, Java, and ASP.NET).
 
-There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
+There are two ways you can integrate CKEditor 5 with CKFinder:
 
 * **With the server-side connector only** &ndash; In this scenario, images dropped or pasted into the editor are uploaded to the CKFinder server-side connector running on your server.
 * **With both the server-side connector and the client-side file manager** (recommended) &ndash; Images dropped and pasted into the editor are uploaded to the server (like in the first option). With access to the file manager, you can browse previously uploaded images, organize them, or edit them.
@@ -66,7 +68,7 @@ The {@link features/easy-image Easy Image} feature aims to make the image upload
 
 Easy Image securely uploads images, takes care of rescaling and optimizing them as well as providing various image sizes (responsive images), and delivers uploaded images through a blazing-fast CDN.
 
-It does not provide any user interface or file management options. It was replaced by a much more powerful and feature-rich [CKBox](#ckbox).
+Easy Image does not provide any user interface or file management options. It was replaced by a much more powerful and feature-rich [CKBox](#ckbox).
 
 {@link features/easy-image **Learn how to use Easy Image in your project**}.
 ### Simple adapter
@@ -87,6 +89,6 @@ The {@link features/base64-upload-adapter Base64 upload feature} converts images
 
 ## Implementing your own upload adapter
 
-CKEditor 5 provides an open API that allows you to develop your upload adapters. Tailored to your project, a custom adapter will allow you to take **full control** over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
+CKEditor 5 provides an open API that allows you to develop your upload adapters. Tailored to your project, a custom adapter will allow you to take full control over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
 
 {@link framework/deep-dive/upload-adapter **Learn how to develop a custom upload adapter for CKEditor 5**}.
