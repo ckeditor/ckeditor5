@@ -19,8 +19,6 @@ import type {
 import { first, type GetCallback } from 'ckeditor5/src/utils';
 import type ImageUtils from '../imageutils';
 
-type SrcsetAttributeType = null | { data: unknown; width: unknown };
-
 /**
  * Returns a function that converts the image view representation:
  *
