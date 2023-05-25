@@ -64,12 +64,6 @@ class FormView extends View {
 		this.keystrokes.listenTo(this.element);
 	}
 
-	focus() {
-		if (this.childViews.length) {
-			this.childViews.first.focus();
-		}
-	}
-
 	get heightInputValue() {
 		return this.heightInputView.fieldView.element.value;
 	}
