@@ -177,7 +177,9 @@ describe( 'ColorPickerView', () => {
 				} );
 			} );
 
-			it( 'should not set any color directly to color-picker component', () => {
+			it( 'should not set any color directly to color-picker component when it visible', () => {
+				makeElementVisibleInDOM( view.picker );
+
 				const spy = sinon.spy( view.picker, 'setAttribute' );
 
 				const event = new CustomEvent( 'color-changed', {
@@ -191,13 +193,15 @@ describe( 'ColorPickerView', () => {
 				clock.tick( 200 );
 
 				sinon.assert.notCalled( spy );
+
+				// Cleanup DOM
+				view.picker.parentElement.remove();
 			} );
 
 			it( 'should set color in color-picker component when change was caused by input', () => {
 				const spy = sinon.spy( view.picker, 'setAttribute' );
 
 				const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
-				view.color = '#000000';
 
 				fieldView.isFocused = true;
 				fieldView.value = '#ffffff';
@@ -210,7 +214,6 @@ describe( 'ColorPickerView', () => {
 
 			it( 'should set color in color-picker component when its not visible', () => {
 				const spy = sinon.spy( view.picker, 'setAttribute' );
-				view.picker.style.display = 'none';
 
 				const event = new CustomEvent( 'color-changed', {
 					detail: {
@@ -523,5 +526,13 @@ describe( 'ColorPickerView', () => {
 			expect( fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
 			expect( view.color, 'Wrong color property value' ).to.equal( options.expectedColorProperty );
 		} );
+	}
+
+	function makeElementVisibleInDOM( element ) {
+		const parent = document.createElement( 'div' );
+		parent.style.position = 'relative';
+		parent.style.display = 'block';
+		parent.appendChild( element );
+		document.body.appendChild( parent );
 	}
 } );

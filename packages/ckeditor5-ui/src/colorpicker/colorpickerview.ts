@@ -118,7 +118,7 @@ export default class ColorPickerView extends View {
 
 			// Should update color in color picker when change was caused by input or when
 			// color picker is not visible.
-			if ( input.isFocused || this.picker.style.display === 'none' ) {
+			if ( input.isFocused || this.picker.offsetParent === null ) {
 				this.picker.setAttribute( 'color', this._hexColor );
 			}
 
