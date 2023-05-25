@@ -1,0 +1,40 @@
+/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+import type * as clipboard from '@ckeditor/ckeditor5-clipboard';
+import type * as core from '@ckeditor/ckeditor5-core';
+import type * as engine from '@ckeditor/ckeditor5-engine';
+import type * as enter from '@ckeditor/ckeditor5-enter';
+import type * as paragraph from '@ckeditor/ckeditor5-paragraph';
+import type * as selectAll from '@ckeditor/ckeditor5-select-all';
+import type * as typing from '@ckeditor/ckeditor5-typing';
+import type * as ui from '@ckeditor/ckeditor5-ui';
+import type * as undo from '@ckeditor/ckeditor5-undo';
+import type * as upload from '@ckeditor/ckeditor5-upload';
+import type * as utils from '@ckeditor/ckeditor5-utils';
+import type * as watchdog from '@ckeditor/ckeditor5-watchdog';
+import type * as widget from '@ckeditor/ckeditor5-widget';
+
+export interface CKEditor5Dll {
+	clipboard: typeof clipboard;
+	core: typeof core;
+	engine: typeof engine;
+	enter: typeof enter;
+	paragraph: typeof paragraph;
+	selectAll: typeof selectAll;
+	typing: typeof typing;
+	ui: typeof ui;
+	undo: typeof undo;
+	upload: typeof upload;
+	utils: typeof utils;
+	watchdog: typeof watchdog;
+	widget: typeof widget;
+}
+
+declare global {
+	interface Window {
+		CKEditor5: CKEditor5Dll;
+	}
+}

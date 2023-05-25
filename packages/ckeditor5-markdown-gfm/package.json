@@ -63,6 +63,7 @@
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "postversion": "npm run build",
-    "dll:build": "webpack"
+    "dll:build": "webpack",
+    "postdll:build": "node ../../scripts/dll/build-dll-types.js"
   }
 }

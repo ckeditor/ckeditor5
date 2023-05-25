@@ -1,0 +1,12 @@
+/**
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+import type * as __NAME__ from '__FULL_PACKAGE_NAME__';
+
+declare module 'ckeditor5/build/ckeditor5-dll.js' {
+	interface CKEditor5Dll {
+		__NAME__: typeof __NAME__;
+	}
+}
