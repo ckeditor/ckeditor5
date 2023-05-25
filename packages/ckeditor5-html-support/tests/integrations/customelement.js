@@ -263,8 +263,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element data-foo="foo">bar</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -286,8 +286,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element foo="bar">baz</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -311,8 +311,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element data-foo="bar">baz</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -337,8 +337,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element class="foo">bar</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -358,8 +358,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element style="background:red;">bar</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {

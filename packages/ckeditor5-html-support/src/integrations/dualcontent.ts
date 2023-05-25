@@ -17,6 +17,7 @@ import {
 } from '../converters';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import type { DataSchemaBlockElementDefinition } from '../dataschema';
+import { getHtmlAttributeName } from '../utils';
 
 /**
  * Provides the General HTML Support integration for elements which can behave like sectioning element (e.g. article) or
@@ -139,7 +140,7 @@ export default class DualContentModelElementSupport extends Plugin {
 		const dataFilter = editor.plugins.get( DataFilter );
 
 		editor.model.schema.extend( definition.model, {
-			allowAttributes: 'htmlAttributes'
+			allowAttributes: getHtmlAttributeName( definition.view! )
 		} );
 
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, dataFilter ) );
