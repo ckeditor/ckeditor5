@@ -76,6 +76,16 @@ describe( 'utils', () => {
 				[ 0, 0 ],
 				[ 0, 9 ] );
 		} );
+
+		it( 'should return empty string if the range is `on` the element', () => {
+			setModelData( model, '<paragraph>foobarbaz[]</paragraph>' );
+
+			testOutput(
+				model.createRangeOn( root.getChild( 0 ) ),
+				'',
+				[ 1 ],
+				[ 1 ] );
+		} );
 	} );
 
 	function testOutput( range1, expectedText, startPath, endPath ) {
