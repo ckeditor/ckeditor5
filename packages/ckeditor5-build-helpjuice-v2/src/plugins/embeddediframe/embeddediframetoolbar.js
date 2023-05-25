@@ -1,6 +1,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
-import { isEmbeddedIFrameWidget } from './utils';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { isEmbeddedIFrameElement, isEmbeddedIFrameWidget } from './utils';
 
 function getClosestSelectedEmbeddedIFrameWidget(selection) {
 	const viewElement = selection.getSelectedElement();
@@ -35,5 +36,24 @@ export default class EmbeddedIFrameToolbar extends Plugin {
 			items: ['resizeEmbeddedIFrame'],
 			getRelatedElement: selection => getClosestSelectedEmbeddedIFrameWidget(selection)
 		});
+
+		const sourceEditing = editor.plugins.get(SourceEditing);
+		if (sourceEditing) {
+			// Hide toolbar when source editing is ON
+			sourceEditing.on('change:isSourceEditingMode', (_evt, _data, isSourceEditingMode) => {
+				if (!isSourceEditingMode) {
+					widgetToolbarRepository.clearForceDisabled('embeddedIFrame');
+					return;
+				}
+
+				const model = this.editor.model;
+				const selection = model.document.selection;
+				const element = selection.getSelectedElement();
+
+				if (element && isEmbeddedIFrameElement(element)) {
+					widgetToolbarRepository.forceDisabled('embeddedIFrame');
+				}
+			});
+		}
 	}
 }

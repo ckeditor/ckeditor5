@@ -1,8 +1,8 @@
 import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
 import Widget from "@ckeditor/ckeditor5-widget/src/widget";
+import { toWidget } from "@ckeditor/ckeditor5-widget";
 import InsertEmbeddedIFrameCommand from "./insertembeddediframecommand";
 import ResizeEmbeddedIFrameCommand from "./resizeembeddediframecommand";
-import { toWidget } from "@ckeditor/ckeditor5-widget";
 import ReplaceEmbeddedIFrameWithLinkCommand from "./replaceembeddediframewithlinkcommand";
 
 export default class EmbeddedIFrameEditing extends Plugin {

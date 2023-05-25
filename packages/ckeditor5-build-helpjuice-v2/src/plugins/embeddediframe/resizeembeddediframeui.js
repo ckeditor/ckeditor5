@@ -1,10 +1,15 @@
-import { View } from '@ckeditor/ckeditor5-ui';
+import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 import { Plugin, icons } from 'ckeditor5/src/core';
 import { ButtonView, LabeledFieldView, createLabeledInputText, submitHandler } from 'ckeditor5/src/ui';
+import { isEmbeddedIFrameElement } from "./utils";
 
 class FormView extends View {
 	constructor(locale) {
 		super(locale);
+
+		this.focusTracker = new FocusTracker();
+		this.keystrokes = new KeystrokeHandler();
 
 		this.heightInputView = this._createInput('Height');
 		this.widthInputView = this._createInput('Width');
@@ -22,6 +27,16 @@ class FormView extends View {
 			this.convertToLinkButtonView,
 		]);
 
+		this.focusCycler = new FocusCycler({
+			focusables: this.childViews,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				focusPrevious: 'shift + tab',
+				focusNext: 'tab'
+			}
+		});
+
 		this.setTemplate({
 			tag: 'form',
 			attributes: {
@@ -32,8 +47,27 @@ class FormView extends View {
 		});
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	render() {
 		super.render();
+
+		for (const view of this.childViews) {
+			this.focusTracker.add(view.element);
+		}
+
+		this.keystrokes.listenTo(this.element);
+	}
+
+	focus() {
+		if (this.childViews.length) {
+			this.childViews.first.focus();
+		}
 	}
 
 	get heightInputValue() {
