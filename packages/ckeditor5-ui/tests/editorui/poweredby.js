@@ -6,6 +6,7 @@
 /* global document, Event, window, HTMLElement, getComputedStyle  */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EditorUI from '../../src/editorui/editorui';
 import { BalloonPanelView } from '../../src';
 import View from '../../src/view';
@@ -14,6 +15,8 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Rect } from '@ckeditor/ckeditor5-utils';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -925,8 +928,44 @@ describe( 'PoweredBy', () => {
 		balloonView.destroy();
 	} );
 
+	it( 'should not overlapped at any opened toolbar dropdown', async () => {
+		const editor = await createClassicEditor( element, {
+			toolbar: [ 'heading' ],
+			plugins: [ ArticlePluginSet ],
+			ui: {
+				poweredBy: {
+					side: 'left',
+					position: 'inside'
+				}
+			}
+		} );
+
+		setData( editor.model, '<heading2>foo[]bar</heading2>' );
+
+		focusEditor( editor );
+
+		const headingToolbarButton = editor.ui.view.toolbar.items
+			.find( item => item.buttonView && item.buttonView.label.startsWith( 'Heading' ) );
+
+		let elementFromPoint = document.elementFromPoint( 60, 90 );
+
+		expect( elementFromPoint.classList.contains( 'ck-powered-by__label' ) ).to.be.true;
+
+		headingToolbarButton.buttonView.fire( 'execute' );
+
+		elementFromPoint = document.elementFromPoint( 60, 90 );
+
+		expect( elementFromPoint.classList.contains( 'ck-button__label' ) ).to.be.true;
+
+		await editor.destroy();
+	} );
+
 	async function createEditor( element, config = { plugins: [ SourceEditing ] } ) {
 		return ClassicTestEditor.create( element, config );
+	}
+
+	async function createClassicEditor( element, config = {} ) {
+		return ClassicEditor.create( element, config );
 	}
 
 	function wait( time ) {
