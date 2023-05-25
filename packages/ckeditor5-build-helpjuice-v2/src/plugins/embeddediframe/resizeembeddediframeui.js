@@ -13,7 +13,7 @@ class FormView extends View {
 
 		this.heightInputView = this._createInput('Height');
 		this.widthInputView = this._createInput('Width');
-		this.saveButtonView = this._createButton('Resize', 'ck-button-resize');
+		this.saveButtonView = this._createButton('Resize', 'ck-button-action ck-button-resize');
 		this.convertToLinkButtonView = this._createButton('Convert to Link', 'ck-button-convert-to-link');
 
 		this.saveButtonView.bind('isEnabled').to(this, 'isEnabled');
@@ -40,7 +40,7 @@ class FormView extends View {
 		this.setTemplate({
 			tag: 'form',
 			attributes: {
-				class: ['ck', 'ck-hj-embedded-iframe-resize-form'],
+				class: ['ck', 'ck-form', 'ck-hj-embedded-iframe-resize-form'],
 				tabindex: -1
 			},
 			children: this.childViews

@@ -22,3 +22,15 @@
 .ck.ck-editor__editable:not(.ck-blurred) .ck-widget.hj-embedded-iframe-container.ck-widget_selected:before {
 	background: var(--ck-color-focus-border);
 }
+
+.ck.ck-hj-embedded-iframe-resize-form {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0;
+}
+
+.ck.ck-hj-embedded-iframe-resize-form .ck-labeled-field-view {
+	max-width: 6em;
+	min-width: 6em;
+	width: 6em;
+}
