@@ -3,6 +3,7 @@ import Widget from "@ckeditor/ckeditor5-widget/src/widget";
 import InsertEmbeddedIFrameCommand from "./insertembeddediframecommand";
 import ResizeEmbeddedIFrameCommand from "./resizeembeddediframecommand";
 import { toWidget } from "@ckeditor/ckeditor5-widget";
+import ReplaceEmbeddedIFrameWithLinkCommand from "./replaceembeddediframewithlinkcommand";
 
 export default class EmbeddedIFrameEditing extends Plugin {
 	static get requires() {
@@ -15,6 +16,7 @@ export default class EmbeddedIFrameEditing extends Plugin {
 
 		this.editor.commands.add('insertEmbeddedIFrame', new InsertEmbeddedIFrameCommand(this.editor));
 		this.editor.commands.add('resizeEmbeddedIFrame', new ResizeEmbeddedIFrameCommand(this.editor));
+		this.editor.commands.add('replaceEmbeddedIFrameWithLink', new ReplaceEmbeddedIFrameWithLinkCommand(this.editor));
 	}
 
 	_defineSchema() {

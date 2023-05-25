@@ -9,14 +9,17 @@ class FormView extends View {
 		this.heightInputView = this._createInput('Height');
 		this.widthInputView = this._createInput('Width');
 		this.saveButtonView = this._createButton('Resize', 'ck-button-resize');
+		this.convertToLinkButtonView = this._createButton('Convert to Link', 'ck-button-convert-to-link');
 
 		this.saveButtonView.bind('isEnabled').to(this, 'isEnabled');
 		this.saveButtonView.delegate('execute').to(this, 'resize');
+		this.convertToLinkButtonView.delegate('execute').to(this, 'convertToLink');
 
 		this.childViews = this.createCollection([
 			this.heightInputView,
 			this.widthInputView,
-			this.saveButtonView
+			this.saveButtonView,
+			this.convertToLinkButtonView,
 		]);
 
 		this.setTemplate({
@@ -84,6 +87,11 @@ export default class ResizeEmbeddedIFrameUI extends Plugin {
 
 			this.listenTo(view, 'resize', () => {
 				editor.execute('resizeEmbeddedIFrame', { height: view.heightInputValue, width: view.widthInputValue });
+			} );
+
+			this.listenTo(view, 'convertToLink', () => {
+				editor.execute('replaceEmbeddedIFrameWithLink', command.value.source);
+				editor.editing.view.focus();
 			} );
 
 			return view;
