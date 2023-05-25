@@ -1,11 +1,11 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import EmbeddedIFrameEditing from './embeddediframeediting';
 import EmbeddedIFrameToolbar from './embeddediframetoolbar';
 import ResizeEmbeddedIFrameUI from './resizeembeddediframeui';
-import "./styles.css";
+import './styles.css';
 
 export default class EmbeddedIFrame extends Plugin {
 	static get requires() {
-		return [EmbeddedIFrameEditing, EmbeddedIFrameToolbar, ResizeEmbeddedIFrameUI];
+		return [ EmbeddedIFrameEditing, EmbeddedIFrameToolbar, ResizeEmbeddedIFrameUI ];
 	}
 }

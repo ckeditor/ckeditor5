@@ -1,19 +1,19 @@
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
+import { Plugin } from 'ckeditor5/src/core';
+import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { isEmbeddedIFrameElement, isEmbeddedIFrameWidget } from './utils';
 
-function getClosestSelectedEmbeddedIFrameWidget(selection) {
+function getClosestSelectedEmbeddedIFrameWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
-	if (viewElement && isEmbeddedIFrameWidget(viewElement)) {
+	if ( viewElement && isEmbeddedIFrameWidget( viewElement ) ) {
 		return viewElement;
 	}
 
 	let parent = selection.getFirstPosition().parent;
 
-	while (parent) {
-		if (parent.is('element') && isEmbeddedIFrameWidget(parent)) {
+	while ( parent ) {
+		if ( parent.is( 'element' ) && isEmbeddedIFrameWidget( parent ) ) {
 			return parent;
 		}
 
@@ -25,24 +25,24 @@ function getClosestSelectedEmbeddedIFrameWidget(selection) {
 
 export default class EmbeddedIFrameToolbar extends Plugin {
 	static get requires() {
-		return [WidgetToolbarRepository];
+		return [ WidgetToolbarRepository ];
 	}
 
 	afterInit() {
 		const editor = this.editor;
-		const widgetToolbarRepository = editor.plugins.get(WidgetToolbarRepository);
+		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
-		widgetToolbarRepository.register('embeddedIFrame', {
-			items: ['resizeEmbeddedIFrame'],
-			getRelatedElement: selection => getClosestSelectedEmbeddedIFrameWidget(selection)
-		});
+		widgetToolbarRepository.register( 'embeddedIFrame', {
+			items: [ 'resizeEmbeddedIFrame' ],
+			getRelatedElement: selection => getClosestSelectedEmbeddedIFrameWidget( selection )
+		} );
 
-		const sourceEditing = editor.plugins.get(SourceEditing);
-		if (sourceEditing) {
+		const sourceEditing = editor.plugins.get( SourceEditing );
+		if ( sourceEditing ) {
 			// Hide toolbar when source editing is ON
-			sourceEditing.on('change:isSourceEditingMode', (_evt, _data, isSourceEditingMode) => {
-				if (!isSourceEditingMode) {
-					widgetToolbarRepository.clearForceDisabled('embeddedIFrame');
+			sourceEditing.on( 'change:isSourceEditingMode', ( _evt, _data, isSourceEditingMode ) => {
+				if ( !isSourceEditingMode ) {
+					widgetToolbarRepository.clearForceDisabled( 'embeddedIFrame' );
 					return;
 				}
 
@@ -50,10 +50,10 @@ export default class EmbeddedIFrameToolbar extends Plugin {
 				const selection = model.document.selection;
 				const element = selection.getSelectedElement();
 
-				if (element && isEmbeddedIFrameElement(element)) {
-					widgetToolbarRepository.forceDisabled('embeddedIFrame');
+				if ( element && isEmbeddedIFrameElement( element ) ) {
+					widgetToolbarRepository.forceDisabled( 'embeddedIFrame' );
 				}
-			});
+			} );
 		}
 	}
 }

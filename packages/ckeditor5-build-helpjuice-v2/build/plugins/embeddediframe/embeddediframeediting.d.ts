@@ -4,5 +4,5 @@ export default class EmbeddedIFrameEditing extends Plugin {
     _defineSchema(): void;
     _defineConverters(): void;
 }
-import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
-import Widget from "@ckeditor/ckeditor5-widget/src/widget";
+import { Plugin } from "@ckeditor/ckeditor5-core";
+import { Widget } from "@ckeditor/ckeditor5-widget";

@@ -1,9 +1,9 @@
-import { isWidget } from '@ckeditor/ckeditor5-widget';
+import { isWidget } from 'ckeditor5/src/widget';
 
-export function isEmbeddedIFrameWidget(viewElement) {
-	return !!viewElement.getCustomProperty('embeddedIFrame') && isWidget(viewElement);
+export function isEmbeddedIFrameWidget( viewElement ) {
+	return !!viewElement.getCustomProperty( 'embeddedIFrame' ) && isWidget( viewElement );
 }
 
-export function isEmbeddedIFrameElement(element) {
+export function isEmbeddedIFrameElement( element ) {
 	return element.name === 'embeddedIFrame';
 }
