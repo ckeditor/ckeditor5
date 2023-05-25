@@ -22,6 +22,7 @@ CKEditor 5 is an ultra-modern JavaScript rich-text editor with MVC architecture,
 		- [CKEditor 5 online builder](#ckeditor-5-online-builder)
 		- [CKEditor 5 predefined builds](#ckeditor-5-predefined-builds)
 			- [Example installation](#example-installation)
+		- [TypeScript support](#typescript-support)
 		- [CKEditor 5 advanced installation](#ckeditor-5-advanced-installation)
 			- [CKEditor 5 Framework](#ckeditor-5-framework)
 	- [Documentation and FAQ](#documentation-and-faq)
@@ -85,6 +86,10 @@ Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/a
 You’re ready to go!
 
 To find out how to start with other builds, check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) guide in the CKEditor 5 documentation.
+
+### TypeScript support
+
+CKEditor 5 is a TypeScript project. Starting from the v37.0.0 release, it offers native type definitions. Check out our dedicated guide to read more about [TypeScript support](https://ckeditor.com/docs/ckeditor5/latest/installation/working-with-typescript.html).
 
 ### CKEditor 5 advanced installation
 
