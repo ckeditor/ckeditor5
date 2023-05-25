@@ -55,6 +55,6 @@ Here are some examples of tags you can enable by using this plugin:
 
 CKEditor 5 has other features related to HTML editing that you may want to check:
 
-* {@link features/general-html-support General HTML Support} &ndash; It lets you add elements, attributes, classes, and styles to the content elements and ensures this markup stays in the editor window and the output.
+* {@link features/general-html-support General HTML Support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor 5 plugins.
 * {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
-* {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
+* {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.

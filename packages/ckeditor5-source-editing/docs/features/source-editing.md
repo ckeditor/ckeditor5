@@ -85,9 +85,9 @@ ClassicEditor
 
 There are other source-related CKEditor 5 features you may want to check:
 
-* {@link features/general-html-support General HTML support} &ndash; Allows enabling a generic support for additional HTML features not yet covered by official plugins.
+* {@link features/general-html-support General HTML support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor 5 plugins.
+* * {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor 5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.
-* {@link features/autoformat Autoformatting} &ndash; Allows using Markdown-like shortcodes to format the content on the go.
 * {@link features/markdown Markdown output} &ndash; Allows for Markdown output instead of HTML output.
 
 ## Common API
