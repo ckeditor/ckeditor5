@@ -15,7 +15,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Rect } from '@ckeditor/ckeditor5-utils';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'PoweredBy', () => {
@@ -931,7 +931,7 @@ describe( 'PoweredBy', () => {
 	it( 'should not overlapped at any opened toolbar dropdown', async () => {
 		const editor = await createClassicEditor( element, {
 			toolbar: [ 'heading' ],
-			plugins: [ ArticlePluginSet ],
+			plugins: [ Heading ],
 			ui: {
 				poweredBy: {
 					side: 'left',
