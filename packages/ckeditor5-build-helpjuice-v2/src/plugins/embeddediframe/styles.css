@@ -11,7 +11,7 @@
     content: 'Embedded IFrame';
     font-family: var(--ck-font-face);
     font-size: var(--ck-font-size-tiny);
-    left: var(--ck-spacing-standard);
+    right: var(--ck-spacing-standard);
     padding: calc(var(--ck-spacing-tiny) + var(--ck-html-embed-unfocused-outline-width)) var(--ck-spacing-small) var(--ck-spacing-tiny);
     top: 0;
     transition: background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
