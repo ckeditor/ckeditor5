@@ -176,7 +176,7 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
 }
 
 /**
- * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
+ * Converter used to convert the `srcset` model image attribute to the `srcset` and `sizes` attributes in the view.
  *
  * @internal
  * @param imageType The type of the image.
