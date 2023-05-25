@@ -1,6 +1,7 @@
-.hj-embedded-iframe-container iframe {
+.ck-widget.hj-embedded-iframe-container iframe {
 	height: 100%;
 	width: 100%;
+	pointer-events: none;
 }
 
 .ck-widget.hj-embedded-iframe-container:before {
