@@ -8,7 +8,7 @@ modified_at: 2023-05-15
 
 {@snippet features/general-html-support-source}
 
-The Full Page HTML feature allows you to preserve the whole HTML page in the editor data. With this plugin, you can enable certain HTML tags in your editor. But, unlike GHS, which focuses on tags inside the content, this feature keeps the markup that's usually not visible to the user, like the wrapping `<html></html>` tag.
+Thanks to the full page HTML feature you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the {@link features/general-html-support General HTML Support} feature focuses on elements inside the content (the document's `<body>`), this feature enables markup mostly invisible to the end user.
 
 ## Demo
 
@@ -43,13 +43,13 @@ ClassicEditor
 
 ## Additional feature information
 
-Here are some examples of tags you can enable by using this plugin:
+Here are some examples of the HTML elements you can enable with this plugin:
 
 * The HTML doctype preamble: `<!DOCTYPE html>`
-* The HTML root element: `<html></html>`
-* The head element: `<head></head>`
-* Document's title: `<title></title>`
-* Meta tags inside the head element like: `<meta name="description" content="Meta description">`
+* The HTML root element: `<html>`
+* The head element: `<head>`
+* The document's title: `<title>`
+* Meta tags inside the head element, like: `<meta name="description" content="Meta description">`
 
 ## Related features
 
