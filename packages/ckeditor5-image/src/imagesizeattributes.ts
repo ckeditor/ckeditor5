@@ -43,11 +43,11 @@ export default class ImageSizeAttributes extends Plugin {
 	 */
 	private _registerSchema(): void {
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'widthAttribute', 'heightAttribute' ] } );
+			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'width', 'height' ] } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'widthAttribute', 'heightAttribute' ] } );
+			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'width', 'height' ] } );
 		}
 	}
 
@@ -68,7 +68,7 @@ export default class ImageSizeAttributes extends Plugin {
 					}
 				},
 				model: {
-					key: 'widthAttribute',
+					key: 'width',
 					value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'width' )
 				}
 			} )
@@ -80,15 +80,15 @@ export default class ImageSizeAttributes extends Plugin {
 					}
 				},
 				model: {
-					key: 'heightAttribute',
+					key: 'height',
 					value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'height' )
 				}
 			} );
 
 		// Dedicated converter to propagate attributes to the <img> element.
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			attachDowncastConverter( dispatcher, 'widthAttribute', 'width' );
-			attachDowncastConverter( dispatcher, 'heightAttribute', 'height' );
+			attachDowncastConverter( dispatcher, 'width', 'width' );
+			attachDowncastConverter( dispatcher, 'height', 'height' );
 		} );
 
 		function attachDowncastConverter( dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string ) {

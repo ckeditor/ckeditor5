@@ -398,7 +398,7 @@ export default class ImageUploadEditing extends Plugin {
 		if ( srcsetAttribute != '' ) {
 			writer.setAttributes( {
 				srcset: srcsetAttribute,
-				widthAttribute: maxWidth
+				width: maxWidth
 			}, image );
 		}
 	}

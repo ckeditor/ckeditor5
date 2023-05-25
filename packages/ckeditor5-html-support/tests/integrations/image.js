@@ -2403,8 +2403,8 @@ describe( 'ImageElementSupport', () => {
 						'src',
 						'srcset',
 						'linkHref',
-						'widthAttribute',
-						'heightAttribute',
+						'width',
+						'height',
 						'htmlAttributes',
 						'htmlFigureAttributes',
 						'htmlLinkAttributes'
@@ -2439,8 +2439,8 @@ describe( 'ImageElementSupport', () => {
 						'alt',
 						'src',
 						'srcset',
-						'widthAttribute',
-						'heightAttribute',
+						'width',
+						'height',
 						'htmlA',
 						'htmlAttributes'
 					] );

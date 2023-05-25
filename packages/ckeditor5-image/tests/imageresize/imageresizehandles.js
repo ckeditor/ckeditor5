@@ -811,7 +811,7 @@ describe( 'ImageResizeHandles', () => {
 							`src="${ imageBaseUrl }" ` +
 							`srcset="${ imageBaseUrl }?a 110w, ${ imageBaseUrl }?b 440w, ${ imageBaseUrl }?c 1025w" ` +
 							'sizes="100vw" ' +
-							'widthAttribute="96">' +
+							'width="96">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);

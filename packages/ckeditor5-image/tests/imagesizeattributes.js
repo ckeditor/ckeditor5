@@ -47,14 +47,14 @@ describe( 'ImageSizeAttributes', () => {
 	} );
 
 	describe( 'schema', () => {
-		it( 'should allow the "widthAttribute" and "heightAttribute" attributes on the imageBlock element', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'widthAttribute' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'heightAttribute' ) ).to.be.true;
+		it( 'should allow the "width" and "height" attributes on the imageBlock element', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'width' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'height' ) ).to.be.true;
 		} );
 
-		it( 'should allow the "widthAttribute" and "heightAttribute" attributes on the imageInline element', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'widthAttribute' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'heightAttribute' ) ).to.be.true;
+		it( 'should allow the "width" and "height" attributes on the imageInline element', () => {
+			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'width' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'height' ) ).to.be.true;
 		} );
 	} );
 
@@ -69,7 +69,7 @@ describe( 'ImageSizeAttributes', () => {
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>' +
 							'Lorem ' +
-							'<imageInline src="/assets/sample.png" widthAttribute="100px"></imageInline>' +
+							'<imageInline src="/assets/sample.png" width="100px"></imageInline>' +
 							' ipsum' +
 						'</paragraph>'
 					);
@@ -83,7 +83,7 @@ describe( 'ImageSizeAttributes', () => {
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>' +
 							'Lorem ' +
-							'<imageInline heightAttribute="50px" src="/assets/sample.png"></imageInline>' +
+							'<imageInline height="50px" src="/assets/sample.png"></imageInline>' +
 							' ipsum' +
 						'</paragraph>'
 					);
@@ -97,7 +97,7 @@ describe( 'ImageSizeAttributes', () => {
 					);
 
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock src="/assets/sample.png" widthAttribute="100px"></imageBlock>'
+						'<imageBlock src="/assets/sample.png" width="100px"></imageBlock>'
 					);
 				} );
 
@@ -107,7 +107,7 @@ describe( 'ImageSizeAttributes', () => {
 					);
 
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock heightAttribute="50px" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock height="50px" src="/assets/sample.png"></imageBlock>'
 					);
 				} );
 			} );
@@ -149,11 +149,11 @@ describe( 'ImageSizeAttributes', () => {
 
 				it( 'should not downcast consumed tokens for width attribute', () => {
 					editor.conversion.for( 'downcast' ).add( dispatcher =>
-						dispatcher.on( 'attribute:widthAttribute:imageInline', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, 'attribute:widthAttribute:imageInline' );
+						dispatcher.on( 'attribute:width:imageInline', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:width:imageInline' );
 						}, { priority: 'high' } )
 					);
-					setData( model, '<paragraph><imageInline src="/assets/sample.png" widthAttribute="100px"></imageInline></paragraph>' );
+					setData( model, '<paragraph><imageInline src="/assets/sample.png" width="100px"></imageInline></paragraph>' );
 
 					expect( editor.getData() ).to.equal(
 						'<p><img src="/assets/sample.png"></p>'
@@ -162,11 +162,11 @@ describe( 'ImageSizeAttributes', () => {
 
 				it( 'should not downcast consumed tokens for height attribute', () => {
 					editor.conversion.for( 'downcast' ).add( dispatcher =>
-						dispatcher.on( 'attribute:heightAttribute:imageInline', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, 'attribute:heightAttribute:imageInline' );
+						dispatcher.on( 'attribute:height:imageInline', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:height:imageInline' );
 						}, { priority: 'high' } )
 					);
-					setData( model, '<paragraph><imageInline src="/assets/sample.png" heightAttribute="50px"></imageInline></paragraph>' );
+					setData( model, '<paragraph><imageInline src="/assets/sample.png" height="50px"></imageInline></paragraph>' );
 
 					expect( editor.getData() ).to.equal(
 						'<p><img src="/assets/sample.png"></p>'
@@ -174,12 +174,12 @@ describe( 'ImageSizeAttributes', () => {
 				} );
 
 				it( 'should remove width attribute properly', () => {
-					setData( model, '<paragraph><imageInline src="/assets/sample.png" widthAttribute="100px"></imageInline></paragraph>' );
+					setData( model, '<paragraph><imageInline src="/assets/sample.png" width="100px"></imageInline></paragraph>' );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
 
 					editor.model.change( writer => {
-						writer.removeAttribute( 'widthAttribute', imageModel );
+						writer.removeAttribute( 'width', imageModel );
 					} );
 
 					expect( editor.getData() )
@@ -187,12 +187,12 @@ describe( 'ImageSizeAttributes', () => {
 				} );
 
 				it( 'should remove height attribute properly', () => {
-					setData( model, '<paragraph><imageInline src="/assets/sample.png" heightAttribute="50px"></imageInline></paragraph>' );
+					setData( model, '<paragraph><imageInline src="/assets/sample.png" height="50px"></imageInline></paragraph>' );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
 
 					editor.model.change( writer => {
-						writer.removeAttribute( 'heightAttribute', imageModel );
+						writer.removeAttribute( 'height', imageModel );
 					} );
 
 					expect( editor.getData() )
@@ -235,11 +235,11 @@ describe( 'ImageSizeAttributes', () => {
 
 				it( 'should not downcast consumed tokens for width attribute', () => {
 					editor.conversion.for( 'downcast' ).add( dispatcher =>
-						dispatcher.on( 'attribute:widthAttribute:imageBlock', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, 'attribute:widthAttribute:imageBlock' );
+						dispatcher.on( 'attribute:width:imageBlock', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:width:imageBlock' );
 						}, { priority: 'high' } )
 					);
-					setData( model, '<imageBlock src="/assets/sample.png" widthAttribute="100px"></imageBlock>' );
+					setData( model, '<imageBlock src="/assets/sample.png" width="100px"></imageBlock>' );
 
 					expect( editor.getData() ).to.equal(
 						'<figure class="image"><img src="/assets/sample.png"></figure>'
@@ -248,11 +248,11 @@ describe( 'ImageSizeAttributes', () => {
 
 				it( 'should not downcast consumed tokens for height attribute', () => {
 					editor.conversion.for( 'downcast' ).add( dispatcher =>
-						dispatcher.on( 'attribute:heightAttribute:imageBlock', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, 'attribute:heightAttribute:imageBlock' );
+						dispatcher.on( 'attribute:height:imageBlock', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:height:imageBlock' );
 						}, { priority: 'high' } )
 					);
-					setData( model, '<imageBlock src="/assets/sample.png" heightAttribute="50px"></imageBlock>' );
+					setData( model, '<imageBlock src="/assets/sample.png" height="50px"></imageBlock>' );
 
 					expect( editor.getData() ).to.equal(
 						'<figure class="image"><img src="/assets/sample.png"></figure>'
@@ -260,12 +260,12 @@ describe( 'ImageSizeAttributes', () => {
 				} );
 
 				it( 'should remove width attribute properly', () => {
-					setData( model, '<imageBlock src="/assets/sample.png" widthAttribute="100px"></imageBlock>' );
+					setData( model, '<imageBlock src="/assets/sample.png" width="100px"></imageBlock>' );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 );
 
 					editor.model.change( writer => {
-						writer.removeAttribute( 'widthAttribute', imageModel );
+						writer.removeAttribute( 'width', imageModel );
 					} );
 
 					expect( editor.getData() )
@@ -273,12 +273,12 @@ describe( 'ImageSizeAttributes', () => {
 				} );
 
 				it( 'should remove height attribute properly', () => {
-					setData( model, '<imageBlock src="/assets/sample.png" heightAttribute="50px"></imageBlock>' );
+					setData( model, '<imageBlock src="/assets/sample.png" height="50px"></imageBlock>' );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 );
 
 					editor.model.change( writer => {
-						writer.removeAttribute( 'heightAttribute', imageModel );
+						writer.removeAttribute( 'height', imageModel );
 					} );
 
 					expect( editor.getData() )
