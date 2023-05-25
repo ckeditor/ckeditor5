@@ -12,7 +12,7 @@ import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element }
 import ImageUtils from './imageutils';
 
 /**
- * TODO
+ * This plugin enables `width` and `size` attributes in inline and block image elements.
  */
 export default class ImageSizeAttributes extends Plugin {
 	/**
@@ -39,7 +39,7 @@ export default class ImageSizeAttributes extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers the `width` and `height` attributes for inline and block images.
 	 */
 	private _registerSchema(): void {
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
