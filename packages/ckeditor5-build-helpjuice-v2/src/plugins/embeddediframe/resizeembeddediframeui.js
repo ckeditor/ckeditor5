@@ -6,6 +6,11 @@ class FormView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		this.set( {
+			height: '',
+			width: ''
+		} );
+
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
@@ -18,7 +23,17 @@ class FormView extends View {
 		} );
 
 		this.heightInputView = this._createInput( 'Height' );
+		this.heightInputView.fieldView.bind( 'value' ).to( this, 'height' );
+		this.heightInputView.fieldView.on( 'input', () => {
+			this.height = this.heightInputView.fieldView.element.value;
+		} );
+
 		this.widthInputView = this._createInput( 'Width' );
+		this.widthInputView.fieldView.bind( 'value' ).to( this, 'width' );
+		this.widthInputView.fieldView.on( 'input', () => {
+			this.width = this.widthInputView.fieldView.element.value;
+		} );
+
 		this.saveButtonView = this._createButton( 'Resize', 'ck-button-action ck-button-resize' );
 		this.convertToLinkButtonView = this._createButton( 'Convert to Link', 'ck-button-convert-to-link' );
 
@@ -70,22 +85,6 @@ class FormView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
-	get heightInputValue() {
-		return this.heightInputView.fieldView.element.value;
-	}
-
-	set heightInputValue( value ) {
-		this.heightInputView.fieldView.value = value;
-	}
-
-	get widthInputValue() {
-		return this.widthInputView.fieldView.element.value;
-	}
-
-	set widthInputValue( value ) {
-		this.widthInputView.fieldView.value = value;
-	}
-
 	_createInput( label ) {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		labeledInput.label = label;
@@ -113,14 +112,12 @@ export default class ResizeEmbeddedIFrameUI extends Plugin {
 			const command = editor.commands.get( 'resizeEmbeddedIFrame' );
 			const view = new FormView( locale );
 
-			command.on( 'set:value', ( _evt, _property, value ) => {
-				view.heightInputValue = value?.height;
-				view.widthInputValue = value?.width;
-			} );
+			view.bind( 'height' ).to( command, 'value', value => value?.height );
+			view.bind( 'width' ).to( command, 'value', value => value?.width );
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 			this.listenTo( view, 'resize', () => {
-				editor.execute( 'resizeEmbeddedIFrame', { height: view.heightInputValue, width: view.widthInputValue } );
+				editor.execute( 'resizeEmbeddedIFrame', { height: view.height, width: view.width } );
 			} );
 
 			this.listenTo( view, 'convertToLink', () => {
