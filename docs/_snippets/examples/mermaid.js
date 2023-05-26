@@ -19,7 +19,7 @@ import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
 // This bad boy breaks everything down. I can't even.
-// import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
+import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
@@ -36,14 +36,14 @@ ClassicEditor
 			CKBox,
 			Typing,
 			Enter,
-			Clipboard
-			// Mermaid
+			Clipboard,
+			Mermaid
 		] ),
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic', 'code',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock', // Mermaid,
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock', 'mermaid',
 				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
 			]
 		},
@@ -51,8 +51,8 @@ ClassicEditor
 			languages: [
 				{ language: 'plaintext', label: 'Plain text', class: '' },
 				{ language: 'javascript', label: 'JavaScript' },
-				{ language: 'python', label: 'Python' }
-				// { language: 'mermaid', label: 'Mermaid' }
+				{ language: 'python', label: 'Python' },
+				{ language: 'mermaid', label: 'Mermaid' }
 			]
 		},
 		ui: {
