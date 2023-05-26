@@ -33,9 +33,74 @@ Learn more about Mermaid syntax and usage in a [dedicated article](https://ckedi
 
 <details>
 <summary>Editor configuration script</summary>
+<!-- Let's consider removing parts of this -->
 
 ```js
-Later
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { Code } from '@ckeditor/ckeditor5-basic-styles';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { CKEditorInspector } from '@ckeditor/ckeditor5-inspector';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+
+import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
+
+ClassicEditor
+	.create( document.querySelector( '#mermaid' ), {
+		plugins: ClassicEditor.builtinPlugins.concat( [
+			CodeBlock,
+			Code,
+			PictureEditing,
+			ImageResize,
+			AutoImage,
+			LinkImage,
+			CKBox,
+			Typing,
+			Enter,
+			Clipboard,
+			Mermaid
+		] ),
+		toolbar: {
+			items: [
+				'undo', 'redo', '|', 'heading',
+				'|', 'bold', 'italic', 'code',
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock', 'mermaid',
+				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
+			]
+		},
+		codeBlock: {
+			languages: [
+				{ language: 'plaintext', label: 'Plain text', class: '' },
+				{ language: 'javascript', label: 'JavaScript' },
+				{ language: 'python', label: 'Python' },
+				{ language: 'mermaid', label: 'Mermaid' }
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		},
+			ckbox: {
+			// Provide correct configuration values to CKBox.
+				tokenUrl: 'https://your.token.url',
+			// Read more about CKBox - https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html.
+			// For other image upload methods see the guide - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html.
+			},
+	} )
+	.then( editor => {
+		window.editor = editor;
+		CKEditorInspector.attach( editor );
+		window.console.log( 'CKEditor 5 is ready.', editor );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 ```
 
 </details>
@@ -44,7 +109,12 @@ Later
 <summary>Editor content listing</summary>
 
 ```html
-Later
+<div id="mermaid">
+	<pre spellcheck="false"><code class="language-mermaid">
+		Sample mermaid code goes here.
+	</code></pre>
+
+</div>
 ```
 
 </details>
