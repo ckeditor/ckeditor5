@@ -1,7 +1,6 @@
-import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, LabeledFieldView, createLabeledInputText, FocusCycler, View } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView, LabeledFieldView, createLabeledInputText, submitHandler } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core';
 
 class FormView extends View {
 	constructor( locale ) {
@@ -9,6 +8,14 @@ class FormView extends View {
 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
+
+		// Allow arrow keys to be used on the inputs; otherwise, CKEditor will attempt to change the focus to the next/previous toolbar item
+		this.keystrokes.set('arrowleft', (ev, _cancel) => {
+			ev.stopPropagation();
+		});
+		this.keystrokes.set('arrowright', (ev, _cancel) => {
+			ev.stopPropagation();
+		});
 
 		this.heightInputView = this._createInput( 'Height' );
 		this.widthInputView = this._createInput( 'Width' );
