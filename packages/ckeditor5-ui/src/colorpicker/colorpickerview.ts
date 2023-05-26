@@ -114,11 +114,8 @@ export default class ColorPickerView extends View {
 		} );
 
 		this.on( 'change:_hexColor', () => {
-			const input = this.hexInputRow!.children.get( 1 ) as LabeledFieldView<InputTextView>;
-
-			// Should update color in color picker when change was caused by input or when
-			// color picker is not visible.
-			if ( input.isFocused || this.picker.offsetParent === null ) {
+			// Should update color in color picker when its not focused
+			if ( document.activeElement !== this.picker ) {
 				this.picker.setAttribute( 'color', this._hexColor );
 			}
 

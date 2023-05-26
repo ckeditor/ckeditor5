@@ -177,10 +177,12 @@ describe( 'ColorPickerView', () => {
 				} );
 			} );
 
-			it( 'should not set any color directly to color-picker component when it visible', () => {
+			it( 'should not set any color directly to color-picker component when its focused', () => {
 				makeElementVisibleInDOM( view.picker );
 
 				const spy = sinon.spy( view.picker, 'setAttribute' );
+
+				view.focus();
 
 				const event = new CustomEvent( 'color-changed', {
 					detail: {
@@ -192,10 +194,10 @@ describe( 'ColorPickerView', () => {
 
 				clock.tick( 200 );
 
-				sinon.assert.notCalled( spy );
-
 				// Cleanup DOM
 				view.picker.parentElement.remove();
+
+				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should set color in color-picker component when change was caused by input', () => {
@@ -213,6 +215,8 @@ describe( 'ColorPickerView', () => {
 			} );
 
 			it( 'should set color in color-picker component when its not visible', () => {
+				// We didn't add color picker to document here then its not visible by default
+
 				const spy = sinon.spy( view.picker, 'setAttribute' );
 
 				const event = new CustomEvent( 'color-changed', {
