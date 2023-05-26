@@ -168,7 +168,7 @@ describe( 'ImageInlineEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
 				);
 
@@ -603,7 +603,7 @@ describe( 'ImageInlineEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{"data":"small.png 148w, big.png 1024w"}\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
 				);
 
