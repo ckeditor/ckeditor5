@@ -178,7 +178,7 @@ describe( 'ColorPickerView', () => {
 			} );
 
 			it( 'should not set any color directly to color-picker component when its focused', () => {
-				makeElementVisibleInDOM( view.picker );
+				document.body.appendChild( view.picker );
 
 				const spy = sinon.spy( view.picker, 'setAttribute' );
 
@@ -195,7 +195,7 @@ describe( 'ColorPickerView', () => {
 				clock.tick( 200 );
 
 				// Cleanup DOM
-				view.picker.parentElement.remove();
+				view.picker.remove();
 
 				sinon.assert.notCalled( spy );
 			} );
@@ -530,13 +530,5 @@ describe( 'ColorPickerView', () => {
 			expect( fieldView.value, 'Wrong input value' ).to.equal( options.expectedInput );
 			expect( view.color, 'Wrong color property value' ).to.equal( options.expectedColorProperty );
 		} );
-	}
-
-	function makeElementVisibleInDOM( element ) {
-		const parent = document.createElement( 'div' );
-		parent.style.position = 'relative';
-		parent.style.display = 'block';
-		parent.appendChild( element );
-		document.body.appendChild( parent );
 	}
 } );
