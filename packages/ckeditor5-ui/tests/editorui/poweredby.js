@@ -947,13 +947,29 @@ describe( 'PoweredBy', () => {
 		const headingToolbarButton = editor.ui.view.toolbar.items
 			.find( item => item.buttonView && item.buttonView.label.startsWith( 'Heading' ) );
 
-		let elementFromPoint = document.elementFromPoint( 60, 90 );
+		const poweredByElement = editor.ui.poweredBy._balloonView.element;
+
+		const poweredByElementGeometry = new Rect( poweredByElement );
+
+		const middleOfThePoweredByCoords = {
+			x: ( poweredByElementGeometry.width / 2 ) + poweredByElementGeometry.left,
+			y: ( poweredByElementGeometry.height / 2 ) + poweredByElementGeometry.top
+		};
+
+		let elementFromPoint = document.elementFromPoint(
+			middleOfThePoweredByCoords.x - 5, // "-5" to hit in the label not SVG,
+			middleOfThePoweredByCoords.y
+		);
 
 		expect( elementFromPoint.classList.contains( 'ck-powered-by__label' ) ).to.be.true;
 
+		// show heading dropdown
 		headingToolbarButton.buttonView.fire( 'execute' );
 
-		elementFromPoint = document.elementFromPoint( 60, 90 );
+		elementFromPoint = document.elementFromPoint(
+			middleOfThePoweredByCoords.x,
+			middleOfThePoweredByCoords.y
+		);
 
 		expect( elementFromPoint.classList.contains( 'ck-button__label' ) ).to.be.true;
 
