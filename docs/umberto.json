@@ -387,6 +387,7 @@
 							"id": "features-comments",
 							"slug": "comments",
 							"order": 100,
+							"folded": true,
 							"badges": [
 								"premium"
 							]
@@ -396,6 +397,7 @@
 							"id": "features-track-changes",
 							"slug": "track-changes",
 							"order": 200,
+							"folded": true,
 							"badges": [
 								"premium"
 							]
@@ -405,6 +407,7 @@
 							"id": "features-revision-history",
 							"slug": "revision-history",
 							"order": 300,
+							"folded": true,
 							"badges": [
 								"premium"
 							]
@@ -414,6 +417,7 @@
 							"id": "features-real-time-collaboration",
 							"slug": "real-time-collaboration",
 							"order": 400,
+							"folded": true,
 							"badges": [
 								"premium"
 							]
@@ -422,7 +426,8 @@
 							"name": "Annotations",
 							"id": "features-annotations",
 							"slug": "annotations",
-							"order": 500
+							"order": 500,
+							"folded": true
 						}
 					]
 				},
@@ -435,6 +440,7 @@
 							"name": "Import from Word",
 							"id": "import-word",
 							"slug": "import-word",
+							"folded": true,
 							"badges": [
 								"premium"
 							]
@@ -460,6 +466,7 @@
 							"name": "Image upload",
 							"id": "features-image-upload",
 							"slug": "image-upload",
+							"folded": true,
 							"order": 80
 						}
 					]
@@ -473,6 +480,7 @@
 					"name": "Pagination",
 					"id": "features-pagination",
 					"slug": "pagination",
+					"folded": true,
 					"badges": [
 						"premium"
 					]
@@ -535,7 +543,8 @@
 					"name": "Update guides",
 					"id": "update-guides",
 					"slug": "guides",
-					"order": 30
+					"order": 30,
+					"folded": true
 				}
 			]
 		},
@@ -575,13 +584,15 @@
 							"name": "Creating an abbreviation plugin",
 							"id": "abbreviation-plugin",
 							"slug": "abbreviation-plugin",
-							"order": 20
+							"order": 20,
+							"folded": true
 						},
 						{
 							"name": "Package Generator",
 							"id": "package-generator",
 							"slug": "package-generator",
-							"order": 40
+							"order": 40,
+							"folded": true
 						}
 					]
 				},
@@ -602,6 +613,7 @@
 							"id": "framework-deep-dive-conversion",
 							"slug": "conversion",
 							"order": 100,
+							"folded": true,
 							"categories": [
 								{
 									"name": "Conversion helpers",
@@ -615,7 +627,8 @@
 							"name": "User interface",
 							"id": "framework-deep-dive-ui",
 							"slug": "ui",
-							"order": 110
+							"order": 110,
+							"folded": true
 						}
 					]
 				},

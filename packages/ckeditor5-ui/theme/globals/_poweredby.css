@@ -16,7 +16,6 @@
 .ck.ck-balloon-panel.ck-powered-by-balloon {
 	--ck-border-radius: var(--ck-powered-by-border-radius);
 
-	border: 0;
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
@@ -59,6 +58,10 @@
 				opacity: 1;
 			}
 		}
+	}
+
+	&[class*="position_inside"] {
+		border-color: transparent;
 	}
 
 	&[class*="position_border"] {
