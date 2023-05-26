@@ -10,12 +10,12 @@ class FormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		// Allow arrow keys to be used on the inputs; otherwise, CKEditor will attempt to change the focus to the next/previous toolbar item
-		this.keystrokes.set('arrowleft', (ev, _cancel) => {
+		this.keystrokes.set( 'arrowleft', ( ev, _cancel ) => {
 			ev.stopPropagation();
-		});
-		this.keystrokes.set('arrowright', (ev, _cancel) => {
+		} );
+		this.keystrokes.set( 'arrowright', ( ev, _cancel ) => {
 			ev.stopPropagation();
-		});
+		} );
 
 		this.heightInputView = this._createInput( 'Height' );
 		this.widthInputView = this._createInput( 'Width' );
