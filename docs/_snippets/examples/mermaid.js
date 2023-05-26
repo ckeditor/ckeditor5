@@ -63,6 +63,15 @@ ClassicEditor
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert Mermaid diagram' ),
+			text: 'Click to insert a Mermaid diagram.',
+			tippyOptions: {
+				placement: 'bottom-center'
+			},
+			editor
+		} );
 		window.editor = editor;
 		CKEditorInspector.attach( editor );
 		window.console.log( 'CKEditor 5 is ready.', editor );
