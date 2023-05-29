@@ -8,7 +8,7 @@
 import Rect from '../../../src/dom/rect';
 import RectDrawer from '../../_utils/rectdrawer';
 
-document.addEventListener( 'scroll', drawVisibleRects );
+window.addEventListener( 'scroll', drawVisibleRects, true );
 window.addEventListener( 'resize', drawVisibleRects );
 drawVisibleRects();
 
@@ -16,15 +16,23 @@ function drawVisibleRects() {
 	RectDrawer.clear();
 
 	const children = Array.from( document.querySelectorAll( '.child' ) );
+	const parents = Array.from( document.querySelectorAll( '.parent' ) );
+
+	for ( const element of [ ...parents, ...children ] ) {
+		const elementRect = new Rect( element );
+		const overflow = window.getComputedStyle( element ).overflow;
+		const position = window.getComputedStyle( element ).position;
+
+		RectDrawer.draw( elementRect, {
+			outlineWidth: '1px',
+			outlineStyle: 'dashed',
+			outlineColor: 'rgba(0,0,0,.3)',
+			opacity: 1
+		}, `ovf:${ overflow.slice( 0, 3 ) } pos:${ position.slice( 0, 4 ) }` );
+	}
 
 	for ( const child of children ) {
 		const visibleRect = new Rect( child ).getVisible();
-
-		RectDrawer.draw( new Rect( child ), {
-			opacity: '1',
-			background: 'none',
-			outline: '1px dashed rgba(0,0,0,.3)'
-		} );
 
 		if ( visibleRect ) {
 			RectDrawer.draw( visibleRect, {
@@ -33,7 +41,9 @@ function drawVisibleRects() {
 				backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIuMDAwMDEgMkwxOTAgMTkwTTE5MCAyTDIgMTkwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjMiLz4KPC9zdmc+Cg==")',
 				backgroundRepeat: 'no-repeat',
 				backgroundSize: '100% 100%',
-				outline: '2px solid black'
+				outlineWidth: '2px',
+				outlineStyle: 'solid',
+				outlineColor: 'black'
 			} );
 		}
 	}

@@ -247,38 +247,51 @@ export default class Rect {
 	 */
 	public getVisible(): Rect | null {
 		const source: RectSource & { parentNode?: Node | null; commonAncestorContainer?: Node | null } = this._source;
-		const isAbsolutelyPositionedSourceElement = source instanceof HTMLElement && getElementPosition( source ) == 'absolute';
 
 		let visibleRect = this.clone();
 
 		// There's no ancestor to crop <body> with the overflow.
-		if ( !isBody( source ) ) {
-			let parent = source.parentNode || source.commonAncestorContainer;
+		if ( isBody( source ) ) {
+			return visibleRect;
+		}
 
-			// Check the ancestors all the way up to the <body>.
-			while ( parent && !isBody( parent ) ) {
-				// Skip parent if the target has `position: absolute` and the parent has position other than `relative`. In such case
-				// `overflow` does not apply and there's no chance of visual clipping https://github.com/ckeditor/ckeditor5/issues/14107.
-				if ( isAbsolutelyPositionedSourceElement && getElementPosition( parent as HTMLElement ) !== 'relative' ) {
-					parent = parent.parentNode;
-					continue;
-				}
+		let child: any = source;
+		let parent = source.parentNode || source.commonAncestorContainer;
+		let absolutelyPositionedChildElement;
 
-				const parentRect = new Rect( parent as HTMLElement );
-				const intersectionRect = visibleRect.getIntersection( parentRect );
-
-				if ( intersectionRect ) {
-					if ( intersectionRect.getArea() < visibleRect.getArea() ) {
-						// Reduce the visible rect to the intersection.
-						visibleRect = intersectionRect;
-					}
-				} else {
-					// There's no intersection, the rect is completely invisible.
-					return null;
-				}
-
-				parent = parent.parentNode;
+		// Check the ancestors all the way up to the <body>.
+		while ( parent && !isBody( parent ) ) {
+			if ( child instanceof HTMLElement && getElementPosition( child ) === 'absolute' ) {
+				absolutelyPositionedChildElement = child;
 			}
+
+			// The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
+			// Otherwise there's no chance of visual clipping and the parent can be skipped
+			// https://github.com/ckeditor/ckeditor5/issues/14107.
+			if (
+				absolutelyPositionedChildElement &&
+				( getElementPosition( parent as HTMLElement ) !== 'relative' || getElementOverflow( parent as HTMLElement ) === 'visible' )
+			) {
+				child = parent;
+				parent = parent.parentNode;
+				continue;
+			}
+
+			const parentRect = new Rect( parent as HTMLElement );
+			const intersectionRect = visibleRect.getIntersection( parentRect );
+
+			if ( intersectionRect ) {
+				if ( intersectionRect.getArea() < visibleRect.getArea() ) {
+					// Reduce the visible rect to the intersection.
+					visibleRect = intersectionRect;
+				}
+			} else {
+				// There's no intersection, the rect is completely invisible.
+				return null;
+			}
+
+			child = parent;
+			parent = parent.parentNode;
 		}
 
 		return visibleRect;
@@ -484,4 +497,11 @@ function isDomElement( value: any ): value is Element {
  */
 function getElementPosition( element: HTMLElement ): string {
 	return element.ownerDocument.defaultView!.getComputedStyle( element ).position;
+}
+
+/**
+ * Returns the value of the `overflow` style of an `HTMLElement`.
+ */
+function getElementOverflow( element: HTMLElement ): string {
+	return element.ownerDocument.defaultView!.getComputedStyle( element ).overflow;
 }

@@ -631,6 +631,53 @@ describe( 'Rect', () => {
 			} );
 		} );
 
+		it( 'should return the visible rect (HTMLElement), partially cropped, ' +
+			'deep ancestor overflow (ancestor with position: absolute)', () => {
+			ancestorB.appendChild( ancestorA );
+			document.body.appendChild( ancestorB );
+
+			element.style.position = 'static';
+			ancestorA.style.position = 'absolute';
+			ancestorB.style.overflow = 'scroll';
+			ancestorB.style.position = 'relative';
+
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 50,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 50,
+				height: 50
+			} );
+
+			sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 150,
+				bottom: 100,
+				left: 50,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 50,
+				right: 100,
+				bottom: 100,
+				left: 50,
+				width: 50,
+				height: 50
+			} );
+		} );
+
 		it( 'should return the visible rect (Range), partially cropped', () => {
 			range.setStart( ancestorA, 0 );
 			range.setEnd( ancestorA, 1 );
@@ -759,7 +806,8 @@ describe( 'Rect', () => {
 			} );
 		} );
 
-		it( 'should not ignore a parent if target is an element with position: absolute but parent has position: relative', () => {
+		it( 'should ignore a parent if target is an element with position: absolute ' +
+			'but parent has position: relative but no overflow', () => {
 			sinon.stub( element, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 100,
@@ -771,6 +819,40 @@ describe( 'Rect', () => {
 
 			element.style.position = 'absolute';
 			ancestorA.style.position = 'relative';
+
+			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 50,
+				right: 150,
+				bottom: 150,
+				left: 50,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+		} );
+
+		it( 'should not ignore a parent if target is an element with position: absolute ' +
+			'but parent has position: relative and overflow', () => {
+			sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			element.style.position = 'absolute';
+			ancestorA.style.position = 'relative';
+			ancestorA.style.overflow = 'hidden';
 
 			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 50,
