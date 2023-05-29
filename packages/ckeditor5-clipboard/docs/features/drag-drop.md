@@ -55,7 +55,7 @@ The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate a
 In the v38.0.0 release, we introduced plugins that enable dragging content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
 
 <info-box warning>
-	This is still an **experimental feature**, it is available for users, developers, and enthusiasts, who want to test out new functionality and provide feedback to the product team. Usage in production environments may result in errors.
+	This block drag and drop is still an **experimental feature**. It is available for users, developers, and enthusiasts, who want to test the new functionality and provide feedback to the product team. Usage in production environments may result in errors.
 </info-box>
 
 Functions introduced in the initial release include:
