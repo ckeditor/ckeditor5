@@ -50,31 +50,31 @@ ClassicEditor.create(document.querySelector("#editor"), {
 
 The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate along with the clipboard plugin.
 
-## Experimental drag and drop of blocks
+## Drag and drop of content blocks
 
-In the version `38.0.0` we introduced experimental plugins for dragging blocks inside the editor. This allows you to select an entire block or blocks, and move them before or after other blocks.
+In the v38.0.0 release, we introduced a plugin version that enables dragging content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
 
 <info-box warning>
-	This is an **experimental feature**, it is available for users, developers, and enthusiasts, who want to test out new functionality and provide feedback to the product team. Usage in production environments may result in errors.
+	This is still an **experimental feature**, it is available for users, developers, and enthusiasts, who want to test out new functionality and provide feedback to the product team. Usage in production environments may result in errors.
 </info-box>
 
-What works in the experimental release:
+Functions introduced in the initial release include:
 
-* Selection of the text, elements, multiple block, and moving them blocks.
-* Placement of blocks inside other blocks: tables, blockquote, etc.
-* The pilcrow icon in the Ballon block editor behaves as a drag handle.
+* Selection of the text, elements, multiple blocks, and moving these around.
+* Placement of blocks inside other blocks such as tables, blockquotes, etc.
+* The pilcrow icon 	{@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg} in the balloon block editor now behaves as a drag handle.
 
-Enable the drag and drop of blocks by adding to your plugins list the {@link module:clipboard/dragdropexperimental~DragDropExperimental `DragDropExperimental`} and additionally the {@link module:clipboard/dragdropblocktoolbar~DragDropBlockToolbar `DragDropBlockToolbar`} for a Balloon block editor.
-
-Feedback for the drag and drop of block is gathered in [issue #7731](https://github.com/ckeditor/ckeditor5/issues/7731). If you have some thoughts what should work better, leave us a comment!
+Feedback for the drag and drop of blocks is gathered in [issue #7731](https://github.com/ckeditor/ckeditor5/issues/7731). If you have any thoughts on what should work better, leave us a comment!
 
 ### Classic editor demo
 
-Select a block or blocks, and drag them across the document. You can place blocks in the other blocks like tables and blockquotes.
+Select a block or blocks, and drag them across the document. You can place blocks inside other blocks, such as tables and blockquotes.
 
 {@snippet features/experimental-drag-drop}
 
-Here's the configuration that will allow you to enable the blocks drag and drop in the Classic editor:
+#### Installation
+
+To enable the block drag and drop in a classic editor, you need to add the {@link module:clipboard/dragdropexperimental~DragDropExperimental `DragDropExperimental`} module to your editor configuration:
 
 ```js
 import { ClassicEditor } from "@ckeditor/ckeditor5-editor-classic";
@@ -89,11 +89,13 @@ ClassicEditor.create(document.querySelector("#editor"), {
 
 ### Balloon block editor demo
 
-In a Balloon block editor you can also drag block with the drag handle. Select or focus on the block, and then drag the block with the pilcrow icon.
+In the balloon block editor, you can also drag content blocks using the drag handle. Select or focus on the block, and then drag the block with the pilcrow icon {@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg}.
 
 {@snippet features/experimental-balloon-drag-drop}
 
-Here's the configuration that will allow you to enable the blocks drag and drop in the Balloon block editor:
+#### Installation
+
+To enable the block drag and drop in a balloon block editor, you need to add the {@link module:clipboard/dragdropexperimental~DragDropExperimental `DragDropExperimental`} and the {@link module:clipboard/dragdropblocktoolbar~DragDropBlockToolbar `DragDropBlockToolbar`} modules to your editor configuration::
 
 ```js
 import { BalloonEditor } from "@ckeditor/ckeditor5-editor-balloon";
