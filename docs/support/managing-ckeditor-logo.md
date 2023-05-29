@@ -24,13 +24,19 @@ Refer to the {@link support/license-key-and-activation License key and activatio
 
 ## How to configure the layout of the "Powered by CKEditor" logo?
 
+{@snippet build-classic-source}
+
 For open source, free users, the "Powered by CKEditor" logo will always be displayed. There is, however, some degree of control over it.
+
+{@snippet support/managing-ckeditor-logo-position}
 
 Complete configuration reference is available in the {@link module:core/editor/editorconfig~EditorConfig#ui API documentation}. In short, you can configure the following properties:
 
 * The **position** relative to the editor’s bottom edge. The default is over the edge. The logo can also be displayed inside the container.
 * The logo **offset** toward the configured editable's corner.
 * The **alignment**: left or right side of the editable area.
+
+{@snippet support/managing-ckeditor-logo-styling}
 
 To change the default position and display the logo inside the container, use this configuration option:
 
