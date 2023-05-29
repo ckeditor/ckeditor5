@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals BalloonEditorExperimental, console, window, document */
+/* globals ClassicEditorExperimental, console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-BalloonEditorExperimental.create(
-	document.querySelector( '#snippet-experimental-balloon-drag-drop' ),
+ClassicEditorExperimental.create(
+	document.querySelector( '#snippet-block-drag-drop' ),
 	{
 		placeholder: 'Drop the content here to test the feature.',
 		cloudServices: CS_CONFIG
 	}
 )
 	.then( editor => {
-		window.editorExperimentalBalloon = editor;
+		window.editorExperimental = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );

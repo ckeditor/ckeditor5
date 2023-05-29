@@ -52,7 +52,7 @@ The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate a
 
 ## Drag and drop of content blocks
 
-In the v38.0.0 release, we introduced a plugin version that enables dragging content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
+In the v38.0.0 release, we introduced plugins that enable dragging content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
 
 <info-box warning>
 	This is still an **experimental feature**, it is available for users, developers, and enthusiasts, who want to test out new functionality and provide feedback to the product team. Usage in production environments may result in errors.
@@ -70,7 +70,7 @@ Feedback for the drag and drop of blocks is gathered in [issue #7731](https://gi
 
 Select a block or blocks, and drag them across the document. You can place blocks inside other blocks, such as tables and blockquotes.
 
-{@snippet features/experimental-drag-drop}
+{@snippet features/block-drag-drop}
 
 #### Installation
 
@@ -91,7 +91,7 @@ ClassicEditor.create(document.querySelector("#editor"), {
 
 In the balloon block editor, you can also drag content blocks using the drag handle. Select or focus on the block, and then drag the block with the pilcrow icon {@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg}.
 
-{@snippet features/experimental-balloon-drag-drop}
+{@snippet features/block-balloon-drag-drop}
 
 #### Installation
 
