@@ -163,7 +163,7 @@ export function attributeToViewInlineConverter( { priority, view: viewName }: Da
 /**
  * View-to-model conversion helper preserving allowed attributes on block element.
  *
- * All matched attributes will be preserved on `htmlXAttributes` attribute.
+ * All matched attributes will be preserved on `html*Attributes` attribute.
  *
  * @returns Returns a conversion callback.
 */
@@ -194,7 +194,7 @@ export function viewToModelBlockAttributeConverter( { view: viewName }: DataSche
 }
 
 /**
- * Model-to-view conversion helper applying attributes preserved in `htmlXAttributes` attribute
+ * Model-to-view conversion helper applying attributes preserved in `html*Attributes` attribute
  * for block elements.
  *
  * @returns Returns a conversion callback.

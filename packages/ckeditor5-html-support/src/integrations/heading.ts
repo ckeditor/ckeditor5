@@ -81,7 +81,7 @@ export default class HeadingElementSupport extends Plugin {
 	}
 
 	/**
-	 * Removes css classes from "htmlXAttributes" of new paragraph created when hitting "enter" in heading.
+	 * Removes css classes from "html*Attributes" of new paragraph created when hitting "enter" in heading.
 	 */
 	private removeClassesOnEnter( editor: Editor, options: Array<HeadingOption> ): void {
 		const enterCommand: EnterCommand = editor.commands.get( 'enter' )!;
@@ -94,7 +94,7 @@ export default class HeadingElementSupport extends Plugin {
 				modifyGhsAttribute(
 					data.writer,
 					positionParent as Item,
-					getHtmlAttributeName( typeof heading.view === 'string' ? heading.view : heading.view.name ),
+					getHtmlAttributeName( heading.view as string ),
 					'classes',
 					classes => classes.clear()
 				);

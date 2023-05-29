@@ -77,7 +77,7 @@ export default class CodeBlockElementSupport extends Plugin {
  * View-to-model conversion helper preserving allowed attributes on {@link module:code-block/codeblock~CodeBlock Code Block}
  * feature model element.
  *
- * Attributes are preserved as a value of `htmlXAttributes` model attribute.
+ * Attributes are preserved as a value of `html*Attributes` model attribute.
  * @param dataFilter
  * @returns Returns a conversion callback.
  */
