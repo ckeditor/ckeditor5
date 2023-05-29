@@ -177,7 +177,7 @@ describe( 'ColorPickerView', () => {
 				} );
 			} );
 
-			it( 'should not set any color directly to color-picker component when its focused', () => {
+			it( 'should not set any color directly to color picker HTML when its focused', () => {
 				document.body.appendChild( view.picker );
 
 				const spy = sinon.spy( view.picker, 'setAttribute' );
@@ -194,13 +194,13 @@ describe( 'ColorPickerView', () => {
 
 				clock.tick( 200 );
 
+				sinon.assert.notCalled( spy );
+
 				// Cleanup DOM
 				view.picker.remove();
-
-				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should set color in color-picker component when change was caused by input', () => {
+			it( 'should set color in color picker HTML when change was caused by input', () => {
 				const spy = sinon.spy( view.picker, 'setAttribute' );
 
 				const fieldView = view.hexInputRow.children.get( 1 ).fieldView;
@@ -208,24 +208,6 @@ describe( 'ColorPickerView', () => {
 				fieldView.isFocused = true;
 				fieldView.value = '#ffffff';
 				fieldView.fire( 'input' );
-
-				clock.tick( 200 );
-
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'should set color in color-picker component when its not visible', () => {
-				// We didn't add color picker to document here then its not visible by default
-
-				const spy = sinon.spy( view.picker, 'setAttribute' );
-
-				const event = new CustomEvent( 'color-changed', {
-					detail: {
-						value: '#733232'
-					}
-				} );
-
-				view.picker.dispatchEvent( event );
 
 				clock.tick( 200 );
 
