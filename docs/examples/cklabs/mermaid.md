@@ -23,7 +23,7 @@ The example below lets you test creating diagrams and flowcharts on the go, righ
 * `BT` &ndash; bottom to top
 * `LR` &ndash; left-right
 * `RL` &ndash; right-left
-* `--&gt;` &ndash; arrow
+* `-->` &ndash; arrow
 * `-- text --` &ndash; straight line with text
 
 Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog.
@@ -104,7 +104,7 @@ ClassicEditor
 
 ```html
 <div id="mermaid">
-	
+
 	<p>Sample editor data</p>
 	<pre spellcheck="false"><code class="language-mermaid">
 		Sample mermaid code goes here.
