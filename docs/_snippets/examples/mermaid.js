@@ -13,12 +13,6 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { CKEditorInspector } from '@ckeditor/ckeditor5-inspector';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-// Not exactly sure this is not covered in the build, gotta check that later, uh?
-import { Typing } from '@ckeditor/ckeditor5-typing';
-import { Enter } from '@ckeditor/ckeditor5-enter';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
-
-// This bad boy breaks everything down. I can't even.
 import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
@@ -34,9 +28,6 @@ ClassicEditor
 			AutoImage,
 			LinkImage,
 			CKBox,
-			Typing,
-			Enter,
-			Clipboard,
 			Mermaid
 		] ),
 		toolbar: {
@@ -63,15 +54,6 @@ ClassicEditor
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert Mermaid diagram' ),
-			text: 'Click to insert a Mermaid diagram.',
-			tippyOptions: {
-				placement: 'bottom-center'
-			},
-			editor
-		} );
 		window.editor = editor;
 		CKEditorInspector.attach( editor );
 		window.console.log( 'CKEditor 5 is ready.', editor );

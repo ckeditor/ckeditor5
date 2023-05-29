@@ -44,9 +44,6 @@ import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { CKEditorInspector } from '@ckeditor/ckeditor5-inspector';
-import { Typing } from '@ckeditor/ckeditor5-typing';
-import { Enter } from '@ckeditor/ckeditor5-enter';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
 import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
 
@@ -60,9 +57,6 @@ ClassicEditor
 			AutoImage,
 			LinkImage,
 			CKBox,
-			Typing,
-			Enter,
-			Clipboard,
 			Mermaid
 		] ),
 		toolbar: {
@@ -110,6 +104,8 @@ ClassicEditor
 
 ```html
 <div id="mermaid">
+	
+	<p>Sample editor data</p>
 	<pre spellcheck="false"><code class="language-mermaid">
 		Sample mermaid code goes here.
 	</code></pre>
