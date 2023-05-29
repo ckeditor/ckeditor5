@@ -8,26 +8,24 @@
  */
 
 import { icons } from 'ckeditor5/src/core';
-import {
-	ButtonView,
-	ColorGridView,
-	ColorTileView,
-	FocusCycler,
-	LabelView,
-	Template,
-	View,
-	ViewCollection,
-	ColorPickerView,
-	icons as uiIcons,
-	type ColorDefinition,
-	type ColorPickerConfig
-} from 'ckeditor5/src/ui';
+
+import ButtonView from '../button/buttonview';
+import ColorGridView, { type ColorDefinition } from '../colorgrid/colorgridview';
+import ColorTileView from '../colorgrid/colortileview';
+import FocusCycler from '../focuscycler';
+import LabelView from '../label/labelview';
+import Template from '../template';
+import View from '../view';
+import ViewCollection from '../viewcollection';
+import ColorPickerView from '../colorpicker/colorpickerview';
+import colorPaletteIcon from '../../theme/icons/color-palette.svg';
+import  { type ColorPickerConfig } from '../colorpicker/utils';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
 
-import DocumentColorCollection from '../documentcolorcollection';
+import DocumentColorCollection from './documentcolorcollection';
 
-import '../../theme/fontcolor.css';
+import '../../theme/components/colortable/colortableview.css';
 
 /**
  * A class which represents a view with the following sub–components:
@@ -623,7 +621,7 @@ class ColorGridsPageView extends View {
 		this.colorPickerButtonView.set( {
 			label: this._colorPickerLabel,
 			withText: true,
-			icon: uiIcons.colorPaletteIcon,
+			icon: colorPaletteIcon,
 			class: 'ck-color-table__color-picker'
 		} );
 
@@ -1002,7 +1000,6 @@ class ColorPickerPageView extends View {
 			class: 'ck-button-save',
 			withText: false,
 			label: t( 'Accept' ),
-			type: 'submit'
 		} );
 
 		cancelButtonView.set( {

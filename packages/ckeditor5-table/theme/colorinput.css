@@ -36,4 +36,16 @@
 			}
 		}
 	}
+
+	& .ck-color-picker__row {
+		width: unset;
+
+		& .ck.ck-labeled-field-view {
+			padding-top: unset;
+		}
+
+		& .ck.ck-input-text {
+			width: unset;
+		}
+	}
 }

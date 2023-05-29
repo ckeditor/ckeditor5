@@ -26,6 +26,13 @@ export { default as ColorTileView } from './colorgrid/colortileview';
 export { default as ColorPickerView } from './colorpicker/colorpickerview';
 export type { ColorPickerConfig, ColorPickerOutputFormat } from './colorpicker/utils';
 
+export { 
+	default as ColorTableView, 
+	type ColorTableExecuteEvent, 
+	type ColorTableCancelEvent, 
+	type ColorTableShowColorPickerEvent 
+} from './colortable/colortableview';
+
 export { default as ComponentFactory } from './componentfactory';
 
 export { default as DropdownView } from './dropdown/dropdownview';

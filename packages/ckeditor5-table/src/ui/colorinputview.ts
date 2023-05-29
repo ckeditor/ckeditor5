@@ -10,15 +10,14 @@
 import {
 	View,
 	InputTextView,
-	ButtonView,
 	createDropdown,
-	ColorGridView,
 	FocusCycler,
 	ViewCollection,
+	ColorTableView,
 	type ColorDefinition,
 	type DropdownView
 } from 'ckeditor5/src/ui';
-import { icons } from 'ckeditor5/src/core';
+
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
 import '../../theme/colorinput.css';
@@ -209,7 +208,6 @@ export default class ColorInputView extends View {
 		const colorGrid = this._createColorGrid( locale );
 		const dropdown = createDropdown( locale );
 		const colorPreview = new View();
-		const removeColorButton = this._createRemoveColorButton();
 
 		colorPreview.setTemplate( {
 			tag: 'span',
@@ -245,15 +243,30 @@ export default class ColorInputView extends View {
 		dropdown.buttonView.tooltip = true;
 
 		dropdown.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
-		dropdown.panelView.children.add( removeColorButton );
 		dropdown.panelView.children.add( colorGrid );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );
 
-		this._focusables.add( removeColorButton );
 		this._focusables.add( colorGrid );
 
-		this.focusTracker.add( removeColorButton.element! );
 		this.focusTracker.add( colorGrid.element! );
+
+		dropdown.on( 'change:isOpen', ( evt, name, isVisible ) => {
+			if ( !isVisible ) {
+				colorGrid!.showColorGrids();
+			}
+		} );
+
+		colorGrid.on( 'execute', ( evt, data ) => {
+			if ( data.source === 'saveButton' ) {
+				dropdown.isOpen = false;
+			}
+		} );
+
+		colorGrid.on( 'cancel', () => {
+			this.value = this.options.defaultColorValue || '';
+			this.fire( 'input' );
+			dropdown.isOpen = false;
+		} );
 
 		return dropdown;
 	}
@@ -297,42 +310,32 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Creates and configures the button that clears the color.
-	 */
-	private _createRemoveColorButton() {
-		const locale = this.locale!;
-		const t = locale.t;
-		const removeColorButton = new ButtonView( locale );
-		const defaultColor = this.options.defaultColorValue || '';
-		const removeColorButtonLabel = defaultColor ? t( 'Restore default' ) : t( 'Remove color' );
-
-		removeColorButton.class = 'ck-input-color__remove-color';
-		removeColorButton.withText = true;
-		removeColorButton.icon = icons.eraser;
-		removeColorButton.label = removeColorButtonLabel;
-		removeColorButton.on( 'execute', () => {
-			this.value = defaultColor;
-			this.dropdownView.isOpen = false;
-			this.fire( 'input' );
-		} );
-
-		return removeColorButton;
-	}
-
-	/**
 	 * Creates and configures the color grid inside the {@link #dropdownView}.
 	 */
 	private _createColorGrid( locale: Locale ) {
-		const colorGrid = new ColorGridView( locale, {
-			colorDefinitions: this.options.colorDefinitions,
-			columns: this.options.columns
+		const t = locale.t;
+		const defaultColor = this.options.defaultColorValue || '';
+		const removeColorButtonLabel = defaultColor ? t( 'Restore default' ) : t( 'Remove color' );
+
+		const colorGrid = new ColorTableView( locale, {
+			colors: this.options.colorDefinitions,
+			columns: this.options.columns,
+			removeButtonLabel: removeColorButtonLabel,
+			colorPickerLabel: 'Color picker',
+			colorPickerConfig: { format: 'hsl' }
 		} );
 
+		colorGrid!.appendUI();
+
 		colorGrid.on( 'execute', ( evtData, data ) => {
-			this.value = data.value;
-			this.dropdownView.isOpen = false;
+			this.value = data.value || defaultColor;
 			this.fire( 'input' );
+
+			if ( data.source !== 'colorPicker' ) {
+				this.dropdownView.isOpen = false;
+			}
 		} );
+
 		colorGrid.bind( 'selectedColor' ).to( this, 'value' );
 
 		return colorGrid;

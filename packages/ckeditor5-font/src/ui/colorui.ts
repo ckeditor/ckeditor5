@@ -9,7 +9,16 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { Batch } from 'ckeditor5/src/engine';
-import { createDropdown, normalizeColorOptions, getLocalizedColorOptions, focusChildOnDropdownOpen } from 'ckeditor5/src/ui';
+import {
+	createDropdown,
+	normalizeColorOptions,
+	getLocalizedColorOptions,
+	focusChildOnDropdownOpen,
+	type ColorTableView,
+	type ColorTableExecuteEvent,
+	type ColorTableCancelEvent,
+	type ColorTableShowColorPickerEvent
+} from 'ckeditor5/src/ui';
 
 import {
 	addColorTableToDropdown,
@@ -17,12 +26,6 @@ import {
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR
 } from '../utils';
-import {
-	type default as ColorTableView,
-	type ColorTableExecuteEvent,
-	type ColorTableCancelEvent,
-	type ColorTableShowColorPickerEvent
-} from './colortableview';
 import type FontColorCommand from '../fontcolor/fontcolorcommand';
 import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
 import type { FontColorConfig } from '../fontconfig';
@@ -162,6 +165,10 @@ export default class ColorUI extends Plugin {
 
 				if ( data.source !== 'colorPicker' ) {
 					editor.editing.view.focus();
+				}
+
+				if ( data.source === 'saveButton' ) {
+					dropdownView.isOpen = false;
 				}
 			} );
 

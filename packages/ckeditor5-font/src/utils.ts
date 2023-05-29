@@ -7,10 +7,8 @@
  * @module font/utils
  */
 
-import ColorTableView from './ui/colortableview';
-
 import type { FontFamilyOption, FontSizeOption } from './fontconfig';
-import type { ColorDefinition, ColorPickerConfig, DropdownView } from 'ckeditor5/src/ui';
+import { ColorTableView, type ColorDefinition, type ColorPickerConfig, type DropdownView } from 'ckeditor5/src/ui';
 import type { ArrayOrItem } from 'ckeditor5/src/utils';
 import type {
 	ViewAttributeElement,
