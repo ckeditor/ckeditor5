@@ -910,7 +910,7 @@ describe( 'PoweredBy', () => {
 		} );
 	} );
 
-	it( 'should have lower z-index than regular balloon', () => {
+	it( 'should have the z-index lower than a regular BalloonPanelView instance', () => {
 		focusEditor( editor );
 
 		const balloonView = new BalloonPanelView();
@@ -928,7 +928,7 @@ describe( 'PoweredBy', () => {
 		balloonView.destroy();
 	} );
 
-	it( 'should not overlapped at any opened toolbar dropdown', async () => {
+	it( 'should not overlap a dropdown panel in a toolbar', async () => {
 		const editor = await createClassicEditor( element, {
 			toolbar: [ 'heading' ],
 			plugins: [ Heading ],
