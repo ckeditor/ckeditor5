@@ -591,59 +591,95 @@ export type ToolbarConfigItem = string | {
 	tooltip?: boolean | string | ( ( label: string, keystroke: string | undefined ) => string );
 };
 
+/**
+ * PoweredByConfig configuration options.
+ **/
+export interface PoweredByConfig {
+
+	/**
+	 * Position of the project's logo.
+	 *
+	 * * When `'inside'` the logo will be displayed within the boundaries of the editing area.
+	 * * When `'border'` the logo will be displayed over the bottom border of the editing area.
+	 *
+	 * @default 'border'
+	 */
+	position: 'inside' | 'border';
+
+	/**
+	 * Allows choosing the side of the editing area the logo will be displayed to.
+	 *
+	 * **Note:** If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
+	 * language, the side switches to `'left'` by default.
+	 *
+	 * @default 'right'
+	 */
+	side: 'left' | 'right';
+
+	/**
+	 * Allows changing the label displayed next to the CKEditor logo.
+	 *
+	 * **Note:** Set the value to `null` to hide the label.
+	 *
+	 * @default 'Powered by'
+	 */
+	label: string | null;
+
+	/**
+	 * The vertical distance the logo can be moved away from its default position.
+	 *
+	 * **Note:** If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
+	 *
+	 * @default 5
+	 */
+	verticalOffset: number;
+
+	/**
+	 * The horizontal distance between the side of the editing root and the nearest side of the logo.
+	 *
+	 * @default 5
+	 */
+	horizontalOffset: number;
+}
+
+/**
+ * The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar or other
+ * absolutely positioned UI elements.
+ */
+export interface ViewportOffset {
+
+	/**
+	 * Bottom offset in pixels.
+	 */
+	bottom?: number;
+
+	/**
+	 * Left offset in pixels.
+	 */
+	left?: number;
+
+	/**
+	 * Right offset in pixels.
+	 */
+	right?: number;
+
+	/**
+	 * Top offset in pixels.
+	 */
+	top?: number;
+}
+
 export interface UiConfig {
-	viewportOffset?: {
-		bottom?: number;
-		left?: number;
-		right?: number;
-		top?: number;
-	};
 
-	poweredBy?: {
+	/**
+	 * Read more in {@link module:core/editor/editorconfig~ViewportOffset}.
+	 **/
+	viewportOffset?: ViewportOffset;
 
-		/**
-		 * Position of the project's logo.
-		 *
-		 * * When `'inside'` the logo will be displayed within the boundaries of the editing area.
-		 * * When `'border'` the logo will be displayed over the bottom border of the editing area.
-		 *
-		 * @default 'border'
-		 */
-		position: 'inside' | 'border';
-
-		/**
-		 * Allows choosing the side of the editing area the logo will be displayed to.
-		 *
-		 * **Note:** If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
-		 * language, the side switches to `'left'` by default.
-		 *
-		 * @default 'right'
-		 */
-		side: 'left' | 'right';
-
-		/**
-		 * Allows changing the label displayed next to the CKEditor logo.
-		 *
-		 * **Note:** Set the value to `null` to hide the label.
-		 *
-		 * @default 'Powered by'
-		 */
-		label: string | null;
-
-		/**
-		 * The vertical distance the logo can be moved away from its default position.
-		 *
-		 * **Note:** If `position` is `'border'`, the offset is measured from the (vertical) center of the logo.
-		 *
-		 * @default 5
-		 */
-		verticalOffset: number;
-
-		/**
-		 * The horizontal distance between the side of the editing root and the nearest side of the logo.
-		 *
-		 * @default 5
-		 */
-		horizontalOffset: number;
-	};
+	/**
+	 * The configuration of the PoweredBy feature.
+	 *
+	 * Read more in {@link module:core/editor/editorconfig~PoweredByConfig}.
+	 **/
+	poweredBy?: PoweredByConfig;
 }
