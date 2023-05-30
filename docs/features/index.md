@@ -23,6 +23,28 @@ Most of the features are easily accessible from a {@link features/toolbar highly
 
 CKEditor 5 features cover several functional areas of application and use. Listed below are some of the most useful ones.
 
+### Formatting features
+
+{@link features/basic-styles Basic text styles} include essentials like bold, italics, super- and subscript as well as inline code formatting and more. The {@link features/font font feature} provides support for using different font families, controlling the font size as well as font and background colors.
+
+{@link features/headings Headings} (with configurable levels and styles), as well as the {@link features/text-alignment text alignment feature} help organize the structure of the document.
+
+Most of these formatting options can be applied from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature}.
+
+{@img assets/img/features-basic-formatting.png 800 CKEditor 5 formatting features.}
+
+### Advanced content editing
+
+Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} and create a responsive design. If that is not enough, {@link features/media-embed embed media} into your content.
+
+An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
+
+Provide clear and accessible data using {@link features/tables tables} (you can even nest them to create advanced layouts), ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw the reader's attention to it.
+
+Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that lets you produce code listing with a syntax highlight, too!
+
+{@img assets/img/features-images.png 800 CKEditor 5 image feature.}
+
 ### Collaboration
 
 The {@link framework/index CKEditor 5 Framework} was created with {@link features/collaboration collaboration} in mind.
@@ -46,28 +68,6 @@ If you need to share the document outside your team, use the {@link features/exp
 The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text addressing the needs of software professionals.
 
 {@img assets/img/features-output.png 800 CKEditor 5 output features.}
-
-### Formatting features
-
-{@link features/basic-styles Basic text styles} include essentials like bold, italics, super- and subscript as well as inline code formatting and more. The {@link features/font font feature} provides support for using different font families, controlling the font size as well as font and background colors.
-
-{@link features/headings Headings} (with configurable levels and styles), as well as the {@link features/text-alignment text alignment feature} help organize the structure of the document.
-
-Most of these formatting options can be applied from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature}.
-
-{@img assets/img/features-basic-formatting.png 800 CKEditor 5 formatting features.}
-
-### Advanced content editing
-
-Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} and create a responsive design. If that is not enough, {@link features/media-embed embed media} into your content.
-
-An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
-
-Provide clear and accessible data using {@link features/tables tables} (you can even nest them to create advanced layouts), ordered and unordered {@link features/lists lists} with various markers to choose from and {@link features/todo-lists to-do lists}. Use {@link features/indent indents and outdents} as well as {@link features/block-quote block quotes} to structure the content and draw the reader's attention to it.
-
-Enrich you content further by {@link features/html-embed embedding HTML code} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} that lets you produce code listing with a syntax highlight, too!
-
-{@img assets/img/features-images.png 800 CKEditor 5 image feature.}
 
 ### Productivity features
 
