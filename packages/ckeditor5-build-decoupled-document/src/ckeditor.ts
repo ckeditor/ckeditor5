@@ -32,6 +32,7 @@ import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
+	Image,
 	ImageInsert,
 	ImageCaption,
 	ImageResize,
@@ -89,6 +90,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		CloudServices,
 		EasyImage,
 		Heading,
+		Image,
 		ImageInsert,
 		ImageCaption,
 		ImageResize,
