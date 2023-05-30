@@ -592,7 +592,7 @@ export type ToolbarConfigItem = string | {
 };
 
 /**
- * PoweredByConfig configuration options.
+ * The “Powered by CKEditor” logo configuration options.
  **/
 export interface PoweredByConfig {
 
@@ -646,7 +646,7 @@ export interface PoweredByConfig {
  * The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar or other
  * absolutely positioned UI elements.
  */
-export interface ViewportOffset {
+export interface ViewportOffsetConfig {
 
 	/**
 	 * Bottom offset in pixels.
@@ -672,12 +672,14 @@ export interface ViewportOffset {
 export interface UiConfig {
 
 	/**
-	 * Read more in {@link module:core/editor/editorconfig~ViewportOffset}.
+	 * The viewport offset used for positioning various absolutely positioned UI elements.
+	 *
+	 * Read more in {@link module:core/editor/editorconfig~ViewportOffsetConfig}.
 	 **/
-	viewportOffset?: ViewportOffset;
+	viewportOffset?: ViewportOffsetConfig;
 
 	/**
-	 * The configuration of the PoweredBy feature.
+	 * The configuration of the “Powered by CKEditor” logo.
 	 *
 	 * Read more in {@link module:core/editor/editorconfig~PoweredByConfig}.
 	 **/
