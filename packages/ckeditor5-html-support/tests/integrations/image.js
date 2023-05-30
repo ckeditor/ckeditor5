@@ -62,16 +62,16 @@ describe( 'ImageElementSupport', () => {
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: {
 					1: {
 						attributes: {
-							'data-image': 'image'
+							'data-figure': 'figure'
 						}
 					},
 					2: {
 						attributes: {
-							'data-figure': 'figure'
+							'data-image': 'image'
 						}
 					}
 				}
@@ -94,7 +94,7 @@ describe( 'ImageElementSupport', () => {
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						classes: [ 'foobar' ]
@@ -120,7 +120,7 @@ describe( 'ImageElementSupport', () => {
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						styles: {
@@ -239,19 +239,19 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>' +
-					'<htmlFigure htmlAttributes="(3)">' +
-						'<htmlFigcaption htmlAttributes="(4)">foobar</htmlFigcaption>' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>' +
+					'<htmlFigure htmlFigureAttributes="(3)">' +
+						'<htmlFigcaption htmlFigcaptionAttributes="(4)">foobar</htmlFigcaption>' +
 					'</htmlFigure>',
 				attributes: {
 					1: {
 						attributes: {
-							'data-image': 'image'
+							'data-figure': 'image'
 						}
 					},
 					2: {
 						attributes: {
-							'data-figure': 'image'
+							'data-image': 'image'
 						}
 					},
 					3: {
@@ -290,7 +290,7 @@ describe( 'ImageElementSupport', () => {
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
-				'htmlAttributes',
+				'htmlImgAttributes',
 				'htmlFigureAttributes'
 			].forEach( attributeName => {
 				editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -389,7 +389,7 @@ describe( 'ImageElementSupport', () => {
 		// 	} );
 
 		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-		// 		data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+		// 		data: '<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 		// 		attributes: {
 		// 			1: {
 		// 				attributes: {
@@ -496,18 +496,18 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlLinkAttributes="(3)" ' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
 					'</imageBlock>',
 				attributes: {
 					1: {
 						attributes: {
-							'data-image': 'image'
+							'data-figure': 'figure'
 						}
 					},
 					2: {
 						attributes: {
-							'data-figure': 'figure'
+							'data-image': 'image'
 						}
 					},
 					3: {
@@ -538,7 +538,7 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlLinkAttributes="(3)" ' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
 					'</imageBlock>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
@@ -569,7 +569,7 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlLinkAttributes="(3)" ' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
 					'</imageBlock>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
@@ -704,21 +704,21 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlLinkAttributes="(3)" ' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
 					'</imageBlock>' +
-					'<htmlFigure htmlAttributes="(4)">' +
-						'<htmlFigcaption htmlAttributes="(5)">foobar</htmlFigcaption>' +
+					'<htmlFigure htmlFigureAttributes="(4)">' +
+						'<htmlFigcaption htmlFigcaptionAttributes="(5)">foobar</htmlFigcaption>' +
 					'</htmlFigure>',
 				attributes: {
 					1: {
 						attributes: {
-							'data-image': 'image'
+							'data-figure': 'image'
 						}
 					},
 					2: {
 						attributes: {
-							'data-figure': 'image'
+							'data-image': 'image'
 						}
 					},
 					3: {
@@ -744,7 +744,7 @@ describe( 'ImageElementSupport', () => {
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
-				'htmlAttributes',
+				'htmlImgAttributes',
 				'htmlFigureAttributes'
 			].forEach( attributeName => {
 				editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -793,16 +793,16 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlLinkAttributes="(3)" ' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 						'linkHref="www.example.com" src="/assets/sample.png">' +
-						'<caption htmlAttributes="(4)">' +
+						'<caption htmlFigcaptionAttributes="(4)">' +
 							'<$text htmlA="(5)" linkHref="www.example.com/2">foobar</$text>' +
 						'</caption>' +
 					'</imageBlock>',
 				attributes: {
 					1: {
 						attributes: {
-							'data-image': 'image'
+							'data-figure': 'figure'
 						},
 						classes: [
 							'foobar'
@@ -813,7 +813,7 @@ describe( 'ImageElementSupport', () => {
 					},
 					2: {
 						attributes: {
-							'data-figure': 'figure'
+							'data-image': 'image'
 						},
 						classes: [
 							'foobar'
@@ -950,7 +950,7 @@ describe( 'ImageElementSupport', () => {
 
 		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 		// 		data:
-		// 			'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlLinkAttributes="(3)" ' +
+		// 			'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" htmlLinkAttributes="(3)" ' +
 		// 				'linkHref="www.example.com" src="/assets/sample.png">' +
 		// 			'</imageBlock>',
 		// 		attributes: {
@@ -1082,18 +1082,18 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
-						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlFigcaptionAttributes="(3)">A caption</caption>' +
 					'</imageBlock>',
 				attributes: {
 					1: {
 						attributes: {
-							'data-image': 'image'
+							'data-figure': 'figure'
 						}
 					},
 					2: {
 						attributes: {
-							'data-figure': 'figure'
+							'data-image': 'image'
 						}
 					},
 					3: {
@@ -1123,8 +1123,8 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
-						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlFigcaptionAttributes="(3)">A caption</caption>' +
 					'</imageBlock>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -1153,8 +1153,8 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
-						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlFigcaptionAttributes="(3)">A caption</caption>' +
 					'</imageBlock>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -1280,19 +1280,19 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>' +
-					'<htmlFigure htmlAttributes="(3)">' +
-						'<htmlFigcaption htmlAttributes="(4)">foobar</htmlFigcaption>' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png"></imageBlock>' +
+					'<htmlFigure htmlFigureAttributes="(3)">' +
+						'<htmlFigcaption htmlFigcaptionAttributes="(4)">foobar</htmlFigcaption>' +
 					'</htmlFigure>',
 				attributes: {
 					1: {
 						attributes: {
-							'data-image': 'image'
+							'data-figure': 'image'
 						}
 					},
 					2: {
 						attributes: {
-							'data-figure': 'image'
+							'data-image': 'image'
 						}
 					},
 					3: {
@@ -1313,7 +1313,7 @@ describe( 'ImageElementSupport', () => {
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
-				'htmlAttributes',
+				'htmlImgAttributes',
 				'htmlFigureAttributes'
 			].forEach( attributeName => {
 				editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -1369,8 +1369,8 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
-						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'<imageBlock htmlFigureAttributes="(1)" htmlImgAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlFigcaptionAttributes="(3)">A caption</caption>' +
 					'</imageBlock>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -1615,8 +1615,8 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlAttributes="(1)">' +
-						'<imageInline htmlAttributes="(2)" src="/assets/sample.png"></imageInline>' +
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline htmlImgAttributes="(2)" src="/assets/sample.png"></imageInline>' +
 					'</paragraph>',
 				attributes: {
 					1: {
@@ -1647,8 +1647,8 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlAttributes="(1)">' +
-						'<imageInline htmlAttributes="(2)" src="/assets/sample.png"></imageInline>' +
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline htmlImgAttributes="(2)" src="/assets/sample.png"></imageInline>' +
 					'</paragraph>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -1673,8 +1673,8 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlAttributes="(1)">' +
-						'<imageInline htmlAttributes="(2)" src="/assets/sample.png"></imageInline>' +
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline htmlImgAttributes="(2)" src="/assets/sample.png"></imageInline>' +
 					'</paragraph>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -1770,7 +1770,7 @@ describe( 'ImageElementSupport', () => {
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
-				'htmlAttributes',
+				'htmlImgAttributes',
 				'htmlFigureAttributes'
 			].forEach( attributeName => {
 				editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -1876,8 +1876,8 @@ describe( 'ImageElementSupport', () => {
 
 		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 		// 		data:
-		// 			'<paragraph htmlAttributes="(1)">' +
-		// 				'<imageInline htmlAttributes="(2)" src="/assets/sample.png"></imageInline>' +
+		// 			'<paragraph htmlPAttributes="(1)">' +
+		// 				'<imageInline htmlImgAttributes="(2)" src="/assets/sample.png"></imageInline>' +
 		// 			'</paragraph>',
 		// 		attributes: {
 		// 			1: {
@@ -1939,7 +1939,7 @@ describe( 'ImageElementSupport', () => {
 
 		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 		// 		data:
-		// 			'<paragraph htmlAttributes="(1)">' +
+		// 			'<paragraph htmlPAttributes="(1)">' +
 		// 				'<imageInline src="/assets/sample.png"></imageInline>' +
 		// 			'</paragraph>',
 		// 		attributes: {
@@ -1985,8 +1985,9 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlAttributes="(1)">' +
-						'<imageInline htmlA="(2)" htmlAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline htmlA="(2)" htmlImgAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png">' +
+						'</imageInline>' +
 					'</paragraph>',
 				attributes: {
 					1: {
@@ -2027,8 +2028,9 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlAttributes="(1)">' +
-						'<imageInline htmlA="(2)" htmlAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline htmlA="(2)" htmlImgAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png">' +
+						'</imageInline>' +
 					'</paragraph>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -2058,8 +2060,9 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlAttributes="(1)">' +
-						'<imageInline htmlA="(2)" htmlAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
+					'<paragraph htmlPAttributes="(1)">' +
+						'<imageInline htmlA="(2)" htmlImgAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png">' +
+						'</imageInline>' +
 					'</paragraph>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
@@ -2159,7 +2162,7 @@ describe( 'ImageElementSupport', () => {
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
-				'htmlAttributes',
+				'htmlImgAttributes',
 				'htmlFigureAttributes'
 			].forEach( attributeName => {
 				editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -2259,7 +2262,7 @@ describe( 'ImageElementSupport', () => {
 
 		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 		// 		data:
-		// 			'<paragraph htmlAttributes="(1)">' +
+		// 			'<paragraph htmlPAttributes="(1)">' +
 		// 				'<imageInline htmlA="(2)" htmlAttributes="(3)" linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
 		// 			'</paragraph>',
 		// 		attributes: {
@@ -2342,7 +2345,7 @@ describe( 'ImageElementSupport', () => {
 
 		// 	expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 		// 		data:
-		// 			'<paragraph htmlAttributes="(1)">' +
+		// 			'<paragraph htmlPAttributes="(1)">' +
 		// 				'<imageInline linkHref="www.example.com" src="/assets/sample.png"></imageInline>' +
 		// 			'</paragraph>',
 		// 		attributes: {
@@ -2403,7 +2406,7 @@ describe( 'ImageElementSupport', () => {
 						'src',
 						'srcset',
 						'linkHref',
-						'htmlAttributes',
+						'htmlImgAttributes',
 						'htmlFigureAttributes',
 						'htmlLinkAttributes'
 					] );
@@ -2438,7 +2441,7 @@ describe( 'ImageElementSupport', () => {
 						'src',
 						'srcset',
 						'htmlA',
-						'htmlAttributes'
+						'htmlImgAttributes'
 					] );
 
 					expect( schema.getDefinition( 'imageBlock' ) ).to.be.undefined;
@@ -2467,10 +2470,10 @@ describe( 'ImageElementSupport', () => {
 					editor.setData( '' );
 
 					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).to.deep.equal( [
-						'htmlAttributes'
+						'htmlImgAttributes'
 					] );
 					expect( schema.getDefinition( 'imageInline' ).allowAttributes ).to.deep.equal( [
-						'htmlAttributes'
+						'htmlImgAttributes'
 					] );
 				} );
 		} );
