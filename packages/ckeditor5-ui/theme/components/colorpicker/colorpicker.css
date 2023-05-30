@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-input {
-	min-width: unset;
-}
-
 .color-picker-hex-input {
 	width: max-content;
+
+	& .ck.ck-input {
+		min-width: unset;
+	}
 }
 
 .ck.ck-color-picker__row {
