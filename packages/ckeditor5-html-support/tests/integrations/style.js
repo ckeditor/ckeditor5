@@ -58,15 +58,15 @@ describe( 'StyleElementSupport', () => {
 		editor.setData( `<p>Foo</p><style type="c++" nonce="qwerty">${ STYLE }</style>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlStyle htmlAttributes="(1)" htmlContent="${ STYLE }"></htmlStyle>`,
+			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: {
+				1: STYLE,
+				2: {
 					attributes: {
 						nonce: 'qwerty',
 						type: 'c++'
 					}
-				},
-				2: STYLE
+				}
 			}
 		} );
 
@@ -80,14 +80,14 @@ describe( 'StyleElementSupport', () => {
 		editor.setData( `<p>Foo</p><style type="c++" nonce="qwerty">${ STYLE }</style>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlStyle htmlAttributes="(1)" htmlContent="${ STYLE }"></htmlStyle>`,
+			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: {
+				1: STYLE,
+				2: {
 					attributes: {
 						type: 'c++'
 					}
-				},
-				2: STYLE
+				}
 			}
 		} );
 
@@ -153,7 +153,7 @@ describe( 'StyleElementSupport', () => {
 		dataFilter.allowAttributes( { name: 'style', attributes: true } );
 
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'attribute:htmlAttributes:htmlStyle', ( evt, data, conversionApi ) => {
+			dispatcher.on( 'attribute:htmlStyleAttributes:htmlStyle', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, evt.name );
 			}, { priority: 'high' } );
 		} );
@@ -161,10 +161,10 @@ describe( 'StyleElementSupport', () => {
 		editor.setData( `<p>Foo</p><style nonce="qwerty">${ STYLE }</style>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlStyle htmlAttributes="(1)" htmlContent="${ STYLE }"></htmlStyle>`,
+			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: { attributes: { nonce: 'qwerty' } },
-				2: STYLE
+				1: STYLE,
+				2: { attributes: { nonce: 'qwerty' } }
 			}
 		} );
 
@@ -183,10 +183,10 @@ describe( 'StyleElementSupport', () => {
 		editor.setData( `<p>Foo</p><style type="text/css" nonce="qwerty">${ STYLE }</style>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlStyle htmlAttributes="(1)" htmlContent="${ STYLE }"></htmlStyle>`,
+			data: `<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }" htmlStyleAttributes="(1)"></htmlStyle>`,
 			attributes: {
-				1: { attributes: { type: 'text/css' } },
-				2: STYLE
+				1: STYLE,
+				2: { attributes: { type: 'text/css' } }
 			}
 		} );
 	} );

@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, window, HTMLElement */
+/* global document, Event, window, HTMLElement, getComputedStyle  */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EditorUI from '../../src/editorui/editorui';
 import { BalloonPanelView } from '../../src';
 import View from '../../src/view';
@@ -14,6 +15,8 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Rect } from '@ckeditor/ckeditor5-utils';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -907,8 +910,78 @@ describe( 'PoweredBy', () => {
 		} );
 	} );
 
+	it( 'should have the z-index lower than a regular BalloonPanelView instance', () => {
+		focusEditor( editor );
+
+		const balloonView = new BalloonPanelView();
+		balloonView.render();
+
+		const zIndexOfPoweredByBalloon = Number( getComputedStyle( editor.ui.poweredBy._balloonView.element ).zIndex );
+
+		document.body.appendChild( balloonView.element );
+
+		const zIndexOfRegularBalloon = Number( getComputedStyle( balloonView.element ).zIndex );
+
+		expect( zIndexOfPoweredByBalloon ).to.be.lessThan( zIndexOfRegularBalloon );
+
+		balloonView.element.remove();
+		balloonView.destroy();
+	} );
+
+	it( 'should not overlap a dropdown panel in a toolbar', async () => {
+		const editor = await createClassicEditor( element, {
+			toolbar: [ 'heading' ],
+			plugins: [ Heading ],
+			ui: {
+				poweredBy: {
+					side: 'left',
+					position: 'inside'
+				}
+			}
+		} );
+
+		setData( editor.model, '<heading2>foo[]bar</heading2>' );
+
+		focusEditor( editor );
+
+		const headingToolbarButton = editor.ui.view.toolbar.items
+			.find( item => item.buttonView && item.buttonView.label.startsWith( 'Heading' ) );
+
+		const poweredByElement = editor.ui.poweredBy._balloonView.element;
+
+		const poweredByElementGeometry = new Rect( poweredByElement );
+
+		const middleOfThePoweredByCoords = {
+			x: ( poweredByElementGeometry.width / 2 ) + poweredByElementGeometry.left,
+			y: ( poweredByElementGeometry.height / 2 ) + poweredByElementGeometry.top
+		};
+
+		let elementFromPoint = document.elementFromPoint(
+			middleOfThePoweredByCoords.x - 5, // "-5" to hit in the label not SVG,
+			middleOfThePoweredByCoords.y
+		);
+
+		expect( elementFromPoint.classList.contains( 'ck-powered-by__label' ) ).to.be.true;
+
+		// show heading dropdown
+		headingToolbarButton.buttonView.fire( 'execute' );
+
+		elementFromPoint = document.elementFromPoint(
+			middleOfThePoweredByCoords.x,
+			middleOfThePoweredByCoords.y
+		);
+
+		expect( elementFromPoint.classList.contains( 'ck-button__label' ) ).to.be.true;
+
+		await editor.destroy();
+	} );
+
 	async function createEditor( element, config = { plugins: [ SourceEditing ] } ) {
 		return ClassicTestEditor.create( element, config );
+	}
+
+	async function createClassicEditor( element, config = {} ) {
+		return ClassicEditor.create( element, config );
 	}
 
 	function wait( time ) {

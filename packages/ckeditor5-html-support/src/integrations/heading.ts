@@ -17,7 +17,8 @@ import {
 } from 'ckeditor5/src/enter';
 
 import DataSchema from '../dataschema';
-import { modifyGhsAttribute } from '../utils';
+import { getHtmlAttributeName, modifyGhsAttribute } from '../utils';
+import type { HeadingElementOption } from '@ckeditor/ckeditor5-heading/src/headingconfig';
 
 /**
  * Provides the General HTML Support integration with {@link module:heading/heading~Heading Heading} feature.
@@ -80,20 +81,20 @@ export default class HeadingElementSupport extends Plugin {
 	}
 
 	/**
-	 * Removes css classes from "htmlAttributes" of new paragraph created when hitting "enter" in heading.
+	 * Removes css classes from "html*Attributes" of new paragraph created when hitting "enter" in heading.
 	 */
 	private removeClassesOnEnter( editor: Editor, options: Array<HeadingOption> ): void {
 		const enterCommand: EnterCommand = editor.commands.get( 'enter' )!;
 
 		this.listenTo<EnterCommandAfterExecuteEvent>( enterCommand, 'afterExecute', ( evt, data ) => {
 			const positionParent = editor.model.document.selection.getFirstPosition()!.parent;
-			const isHeading = options.some( option => positionParent.is( 'element', option.model ) );
+			const heading = options.find( ( option ): option is HeadingElementOption => positionParent.is( 'element', option.model ) );
 
-			if ( isHeading && positionParent.childCount === 0 ) {
+			if ( heading && positionParent.childCount === 0 ) {
 				modifyGhsAttribute(
 					data.writer,
 					positionParent as Item,
-					'htmlAttributes',
+					getHtmlAttributeName( heading.view as string ),
 					'classes',
 					classes => classes.clear()
 				);

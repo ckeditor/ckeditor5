@@ -59,15 +59,15 @@ describe( 'ScriptElementSupport', () => {
 		editor.setData( `<p>Foo</p><script type="c++" nonce="qwerty">${ CODE_CPP }</script>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlScript htmlAttributes="(1)" htmlContent="${ CODE_CPP }"></htmlScript>`,
+			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: {
+				1: CODE_CPP,
+				2: {
 					attributes: {
 						nonce: 'qwerty',
 						type: 'c++'
 					}
-				},
-				2: CODE_CPP
+				}
 			}
 		} );
 
@@ -81,14 +81,14 @@ describe( 'ScriptElementSupport', () => {
 		editor.setData( `<p>Foo</p><script type="c++" nonce="qwerty">${ CODE_CPP }</script>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlScript htmlAttributes="(1)" htmlContent="${ CODE_CPP }"></htmlScript>`,
+			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: {
+				1: CODE_CPP,
+				2: {
 					attributes: {
 						type: 'c++'
 					}
-				},
-				2: CODE_CPP
+				}
 			}
 		} );
 
@@ -154,7 +154,7 @@ describe( 'ScriptElementSupport', () => {
 		dataFilter.allowAttributes( { name: 'script', attributes: true } );
 
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on( 'attribute:htmlAttributes:htmlScript', ( evt, data, conversionApi ) => {
+			dispatcher.on( 'attribute:htmlScriptAttributes:htmlScript', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, evt.name );
 			}, { priority: 'high' } );
 		} );
@@ -162,10 +162,10 @@ describe( 'ScriptElementSupport', () => {
 		editor.setData( `<p>Foo</p><script nonce="qwerty">${ CODE }</script>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlScript htmlAttributes="(1)" htmlContent="${ CODE }"></htmlScript>`,
+			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: { attributes: { nonce: 'qwerty' } },
-				2: CODE
+				1: CODE,
+				2: { attributes: { nonce: 'qwerty' } }
 			}
 		} );
 
@@ -184,10 +184,10 @@ describe( 'ScriptElementSupport', () => {
 		editor.setData( `<p>Foo</p><script type="c++" nonce="qwerty">${ CODE_CPP }</script>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlScript htmlAttributes="(1)" htmlContent="${ CODE_CPP }"></htmlScript>`,
+			data: `<paragraph>Foo</paragraph><htmlScript htmlContent="${ CODE_CPP }" htmlScriptAttributes="(1)"></htmlScript>`,
 			attributes: {
-				1: { attributes: { type: 'c++' } },
-				2: CODE_CPP
+				1: CODE_CPP,
+				2: { attributes: { type: 'c++' } }
 			}
 		} );
 	} );
