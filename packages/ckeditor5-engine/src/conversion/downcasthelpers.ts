@@ -2182,17 +2182,18 @@ function downcastAttributeToAttribute( config: {
  *
  * See {@link ~DowncastHelpers#markerToElement `.markerToElement()` downcast helper} for examples.
  *
+ * @internal
  * @param config Conversion configuration.
  * @param config.model The name of the model marker (or model marker group) to convert.
  * @param config.view A view element definition or a function that takes the model marker data as a parameter and returns a view UI element.
  * @param config.converterPriority Converter priority.
  * @returns Conversion helper.
  */
-function downcastMarkerToElement( config: {
+export function downcastMarkerToElement( config: {
 	model: string;
 	view: ElementDefinition | MarkerElementCreatorFunction;
 	converterPriority?: PriorityString;
-} ) {
+} ): ( dispatcher: DowncastDispatcher ) => void {
 	const view = normalizeToElementConfig( config.view, 'ui' );
 
 	return ( dispatcher: DowncastDispatcher ) => {
@@ -2253,6 +2254,7 @@ function downcastMarkerToData( config: {
  *
  * See {@link ~DowncastHelpers#markerToElement `.markerToElement()` downcast helper} for examples.
  *
+ * @internal
  * @param config Conversion configuration.
  * @param config.model The name of the model marker (or model marker group) to convert.
  * @param config.view A highlight descriptor that will be used for highlighting or a function that takes
@@ -2260,11 +2262,11 @@ function downcastMarkerToData( config: {
  * @param config.converterPriority Converter priority.
  * @returns Conversion helper.
  */
-function downcastMarkerToHighlight( config: {
+export function downcastMarkerToHighlight( config: {
 	model: string;
 	view: HighlightDescriptor | HighlightDescriptorCreatorFunction;
 	converterPriority?: PriorityString;
-} ) {
+} ): ( dispatcher: DowncastDispatcher ) => void {
 	return ( dispatcher: DowncastDispatcher ) => {
 		dispatcher.on<DowncastAddMarkerEvent>(
 			`addMarker:${ config.model }`,

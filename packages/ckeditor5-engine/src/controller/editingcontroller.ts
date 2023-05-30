@@ -11,7 +11,9 @@ import {
 	CKEditorError,
 	ObservableMixin,
 	env,
-	type GetCallback
+	delay,
+	type GetCallback,
+	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import RootEditableElement from '../view/rooteditableelement';
@@ -26,6 +28,8 @@ import {
 	clearAttributes,
 	convertCollapsedSelection,
 	convertRangeSelection,
+	downcastMarkerToElement,
+	downcastMarkerToHighlight,
 	insertAttributesAndChildren,
 	insertText,
 	remove
@@ -47,6 +51,8 @@ import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectio
 import type { ViewDocumentInputEvent } from '../view/observer/inputobserver';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
+
+const VISUAL_SELECTION_MARKER_NAME = 'fake-selection';
 
 /**
  * A controller for the editing pipeline. The editing pipeline controls the {@link ~EditingController#model model} rendering,
@@ -73,6 +79,11 @@ export default class EditingController extends ObservableMixin() {
 	 * Downcast dispatcher that converts changes from the model to the {@link #view editing view}.
 	 */
 	public readonly downcastDispatcher: DowncastDispatcher;
+
+	/**
+	 * TODO
+	 */
+	private readonly _hideFakeVisualSelectionDelayed = delay( () => this._hideFakeVisualSelection(), 0 );
 
 	/**
 	 * Creates an editing controller instance.
@@ -119,10 +130,28 @@ export default class EditingController extends ObservableMixin() {
 			} );
 		}, { priority: 'low' } );
 
+		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange', () => {
+			if ( this.view.document.isFocused ) {
+				this._hideFakeVisualSelectionDelayed();
+			}
+		} );
+
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
 		);
+
+		this.listenTo<ObservableChangeEvent>( this.view.document, 'change:isFocused', ( evt, prop, isFocused ) => {
+			if ( !isFocused ) {
+				this._showFakeVisualSelection();
+			}
+		}, { priority: 'low' } );
+
+		this.listenTo<ObservableChangeEvent>( this.view.document, 'change:isFocused', ( evt, prop, isFocused ) => {
+			if ( isFocused ) {
+				this._hideFakeVisualSelectionDelayed();
+			}
+		}, { priority: 'high' } );
 
 		// Fix `beforeinput` target ranges so that they map to the valid model ranges.
 		this.listenTo<ViewDocumentInputEvent>( this.view.document, 'beforeinput',
@@ -139,6 +168,23 @@ export default class EditingController extends ObservableMixin() {
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', clearAttributes(), { priority: 'high' } );
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertCollapsedSelection(), { priority: 'low' } );
+
+		// Renders a fake visual selection marker on an expanded selection.
+		downcastMarkerToHighlight( {
+			model: VISUAL_SELECTION_MARKER_NAME,
+			view: {
+				classes: [ 'ck-fake-link-selection' ]
+			}
+		} )( this.downcastDispatcher );
+
+		// Renders a fake visual selection marker on a collapsed selection.
+		downcastMarkerToElement( {
+			model: VISUAL_SELECTION_MARKER_NAME,
+			view: {
+				name: 'span',
+				classes: [ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ]
+			}
+		} )( this.downcastDispatcher );
 
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
@@ -173,6 +219,7 @@ export default class EditingController extends ObservableMixin() {
 	 * by `EditingController` that need to be destroyed.
 	 */
 	public destroy(): void {
+		this._hideFakeVisualSelectionDelayed.cancel();
 		this.view.destroy();
 		this.stopListening();
 	}
@@ -245,6 +292,55 @@ export default class EditingController extends ObservableMixin() {
 		this.model.change( () => {
 			this.model.document.differ._refreshItem( item );
 		} );
+	}
+
+	/**
+	 * Displays a fake visual selection when the contextual balloon is displayed.
+	 *
+	 * This adds a marker into the document that is rendered as a highlight on selected text fragment.
+	 */
+	private _showFakeVisualSelection(): void {
+		const model = this.model;
+
+		model.change( writer => {
+			const range = model.document.selection.getFirstRange()!;
+
+			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
+			} else {
+				if ( range.start.isAtEnd ) {
+					const startPosition = range.start.getLastMatchingPosition(
+						( { item } ) => !model.schema.isContent( item ),
+						{ boundaries: range }
+					);
+
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range: writer.createRange( startPosition, range.end )
+					} );
+				} else {
+					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+						usingOperation: false,
+						affectsData: false,
+						range
+					} );
+				}
+			}
+		} );
+	}
+
+	/**
+	 * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
+	 */
+	private _hideFakeVisualSelection(): void {
+		const model = this.model;
+
+		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
+			model.change( writer => {
+				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
+			} );
+		}
 	}
 }
 

@@ -28,3 +28,11 @@
 	margin-right: -1px;
 	outline: solid 1px hsla(0, 0%, 100%, .5);
 }
+
+.ck.ck-blurred .ck-fake-link-selection {
+	background: var(--ck-color-link-fake-selection-blurred);
+}
+
+.ck.ck-blurred .ck-fake-link-selection_collapsed {
+	display: none;
+}
