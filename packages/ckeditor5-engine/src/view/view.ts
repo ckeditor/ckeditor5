@@ -40,11 +40,12 @@ import {
 	CKEditorError,
 	ObservableMixin,
 	scrollViewportToShowTarget,
-	type ObservableChangeEvent,
-	type DecoratedMethodEvent
+	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
+
+import { cloneDeep } from 'lodash-es';
 
 type IfTrue<T> = T extends true ? true : never;
 type DomRange = globalThis.Range;
@@ -214,8 +215,6 @@ export default class View extends ObservableMixin() {
 		this.listenTo<ObservableChangeEvent>( this.document, 'change:isFocused', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
-
-		this.decorate( 'scrollToTheSelection' );
 	}
 
 	/**
@@ -420,13 +419,14 @@ export default class View extends ObservableMixin() {
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 	} = {} ): void {
-		// console.group( 'View#scrollToTheSelection()' );
 		const range = this.document.selection.getFirstRange();
 
 		if ( !range ) {
-			// console.groupEnd();
 			return;
 		}
+
+		// Clone to make sure properties like `viewportOffset` are not mutated in the event listeners.
+		const originalArgs = cloneDeep( { alignToTop, forceScroll, viewportOffset, ancestorOffset } );
 
 		if ( typeof viewportOffset === 'number' ) {
 			viewportOffset = {
@@ -439,18 +439,15 @@ export default class View extends ObservableMixin() {
 
 		const options = {
 			target: this.domConverter.viewRangeToDom( range ),
-			// TODO: Separate top and bottom offsets.
 			viewportOffset,
 			ancestorOffset,
 			alignToTop,
 			forceScroll
 		};
 
-		this.fire<ViewBeforeScrollToTheSelectionEvent>( 'beforeScrollToTheSelection', options );
+		this.fire<ViewScrollToTheSelectionEvent>( 'scrollToTheSelection', options, originalArgs );
 
 		scrollViewportToShowTarget( options );
-
-		// console.groupEnd();
 	}
 
 	/**
@@ -802,21 +799,28 @@ export type ViewRenderEvent = {
 };
 
 /**
- * TODO
+ * An event fired at the moment of {@link module:engine/view/view~View#scrollToTheSelection} being called. It
+ * carries two kinds of data in its payload (`args`):
+ *
+ * * The first argument is the object containing data that will be passed down to the
+ *   {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper. If some event listeners modifies it, it can adjust the behavior of
+ *   the scrolling (e.g. include additional `viewportOffset`).
+ * * The second argument corresponds to the original arguments passed to {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
+ *   It allows listeners to re-execute the `scrollViewportToShowTarget()` method with its original arguments if there is such a need,
+ *   for instance, if the integration requires re–scrolling after certain interaction.
+ *
+ * @eventName ~View#scrollToTheSelection
  */
-export type ViewScrollToTheSelectionEvent = DecoratedMethodEvent<View, 'scrollToTheSelection'>;
-
-/**
- * TODO
- */
-export type ViewBeforeScrollToTheSelectionEvent = {
-	name: 'beforeScrollToTheSelection';
-	args: [ {
-		target: DomRange;
-		viewportOffset: { top: number; bottom: number };
-		ancestorOffset: number;
-		alignToTop?: boolean;
-		forceScroll?: boolean;
-	}];
+export type ViewScrollToTheSelectionEvent = {
+	name: 'scrollToTheSelection';
+	args: [
+		{
+			target: DomRange;
+			viewportOffset: { top: number; bottom: number; left: number; right: number };
+			ancestorOffset: number;
+			alignToTop?: boolean;
+			forceScroll?: boolean;
+		},
+		Parameters<View[ 'scrollToTheSelection' ]>[ 0 ]
+	];
 };
-

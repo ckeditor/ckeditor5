@@ -26,7 +26,7 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine';
-import type { ViewBeforeScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine/src/view/view';
+import type { ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine/src/view/view';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -140,8 +140,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo<ViewDocumentLayoutChangedEvent>( editingView.document, 'layoutChanged', () => this.update() );
-		this.listenTo<ViewBeforeScrollToTheSelectionEvent>(
-			editingView, 'beforeScrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
+		this.listenTo<ViewScrollToTheSelectionEvent>( editingView, 'scrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
 
 		this._initFocusTracking();
 	}
@@ -526,19 +525,20 @@ export default abstract class EditorUI extends ObservableMixin() {
 	}
 
 	/**
-	 * TODO
+	 * Provides an integration between {@link #viewportOffset} and {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
+	 * It allows the UI-agnostic engine method to consider user-configured viewport offsets specific for the integration.
 	 *
-	 * @param evt
-	 * @param data
+	 * @param evt The `scrollToTheSelection` event info.
+	 * @param data The payload carried by the `scrollToTheSelection` event.
 	 */
 	private _handleScrollToTheSelection(
-		evt: EventInfo<'beforeScrollToTheSelection'>,
-		data: ViewBeforeScrollToTheSelectionEvent[ 'args' ][ 0 ]
+		evt: EventInfo<'scrollToTheSelection'>,
+		data: ViewScrollToTheSelectionEvent[ 'args' ][ 0 ]
 	): void {
 		const configuredViewportOffset = {
 			top: 0,
 			bottom: 0,
-			...( this.editor.config.get( 'ui.viewportOffset' ) || {} )
+			...this.viewportOffset
 		};
 
 		data.viewportOffset.top += configuredViewportOffset.top;

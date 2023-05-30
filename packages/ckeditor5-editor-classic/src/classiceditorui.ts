@@ -11,7 +11,6 @@ import type { Editor, ElementApi } from 'ckeditor5/src/core';
 import { EditorUI, normalizeToolbarConfig, type EditorUIReadyEvent } from 'ckeditor5/src/ui';
 import {
 	enablePlaceholder,
-	type ViewBeforeScrollToTheSelectionEvent,
 	type ViewScrollToTheSelectionEvent
 } from 'ckeditor5/src/engine';
 import { ElementReplacer, Rect, type EventInfo } from 'ckeditor5/src/utils';
@@ -36,8 +35,6 @@ export default class ClassicEditorUI extends EditorUI {
 	 */
 	private readonly _elementReplacer: ElementReplacer;
 
-	private _scrollToTheSelectionArgs: ViewScrollToTheSelectionEvent[ 'args' ][ 0 ] | null;
-
 	/**
 	 * Creates an instance of the classic editor UI class.
 	 *
@@ -50,14 +47,9 @@ export default class ClassicEditorUI extends EditorUI {
 		this.view = view;
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 		this._elementReplacer = new ElementReplacer();
-		this._scrollToTheSelectionArgs = null;
 
-		this.listenTo<ViewScrollToTheSelectionEvent>( editor.editing.view, 'scrollToTheSelection', ( evt, args ) => {
-			this._scrollToTheSelectionArgs = args;
-		} );
-
-		this.listenTo<ViewBeforeScrollToTheSelectionEvent>(
-			editor.editing.view, 'beforeScrollToTheSelection', this._handleScrollToTheSelectionWithStickyPanel.bind( this ) );
+		this.listenTo<ViewScrollToTheSelectionEvent>(
+			editor.editing.view, 'scrollToTheSelection', this._handleScrollToTheSelectionWithStickyPanel.bind( this ) );
 	}
 
 	/**
@@ -181,14 +173,18 @@ export default class ClassicEditorUI extends EditorUI {
 	}
 
 	/**
-	 * TODO
+	 * Provides an integration between the sticky toolbar and {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
+	 * It allows the UI-agnostic engine method to consider the geometry of the sticky toolbar (panel) that pins to the
+	 * edge of the viewport and can obscure the user caret after scrolling.
 	 *
-	 * @param evt
-	 * @param data
+	 * @param evt The `scrollToTheSelection` event info.
+	 * @param data The payload carried by the `scrollToTheSelection` event.
+	 * @param originalArgs The original arguments passed to `scrollViewportToShowTarget()` method (see implementation to learn more).
 	 */
 	private _handleScrollToTheSelectionWithStickyPanel(
-		evt: EventInfo<'beforeScrollToTheSelection'>,
-		data: ViewBeforeScrollToTheSelectionEvent[ 'args' ][ 0 ]
+		evt: EventInfo<'scrollToTheSelection'>,
+		data: ViewScrollToTheSelectionEvent[ 'args' ][ 0 ],
+		originalArgs: ViewScrollToTheSelectionEvent[ 'args' ][ 1 ]
 	): void {
 		const wasPanelSticky = this.view.stickyPanel.isSticky;
 
@@ -205,9 +201,9 @@ export default class ClassicEditorUI extends EditorUI {
 					return;
 				}
 
-				// console.log( 'ClassicEditorUI: Re-scrolling because the panel became sticky', ...this._scrollToTheSelectionArgs! );
+				// console.log( 'ClassicEditorUI: Re-scrolling because the panel became sticky', originalArgs! );
 
-				this.editor.editing.view.scrollToTheSelection( ...this._scrollToTheSelectionArgs! );
+				this.editor.editing.view.scrollToTheSelection( originalArgs );
 			};
 
 			this.listenTo( this.view.stickyPanel, 'change:isSticky', onPanelStickyChange );
