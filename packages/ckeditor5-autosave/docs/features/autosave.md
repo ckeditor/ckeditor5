@@ -11,6 +11,8 @@ The autosave feature allows you to automatically save the data (e.g. send it to 
 
 ## Demo
 
+Type some text in the demo below to try out the autosave feature. Try adding images	{@icon @ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.svg} and other rich content such as tables and observe the feature's behavior. Demo elements and mechanisms are explained below the editor.
+
 {@snippet installation/getting-and-setting-data/autosave}
 
 <info-box info>
@@ -29,10 +31,10 @@ How to understand this demo:
 ## Installation
 
 <info-box>
-	This plugin is unavailable in any of the builds by default so you need to {@link installation/plugins/installing-plugins install it}.
+	This plugin is not enabled in any of the {@link installation/getting-started/predefined-builds predefined builds}, so you need to {@link installation/plugins/installing-plugins install it} by hand.
 </info-box>
 
-Assuming that you implemented a `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is as simple as:
+Assuming that you have implemented sort of a `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is simple:
 
 ```js
 ClassicEditor
@@ -76,9 +78,9 @@ ClassicEditor
 	} );
 ```
 
-### Demo
+### Demo code
 
-This demo shows a simple integration of the editor with a fake HTTP server (which needs 1000ms to save the content).
+The demo example at the beginning of this guide shows a simple integration of the editor with a fake HTTP server (which needs 1000ms to save the content). Here the demo code:
 
 ```js
 ClassicEditor
@@ -135,6 +137,8 @@ function displayStatus( editor ) {
 * You can read more about {@link installation/getting-started/getting-and-setting-data getting and setting data} in the Installation section.
 
 ## Common API
+
+The {@link module:autosave/autosave~Autosave} plugin registers the {@link module:autosave/autosave~AutosaveAdapter} used to save the data. {@link module:autosave/autosave~AutosaveConfig} is used to control the behavior of the adapter.
 
 ## Contribute
 
