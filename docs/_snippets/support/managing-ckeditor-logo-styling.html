@@ -142,20 +142,13 @@
 		/* -- Overrides the default colors used by the ckeditor5-link package. ---------------------- */
 
 		--ck-color-link-default: hsl(190, 100%, 75%);
-
-		/* -- Overrides the default PoweredBy logo border color. ------------------------------------ */
-
-		--ck-powered-by-border-color: var(--ck-custom-background);
 	}
 
 	/* PoweredBy logo customization. */
 	.custom-theme-editor-wrapper .ck.ck-balloon-panel.ck-powered-by-balloon {
 		--ck-powered-by-background: var(--ck-custom-background);
+		--ck-powered-by-border-color: var(--ck-custom-background);
 	}
-/*
-	.ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by a::after {
-		display: none;
-	} */
 
 	.custom-theme-editor-wrapper .ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by .ck-powered-by__label {
 		text-transform: none;
