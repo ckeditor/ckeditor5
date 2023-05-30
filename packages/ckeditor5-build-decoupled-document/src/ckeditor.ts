@@ -40,6 +40,7 @@ import {
 	ImageToolbar,
 	ImageUpload,
 	PictureEditing,
+	AutoImage
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -92,6 +93,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Heading,
 		Image,
 		ImageInsert,
+		AutoImage,
 		ImageCaption,
 		ImageResize,
 		ImageStyle,
@@ -148,6 +150,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'indent',
 				'|',
 				'link',
+				'uploadImage',
 				'insertImage',
 				'insertTable',
 				'mediaEmbed',
