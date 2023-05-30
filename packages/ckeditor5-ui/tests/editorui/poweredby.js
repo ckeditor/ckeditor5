@@ -80,7 +80,7 @@ describe( 'PoweredBy', () => {
 				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
 			} );
 
-			it( 'should not create the balloon when valid license key is configured', async () => {
+			it( 'should not create the balloon when a valid license key is configured', async () => {
 				const editor = await createEditor( element, {
 					// eslint-disable-next-line max-len
 					// https://github.com/ckeditor/ckeditor5/blob/226bf243d1eb8bae2d447f631d6f5d9961bc6541/packages/ckeditor5-utils/tests/verifylicense.js#L14
@@ -97,7 +97,7 @@ describe( 'PoweredBy', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should create the balloon when valid license key is configured and `forceVisible` is set to true', async () => {
+			it( 'should create the balloon when a valid license key is configured and `forceVisible` is set to true', async () => {
 				const editor = await createEditor( element, {
 					// eslint-disable-next-line max-len
 					// https://github.com/ckeditor/ckeditor5/blob/226bf243d1eb8bae2d447f631d6f5d9961bc6541/packages/ckeditor5-utils/tests/verifylicense.js#L14

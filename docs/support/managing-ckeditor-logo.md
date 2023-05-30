@@ -16,19 +16,21 @@ This logo is only visible when the editor is focused and only in the editable. T
 
 The logo **will not be displayed for customers with commercial licenses**, but please read on as certain actions need to be taken to white-label your CKEditor 5 installation. You can [reach out to our Technical Support team](https://ckeditor.com/contact/) if you have any questions.
 
-But even as a paid customer, you can still have this logo, if you want.
-
-```js
-config.ui.poweredBy.forceVisible: true
-```
-
-The default option is `false`.
+However, even as a paid customer, you can [keep the logo](#how-to-keep-the-powered-by-ckeditor-logo) if you wish.
 
 ## How to remove the "Powered by CKEditor" logo?
 
 To remove the logo, you need to obtain a commercial license and then configure the {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} setting.
 
 Refer to the {@link support/license-key-and-activation License key and activation} guide for details on where to find the license key and how to use it in your configuration.
+
+## How to keep the "Powered by CKEditor" logo?
+
+If you wish to keep the "Powered by CKEditor" logo in your editor even if you are a paid customer (numerous reasons can play a factor here), you can do it easily. Just set the following option to `true` (by default it is set to `false`) and enjoy the branding!
+
+```js
+config.ui.poweredBy.forceVisible: true
+```
 
 ## How to configure the layout of the "Powered by CKEditor" logo?
 
