@@ -19,7 +19,7 @@ import {
 import { normalizeSpacing, normalizeSpacerunSpans } from './space';
 
 /**
- * Parses provided HTML extracting contents of `<body>` and `<style>` tags.
+ * Parses the provided HTML extracting contents of `<body>` and `<style>` tags.
  *
  * @param htmlString HTML string to be parsed.
  */

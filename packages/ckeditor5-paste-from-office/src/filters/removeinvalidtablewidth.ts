@@ -10,7 +10,7 @@
 import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
 
 /**
- * Removes `width:0px` style from table pasted from Google Sheets.
+ * Removes the `width:0px` style from table pasted from Google Sheets.
  *
  * @param documentFragment element `data.content` obtained from clipboard
  */
