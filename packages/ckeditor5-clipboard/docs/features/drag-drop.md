@@ -39,13 +39,13 @@ npm install --save @ckeditor/ckeditor5-clipboard
 Then add the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin to your plugin list:
 
 ```js
-import { Clipboard } from "@ckeditor/ckeditor5-clipboard";
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
-ClassicEditor.create(document.querySelector("#editor"), {
-	plugins: [Clipboard, Bold /* ... */],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Clipboard, Bold, /* ... */ ],
 })
-	.then(/* ... */)
-	.catch(/* ... */);
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate along with the clipboard plugin.
@@ -77,14 +77,14 @@ Select a block or blocks, and drag them across the document. You can place block
 To enable the block drag and drop in a classic editor, you need to add the {@link module:clipboard/dragdropexperimental~DragDropExperimental `DragDropExperimental`} module to your editor configuration:
 
 ```js
-import { ClassicEditor } from "@ckeditor/ckeditor5-editor-classic";
-import { Clipboard, DragDropExperimental } from "@ckeditor/ckeditor5-clipboard";
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Clipboard, DragDropExperimental } from '@ckeditor/ckeditor5-clipboard';
 
-ClassicEditor.create(document.querySelector("#editor"), {
-	plugins: [Clipboard, DragDropExperimental /* ... */],
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ Clipboard, DragDropExperimental, /* ... */ ],
 })
-	.then(/* ... */)
-	.catch(/* ... */);
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Balloon block editor demo
@@ -98,14 +98,14 @@ In the balloon block editor, you can also drag content blocks using the drag han
 To enable the block drag and drop in a balloon block editor, you need to add the {@link module:clipboard/dragdropexperimental~DragDropExperimental `DragDropExperimental`} and the {@link module:clipboard/dragdropblocktoolbar~DragDropBlockToolbar `DragDropBlockToolbar`} modules to your editor configuration::
 
 ```js
-import { BalloonEditor } from "@ckeditor/ckeditor5-editor-balloon";
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import {
 	DragDropExperimental,
 	DragDropBlockToolbar,
-} from "@ckeditor/ckeditor5-clipboard";
-import { BlockToolbar } from "@ckeditor/ckeditor5-ui";
+} from '@ckeditor/ckeditor5-clipboard';
+import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 
-BalloonEditor.create(document.querySelector("#editor"), {
+BalloonEditor.create(document.querySelector( '#editor' ), {
 	plugins: [
 		Clipboard,
 		DragDropExperimental,
@@ -114,8 +114,8 @@ BalloonEditor.create(document.querySelector("#editor"), {
 		/* ... */
 	],
 })
-	.then(/* ... */)
-	.catch(/* ... */);
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Related features
