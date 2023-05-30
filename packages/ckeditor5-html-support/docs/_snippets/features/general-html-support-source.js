@@ -12,7 +12,7 @@ import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { ImageUpload, PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { GeneralHtmlSupport, HtmlComment } from '@ckeditor/ckeditor5-html-support';
+import { FullPage, GeneralHtmlSupport, HtmlComment } from '@ckeditor/ckeditor5-html-support';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
@@ -51,6 +51,7 @@ ClassicEditor.defaultConfig = {
 };
 
 window.ClassicEditor = ClassicEditor;
+window.FullPage = FullPage;
 window.GeneralHtmlSupport = GeneralHtmlSupport;
 window.HtmlComment = HtmlComment;
 window.ArticlePluginSet = ArticlePluginSet;

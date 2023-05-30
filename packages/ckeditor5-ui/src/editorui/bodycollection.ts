@@ -56,6 +56,13 @@ export default class BodyCollection extends ViewCollection {
 	}
 
 	/**
+	 * The element holding elements of the body region.
+	 */
+	public get bodyCollectionContainer(): HTMLElement | undefined {
+		return this._bodyCollectionContainer;
+	}
+
+	/**
 	 * Attaches the body collection to the DOM body element. You need to execute this method to render the content of
 	 * the body collection.
 	 */
