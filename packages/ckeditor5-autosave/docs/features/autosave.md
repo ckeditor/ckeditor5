@@ -7,7 +7,7 @@ modified_at: 2023-05-29
 
 # Autosave
 
-The {@link module:autosave/autosave~Autosave} feature allows you to automatically save the data (e.g. send it to the server) when needed (when the user changed the content).
+The autosave feature allows you to automatically save the data (e.g. send it to the server) when needed (when the user changed the content).
 
 ## Demo
 
@@ -22,7 +22,7 @@ How to understand this demo:
 * The status indicator shows when the editor has some unsaved content or pending actions.
 	* If you drop a big image into this editor, you will see that it is busy during the entire period when the image is being uploaded.
 	* The editor is also busy when saving the content is in progress (the `save()`'s promise was not resolved).
-* The autosave feature has a throttling mechanism which groups frequent changes (e.g. typing) are grouped in batches.
+* The autosave feature has a throttling mechanism that groups frequent changes (e.g. typing), these are grouped in batches.
 * The autosave itself does not check whether the data has actually changed. It bases on changes in the model which, in special cases, may not be "visible" in the data. You can add such a check yourself if you would like to avoid sending the same data to the server twice in a row.
 * You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and typing something. These actions will make the editor "busy" for a longer time &mdash; try leaving the page then.
 
@@ -32,7 +32,7 @@ How to understand this demo:
 	This plugin is unavailable in any of the builds by default so you need to {@link installation/plugins/installing-plugins install it}.
 </info-box>
 
-Assuming that you implemented a `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the autosave feature is as simple as:
+Assuming that you implemented a `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is as simple as:
 
 ```js
 ClassicEditor
@@ -131,6 +131,8 @@ function displayStatus( editor ) {
 ```
 
 ## Related features
+
+* You can read more about {@link installation/getting-started/getting-and-setting-data getting and setting data} in the Installation section.
 
 ## Common API
 
