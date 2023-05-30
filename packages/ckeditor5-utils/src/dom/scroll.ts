@@ -428,7 +428,14 @@ function getRectRelativeToWindow( target: HTMLElement | Range, relativeWindow: W
 	return rect;
 }
 
-// TODO
+/**
+ * A helper that explodes the `viewportOffset` configuration if defined as a plain number into an object
+ * with `top`, `bottom`, `left`, and `right` properties.
+ *
+ * If an object value is passed, this helper will pass it through.
+ *
+ * @param viewportOffset Viewport offset to be normalized.
+ */
 function normalizeViewportOffset( viewportOffset: number | { top: number; bottom: number; left: number; right: number } ) {
 	if ( typeof viewportOffset === 'number' ) {
 		return {
