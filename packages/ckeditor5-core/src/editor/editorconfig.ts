@@ -645,5 +645,13 @@ export interface UiConfig {
 		 * @default 5
 		 */
 		horizontalOffset: number;
+
+		/**
+		 * Allows to show the logo even if the valid commercial license is configured using
+		 * the {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} setting.
+		 *
+		 * @default false
+		 */
+		forceVisible?: boolean;
 	};
 }

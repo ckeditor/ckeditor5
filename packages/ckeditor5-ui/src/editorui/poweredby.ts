@@ -108,9 +108,10 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 */
 	private _handleEditorReady(): void {
 		const editor = this.editor;
+		const forceVisible = !!editor.config.get( 'ui.poweredBy.forceVisible' );
 
 		/* istanbul ignore next -- @preserve */
-		if ( verifyLicense( editor.config.get( 'licenseKey' ) ) === 'VALID' ) {
+		if ( verifyLicense( editor.config.get( 'licenseKey' ) ) === 'VALID' && !forceVisible ) {
 			return;
 		}
 

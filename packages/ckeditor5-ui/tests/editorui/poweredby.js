@@ -79,6 +79,45 @@ describe( 'PoweredBy', () => {
 
 				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
 			} );
+
+			it( 'should not create the balloon when valid license key is configured', async () => {
+				const editor = await createEditor( element, {
+					// eslint-disable-next-line max-len
+					// https://github.com/ckeditor/ckeditor5/blob/226bf243d1eb8bae2d447f631d6f5d9961bc6541/packages/ckeditor5-utils/tests/verifylicense.js#L14
+					// eslint-disable-next-line max-len
+					licenseKey: 'dG9vZWFzZXRtcHNsaXVyb3JsbWlkbXRvb2Vhc2V0bXBzbGl1cm9ybG1pZG10b29lYXNldG1wc2xpdXJvcmxtaWRtLU1qQTBOREEyTVRJPQ=='
+				} );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.null;
+
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.null;
+
+				await editor.destroy();
+			} );
+
+			it( 'should create the balloon when valid license key is configured and `forceVisible` is set to true', async () => {
+				const editor = await createEditor( element, {
+					// eslint-disable-next-line max-len
+					// https://github.com/ckeditor/ckeditor5/blob/226bf243d1eb8bae2d447f631d6f5d9961bc6541/packages/ckeditor5-utils/tests/verifylicense.js#L14
+					// eslint-disable-next-line max-len
+					licenseKey: 'dG9vZWFzZXRtcHNsaXVyb3JsbWlkbXRvb2Vhc2V0bXBzbGl1cm9ybG1pZG10b29lYXNldG1wc2xpdXJvcmxtaWRtLU1qQTBOREEyTVRJPQ==',
+					ui: {
+						poweredBy: {
+							forceVisible: true
+						}
+					}
+				} );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.null;
+
+				focusEditor( editor );
+
+				expect( editor.ui.poweredBy._balloonView ).to.be.instanceOf( BalloonPanelView );
+
+				await editor.destroy();
+			} );
 		} );
 
 		describe( 'balloon management on editor focus change', () => {
