@@ -38,13 +38,6 @@ Learn more about Mermaid syntax and usage in a [dedicated article](https://ckedi
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { Code } from '@ckeditor/ckeditor5-basic-styles';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { CKEditorInspector } from '@ckeditor/ckeditor5-inspector';
-
 import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
 
 ClassicEditor
