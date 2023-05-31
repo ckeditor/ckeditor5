@@ -7,7 +7,7 @@ modified_at: 2023-05-29
 
 # Autosave
 
-The autosave feature allows you to automatically save the data (e.g. send it to the server) when needed (when the user changed the content).
+The autosave feature allows you to automatically save the data (e.g. send it to the server) when needed. This can happen, for example, when the user changed the content.
 
 ## Demo
 
@@ -64,7 +64,11 @@ It also listens to the native [`window#beforeunload`](https://developer.mozilla.
 
 This automatically secures you from the user leaving the page before the content is saved or some ongoing actions like image upload did not finish.
 
-The minimum time period between two save actions can be configured using the {@link module:autosave/autosave~AutosaveConfig#waitingTime `config.waitingTime`} property to not overload the backend. 1 second is the default waiting time before the next save action if nothing has changed in the meantime after the editor data has changed.
+## Configuration
+
+You can configure the minimum period between two save actions using the {@link module:autosave/autosave~AutosaveConfig#waitingTime `config.waitingTime`} property. This helps to avoid overloading the backend.
+
+One second is the default waiting time before the next save action if nothing has changed after the editor data was last saved.
 
 ```js
 ClassicEditor
