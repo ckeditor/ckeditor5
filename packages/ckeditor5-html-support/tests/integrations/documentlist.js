@@ -341,7 +341,7 @@ describe( 'DocumentListElementSupport', () => {
 					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a00" listType="bulleted">' +
 						'Foo' +
 					'</paragraph>' +
-					'<div htmlAttributes="(3)">Bar</div>',
+					'<div htmlDivAttributes="(3)">Bar</div>',
 				attributes: {
 					1: {
 						attributes: { 'data-bar': 'A' }

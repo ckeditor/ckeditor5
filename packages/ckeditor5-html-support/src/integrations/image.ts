@@ -16,7 +16,7 @@ import type {
 	ViewElement } from 'ckeditor5/src/engine';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils';
+import { type GHSViewAttributes, setViewAttributes, updateViewAttributes, getHtmlAttributeName } from '../utils';
 import { getDescendantElement } from './integrationutils';
 
 /**
@@ -64,7 +64,7 @@ export default class ImageElementSupport extends Plugin {
 			if ( schema.isRegistered( 'imageBlock' ) ) {
 				schema.extend( 'imageBlock', {
 					allowAttributes: [
-						'htmlAttributes',
+						'htmlImgAttributes',
 						// Figure and Link don't have model counterpart.
 						// We will preserve attributes on image model element using these attribute keys.
 						'htmlFigureAttributes',
@@ -78,7 +78,7 @@ export default class ImageElementSupport extends Plugin {
 					allowAttributes: [
 						// `htmlA` is needed for standard GHS link integration.
 						'htmlA',
-						'htmlAttributes'
+						'htmlImgAttributes'
 					]
 				} );
 			}
@@ -107,7 +107,7 @@ function viewToModelImageAttributeConverter( dataFilter: DataFilter ) {
 			const viewImageElement = data.viewItem;
 			const viewContainerElement = viewImageElement.parent;
 
-			preserveElementAttributes( viewImageElement, 'htmlAttributes' );
+			preserveElementAttributes( viewImageElement, 'htmlImgAttributes' );
 
 			if ( viewContainerElement.is( 'element', 'a' ) ) {
 				preserveLinkAttributes( viewContainerElement );
@@ -161,9 +161,9 @@ function viewToModelFigureAttributeConverter( dataFilter: DataFilter ) {
  */
 function modelToViewImageAttributeConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
-		addInlineAttributeConversion( 'htmlAttributes' );
+		addInlineAttributeConversion( 'htmlImgAttributes' );
 
-		addBlockAttributeConversion( 'img', 'htmlAttributes' );
+		addBlockAttributeConversion( 'img', 'htmlImgAttributes' );
 		addBlockAttributeConversion( 'figure', 'htmlFigureAttributes' );
 		addBlockAttributeConversion( 'a', 'htmlLinkAttributes' );
 

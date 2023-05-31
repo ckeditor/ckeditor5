@@ -98,7 +98,7 @@ describe( 'TableStyleSupport', () => {
 		command.execute( { styleName: 'Test table style' } );
 
 		expect( getData( model, { withoutSelection: true } ) ).to.equal(
-			'<table htmlAttributes="{"classes":["test-table-style"]}">' +
+			'<table htmlTableAttributes="{"classes":["test-table-style"]}">' +
 				'<tableRow>' +
 					'<tableCell>' +
 						'<paragraph>foo</paragraph>' +
@@ -333,7 +333,7 @@ describe( 'TableStyleSupport', () => {
 		expect( getData( model, { withoutSelection: true } ) ).to.equal(
 			'<table headingRows="1">' +
 				'<tableRow>' +
-					'<tableCell htmlAttributes="{"classes":["test-th-style"]}">' +
+					'<tableCell htmlThAttributes="{"classes":["test-th-style"]}">' +
 						'<paragraph>foo</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
@@ -400,7 +400,7 @@ describe( 'TableStyleSupport', () => {
 
 		expect( getData( model, { withoutSelection: true } ) ).to.equal(
 			'<table>' +
-				'<tableRow htmlAttributes="{"classes":["test-tr-style"]}">' +
+				'<tableRow htmlTrAttributes="{"classes":["test-tr-style"]}">' +
 					'<tableCell>' +
 						'<paragraph>foo</paragraph>' +
 					'</tableCell>' +
@@ -427,7 +427,7 @@ describe( 'TableStyleSupport', () => {
 		expect( getData( model, { withoutSelection: true } ) ).to.equal(
 			'<table>' +
 				'<tableRow>' +
-					'<tableCell htmlAttributes="{"classes":["test-td-style"]}">' +
+					'<tableCell htmlTdAttributes="{"classes":["test-td-style"]}">' +
 						'<paragraph>foo</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
@@ -457,7 +457,7 @@ describe( 'TableStyleSupport', () => {
 						'<paragraph>foo</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
-				'<caption htmlAttributes="{"classes":["test-caption-style"]}">abc</caption>' +
+				'<caption htmlCaptionAttributes="{"classes":["test-caption-style"]}">abc</caption>' +
 			'</table>'
 		);
 	} );
@@ -485,7 +485,11 @@ describe( 'TableStyleSupport', () => {
 						'<paragraph>foo</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
-				'<caption htmlAttributes="{"classes":["test-caption-style","test-figcaption-style"]}">abc</caption>' +
+				'<caption' +
+					' htmlCaptionAttributes="{"classes":["test-caption-style"]}"' +
+					' htmlFigcaptionAttributes="{"classes":["test-figcaption-style"]}"' +
+					'>' +
+					'abc</caption>' +
 			'</table>'
 		);
 	} );
@@ -516,7 +520,7 @@ describe( 'TableStyleSupport', () => {
 		expect( getData( model, { withoutSelection: true } ) ).to.equal(
 			'<table headingRows="1">' +
 				'<tableRow>' +
-					'<tableCell htmlAttributes="{"classes":["test-th-style"]}">' +
+					'<tableCell htmlThAttributes="{"classes":["test-th-style"]}">' +
 						'<paragraph>header</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +

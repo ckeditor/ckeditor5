@@ -45,7 +45,10 @@ import {
 	type DataSchemaInlineElementDefinition
 } from './dataschema';
 
-import type { GHSViewAttributes } from './utils';
+import {
+	getHtmlAttributeName,
+	type GHSViewAttributes
+} from './utils';
 
 import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
 
@@ -498,7 +501,7 @@ export default class DataFilter extends Plugin {
 		}
 
 		schema.extend( definition.model, {
-			allowAttributes: [ 'htmlAttributes', 'htmlContent' ]
+			allowAttributes: [ getHtmlAttributeName( viewName ), 'htmlContent' ]
 		} );
 
 		// Store element content in special `$rawContent` custom property to
@@ -519,9 +522,7 @@ export default class DataFilter extends Plugin {
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: modelName,
-				attributes: [
-					'htmlAttributes'
-				]
+				attributes: [ getHtmlAttributeName( viewName ) ]
 			},
 			view: toObjectWidgetConverter( editor, definition as DataSchemaInlineElementDefinition )
 		} );
@@ -570,7 +571,7 @@ export default class DataFilter extends Plugin {
 		}
 
 		schema.extend( definition.model, {
-			allowAttributes: 'htmlAttributes'
+			allowAttributes: getHtmlAttributeName( viewName )
 		} );
 
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
