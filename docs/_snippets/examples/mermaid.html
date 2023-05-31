@@ -1,27 +1,32 @@
 <script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
 <div id="mermaid">
-	Mermaid example.
+    <h2>Timeline diagram</h2>
+    <pre spellcheck="false"><code class="language-mermaid">
+    timeline
+    title History of CKEditor
+    2003 : FCKeditor
+    2009 : CKEditor 3
+    2012 : CKEditor 4
+    2018 : CKEditor 5
+    </code></pre>
 
-<pre spellcheck="false"><code class="language-mermaid">
-flowchart TD
-A[Repair chart] -->|Is it...| B(moving?)
-A[Repair chart] -->|Is it...| C(not moving?)
-B --> |Should it?| E{NO}
-B --> |Should it?| D{YES}
-C --> |Should it?| G{NO}
-C --> |Should it?| F{YES}
-D --> H[OK]
-F --> H[OK]
-E --> I[Duct tape]
-G --> J[WD40]
-</code></pre>
-<p>&nbsp;</p>
-<pre spellcheck="false"><code class="language-mermaid">
-timeline
-title History of CKEditor
-2003 : FCKeditor
-2009 : CKEditor 3
-2012 : CKEditor 4
-2018 : CKEditor 5
-</code></pre>
+    <h2>Collaboration mindmap</h2>
+    <pre spellcheck="false"><code class="language-mermaid">
+        mindmap
+        root(CKEditor 5<br />Collaboration)
+          Changes control
+            Track changes
+            ::icon(fa fa-code-fork)
+            Revision history
+            ::icon(fa fa-history)
+          Comments
+          ::icon(fa fa-commenting)
+            Comments archive
+            ::icon(fa fa-comments)
+          Other tools
+            @ Mentions
+            User list
+            ::icon(fa fa-users)
+    </code></pre>
+
 </div>

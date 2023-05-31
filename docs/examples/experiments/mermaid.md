@@ -24,6 +24,8 @@ Mermaid offers an extensive and flexible syntax allowing users to create a varie
 
 ## Editor example configuration
 
+This example demo uses our won Mermaid package, [available on GitHub](https://github.com/ckeditor/ckeditor5-mermaid). It needs to be imported before CKEditor 5 can make use of the Mermaid syntax. Have a look at the sample configuration to learn how to add the package and the toolbar button.
+
 <details>
 <summary>Editor configuration script</summary>
 <!-- Let's consider removing parts of this -->
