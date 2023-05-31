@@ -1,6 +1,6 @@
 ---
 category: integrations
-order: 70
+order: 80
 menu-title: Other
 ---
 
