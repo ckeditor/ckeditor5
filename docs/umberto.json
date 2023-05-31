@@ -520,15 +520,15 @@
 					"order": 200
 				},
 				{
-					"name": "Framework",
-					"id": "examples-framework",
-					"slug": "framework",
+					"name": "Experiments",
+					"id": "experiments",
+					"slug": "experiments",
 					"order": 300
 				},
 				{
-					"name": "CK Labs",
-					"id": "cklabs",
-					"slug": "cklabs",
+					"name": "Framework",
+					"id": "examples-framework",
+					"slug": "framework",
 					"order": 400
 				}
 			]

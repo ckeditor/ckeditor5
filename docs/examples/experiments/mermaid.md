@@ -1,13 +1,14 @@
 ---
-category: cklabs
+category: experiments
 order: 20
 classes: main__content--no-toc
 toc: false
-meta-title: Mermaid-enabled editor
+meta-title: Flowcharts and diagrams in a Mermaid-enabled editor
+menu-title: Creating flowcharts and diagrams
 modified_at: 2023-05-26
 ---
 
-# Mermaid-enabled editor
+# Creating flowcharts and diagrams using Mermaid
 
 Mermaid is a JavaScript-based tool for creating flowcharts and diagram visualizations. It uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie charts, graphs, mindmaps, and others. 
 
@@ -15,19 +16,11 @@ The example below lets you test creating diagrams and flowcharts on the go, righ
 
 {@snippet examples/mermaid}
 
-## Quick command cheatsheet<!-- consider whether we need this, or just the article link -->
+## Using Mermaid syntax
 
-* `flowchart` &ndash; create a flowchart with straight lines
-* `graph` &ndash; create a graph
-* `TB` &ndash; top to bottom
-* `BT` &ndash; bottom to top
-* `LR` &ndash; left-right
-* `RL` &ndash; right-left
-* `-->` &ndash; arrow
-* `-- text --` &ndash; straight line with text
+Mermaid offers an extensive and flexible syntax allowing users to create a variety of diagrams, charts, and graphs. Find the full syntax reference on [Mermaid.js](https://mermaid.js.org/intro/). You can also check out more examples online on [Mermaid Live Editor](https://mermaid.live/).
 
-Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog. You can also check out more examples online on [Mermaid Live Editor](https://mermaid.live/) and find a full syntax reference on [Mermaid.js](https://mermaid.js.org/intro/).
-
+<!-- Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog. -->
 
 ## Editor example configuration
 
