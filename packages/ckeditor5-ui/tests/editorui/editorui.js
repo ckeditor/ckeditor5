@@ -392,7 +392,9 @@ describe( 'EditorUI', () => {
 			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
 			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
 		} );
+	} );
 
+	describe( 'View#scrollToTheSelection integration', () => {
 		it( 'should listen to View#scrollToTheSelection and inject the offset values into the event', async () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
@@ -408,9 +410,9 @@ describe( 'EditorUI', () => {
 				}
 			} );
 
-			const range = editor.editing.view.document.selection.getFirstRange();
-
 			editor.editing.view.on( 'scrollToTheSelection', ( evt, data ) => {
+				const range = editor.editing.view.document.selection.getFirstRange();
+
 				expect( data ).to.deep.equal( {
 					target: editor.editing.view.domConverter.viewRangeToDom( range ),
 					viewportOffset: {
@@ -446,9 +448,9 @@ describe( 'EditorUI', () => {
 				}
 			} );
 
-			const range = editor.editing.view.document.selection.getFirstRange();
-
 			editor.editing.view.on( 'scrollToTheSelection', ( evt, data ) => {
+				const range = editor.editing.view.document.selection.getFirstRange();
+
 				expect( data ).to.deep.equal( {
 					target: editor.editing.view.domConverter.viewRangeToDom( range ),
 					viewportOffset: {

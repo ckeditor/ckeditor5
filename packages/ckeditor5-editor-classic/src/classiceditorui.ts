@@ -174,8 +174,9 @@ export default class ClassicEditorUI extends EditorUI {
 
 	/**
 	 * Provides an integration between the sticky toolbar and {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
-	 * It allows the UI-agnostic engine method to consider the geometry of the sticky toolbar (panel) that pins to the
-	 * edge of the viewport and can obscure the user caret after scrolling.
+	 * It allows the UI-agnostic engine method to consider the geometry of the
+	 * {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#stickyPanel} that pins to the
+	 * edge of the viewport and can obscure the user caret after scrolling the window.
 	 *
 	 * @param evt The `scrollToTheSelection` event info.
 	 * @param data The payload carried by the `scrollToTheSelection` event.
@@ -186,32 +187,23 @@ export default class ClassicEditorUI extends EditorUI {
 		data: ViewScrollToTheSelectionEvent[ 'args' ][ 0 ],
 		originalArgs: ViewScrollToTheSelectionEvent[ 'args' ][ 1 ]
 	): void {
-		const wasPanelSticky = this.view.stickyPanel.isSticky;
+		const stickyPanel = this.view.stickyPanel;
 
-		if ( wasPanelSticky ) {
-			const stickyPanelHeight = new Rect( this.view.stickyPanel.element! ).height;
+		if ( stickyPanel.isSticky ) {
+			const stickyPanelHeight = new Rect( stickyPanel.element! ).height;
 
 			data.viewportOffset.top += stickyPanelHeight;
-
-			// console.log( `ClassicEditorUI: making up for the sticky panel +${ stickyPanelHeight }, total`, data.viewportOffset );
 		} else {
-			// Wait for (async) DOM scroll and then for the panel to become sticky (or not).
-			const onPanelStickyChange = () => {
-				if ( !this.view.stickyPanel.isSticky ) {
-					return;
-				}
-
-				// console.log( 'ClassicEditorUI: Re-scrolling because the panel became sticky', originalArgs! );
-
+			const scrollViewportOnPanelGettingSticky = () => {
 				this.editor.editing.view.scrollToTheSelection( originalArgs );
 			};
 
-			this.listenTo( this.view.stickyPanel, 'change:isSticky', onPanelStickyChange );
+			this.listenTo( stickyPanel, 'change:isSticky', scrollViewportOnPanelGettingSticky );
 
-			// This works as a post-scroll-fixer because we cannot predict whether the panel will be sticky after scrolling or not.
+			// This works as a post-scroll-fixer because it's impossible predict whether the panel will be sticky after scrolling or not.
 			// Listen for a short period of time only and if the toolbar does not become sticky very soon, cancel the listener.
 			setTimeout( () => {
-				this.stopListening( this.view.stickyPanel, 'change:isSticky', onPanelStickyChange );
+				this.stopListening( stickyPanel, 'change:isSticky', scrollViewportOnPanelGettingSticky );
 			}, 20 );
 		}
 	}
