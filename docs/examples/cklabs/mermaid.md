@@ -9,9 +9,9 @@ modified_at: 2023-05-26
 
 # Mermaid-enabled editor
 
-Mermaid is a JavaScript-based tool for creating flowcharts and diagram visualizations. It uses a syntax Markdown-inspired to create and dynamically modify flowcharts. You can also check out a live implementation in [GitHub Writer](https://ckeditor.com/blog/github-writer-now-available-with-mermaid-support/).
+Mermaid is a JavaScript-based tool for creating flowcharts and diagram visualizations. It uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie charts, graphs, mindmaps, and others. 
 
-The example below lets you test creating diagrams and flowcharts on the go, right during the content creation &mdash; no more screenshots that need to be re-created and re-uploaded each time something needs a change!
+The example below lets you test creating diagrams and flowcharts on the go, right during the content creation &mdash; no more screenshots that need to be re-created and re-uploaded each time something needs a change! You can also check out a live implementation in [GitHub Writer](https://ckeditor.com/blog/github-writer-now-available-with-mermaid-support/).
 
 {@snippet examples/mermaid}
 
@@ -26,7 +26,7 @@ The example below lets you test creating diagrams and flowcharts on the go, righ
 * `-->` &ndash; arrow
 * `-- text --` &ndash; straight line with text
 
-Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog.
+Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog. You can also check out more examples online on [Mermaid Live Editor](https://mermaid.live/) and find a full syntax reference on [Mermaid.js](https://mermaid.js.org/intro/).
 
 
 ## Editor example configuration
@@ -50,29 +50,14 @@ import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
 ClassicEditor
 	.create( document.querySelector( '#mermaid' ), {
 		plugins: ClassicEditor.builtinPlugins.concat( [
-			CodeBlock,
-			Code,
-			PictureEditing,
-			ImageResize,
-			AutoImage,
-			LinkImage,
-			CKBox,
 			Mermaid
 		] ),
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',
-				'|', 'bold', 'italic', 'code',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock', 'mermaid',
+				'|', 'bold', 'italic',
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'mermaid',
 				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
-			]
-		},
-		codeBlock: {
-			languages: [
-				{ language: 'plaintext', label: 'Plain text', class: '' },
-				{ language: 'javascript', label: 'JavaScript' },
-				{ language: 'python', label: 'Python' },
-				{ language: 'mermaid', label: 'Mermaid' }
 			]
 		},
 		ui: {
@@ -80,12 +65,6 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
-			ckbox: {
-			// Provide correct configuration values to CKBox.
-				tokenUrl: 'https://your.token.url',
-			// Read more about CKBox - https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html.
-			// For other image upload methods see the guide - https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html.
-			},
 	} )
 	.then( editor => {
 		window.editor = editor;
