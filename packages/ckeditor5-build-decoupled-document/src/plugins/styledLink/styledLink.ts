@@ -1,6 +1,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import icon from './icon.svg';
+import icon from './link.svg';
 
 export default class StyledLink extends Plugin {
 	public static get pluginName(): 'StyledLink' {
