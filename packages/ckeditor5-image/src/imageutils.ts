@@ -155,10 +155,6 @@ export default class ImageUtils extends Plugin {
 			this._setWidthAndHeight( imageElement, img.naturalWidth, img.naturalHeight );
 		} );
 
-		this._domEmitter.listenTo( img, 'error', ( evt, data ) => {
-			console.warn( `Failed to download image with src: ${ src }.` );
-		} );
-
 		img.src = src;
 	}
 
