@@ -7,7 +7,7 @@
  * @module html-support/dataschema
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { toArray } from 'ckeditor5/src/utils';
 import defaultConfig from './schemadefinitions';
 import { mergeWith } from 'lodash-es';
