@@ -79,6 +79,10 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 {@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 spell-checking feature.}
 
+### Productivity pack
+
+The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor 5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template content templates} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets the users style their content in a blaze.
+
 ### Customizable user experience
 
 Work as you like it - choose user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
