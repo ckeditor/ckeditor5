@@ -396,6 +396,9 @@ export default class View extends ObservableMixin() {
 	 * Scrolls the page viewport and {@link #domRoots} with their ancestors to reveal the
 	 * caret, **if not already visible to the user**.
 	 *
+	 * **Note**: Calling this method fires the {@link module:engine/view/view~ViewScrollToTheSelectionEvent} event that
+	 * allows custom behaviors.
+	 *
 	 * @param options Additional configuration of the scrolling behavior.
 	 * @param options.viewportOffset A distance between the DOM selection and the viewport boundary to be maintained
 	 * while scrolling to the selection (default is 20px). Setting this value to `0` will reveal the selection precisely at
@@ -800,11 +803,11 @@ export type ViewRenderEvent = {
 
 /**
  * An event fired at the moment of {@link module:engine/view/view~View#scrollToTheSelection} being called. It
- * carries two kinds of data in its payload (`args`):
+ * carries two objects in its payload (`args`):
  *
- * * The first argument is the object containing data that will be passed down to the
- *   {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper. If some event listeners modifies it, it can adjust the behavior of
- *   the scrolling (e.g. include additional `viewportOffset`).
+ * * The first argument is the {@link module:engine/view/view~ViewScrollToTheSelectionEventData object containing data} that gets
+ *   passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper. If some event listener modifies it, it can
+ *   adjust the behavior of the scrolling (e.g. include additional `viewportOffset`).
  * * The second argument corresponds to the original arguments passed to {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
  *   It allows listeners to re-execute the `scrollViewportToShowTarget()` method with its original arguments if there is such a need,
  *   for instance, if the integration requires re–scrolling after certain interaction.
@@ -821,9 +824,9 @@ export type ViewScrollToTheSelectionEvent = {
 
 /**
  * An object passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper while calling
- * {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
+ * {@link module:engine/view/view~View#scrollToTheSelection}.
  */
-type ViewScrollToTheSelectionEventData = {
+export type ViewScrollToTheSelectionEventData = {
 	target: DomRange;
 	viewportOffset: { top: number; bottom: number; left: number; right: number };
 	ancestorOffset: number;
