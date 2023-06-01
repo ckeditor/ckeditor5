@@ -24,7 +24,7 @@ import type {
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { determineImageTypeForInsertionAtSelection } from './image/utils';
-import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils';
+import { DomEmitterMixin, type DomEmitter, global } from 'ckeditor5/src/utils';
 
 /**
  * A set of helpers related to images.
@@ -149,10 +149,11 @@ export default class ImageUtils extends Plugin {
 			return;
 		}
 
-		const img = new Image();
+		const img = new global.window.Image();
 
 		this._domEmitter.listenTo( img, 'load', ( evt, data ) => {
 			this._setWidthAndHeight( imageElement, img.naturalWidth, img.naturalHeight );
+			this._domEmitter.stopListening( img, 'load' );
 		} );
 
 		img.src = src;
@@ -163,8 +164,8 @@ export default class ImageUtils extends Plugin {
 	 */
 	private _setWidthAndHeight( imageElement: Element, width: number, height: number ): void {
 		this.editor.model.enqueueChange( { isUndoable: false }, writer => {
-			writer.setAttribute( 'width', width.toString(), imageElement );
-			writer.setAttribute( 'height', height.toString(), imageElement );
+			writer.setAttribute( 'width', width, imageElement );
+			writer.setAttribute( 'height', height, imageElement );
 		} );
 	}
 
@@ -278,6 +279,15 @@ export default class ImageUtils extends Plugin {
 				return item as ViewElement;
 			}
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		this._domEmitter.stopListening();
+
+		return super.destroy();
 	}
 }
 
