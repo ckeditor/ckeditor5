@@ -18,7 +18,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 /* global document */
 
 describe( 'DocumentListElementSupport', () => {
-	let editor, model, editorElement, dataFilter;
+	let editor, model, editorElement, dataFilter, dataSchema;
 
 	testUtils.createSinonSandbox();
 
@@ -32,6 +32,7 @@ describe( 'DocumentListElementSupport', () => {
 			} );
 		model = editor.model;
 		dataFilter = editor.plugins.get( 'DataFilter' );
+		dataSchema = editor.plugins.get( 'DataSchema' );
 
 		stubUid();
 	} );
@@ -46,7 +47,49 @@ describe( 'DocumentListElementSupport', () => {
 		expect( editor.plugins.has( 'DocumentListElementSupport' ) ).to.be.true;
 	} );
 
+	it( 'should preserve attributes on lists on conversion', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		const expectedHtml =
+			'<ul class="foo">' +
+				'<li data-foo="bar1">One</li>' +
+			'</ul>';
+
+		editor.setData( expectedHtml );
+
+		expect( editor.getData() ).to.equal( expectedHtml );
+	} );
+
+	it( 'removes list attributes when list is changed to a paragraph', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+
+		editor.commands.get( 'bulletedList' ).execute( { forceValue: false } );
+
+		expect( editor.getData() ).to.equal( '<p data-foo="bar-p">1.</p>' );
+	} );
+
 	describe( 'downcast', () => {
+		beforeEach( () => {
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			// Apply filtering rules added after initial data load.
+			editor.setData( '' );
+		} );
+
 		it( 'should downcast list attributes', () => {
 			setModelData( model, makeList( 'bulleted', 0, { attributes: { 'data-foo': 'foo', 'data-bar': 'bar' } }, [
 				{ text: '1.' },
@@ -321,6 +364,11 @@ describe( 'DocumentListElementSupport', () => {
 		} );
 
 		it( 'should allow attributes (non-list item content)', () => {
+			dataSchema.registerBlockElement( {
+				model: 'div',
+				view: 'div'
+			} );
+
 			dataFilter.allowElement( /^(ul|ol|div)$/ );
 			dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: { 'data-foo': true } } );
 			dataFilter.allowAttributes( { name: /^(li|div)$/, attributes: { 'data-bar': true } } );
@@ -440,6 +488,15 @@ describe( 'DocumentListElementSupport', () => {
 
 	describe( 'post-fixer', () => {
 		describe( 'htmlListAttributes', () => {
+			beforeEach( () => {
+				dataFilter.allowElement( /^.*$/ );
+				dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+				dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+				// Apply filtering rules added after initial data load.
+				editor.setData( '' );
+			} );
+
 			it( 'should ensure that all items in a single list have the same `htmlListAttributes`', () => {
 				setModelData( model,
 					paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
@@ -537,6 +594,15 @@ describe( 'DocumentListElementSupport', () => {
 		} );
 
 		describe( 'htmlLiAttributes', () => {
+			beforeEach( () => {
+				dataFilter.allowElement( /^.*$/ );
+				dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+				dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+				// Apply filtering rules added after initial data load.
+				editor.setData( '' );
+			} );
+
 			it( 'should ensure that all blocks of single list item have the same `htmlLiAttributes`', () => {
 				setModelData( model,
 					liParagraph( 'A1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
@@ -614,6 +680,15 @@ describe( 'DocumentListElementSupport', () => {
 	} );
 
 	describe( 'indenting lists', () => {
+		beforeEach( () => {
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			// Apply filtering rules added after initial data load.
+			editor.setData( '' );
+		} );
+
 		it( 'should reset `htmlListAttributes` attribute after indenting a single item', () => {
 			setModelData( model,
 				paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'foo' } ) +

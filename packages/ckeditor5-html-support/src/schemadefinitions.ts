@@ -520,17 +520,20 @@ export default {
 		{
 			model: 'htmlLiAttributes',
 			view: 'li',
-			appliesToBlock: true
+			appliesToBlock: true,
+			coupledAttribute: 'listItemId'
 		},
 		{
 			model: 'htmlListAttributes',
 			view: 'ol',
-			appliesToBlock: true
+			appliesToBlock: true,
+			coupledAttribute: 'listItemId'
 		},
 		{
 			model: 'htmlListAttributes',
 			view: 'ul',
-			appliesToBlock: true
+			appliesToBlock: true,
+			coupledAttribute: 'listItemId'
 		},
 		{
 			model: 'htmlFigureAttributes',
