@@ -154,7 +154,9 @@ Enabling the `updateSourceElementOnDestroy` option in your configuration might h
 
 ## Autosave feature
 
-The {@link module:autosave/autosave~Autosave} feature allows you to automatically save the data (e.g. send it to the server) when needed (when the user changed the content). Please refer to the {@link features/autosave autosave} guide for details.
+The {@link module:autosave/autosave~Autosave} feature allows you to automatically save the data (e.g. send it to the server) when needed. This can happen, for example, when the user changed the content.
+
+Please refer to the {@link features/autosave Autosave} guide for details.
 
 ## Handling users exiting the page
 

@@ -5,8 +5,8 @@
 
 /**
  * This is the additional demo snippet.
- * The base snippet sits in the /snippets/installation/getting-and-setting-data folder.
- * This is due legacy reasons.
+ * The base snippet sits in the /_snippets/installation/getting-and-setting-data folder.
+ * This is due to legacy reasons.
  */
 
 /* globals ClassicEditor, console, window, document, setTimeout */

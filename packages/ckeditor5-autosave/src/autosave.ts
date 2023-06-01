@@ -50,7 +50,7 @@ import { debounce, type DebouncedFunc } from 'lodash-es';
  * 	} );
  * ```
  *
- * Read more about this feature in the {@glink features/autosave autosave} feature guide.
+ * Read more about this feature in the {@glink features/autosave Autosave} feature guide.
  */
 export default class Autosave extends Plugin {
 	/**
