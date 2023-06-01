@@ -21,7 +21,7 @@ import type {
 import { Plugin } from 'ckeditor5/src/core';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
-import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } from '../utils';
+import { updateViewAttributes, type GHSViewAttributes } from '../utils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { getDescendantElement } from './integrationutils';
 
