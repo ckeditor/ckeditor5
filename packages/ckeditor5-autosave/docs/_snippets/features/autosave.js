@@ -3,6 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * This is the additional demo snippet.
+ * The base snippet sits in the /_snippets/installation/getting-and-setting-data folder.
+ * This is due to legacy reasons.
+ */
+
 /* globals ClassicEditor, console, window, document, setTimeout */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
