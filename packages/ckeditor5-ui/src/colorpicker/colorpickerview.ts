@@ -114,7 +114,10 @@ export default class ColorPickerView extends View {
 		} );
 
 		this.on( 'change:_hexColor', () => {
-			this.picker.setAttribute( 'color', this._hexColor );
+			// Should update color in color picker when its not focused
+			if ( document.activeElement !== this.picker ) {
+				this.picker.setAttribute( 'color', this._hexColor );
+			}
 
 			// There has to be two way binding between properties.
 			// Extra precaution has to be taken to trigger change back only when the color really changes.
