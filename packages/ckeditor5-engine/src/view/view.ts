@@ -814,13 +814,19 @@ export type ViewRenderEvent = {
 export type ViewScrollToTheSelectionEvent = {
 	name: 'scrollToTheSelection';
 	args: [
-		{
-			target: DomRange;
-			viewportOffset: { top: number; bottom: number; left: number; right: number };
-			ancestorOffset: number;
-			alignToTop?: boolean;
-			forceScroll?: boolean;
-		},
+		ViewScrollToTheSelectionEventData,
 		Parameters<View[ 'scrollToTheSelection' ]>[ 0 ]
 	];
+};
+
+/**
+ * An object passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper while calling
+ * {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
+ */
+type ViewScrollToTheSelectionEventData = {
+	target: DomRange;
+	viewportOffset: { top: number; bottom: number; left: number; right: number };
+	ancestorOffset: number;
+	alignToTop?: boolean;
+	forceScroll?: boolean;
 };
