@@ -9,6 +9,7 @@ import WordCount from '../src/wordcount';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
@@ -578,5 +579,41 @@ describe( 'WordCount', () => {
 				} );
 		} );
 	} );
-} );
 
+	describe( 'multi-root editor integration', () => {
+		beforeEach( () => {
+			return MultiRootEditor
+				.create( {
+					foo: document.createElement( 'div' ),
+					bar: document.createElement( 'div' )
+				}, {
+					plugins: [
+						WordCount, Paragraph
+					]
+				} )
+				.then( _editor => {
+					editor = _editor;
+					model = editor.model;
+					wordCountPlugin = editor.plugins.get( 'WordCount' );
+				} );
+		} );
+
+		afterEach( () => {
+			editor.destroy();
+		} );
+
+		it( 'should sum characters of each root', () => {
+			setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
+			setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
+
+			expect( wordCountPlugin.characters ).to.be.equal( 18 );
+		} );
+
+		it( 'should sum words of each root', () => {
+			setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
+			setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
+
+			expect( wordCountPlugin.words ).to.be.equal( 4 );
+		} );
+	} );
+} );

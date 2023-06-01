@@ -17,6 +17,7 @@ import {
 } from '../converters';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import type { DataSchemaBlockElementDefinition } from '../dataschema';
+import { getHtmlAttributeName } from '../utils';
 
 /**
  * Provides the General HTML Support for `style` elements.
@@ -50,7 +51,7 @@ export default class StyleElementSupport extends Plugin {
 			schema.register( 'htmlStyle', definition.modelSchema );
 
 			schema.extend( 'htmlStyle', {
-				allowAttributes: [ 'htmlAttributes', 'htmlContent' ],
+				allowAttributes: [ 'htmlStyleAttributes', 'htmlContent' ],
 				isContent: true
 			} );
 

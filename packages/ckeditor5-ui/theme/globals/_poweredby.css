@@ -16,10 +16,10 @@
 .ck.ck-balloon-panel.ck-powered-by-balloon {
 	--ck-border-radius: var(--ck-powered-by-border-radius);
 
-	border: 0;
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
+	z-index: calc( var(--ck-z-modal) - 1 );
 
 	& .ck.ck-powered-by {
 		line-height: var(--ck-powered-by-line-height);
@@ -58,6 +58,10 @@
 				opacity: 1;
 			}
 		}
+	}
+
+	&[class*="position_inside"] {
+		border-color: transparent;
 	}
 
 	&[class*="position_border"] {

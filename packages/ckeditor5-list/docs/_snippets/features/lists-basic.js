@@ -49,8 +49,8 @@ ClassicEditor
 		window.editorBasic = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Numbered List' ),
-			text: 'Click to create an ordered or unordered list.',
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label === 'Bulleted List' ),
+			text: 'Click to add an ordered or unordered list.',
 			editor
 		} );
 	} )

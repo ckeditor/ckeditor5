@@ -9,10 +9,28 @@ import { Bold, Italic, Code, Strikethrough, Underline, Subscript, Superscript } 
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Font } from '@ckeditor/ckeditor5-font';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( Alignment, Font, Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code, RemoveFormat );
+ClassicEditor.builtinPlugins.push(
+	Alignment,
+	Font,
+	Bold,
+	Italic,
+	Underline,
+	Strikethrough,
+	Subscript,
+	Superscript,
+	Code,
+	RemoveFormat,
+	PictureEditing,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	CKBox );
 
 window.ClassicEditor = ClassicEditor;

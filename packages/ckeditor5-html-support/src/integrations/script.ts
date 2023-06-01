@@ -16,6 +16,7 @@ import {
 } from '../converters';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import type { DataSchemaBlockElementDefinition } from '../dataschema';
+import { getHtmlAttributeName } from '../utils';
 
 /**
  * Provides the General HTML Support for `script` elements.
@@ -49,7 +50,7 @@ export default class ScriptElementSupport extends Plugin {
 			schema.register( 'htmlScript', definition.modelSchema );
 
 			schema.extend( 'htmlScript', {
-				allowAttributes: [ 'htmlAttributes', 'htmlContent' ],
+				allowAttributes: [ 'htmlScriptAttributes', 'htmlContent' ],
 				isContent: true
 			} );
 
