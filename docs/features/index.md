@@ -70,7 +70,11 @@ The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved
 
 {@img assets/img/features-output.png 800 CKEditor 5 output features.}
 
-### Productivity features
+### Productivity pack
+
+The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor 5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template content templates} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets the users style their content in a blaze.
+
+### Other productivity features
 
 Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link installation/index editor build} to suit your needs.
 
@@ -79,10 +83,6 @@ The {@link features/word-count words and characters counter} will help you track
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spell and grammar check} to ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
 {@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 spell-checking feature.}
-
-### Productivity pack
-
-The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor 5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template content templates} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets the users style their content in a blaze.
 
 ### Customizable user experience
 

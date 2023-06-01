@@ -3,19 +3,22 @@ category: features
 menu-title: Productivity pack
 order: -998
 modified_at: 2023-05-31
+badges: [ premium ]
 ---
 
-# Productivity pack - overview
+# Productivity pack
 
-The productivity pack is a set of exclusive premium features for the CKEditor 5 WYSIWYG editor, that make editing faster, easier, and more efficient. These are only available to holders of a [CKEditor 5 commercial license](https://ckeditor.com/pricing/). However, unlike other premium features such as file exporters or collaboration, these are not additionally paid on top of the editor deal but are already included in it.
+The productivity pack is a set of exclusive premium features for the CKEditor 5 WYSIWYG editor, that make editing faster, easier, and more efficient.
 
-The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined templates and a new set of commands. Document outline and table of contents make navigating large documents much easier and format painter lets the users style their content in a blaze.
+<info-box>
+These are only available to holders of a [CKEditor 5 commercial license](https://ckeditor.com/pricing/). However, unlike other premium features such as file exporters or collaboration, these are not additionally paid on top of the editor deal but are already included in it.
+</info-box>
 
 ## Features included in the productivity pack
 
-* Content templates
+* Content Templates
 
-	The {@link features/template content templates feature} allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (e.g. a formatted table) and base structures for entire documents (e.g. a formal letter template).
+	The {@link features/template templates feature}{@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (e.g. a formatted table) and base structures for entire documents (e.g. a formal letter template).
 
 * Document outline
 
@@ -23,7 +26,7 @@ The productivity pack provides tools that make the creation of content faster an
 
 * Format painter
 
-	The {@link features/format-painter format painter feature} lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
+	The {@link features/format-painter format painter feature}{@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
 
 * Slash commands
 
@@ -31,9 +34,9 @@ The productivity pack provides tools that make the creation of content faster an
 
 * Table of contents
 
-	The {@link features/table-of-contents table of contents feature} lets you insert a widget with a list of headings (section titles) that reflects the structure of the document and will be retained in the editor output data. The list stays up–to–date automatically as the user works on the document. Clicking a list item navigates the user to the corresponding document section.
+	The {@link features/table-of-contents table of contents feature}{@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} lets you insert a widget with a list of headings (section titles) that reflects the structure of the document and will be retained in the editor output data. The list stays up–to–date automatically as the user works on the document. Clicking a list item navigates the user to the corresponding document section.
 
-## Trying out the productivity pack features
+## Free trial
 
 Before committing, you may try out the productivity pack, just like all CKEditor 5 premium features. To do it, simply start your non-commitment [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
 
