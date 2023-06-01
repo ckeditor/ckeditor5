@@ -139,7 +139,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 		} );
 
 		// Informs UI components that should be refreshed after layout change.
-		this.listenTo<ViewDocumentLayoutChangedEvent>( editingView.document, 'layoutChanged', () => this.update() );
+		this.listenTo<ViewDocumentLayoutChangedEvent>( editingView.document, 'layoutChanged', this.update.bind( this ) );
 		this.listenTo<ViewScrollToTheSelectionEvent>( editingView, 'scrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
 
 		this._initFocusTracking();
