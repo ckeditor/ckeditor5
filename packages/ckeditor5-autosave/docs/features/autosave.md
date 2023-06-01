@@ -13,7 +13,7 @@ The autosave feature allows you to automatically save the data (e.g. send it to 
 
 Type some text in the demo below to try out the autosave feature. Try adding rich content such as images or tables, and observe the feature's behavior. Demo elements and mechanisms are explained below the editor.
 
-{@snippet installation/getting-and-setting-data/autosave}
+{@snippet features/autosave}
 
 How to understand this demo:
 
