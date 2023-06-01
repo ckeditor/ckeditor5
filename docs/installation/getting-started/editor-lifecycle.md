@@ -25,8 +25,6 @@ Most of the examples in the documentation use the `ClassicEditor` class, but thi
 	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include the editor in your application, but you can also {@link installation/advanced/integrating-from-source-webpack use the editor classes and plugins directly} for greater flexibility.
 </info-box>
 
-{@snippet installation/getting-and-setting-data/build-autosave-source}
-
 ## Creating an editor with `create()`
 
 Regardless of the chosen build, creating an editor is done using the static `create()` method.
