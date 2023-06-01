@@ -149,6 +149,10 @@ export default class ImageUtils extends Plugin {
 			return;
 		}
 
+		if ( imageElement.getAttribute( 'width' ) || imageElement.getAttribute( 'height' ) ) {
+			return;
+		}
+
 		const img = new global.window.Image();
 
 		this._domEmitter.listenTo( img, 'load', ( evt, data ) => {
