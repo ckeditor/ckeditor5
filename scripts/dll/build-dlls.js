@@ -15,7 +15,6 @@ const path = require( 'path' );
 
 const argv = minimist( process.argv.slice( 2 ), {
 	string: [
-		'base-dll-config',
 		'base-dll-path'
 	],
 	boolean: [
@@ -38,15 +37,12 @@ const VERBOSE_MODE = argv.verbose;
 // make them stand out from the wall of text that webpack spits out.
 const prefix = VERBOSE_MODE ? '\n📍 ' : '';
 
-if ( argv[ 'base-dll-config' ] && !argv[ 'skip-base-dll' ] ) {
+if ( !argv[ 'skip-base-dll' ] ) {
 	console.log( prefix + chalk.bold( 'Creating the base DLL build...' ) );
 
-	const baseDllPath = argv[ 'base-dll-path' ] || ROOT_DIRECTORY;
-	const baseDllConfigPath = path.relative( baseDllPath, argv[ 'base-dll-config' ] );
-
 	const status = execute( {
-		command: [ 'yarn', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
-		cwd: baseDllPath
+		command: [ 'yarn', 'run', 'maindll:build' ],
+		cwd: argv[ 'base-dll-path' ] || ROOT_DIRECTORY
 	} );
 
 	if ( status ) {
