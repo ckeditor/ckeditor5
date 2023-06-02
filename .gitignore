@@ -21,6 +21,9 @@ mrgit.json
 .idea
 .vscode
 
+# Prepared files to publish to npm.
+/release/
+
 # Ignore yalc
 .yalc
 yalc.lock
