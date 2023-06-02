@@ -93,7 +93,7 @@ export default class DualContentModelElementSupport extends Plugin {
 				},
 				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 				// this listener is called before it. If not, some elements will be transformed into a paragraph.
-				converterPriority: priorities.get( 'low' ) + 0.5
+				converterPriority: priorities.low + 0.5
 			} );
 
 			conversion.for( 'downcast' ).elementToElement( {
