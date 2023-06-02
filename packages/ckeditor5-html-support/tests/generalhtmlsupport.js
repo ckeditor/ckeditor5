@@ -58,8 +58,8 @@ describe( 'GeneralHtmlSupport', () => {
 		} );
 
 		it( 'should return model attribute name for list elements with multiple view representations', () => {
-			expect( generalHtmlSupport.getGhsAttributeNameForElement( 'ul' ) ).to.equal( 'htmlListAttributes' );
-			expect( generalHtmlSupport.getGhsAttributeNameForElement( 'ol' ) ).to.equal( 'htmlListAttributes' );
+			expect( generalHtmlSupport.getGhsAttributeNameForElement( 'ul' ) ).to.equal( 'htmlUlAttributes' );
+			expect( generalHtmlSupport.getGhsAttributeNameForElement( 'ol' ) ).to.equal( 'htmlOlAttributes' );
 			expect( generalHtmlSupport.getGhsAttributeNameForElement( 'li' ) ).to.equal( 'htmlLiAttributes' );
 		} );
 
