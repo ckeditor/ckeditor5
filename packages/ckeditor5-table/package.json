@@ -21,7 +21,7 @@
     "@ckeditor/ckeditor5-block-quote": "^38.0.1",
     "@ckeditor/ckeditor5-clipboard": "^38.0.1",
     "@ckeditor/ckeditor5-core": "^38.0.1",
-    "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^38.0.1",
     "@ckeditor/ckeditor5-editor-multi-root": "^38.0.1",
     "@ckeditor/ckeditor5-engine": "^38.0.1",
