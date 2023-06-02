@@ -15,7 +15,8 @@ import {
 	type ListDropdownItemDefinition,
 	type NormalizedColorOption,
 	type ToolbarView,
-	type View
+	type View,
+	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
 
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils';
@@ -378,13 +379,15 @@ export function getLabeledColorInputCreator(
 		colorConfig: Array<NormalizedColorOption>;
 		columns: number;
 		defaultColorValue?: string;
+		colorPickerConfig: false | ColorPickerConfig;
 	}
 ) {
 	return ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ): ColorInputView => {
 		const colorInputView = new ColorInputView( labeledFieldView.locale!, {
 			colorDefinitions: colorConfigToColorGridDefinitions( options.colorConfig ),
 			columns: options.columns,
-			defaultColorValue: options.defaultColorValue
+			defaultColorValue: options.defaultColorValue,
+			colorPickerConfig: options.colorPickerConfig
 		} );
 
 		colorInputView.inputView.set( {

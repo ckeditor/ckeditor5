@@ -15,7 +15,8 @@ import {
 	ViewCollection,
 	ColorTableView,
 	type ColorDefinition,
-	type DropdownView
+	type DropdownView,
+	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
 
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
@@ -26,6 +27,7 @@ export type ColorInputViewOptions = {
 	colorDefinitions: Array<ColorDefinition>;
 	columns: number;
 	defaultColorValue?: string;
+	colorPickerConfig: false | ColorPickerConfig;
 };
 
 /**
@@ -322,7 +324,7 @@ export default class ColorInputView extends View {
 			columns: this.options.columns,
 			removeButtonLabel: removeColorButtonLabel,
 			colorPickerLabel: 'Color picker',
-			colorPickerConfig: { format: 'hsl' }
+			colorPickerConfig: this.options.colorPickerConfig
 		} );
 
 		colorGrid!.appendUI();

@@ -8,7 +8,7 @@
  */
 
 import type { ToolbarConfigItem } from 'ckeditor5/src/core';
-import type { ColorOption } from 'ckeditor5/src/ui';
+import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui';
 
 /**
  * The configuration of the table feature. Used by the table feature in the `@ckeditor/ckeditor5-table` package.
@@ -217,6 +217,7 @@ export interface TablePropertiesConfig {
 	borderColors?: TableColorConfig;
 	backgroundColors?: TableColorConfig;
 	defaultProperties?: TablePropertiesOptions;
+	colorPicker?: false | ColorPickerConfig;
 }
 
 /**
@@ -271,6 +272,7 @@ export interface TableCellPropertiesConfig {
 	borderColors?: TableColorConfig;
 	backgroundColors?: TableColorConfig;
 	defaultProperties?: TableCellPropertiesOptions;
+	colorPicker?: false | ColorPickerConfig;
 }
 
 /**
