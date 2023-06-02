@@ -291,7 +291,7 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	/**
 	 * The name of the model attribute that generates the same view element. GHS inline attribute
 	 * will be removed from the model tree as soon as the coupled attribute is removed. See
-	 * {@link module:html-support/datafilter~DataFilter#_registerModelPostFixer GHS post-fixer} for more details.
+	 * {@link module:html-support/datafilter~DataFilter#_registerCoupledAttributesPostFixer GHS post-fixer} for more details.
 	 */
 	coupledAttribute?: string;
 
