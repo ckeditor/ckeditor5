@@ -137,7 +137,7 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Copying CKEditor 5 packages.',
+					title: 'Copying CKEditor 5 packages to the release directory.',
 					task: () => {
 						return releaseTools.prepareRepository( {
 							outputDirectory: RELEASE_DIRECTORY,
