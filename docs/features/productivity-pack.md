@@ -40,7 +40,7 @@ These are only available to holders of a [CKEditor 5 commercial license](https:/
 
 Before committing, you may try out the productivity pack, just like all CKEditor 5 premium features. To do it, simply start your non-commitment [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
 
-Please refer to the {@link @trial guides/productivity-pack//productivity-pack/productivity-pack productivity pack trial} guide for information on how to start using these features in your CKEditor 5 WYSIWYG editor now.
+Please refer to the {@link @trial guides/productivity-pack/productivity-pack productivity pack trial} guide for information on how to start using these features in your CKEditor 5 WYSIWYG editor now.
 
 <info-box>
 	If you have any further comments or suggestions concerning these features, please [contact us](https://ckeditor.com/contact/) and share them. We will be happy to hear your feedback!
