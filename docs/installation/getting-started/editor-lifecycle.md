@@ -25,8 +25,6 @@ Most of the examples in the documentation use the `ClassicEditor` class, but thi
 	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include the editor in your application, but you can also {@link installation/advanced/integrating-from-source-webpack use the editor classes and plugins directly} for greater flexibility.
 </info-box>
 
-{@snippet installation/getting-and-setting-data/build-autosave-source}
-
 ## Creating an editor with `create()`
 
 Regardless of the chosen build, creating an editor is done using the static `create()` method.
@@ -54,7 +52,7 @@ ClassicEditor
 	} );
 ```
 
-In this case the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same way.
+In this case, the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same way.
 
 ### Example – inline editor
 
@@ -81,7 +79,7 @@ InlineEditor
 
 ### Example – balloon editor
 
-The procedure is the same as for inline editor. The only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
+The procedure is the same as for the inline editor. The only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
 Add an element where CKEditor should initialize to your page:
 
@@ -134,7 +132,7 @@ DecoupledEditor
 ```
 
 <info-box tip>
-	Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, classic editor will replace the given element with an editor, while inline editor will use the given element to initialize an editor on it. See each editor's documentation to learn the details.
+	Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, the classic editor will replace the given element with an editor, while the inline editor will use the given element to initialize an editor on it. See each editor's documentation to learn the details.
 
 	The interface of the editor class is not enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
 </info-box>

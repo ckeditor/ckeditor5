@@ -19,7 +19,7 @@ CKEditor 5 consists of the {@link installation/getting-started/predefined-builds
 Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source-webpack CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
-	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#building-the-editor-from-source create a custom build of CKEditor 5} and include it in your Angular application.
+	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#customizing-a-build create a custom build of CKEditor 5} and include it in your Angular application.
 </info-box>
 
 <info-box hint>
@@ -179,15 +179,14 @@ export class AppComponent {
   title = 'angular';
   public Editor = DecoupledEditor;
 
-  public onReady( editor: any ): void { //using `any` is a temporary workaround for https://github.com/ckeditor/ckeditor5/issues/13838
-	const decoupledEditor = editor as DecoupledEditor;
-	const element = decoupledEditor.ui.getEditableElement()!;
-	const parent = element.parentElement!;
+  public onReady( editor: DecoupledEditor ): void {
+    const element = editor.ui.getEditableElement()!;
+    const parent = element.parentElement!;
 
-	parent.insertBefore(
-	  decoupledEditor.ui.view.toolbar.element!,
-	  element
-	);
+    parent.insertBefore(
+      editor.ui.view.toolbar.element!,
+      element
+    );
   }
 }
 ```

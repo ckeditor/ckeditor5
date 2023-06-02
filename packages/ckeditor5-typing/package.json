@@ -61,7 +61,6 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json",
-    "postversion": "npm run build"
+    "build": "tsc -p ./tsconfig.json"
   }
 }

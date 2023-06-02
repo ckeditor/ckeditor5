@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^38.0.1",
-    "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^38.0.1",
     "@ckeditor/ckeditor5-engine": "^38.0.1",
     "@ckeditor/ckeditor5-essentials": "^38.0.1",
@@ -55,7 +55,6 @@
   ],
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
-    "postversion": "npm run build",
     "dll:build": "webpack"
   }
 }

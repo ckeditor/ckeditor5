@@ -16,7 +16,6 @@ import {
 } from '../converters';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import type { DataSchemaBlockElementDefinition } from '../dataschema';
-import { getHtmlAttributeName } from '../utils';
 
 /**
  * Provides the General HTML Support for `script` elements.

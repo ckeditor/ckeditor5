@@ -13,10 +13,11 @@ import type {
 	DowncastDispatcher,
 	Element,
 	UpcastDispatcher,
-	ViewElement } from 'ckeditor5/src/engine';
+	ViewElement
+} from 'ckeditor5/src/engine';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { type GHSViewAttributes, setViewAttributes, updateViewAttributes, getHtmlAttributeName } from '../utils';
+import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils';
 import { getDescendantElement } from './integrationutils';
 
 /**
