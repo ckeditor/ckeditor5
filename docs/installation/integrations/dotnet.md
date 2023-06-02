@@ -18,24 +18,24 @@ You can learn more about creating custom builds of CKE5 via the online builder i
 
 ## Setting up the project
 
-For the purpose of this guide, we will use a basic .NET [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) project. You can refer to the [Blazor documentation](https://dotnet.microsoft.com/en-us/learn/aspnet/blazor-tutorial/intro) to learn how to set up a project in the framework.
+For the purpose of this guide, we will use a basic ASP.NET Core project created with `dotnet new webapp`. You can refer to the [ASP.NET Core documentation](https://learn.microsoft.com/en-us/aspnet/core/getting-started/?view=aspnetcore-7.0) to learn how to set up a project in the framework.
 
 Once the project has been prepared, create an `assets/vendor` directory in the existing `wwwroot` directory in your app. Your folder structure should resemble this one:
 
 ````
 ├── bin
-├── Data
 ├── obj
 ├── Pages
 ├── Properties
-├── Shared
 ├── wwwroot
 │   ├── assets
 |      └── vendor
 │   ├── css
+│   ├── js
+│   ├── lib
 │   └── favicon.ico
-├── _Imports.razor
-├── App.razor
+├── appsettings.Development.json
+├── appsettings.json
 └── ...
 ````
 
@@ -45,40 +45,34 @@ Once you have your custom build of the editor ready, and the .NET project has be
 
 ````
 ├── bin
-├── Data
 ├── obj
 ├── Pages
 ├── Properties
-├── Shared
 ├── wwwroot
 │   ├── assets
 |      ├── vendor
 |          └── ckeditor5
 │   ├── css
+│   ├── js
+│   ├── lib
 │   └── favicon.ico
-├── _Imports.razor
-├── App.razor
+├── appsettings.Development.json
+├── appsettings.json
 └── ...
 ````
 
-Then, modify the `_Host.cshtml` file contained in the `Pages` directory to include the CKEditor 5 script. You can use this HTML boilerplate as a starting point:
+Then, modify the `Index.cshtml` file contained in the `Pages` directory to include the CKEditor 5 script. You can use this HTML boilerplate as a starting point:
 
 ````
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <base href="~/" />
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="dotnet-ckeditor.styles.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="favicon.png"/>
-    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
-</head>
-<body>
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
     <h1>Welcome to CKEditor 5 in .NET</h1>
     <div id="editor"></div>
-
     <script src="assets/vendor/ckeditor5/build/ckeditor.js"></script>
     <script>
         ClassicEditor
@@ -87,8 +81,7 @@ Then, modify the `_Host.cshtml` file contained in the `Pages` directory to inclu
                 console.error( error );
             } );
     </script>
-</body>
-</html>
+</div>
 ````
 
-Finally, in the root of your .NET Blazor project, run `dotnet watch` to see the app in action.
+Finally, in the root of your .NET project, run `dotnet watch run` to see the app in action.
