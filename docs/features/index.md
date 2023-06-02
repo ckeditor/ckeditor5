@@ -72,7 +72,7 @@ The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved
 
 ### Productivity pack
 
-The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor 5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template content templates} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets the users style their content in a blaze.
+The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor 5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets the users style their content in a blaze.
 
 ### Other productivity features
 
@@ -96,7 +96,7 @@ Do not get stopped by technology differences - CKEditor 5 offers cross-platform 
 
 {@img assets/img/features-paste.png 800 CKEditor 5 paste features.}
 
-## Backwards feature compatibility
+## Backward feature compatibility
 
 If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
 
