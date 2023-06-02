@@ -7,7 +7,9 @@
  * @module font/ui/colortableview
  */
 
-import { icons } from 'ckeditor5/src/core';
+import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import ButtonView from '../button/buttonview';
 import ColorGridView, { type ColorDefinition } from '../colorgrid/colorgridview';
@@ -19,9 +21,9 @@ import View from '../view';
 import ViewCollection from '../viewcollection';
 import ColorPickerView from '../colorpicker/colorpickerview';
 import colorPaletteIcon from '../../theme/icons/color-palette.svg';
-import  { type ColorPickerConfig } from '../colorpicker/utils';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import type { Model } from 'ckeditor5/src/engine';
+import type { ColorPickerConfig } from '../colorpicker/utils';
+import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
+import type { Model } from '@ckeditor/ckeditor5-engine';
 
 import DocumentColorCollection from './documentcolorcollection';
 
@@ -108,10 +110,20 @@ export default class ColorTableView extends View {
 	 * @param documentColorsLabel The label for the section with the document colors.
 	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
 	 * @param colorPickerConfig The configuration of color picker feature.
+	 * @param hideColorPickerInput Hides input in color picker.
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel, colorPickerConfig }: {
+		{
+			colors,
+			columns,
+			removeButtonLabel,
+			documentColorsLabel,
+			documentColorsCount,
+			colorPickerLabel,
+			colorPickerConfig,
+			hideColorPickerInput
+		}: {
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
@@ -119,6 +131,7 @@ export default class ColorTableView extends View {
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
 			colorPickerConfig: ColorPickerConfig | false;
+			hideColorPickerInput?: boolean;
 		}
 	) {
 		super( locale );
@@ -152,6 +165,7 @@ export default class ColorTableView extends View {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokes: this.keystrokes,
+			hideInput: hideColorPickerInput,
 			colorPickerConfig
 		} );
 
@@ -638,7 +652,7 @@ class ColorGridsPageView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: icons.eraser,
+			icon: removeButtonIcon,
 			label: this._removeButtonLabel
 		} );
 
@@ -818,11 +832,19 @@ class ColorPickerPageView extends View {
 	private _pickerConfig: ColorPickerConfig | false;
 
 	/**
+	 * Hides input in the color picker.
+	 *
+	 * @readonly
+	 */
+	private _hideInput?: boolean;
+
+	/**
 	 * @param locale The localization services instance.
 	 * @param focusTracker Tracks information about the DOM focus in the list.
 	 * @param focusables A collection of views that can be focused in the view..
 	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 	 * @param colorPickerConfig The configuration of color picker feature.
+	 * @param hideInput Hides input in color picker.
 	 */
 	constructor(
 		locale: Locale,
@@ -830,13 +852,15 @@ class ColorPickerPageView extends View {
 			focusTracker,
 			focusables,
 			keystrokes,
-			colorPickerConfig
+			colorPickerConfig,
+			hideInput
 		}:
 			{
 				focusTracker: FocusTracker;
 				focusables: ViewCollection;
 				keystrokes: KeystrokeHandler;
 				colorPickerConfig: ColorPickerConfig | false;
+				hideInput?: boolean;
 			}
 	) {
 		super( locale );
@@ -850,6 +874,7 @@ class ColorPickerPageView extends View {
 
 		this._focusables = focusables;
 		this._pickerConfig = colorPickerConfig;
+		this._hideInput = hideInput;
 
 		const bind = this.bindTemplate;
 		const { saveButtonView, cancelButtonView } = this._createActionButtons();
@@ -876,7 +901,10 @@ class ColorPickerPageView extends View {
 	public override render(): void {
 		super.render();
 
-		const colorPickerView = new ColorPickerView( this.locale, this._pickerConfig as ColorPickerConfig );
+		const colorPickerView = new ColorPickerView( this.locale, {
+			hideInput: this._hideInput,
+			...this._pickerConfig
+		} as ColorPickerConfig );
 
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
@@ -949,8 +977,12 @@ class ColorPickerPageView extends View {
 			this._focusables.add( slider );
 		}
 
-		this.focusTracker.add( this.colorPickerView!.hexInputRow.children.get( 1 )!.element! );
-		this._focusables.add( this.colorPickerView!.hexInputRow.children.get( 1 )! );
+		const input = this.colorPickerView!.hexInputRow.children.get( 1 )!;
+
+		if ( input.element! ) {
+			this.focusTracker.add( input.element! );
+			this._focusables.add( input );
+		}
 
 		this.focusTracker.add( this.saveButtonView.element! );
 		this._focusables.add( this.saveButtonView );
@@ -996,14 +1028,14 @@ class ColorPickerPageView extends View {
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
-			icon: icons.check,
+			icon: checkButtonIcon,
 			class: 'ck-button-save',
 			withText: false,
-			label: t( 'Accept' ),
+			label: t( 'Accept' )
 		} );
 
 		cancelButtonView.set( {
-			icon: icons.cancel,
+			icon: cancelButtonIcon,
 			class: 'ck-button-cancel',
 			withText: false,
 			label: t( 'Cancel' )

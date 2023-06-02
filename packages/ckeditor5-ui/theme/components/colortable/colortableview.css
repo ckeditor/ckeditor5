@@ -46,6 +46,7 @@ label.ck.ck-color-grid__label {
 	& .hex-color-picker {
 		height: 100px;
 		margin: 0 0 var(--ck-spacing-large) 0;
+		min-width: 180px;
 
 		&::part(saturation) {
 			border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;

@@ -74,7 +74,7 @@ export default class ColorPickerView extends View {
 	 * @param locale
 	 * @param config
 	 */
-	constructor( locale: Locale | undefined, config: ColorPickerConfig ) {
+	constructor( locale: Locale | undefined, config: ColorPickerConfig & { hideInput?: boolean } ) {
 		super( locale );
 
 		this.set( 'color', '' );
@@ -84,9 +84,11 @@ export default class ColorPickerView extends View {
 		this._format = config.format || 'hsl';
 
 		this.hexInputRow = this._createInputRow();
-
 		const children = this.createCollection();
-		children.add( this.hexInputRow );
+
+		if ( !config.hideInput ) {
+			children.add( this.hexInputRow );
+		}
 
 		this.setTemplate( {
 			tag: 'div',
@@ -140,7 +142,11 @@ export default class ColorPickerView extends View {
 		this._createSlidersView();
 
 		if ( this.element ) {
-			this.element.insertBefore( this.picker, this.hexInputRow.element );
+			if ( this.hexInputRow.element ) {
+				this.element.insertBefore( this.picker, this.hexInputRow.element );
+			} else {
+				this.element.appendChild( this.picker );
+			}
 
 			// Create custom stylesheet with a look of focused pointer in color picker and append it into the color picker shadowDom
 			const styleSheetForFocusedColorPicker = document.createElement( 'style' );

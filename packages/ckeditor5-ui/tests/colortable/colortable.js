@@ -6,19 +6,20 @@
 /* globals document,Event */
 
 import ColorTableView from './../../src/colortable/colortableview';
-import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
-import { icons } from 'ckeditor5/src/core';
+import ColorTileView from './../../src/colorgrid/colortileview';
+import FocusCycler from './../../src/focuscycler';
+import ColorPickerView from './../../src/colorpicker/colorpickerview';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import ColorPickerView from '@ckeditor/ckeditor5-ui/src/colorpicker/colorpickerview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 describe( 'ColorTableView', () => {
 	let locale, colorTableView;
@@ -46,29 +47,6 @@ describe( 'ColorTableView', () => {
 			}
 		}
 	];
-	const testColorConfig = {
-		colors: [
-			'yellow',
-			{
-				color: '#000'
-			},
-			{
-				color: 'rgb(255, 255, 255)',
-				label: 'White',
-				hasBorder: true
-			},
-			{
-				color: 'red',
-				label: 'Red'
-			},
-			{
-				color: '#00FF00',
-				label: 'Green',
-				hasBorder: false
-			}
-		],
-		columns: 3
-	};
 
 	beforeEach( () => {
 		locale = { t() {} };
@@ -506,7 +484,7 @@ describe( 'ColorTableView', () => {
 
 			it( 'should have proper settings', () => {
 				expect( saveButton.withText ).to.be.false;
-				expect( saveButton.icon ).to.equal( icons.check );
+				expect( saveButton.icon ).to.equal( checkButtonIcon );
 			} );
 
 			it( 'should execute event with "null" value', () => {
@@ -527,7 +505,7 @@ describe( 'ColorTableView', () => {
 
 			it( 'should have proper settings', () => {
 				expect( cancelButton.withText ).to.be.false;
-				expect( cancelButton.icon ).to.equal( icons.cancel );
+				expect( cancelButton.icon ).to.equal( cancelButtonIcon );
 			} );
 		} );
 	} );
