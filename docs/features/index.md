@@ -62,9 +62,11 @@ You can also easily track the progress and changes done in the content with the 
 
 {@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
 
-### Output and exports
+### Document conversion
 
 If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-export-pdf/theme/icons/exportpdf.svg Export to PDF} to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word feature} {@icon @ckeditor/ckeditor5-export-word/theme/icons/exportword.svg Export to Word} instead &mdash; and keep your comments and changes in the resulting document, ready to be edited further. These two are accompanied by the {@link features/pagination pagination feature} {@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-up.svg Previous page}{@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-down.svg Next page}, to ensure all produced documents will always look the way they should.
+
+### HTML and Markdown output
 
 The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text addressing the needs of software professionals.
 
