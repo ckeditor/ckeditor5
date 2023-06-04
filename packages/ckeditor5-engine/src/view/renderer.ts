@@ -93,6 +93,14 @@ export default class Renderer extends ObservableMixin() {
 	declare public readonly isFocused: boolean;
 
 	/**
+	 * Set to `true` if the document is in the process of changing the focus.
+	 *
+	 * @readonly
+	 * @observable
+	 */
+	declare public readonly isFocusChanging: boolean;
+
+	/**
 	 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
 	 * When they stop selecting, the property goes back to `false`.
 	 *
@@ -136,6 +144,7 @@ export default class Renderer extends ObservableMixin() {
 		this.selection = selection;
 
 		this.set( 'isFocused', false );
+		this.set( 'isFocusChanging', false );
 		this.set( 'isSelecting', false );
 
 		// Rendering the selection and inline filler manipulation should be postponed in (non-Android) Blink until the user finishes
@@ -861,12 +870,19 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
+		if ( this.isFocusChanging ) {
+			return;
+		}
+
+		// console.log( 'render dom selection' );
+
 		if ( !this.isFocused ) {
 			const domSelection = domRoot.ownerDocument.defaultView!.getSelection()!;
 			const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 			const selectionInEditable = newViewSelection.rangeCount > 0;
 
 			if ( selectionInEditable ) {
+				// console.log( '-- clear DOM selection --' );
 				domSelection.removeAllRanges();
 				this._removeFakeSelection();
 			}
@@ -1047,7 +1063,7 @@ export default class Renderer extends ObservableMixin() {
 	 * Checks if focus needs to be updated and possibly updates it.
 	 */
 	private _updateFocus(): void {
-		if ( this.isFocused ) {
+		if ( this.isFocused && !this.isFocusChanging ) {
 			const editable = this.selection.editableElement;
 
 			if ( editable ) {

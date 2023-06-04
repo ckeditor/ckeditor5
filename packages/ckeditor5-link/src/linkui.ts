@@ -33,8 +33,6 @@ import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './ut
 
 import linkIcon from '../theme/icons/link.svg';
 
-const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
-
 /**
  * The link UI plugin. It introduces the `'link'` and `'unlink'` buttons and support for the <kbd>Ctrl+K</kbd> keystroke.
  *
@@ -84,23 +82,6 @@ export default class LinkUI extends Plugin {
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
 		this._enableBalloonActivators();
-
-		// Renders a fake visual selection marker on an expanded selection.
-		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
-			model: VISUAL_SELECTION_MARKER_NAME,
-			view: {
-				classes: [ 'ck-fake-link-selection' ]
-			}
-		} );
-
-		// Renders a fake visual selection marker on a collapsed selection.
-		editor.conversion.for( 'editingDowncast' ).markerToElement( {
-			model: VISUAL_SELECTION_MARKER_NAME,
-			view: {
-				name: 'span',
-				classes: [ 'ck-fake-link-selection', 'ck-fake-link-selection_collapsed' ]
-			}
-		} );
 	}
 
 	/**
@@ -395,8 +376,6 @@ export default class LinkUI extends Plugin {
 			// Because the form has an input which has focus, the focus must be brought back
 			// to the editor. Otherwise, it would be lost.
 			this.editor.editing.view.focus();
-
-			this._hideFakeVisualSelection();
 		}
 	}
 
@@ -412,10 +391,6 @@ export default class LinkUI extends Plugin {
 
 		// When there's no link under the selection, go straight to the editing UI.
 		if ( !this._getSelectedLinkElement() ) {
-			// Show visual selection on a text without a link when the contextual balloon is displayed.
-			// See https://github.com/ckeditor/ckeditor5/issues/4721.
-			this._showFakeVisualSelection();
-
 			this._addActionsView();
 
 			// Be sure panel with link is visible.
@@ -470,8 +445,6 @@ export default class LinkUI extends Plugin {
 
 		// Then remove the actions view because it's beneath the form.
 		this._balloon.remove( this.actionsView! );
-
-		this._hideFakeVisualSelection();
 	}
 
 	/**
@@ -578,34 +551,21 @@ export default class LinkUI extends Plugin {
 	 */
 	private _getBalloonPositionData(): Partial<PositionOptions> {
 		const view = this.editor.editing.view;
-		const model = this.editor.model;
 		const viewDocument = view.document;
-		let target: PositionOptions[ 'target' ];
 
-		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-			// There are cases when we highlight selection using a marker (#7705, #4721).
-			const markerViewElements = Array.from( this.editor.editing.mapper.markerNameToElements( VISUAL_SELECTION_MARKER_NAME )! );
-			const newRange = view.createRange(
-				view.createPositionBefore( markerViewElements[ 0 ] ),
-				view.createPositionAfter( markerViewElements[ markerViewElements.length - 1 ] )
-			);
+		// Make sure the target is calculated on demand at the last moment because a cached DOM range
+		// (which is very fragile) can desynchronize with the state of the editing view if there was
+		// any rendering done in the meantime. This can happen, for instance, when an inline widget
+		// gets unlinked.
+		const target = () => {
+			const targetLink = this._getSelectedLinkElement();
 
-			target = view.domConverter.viewRangeToDom( newRange );
-		} else {
-			// Make sure the target is calculated on demand at the last moment because a cached DOM range
-			// (which is very fragile) can desynchronize with the state of the editing view if there was
-			// any rendering done in the meantime. This can happen, for instance, when an inline widget
-			// gets unlinked.
-			target = () => {
-				const targetLink = this._getSelectedLinkElement();
-
-				return targetLink ?
-					// When selection is inside link element, then attach panel to this element.
-					view.domConverter.mapViewToDom( targetLink )! :
-					// Otherwise attach panel to the selection.
-					view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
-			};
-		}
+			return targetLink ?
+				// When selection is inside link element, then attach panel to this element.
+				view.domConverter.mapViewToDom( targetLink )! :
+				// Otherwise attach panel to the selection.
+				view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
+		};
 
 		return { target };
 	}
@@ -644,55 +604,6 @@ export default class LinkUI extends Plugin {
 			} else {
 				return null;
 			}
-		}
-	}
-
-	/**
-	 * Displays a fake visual selection when the contextual balloon is displayed.
-	 *
-	 * This adds a 'link-ui' marker into the document that is rendered as a highlight on selected text fragment.
-	 */
-	private _showFakeVisualSelection(): void {
-		const model = this.editor.model;
-
-		model.change( writer => {
-			const range = model.document.selection.getFirstRange()!;
-
-			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
-			} else {
-				if ( range.start.isAtEnd ) {
-					const startPosition = range.start.getLastMatchingPosition(
-						( { item } ) => !model.schema.isContent( item ),
-						{ boundaries: range }
-					);
-
-					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-						usingOperation: false,
-						affectsData: false,
-						range: writer.createRange( startPosition, range.end )
-					} );
-				} else {
-					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-						usingOperation: false,
-						affectsData: false,
-						range
-					} );
-				}
-			}
-		} );
-	}
-
-	/**
-	 * Hides the fake visual selection created in {@link #_showFakeVisualSelection}.
-	 */
-	private _hideFakeVisualSelection(): void {
-		const model = this.editor.model;
-
-		if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
-			model.change( writer => {
-				writer.removeMarker( VISUAL_SELECTION_MARKER_NAME );
-			} );
 		}
 	}
 }

@@ -175,8 +175,8 @@ export default class View extends ObservableMixin() {
 		this.set( 'hasDomSelection', false );
 
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' )
-			.to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
+		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing', 'isFocusChanging' )
+			.to( this.document, 'isFocused', 'isSelecting', 'isComposing', 'isFocusChanging' );
 
 		this._writer = new DowncastWriter( this.document );
 

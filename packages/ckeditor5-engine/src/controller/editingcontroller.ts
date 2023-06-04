@@ -130,16 +130,18 @@ export default class EditingController extends ObservableMixin() {
 			} );
 		}, { priority: 'low' } );
 
-		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange', () => {
-			if ( this.view.document.isFocused ) {
-				this._hideFakeVisualSelectionDelayed();
-			}
-		} );
-
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
 		);
+
+		// this.listenTo<ObservableChangeEvent>( this.view.document, 'change:isFocused', ( evt, prop, isFocused ) => {
+		// 	console.log( '    isFocused =', isFocused );
+		// }, { priority: 'highest' } );
+		//
+		// this.listenTo<ObservableChangeEvent>( this.view.document, 'change:isFocusChanging', ( evt, prop, isFocusChanging ) => {
+		// 	console.log( '    isFocusChanging =', isFocusChanging );
+		// }, { priority: 'highest' } );
 
 		this.listenTo<ObservableChangeEvent>( this.view.document, 'change:isFocused', ( evt, prop, isFocused ) => {
 			if ( !isFocused ) {
@@ -152,6 +154,12 @@ export default class EditingController extends ObservableMixin() {
 				this._hideFakeVisualSelectionDelayed();
 			}
 		}, { priority: 'high' } );
+
+		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange', () => {
+			if ( this.view.document.isFocused ) {
+				this._hideFakeVisualSelectionDelayed();
+			}
+		} );
 
 		// Fix `beforeinput` target ranges so that they map to the valid model ranges.
 		this.listenTo<ViewDocumentInputEvent>( this.view.document, 'beforeinput',

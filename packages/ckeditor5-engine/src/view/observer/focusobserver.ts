@@ -12,6 +12,8 @@
 import DomEventObserver from './domeventobserver';
 import type DomEventData from './domeventdata';
 import type View from '../view';
+import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import type { ViewDocumentSelectionChangeEvent } from './selectionobserver';
 
 /**
  * {@link module:engine/view/document~Document#event:focus Focus}
@@ -25,19 +27,14 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * Identifier of the timeout currently used by focus listener to delay rendering execution.
 	 */
-	private _renderTimeoutId!: ReturnType<typeof setTimeout>;
-
-	/**
-	 * Set to `true` if the document is in the process of setting the focus.
-	 *
-	 * The flag is used to indicate that setting the focus is in progress.
-	 */
-	private _isFocusChanging: boolean = false;
+	private _timeoutId!: ReturnType<typeof setTimeout>;
 
 	/**
 	 * @inheritDoc
 	 */
 	public readonly domEventType = [ 'focus', 'blur' ] as const;
+
+	private _isFocusing = false;
 
 	/**
 	 * @inheritDoc
@@ -46,46 +43,106 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		super( view );
 
 		this.useCapture = true;
+
 		const document = this.document;
 
-		document.on<ViewDocumentFocusEvent>( 'focus', () => {
-			this._isFocusChanging = true;
+		document.on<ViewDocumentFocusEvent>( 'focus', ( evt, data ) => {
+			// console.log( 'focus' );
 
-			// Unfortunately native `selectionchange` event is fired asynchronously.
-			// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
-			// overwrite new DOM selection with selection from the view.
-			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
-			// Long timeout is needed to solve #676 and https://github.com/ckeditor/ckeditor5-engine/issues/1157 issues.
-			//
-			// Using `view.change()` instead of `view.forceRender()` to prevent double rendering
-			// in a situation where `selectionchange` already caused selection change.
-			this._renderTimeoutId = setTimeout( () => {
-				this.flush();
-				view.change( () => {} );
-			}, 50 );
+			if ( this._timeoutId ) {
+				clearTimeout( this._timeoutId );
+			}
+
+			this.document.isFocusChanging = true;
+			this._isFocusing = true;
+
+			const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
+			const viewSelection = view.domConverter.domSelectionToView( domSelection );
+
+			// The selection is already in the focused element (for example in Firefox) so just flush the focused state.
+			if ( viewSelection.editableElement && viewSelection.editableElement == data.target ) {
+				// console.log( '  focus: has selection' );
+				this._timeoutId = setTimeout( () => this.flush(), 0 );
+				// this.flush();
+			} else {
+				// console.log( '  focus: without selection' );
+				this._timeoutId = setTimeout( () => this.flush(), 50 );
+			}
 		} );
 
 		document.on<ViewDocumentBlurEvent>( 'blur', ( evt, data ) => {
-			const selectedEditable = document.selection.editableElement;
+			// console.log( 'blur' );
 
-			if ( selectedEditable === null || selectedEditable === data.target ) {
-				document.isFocused = false;
-				this._isFocusChanging = false;
+			if ( this._timeoutId ) {
+				clearTimeout( this._timeoutId );
+			}
 
-				// Re-render the document to update view elements
-				// (changing document.isFocused already marked view as changed since last rendering).
-				view.change( () => {} );
+			this.document.isFocusChanging = true;
+			this._isFocusing = false;
+
+			const relatedViewElement = view.domConverter.mapDomToView( data.domEvent.relatedTarget as HTMLElement );
+
+			if ( !relatedViewElement ) {
+				// console.log( '  blur: outside editor' );
+				this._timeoutId = setTimeout( () => this.flush(), 0 );
+			} else {
+				// console.log( '  blur: inside editor' );
+				this._timeoutId = setTimeout( () => this.flush(), 50 );
 			}
 		} );
+
+		view.on<ObservableChangeEvent>( 'change:hasDomSelection', ( evt, prop, hasDomSelection ) => {
+			// console.log( 'change:hasDomSelection', hasDomSelection );
+
+			if ( !this.document.isFocusChanging ) {
+				return;
+			}
+
+			if ( this._timeoutId ) {
+				clearTimeout( this._timeoutId );
+			}
+
+			this._timeoutId = setTimeout( () => this.flush(), 0 );
+		} );
+
+		document.on<ViewDocumentSelectionChangeEvent>( 'selectionChange', () => {
+			// console.log( 'selectionchange' );
+
+			if ( !this.document.isFocusChanging ) {
+				return;
+			}
+
+			if ( this._timeoutId ) {
+				clearTimeout( this._timeoutId );
+			}
+
+			this._timeoutId = setTimeout( () => this.flush(), 0 );
+		}, { priority: 'low' } );
 	}
 
 	/**
 	 * Finishes setting the document focus state.
 	 */
 	public flush(): void {
-		if ( this._isFocusChanging ) {
-			this._isFocusChanging = false;
-			this.document.isFocused = true;
+		if ( !this.document.isFocusChanging ) {
+			return;
+		}
+
+		const domRootWithActiveElement = Array.from( this.view.domRoots.values() ).find( domRoot => domRoot.ownerDocument.activeElement );
+		const activeDomElement = domRootWithActiveElement && domRootWithActiveElement.ownerDocument.activeElement;
+		const activeViewElement = this.view.domConverter.mapDomToView( activeDomElement as HTMLElement );
+
+		const viewSelection = this.view.document.selection;
+
+		const isFocused = !!viewSelection && !!viewSelection.editableElement && viewSelection.editableElement == activeViewElement;
+
+		if ( isFocused == this._isFocusing ) {
+			this.document.isFocusChanging = false;
+			this.document.isFocused = isFocused;
+
+			this.view.change( () => {} );
+		} else {
+			// console.log( 'waiting' );
 		}
 	}
 
@@ -100,8 +157,8 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
-		if ( this._renderTimeoutId ) {
-			clearTimeout( this._renderTimeoutId );
+		if ( this._timeoutId ) {
+			clearTimeout( this._timeoutId );
 		}
 
 		super.destroy();
