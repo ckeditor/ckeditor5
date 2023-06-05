@@ -1099,9 +1099,9 @@ import { Table } from '@ckeditor/ckeditor5-table';
   This rule should only be used on `.ts` files.
 </info-box>
 
-In TypeScript, types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
+In TypeScript, the types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but in some cases a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
 
-This rule forces all return statements in some methods to end with `as const`.
+The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (e.g. `delete'` literal string instead of generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
 
 ```ts
 export default class Delete extends Plugin {
