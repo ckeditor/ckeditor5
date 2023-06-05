@@ -527,13 +527,13 @@ There are some special rules and tips for tests.
 	Think about this &mdash; when you fix a bug by adding a parameter to an existing function call you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
 * It should be `expect( x ).to.equal( y )`. **NOT**: ~~`expect( x ).to.be.equal( y )`~~.
 * When using Sinon spies, pay attention to the readability of assertions and failure messages.
-  * Use named spies, for example:
+   * Use named spies, for example:
 
 		```js
 		const someCallbackSpy = sinon.spy().named( 'someCallback' );
 		const myMethodSpy = sinon.spy( obj, 'myMethod' );
 		```
-  * Use [sinon-chai assertions](https://www.chaijs.com/plugins/sinon-chai/)
+   * Use [sinon-chai assertions](https://www.chaijs.com/plugins/sinon-chai/)
 
 		```js
 		expect( myMethodSpy ).to.be.calledOnce
@@ -627,33 +627,33 @@ this.mustRefresh;
 All buttons should follow the **verb + noun** or the **noun** convention. Examples:
 
 * The **verb + noun** convention:
-  * `insertTable`
-  * `selectAll`
-  * `uploadImage`
+	* `insertTable`
+	* `selectAll`
+	* `uploadImage`
 * The **noun** convention:
-  * `bold`
-  * `mediaEmbed`
-  * `restrictedEditing`
+	* `bold`
+	* `mediaEmbed`
+	* `restrictedEditing`
 
 #### Commands
 
 As for commands it is trickier, because there are many more possible combinations of their names than there are for buttons. Examples:
 
 * The **feature-related** convention:
-  * **noun-based** case:
-    * `codeBlock`
-    * `fontColor`
-    * `shiftEnter`
-  * **verb-based** case:
-    * `indent`
-    * `removeFormat`
-    * `selectAll`
+	* **noun-based** case:
+		* `codeBlock`
+		* `fontColor`
+		* `shiftEnter`
+	* **verb-based** case:
+		* `indent`
+		* `removeFormat`
+		* `selectAll`
 * The **feature + sub-feature** convention:
-  * `imageStyle`
-  * `imageTextAlternative`
-  * `tableAlignment`
+	* `imageStyle`
+	* `imageTextAlternative`
+	* `tableAlignment`
 
-For commands, the **noun + verb** (or the **feature + action**) naming conventions **should not be used**, because it does not sound natural (*what do* vs. *do what*). In most cases the proper name should start with the **action** followed by the **feature** name:
+For commands, the **noun + verb** (or the **feature + action**) naming conventions **should not be used**, because it does not sound natural (_what do_ vs. _do what_). In most cases the proper name should start with the **action** followed by the **feature** name:
 
 * `checkTodoList`
 * `insertTable`
@@ -662,15 +662,14 @@ For commands, the **noun + verb** (or the **feature + action**) naming conventio
 #### Plugins
 
 Plugins should follow the **feature** or the **feature + sub-feature** convention. Examples:
-
 * The **feature** convention:
-  * `Bold`
-  * `Paragraph`
-  * `SpecialCharacters`
+	* `Bold`
+	* `Paragraph`
+	* `SpecialCharacters`
 * The **feature + sub-feature** convention:
-  * `ImageResize`
-  * `ListProperties`
-  * `TableClipboard`
+	* `ImageResize`
+	* `ListProperties`
+	* `TableClipboard`
 
 Plugins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase).
 
@@ -696,13 +695,13 @@ this.env;
 Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above &mdash; especially when there is a need to include an acronym or a proper name in a variable or class name. In such case, one should follow the following rules:
 
 * Acronyms:
-  * All lowercase if at the beginning of the variable name: `let domError`.
-  * Default camel case at the beginning of the class name: `class DomError`.
-  * Default camel case inside the variable or class name: `function getDomError()`.
+	* All lowercase if at the beginning of the variable name: `let domError`.
+	* Default camel case at the beginning of the class name: `class DomError`.
+	* Default camel case inside the variable or class name: `function getDomError()`.
 * Proper names:
-  * All lowercase if at the beginning of the variable: `let ckeditorError`.
-  * Original case if at the beginning of the class name: `class CKEditorError`.
-  * Original case inside the variable or class name: `function getCKEditorError()`.
+	* All lowercase if at the beginning of the variable: `let ckeditorError`.
+	* Original case if at the beginning of the class name: `class CKEditorError`.
+	* Original case inside the variable or class name: `function getCKEditorError()`.
 
 However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. So e.g. `getUI` (not `getUi`).
 
@@ -774,8 +773,8 @@ File and directory names must follow a standard that makes their syntax easy to 
 * All lowercase.
 * Only alphanumeric characters are accepted.
 * Words are separated by dashes (`-`) ([kebab-case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles)).
-  * Code entities are considered single words, so the `DataProcessor` class is defined in the `dataprocessor.js` file.
-  * However, a test file covering for "mutations in multi-root editors": `mutations-in-multi-root-editors.js`.
+	* Code entities are considered single words, so the `DataProcessor` class is defined in the `dataprocessor.js` file.
+	* However, a test file covering for "mutations in multi-root editors": `mutations-in-multi-root-editors.js`.
 * HTML files have the `.html` extension.
 
 #### Examples
