@@ -6,15 +6,15 @@ menu-title: .NET
 
 # Compatibility with .NET
 
-As a pure JavaScript/TypeScript application, CKEditor 5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom build of CKE5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
+As a pure JavaScript/TypeScript application, CKEditor 5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom build of CKEditor 5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
 
-The core of the integration is preparing a build of CKEditor 5 with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), and then importing it into your .NET project.
+The core of the integration is preparing a custom CKEditor 5 build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), and then importing it into your .NET project.
 
 ## Preparing a build
 
-The easiest way of preparing a custom build of CKEditor 5 is to use our [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a powerful tool that lets you efortlessly create a rich text editor that is custom-tailored to your needs. With the online builder, you can choose the desired editor type, plugins, configure the toolbar, and choose the UI language for your editor.
+The easiest way of preparing a custom build of CKEditor 5 is to use our [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a powerful tool that lets you effortlessly create a rich text editor that is custom-tailored to your needs. With the online builder, you can choose the desired editor type, and plugins, configure the toolbar, and choose the UI language for your editor.
 
-You can learn more about creating custom builds of CKE5 via the online builder in our {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation guide}.
+You can learn more about creating custom CKEditor 5 builds with the online builder in our {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
 
 ## Setting up the project
 
@@ -41,7 +41,7 @@ Once the project has been prepared, create an `assets/vendor` directory in the e
 
 ## Integrating the build in your .NET project
 
-Once you have your custom build of the editor ready, and the .NET project has been set up, extract the `.zip` folder obtained from the online builder and place it in the `assets/vendor` directory created in the previous step. Your folder structure should now look like this:
+Once you have your custom editor build ready and the .NET project has been set up, extract the `.zip` folder obtained from the online builder and place it in the `assets/vendor` directory created in the previous step. Your folder structure should now look like this:
 
 ````
 ├── bin
@@ -63,7 +63,7 @@ Once you have your custom build of the editor ready, and the .NET project has be
 
 Then, modify the `Index.cshtml` file contained in the `Pages` directory to include the CKEditor 5 script. You can use this HTML boilerplate as a starting point:
 
-````
+```html
 @page
 @model IndexModel
 @{
@@ -82,6 +82,6 @@ Then, modify the `Index.cshtml` file contained in the `Pages` directory to inclu
             } );
     </script>
 </div>
-````
+```
 
 Finally, in the root of your .NET project, run `dotnet watch run` to see the app in action.
