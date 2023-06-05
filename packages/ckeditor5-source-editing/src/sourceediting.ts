@@ -257,6 +257,8 @@ export default class SourceEditing extends Plugin {
 			// wrapper's `data-value` property.
 			domSourceEditingElementTextarea.addEventListener( 'input', () => {
 				domSourceEditingElementWrapper.dataset.value = domSourceEditingElementTextarea.value;
+
+				editor.ui.update();
 			} );
 
 			editingView.change( writer => {

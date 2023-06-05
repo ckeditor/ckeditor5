@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Javanese (https://www.transifex.com/ckeditor/teams/11143/jv/)\n"
+"Language-Team: Javanese (https://app.transifex.com/ckeditor/teams/11143/jv/)\n"
 "Language: jv\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 

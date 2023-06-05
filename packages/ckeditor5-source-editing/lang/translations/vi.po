@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language-Team: Vietnamese (https://app.transifex.com/ckeditor/teams/11143/vi/)\n"
 "Language: vi\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 

@@ -320,5 +320,5 @@ Congratulations, you have just run your first CKEditor 5 instance!
 
 You can also try another simple installation method, like the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 
-And if you use Angular, React or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/frameworks/overview Frameworks section}.
+And if you use Angular, React, or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
 </info-box>

@@ -56,7 +56,7 @@ describe( 'BodyCollection', () => {
 			expect( wrappers.length ).to.equal( 1 );
 			expect( wrappers[ 0 ].parentNode ).to.equal( document.body );
 
-			const el = body._bodyCollectionContainer;
+			const el = body.bodyCollectionContainer;
 
 			expect( el.parentNode ).to.equal( wrappers[ 0 ] );
 			expect( el.classList.contains( 'ck' ) ).to.be.true;
@@ -70,7 +70,7 @@ describe( 'BodyCollection', () => {
 
 			body.attachToDom();
 
-			const el = body._bodyCollectionContainer;
+			const el = body.bodyCollectionContainer;
 
 			expect( el.getAttribute( 'dir' ) ).to.equal( 'ltr' );
 		} );
@@ -81,7 +81,7 @@ describe( 'BodyCollection', () => {
 
 			body.attachToDom();
 
-			const el = body._bodyCollectionContainer;
+			const el = body.bodyCollectionContainer;
 
 			expect( el.getAttribute( 'dir' ) ).to.equal( 'rtl' );
 		} );
@@ -137,8 +137,8 @@ describe( 'BodyCollection', () => {
 			expect( wrappers.length ).to.equal( 1 );
 
 			const wrapper = wrappers[ 0 ];
-			const body1Element = body1._bodyCollectionContainer;
-			const body2Element = body2._bodyCollectionContainer;
+			const body1Element = body1.bodyCollectionContainer;
+			const body2Element = body2.bodyCollectionContainer;
 
 			expect( body1Element.parentNode ).to.equal( wrapper );
 			expect( body1Element.childNodes.length ).to.equal( 1 );

@@ -497,6 +497,114 @@ describe( 'view', () => {
 			sinon.assert.notCalled( global.window.scrollTo );
 		} );
 
+		it( 'should fire the #scrollToTheSelection event', () => {
+			const spy = sinon.spy();
+
+			view.on( 'scrollToTheSelection', spy );
+
+			stubSelectionRangeGeometry( { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			view.scrollToTheSelection();
+
+			const range = view.document.selection.getFirstRange();
+
+			sinon.assert.calledWith( spy, sinon.match.object, {
+				target: view.domConverter.viewRangeToDom( range ),
+				alignToTop: undefined,
+				forceScroll: undefined,
+				viewportOffset: { top: 20, bottom: 20, left: 20, right: 20 },
+				ancestorOffset: 20
+			}, {
+				alignToTop: undefined,
+				forceScroll: undefined,
+				viewportOffset: 20,
+				ancestorOffset: 20
+			} );
+
+			assertScrollPosition( domRootAncestor, { scrollTop: -120, scrollLeft: 220 } );
+			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -120 );
+		} );
+
+		it( 'should allow dynamic injection of options through the #scrollToTheSelection event', () => {
+			const spy = sinon.spy();
+
+			view.on( 'scrollToTheSelection', ( evt, data ) => {
+				data.viewportOffset.top += 10;
+				data.viewportOffset.bottom += 20;
+				data.viewportOffset.left += 30;
+				data.viewportOffset.right += 40;
+				data.alignToTop = true;
+			} );
+
+			view.on( 'scrollToTheSelection', spy );
+
+			stubSelectionRangeGeometry( { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			view.scrollToTheSelection();
+
+			const range = view.document.selection.getFirstRange();
+
+			sinon.assert.calledWith( spy, sinon.match.object, {
+				target: view.domConverter.viewRangeToDom( range ),
+				alignToTop: true,
+				forceScroll: undefined,
+				viewportOffset: { top: 30, bottom: 40, left: 50, right: 60 },
+				ancestorOffset: 20
+			}, {
+				alignToTop: undefined,
+				forceScroll: undefined,
+				viewportOffset: 20,
+				ancestorOffset: 20
+			} );
+
+			assertScrollPosition( domRootAncestor, { scrollTop: -120, scrollLeft: 220 } );
+			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -130 );
+		} );
+
+		it( 'should pass the original method arguments along the #scrollToTheSelection event', () => {
+			const spy = sinon.spy();
+
+			view.on( 'scrollToTheSelection', ( evt, data ) => {
+				data.viewportOffset.top += 10;
+				data.viewportOffset.bottom += 20;
+				data.viewportOffset.left += 30;
+				data.viewportOffset.right += 40;
+			} );
+
+			view.on( 'scrollToTheSelection', spy );
+
+			stubSelectionRangeGeometry( { top: -200, right: 200, bottom: -100, left: 100, width: 100, height: 100 } );
+			view.scrollToTheSelection( {
+				viewportOffset: {
+					top: 5,
+					bottom: 10,
+					left: 15,
+					right: 20
+				},
+				ancestorOffset: 30,
+				alignToTop: true,
+				forceScroll: true
+			} );
+
+			const range = view.document.selection.getFirstRange();
+
+			sinon.assert.calledWith( spy, sinon.match.object, {
+				target: view.domConverter.viewRangeToDom( range ),
+				alignToTop: true,
+				forceScroll: true,
+				viewportOffset: { top: 15, bottom: 30, left: 45, right: 60 },
+				ancestorOffset: 30
+			}, {
+				viewportOffset: {
+					top: 5,
+					bottom: 10,
+					left: 15,
+					right: 20
+				},
+				ancestorOffset: 30,
+				alignToTop: true,
+				forceScroll: true
+			} );
+		} );
+
 		function stubSelectionRangeGeometry( geometry ) {
 			const domRange = global.document.createRange();
 			domRange.setStart( domRoot, 0 );

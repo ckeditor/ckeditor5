@@ -134,7 +134,7 @@ npm install --save @ckeditor/ckeditor5-code-block
 Then add it to your plugin list and the toolbar configuration:
 
 ```js
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

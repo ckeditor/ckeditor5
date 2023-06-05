@@ -6,15 +6,21 @@
 import type {
 	Clipboard,
 	ClipboardPipeline,
+	PastePlainText,
 	DragDrop,
-	PastePlainText
+	DragDropExperimental,
+	DragDropTarget,
+	DragDropBlockToolbar
 } from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ Clipboard.pluginName ]: Clipboard;
 		[ ClipboardPipeline.pluginName ]: ClipboardPipeline;
-		[ DragDrop.pluginName ]: DragDrop;
 		[ PastePlainText.pluginName ]: PastePlainText;
+		[ DragDrop.pluginName ]: DragDrop;
+		[ DragDropExperimental.pluginName ]: DragDropExperimental;
+		[ DragDropTarget.pluginName ]: DragDropTarget;
+		[ DragDropBlockToolbar.pluginName ]: DragDropBlockToolbar;
 	}
 }

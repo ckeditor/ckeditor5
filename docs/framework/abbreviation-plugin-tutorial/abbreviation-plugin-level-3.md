@@ -281,7 +281,7 @@ We will start by simply moving there the action we already created for `submit` 
 ```js
 // abbreviation/abbreviationcommand.js
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationCommand extends Command {
 	execute( { title, abbr } ) {
@@ -302,7 +302,7 @@ Now, let's initialize our `AbbreviationCommand`, by adding it to the list of edi
 ```js
 // abreviation/abbreviationediting.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import AbbreviationCommand from './abbreviationcommand';			// ADDED
 
 export default class AbbreviationEditing extends Plugin {
@@ -368,7 +368,7 @@ Before we do that, we may want to check if the command can be used at all on a g
 ```js
 // abbreviation/abbreviationcommand.js
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 export default class AbbreviationCommand extends Command {
 	refresh() {
@@ -396,8 +396,8 @@ Then, we change the value of the command. We will get the abbreviation text usin
 ```js
 // abbreviation/abbreviationcommand.js
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import findAttributeRange from '@ckeditor/ckeditor5-typing/src/utils/findattributerange'; 	// ADDED
+import { Command } from '@ckeditor/ckeditor5-core';
+import { findAttributeRange } from '@ckeditor/ckeditor5-typing'; 	// ADDED
 import getRangeText from './utils.js';														// ADDED
 
 export default class AbbreviationCommand extends Command {

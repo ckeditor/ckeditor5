@@ -26,6 +26,7 @@ import {
 	setViewAttributes,
 	mergeViewElementAttributes,
 	updateViewAttributes,
+	getHtmlAttributeName,
 	type GHSViewAttributes
 } from './utils';
 import type DataFilter from './datafilter';
@@ -62,7 +63,7 @@ export function toObjectWidgetConverter(
 		const widgetLabel = t( 'HTML object' );
 
 		const viewElement = createObjectView( viewName!, modelElement, writer );
-		const viewAttributes = modelElement.getAttribute( 'htmlAttributes' );
+		const viewAttributes = modelElement.getAttribute( getHtmlAttributeName( viewName! ) );
 
 		writer.addClass( 'html-object-embed__content', viewElement );
 
@@ -162,7 +163,7 @@ export function attributeToViewInlineConverter( { priority, view: viewName }: Da
 /**
  * View-to-model conversion helper preserving allowed attributes on block element.
  *
- * All matched attributes will be preserved on `htmlAttributes` attribute.
+ * All matched attributes will be preserved on `html*Attributes` attribute.
  *
  * @returns Returns a conversion callback.
 */
@@ -179,31 +180,45 @@ export function viewToModelBlockAttributeConverter( { view: viewName }: DataSche
 
 			const viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
-			if ( viewAttributes ) {
-				conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
+			if ( !viewAttributes ) {
+				return;
 			}
+
+			conversionApi.writer.setAttribute(
+				getHtmlAttributeName( data.viewItem.name ),
+				viewAttributes,
+				data.modelRange
+			);
 		}, { priority: 'low' } );
 	};
 }
 
 /**
- * Model-to-view conversion helper applying attributes preserved in `htmlAttributes` attribute
+ * Model-to-view conversion helper applying attributes preserved in `html*Attributes` attribute
  * for block elements.
  *
  * @returns Returns a conversion callback.
 */
-export function modelToViewBlockAttributeConverter( { model: modelName }: DataSchemaBlockElementDefinition ) {
+export function modelToViewBlockAttributeConverter( { view: viewName, model: modelName }: DataSchemaBlockElementDefinition ) {
 	return ( dispatcher: DowncastDispatcher ): void => {
-		dispatcher.on<DowncastAttributeEvent>( `attribute:htmlAttributes:${ modelName }`, ( evt, data, conversionApi ) => {
-			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-				return;
+		dispatcher.on<DowncastAttributeEvent>(
+			`attribute:${ getHtmlAttributeName( viewName! ) }:${ modelName }`,
+			( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const { attributeOldValue, attributeNewValue } = data;
+				const viewWriter = conversionApi.writer;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+
+				updateViewAttributes(
+					viewWriter,
+					attributeOldValue as GHSViewAttributes,
+					attributeNewValue as GHSViewAttributes,
+					viewElement
+				);
 			}
-
-			const { attributeOldValue, attributeNewValue } = data;
-			const viewWriter = conversionApi.writer;
-			const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
-
-			updateViewAttributes( viewWriter, attributeOldValue as GHSViewAttributes, attributeNewValue as GHSViewAttributes, viewElement );
-		} );
+		);
 	};
 }

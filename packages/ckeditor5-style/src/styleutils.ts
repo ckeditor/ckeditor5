@@ -24,6 +24,8 @@ const NON_PREVIEWABLE_ELEMENT_NAMES = [
 ];
 
 export default class StyleUtils extends Plugin {
+	private _htmlSupport!: GeneralHtmlSupport;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -47,6 +49,13 @@ export default class StyleUtils extends Plugin {
 
 		this.decorate( 'getStylePreview' );
 		this.decorate( 'configureGHSDataFilter' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		this._htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 	}
 
 	/**
@@ -127,8 +136,7 @@ export default class StyleUtils extends Plugin {
 	 */
 	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
 		const model = this.editor.model;
-		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
-		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
+		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 
 		if ( !model.schema.checkAttribute( block, attributeName ) ) {
 			return false;
@@ -143,8 +151,7 @@ export default class StyleUtils extends Plugin {
 	 * @internal
 	 */
 	public isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
-		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
-		const attributeName = htmlSupport.getGhsAttributeNameForElement( definition.element );
+		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 		const ghsAttributeValue = block.getAttribute( attributeName );
 
 		return this.hasAllClasses( ghsAttributeValue, definition.classes );

@@ -18,7 +18,9 @@ import {
 	env,
 	getEnvKeystrokeText,
 	uid,
-	type Locale
+	delay,
+	type Locale,
+	type DelayedFunc
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/button/button.css';
@@ -171,6 +173,11 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	declare public _tooltipString: string;
 
 	/**
+	 * Delayed focus function for focus handling in Safari.
+	 */
+	private _focusDelayed: DelayedFunc<() => void> | null = null;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -265,9 +272,16 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		// On Safari we have to force the focus on a button on click as it's the only browser
 		// that doesn't do that automatically. See #12115.
 		if ( env.isSafari ) {
-			template.on.mousedown = bind.to( evt => {
-				this.focus();
-				evt.preventDefault();
+			if ( !this._focusDelayed ) {
+				this._focusDelayed = delay( () => this.focus(), 0 );
+			}
+
+			template.on.mousedown = bind.to( () => {
+				this._focusDelayed!();
+			} );
+
+			template.on.mouseup = bind.to( () => {
+				this._focusDelayed!.cancel();
 			} );
 		}
 
@@ -297,6 +311,17 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	 */
 	public focus(): void {
 		this.element!.focus();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		if ( this._focusDelayed ) {
+			this._focusDelayed.cancel();
+		}
+
+		super.destroy();
 	}
 
 	/**

@@ -7,8 +7,6 @@
  * @module clipboard/dragdrop
  */
 
-/* globals setTimeout, clearTimeout */
-
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -26,7 +24,13 @@ import {
 
 import { Widget, isWidget, type WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 
-import { env, uid, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import {
+	env,
+	uid,
+	delay,
+	type DelayedFunc,
+	type ObservableChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 
 import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ViewDocumentClipboardOutputEvent } from './clipboardpipeline';
 import ClipboardObserver, {
@@ -38,7 +42,7 @@ import ClipboardObserver, {
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver';
 
-import { type DebouncedFunc, throttle } from 'lodash-es';
+import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import '../theme/clipboard.css';
 
@@ -186,6 +190,12 @@ export default class DragDrop extends Plugin {
 		this._removeDropMarkerDelayed = delay( () => this._removeDropMarker(), 40 );
 		this._clearDraggableAttributesDelayed = delay( () => this._clearDraggableAttributes(), 40 );
 
+		if ( editor.plugins.has( 'DragDropExperimental' ) ) {
+			this.forceDisabled( 'DragDropExperimental' );
+
+			return;
+		}
+
 		view.addObserver( ClipboardObserver );
 		view.addObserver( MouseObserver );
 
@@ -288,7 +298,9 @@ export default class DragDrop extends Plugin {
 
 			this._draggingUid = uid();
 
-			data.dataTransfer.effectAllowed = this.isEnabled ? 'copyMove' : 'copy';
+			const canEditAtDraggedRange = this.isEnabled && editor.model.canEditAt( this._draggedRange );
+
+			data.dataTransfer.effectAllowed = canEditAtDraggedRange ? 'copyMove' : 'copy';
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
@@ -300,7 +312,7 @@ export default class DragDrop extends Plugin {
 				method: 'dragstart'
 			} );
 
-			if ( !this.isEnabled ) {
+			if ( !canEditAtDraggedRange ) {
 				this._draggedRange.detach();
 				this._draggedRange = null;
 				this._draggingUid = '';
@@ -341,6 +353,13 @@ export default class DragDrop extends Plugin {
 			this._removeDropMarkerDelayed.cancel();
 
 			const targetRange = findDropTargetRange( editor, data.targetRanges, data.target );
+
+			// Do not drop if target place is not editable.
+			if ( !editor.model.canEditAt( targetRange ) ) {
+				data.dataTransfer.dropEffect = 'none';
+
+				return;
+			}
 
 			// If this is content being dragged from another editor, moving out of current editor instance
 			// is not possible until 'dragend' event case will be fixed.
@@ -385,7 +404,7 @@ export default class DragDrop extends Plugin {
 			this._removeDropMarker();
 
 			/* istanbul ignore if -- @preserve */
-			if ( !targetRange ) {
+			if ( !targetRange || !editor.model.canEditAt( targetRange ) ) {
 				this._finalizeDragging( false );
 				evt.stop();
 
@@ -480,11 +499,15 @@ export default class DragDrop extends Plugin {
 			// In Firefox this is not needed. In Safari it makes the whole editable draggable (not just textual content).
 			// Disabled in read-only mode because draggable="true" + contenteditable="false" results
 			// in not firing selectionchange event ever, which makes the selection stuck in read-only mode.
-			if ( env.isBlink && !editor.isReadOnly && !draggableElement && !viewDocument.selection.isCollapsed ) {
+			if ( env.isBlink && !draggableElement && !viewDocument.selection.isCollapsed ) {
 				const selectedElement = viewDocument.selection.getSelectedElement();
 
 				if ( !selectedElement || !isWidget( selectedElement ) ) {
-					draggableElement = viewDocument.selection.editableElement;
+					const editableElement = viewDocument.selection.editableElement;
+
+					if ( editableElement && !editableElement.isReadOnly ) {
+						draggableElement = editableElement;
+					}
 				}
 			}
 
@@ -807,32 +830,6 @@ function getFinalDropEffect( dataTransfer: DataTransfer ): DataTransfer[ 'dropEf
 	}
 
 	return [ 'all', 'copyMove' ].includes( dataTransfer.effectAllowed ) ? 'move' : 'copy';
-}
-
-/**
- * Returns a function wrapper that will trigger a function after a specified wait time.
- * The timeout can be canceled by calling the cancel function on the returned wrapped function.
- * @param func The function to wrap.
- * @param wait The timeout in ms.
- */
-function delay<T extends ( ...args: Array<any> ) => any>( func: T, wait: number ): DelayedFunc<T> {
-	let timer: ReturnType<typeof setTimeout>;
-
-	function delayed( ...args: Parameters<T> ) {
-		delayed.cancel();
-		timer = setTimeout( () => func( ...args ), wait );
-	}
-
-	delayed.cancel = () => {
-		clearTimeout( timer );
-	};
-
-	return delayed;
-}
-
-interface DelayedFunc<T extends ( ...args: Array<any> ) => any> {
-	( ...args: Parameters<T> ): void;
-	cancel(): void;
 }
 
 /**

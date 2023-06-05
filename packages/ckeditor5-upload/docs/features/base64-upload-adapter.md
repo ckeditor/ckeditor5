@@ -41,7 +41,7 @@ npm install --save @ckeditor/ckeditor5-upload
 Add the {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} to your plugin list:
 
 ```js
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
+import { Base64UploadAdapter } from '@ckeditor/ckeditor5-upload';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

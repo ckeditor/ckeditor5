@@ -256,7 +256,7 @@ ClassicEditor
 					classes: [ 'background-list-item' ]
 				},
 				{
-					name: 'Figure',
+					name: 'Figure outline',
 					element: 'figure',
 					classes: [ 'figure-style' ]
 				},
@@ -291,14 +291,39 @@ ClassicEditor
 					classes: [ 'bold-table' ]
 				},
 				{
-					name: 'Facncy table',
+					name: 'Fancy table',
 					element: 'table',
 					classes: [ 'fancy-table' ]
 				},
 				{
-					name: 'Colorfull cell',
+					name: 'Table row',
+					element: 'tr',
+					classes: [ 'colorful-row' ]
+				},
+				{
+					name: 'Color-full cell',
 					element: 'td',
 					classes: [ 'colorful-cell' ]
+				},
+				{
+					name: 'Color-full heading cell',
+					element: 'th',
+					classes: [ 'colorful-cell' ]
+				},
+				{
+					name: 'Table head',
+					element: 'thead',
+					classes: [ 'table-head' ]
+				},
+				{
+					name: 'Table body',
+					element: 'tbody',
+					classes: [ 'table-body' ]
+				},
+				{
+					name: 'Caption',
+					element: 'caption',
+					classes: [ 'fancy-caption' ]
 				},
 				{
 					name: 'Vibrant code',
@@ -310,6 +335,17 @@ ClassicEditor
 					element: 'blockquote',
 					classes: [ 'side-quote' ]
 				},
+				{
+					name: 'Code (dark)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-dark' ]
+				},
+				{
+					name: 'Code (bright)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-bright' ]
+				},
+
 				{
 					name: 'Marker',
 					element: 'span',
@@ -360,16 +396,6 @@ ClassicEditor
 					name: 'code.Qux',
 					element: 'code',
 					classes: [ 'Qux' ]
-				},
-				{
-					name: 'Code (dark)',
-					element: 'pre',
-					classes: [ 'fancy-code', 'fancy-code-dark' ]
-				},
-				{
-					name: 'Code (bright)',
-					element: 'pre',
-					classes: [ 'fancy-code', 'fancy-code-bright' ]
 				}
 			]
 		}

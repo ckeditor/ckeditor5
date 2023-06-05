@@ -244,7 +244,7 @@ npm install --save @ckeditor/ckeditor5-word-count
 And add it to your plugin list configuration:
 
 ```js
-import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+import { WordCount } from '@ckeditor/ckeditor5-word-count';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -264,7 +264,7 @@ ClassicEditor
 CKEditor 5 provides other productivity-boosting features that you may find helpful:
 
 * {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
-* {@link installation/getting-started/getting-and-setting-data#autosave-feature Autosave} &ndash; Never lose your content by accident, stay safe and automatically save.
+* {@link features/autosave Autosave} &ndash; Never lose your content by accident, stay safe and automatically save.
 * {@link features/autoformat Autoformatting} &ndash; Employ Markdown syntax for a faster and more efficient editing process.
 * {@link features/text-transformation Automatic text transformation} &ndash; Automatically turn predefined snippets into their improved forms using the autocorrect feature.
 
