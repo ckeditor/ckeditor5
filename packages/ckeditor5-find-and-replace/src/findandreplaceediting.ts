@@ -9,9 +9,12 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { DiffItem, DiffItemAttribute, Element, Item, Node } from 'ckeditor5/src/engine';
-import type { Collection, GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils';
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports, ckeditor5-rules/allow-imports-only-from-main-package-entry-point
-import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import {
+	scrollViewportToShowTarget,
+	type Collection,
+	type GetCallback,
+	type ObservableChangeEvent
+} from 'ckeditor5/src/utils';
 
 import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
