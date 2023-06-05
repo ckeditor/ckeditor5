@@ -323,13 +323,14 @@ export default class ColorInputView extends View {
 			colors: this.options.colorDefinitions,
 			columns: this.options.columns,
 			removeButtonLabel: removeColorButtonLabel,
-			colorPickerLabel: 'Color picker',
-			colorPickerConfig: this.options.colorPickerConfig
+			colorPickerLabel: t( 'Color picker' ),
+			colorPickerConfig: this.options.colorPickerConfig,
+			hideColorPickerInput: true
 		} );
 
 		colorGrid!.appendUI();
 
-		colorGrid.on( 'execute', ( evtData, data ) => {
+		colorGrid.on( 'execute', ( _, data ) => {
 			this.value = data.value || defaultColor;
 			this.fire( 'input' );
 

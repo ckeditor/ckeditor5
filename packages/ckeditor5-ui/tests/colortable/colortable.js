@@ -14,6 +14,9 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -221,6 +224,70 @@ describe( 'ColorTableView', () => {
 			colorTableView.appendGrids();
 			colorTableView.appendGrids();
 			expect( colorTableView.colorGridsPageView.items.length ).to.equal( 4 );
+		} );
+	} );
+
+	describe( 'appendUI()', () => {
+		it( 'should call appendGrids', () => {
+			const spy = sinon.spy( colorTableView, 'appendGrids' );
+
+			colorTableView.appendUI();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should call _appendColorPicker', () => {
+			const spy = sinon.spy( colorTableView, '_appendColorPicker' );
+
+			colorTableView.appendUI();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'Document colors', () => {
+		let editor, element, model;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Paragraph ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'should call updateDocumentColors in colorGridsPageView', () => {
+			const spy = sinon.spy( colorTableView.colorGridsPageView, 'updateDocumentColors' );
+			setModelData( model,
+				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
+			);
+
+			colorTableView.updateDocumentColors( model, 'componentName' );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should call updateSelectedColors in colorGridsPageView', () => {
+			const spy = sinon.spy( colorTableView.colorGridsPageView, 'updateSelectedColors' );
+
+			colorTableView.updateSelectedColors();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
