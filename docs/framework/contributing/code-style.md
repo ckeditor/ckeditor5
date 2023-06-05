@@ -527,13 +527,13 @@ There are some special rules and tips for tests.
 	Think about this &mdash; when you fix a bug by adding a parameter to an existing function call you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
 * It should be `expect( x ).to.equal( y )`. **NOT**: ~~`expect( x ).to.be.equal( y )`~~.
 * When using Sinon spies, pay attention to the readability of assertions and failure messages.
-   * Use named spies, for example:
+  * Use named spies, for example:
 
 		```js
 		const someCallbackSpy = sinon.spy().named( 'someCallback' );
 		const myMethodSpy = sinon.spy( obj, 'myMethod' );
 		```
-   * Use [sinon-chai assertions](https://www.chaijs.com/plugins/sinon-chai/)
+  * Use [sinon-chai assertions](https://www.chaijs.com/plugins/sinon-chai/)
 
 		```js
 		expect( myMethodSpy ).to.be.calledOnce
@@ -627,33 +627,33 @@ this.mustRefresh;
 All buttons should follow the **verb + noun** or the **noun** convention. Examples:
 
 * The **verb + noun** convention:
-	* `insertTable`
-	* `selectAll`
-	* `uploadImage`
+  * `insertTable`
+  * `selectAll`
+  * `uploadImage`
 * The **noun** convention:
-	* `bold`
-	* `mediaEmbed`
-	* `restrictedEditing`
+  * `bold`
+  * `mediaEmbed`
+  * `restrictedEditing`
 
 #### Commands
 
 As for commands it is trickier, because there are many more possible combinations of their names than there are for buttons. Examples:
 
 * The **feature-related** convention:
-	* **noun-based** case:
-		* `codeBlock`
-		* `fontColor`
-		* `shiftEnter`
-	* **verb-based** case:
-		* `indent`
-		* `removeFormat`
-		* `selectAll`
+  * **noun-based** case:
+    * `codeBlock`
+    * `fontColor`
+    * `shiftEnter`
+  * **verb-based** case:
+    * `indent`
+    * `removeFormat`
+    * `selectAll`
 * The **feature + sub-feature** convention:
-	* `imageStyle`
-	* `imageTextAlternative`
-	* `tableAlignment`
+  * `imageStyle`
+  * `imageTextAlternative`
+  * `tableAlignment`
 
-For commands, the **noun + verb** (or the **feature + action**) naming conventions **should not be used**, because it does not sound natural (_what do_ vs. _do what_). In most cases the proper name should start with the **action** followed by the **feature** name:
+For commands, the **noun + verb** (or the **feature + action**) naming conventions **should not be used**, because it does not sound natural (*what do* vs. *do what*). In most cases the proper name should start with the **action** followed by the **feature** name:
 
 * `checkTodoList`
 * `insertTable`
@@ -662,14 +662,15 @@ For commands, the **noun + verb** (or the **feature + action**) naming conventio
 #### Plugins
 
 Plugins should follow the **feature** or the **feature + sub-feature** convention. Examples:
+
 * The **feature** convention:
-	* `Bold`
-	* `Paragraph`
-	* `SpecialCharacters`
+  * `Bold`
+  * `Paragraph`
+  * `SpecialCharacters`
 * The **feature + sub-feature** convention:
-	* `ImageResize`
-	* `ListProperties`
-	* `TableClipboard`
+  * `ImageResize`
+  * `ListProperties`
+  * `TableClipboard`
 
 Plugins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase).
 
@@ -695,13 +696,13 @@ this.env;
 Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above &mdash; especially when there is a need to include an acronym or a proper name in a variable or class name. In such case, one should follow the following rules:
 
 * Acronyms:
-	* All lowercase if at the beginning of the variable name: `let domError`.
-	* Default camel case at the beginning of the class name: `class DomError`.
-	* Default camel case inside the variable or class name: `function getDomError()`.
+  * All lowercase if at the beginning of the variable name: `let domError`.
+  * Default camel case at the beginning of the class name: `class DomError`.
+  * Default camel case inside the variable or class name: `function getDomError()`.
 * Proper names:
-	* All lowercase if at the beginning of the variable: `let ckeditorError`.
-	* Original case if at the beginning of the class name: `class CKEditorError`.
-	* Original case inside the variable or class name: `function getCKEditorError()`.
+  * All lowercase if at the beginning of the variable: `let ckeditorError`.
+  * Original case if at the beginning of the class name: `class CKEditorError`.
+  * Original case inside the variable or class name: `function getCKEditorError()`.
 
 However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. So e.g. `getUI` (not `getUi`).
 
@@ -773,8 +774,8 @@ File and directory names must follow a standard that makes their syntax easy to 
 * All lowercase.
 * Only alphanumeric characters are accepted.
 * Words are separated by dashes (`-`) ([kebab-case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles)).
-	* Code entities are considered single words, so the `DataProcessor` class is defined in the `dataprocessor.js` file.
-	* However, a test file covering for "mutations in multi-root editors": `mutations-in-multi-root-editors.js`.
+  * Code entities are considered single words, so the `DataProcessor` class is defined in the `dataprocessor.js` file.
+  * However, a test file covering for "mutations in multi-root editors": `mutations-in-multi-root-editors.js`.
 * HTML files have the `.html` extension.
 
 #### Examples
@@ -826,7 +827,7 @@ Even if the import statement works locally, it will throw an error when develope
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
@@ -885,11 +886,11 @@ When importing modules from the `ckeditor5` package, all imports must come from 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // The import uses the `ckeditor5` package, but the specified path does not exist when installing the package from npm.
 
-import Plugin from 'ckeditor5/packages/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/packages/ckeditor5-core';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -907,7 +908,7 @@ Also, non-DLL packages should not import between non-DLL packages to avoid code 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-link/src/linkimage.js`
 
-import { createImageViewElement } from '@ckeditor/ckeditor5-image/src/image/utils.js'
+import { createImageViewElement } from '@ckeditor/ckeditor5-image'
 ```
 
 To use the `createImageViewElement()` function, consider implementing a utils plugin that will expose the required function in the `ckeditor5-image` package.
@@ -927,7 +928,7 @@ import { Plugin } from 'ckeditor5/src/core';
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 ```
 
 History of changes:
@@ -955,7 +956,6 @@ Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 
 import { toArray } from 'ckeditor5/src/utils';
 import { toArray } from '@ckeditor/ckeditor5-utils';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
@@ -1006,7 +1006,9 @@ To create a code executed only in the debug mode, follow the description of the 
 
 ### Non public members marked as @internal : `ckeditor5-rules/non-public-members-as-internal`
 
-**This rule should only be used on `.ts` files.**
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
 
 In order to remove non public members from typings, the `@internal` tag has to be used in member's JSDoc.
 
@@ -1062,3 +1064,75 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
+
+### Declaring module augmentation for the core package: `allow-declare-module-only-in-augmentation-file`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+The main entry points (`index.ts` files) in most modules have a side effect import `import './augmentation'` which uses module augmentation to populate the editor types with information about available plugins, configurations and commands.
+
+This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined in this `augmentation.ts` file.
+
+### Importing from modules: `allow-imports-only-from-main-package-entry-point`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+As explained in the description of the `allow-declare-module-only-in-augmentation-file` rule, information about available plugins, configuration and commands is only available in the editor types when data from modules is imported from the main entry point.
+
+This rule forces all imports from `@ckeditor/*` packages to be done through the main entry point.
+
+👎&nbsp; Example of an incorrect code for this rule:
+
+```ts
+// Importing from the `/src/` folder is not allowed.
+import Table from '@ckeditor/ckeditor5-table/src/table';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+// ✔️ Importing from the main entry point is allowed.
+import { Table } from '@ckeditor/ckeditor5-table';
+```
+
+### Require `as const`: `require-as-const-returns-in-methods`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+In TypeScript, the types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but in some cases a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
+
+The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (e.g. `delete'` literal string instead of generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
+
+👎&nbsp; Examples of an incorrect code for this rule:
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName(): string {
+		return 'Delete';
+	}
+}
+```
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName(): 'Delete' {
+		return 'Delete';
+	}
+}
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName() {
+		return 'Delete' as const;
+	}
+}
+```
