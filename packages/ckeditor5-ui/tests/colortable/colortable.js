@@ -274,10 +274,11 @@ describe( 'ColorTableView', () => {
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="red">Old Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
 			);
 
-			colorTableView.updateDocumentColors( model, 'componentName' );
+			colorTableView.updateDocumentColors( model, 'testColor' );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -288,6 +289,43 @@ describe( 'ColorTableView', () => {
 			colorTableView.updateSelectedColors();
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should unset selected color', () => {
+			setModelData( model,
+				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="red">Old Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
+			);
+
+			colorTableView.updateDocumentColors( model, 'testColor' );
+
+			colorTableView.colorGridsPageView.selectedColor = '#ff0000';
+			colorTableView.updateSelectedColors();
+
+			colorTableView.colorGridsPageView.documentColors.set( 'isEmpty', true );
+
+			expect( colorTableView.colorGridsPageView.documentColorsGrid.selectedColor ).to.equal( null );
+		} );
+
+		it( 'should has colors', () => {
+			setModelData( model,
+				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="red">Old Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
+			);
+
+			colorTableView.updateDocumentColors( model, 'testColor' );
+
+			expect( colorTableView.colorGridsPageView.documentColors.hasColor( 'gold' ) ).to.be.true;
+			expect( colorTableView.colorGridsPageView.documentColors.hasColor( 'rgb(10,20,30)' ) ).to.be.true;
+			expect( colorTableView.colorGridsPageView.documentColors.hasColor( '#FFAACC' ) ).to.be.true;
+			expect( colorTableView.colorGridsPageView.documentColors.hasColor( 'red' ) ).to.be.true;
+			expect( colorTableView.colorGridsPageView.documentColors.hasColor( 'blue' ) ).to.be.false;
 		} );
 	} );
 
@@ -573,6 +611,16 @@ describe( 'ColorTableView', () => {
 			it( 'should have proper settings', () => {
 				expect( cancelButton.withText ).to.be.false;
 				expect( cancelButton.icon ).to.equal( cancelButtonIcon );
+			} );
+
+			it( 'should fire "cancel" event', () => {
+				const spy = sinon.spy();
+
+				colorTableView.colorPickerPageView.on( 'cancel', spy );
+
+				cancelButton.element.dispatchEvent( new Event( 'click' ) );
+
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );

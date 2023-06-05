@@ -312,6 +312,14 @@ describe( 'ColorPickerView', () => {
 
 			expect( view.color ).to.equal( '#ff0000' );
 		} );
+
+		it( 'should render without input', () => {
+			const view = new ColorPickerView( locale, { format: 'hex', hideInput: true } );
+
+			view.render();
+
+			expect( view.element.children.length ).to.equal( 1 );
+		} );
 	} );
 
 	describe( 'focus()', () => {
