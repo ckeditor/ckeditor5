@@ -834,4 +834,76 @@ describe( 'HeadingElementSupport', () => {
 			} );
 		} );
 	} );
+
+	describe( 'HeadingEditing plugin with default configuration', () => {
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const newEditor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ HeadingEditing, GeneralHtmlSupport ]
+				} );
+
+			editor = newEditor;
+			model = editor.model;
+			doc = model.document;
+			dataSchema = editor.plugins.get( 'DataSchema' );
+			dataFilter = editor.plugins.get( 'DataFilter' );
+			htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
+
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(h1|h2|h3|h4|h5)$/,
+				attributes: true,
+				classes: true,
+				styles: true
+			} ] );
+		} );
+
+		it( 'should preserve attributes on headings', () => {
+			editor.setData(
+				'<h1 data-foo="bar-1">one</h1>' +
+				'<h2 data-foo="bar-2">two</h2>' +
+				'<h3 data-foo="bar-3">three</h3>' +
+				'<h4 data-foo="bar-4">four</h4>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<htmlH1 htmlH1Attributes="(1)">one</htmlH1>' +
+					'<heading1 htmlH2Attributes="(2)">two</heading1>' +
+					'<heading2 htmlH3Attributes="(3)">three</heading2>' +
+					'<heading3 htmlH4Attributes="(4)">four</heading3>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'bar-1'
+						}
+					},
+					2: {
+						attributes: {
+							'data-foo': 'bar-2'
+						}
+					},
+					3: {
+						attributes: {
+							'data-foo': 'bar-3'
+						}
+					},
+					4: {
+						attributes: {
+							'data-foo': 'bar-4'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<h1 data-foo="bar-1">one</h1>' +
+				'<h2 data-foo="bar-2">two</h2>' +
+				'<h3 data-foo="bar-3">three</h3>' +
+				'<h4 data-foo="bar-4">four</h4>'
+			);
+		} );
+	} );
 } );

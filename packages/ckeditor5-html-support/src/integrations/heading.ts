@@ -8,17 +8,10 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Item } from 'ckeditor5/src/engine';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
-import {
-	Enter,
-	type EnterCommand,
-	type EnterCommandAfterExecuteEvent
-} from 'ckeditor5/src/enter';
+import { Enter } from 'ckeditor5/src/enter';
 
 import DataSchema from '../dataschema';
-import { getHtmlAttributeName, modifyGhsAttribute } from '../utils';
-import type { HeadingElementOption } from '@ckeditor/ckeditor5-heading/src/headingconfig';
 
 /**
  * Provides the General HTML Support integration with {@link module:heading/heading~Heading Heading} feature.
@@ -51,7 +44,6 @@ export default class HeadingElementSupport extends Plugin {
 		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
 
 		this.registerHeadingElements( editor, options );
-		this.removeClassesOnEnter( editor, options );
 	}
 
 	/**
@@ -76,28 +68,6 @@ export default class HeadingElementSupport extends Plugin {
 			model: 'htmlHgroup',
 			modelSchema: {
 				allowChildren: headerModels
-			}
-		} );
-	}
-
-	/**
-	 * Removes css classes from "html*Attributes" of new paragraph created when hitting "enter" in heading.
-	 */
-	private removeClassesOnEnter( editor: Editor, options: Array<HeadingOption> ): void {
-		const enterCommand: EnterCommand = editor.commands.get( 'enter' )!;
-
-		this.listenTo<EnterCommandAfterExecuteEvent>( enterCommand, 'afterExecute', ( evt, data ) => {
-			const positionParent = editor.model.document.selection.getFirstPosition()!.parent;
-			const heading = options.find( ( option ): option is HeadingElementOption => positionParent.is( 'element', option.model ) );
-
-			if ( heading && positionParent.childCount === 0 ) {
-				modifyGhsAttribute(
-					data.writer,
-					positionParent as Item,
-					getHtmlAttributeName( heading.view as string ),
-					'classes',
-					classes => classes.clear()
-				);
 			}
 		} );
 	}

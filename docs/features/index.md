@@ -62,15 +62,21 @@ You can also easily track the progress and changes done in the content with the 
 
 {@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
 
-### Output and exports
+### Document conversion
 
 If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-export-pdf/theme/icons/exportpdf.svg Export to PDF} to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word feature} {@icon @ckeditor/ckeditor5-export-word/theme/icons/exportword.svg Export to Word} instead &mdash; and keep your comments and changes in the resulting document, ready to be edited further. These two are accompanied by the {@link features/pagination pagination feature} {@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-up.svg Previous page}{@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-down.svg Next page}, to ensure all produced documents will always look the way they should.
+
+### HTML and Markdown output
 
 The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text addressing the needs of software professionals.
 
 {@img assets/img/features-output.png 800 CKEditor 5 output features.}
 
-### Productivity features
+### Productivity pack
+
+The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor 5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets the users style their content in a blaze.
+
+### Other productivity features
 
 Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link installation/index editor build} to suit your needs.
 
@@ -92,7 +98,7 @@ Do not get stopped by technology differences - CKEditor 5 offers cross-platform 
 
 {@img assets/img/features-paste.png 800 CKEditor 5 paste features.}
 
-## Backwards feature compatibility
+## Backward feature compatibility
 
 If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
 

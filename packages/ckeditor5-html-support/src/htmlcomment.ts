@@ -7,7 +7,7 @@
  * @module html-support/htmlcomment
  */
 
-import type { Marker, Position, Range, Element, ViewRootEditableElement } from 'ckeditor5/src/engine';
+import type { Marker, Position, Range, Element } from 'ckeditor5/src/engine';
 import { Plugin } from 'ckeditor5/src/core';
 import { uid } from 'ckeditor5/src/utils';
 
