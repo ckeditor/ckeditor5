@@ -130,9 +130,9 @@ describe( 'DocumentListStyleSupport', () => {
 			expect( command.enabledStyles ).to.have.members( [ 'P style' ] );
 		} );
 
-		it( 'UL style should be disabled if htmlListAttributes is disabled', () => {
+		it( 'OL style should be disabled if htmlOlAttributes is disabled', () => {
 			model.schema.addAttributeCheck( ( context, attributeName ) => {
-				if ( attributeName == 'htmlListAttributes' ) {
+				if ( attributeName == 'htmlOlAttributes' ) {
 					return false;
 				}
 			} );
@@ -143,9 +143,9 @@ describe( 'DocumentListStyleSupport', () => {
 			expect( command.enabledStyles ).to.have.members( [ 'LI style', 'P style' ] );
 		} );
 
-		it( 'OL style should be disabled if htmlListAttributes is disabled', () => {
+		it( 'UL style should be disabled if htmlUlAttributes is disabled', () => {
 			model.schema.addAttributeCheck( ( context, attributeName ) => {
-				if ( attributeName == 'htmlListAttributes' ) {
+				if ( attributeName == 'htmlUlAttributes' ) {
 					return false;
 				}
 			} );

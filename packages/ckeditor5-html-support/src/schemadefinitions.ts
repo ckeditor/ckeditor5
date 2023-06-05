@@ -524,13 +524,13 @@ export default {
 			coupledAttribute: 'listItemId'
 		},
 		{
-			model: 'htmlListAttributes',
+			model: 'htmlOlAttributes',
 			view: 'ol',
 			appliesToBlock: true,
 			coupledAttribute: 'listItemId'
 		},
 		{
-			model: 'htmlListAttributes',
+			model: 'htmlUlAttributes',
 			view: 'ul',
 			appliesToBlock: true,
 			coupledAttribute: 'listItemId'
