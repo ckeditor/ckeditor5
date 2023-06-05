@@ -170,7 +170,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, 'rgba(255, 0, 0, 1)', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, 'rgba(255,0,0,1)', null );
 					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, 'ridge', null );
 					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, '2em', null );
 				} );
