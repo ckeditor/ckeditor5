@@ -24,11 +24,11 @@ Refer to the {@link support/license-key-and-activation License key and activatio
 
 ## How to configure the "Powered by CKEditor" logo?
 
-For open-source, free users, the "Powered by CKEditor" logo will always be displayed. You can, however, adjust some aspects of it to suit your editor integration better.
+For free, open source users, the "Powered by CKEditor" logo will always be displayed when the editor is in focus. You can, however, adjust some aspects of it to suit your editor integration better.
 
 ### Layout customization
 
-You can configure the following logo's properties:
+You can configure the following properties of the logo:
 
 * The **position** relative to the editor’s bottom edge. The default is over the edge. The logo can also be displayed inside the container.
 * The logo **offset** relative to the configured editable's corner.
@@ -63,7 +63,7 @@ ClassicEditor
 
 ### Styling customization
 
-A set of ready-made CSS variables is available. You can use it to customize the style of the "Powered by CKEditor" logo.
+A set of ready-made CSS variables is available for integrators. You can use it to customize the style of the "Powered by CKEditor" logo.
 
 ```css
 /*
