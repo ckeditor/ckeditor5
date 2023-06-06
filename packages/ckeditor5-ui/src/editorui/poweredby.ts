@@ -26,6 +26,8 @@ import type { UiConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig'
 
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
+// ⚠ Note, whenever changing the threshold, make sure to update the docs/support/managing-ckeditor-logo.md docs
+// as this information is also mentioned there ⚠.
 const NARROW_ROOT_HEIGHT_THRESHOLD = 50;
 const NARROW_ROOT_WIDTH_THRESHOLD = 350;
 const DEFAULT_LABEL = 'Powered by';
