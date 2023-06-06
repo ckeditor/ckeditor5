@@ -21,13 +21,14 @@ import View from '../view';
 import ViewCollection from '../viewcollection';
 import ColorPickerView from '../colorpicker/colorpickerview';
 import colorPaletteIcon from '../../theme/icons/color-palette.svg';
-import type { ColorPickerConfig } from '../colorpicker/utils';
+import type { ColorPickerViewConfig } from '../colorpicker/utils';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { Model } from '@ckeditor/ckeditor5-engine';
 
 import DocumentColorCollection from './documentcolorcollection';
 
-import '../../theme/components/colortable/colortableview.css';
+import '../../theme/components/colortable/colortablebase.css';
+import '../../theme/components/colortable/colortabletheme.css';
 
 /**
  * A class which represents a view with the following sub–components:
@@ -97,7 +98,7 @@ export default class ColorTableView extends View {
 	/**
 	 * The configuration of color picker feature.
 	 */
-	private _colorPickerConfig: ColorPickerConfig | false;
+	private _colorPickerConfig: ColorPickerViewConfig | false;
 
 	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
@@ -110,7 +111,6 @@ export default class ColorTableView extends View {
 	 * @param documentColorsLabel The label for the section with the document colors.
 	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
 	 * @param colorPickerConfig The configuration of color picker feature.
-	 * @param hideColorPickerInput Hides input in color picker.
 	 */
 	constructor(
 		locale: Locale,
@@ -121,8 +121,7 @@ export default class ColorTableView extends View {
 			documentColorsLabel,
 			documentColorsCount,
 			colorPickerLabel,
-			colorPickerConfig,
-			hideColorPickerInput
+			colorPickerConfig
 		}: {
 			colors: Array<ColorDefinition>;
 			columns: number;
@@ -130,8 +129,7 @@ export default class ColorTableView extends View {
 			colorPickerLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
-			colorPickerConfig: ColorPickerConfig | false;
-			hideColorPickerInput?: boolean;
+			colorPickerConfig: ColorPickerViewConfig | false;
 		}
 	) {
 		super( locale );
@@ -165,7 +163,6 @@ export default class ColorTableView extends View {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokes: this.keystrokes,
-			hideInput: hideColorPickerInput,
 			colorPickerConfig
 		} );
 
@@ -829,14 +826,7 @@ class ColorPickerPageView extends View {
 	 *
 	 * @readonly
 	 */
-	private _pickerConfig: ColorPickerConfig | false;
-
-	/**
-	 * Hides input in the color picker.
-	 *
-	 * @readonly
-	 */
-	private _hideInput?: boolean;
+	private _pickerConfig: ColorPickerViewConfig | false;
 
 	/**
 	 * @param locale The localization services instance.
@@ -844,7 +834,6 @@ class ColorPickerPageView extends View {
 	 * @param focusables A collection of views that can be focused in the view..
 	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 	 * @param colorPickerConfig The configuration of color picker feature.
-	 * @param hideInput Hides input in color picker.
 	 */
 	constructor(
 		locale: Locale,
@@ -852,15 +841,13 @@ class ColorPickerPageView extends View {
 			focusTracker,
 			focusables,
 			keystrokes,
-			colorPickerConfig,
-			hideInput
+			colorPickerConfig
 		}:
 			{
 				focusTracker: FocusTracker;
 				focusables: ViewCollection;
 				keystrokes: KeystrokeHandler;
-				colorPickerConfig: ColorPickerConfig | false;
-				hideInput?: boolean;
+				colorPickerConfig: ColorPickerViewConfig | false;
 			}
 	) {
 		super( locale );
@@ -874,7 +861,6 @@ class ColorPickerPageView extends View {
 
 		this._focusables = focusables;
 		this._pickerConfig = colorPickerConfig;
-		this._hideInput = hideInput;
 
 		const bind = this.bindTemplate;
 		const { saveButtonView, cancelButtonView } = this._createActionButtons();
@@ -902,9 +888,8 @@ class ColorPickerPageView extends View {
 		super.render();
 
 		const colorPickerView = new ColorPickerView( this.locale, {
-			hideInput: this._hideInput,
 			...this._pickerConfig
-		} as ColorPickerConfig );
+		} as ColorPickerViewConfig );
 
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();

@@ -7,7 +7,7 @@
  * @module ui/colorpicker/colorpickerview
  */
 
-import { convertColor, convertToHex, type ColorPickerConfig, type ColorPickerOutputFormat } from './utils';
+import { convertColor, convertToHex, type ColorPickerViewConfig, type ColorPickerOutputFormat } from './utils';
 
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
@@ -74,7 +74,7 @@ export default class ColorPickerView extends View {
 	 * @param locale
 	 * @param config
 	 */
-	constructor( locale: Locale | undefined, config: ColorPickerConfig & { hideInput?: boolean } ) {
+	constructor( locale: Locale | undefined, config: ColorPickerViewConfig ) {
 		super( locale );
 
 		this.set( 'color', '' );

@@ -34,6 +34,15 @@ export type ColorPickerConfig = {
 };
 
 /**
+ * Configuration of the color picker view.
+ *
+ * It can be forced to apply colors in the editor in a particular format and hide input.
+ */
+export type ColorPickerViewConfig = ColorPickerConfig & {
+	hideInput?: boolean;
+};
+
+/**
  * Parses and converts the color string to requested format. Handles variety of color spaces
  * like `hsl`, `hex` or `rgb`.
  *

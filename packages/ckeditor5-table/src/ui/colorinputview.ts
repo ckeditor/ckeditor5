@@ -324,8 +324,10 @@ export default class ColorInputView extends View {
 			columns: this.options.columns,
 			removeButtonLabel: removeColorButtonLabel,
 			colorPickerLabel: t( 'Color picker' ),
-			colorPickerConfig: this.options.colorPickerConfig,
-			hideColorPickerInput: true
+			colorPickerConfig: {
+				...this.options.colorPickerConfig,
+				hideInput: true
+			}
 		} );
 
 		colorGrid!.appendUI();
