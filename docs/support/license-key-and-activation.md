@@ -44,7 +44,7 @@ If you are using the trial, refer to the [CKEditor 5 Premium Features free trial
 
 ## Obtaining a license key
 
-Follow this guide to get the license key necessary to activate your purchased premium features or to white-label CKEditor 5.
+Follow this guide to get the license key necessary to activate your purchased premium features or to white-label CKEditor 5 (remove the "Powered by CKEditor" logo).
 
 ### Log in to the CKEditor Ecosystem dashboard
 
