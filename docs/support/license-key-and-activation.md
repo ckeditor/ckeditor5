@@ -19,11 +19,11 @@ This article explains how to activate a commercial license of CKEditor 5 and the
 	* {@link features/slash-commands Slash commands}
 	* {@link features/table-of-contents Table of contents}
 	* {@link features/template Templates}
-	
+
 Other premium features such as {@link features/real-time-collaboration real-time collaboration}, {@link features/export-word export to Word}, {@link features/export-pdf export to PDF}, or {@link features/import-word import from Word} are authenticated on the server side. Please refer to respective feature guides for installation details.
 
 <info-box>
-	CKEditor 5 can be used without activation as {@link support/license-and-legal open source software under the GPL license}. It will then {@link support/managing-ckeditor-logo display a small logo in the editor area}.
+	CKEditor 5 (without premium features listed above) can be used without activation as {@link support/license-and-legal open source software under the GPL license}. It will then {@link support/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 </info-box>
 
 ## Obtaining a license
