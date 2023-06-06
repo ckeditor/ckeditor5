@@ -31,8 +31,4 @@ export default class ShowBlocks extends Plugin {
 	public static get requires() {
 		return [ ShowBlocksEditing, ShowBlocksUI ] as const;
 	}
-
-	public init(): void {
-		console.log( 'Show blocks feature was loaded.' );
-	}
 }

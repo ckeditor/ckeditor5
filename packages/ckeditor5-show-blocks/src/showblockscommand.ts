@@ -18,7 +18,5 @@ export default class ShowBlocksCommand extends Command {
 	/**
 	 * @TODO
 	 */
-	public override execute(): void {
-		console.log( 'Show blocks command executed!' );
-	}
+	public override execute(): void {}
 }
