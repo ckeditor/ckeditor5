@@ -7,7 +7,7 @@
  * @module engine/view/observer/focusobserver
  */
 
-/* globals setTimeout, clearTimeout */
+/* globals setTimeout, clearTimeout, window */
 
 import DomEventObserver from './domeventobserver';
 import type DomEventData from './domeventdata';
@@ -43,11 +43,12 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		super( view );
 
 		this.useCapture = true;
+		this.priority = 'high';
 
 		const document = this.document;
 
 		document.on<ViewDocumentFocusEvent>( 'focus', ( evt, data ) => {
-			// console.log( 'focus' );
+			console.log( 'focus', window.document.getSelection()!.focusNode );
 
 			if ( this._timeoutId ) {
 				clearTimeout( this._timeoutId );
@@ -71,7 +72,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		} );
 
 		document.on<ViewDocumentBlurEvent>( 'blur', ( evt, data ) => {
-			// console.log( 'blur' );
+			console.log( 'blur' );
 
 			if ( this._timeoutId ) {
 				clearTimeout( this._timeoutId );
@@ -85,6 +86,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			if ( !relatedViewElement ) {
 				// console.log( '  blur: outside editor' );
 				this._timeoutId = setTimeout( () => this.flush(), 0 );
+				// this.flush();
 			} else {
 				// console.log( '  blur: inside editor' );
 				this._timeoutId = setTimeout( () => this.flush(), 50 );
@@ -92,7 +94,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		} );
 
 		view.on<ObservableChangeEvent>( 'change:hasDomSelection', ( evt, prop, hasDomSelection ) => {
-			// console.log( 'change:hasDomSelection', hasDomSelection );
+			console.log( 'change:hasDomSelection', hasDomSelection );
 
 			if ( !this.document.isFocusChanging ) {
 				return;
@@ -103,10 +105,11 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			}
 
 			this._timeoutId = setTimeout( () => this.flush(), 0 );
+			// this.flush();
 		} );
 
 		document.on<ViewDocumentSelectionChangeEvent>( 'selectionChange', () => {
-			// console.log( 'selectionchange' );
+			console.log( 'selectionchange' );
 
 			if ( !this.document.isFocusChanging ) {
 				return;
@@ -117,6 +120,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			}
 
 			this._timeoutId = setTimeout( () => this.flush(), 0 );
+			// this.flush();
 		}, { priority: 'low' } );
 	}
 
@@ -142,7 +146,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 
 			this.view.change( () => {} );
 		} else {
-			// console.log( 'waiting' );
+			console.log( 'waiting' );
 		}
 	}
 

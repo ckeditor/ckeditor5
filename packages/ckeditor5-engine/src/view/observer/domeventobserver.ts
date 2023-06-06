@@ -10,7 +10,7 @@
 import Observer from './observer';
 import DomEventData from './domeventdata';
 
-import type { EventInfo } from '@ckeditor/ckeditor5-utils';
+import type { EventInfo, PriorityString } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Base class for DOM event observers. This class handles
@@ -57,6 +57,11 @@ export default abstract class DomEventObserver<
 	public useCapture: boolean = false;
 
 	/**
+	 * Listener priority.
+	 */
+	public priority?: PriorityString;
+
+	/**
 	 * Callback which should be called when the DOM event occurred. Note that the callback will not be called if
 	 * observer {@link #isEnabled is not enabled}.
 	 *
@@ -75,7 +80,7 @@ export default abstract class DomEventObserver<
 				if ( this.isEnabled && !this.checkShouldIgnoreEventFromTarget( domEvent.target as any ) ) {
 					this.onDomEvent( domEvent );
 				}
-			}, { useCapture: this.useCapture } );
+			}, { useCapture: this.useCapture, priority: this.priority } );
 		} );
 	}
 
