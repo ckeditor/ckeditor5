@@ -15,6 +15,10 @@ const RGBA_COLOR_REGEXP = /^rgba\([ ]?([0-9]{1,3}[ %]?,[ ]?){3}(1|[0-9]+%|[0]?\.
 const HSL_COLOR_REGEXP = /^hsl\([ ]?([0-9]{1,3}[ %]?[,]?[ ]*){3}(1|[0-9]+%|[0]?\.?[0-9]+)?\)$/i;
 const HSLA_COLOR_REGEXP = /^hsla\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}(1|[0-9]+%|[0]?\.?[0-9]+)\)$/i;
 
+// Note: This regexp hardcodes a single level of nested () for values such as `calc( var( ...) + ...)`.
+// If this gets more complex, a proper parser should be used instead.
+const CSS_SHORTHAND_VALUE_REGEXP = /\w+\((?:[^()]|\([^()]*\))*\)|\S+/gi;
+
 const COLOR_NAMES = new Set( [
 	// CSS Level 1
 	'black', 'silver', 'gray', 'white', 'maroon', 'red', 'purple', 'fuchsia',
@@ -249,8 +253,7 @@ export function getPositionShorthandNormalizer( shorthand: string ) {
  * ```
  */
 export function getShorthandValues( string: string ): Array<string> {
-	return string
-		.replace( /, /g, ',' ) // Exclude comma from spaces evaluation as values are separated by spaces.
-		.split( ' ' )
-		.map( string => string.replace( /,/g, ', ' ) ); // Restore original notation.
+	const matches = string.matchAll( CSS_SHORTHAND_VALUE_REGEXP );
+
+	return Array.from( matches ).map( i => i[ 0 ] );
 }
