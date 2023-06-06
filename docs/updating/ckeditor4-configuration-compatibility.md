@@ -659,7 +659,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates">templates</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates_files">templates_files</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates_replaceContent">templates_replaceContent</a></td>
-			<td>Refer to the {@link features/template Content templates} guide to learn about support for templates in CKEditor 5.</td>
+			<td>Refer to the {@link features/template Templates} guide to learn about support for templates in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-title">title</a></td>

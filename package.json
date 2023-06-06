@@ -163,7 +163,7 @@
     "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js",
     "manual:verify": "node ./scripts/web-crawler/index.js --manual",
     "bootstrap": "yarn install",
-    "clean": "npx rimraf package-lock.json yarn.lock ./**/node_modules",
+    "clean": "npx rimraf --glob package-lock.json yarn.lock ./**/node_modules",
     "reset": "rm -rf ./node_modules && yarn run bootstrap",
     "reinstall": "yarn run clean && yarn run bootstrap",
     "docs": "node --max-old-space-size=8192 ./scripts/docs/build-docs.js",
