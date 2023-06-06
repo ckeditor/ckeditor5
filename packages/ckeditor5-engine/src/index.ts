@@ -137,6 +137,7 @@ export { default as ViewEmptyElement } from './view/emptyelement';
 export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
+export { default as ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './view/treewalker';
 export type { default as ViewElementDefinition } from './view/elementdefinition';
 export type { default as ViewDocumentSelection } from './view/documentselection';
 export { default as AttributeElement } from './view/attributeelement';
@@ -183,7 +184,7 @@ export type {
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver';
 export type { ViewDocumentClickEvent } from './view/observer/clickobserver';
 export type { ViewDocumentSelectionChangeEvent } from './view/observer/selectionobserver';
-export type { ViewRenderEvent } from './view/view';
+export type { ViewRenderEvent, ViewScrollToTheSelectionEvent } from './view/view';
 
 // View / Styles.
 export { StylesProcessor, type BoxSides } from './view/stylesmap';

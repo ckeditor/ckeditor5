@@ -45,7 +45,10 @@ import {
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 
+import { cloneDeep } from 'lodash-es';
+
 type IfTrue<T> = T extends true ? true : never;
+type DomRange = globalThis.Range;
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -393,6 +396,9 @@ export default class View extends ObservableMixin() {
 	 * Scrolls the page viewport and {@link #domRoots} with their ancestors to reveal the
 	 * caret, **if not already visible to the user**.
 	 *
+	 * **Note**: Calling this method fires the {@link module:engine/view/view~ViewScrollToTheSelectionEvent} event that
+	 * allows custom behaviors.
+	 *
 	 * @param options Additional configuration of the scrolling behavior.
 	 * @param options.viewportOffset A distance between the DOM selection and the viewport boundary to be maintained
 	 * while scrolling to the selection (default is 20px). Setting this value to `0` will reveal the selection precisely at
@@ -411,22 +417,40 @@ export default class View extends ObservableMixin() {
 		viewportOffset = 20,
 		ancestorOffset = 20
 	}: {
-		readonly viewportOffset?: number;
+		readonly viewportOffset?: number | { top: number; bottom: number; left: number; right: number };
 		readonly ancestorOffset?: number;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 	} = {} ): void {
 		const range = this.document.selection.getFirstRange();
 
-		if ( range ) {
-			scrollViewportToShowTarget( {
-				target: this.domConverter.viewRangeToDom( range ),
-				viewportOffset,
-				ancestorOffset,
-				alignToTop,
-				forceScroll
-			} );
+		if ( !range ) {
+			return;
 		}
+
+		// Clone to make sure properties like `viewportOffset` are not mutated in the event listeners.
+		const originalArgs = cloneDeep( { alignToTop, forceScroll, viewportOffset, ancestorOffset } );
+
+		if ( typeof viewportOffset === 'number' ) {
+			viewportOffset = {
+				top: viewportOffset,
+				bottom: viewportOffset,
+				left: viewportOffset,
+				right: viewportOffset
+			};
+		}
+
+		const options = {
+			target: this.domConverter.viewRangeToDom( range ),
+			viewportOffset,
+			ancestorOffset,
+			alignToTop,
+			forceScroll
+		};
+
+		this.fire<ViewScrollToTheSelectionEvent>( 'scrollToTheSelection', options, originalArgs );
+
+		scrollViewportToShowTarget( options );
 	}
 
 	/**
@@ -775,4 +799,37 @@ export default class View extends ObservableMixin() {
 export type ViewRenderEvent = {
 	name: 'render';
 	args: [];
+};
+
+/**
+ * An event fired at the moment of {@link module:engine/view/view~View#scrollToTheSelection} being called. It
+ * carries two objects in its payload (`args`):
+ *
+ * * The first argument is the {@link module:engine/view/view~ViewScrollToTheSelectionEventData object containing data} that gets
+ *   passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper. If some event listener modifies it, it can
+ *   adjust the behavior of the scrolling (e.g. include additional `viewportOffset`).
+ * * The second argument corresponds to the original arguments passed to {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
+ *   It allows listeners to re-execute the `scrollViewportToShowTarget()` method with its original arguments if there is such a need,
+ *   for instance, if the integration requires re–scrolling after certain interaction.
+ *
+ * @eventName ~View#scrollToTheSelection
+ */
+export type ViewScrollToTheSelectionEvent = {
+	name: 'scrollToTheSelection';
+	args: [
+		ViewScrollToTheSelectionEventData,
+		Parameters<View[ 'scrollToTheSelection' ]>[ 0 ]
+	];
+};
+
+/**
+ * An object passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper while calling
+ * {@link module:engine/view/view~View#scrollToTheSelection}.
+ */
+export type ViewScrollToTheSelectionEventData = {
+	target: DomRange;
+	viewportOffset: { top: number; bottom: number; left: number; right: number };
+	ancestorOffset: number;
+	alignToTop?: boolean;
+	forceScroll?: boolean;
 };

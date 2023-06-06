@@ -580,6 +580,14 @@ describe( 'scrollViewportToShowTarget()', () => {
 			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 1050 } );
 			sinon.assert.calledWithExactly( window.scrollTo, 200, 70 );
 		} );
+
+		it( 'works for the viewportOffset option provided as an object', () => {
+			stubGeometry( testUtils, target, { top: -200, right: 1050, bottom: -100, left: 950, width: 100, height: 100 } );
+
+			scrollViewportToShowTarget( { target, viewportOffset: { top: 10, bottom: 20, left: 30, right: 40 } } );
+			assertScrollPosition( firstAncestor, { scrollTop: -100, scrollLeft: 1050 } );
+			sinon.assert.calledWithExactly( window.scrollTo, 210, -110 );
+		} );
 	}
 
 	function testWithAncestorOffset() {

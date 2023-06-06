@@ -11,7 +11,7 @@ The simple upload adapter lets you upload images to your server using the [`XMLH
 ## Installation
 
 <info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}. See the [installation](#installation) section to learn how to enable it in your editor.
+	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
@@ -72,7 +72,7 @@ ClassicEditor
 
 ### Configuring allowed file types
 
-The allowed file types that can be uploaded should actually be configured in two places:
+The allowed file types that can be uploaded should be configured in two places:
 
 * On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands.
 * On the server side, in your server-side application configuration.
