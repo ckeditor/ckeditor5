@@ -208,6 +208,7 @@ export default class Resizer extends ObservableMixin() {
 			const newWidth = ( unit === '%' ? newSize.widthPercents : newSize.width ) + unit;
 
 			writer.setStyle( 'width', newWidth, this._options.viewElement );
+			writer.removeStyle( 'height', this._options.viewElement );
 		} );
 
 		// Get an actual image width, and:
