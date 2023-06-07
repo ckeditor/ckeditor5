@@ -34,7 +34,7 @@ config.ui.poweredBy.forceVisible: true
 
 ## How to configure the layout of the "Powered by CKEditor" logo?
 
-For open-source, free users, the "Powered by CKEditor" logo will always be displayed. There is, however, some degree of control over it.
+For free, open-source users, the "Powered by CKEditor" logo will always be displayed when the editor is in focus. You can, however, adjust some aspects of it to suit your editor integration better.
 
 ### Layout customization
 
@@ -47,7 +47,7 @@ You can configure the following properties of the logo:
 
 The complete reference is available in the {@link module:core/editor/editorconfig~EditorConfig#ui API documentation}.
 
-The example below shows how the logo can be adjusted using just the available editor configuration.
+The example below shows how the logo can be adjusted using the available editor configuration. Focus the editor to display the customized logo.
 
 {@snippet build-classic-source}
 
@@ -97,10 +97,11 @@ If you need, you can dive even deeper to make it coherent with your product. For
 It was achieved with just a few style rules:
 
 ```css
-	/* PoweredBy logo customization. */
+	/* "Powered by CKEditor" logo customization. */
 	.ck.ck-balloon-panel.ck-powered-by-balloon {
-		--ck-powered-by-background: hsl(270, 1%, 29%); /* You can use your own variable here as well. */
-		--ck-powered-by-border-color: hsl(270, 1%, 29%); /* You can use your own variable here as well. */
+		/* You can use your own variables here as well. */
+		--ck-powered-by-background: hsl(270, 1%, 29%);
+		--ck-powered-by-border-color: hsl(270, 1%, 29%);
 	}
 
 	.ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by .ck-powered-by__label {
@@ -115,6 +116,4 @@ It was achieved with just a few style rules:
 	}
 ```
 
-<info-box>
-	To see how to customize the editor theme, read a {@link framework/theme-customization dedicated guide}.
-</info-box>
+Refer to the {@link framework/theme-customization Theme customization} guide to learn how to adjust the editor theme.
