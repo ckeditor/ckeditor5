@@ -1064,7 +1064,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
 
-### Declaring module augmentation for the core package: `allow-declare-module-only-in-augmentation-file`
+### Declaring module augmentation for the core package: `ckeditor5-rules/allow-declare-module-only-in-augmentation-file`
 
 <info-box warning>
   This rule should only be used on `.ts` files.
@@ -1074,7 +1074,7 @@ The main entry points (`index.ts` files) in most modules have a side effect impo
 
 This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined in this `augmentation.ts` file.
 
-### Importing from modules: `allow-imports-only-from-main-package-entry-point`
+### Importing from modules: `ckeditor5-rules/allow-imports-only-from-main-package-entry-point`
 
 <info-box warning>
   This rule should only be used on `.ts` files.
@@ -1098,7 +1098,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import { Table } from '@ckeditor/ckeditor5-table';
 ```
 
-### Require `as const`: `require-as-const-returns-in-methods`
+### Require `as const`: `ckeditor5-rules/require-as-const-returns-in-methods`
 
 <info-box warning>
   This rule should only be used on `.ts` files.
