@@ -111,7 +111,7 @@ export default class ColorPickerView extends View {
 			evt.return = convertColor( newValue, this._format );
 		} );
 
-		this.on( 'change:color', () => {
+		this.on( 'change:color', ( evt ) => {
 			this._hexColor = convertColorToCommonHexFormat( this.color );
 		} );
 

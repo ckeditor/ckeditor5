@@ -109,7 +109,7 @@ describe( 'ColorInputView', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
-		describe( 'dropdown', () => {
+		describe.only( 'dropdown', () => {
 			it( 'should be created', () => {
 				expect( view.dropdownView ).to.be.instanceOf( DropdownView );
 				expect( view.dropdownView.buttonView.element.classList.contains( 'ck-input-color__button' ) ).to.be.true;

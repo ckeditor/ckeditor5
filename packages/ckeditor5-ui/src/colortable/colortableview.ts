@@ -7,10 +7,6 @@
  * @module font/ui/colortableview
  */
 
-import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-
 import ButtonView from '../button/buttonview';
 import ColorGridView, { type ColorDefinition } from '../colorgrid/colorgridview';
 import ColorTileView from '../colorgrid/colortileview';
@@ -20,12 +16,16 @@ import Template from '../template';
 import View from '../view';
 import ViewCollection from '../viewcollection';
 import ColorPickerView from '../colorpicker/colorpickerview';
-import colorPaletteIcon from '../../theme/icons/color-palette.svg';
 import type { ColorPickerViewConfig } from '../colorpicker/utils';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { Model } from '@ckeditor/ckeditor5-engine';
 
 import DocumentColorCollection from './documentcolorcollection';
+
+import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import colorPaletteIcon from '../../theme/icons/color-palette.svg';
 
 import '../../theme/components/colortable/colortablebase.css';
 import '../../theme/components/colortable/colortabletheme.css';

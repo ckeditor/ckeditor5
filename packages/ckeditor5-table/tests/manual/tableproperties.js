@@ -29,11 +29,6 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ],
-			tableCellProperties: {
-				colorPicker: {
-					format: 'hex'
-				}
-			},
 			tableProperties: {
 				colorPicker: {
 					format: 'rgb'

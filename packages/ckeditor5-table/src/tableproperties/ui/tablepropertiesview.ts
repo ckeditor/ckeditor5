@@ -71,7 +71,7 @@ export interface TablePropertiesViewOptions {
 	defaultTableProperties: TablePropertiesOptions;
 
 	/**
-	 * The default color picker format.
+	 * The default color picker config.
 	 */
 	colorPicker: false | ColorPickerConfig;
 }
