@@ -185,7 +185,7 @@ class ProxyEmitter extends EmitterMixin() {
 	/**
 	 * @internal
 	 */
-	public static _instances = new Map<Node | Window, ProxyEmitter>();
+	public static _instances = new WeakMap<Node | Window, ProxyEmitter>();
 
 	/**
 	 * @param node DOM Node that fires events.

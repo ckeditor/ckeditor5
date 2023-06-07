@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/*
+ * Classes used by the "fake visual selection" displayed in the content when editable is blurred.
+ */
+.ck .ck-fake-visual-selection {
+	background: var(--ck-color-link-fake-selection);
+}
+
+/* A collapsed fake visual selection. */
+.ck .ck-fake-visual-selection_collapsed {
+	height: 100%;
+	border-right: 1px solid var(--ck-color-base-text);
+	margin-right: -1px;
+	outline: solid 1px hsla(0, 0%, 100%, .5);
+}
+
+.ck.ck-blurred .ck-fake-visual-selection {
+	background: var(--ck-color-link-fake-selection-blurred);
+}
+
+.ck.ck-blurred .ck-fake-visual-selection_collapsed {
+	display: none;
+}

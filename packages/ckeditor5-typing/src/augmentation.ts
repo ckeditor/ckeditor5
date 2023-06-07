@@ -11,7 +11,8 @@ import type {
 	TextTransformation,
 	TwoStepCaretMovement,
 	Typing,
-	TypingConfig
+	TypingConfig,
+	FakeVisualSelection
 } from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -37,5 +38,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TextTransformation.pluginName ]: TextTransformation;
 		[ TwoStepCaretMovement.pluginName ]: TwoStepCaretMovement;
 		[ Typing.pluginName ]: Typing;
+		[ FakeVisualSelection.pluginName ]: FakeVisualSelection;
 	}
 }
