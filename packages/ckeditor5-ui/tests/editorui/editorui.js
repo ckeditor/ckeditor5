@@ -16,6 +16,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { Editor } from '@ckeditor/ckeditor5-core';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 /* global document, console */
 
@@ -390,6 +391,85 @@ describe( 'EditorUI', () => {
 
 			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
 			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
+		} );
+	} );
+
+	describe( 'View#scrollToTheSelection integration', () => {
+		it( 'should listen to View#scrollToTheSelection and inject the offset values into the event', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				ui: {
+					viewportOffset: {
+						top: 10,
+						bottom: 20,
+						left: 30,
+						right: 40
+					}
+				}
+			} );
+
+			editor.editing.view.on( 'scrollToTheSelection', ( evt, data ) => {
+				const range = editor.editing.view.document.selection.getFirstRange();
+
+				expect( data ).to.deep.equal( {
+					target: editor.editing.view.domConverter.viewRangeToDom( range ),
+					viewportOffset: {
+						top: 110,
+						bottom: 120,
+						left: 130,
+						right: 140
+					},
+					ancestorOffset: 20,
+					alignToTop: undefined,
+					forceScroll: undefined
+				} );
+			} );
+
+			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
+
+			editorElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should listen to View#scrollToTheSelection and inject the offset values into the event as they change', async () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				ui: {
+					viewportOffset: {
+						top: 10,
+						bottom: 20,
+						left: 30,
+						right: 40
+					}
+				}
+			} );
+
+			editor.editing.view.on( 'scrollToTheSelection', ( evt, data ) => {
+				const range = editor.editing.view.document.selection.getFirstRange();
+
+				expect( data ).to.deep.equal( {
+					target: editor.editing.view.domConverter.viewRangeToDom( range ),
+					viewportOffset: {
+						top: 300,
+						bottom: 120,
+						left: 130,
+						right: 140
+					},
+					ancestorOffset: 20,
+					alignToTop: undefined,
+					forceScroll: undefined
+				} );
+			} );
+
+			editor.ui.viewportOffset.top = 200;
+			editor.editing.view.scrollToTheSelection( { viewportOffset: 100 } );
+
+			editorElement.remove();
+			await editor.destroy();
 		} );
 	} );
 

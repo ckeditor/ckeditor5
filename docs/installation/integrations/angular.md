@@ -179,15 +179,14 @@ export class AppComponent {
   title = 'angular';
   public Editor = DecoupledEditor;
 
-  public onReady( editor: any ): void { //using `any` is a temporary workaround for https://github.com/ckeditor/ckeditor5/issues/13838
-	const decoupledEditor = editor as DecoupledEditor;
-	const element = decoupledEditor.ui.getEditableElement()!;
-	const parent = element.parentElement!;
+  public onReady( editor: DecoupledEditor ): void {
+    const element = editor.ui.getEditableElement()!;
+    const parent = element.parentElement!;
 
-	parent.insertBefore(
-	  decoupledEditor.ui.view.toolbar.element!,
-	  element
-	);
+    parent.insertBefore(
+      editor.ui.view.toolbar.element!,
+      element
+    );
   }
 }
 ```

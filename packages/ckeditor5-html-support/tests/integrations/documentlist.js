@@ -18,7 +18,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 /* global document */
 
 describe( 'DocumentListElementSupport', () => {
-	let editor, model, editorElement, dataFilter;
+	let editor, model, editorElement, dataFilter, dataSchema;
 
 	testUtils.createSinonSandbox();
 
@@ -32,6 +32,7 @@ describe( 'DocumentListElementSupport', () => {
 			} );
 		model = editor.model;
 		dataFilter = editor.plugins.get( 'DataFilter' );
+		dataSchema = editor.plugins.get( 'DataSchema' );
 
 		stubUid();
 	} );
@@ -46,7 +47,73 @@ describe( 'DocumentListElementSupport', () => {
 		expect( editor.plugins.has( 'DocumentListElementSupport' ) ).to.be.true;
 	} );
 
+	it( 'should preserve attributes on lists on conversion', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		const expectedHtml =
+			'<ul class="foo">' +
+				'<li data-foo="bar1">One</li>' +
+			'</ul>';
+
+		editor.setData( expectedHtml );
+
+		expect( editor.getData() ).to.equal( expectedHtml );
+	} );
+
+	it( 'removes list attributes when list is changed to a paragraph', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ul data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+
+		editor.commands.get( 'bulletedList' ).execute( { forceValue: false } );
+
+		expect( editor.getData() ).to.equal( '<p data-foo="bar-p">1.</p>' );
+	} );
+
+	it( 'removes list attributes when list type changed', () => {
+		dataFilter.allowElement( /^.*$/ );
+		dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+		editor.setData(
+			'<ol data-foo="bar-list">' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ol>'
+		);
+
+		editor.commands.get( 'bulletedList' ).execute();
+
+		expect( editor.getData() ).to.equal(
+			'<ul>' +
+				'<li data-foo="bar-item">' +
+					'<p data-foo="bar-p">1.</p>' +
+				'</li>' +
+			'</ul>'
+		);
+	} );
+
 	describe( 'downcast', () => {
+		beforeEach( () => {
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			// Apply filtering rules added after initial data load.
+			editor.setData( '' );
+		} );
+
 		it( 'should downcast list attributes', () => {
 			setModelData( model, makeList( 'bulleted', 0, { attributes: { 'data-foo': 'foo', 'data-bar': 'bar' } }, [
 				{ text: '1.' },
@@ -144,8 +211,12 @@ describe( 'DocumentListElementSupport', () => {
 		} );
 
 		function makeList( listType, listIndent, listAttributes, elements ) {
-			const htmlListAttributes = listAttributes ?
-				`htmlListAttributes="${ JSON.stringify( listAttributes ).replaceAll( '"', '&quot;' ) }" ` :
+			const attribute = listType === 'bulleted' ?
+				'htmlUlAttributes' :
+				'htmlOlAttributes';
+
+			const htmlElementAttributes = listAttributes ?
+				`${ attribute }="${ JSON.stringify( listAttributes ).replaceAll( '"', '&quot;' ) }" ` :
 				'';
 
 			return elements.map( ( element, index ) => {
@@ -162,7 +233,7 @@ describe( 'DocumentListElementSupport', () => {
 				return (
 					'<paragraph ' +
 						htmlLiAttributes +
-						htmlListAttributes +
+						htmlElementAttributes +
 						`listIndent="${ listIndent }" ` +
 						`listItemId="${ index }" ` +
 						`listType="${ listType }">` +
@@ -183,10 +254,10 @@ describe( 'DocumentListElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a00" listType="bulleted">' +
+					'<paragraph htmlLiAttributes="(1)" htmlUlAttributes="(2)" listIndent="0" listItemId="a00" listType="bulleted">' +
 						'Foo' +
 					'</paragraph>' +
-					'<paragraph htmlLiAttributes="(3)" htmlListAttributes="(4)" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'<paragraph htmlLiAttributes="(3)" htmlUlAttributes="(4)" listIndent="0" listItemId="a01" listType="bulleted">' +
 						'Bar' +
 					'</paragraph>',
 				attributes: {
@@ -215,10 +286,10 @@ describe( 'DocumentListElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
+					'<paragraph htmlLiAttributes="(1)" htmlOlAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
 						'Foo' +
 					'</paragraph>' +
-					'<paragraph htmlLiAttributes="(3)" htmlListAttributes="(4)" listIndent="0" listItemId="a01" listType="numbered">' +
+					'<paragraph htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="0" listItemId="a01" listType="numbered">' +
 						'Bar' +
 					'</paragraph>',
 				attributes: {
@@ -247,10 +318,10 @@ describe( 'DocumentListElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
+					'<paragraph htmlLiAttributes="(1)" htmlOlAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
 						'Foo' +
 					'</paragraph>' +
-					'<paragraph htmlLiAttributes="(3)" htmlListAttributes="(4)" listIndent="0" listItemId="a01" listType="numbered">' +
+					'<paragraph htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="0" listItemId="a01" listType="numbered">' +
 						'Bar' +
 					'</paragraph>',
 				attributes: {
@@ -288,13 +359,13 @@ describe( 'DocumentListElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'<paragraph htmlLiAttributes="(1)" htmlUlAttributes="(2)" listIndent="0" listItemId="a01" listType="bulleted">' +
 						'Foo' +
 					'</paragraph>' +
-					'<paragraph htmlLiAttributes="(3)" htmlListAttributes="(4)" listIndent="1" listItemId="a00" listType="numbered">' +
+					'<paragraph htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="1" listItemId="a00" listType="numbered">' +
 						'Bar' +
 					'</paragraph>' +
-					'<paragraph htmlLiAttributes="(5)" htmlListAttributes="(6)" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'<paragraph htmlLiAttributes="(5)" htmlUlAttributes="(6)" listIndent="0" listItemId="a01" listType="bulleted">' +
 						'Baz' +
 					'</paragraph>',
 				attributes: {
@@ -321,6 +392,11 @@ describe( 'DocumentListElementSupport', () => {
 		} );
 
 		it( 'should allow attributes (non-list item content)', () => {
+			dataSchema.registerBlockElement( {
+				model: 'div',
+				view: 'div'
+			} );
+
 			dataFilter.allowElement( /^(ul|ol|div)$/ );
 			dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: { 'data-foo': true } } );
 			dataFilter.allowAttributes( { name: /^(li|div)$/, attributes: { 'data-bar': true } } );
@@ -338,7 +414,7 @@ describe( 'DocumentListElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a00" listType="bulleted">' +
+					'<paragraph htmlLiAttributes="(1)" htmlUlAttributes="(2)" listIndent="0" listItemId="a00" listType="bulleted">' +
 						'Foo' +
 					'</paragraph>' +
 					'<div htmlDivAttributes="(3)">Bar</div>',
@@ -368,10 +444,10 @@ describe( 'DocumentListElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a00" listType="bulleted">' +
+					'<paragraph htmlLiAttributes="(1)" htmlUlAttributes="(2)" listIndent="0" listItemId="a00" listType="bulleted">' +
 						'Foo' +
 					'</paragraph>' +
-					'<paragraph htmlLiAttributes="(3)" htmlListAttributes="(4)" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'<paragraph htmlLiAttributes="(3)" htmlUlAttributes="(4)" listIndent="0" listItemId="a01" listType="bulleted">' +
 						'Bar' +
 					'</paragraph>',
 				attributes: {
@@ -395,10 +471,10 @@ describe( 'DocumentListElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
+					'<paragraph htmlLiAttributes="(1)" htmlOlAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
 						'Foo' +
 					'</paragraph>' +
-					'<paragraph htmlLiAttributes="(3)" htmlListAttributes="(4)" listIndent="0" listItemId="a01" listType="numbered">' +
+					'<paragraph htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="0" listItemId="a01" listType="numbered">' +
 						'Bar' +
 					'</paragraph>',
 				attributes: {
@@ -422,10 +498,10 @@ describe( 'DocumentListElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-					'<paragraph htmlLiAttributes="(1)" htmlListAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
+					'<paragraph htmlLiAttributes="(1)" htmlOlAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
 						'Foo' +
 					'</paragraph>' +
-						'<paragraph htmlLiAttributes="(3)" htmlListAttributes="(4)" listIndent="0" listItemId="a01" listType="numbered">' +
+						'<paragraph htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="0" listItemId="a01" listType="numbered">' +
 						'Bar' +
 					'</paragraph>',
 				attributes: {
@@ -439,8 +515,17 @@ describe( 'DocumentListElementSupport', () => {
 	} );
 
 	describe( 'post-fixer', () => {
-		describe( 'htmlListAttributes', () => {
-			it( 'should ensure that all items in a single list have the same `htmlListAttributes`', () => {
+		describe( 'html*Attributes', () => {
+			beforeEach( () => {
+				dataFilter.allowElement( /^.*$/ );
+				dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+				dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+				// Apply filtering rules added after initial data load.
+				editor.setData( '' );
+			} );
+
+			it( 'should ensure that all items in a single list have the same `html*Attributes`', () => {
 				setModelData( model,
 					paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
 					paragraph( '2.', '02', 0, 'numbered', { 'data-foo': 'A' } ) +
@@ -470,7 +555,7 @@ describe( 'DocumentListElementSupport', () => {
 				) );
 			} );
 
-			it( 'should ensure that all list items have the same `htmlListAttributes` after removing a block between them', () => {
+			it( 'should ensure that all list items have the same `html*Attributes` after removing a block between them', () => {
 				setModelData( model,
 					paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'A' } ) +
 					paragraph( '2.', '02', 0, 'bulleted', { 'data-foo': 'A' } ) +
@@ -491,7 +576,7 @@ describe( 'DocumentListElementSupport', () => {
 				) );
 			} );
 
-			it( 'should restore `htmlListAttributes` attribute after it\'s changed in one of the following items', () => {
+			it( 'should restore `html*Attributes` attribute after it\'s changed in one of the following items', () => {
 				setModelData( model,
 					paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'A' } ) +
 					paragraph( '2.', '02', 0, 'bulleted', { 'data-foo': 'A' } ) +
@@ -500,7 +585,7 @@ describe( 'DocumentListElementSupport', () => {
 
 				model.change( writer => {
 					writer.setAttribute(
-						'htmlListAttributes',
+						'htmlUlAttributes',
 						{ attributes: { 'data-foo': 'B' } },
 						model.document.getRoot().getChild( 2 )
 					);
@@ -513,7 +598,7 @@ describe( 'DocumentListElementSupport', () => {
 				) );
 			} );
 
-			it( 'should change `htmlListAttributes` attribute for all the following items after the first one is changed', () => {
+			it( 'should change `html*Attributes` attribute for all the following items after the first one is changed', () => {
 				setModelData( model,
 					paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'A' } ) +
 					paragraph( '2.', '02', 0, 'bulleted', { 'data-foo': 'A' } ) +
@@ -522,7 +607,7 @@ describe( 'DocumentListElementSupport', () => {
 
 				model.change( writer => {
 					writer.setAttribute(
-						'htmlListAttributes',
+						'htmlUlAttributes',
 						{ attributes: { 'data-foo': 'B' } },
 						model.document.getRoot().getChild( 0 )
 					);
@@ -537,6 +622,15 @@ describe( 'DocumentListElementSupport', () => {
 		} );
 
 		describe( 'htmlLiAttributes', () => {
+			beforeEach( () => {
+				dataFilter.allowElement( /^.*$/ );
+				dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+				dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+				// Apply filtering rules added after initial data load.
+				editor.setData( '' );
+			} );
+
 			it( 'should ensure that all blocks of single list item have the same `htmlLiAttributes`', () => {
 				setModelData( model,
 					liParagraph( 'A1.', '01', 0, 'numbered', { 'data-foo': 'A' } ) +
@@ -614,7 +708,16 @@ describe( 'DocumentListElementSupport', () => {
 	} );
 
 	describe( 'indenting lists', () => {
-		it( 'should reset `htmlListAttributes` attribute after indenting a single item', () => {
+		beforeEach( () => {
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			// Apply filtering rules added after initial data load.
+			editor.setData( '' );
+		} );
+
+		it( 'should reset `html*Attributes` attribute after indenting a single item', () => {
 			setModelData( model,
 				paragraph( '1.', '01', 0, 'numbered', { 'data-foo': 'foo' } ) +
 				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
@@ -634,7 +737,7 @@ describe( 'DocumentListElementSupport', () => {
 			) );
 		} );
 
-		it( 'should reset `htmlListAttributes` attribute after indenting a few items', () => {
+		it( 'should reset `html*Attributes` attribute after indenting a few items', () => {
 			setModelData( model,
 				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
 				paragraph( '[2.', '02', 0, 'bulleted', { 'data-foo': 'foo' } ) +
@@ -650,7 +753,7 @@ describe( 'DocumentListElementSupport', () => {
 			) );
 		} );
 
-		it( 'should copy `htmlListAttributes` attribute after indenting a single item into previously nested list', () => {
+		it( 'should copy `html*Attributes` attribute after indenting a single item into previously nested list', () => {
 			setModelData( model,
 				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
 				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
@@ -670,7 +773,7 @@ describe( 'DocumentListElementSupport', () => {
 			) );
 		} );
 
-		it( 'should copy `htmlListAttributes` attribute after indenting a few items into previously nested list', () => {
+		it( 'should copy `html*Attributes` attribute after indenting a few items into previously nested list', () => {
 			setModelData( model,
 				paragraph( '1.', '01', 0, 'bulleted', { 'data-foo': 'foo' } ) +
 				paragraph( '1a.', '02', 1, 'bulleted', { 'data-foo': 'bar' } ) +
@@ -694,10 +797,13 @@ describe( 'DocumentListElementSupport', () => {
 	} );
 
 	function paragraph( text, id, indent, type, listAttributes ) {
+		const attributeName = type === 'bulleted' ?
+			'htmlUlAttributes' :
+			'htmlOlAttributes';
 		const attrs = JSON.stringify( { attributes: listAttributes } ).replaceAll( '"', '&quot;' );
 
 		return (
-			`<paragraph htmlListAttributes="${ attrs }" listIndent="${ indent }" listItemId="${ id }" listType="${ type }">` +
+			`<paragraph ${ attributeName }="${ attrs }" listIndent="${ indent }" listItemId="${ id }" listType="${ type }">` +
 				text +
 			'</paragraph>'
 		);

@@ -67,7 +67,7 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 	}:
 	{
 		readonly target: HTMLElement | Range;
-		readonly viewportOffset?: number;
+		readonly viewportOffset?: number | { top: number; bottom: number; left: number; right: number };
 		readonly ancestorOffset?: number;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
@@ -76,6 +76,8 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 	const targetWindow = getWindow( target );
 	let currentWindow: Window | null = targetWindow;
 	let currentFrame: HTMLElement | null = null;
+
+	viewportOffset = normalizeViewportOffset( viewportOffset );
 
 	// Iterate over all windows, starting from target's parent window up to window#top.
 	while ( currentWindow ) {
@@ -228,13 +230,13 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 	}: {
 		readonly window: Window;
 		readonly rect: Rect;
-		readonly viewportOffset: number;
+		readonly viewportOffset: { top: number; bottom: number; left: number; right: number };
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 	}
 ): void {
-	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset );
-	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset );
+	const targetShiftedDownRect = rect.clone().moveBy( 0, viewportOffset.bottom );
+	const targetShiftedUpRect = rect.clone().moveBy( 0, -viewportOffset.top );
 	const viewportRect = new Rect( window ).excludeScrollbarsAndBorders();
 
 	const rects = [ targetShiftedUpRect, targetShiftedDownRect ];
@@ -246,15 +248,15 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 	const initialScrollY = scrollY;
 
 	if ( forceScrollToTop ) {
-		scrollY -= ( viewportRect.top - rect.top ) + viewportOffset;
+		scrollY -= ( viewportRect.top - rect.top ) + viewportOffset.top;
 	} else if ( !allRectsFitInViewport ) {
 		if ( isAbove( targetShiftedUpRect, viewportRect ) ) {
-			scrollY -= viewportRect.top - rect.top + viewportOffset;
+			scrollY -= viewportRect.top - rect.top + viewportOffset.top;
 		} else if ( isBelow( targetShiftedDownRect, viewportRect ) ) {
 			if ( alignToTop ) {
-				scrollY += rect.top - viewportRect.top - viewportOffset;
+				scrollY += rect.top - viewportRect.top - viewportOffset.top;
 			} else {
-				scrollY += rect.bottom - viewportRect.bottom + viewportOffset;
+				scrollY += rect.bottom - viewportRect.bottom + viewportOffset.bottom;
 			}
 		}
 	}
@@ -263,9 +265,9 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
 		// TODO: Web browsers scroll natively to place the target in the middle
 		// of the viewport. It's not a very popular case, though.
 		if ( isLeftOf( rect, viewportRect ) ) {
-			scrollX -= viewportRect.left - rect.left + viewportOffset;
+			scrollX -= viewportRect.left - rect.left + viewportOffset.left;
 		} else if ( isRightOf( rect, viewportRect ) ) {
-			scrollX += rect.right - viewportRect.right + viewportOffset;
+			scrollX += rect.right - viewportRect.right + viewportOffset.right;
 		}
 	}
 
@@ -424,4 +426,25 @@ function getRectRelativeToWindow( target: HTMLElement | Range, relativeWindow: W
 	}
 
 	return rect;
+}
+
+/**
+ * A helper that explodes the `viewportOffset` configuration if defined as a plain number into an object
+ * with `top`, `bottom`, `left`, and `right` properties.
+ *
+ * If an object value is passed, this helper will pass it through.
+ *
+ * @param viewportOffset Viewport offset to be normalized.
+ */
+function normalizeViewportOffset( viewportOffset: number | { top: number; bottom: number; left: number; right: number } ) {
+	if ( typeof viewportOffset === 'number' ) {
+		return {
+			top: viewportOffset,
+			bottom: viewportOffset,
+			left: viewportOffset,
+			right: viewportOffset
+		};
+	}
+
+	return viewportOffset;
 }
