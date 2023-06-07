@@ -57,21 +57,13 @@ export default class ImageEditing extends Plugin {
 			.attributeToAttribute( {
 				view: {
 					name: 'img',
-					key: 'srcset'
+					attributes: {
+						srcset: /.+/
+					}
 				},
 				model: {
 					key: 'srcset',
-					value: ( viewImage: ViewElement ) => {
-						const value: Record<string, string> = {
-							data: viewImage.getAttribute( 'srcset' )!
-						};
-
-						if ( viewImage.hasAttribute( 'width' ) ) {
-							value.width = viewImage.getAttribute( 'width' )!;
-						}
-
-						return value;
-					}
+					value: ( viewImage: ViewElement ) => viewImage.getAttribute( 'srcset' )
 				}
 			} );
 

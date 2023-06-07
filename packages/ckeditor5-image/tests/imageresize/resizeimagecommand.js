@@ -24,7 +24,7 @@ describe( 'ResizeImageCommand', () => {
 			isObject: true,
 			isBlock: true,
 			allowWhere: '$block',
-			allowAttributes: 'width'
+			allowAttributes: 'resizedWidth'
 		} );
 
 		model.schema.register( 'caption', {
@@ -40,25 +40,25 @@ describe( 'ResizeImageCommand', () => {
 
 	describe( '#isEnabled', () => {
 		it( 'is true when image is selected', () => {
-			setData( model, '<p>x</p>[<imageBlock width="50px"></imageBlock>]<p>x</p>' );
+			setData( model, '<p>x</p>[<imageBlock resizedWidth="50px"></imageBlock>]<p>x</p>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
 
 		it( 'is true when the selection is inside a block image caption', () => {
-			setData( model, '<imageBlock width="50px"><caption>[F]oo</caption></imageBlock>' );
+			setData( model, '<imageBlock resizedWidth="50px"><caption>[F]oo</caption></imageBlock>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
 
 		it( 'is false when image is not selected', () => {
-			setData( model, '<p>x[]</p><imageBlock width="50px"></imageBlock>' );
+			setData( model, '<p>x[]</p><imageBlock resizedWidth="50px"></imageBlock>' );
 
 			expect( command ).to.have.property( 'isEnabled', false );
 		} );
 
 		it( 'is false when more than one image is selected', () => {
-			setData( model, '<p>x</p>[<imageBlock width="50px"></imageBlock><imageBlock width="50px"></imageBlock>]' );
+			setData( model, '<p>x</p>[<imageBlock resizedWidth="50px"></imageBlock><imageBlock resizedWidth="50px"></imageBlock>]' );
 
 			expect( command ).to.have.property( 'isEnabled', false );
 		} );
@@ -66,24 +66,24 @@ describe( 'ResizeImageCommand', () => {
 
 	describe( '#value', () => {
 		it( 'is null when image is not selected', () => {
-			setData( model, '<p>x[]</p><imageBlock width="50px"></imageBlock>' );
+			setData( model, '<p>x[]</p><imageBlock resizedWidth="50px"></imageBlock>' );
 
 			expect( command ).to.have.property( 'value', null );
 		} );
 
 		it( 'is set to an object with a width property (and height set to null) when a block image is selected', () => {
-			setData( model, '<p>x</p>[<imageBlock width="50px"></imageBlock>]<p>x</p>' );
+			setData( model, '<p>x</p>[<imageBlock resizedWidth="50px"></imageBlock>]<p>x</p>' );
 
 			expect( command ).to.have.deep.property( 'value', { width: '50px', height: null } );
 		} );
 
 		it( 'is set to an object with a width property (and height set to null) when the selection is in a block image caption', () => {
-			setData( model, '<imageBlock width="50px"><caption>[]Foo</caption></imageBlock>' );
+			setData( model, '<imageBlock resizedWidth="50px"><caption>[]Foo</caption></imageBlock>' );
 
 			expect( command ).to.have.deep.property( 'value', { width: '50px', height: null } );
 		} );
 
-		it( 'is set to null if image does not have the width set', () => {
+		it( 'is set to null if image does not have the resizedWidth set', () => {
 			setData( model, '<p>x</p>[<imageBlock></imageBlock>]<p>x</p>' );
 
 			expect( command ).to.have.property( 'value', null );
@@ -91,29 +91,29 @@ describe( 'ResizeImageCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'sets image width', () => {
-			setData( model, '[<imageBlock width="50px"></imageBlock>]' );
+		it( 'sets image resizedWidth', () => {
+			setData( model, '[<imageBlock resizedWidth="50px"></imageBlock>]' );
 
 			command.execute( { width: '100%' } );
 
-			expect( getData( model ) ).to.equal( '[<imageBlock width="100%"></imageBlock>]' );
+			expect( getData( model ) ).to.equal( '[<imageBlock resizedWidth="100%"></imageBlock>]' );
 		} );
 
-		it( 'sets image width when selection is in a block image caption', () => {
-			setData( model, '<imageBlock width="50px"><caption>F[o]o</caption></imageBlock>' );
+		it( 'sets image resizedWidth when selection is in a block image caption', () => {
+			setData( model, '<imageBlock resizedWidth="50px"><caption>F[o]o</caption></imageBlock>' );
 
 			command.execute( { width: '100%' } );
 
-			expect( getData( model ) ).to.equal( '<imageBlock width="100%"><caption>F[o]o</caption></imageBlock>' );
+			expect( getData( model ) ).to.equal( '<imageBlock resizedWidth="100%"><caption>F[o]o</caption></imageBlock>' );
 		} );
 
-		it( 'removes image width when null passed', () => {
-			setData( model, '[<imageBlock width="50px"></imageBlock>]' );
+		it( 'removes image resizedWidth when null passed', () => {
+			setData( model, '[<imageBlock resizedWidth="50px"></imageBlock>]' );
 
 			command.execute( { width: null } );
 
 			expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
-			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'width' ) ).to.be.false;
+			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'resizedWidth' ) ).to.be.false;
 		} );
 	} );
 } );
