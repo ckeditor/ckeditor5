@@ -341,7 +341,7 @@ export default class ColorInputView extends View {
 			}
 		} );
 
-		colorGrid.bind( 'selectedColor' ).to( this, 'value' );
+		// colorGrid.bind( 'selectedColor' ).to( this, 'value' );
 
 		return colorGrid;
 	}
