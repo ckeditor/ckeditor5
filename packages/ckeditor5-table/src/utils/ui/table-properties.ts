@@ -373,6 +373,7 @@ export const defaultColors: Array<ColorOption> = [
  * @param options.columns The configuration of the number of columns the color palette consists of in the input's dropdown.
  * @param options.defaultColorValue If specified, the color input view will replace the "Remove color" button with
  * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
+ * @param options.colorPickerConfig The configuration of the color picker. You could disable it or define your output format.
  */
 export function getLabeledColorInputCreator(
 	options: {

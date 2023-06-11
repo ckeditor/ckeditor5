@@ -438,7 +438,10 @@ describe( 'table utils', () => {
 			beforeEach( () => {
 				creator = getLabeledColorInputCreator( {
 					colorConfig,
-					columns: 3
+					columns: 3,
+					colorPickerConfig: {
+						format: 'hex'
+					}
 				} );
 
 				labeledField = new LabeledFieldView( { t: () => {} }, creator );
@@ -510,6 +513,13 @@ describe( 'table utils', () => {
 
 				labeledField.fieldView.isFocused = false;
 				expect( labeledField.isFocused ).to.be.false;
+			} );
+
+			it( 'should have proper format in color picker', () => {
+				const panelView = labeledField.fieldView.dropdownView.panelView;
+				const colorPicker = panelView.children.get( 0 ).colorPickerPageView.colorPickerView;
+
+				expect( colorPicker._format ).to.equal( 'hex' );
 			} );
 		} );
 	} );

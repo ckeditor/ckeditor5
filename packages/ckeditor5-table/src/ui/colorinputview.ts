@@ -258,18 +258,6 @@ export default class ColorInputView extends View {
 			}
 		} );
 
-		colorGrid.on( 'execute', ( evt, data ) => {
-			if ( data.source === 'saveButton' ) {
-				dropdown.isOpen = false;
-			}
-		} );
-
-		colorGrid.on( 'cancel', () => {
-			this.value = this.options.defaultColorValue || '';
-			this.fire( 'input' );
-			dropdown.isOpen = false;
-		} );
-
 		return dropdown;
 	}
 
@@ -324,21 +312,35 @@ export default class ColorInputView extends View {
 			columns: this.options.columns,
 			removeButtonLabel: removeColorButtonLabel,
 			colorPickerLabel: t( 'Color picker' ),
-			colorPickerConfig: {
+			colorPickerConfig: this.options.colorPickerConfig ? {
 				...this.options.colorPickerConfig,
 				hideInput: true
-			}
+			} : false
 		} );
 
 		colorGrid!.appendUI();
 
 		colorGrid.on( 'execute', ( _, data ) => {
+			if ( data.source === 'saveButton' ) {
+				this.dropdownView.isOpen = false;
+				return;
+			}
+
 			this.value = data.value || defaultColor;
+
 			this.fire( 'input' );
 
 			if ( data.source !== 'colorPicker' ) {
 				this.dropdownView.isOpen = false;
 			}
+		} );
+
+		colorGrid.on( 'cancel', () => {
+			this.value = this.options.defaultColorValue || '';
+
+			this.fire( 'input' );
+
+			this.dropdownView.isOpen = false;
 		} );
 
 		// colorGrid.bind( 'selectedColor' ).to( this, 'value' );

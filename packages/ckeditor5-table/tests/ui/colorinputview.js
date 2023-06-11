@@ -34,7 +34,7 @@ const DEFAULT_COLORS = [
 ];
 
 describe( 'ColorInputView', () => {
-	let view, locale, colorGridView, removeColorButton, inputView;
+	let view, locale, colorGridView, removeColorButton, inputView, colorTableView;
 
 	beforeEach( () => {
 		locale = { t: val => val };
@@ -44,6 +44,7 @@ describe( 'ColorInputView', () => {
 		} );
 		view.render();
 
+		colorTableView = view.dropdownView.panelView.children.first;
 		inputView = view.inputView;
 		removeColorButton = view.dropdownView.panelView.children.first.colorGridsPageView.removeColorButtonView;
 		colorGridView = view.dropdownView.panelView.children.first.colorGridsPageView.staticColorsGrid;
@@ -143,6 +144,47 @@ describe( 'ColorInputView', () => {
 				view.value = '';
 
 				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).to.be.false;
+			} );
+
+			it( 'should show color grids when dropdown is closed', () => {
+				const spy = sinon.spy( colorTableView, 'showColorGrids' );
+				const dropdown = view.dropdownView;
+
+				dropdown.isOpen = true;
+				dropdown.isOpen = false;
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should close dropdown when "save button" is pressed', () => {
+				const dropdown = view.dropdownView;
+				const spy = sinon.spy();
+
+				view.on( 'input', spy );
+
+				dropdown.isOpen = true;
+
+				colorTableView.fire( 'execute', {
+					source: 'saveButton'
+				} );
+
+				sinon.assert.notCalled( spy );
+				expect( dropdown.isOpen ).to.be.equal( false );
+			} );
+
+			it( 'should close dropdown and cancel changes when "cancel button" is pressed asd', () => {
+				const dropdown = view.dropdownView;
+				const spy = sinon.spy();
+
+				view.on( 'input', spy );
+
+				dropdown.isOpen = true;
+
+				colorTableView.fire( 'cancel' );
+
+				sinon.assert.calledOnce( spy );
+				expect( dropdown.isOpen ).to.be.equal( false );
+				expect( inputView.value ).to.be.equal( '' );
 			} );
 
 			it( 'should have the remove color button', () => {

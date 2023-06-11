@@ -30,9 +30,7 @@ ClassicEditor
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ],
 			tableProperties: {
-				colorPicker: {
-					format: 'rgb'
-				}
+				colorPicker: false
 			}
 		}
 	} )
