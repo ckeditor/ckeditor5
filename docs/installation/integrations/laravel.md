@@ -63,10 +63,6 @@ Once you have your custom build of the editor ready and the Laravel project has 
 └── ...
 ````
 
-<info-box>
-    Note that the name of the original `.zip` folder from the online builder has been shortened here to `ckeditor5`.
-</info-box>
-
 Then, modify the `welcome.blade.php` file contained in the `resources/views` directory to include the CKEditor 5 script. You can use this HTML boilerplate as a starting point:
 
 ```html
@@ -90,9 +86,5 @@ Then, modify the `welcome.blade.php` file contained in the `resources/views` dir
 </body>
 </html>
 ```
-
-<info-box>
-    In the snippet above, `ClassicEditor` is referenced, since that is the editor type that was chosen during the build process. If you are using a different editor type, you will have to alter the snippet accordingly.
-</info-box>
 
 Finally, in the root directory of your Laravel project, run `php artisan serve` to see the app in action.
