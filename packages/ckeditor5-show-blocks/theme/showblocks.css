@@ -11,15 +11,14 @@
 }
 
 @define-mixin block-name-background $text {
-	background-image: url("data:image/svg+xml;utf8,<svg width='60' height='8' xmlns='http://www.w3.org/2000/svg'><text y='6' font-size='8px' font-family='monospace'>$(text)</text></svg>");
+	background-image: url("data:image/svg+xml;utf8,<svg width='60' height='8' xmlns='http://www.w3.org/2000/svg'><defs><filter x='0' y='0' width='1' height='1' id='blockslabel'><feFlood flood-color='%23EAEAEA'/><feComposite in='SourceGraphic' operator='xor'/></filter></defs><text filter='url(%23blockslabel)' y='6' font-size='8px' font-family='monospace'>$(text)</text><text y='6' font-size='8px' font-family='monospace'>$(text)</text></svg>");
 	background-repeat: no-repeat;
 	background-position: 2px 2px;
 	padding-top: 8px;
 	border: 1px dashed var(--ck-show-blocks-border-color);
 
 	@mixin ck-dir rtl {
-		background-image: url("data:image/svg+xml;utf8,<svg width='100%' height='8' xmlns='http://www.w3.org/2000/svg'><text y='6' x='100%' font-size='8px' font-family='monospace' text-anchor='end'>$(text)</text></svg>");
-		background-position: top right;
+		background-image: url("data:image/svg+xml;utf8,<svg width='100%' height='8' xmlns='http://www.w3.org/2000/svg'><defs><filter x='0' y='0' width='1' height='1' id='blockslabel'><feFlood flood-color='%23EAEAEA'/><feComposite in='SourceGraphic' operator='xor'/></filter></defs><text filter='url(%23blockslabel)' y='6' x='100%' font-size='8px' font-family='monospace' text-anchor='end'>$(text)</text><text y='6' x='100%' font-size='8px' font-family='monospace' text-anchor='end'>$(text)</text></svg>");
 		background-position: -4px 2px;
 	}
 }
@@ -35,6 +34,13 @@
 
 	& blockquote {
 		@mixin block-name-background BLOCKQUOTE;
+
+		border-left: solid 5px hsl(0, 0%, 80%);
+
+		@mixin ck-dir rtl {
+			border-left: 1px dashed var(--ck-show-blocks-border-color);
+			border-right: solid 5px hsl(0, 0%, 80%);
+		}
 	}
 
 	& > div {
