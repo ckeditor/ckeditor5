@@ -18,5 +18,19 @@ export default class ShowBlocksCommand extends Command {
 	/**
 	 * @TODO
 	 */
-	public override execute(): void {}
+	public override execute(): void {
+		const CLASS_NAME = 'ck-show-blocks';
+		const view = this.editor.editing.view;
+
+		view.change( writer => {
+			// Multiroot support.
+			for ( const root of view.document.roots ) {
+				if ( !root.hasClass( CLASS_NAME ) ) {
+					writer.addClass( CLASS_NAME, root );
+				} else {
+					writer.removeClass( CLASS_NAME, root );
+				}
+			}
+		} );
+	}
 }
