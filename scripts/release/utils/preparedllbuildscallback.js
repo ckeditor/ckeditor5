@@ -24,8 +24,9 @@ module.exports = function prepareDllBuildsCallback( packagePath ) {
 
 	return tools.shExec( 'yarn run dll:build', {
 		cwd: packagePath,
-		verbosity: 'error'
-	}, { async: true } );
+		verbosity: 'error',
+		async: true
+	} );
 
 	function isDllPackage() {
 		return 'dll:build' in ( packageJson.scripts || {} );

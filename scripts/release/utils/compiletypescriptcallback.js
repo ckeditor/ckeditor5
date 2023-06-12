@@ -22,8 +22,9 @@ module.exports = async function compileTypeScriptCallback( packagePath ) {
 
 	return tools.shExec( 'yarn run build', {
 		cwd: packagePath,
-		verbosity: 'error'
-	}, { async: true } );
+		verbosity: 'error',
+		async: true
+	} );
 
 	/**
 	 * @param {String} packagePath
