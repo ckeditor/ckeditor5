@@ -1016,6 +1016,7 @@ class ColorPickerPageView extends View {
 		saveButtonView.set( {
 			icon: checkButtonIcon,
 			class: 'ck-button-save',
+			type: 'button',
 			withText: false,
 			label: t( 'Accept' )
 		} );
@@ -1023,6 +1024,7 @@ class ColorPickerPageView extends View {
 		cancelButtonView.set( {
 			icon: cancelButtonIcon,
 			class: 'ck-button-cancel',
+			type: 'button',
 			withText: false,
 			label: t( 'Cancel' )
 		} );
