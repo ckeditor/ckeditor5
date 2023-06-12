@@ -14,7 +14,7 @@ import {
 	FontSize,
 	FontFamily,
 	FontColor,
-	FontBackgroundColor
+	FontBackgroundColor,
 } from '@ckeditor/ckeditor5-font';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -24,7 +24,7 @@ import {
 	Strikethrough,
 	Underline,
 	Superscript,
-	Subscript
+	Subscript,
 } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -33,12 +33,14 @@ import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageResize,
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
-	PictureEditing
+	PictureEditing,
+	AutoImage
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -91,6 +93,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		EasyImage,
 		Heading,
 		Image,
+		ImageInsert,
+		AutoImage,
 		ImageCaption,
 		ImageResize,
 		ImageStyle,
@@ -118,7 +122,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		ContentTemplates,
 		Exercise,
 		Modal,
-		StyledLink
+		StyledLink,
 	];
 
 	public static override defaultConfig = {
@@ -148,6 +152,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'|',
 				'link',
 				'uploadImage',
+				'insertImage',
 				'insertTable',
 				'mediaEmbed',
 				'|',
@@ -164,8 +169,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'contentTemplates',
 				'exercise',
 				'modal',
-				'styledLink'
-			]
+				'styledLink',
+			],
 		},
 		image: {
 			resizeUnit: 'px' as const,
@@ -175,25 +180,21 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
-			]
+				'imageTextAlternative',
+			],
 		},
 		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
+			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
 		},
 		list: {
 			properties: {
 				styles: true,
 				startIndex: true,
-				reversed: true
-			}
+				reversed: true,
+			},
 		},
 
 		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en'
+		language: 'en',
 	};
 }
