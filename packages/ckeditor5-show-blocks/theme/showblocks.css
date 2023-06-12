@@ -23,6 +23,66 @@
 }
 
 .ck.ck-editor__editable.ck-show-blocks {
+	& address {
+		@mixin block-name-background ADDRESS;
+	}
+
+	& aside {
+		@mixin block-name-background ASIDE;
+	}
+
+	& blockquote {
+		@mixin block-name-background BLOCKQUOTE;
+	}
+
+	& > div {
+		@mixin block-name-background DIV;
+	}
+
+	& footer {
+		@mixin block-name-background FOOTER;
+	}
+
+	& h1 {
+		@mixin block-name-background H1;
+	}
+
+	& h2 {
+		@mixin block-name-background H2;
+	}
+
+	& h3 {
+		@mixin block-name-background H3;
+	}
+
+	& h4 {
+		@mixin block-name-background H4;
+	}
+
+	& h5 {
+		@mixin block-name-background H5;
+	}
+
+	& h6 {
+		@mixin block-name-background H6;
+	}
+
+	& header {
+		@mixin block-name-background HEADER;
+	}
+
+	& main {
+		@mixin block-name-background MAIN;
+	}
+
+	& nav {
+		@mixin block-name-background NAV;
+	}
+
+	& pre {
+		@mixin block-name-background PRE;
+	}
+
 	& ol {
 		@mixin block-name-background OL;
 	}
@@ -31,15 +91,15 @@
 		@mixin block-name-background UL;
 	}
 
-	& blockquote {
-		@mixin block-name-background BLOCKQUOTE;
-	}
-
 	& p {
 		@mixin block-name-background P;
 	}
 
-	& figure.image figcaption {
+	& section {
+		@mixin block-name-background SECTION;
+	}
+
+	& figure.image figcaption, figure.table figcaption {
 		@mixin block-name-background FIGCAPTION;
 	}
 }
