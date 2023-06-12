@@ -49,6 +49,51 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		editor.execute( 'showBlocks' );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-rtl' ), {
+		cloudServices: CS_CONFIG,
+		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, ShowBlocks ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold', 'italic', 'numberedList', 'bulletedList',
+			'|',
+			'link', 'blockquote', 'uploadImage', 'insertTable', 'mediaEmbed',
+			'|',
+			'undo', 'redo',
+			'|',
+			'showBlocks'
+		],
+		image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		},
+		language: 'ar'
+	} )
+	.then( editor => {
+		window.editor = editor;
+
+		editor.execute( 'showBlocks' );
 	} )
 	.catch( err => {
 		console.error( err.stack );
