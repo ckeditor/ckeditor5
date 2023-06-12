@@ -2,3 +2,44 @@
  * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+:root {
+	--ck-show-blocks-border-color: hsl(0, 0%, 46%);
+	--ck-show-blocks-label-background-color: hsl(0, 0%, 92%);
+}
+
+@define-mixin block-name-background $text {
+	background-image: url("data:image/svg+xml;utf8,<svg width='60' height='8' xmlns='http://www.w3.org/2000/svg'><text y='6' font-size='8px' font-family='monospace'>$(text)</text></svg>");
+	background-repeat: no-repeat;
+	background-position: 2px 2px;
+	padding-top: 8px;
+	border: 1px dashed var(--ck-show-blocks-border-color);
+
+	@mixin ck-dir rtl {
+		background-position: top right;
+	}
+}
+
+.ck.ck-editor__editable.ck-show-blocks {
+	& ol {
+		@mixin block-name-background OL;
+	}
+
+	& ul {
+		@mixin block-name-background UL;
+	}
+
+	& blockquote {
+		@mixin block-name-background BLOCKQUOTE;
+	}
+
+	& p {
+		@mixin block-name-background P;
+	}
+
+	& figure.image figcaption {
+		@mixin block-name-background FIGCAPTION;
+	}
+}
