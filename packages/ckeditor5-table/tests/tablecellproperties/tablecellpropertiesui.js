@@ -932,7 +932,7 @@ describe( 'table cell properties', () => {
 				expect( editor.config.get( 'table.tableCellProperties.colorPicker' ) ).to.be.false;
 			} );
 
-			it( 'should define table.tableCellProperties colorPicker asd', () => {
+			it( 'should not have color picker in dropdown', () => {
 				tableCellPropertiesUI._showView();
 
 				const panelView = tableCellPropertiesUI.view.borderColorInput.fieldView.dropdownView.panelView;

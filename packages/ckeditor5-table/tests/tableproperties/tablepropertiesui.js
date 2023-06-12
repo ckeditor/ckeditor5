@@ -916,7 +916,6 @@ describe( 'table properties', () => {
 		} );
 
 		it( 'should define table.tableProperties colorPicker', () => {
-			tablePropertiesUI._showView();
 			expect( editor.config.get( 'table.tableProperties.colorPicker' ) ).to.be.false;
 		} );
 
