@@ -16,6 +16,11 @@ import { Command, type Editor } from 'ckeditor5/src/core';
  */
 export default class ShowBlocksCommand extends Command {
 	/**
+	 * @TODO
+	 */
+	declare public value: boolean;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
@@ -23,6 +28,8 @@ export default class ShowBlocksCommand extends Command {
 
 		// It does not affect data so should be enabled in read-only mode.
 		this.affectsData = false;
+
+		this.value = false;
 	}
 
 	/**
@@ -37,8 +44,10 @@ export default class ShowBlocksCommand extends Command {
 			for ( const root of view.document.roots ) {
 				if ( !root.hasClass( CLASS_NAME ) ) {
 					writer.addClass( CLASS_NAME, root );
+					this.value = true;
 				} else {
 					writer.removeClass( CLASS_NAME, root );
+					this.value = false;
 				}
 			}
 		} );

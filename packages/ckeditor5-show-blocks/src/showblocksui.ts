@@ -44,7 +44,7 @@ export default class ShowBlocksUI extends Plugin {
 				tooltip: true
 			} );
 
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
