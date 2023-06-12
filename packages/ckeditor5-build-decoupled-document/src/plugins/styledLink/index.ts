@@ -1,4 +1,4 @@
-import icon from './link.svg';
+import icon from './icon.svg';
 
 export { default as StyledLink } from './styledLink';
 

@@ -65,6 +65,7 @@ import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-
 import { Exercise } from './plugins/exercise/index';
 // @ts-ignore
 import { Modal } from './plugins/modal';
+// @ts-ignore
 import { StyledLink } from './plugins/styledLink/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
