@@ -97,6 +97,7 @@ export default class ImageResizeEditing extends Plugin {
 	 */
 	private _registerConverters( imageType: 'imageBlock' | 'imageInline' ) {
 		const editor = this.editor;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
@@ -118,7 +119,7 @@ export default class ImageResizeEditing extends Plugin {
 			} )
 		);
 
-		editor.conversion.for( 'downcast' ).add( dispatcher =>
+		editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
 			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
@@ -133,6 +134,35 @@ export default class ImageResizeEditing extends Plugin {
 				} else {
 					viewWriter.removeStyle( 'height', figure );
 					viewWriter.removeClass( 'image_resized', figure );
+				}
+			} )
+		);
+
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
+			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const figure = conversionApi.mapper.toViewElement( data.item );
+
+				if ( data.attributeNewValue !== null ) {
+					viewWriter.setStyle( 'height', data.attributeNewValue, figure );
+					viewWriter.addClass( 'image_resized', figure );
+				} else {
+					viewWriter.removeStyle( 'height', figure );
+					viewWriter.removeClass( 'image_resized', figure );
+				}
+
+				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const img = imageUtils.findViewImgElement( viewElement )!;
+
+				const resizedWidth = parseInt( data.item.getAttribute( 'resizedWidth' ) );
+				const resizedHeight = parseInt( data.item.getAttribute( 'resizedHeight' ) );
+
+				if ( resizedWidth && resizedHeight ) {
+					viewWriter.setStyle( 'aspect-ratio', `${ resizedWidth }/${ resizedHeight }`, img );
 				}
 			} )
 		);

@@ -86,12 +86,19 @@ export default class ImageSizeAttributes extends Plugin {
 			} );
 
 		// Dedicated converter to propagate attributes to the <img> element.
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			attachDowncastConverter( dispatcher, 'width', 'width' );
-			attachDowncastConverter( dispatcher, 'height', 'height' );
+		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+			attachDowncastConverter( dispatcher, 'width', 'width', false );
+			attachDowncastConverter( dispatcher, 'height', 'height', false );
 		} );
 
-		function attachDowncastConverter( dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string ) {
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+			attachDowncastConverter( dispatcher, 'width', 'width', true );
+			attachDowncastConverter( dispatcher, 'height', 'height', true );
+		} );
+
+		function attachDowncastConverter(
+			dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string, setAspectRatio: boolean
+		) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ modelAttributeName }:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
@@ -105,6 +112,18 @@ export default class ImageSizeAttributes extends Plugin {
 					viewWriter.setAttribute( viewAttributeName, data.attributeNewValue, img );
 				} else {
 					viewWriter.removeAttribute( viewAttributeName, img );
+				}
+
+				if ( !setAspectRatio ) {
+					return;
+				}
+
+				const width = data.item.getAttribute( 'width' );
+				const height = data.item.getAttribute( 'height' );
+				const aspectRatio = img.getStyle( 'aspect-ratio' );
+
+				if ( width && height && !aspectRatio ) {
+					viewWriter.setStyle( 'aspect-ratio', `${ width }/${ height }`, img );
 				}
 			} );
 		}
