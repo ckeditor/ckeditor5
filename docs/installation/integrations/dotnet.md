@@ -61,6 +61,10 @@ Once you have your custom editor build ready and the .NET project has been set u
 └── ...
 ````
 
+<info-box>
+    Note that the name of the original `.zip` folder from the online builder has been shortened here to `ckeditor5`.
+</info-box>
+
 Then, modify the `Index.cshtml` file contained in the `Pages` directory to include the CKEditor 5 script. You can use this HTML boilerplate as a starting point:
 
 ```html
@@ -83,5 +87,9 @@ Then, modify the `Index.cshtml` file contained in the `Pages` directory to inclu
     </script>
 </div>
 ```
+
+<info-box>
+    In the snippet above, `ClassicEditor` is referenced, since that is the editor type that was chosen during the build process. If you are using a different editor type, you will have to alter the snippet accordingly.
+</info-box>
 
 Finally, in the root of your .NET project, run `dotnet watch run` to see the app in action.
