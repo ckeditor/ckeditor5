@@ -23,7 +23,8 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "^38.0.0"
+    "ckeditor5": "^38.0.0",
+    "@ckeditor/ckeditor5-ui": "^38.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
@@ -31,7 +32,6 @@
     "@ckeditor/ckeditor5-essentials": "^38.0.0",
     "@ckeditor/ckeditor5-core": "^38.0.0",
     "@ckeditor/ckeditor5-paragraph": "^38.0.0",
-    "@ckeditor/ckeditor5-ui": "^38.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^38.0.0",
     "@ckeditor/ckeditor5-heading": "^38.0.0",
     "@ckeditor/ckeditor5-utils": "^38.0.0",
