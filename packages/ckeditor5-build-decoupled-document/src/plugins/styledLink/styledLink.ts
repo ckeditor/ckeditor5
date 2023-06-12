@@ -1,6 +1,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import icon from './link.svg';
+import icon from './icon.svg';
 
 export default class StyledLink extends Plugin {
 	public static get pluginName(): 'StyledLink' {
@@ -14,21 +14,21 @@ export default class StyledLink extends Plugin {
 		const open = editor.config._config.styledLink.onOpen;
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
-		editor.ui.componentFactory.add( 'styledLink', () => {
+		editor.ui.componentFactory.add('styledLink', () => {
 			// The button will be an instance of ButtonView.
 			const button = new ButtonView();
 
-			button.set( {
+			button.set({
 				label: 'Styled Link',
 				withText: false,
-				icon
-			} );
+				icon,
+			});
 
-			button.on( 'execute', () => {
+			button.on('execute', () => {
 				open();
-			} );
+			});
 
 			return button;
-		} );
+		});
 	}
 }
