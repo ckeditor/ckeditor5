@@ -34,7 +34,7 @@ import type { FontColorConfig } from '../fontconfig';
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
  *
  * It is used to create the `'fontBackgroundColor'` and `'fontColor'` dropdowns, each hosting
- * a {@link module:font/ui/colortableview~ColorTableView}.
+ * a {@link module:ui/colortable/colortableview~ColorTableView}.
  */
 export default class ColorUI extends Plugin {
 	/**
@@ -64,7 +64,7 @@ export default class ColorUI extends Plugin {
 	public columns: number;
 
 	/**
-	 * Keeps a reference to {@link module:font/ui/colortableview~ColorTableView}.
+	 * Keeps a reference to {@link module:ui/colortable/colortableview~ColorTableView}.
 	 */
 	public colorTableView: ColorTableView | undefined;
 
@@ -74,7 +74,7 @@ export default class ColorUI extends Plugin {
 	declare private _undoStepBatch: Batch;
 
 	/**
-	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
+	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:ui/colortable/colortableview~ColorTableView}.
 	 *
 	 * @param config The configuration object.
 	 * @param config.commandName The name of the command which will be executed when a color tile is clicked.

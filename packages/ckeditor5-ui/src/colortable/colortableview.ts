@@ -4,7 +4,7 @@
  */
 
 /**
- * @module font/ui/colortableview
+ * @module ui/colortable/colortableview
  */
 
 import ButtonView from '../button/buttonview';
@@ -33,8 +33,8 @@ import '../../theme/components/colortable/colortabletheme.css';
 /**
  * A class which represents a view with the following sub–components:
  *
- * * A {@link module:font/ui/colortableview~ColorTableView#colorGridsPageView color grids component},
- * * A {@link module:font/ui/colortableview~ColorTableView#colorPickerPageView color picker component}.
+ * * A {@link module:ui/colortable/colortableview~ColorTableView#colorGridsPageView color grids component},
+ * * A {@link module:ui/colortable/colortableview~ColorTableView#colorPickerPageView color picker component}.
  */
 export default class ColorTableView extends View {
 	/**
@@ -297,7 +297,7 @@ export default class ColorTableView extends View {
 
 	/**
 	 * Refreshes the state of the selected color in one or both {@link module:ui/colorgrid/colorgridview~ColorGridView}s
-	 * available in the {@link module:font/ui/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
+	 * available in the {@link module:ui/colortable/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
 	 * of them.
 	 */
 	public updateSelectedColors(): void {
@@ -356,7 +356,8 @@ class ColorGridsPageView extends View {
 	public columns: number;
 
 	/**
-	 * A collection of definitions that store the document colors.
+	 * Preserves the reference to {@link module:ui/colortable/documentcolorcollection~DocumentColorCollection} used to collect
+	 * definitions that store the document colors.
 	 *
 	 * @readonly
 	 */
@@ -530,7 +531,7 @@ class ColorGridsPageView extends View {
 
 	/**
 	 * Refreshes the state of the selected color in one or both {@link module:ui/colorgrid/colorgridview~ColorGridView}s
-	 * available in the {@link module:font/ui/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
+	 * available in the {@link module:ui/colortable/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
 	 * of them.
 	 */
 	public updateSelectedColors(): void {

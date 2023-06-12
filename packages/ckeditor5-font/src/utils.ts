@@ -98,9 +98,9 @@ export function renderDowncastElement( styleAttr: string ) {
 }
 
 /**
- * A helper that adds {@link module:font/ui/colortableview~ColorTableView} to the color dropdown with proper initial values.
+ * A helper that adds {@link module:ui/colortable/colortableview~ColorTableView} to the color dropdown with proper initial values.
  *
- * @param config.dropdownView The dropdown view to which a {@link module:font/ui/colortableview~ColorTableView} will be added.
+ * @param config.dropdownView The dropdown view to which a {@link module:ui/colortable/colortableview~ColorTableView} will be added.
  * @param config.colors An array with definitions representing colors to be displayed in the color table.
  * @param config.removeButtonLabel The label for the button responsible for removing the color.
  * @param config.documentColorsLabel The label for the section with document colors.
