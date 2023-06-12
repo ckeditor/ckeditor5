@@ -874,15 +874,13 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		// console.log( 'render dom selection' );
-
+		// Remove DOM selection from blurred editable so it won't interfere with clicking on dropdowns (especially on iOS).
 		if ( !this.isFocused ) {
 			const domSelection = domRoot.ownerDocument.defaultView!.getSelection()!;
 			const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 			const selectionInEditable = newViewSelection.rangeCount > 0;
 
 			if ( selectionInEditable ) {
-				// console.log( '-- clear DOM selection --' );
 				domSelection.removeAllRanges();
 				this._removeFakeSelection();
 			}

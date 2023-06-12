@@ -215,11 +215,6 @@ export default class View extends ObservableMixin() {
 		this.listenTo<ObservableChangeEvent>( this.document, 'change:isFocused', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
-
-		// Trigger re-render if the editor gained or lost DOM selection.
-		this.listenTo<ObservableChangeEvent>( this, 'change:hasDomSelection', () => {
-			this._hasChangedSinceTheLastRendering = true;
-		} );
 	}
 
 	/**
@@ -573,7 +568,6 @@ export default class View extends ObservableMixin() {
 	 */
 	public forceRender(): void {
 		this._hasChangedSinceTheLastRendering = true;
-		this.getObserver( FocusObserver )!.flush();
 		this.change( () => {} );
 	}
 

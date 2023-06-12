@@ -16,12 +16,9 @@ import '../theme/fakevisualselection.css';
 const VISUAL_SELECTION_MARKER_NAME = 'fake-visual-selection';
 
 /**
- * TODO
+ * Displays a fake visual selection when the editable is blurred.
  */
 export default class FakeVisualSelection extends Plugin {
-	/**
-	 * TODO
-	 */
 	private readonly _hideFakeVisualSelectionDelayed = delay( () => this._hideFakeVisualSelection(), 0 );
 
 	/**
