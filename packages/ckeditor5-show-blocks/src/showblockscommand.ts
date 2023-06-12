@@ -7,7 +7,7 @@
  * @module show-blocks/showblockscommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * The show blocks command.
@@ -15,6 +15,16 @@ import { Command } from 'ckeditor5/src/core';
  * Displays the HTML element names for content blocks.
  */
 export default class ShowBlocksCommand extends Command {
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
+	}
+
 	/**
 	 * @TODO
 	 */
