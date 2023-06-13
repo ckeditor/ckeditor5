@@ -347,7 +347,7 @@ We need to register it in the editor's UI `componentFactory`, so it can be displ
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
@@ -405,7 +405,7 @@ We will use the `insertContent()` method to insert our abbreviation and its titl
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
