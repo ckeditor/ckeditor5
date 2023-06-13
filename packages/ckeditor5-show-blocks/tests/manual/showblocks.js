@@ -3,47 +3,234 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+/* globals window, document, console */
 
 import ShowBlocks from '../../src/showblocks';
 
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { ExportPdf } from '@ckeditor/ckeditor5-export-pdf';
+import { ExportWord } from '@ckeditor/ckeditor5-export-word';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+import { Font } from '@ckeditor/ckeditor5-font';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import {
+	AutoImage,
+	Image,
+	ImageCaption,
+	ImageInsert,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	PictureEditing
+} from '@ckeditor/ckeditor5-image';
+import { ImportWord } from '@ckeditor/ckeditor5-import-word';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { AutoLink, Link, LinkImage } from '@ckeditor/ckeditor5-link';
+import { DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
+import { Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		cloudServices: CS_CONFIG,
-		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, ShowBlocks ],
-		toolbar: [
-			'heading',
-			'|',
-			'bold', 'italic', 'numberedList', 'bulletedList',
-			'|',
-			'link', 'blockquote', 'uploadImage', 'insertTable', 'mediaEmbed',
-			'|',
-			'undo', 'redo',
-			'|',
-			'showBlocks'
+		plugins: [
+			Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption,
+			ImageStyle, ImageToolbar, Indent, Italic, Link, DocumentList, MediaEmbed,
+			Paragraph, Table, TableToolbar, Alignment, AutoImage, AutoLink,
+			CloudServices, Code, CodeBlock, Essentials, ExportPdf,
+			ExportWord, ImportWord, FindAndReplace, Font, Highlight, HorizontalLine,
+			HtmlEmbed, GeneralHtmlSupport, ImageInsert, ImageResize, ImageUpload, IndentBlock,
+			LinkImage, DocumentListProperties, Mention, PageBreak, PasteFromOffice,
+			PictureEditing, RemoveFormat, SourceEditing, SpecialCharacters,
+			SpecialCharactersEssentials, Strikethrough, Subscript, Superscript,
+			TableCaption, TableCellProperties, TableColumnResize,
+			TableProperties, TextTransformation,
+			Underline, ShowBlocks
 		],
-		image: {
-			toolbar: [
-				'imageStyle:inline',
-				'imageStyle:wrapText',
-				'imageStyle:breakText',
+		toolbar: {
+			items: [
+				'showBlocks', 'undo', 'redo',
 				'|',
-				'toggleImageCaption',
-				'imageTextAlternative'
+				'sourceEditing',
+				'|',
+				'exportPdf', 'exportWord', 'importWord',
+				'|',
+				'findAndReplace', 'selectAll',
+				'|',
+				'heading',
+				'|',
+				'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+				'-',
+				'bold', 'italic', 'underline',
+				{
+					label: 'Formatting',
+					icon: 'text',
+					items: [ 'strikethrough', 'subscript', 'superscript', 'code', '|', 'removeFormat' ]
+				},
+				'|',
+				'specialCharacters', 'horizontalLine', 'pageBreak',
+				'|',
+				'link', 'insertImage', 'insertTable',
+				{
+					label: 'Insert',
+					icon: 'plus',
+					items: [ 'highlight', 'blockQuote', 'mediaEmbed', 'codeBlock', 'htmlEmbed' ]
+				},
+				'|',
+				'alignment',
+				'|',
+				'bulletedList', 'numberedList', 'outdent', 'indent'
+			],
+			shouldNotGroupWhenFull: true
+		},
+		exportPdf: {
+			stylesheets: [
+				'../../assets/pagination-fonts.css',
+				'EDITOR_STYLES',
+				'../../snippets/features/pagination/snippet.css',
+				'../../assets/pagination.css'
+			],
+			fileName: 'export-pdf-demo.pdf',
+			appID: 'cke5-docs',
+			converterOptions: {
+				format: 'Tabloid',
+				margin_top: '20mm',
+				margin_bottom: '20mm',
+				margin_right: '24mm',
+				margin_left: '24mm',
+				page_orientation: 'portrait'
+			},
+			tokenUrl: false
+		},
+		exportWord: {
+			stylesheets: [ 'EDITOR_STYLES' ],
+			fileName: 'export-word-demo.docx',
+			appID: 'cke5-docs',
+			converterOptions: {
+				format: 'B4',
+				margin_top: '20mm',
+				margin_bottom: '20mm',
+				margin_right: '12mm',
+				margin_left: '12mm',
+				page_orientation: 'portrait'
+			},
+			tokenUrl: false
+		},
+		fontFamily: {
+			supportAllValues: true
+		},
+		fontSize: {
+			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
+			supportAllValues: true
+		},
+		htmlEmbed: {
+			showPreviews: true
+		},
+		image: {
+			styles: [
+				'alignCenter',
+				'alignLeft',
+				'alignRight'
+			],
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					label: 'Original',
+					value: null
+				},
+				{
+					name: 'resizeImage:50',
+					label: '50%',
+					value: '50'
+				},
+				{
+					name: 'resizeImage:75',
+					label: '75%',
+					value: '75'
+				}
+			],
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'resizeImage'
+			],
+			insert: {
+				integrations: [
+					'insertImageViaUrl'
+				]
+			}
+		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		},
+		link: {
+			decorators: {
+				addTargetToExternalLinks: true,
+				defaultProtocol: 'https://',
+				toggleDownloadable: {
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'file'
+					}
+				}
+			}
+		},
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: [
+						'@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+						'@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+						'@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+						'@sugar', '@sweet', '@topping', '@wafer'
+					],
+					minimumCharacters: 1
+				}
 			]
 		},
+		importWord: {
+			tokenUrl: false,
+			defaultStyles: true
+		},
+		placeholder: 'Type or paste your content here!',
 		table: {
 			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+			]
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
 			]
 		}
 	} )
@@ -51,5 +238,5 @@ ClassicEditor
 		window.editor = editor;
 	} )
 	.catch( err => {
-		console.error( err.stack );
+		console.error( err );
 	} );
