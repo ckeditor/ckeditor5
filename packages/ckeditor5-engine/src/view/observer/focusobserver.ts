@@ -84,7 +84,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			}
 		} );
 
-		view.on<ObservableChangeEvent>( 'change:hasDomSelection', ( evt, prop, hasDomSelection ) => {
+		view.on<ObservableChangeEvent>( 'change:hasDomSelection', () => {
 			if ( !this.document.isFocusChanging ) {
 				return;
 			}
@@ -117,14 +117,13 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			return;
 		}
 
-		const domRootWithActiveElement = Array.from( this.view.domRoots.values() )
-			.find( domRoot => domRoot.ownerDocument.activeElement ) || null;
-		const activeDomElement = domRootWithActiveElement && domRootWithActiveElement.ownerDocument.activeElement;
-		const activeViewElement = this.view.domConverter.mapDomToView( activeDomElement as HTMLElement );
+		const selection = this.view.document.selection;
+		const editableElement = selection && selection.editableElement;
+		const domEditableElement = editableElement && this.view.domConverter.mapViewToDom( editableElement );
 
-		const viewSelection = this.view.document.selection;
-
-		const isFocused = !!viewSelection && !!viewSelection.editableElement && viewSelection.editableElement == activeViewElement;
+		const domDocument = domEditableElement && domEditableElement.ownerDocument;
+		const domActiveElement = domDocument && domDocument.activeElement;
+		const isFocused = domDocument && domDocument.hasFocus() && domEditableElement && domActiveElement == domEditableElement;
 
 		if ( isFocused == this._isFocusing ) {
 			this.document.isFocusChanging = false;
