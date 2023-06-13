@@ -52,10 +52,6 @@ when content is available outside the editor. See https://github.com/ckeditor/ck
 	text-align: left;
 }
 
-.ck.ck-content .table td {
-	overflow-wrap: break-word;
-}
-
 .ck-editor__editable .ck-table-bogus-paragraph {
 	/*
 	 * Use display:inline-block to force Chrome/Safari to limit text mutations to this element.

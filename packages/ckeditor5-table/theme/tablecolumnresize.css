@@ -23,6 +23,7 @@
 .ck-content .table td,
 .ck-content .table th {
 	position: relative;
+	overflow-wrap: break-word;
 }
 
 .ck.ck-editor__editable .table .ck-table-column-resizer {
