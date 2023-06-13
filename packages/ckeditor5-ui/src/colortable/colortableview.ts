@@ -27,8 +27,7 @@ import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import colorPaletteIcon from '../../theme/icons/color-palette.svg';
 
-import '../../theme/components/colortable/colortablebase.css';
-import '../../theme/components/colortable/colortabletheme.css';
+import '../../theme/components/colortable/colortable.css';
 
 /**
  * A class which represents a view with the following sub–components:
