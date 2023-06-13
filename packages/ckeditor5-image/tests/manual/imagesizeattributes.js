@@ -15,6 +15,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import ImageResize from '../../src/imageresize';
 import ImageSizeAttributes from '../../src/imagesizeattributes';
 import ImageUpload from '../../src/imageupload';
+import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -28,7 +29,8 @@ const commonConfig = {
 		Indent,
 		IndentBlock,
 		CloudServices,
-		EasyImage
+		EasyImage,
+		PasteFromOffice
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
