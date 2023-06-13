@@ -915,7 +915,7 @@ describe( 'table properties', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should define table.tableProperties colorPicker', () => {
+		it( 'should define table.tableProperties.colorPicker', () => {
 			expect( editor.config.get( 'table.tableProperties.colorPicker' ) ).to.be.false;
 		} );
 

@@ -928,7 +928,7 @@ describe( 'table cell properties', () => {
 				return editor.destroy();
 			} );
 
-			it( 'should define table.tableCellProperties colorPicker', () => {
+			it( 'should define table.tableCellProperties.colorPicker', () => {
 				expect( editor.config.get( 'table.tableCellProperties.colorPicker' ) ).to.be.false;
 			} );
 
