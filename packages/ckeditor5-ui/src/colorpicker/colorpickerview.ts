@@ -22,6 +22,9 @@ import '../../theme/components/colorpicker/colorpicker.css';
 
 const waitingTime = 150;
 
+/**
+ * A class which represents a color picker with an input field for defining custom colors.
+ */
 export default class ColorPickerView extends View {
 	/**
 	 * Element with saturation and hue sliders.
