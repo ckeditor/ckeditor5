@@ -45,8 +45,8 @@ export default class ImageResizeButtons extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageResizeButtons' {
-		return 'ImageResizeButtons';
+	public static get pluginName() {
+		return 'ImageResizeButtons' as const;
 	}
 
 	/**

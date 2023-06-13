@@ -36,8 +36,8 @@ export default class Indent extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Indent' {
-		return 'Indent';
+	public static get pluginName() {
+		return 'Indent' as const;
 	}
 
 	/**

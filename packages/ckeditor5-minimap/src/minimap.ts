@@ -29,8 +29,8 @@ export default class Minimap extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Minimap' {
-		return 'Minimap';
+	public static get pluginName() {
+		return 'Minimap' as const;
 	}
 
 	/**

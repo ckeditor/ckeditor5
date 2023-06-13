@@ -20,8 +20,8 @@ export default class CKFinderEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKFinderEditing' {
-		return 'CKFinderEditing';
+	public static get pluginName() {
+		return 'CKFinderEditing' as const;
 	}
 
 	/**

@@ -40,8 +40,8 @@ export default class EasyImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'EasyImage' {
-		return 'EasyImage';
+	public static get pluginName() {
+		return 'EasyImage' as const;
 	}
 
 	/**

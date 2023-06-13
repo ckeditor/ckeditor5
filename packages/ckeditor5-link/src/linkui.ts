@@ -67,8 +67,8 @@ export default class LinkUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'LinkUI' {
-		return 'LinkUI';
+	public static get pluginName() {
+		return 'LinkUI' as const;
 	}
 
 	/**

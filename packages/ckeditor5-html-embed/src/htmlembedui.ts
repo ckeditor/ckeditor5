@@ -21,8 +21,8 @@ export default class HtmlEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HtmlEmbedUI' {
-		return 'HtmlEmbedUI';
+	public static get pluginName() {
+		return 'HtmlEmbedUI' as const;
 	}
 
 	/**

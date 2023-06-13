@@ -54,8 +54,8 @@ export default class ListPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ListPropertiesUI' {
-		return 'ListPropertiesUI';
+	public static get pluginName() {
+		return 'ListPropertiesUI' as const;
 	}
 
 	public init(): void {

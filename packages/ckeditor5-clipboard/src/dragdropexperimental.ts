@@ -186,8 +186,8 @@ export default class DragDropExperimental extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DragDropExperimental' {
-		return 'DragDropExperimental';
+	public static get pluginName() {
+		return 'DragDropExperimental' as const;
 	}
 
 	/**

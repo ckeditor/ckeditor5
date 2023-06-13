@@ -30,8 +30,8 @@ export default class CustomElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CustomElementSupport' {
-		return 'CustomElementSupport';
+	public static get pluginName() {
+		return 'CustomElementSupport' as const;
 	}
 
 	/**

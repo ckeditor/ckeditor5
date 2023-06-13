@@ -37,8 +37,8 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'GeneralHtmlSupport' {
-		return 'GeneralHtmlSupport';
+	public static get pluginName() {
+		return 'GeneralHtmlSupport' as const;
 	}
 
 	/**

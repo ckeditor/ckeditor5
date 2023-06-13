@@ -34,7 +34,7 @@ export default class FontColorUI extends ColorUI {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontColorUI' {
-		return 'FontColorUI';
+	public static get pluginName() {
+		return 'FontColorUI' as const;
 	}
 }

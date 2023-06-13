@@ -30,8 +30,8 @@ export default class ListStyle extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ListStyle' {
-		return 'ListStyle';
+	public static get pluginName() {
+		return 'ListStyle' as const;
 	}
 
 	constructor( editor: Editor ) {

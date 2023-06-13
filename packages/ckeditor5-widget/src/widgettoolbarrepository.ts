@@ -77,8 +77,8 @@ export default class WidgetToolbarRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'WidgetToolbarRepository' {
-		return 'WidgetToolbarRepository';
+	public static get pluginName() {
+		return 'WidgetToolbarRepository' as const;
 	}
 
 	/**

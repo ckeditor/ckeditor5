@@ -26,8 +26,8 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HeadingEditing' {
-		return 'HeadingEditing';
+	public static get pluginName() {
+		return 'HeadingEditing' as const;
 	}
 
 	/**

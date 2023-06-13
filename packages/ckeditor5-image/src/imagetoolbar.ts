@@ -37,8 +37,8 @@ export default class ImageToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageToolbar' {
-		return 'ImageToolbar';
+	public static get pluginName() {
+		return 'ImageToolbar' as const;
 	}
 
 	/**

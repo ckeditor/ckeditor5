@@ -26,8 +26,8 @@ export default class SpecialCharactersCurrency extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersCurrency' {
-		return 'SpecialCharactersCurrency';
+	public static get pluginName() {
+		return 'SpecialCharactersCurrency' as const;
 	}
 
 	/**

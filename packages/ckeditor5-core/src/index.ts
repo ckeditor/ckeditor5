@@ -22,7 +22,8 @@ export type {
 	EditorConfig,
 	LanguageConfig,
 	ToolbarConfig,
-	ToolbarConfigItem
+	ToolbarConfigItem,
+	UiConfig
 } from './editor/editorconfig';
 
 export { default as attachToForm } from './editor/utils/attachtoform';

@@ -42,8 +42,8 @@ export default class DragDropBlockToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DragDropBlockToolbar' {
-		return 'DragDropBlockToolbar';
+	public static get pluginName() {
+		return 'DragDropBlockToolbar' as const;
 	}
 
 	/**

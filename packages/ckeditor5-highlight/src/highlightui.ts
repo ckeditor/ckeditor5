@@ -72,8 +72,8 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HighlightUI' {
-		return 'HighlightUI';
+	public static get pluginName() {
+		return 'HighlightUI' as const;
 	}
 
 	/**

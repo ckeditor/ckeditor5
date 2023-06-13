@@ -25,8 +25,8 @@ export default class Notification extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Notification' {
-		return 'Notification';
+	public static get pluginName() {
+		return 'Notification' as const;
 	}
 
 	/**
