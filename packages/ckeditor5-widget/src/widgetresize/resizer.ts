@@ -242,12 +242,13 @@ export default class Resizer extends ObservableMixin() {
 	 */
 	public commit(): void {
 		const unit = this._options.unit || '%';
-		const newValue = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + unit;
+		const newWidth = ( unit === '%' ? this.state.proposedWidthPercents : this.state.proposedWidth ) + unit;
+		const newHeight = ( unit === '%' ) ? null : this.state.proposedHeight + unit;
 
 		// Both cleanup and onCommit callback are very likely to make view changes. Ensure that it is made in a single step.
 		this._options.editor.editing.view.change( () => {
 			this._cleanup();
-			this._options.onCommit( newValue );
+			this._options.onCommit( newWidth, newHeight );
 		} );
 	}
 

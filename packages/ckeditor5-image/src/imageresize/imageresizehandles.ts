@@ -111,7 +111,7 @@ export default class ImageResizeHandles extends Plugin {
 						return !imageStyle || imageStyle == 'block' || imageStyle == 'alignCenter';
 					},
 
-					onCommit( newValue ) {
+					onCommit( newWidth, newHeight ) {
 						// Get rid of the CSS class in case the command execution that follows is unsuccessful
 						// (e.g. Track Changes can override it and the new dimensions will not apply). Otherwise,
 						// the presence of the class and the absence of the width style will cause it to take 100%
@@ -120,7 +120,7 @@ export default class ImageResizeHandles extends Plugin {
 							writer.removeClass( RESIZED_IMAGE_CLASS, widgetView );
 						} );
 
-						editor.execute( 'resizeImage', { width: newValue } );
+						editor.execute( 'resizeImage', { width: newWidth, height: newHeight } );
 					}
 				} );
 

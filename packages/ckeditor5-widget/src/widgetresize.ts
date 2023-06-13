@@ -321,7 +321,7 @@ export interface ResizerOptions {
 	 * };
 	 * ```
 	 */
-	onCommit: ( newValue: string ) => void;
+	onCommit: ( newWidth: string, newHeight: string | null ) => void;
 
 	getResizeHost: ( widgetWrapper: HTMLElement ) => HTMLElement;
 
