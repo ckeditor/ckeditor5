@@ -22,8 +22,10 @@
 
 .ck-content .table td,
 .ck-content .table th {
-	position: relative;
+	/* To prevent text overflowing beyond its cell when columns are resized by resize handler
+	(https://github.com/ckeditor/ckeditor5/pull/14379). */
 	overflow-wrap: break-word;
+	position: relative;
 }
 
 .ck.ck-editor__editable .table .ck-table-column-resizer {
