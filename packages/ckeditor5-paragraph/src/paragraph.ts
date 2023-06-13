@@ -28,8 +28,8 @@ export default class Paragraph extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Paragraph' {
-		return 'Paragraph';
+	public static get pluginName() {
+		return 'Paragraph' as const;
 	}
 
 	/**

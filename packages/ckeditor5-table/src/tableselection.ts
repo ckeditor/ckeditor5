@@ -39,8 +39,8 @@ export default class TableSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableSelection' {
-		return 'TableSelection';
+	public static get pluginName() {
+		return 'TableSelection' as const;
 	}
 
 	/**

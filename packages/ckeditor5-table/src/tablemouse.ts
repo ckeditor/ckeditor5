@@ -22,8 +22,8 @@ export default class TableMouse extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableMouse' {
-		return 'TableMouse';
+	public static get pluginName() {
+		return 'TableMouse' as const;
 	}
 
 	/**

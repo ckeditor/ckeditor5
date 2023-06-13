@@ -36,7 +36,7 @@ export default class Font extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Font' {
-		return 'Font';
+	public static get pluginName() {
+		return 'Font' as const;
 	}
 }

@@ -21,8 +21,8 @@ export default class CKFinderUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKFinderUI' {
-		return 'CKFinderUI';
+	public static get pluginName() {
+		return 'CKFinderUI' as const;
 	}
 
 	/**

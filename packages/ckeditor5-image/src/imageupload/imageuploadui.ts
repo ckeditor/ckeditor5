@@ -25,8 +25,8 @@ export default class ImageUploadUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageUploadUI' {
-		return 'ImageUploadUI';
+	public static get pluginName() {
+		return 'ImageUploadUI' as const;
 	}
 
 	/**

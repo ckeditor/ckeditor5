@@ -43,8 +43,8 @@ export default class ImageResizeHandles extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageResizeHandles' {
-		return 'ImageResizeHandles';
+	public static get pluginName() {
+		return 'ImageResizeHandles' as const;
 	}
 
 	/**

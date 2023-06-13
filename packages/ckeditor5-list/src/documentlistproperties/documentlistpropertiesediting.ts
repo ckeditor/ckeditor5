@@ -58,8 +58,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DocumentListPropertiesEditing' {
-		return 'DocumentListPropertiesEditing';
+	public static get pluginName() {
+		return 'DocumentListPropertiesEditing' as const;
 	}
 
 	/**

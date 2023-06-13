@@ -27,8 +27,8 @@ export default class Clipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Clipboard' {
-		return 'Clipboard';
+	public static get pluginName() {
+		return 'Clipboard' as const;
 	}
 
 	/**

@@ -32,8 +32,8 @@ export default class DocumentListStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DocumentListStyleSupport' {
-		return 'DocumentListStyleSupport';
+	public static get pluginName() {
+		return 'DocumentListStyleSupport' as const;
 	}
 
 	/**

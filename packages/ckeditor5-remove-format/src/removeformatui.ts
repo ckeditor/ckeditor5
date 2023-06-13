@@ -24,8 +24,8 @@ export default class RemoveFormatUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'RemoveFormatUI' {
-		return 'RemoveFormatUI';
+	public static get pluginName() {
+		return 'RemoveFormatUI' as const;
 	}
 
 	/**

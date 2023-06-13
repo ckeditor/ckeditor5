@@ -25,8 +25,8 @@ export default class CodeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeUI' {
-		return 'CodeUI';
+	public static get pluginName() {
+		return 'CodeUI' as const;
 	}
 
 	/**

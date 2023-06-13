@@ -50,8 +50,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCellPropertiesEditing' {
-		return 'TableCellPropertiesEditing';
+	public static get pluginName() {
+		return 'TableCellPropertiesEditing' as const;
 	}
 
 	/**

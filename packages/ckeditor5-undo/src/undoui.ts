@@ -20,8 +20,8 @@ export default class UndoUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'UndoUI' {
-		return 'UndoUI';
+	public static get pluginName() {
+		return 'UndoUI' as const;
 	}
 
 	/**

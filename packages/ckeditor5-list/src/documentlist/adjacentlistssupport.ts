@@ -16,8 +16,8 @@ export default class AdjacentListsSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'AdjacentListsSupport' {
-		return 'AdjacentListsSupport';
+	public static get pluginName() {
+		return 'AdjacentListsSupport' as const;
 	}
 
 	/**

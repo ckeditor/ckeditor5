@@ -60,8 +60,8 @@ export default class TodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TodoListEditing' {
-		return 'TodoListEditing';
+	public static get pluginName() {
+		return 'TodoListEditing' as const;
 	}
 
 	/**
