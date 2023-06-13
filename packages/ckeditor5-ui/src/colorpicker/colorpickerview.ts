@@ -32,7 +32,7 @@ export default class ColorPickerView extends View {
 	 * Container for a `#` sign prefix and an input for displaying and defining custom colors
 	 * in HEX format.
 	 */
-	declare public hexInputRow: ColorPickerInputRowView;
+	public hexInputRow: ColorPickerInputRowView;
 
 	/**
 	 * Current color state in color picker.
@@ -58,15 +58,15 @@ export default class ColorPickerView extends View {
 	declare public _hexColor: string;
 
 	/**
-	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
-	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
-	*/
-	declare private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
+	 * Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
+	 * `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
+	 */
+	private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
 
 	/**
 	 * The output format (the one in which colors are applied in the model) of color picker.
 	 */
-	declare private _format: ColorPickerOutputFormat;
+	private _format: ColorPickerOutputFormat;
 
 	/**
 	 * Creates a view of color picker.
@@ -77,9 +77,10 @@ export default class ColorPickerView extends View {
 	constructor( locale: Locale | undefined, config: ColorPickerViewConfig ) {
 		super( locale );
 
-		this.set( 'color', '' );
-
-		this.set( '_hexColor', '' );
+		this.set( {
+			color: '',
+			_hexColor: ''
+		} );
 
 		this._format = config.format || 'hsl';
 
@@ -312,7 +313,7 @@ class SliderView extends View {
 	}
 }
 
-// View abstaction over the `#` character before color input.
+// View abstraction over the `#` character before color input.
 class HashView extends View {
 	constructor( locale?: Locale ) {
 		super( locale );
