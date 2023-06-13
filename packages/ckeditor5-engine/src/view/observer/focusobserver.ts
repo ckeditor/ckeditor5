@@ -60,9 +60,9 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 
 			// The selection is already in the focused element (for example in Firefox) so just flush the focused state.
 			if ( viewSelection.editableElement && viewSelection.editableElement == data.target ) {
-				this._timeoutId = setTimeout( () => this._updateFocus(), 0 );
+				this._timeoutId = setTimeout( () => this.flush(), 0 );
 			} else {
-				this._timeoutId = setTimeout( () => this._updateFocus(), 50 );
+				this._timeoutId = setTimeout( () => this.flush(), 50 );
 			}
 		} );
 
@@ -78,13 +78,13 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 
 			// Blurred to some element outside editor editable elements.
 			if ( !relatedViewElement ) {
-				this._timeoutId = setTimeout( () => this._updateFocus(), 0 );
+				this._timeoutId = setTimeout( () => this.flush(), 0 );
 			} else {
-				this._timeoutId = setTimeout( () => this._updateFocus(), 50 );
+				this._timeoutId = setTimeout( () => this.flush(), 50 );
 			}
 		} );
 
-		view.on<ObservableChangeEvent>( 'change:hasDomSelection', () => {
+		view.on<ObservableChangeEvent>( 'change:hasDomSelection', ( evt, prop, hasDomSelection ) => {
 			if ( !this.document.isFocusChanging ) {
 				return;
 			}
@@ -93,7 +93,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 				clearTimeout( this._timeoutId );
 			}
 
-			this._timeoutId = setTimeout( () => this._updateFocus(), 0 );
+			this._timeoutId = setTimeout( () => this.flush(), 0 );
 		} );
 
 		document.on<ViewDocumentSelectionChangeEvent>( 'selectionChange', () => {
@@ -105,32 +105,14 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 				clearTimeout( this._timeoutId );
 			}
 
-			this._timeoutId = setTimeout( () => this._updateFocus(), 0 );
+			this._timeoutId = setTimeout( () => this.flush(), 0 );
 		}, { priority: 'low' } );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public onDomEvent( domEvent: FocusEvent ): void {
-		this.fire( domEvent.type, domEvent );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public override destroy(): void {
-		if ( this._timeoutId ) {
-			clearTimeout( this._timeoutId );
-		}
-
-		super.destroy();
 	}
 
 	/**
 	 * Finishes setting the document focus state.
 	 */
-	private _updateFocus(): void {
+	public flush(): void {
 		if ( !this.document.isFocusChanging ) {
 			return;
 		}
@@ -150,6 +132,24 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 
 			this.view.change( () => {} );
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public onDomEvent( domEvent: FocusEvent ): void {
+		this.fire( domEvent.type, domEvent );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		if ( this._timeoutId ) {
+			clearTimeout( this._timeoutId );
+		}
+
+		super.destroy();
 	}
 }
 

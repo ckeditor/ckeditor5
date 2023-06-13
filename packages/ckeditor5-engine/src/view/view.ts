@@ -458,7 +458,7 @@ export default class View extends ObservableMixin() {
 	 * that is currently having selection inside.
 	 */
 	public focus(): void {
-		if ( !this.document.isFocused ) {
+		if ( !this.document.isFocused || this.document.isFocusChanging ) {
 			const editable = this.document.selection.editableElement;
 
 			if ( editable ) {
@@ -568,6 +568,7 @@ export default class View extends ObservableMixin() {
 	 */
 	public forceRender(): void {
 		this._hasChangedSinceTheLastRendering = true;
+		this.getObserver( FocusObserver )!.flush();
 		this.change( () => {} );
 	}
 
