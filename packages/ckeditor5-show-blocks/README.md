@@ -6,7 +6,7 @@ CKEditor 5 show blocks feature
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 ![Dependency Status](https://img.shields.io/librariesio/release/npm/@ckeditor/ckeditor5-show-blocks)
 
-This package contains the show blocks feature for CKEditor 5. It allows you to display the HTML element names for content blocks.
+This package contains the show blocks feature for CKEditor 5. It allows to visualize all block-level elements by surrounding them with an outline and displaying their element name at the top-left.
 
 ## Demo
 
@@ -14,7 +14,7 @@ Check out the [demo in the show blocks feature](https://ckeditor.com/docs/ckedit
 
 ## Documentation
 
-See the <!-- TODO - not sure if there will be an API docs page at all [`@ckeditor/ckeditor5-show-blocks` package](https://ckeditor.com/docs/ckeditor5/latest/api/show-blocks.html) --> page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [Show blocks](https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html) feature guide.
+See the [`@ckeditor/ckeditor5-show-blocks` package](https://ckeditor.com/docs/ckeditor5/latest/api/show-blocks.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) as well as the [Show blocks](https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html) feature guide.
 
 ## License
 
