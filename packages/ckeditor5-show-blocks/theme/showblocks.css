@@ -38,7 +38,7 @@
 		@mixin block-name-background BLOCKQUOTE;
 	}
 
-	& > div {
+	& div:not(.ck-widget *) {
 		@mixin block-name-background DIV;
 	}
 
