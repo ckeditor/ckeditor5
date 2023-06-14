@@ -1,6 +1,6 @@
 ---
 category: integrations
-order: 80
+order: 70
 menu-title: .NET
 ---
 
@@ -8,11 +8,13 @@ menu-title: .NET
 
 As a pure JavaScript/TypeScript application, CKEditor 5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom build of CKEditor 5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
 
-The core of the integration is preparing a custom CKEditor 5 build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), and then importing it into your .NET project.
+To integrate CKEditor 5 with .NET, we will create a custom CKEditor 5 build using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), and then import it into the .NET project.
 
 ## Preparing a build
 
-The easiest way of preparing a custom build of CKEditor 5 is to use our [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a powerful tool that lets you effortlessly create a rich text editor that is custom-tailored to your needs. With the online builder, you can choose the desired editor type, and plugins, configure the toolbar, and choose the UI language for your editor.
+In this guide, we will use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a web interface that lets you create a custom build of CKEditor 5 and download the code as a zip package.
+
+The online builder is a powerful tool that lets you effortlessly create a rich text editor that is custom-tailored to your needs. With the online builder, you can choose the desired editor type, and plugins, configure the toolbar, and choose the UI language for your editor.
 
 You can learn more about creating custom CKEditor 5 builds with the online builder in our {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
 
@@ -92,4 +94,4 @@ Then, modify the `Index.cshtml` file contained in the `Pages` directory to inclu
     In the snippet above, `ClassicEditor` is referenced, since that is the editor type that was chosen during the build process. If you are using a different editor type, you will have to alter the snippet accordingly.
 </info-box>
 
-Finally, in the root of your .NET project, run `dotnet watch run` to see the app in action.
+Finally, in the root directory of your .NET project, run `dotnet watch run` to see the app in action.
