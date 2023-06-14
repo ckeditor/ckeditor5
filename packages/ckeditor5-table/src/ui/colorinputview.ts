@@ -352,7 +352,7 @@ export default class ColorInputView extends View {
 			this.dropdownView.isOpen = false;
 		} );
 
-		colorGrid.colorGridsPageView.colorPickerButtonView?.on( 'execute', () => {
+		colorGrid.colorGridsPageView.colorPickerButtonView!.on( 'execute', () => {
 			/**
 			 * Save color value before changes in color picker.
 			 */
