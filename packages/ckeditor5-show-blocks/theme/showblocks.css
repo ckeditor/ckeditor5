@@ -7,19 +7,21 @@
 
 :root {
 	--ck-show-blocks-border-color: hsl(0, 0%, 46%);
-	--ck-show-blocks-label-background-color: hsl(0, 0%, 92%);
 }
 
 @define-mixin block-name-background $text {
-	background-image: url("data:image/svg+xml;utf8,<svg width='60' height='8' xmlns='http://www.w3.org/2000/svg'><defs><filter x='0' y='0' width='1' height='1' id='blockslabel'><feFlood flood-color='%23EAEAEA'/><feComposite in='SourceGraphic' operator='xor'/></filter></defs><text filter='url(%23blockslabel)' y='6' font-size='8px' font-family='monospace'>$(text)</text><text y='6' font-size='8px' font-family='monospace'>$(text)</text></svg>");
+	background-image: url("data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px);' stroke='%23EAEAEA' stroke-width='12' dominant-baseline='middle' fill='black' x='3' y='7' font-size='10px' font-family='monospace'>$(text)</text></svg>");
 	background-repeat: no-repeat;
-	background-position: 2px 2px;
-	padding-top: 8px;
-	border: 1px dashed var(--ck-show-blocks-border-color);
+	background-position: 1px 1px;
+	padding-top: 15px;
+
+	&:not(.ck-widget_selected):not(.ck-widget:hover) {
+		outline: 1px dashed var(--ck-show-blocks-border-color);
+	}
 
 	@mixin ck-dir rtl {
-		background-image: url("data:image/svg+xml;utf8,<svg width='100%' height='8' xmlns='http://www.w3.org/2000/svg'><defs><filter x='0' y='0' width='1' height='1' id='blockslabel'><feFlood flood-color='%23EAEAEA'/><feComposite in='SourceGraphic' operator='xor'/></filter></defs><text filter='url(%23blockslabel)' y='6' x='100%' font-size='8px' font-family='monospace' text-anchor='end'>$(text)</text><text y='6' x='100%' font-size='8px' font-family='monospace' text-anchor='end'>$(text)</text></svg>");
-		background-position: -4px 2px;
+		background-image: url("data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px); transform:translate(-2px, 0);' stroke='%23EAEAEA' stroke-width='12' dominant-baseline='middle' fill='black' x='100%' text-anchor='end' y='7' font-size='10px' font-family='monospace'>$(text)</text></svg>");
+		background-position: calc(100% - 1px) 1px;
 	}
 }
 
@@ -34,13 +36,6 @@
 
 	& blockquote {
 		@mixin block-name-background BLOCKQUOTE;
-
-		border-left: solid 5px hsl(0, 0%, 80%);
-
-		@mixin ck-dir rtl {
-			border-left: 1px dashed var(--ck-show-blocks-border-color);
-			border-right: solid 5px hsl(0, 0%, 80%);
-		}
 	}
 
 	& > div {
@@ -107,7 +102,7 @@
 		@mixin block-name-background SECTION;
 	}
 
-	& figure.image figcaption, figure.table figcaption {
+	& :where(figure.image, figure.table) figcaption {
 		@mixin block-name-background FIGCAPTION;
 	}
 }
