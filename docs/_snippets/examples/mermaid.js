@@ -31,7 +31,7 @@ ClassicEditor
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
 				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'mermaid',
-				'|', 'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent'
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		ui: {

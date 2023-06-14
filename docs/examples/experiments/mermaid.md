@@ -5,7 +5,7 @@ classes: main__content--no-toc
 toc: false
 meta-title: Flowcharts and diagrams in a Mermaid-enabled editor
 menu-title: Flowcharts and diagrams
-modified_at: 2023-05-26
+modified_at: 2023-06-14
 ---
 
 # Creating flowcharts and diagrams using Mermaid
