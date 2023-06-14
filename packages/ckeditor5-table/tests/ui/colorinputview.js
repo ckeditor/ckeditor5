@@ -172,7 +172,7 @@ describe( 'ColorInputView', () => {
 				expect( dropdown.isOpen ).to.be.equal( false );
 			} );
 
-			it( 'should close dropdown and cancel changes when "cancel button" is pressed asd', () => {
+			it( 'should close dropdown and cancel changes when "cancel button" is pressed', () => {
 				const dropdown = view.dropdownView;
 				const spy = sinon.spy();
 
