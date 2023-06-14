@@ -8,7 +8,7 @@
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { CKEditorInspector } from '@ckeditor/ckeditor5-inspector';
+// import { CKEditorInspector } from '@ckeditor/ckeditor5-inspector';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
@@ -43,8 +43,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		CKEditorInspector.attach( editor );
-		window.console.log( 'CKEditor 5 is ready.', editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
