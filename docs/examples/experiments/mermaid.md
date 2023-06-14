@@ -28,7 +28,6 @@ This example uses our own Mermaid plugin, [available on GitHub](https://github.c
 
 <details>
 <summary>Editor configuration script</summary>
-<!-- Let's consider removing parts of this -->
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
