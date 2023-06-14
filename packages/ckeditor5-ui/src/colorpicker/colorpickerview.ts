@@ -61,8 +61,7 @@ export default class ColorPickerView extends View {
 	declare public _hexColor: string;
 
 	/**
-	 * Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
-	 * `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
+	 * Debounced event method. Updates color property in component.
 	 */
 	private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
 
