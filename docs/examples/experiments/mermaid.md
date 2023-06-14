@@ -18,13 +18,13 @@ The example below lets you test creating diagrams and flowcharts right during th
 
 ## Using Mermaid syntax
 
-Mermaid offers an extensive and flexible syntax allowing users to create a variety of diagrams, charts, and graphs. Find the full syntax reference on [Mermaid.js](https://mermaid.js.org/intro/). You can also check out more examples online in [Mermaid Live Editor](https://mermaid.live/).
+Mermaid offers an extensive and flexible syntax allowing users to create a variety of diagrams, charts, and graphs. Find the complete syntax reference on [Mermaid.js](https://mermaid.js.org/intro/). You can also check out more examples online in [Mermaid Live Editor](https://mermaid.live/).
 
 <!-- Learn more about Mermaid syntax and usage in a [dedicated article](https://ckeditor.com/blog/basic-overview-of-creating-flowcharts-using-mermaid/) on our company blog. -->
 
 ## Editor example configuration
 
-This example uses our own Mermaid plugin, [available on GitHub](https://github.com/ckeditor/ckeditor5-mermaid). It needs to be imported before CKEditor 5 can make use of the Mermaid syntax. Have a look at the sample configuration to learn how to add the plugin and the toolbar button.
+This example uses our own Mermaid plugin, [available on GitHub](https://github.com/ckeditor/ckeditor5-mermaid). You need to import it before CKEditor 5 can use the Mermaid syntax. Look at the sample configuration to learn how to add the plugin and the toolbar button.
 
 <details>
 <summary>Editor configuration script</summary>
