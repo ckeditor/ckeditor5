@@ -10,7 +10,7 @@ modified_at: 2023-06-14
 
 # Creating flowcharts and diagrams using Mermaid
 
-You can create flowcharts and diagrams in CKEditor 5 thanks to the integration with the [Mermaid](https://mermaid.js.org/) library. Mermaid uses Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
+You can create flowcharts and diagrams in CKEditor 5 thanks to the experimental integration with the [Mermaid](https://mermaid.js.org/) library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
 
 The example below lets you test creating diagrams and flowcharts right during the content creation &mdash; no more screenshots that need to be re-created and re-uploaded each time something needs a change! You can also check out a live implementation in [GitHub Writer](https://ckeditor.com/blog/github-writer-now-available-with-mermaid-support/).
 
