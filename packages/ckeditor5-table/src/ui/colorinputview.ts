@@ -312,10 +312,10 @@ export default class ColorInputView extends View {
 			columns: this.options.columns,
 			removeButtonLabel: removeColorButtonLabel,
 			colorPickerLabel: t( 'Color picker' ),
-			colorPickerConfig: this.options.colorPickerConfig ? {
+			colorPickerConfig: this.options.colorPickerConfig === false ? false : {
 				...this.options.colorPickerConfig,
 				hideInput: true
-			} : false
+			}
 		} );
 
 		colorGrid!.appendUI();
@@ -335,12 +335,28 @@ export default class ColorInputView extends View {
 			}
 		} );
 
+		/**
+		 * Color is saved before changes in color picker. In case "cancel button" is pressed
+		 * this color will be applied.
+		 */
+		let backupColor = this.value;
+
 		colorGrid.on( 'cancel', () => {
-			this.value = this.options.defaultColorValue || '';
+			/**
+			 * Revert color to previous value before changes in color picker.
+			 */
+			this.value = backupColor;
 
 			this.fire( 'input' );
 
 			this.dropdownView.isOpen = false;
+		} );
+
+		colorGrid.colorGridsPageView.colorPickerButtonView?.on( 'execute', () => {
+			/**
+			 * Save color value before changes in color picker.
+			 */
+			backupColor = this.value;
 		} );
 
 		// colorGrid.bind( 'selectedColor' ).to( this, 'value' );

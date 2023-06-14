@@ -28,10 +28,7 @@ ClassicEditor
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
-			tableToolbar: [ 'bold', 'italic' ],
-			tableProperties: {
-				colorPicker: false
-			}
+			tableToolbar: [ 'bold', 'italic' ]
 		}
 	} )
 	.then( editor => {

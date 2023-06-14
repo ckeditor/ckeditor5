@@ -187,6 +187,27 @@ describe( 'ColorInputView', () => {
 				expect( inputView.value ).to.be.equal( '' );
 			} );
 
+			it( 'should close dropdown and revert changes when "cancel button" is pressed', () => {
+				const dropdown = view.dropdownView;
+				const spy = sinon.spy();
+				const colorTableView = dropdown.panelView.children.first;
+
+				view.on( 'input', spy );
+
+				dropdown.isOpen = true;
+				view.value = '#ffaaff';
+
+				// Open color picker by clicking on button "color picker".
+				colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
+
+				view.value = '#123456';
+
+				colorTableView.fire( 'cancel' );
+
+				sinon.assert.calledOnce( spy );
+				expect( view.value ).to.be.equal( '#ffaaff' );
+			} );
+
 			it( 'should have the remove color button', () => {
 				const removeColorButton = view.dropdownView.panelView.children.first.colorGridsPageView.removeColorButtonView;
 
