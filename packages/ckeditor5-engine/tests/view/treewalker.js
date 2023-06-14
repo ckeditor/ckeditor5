@@ -749,6 +749,41 @@ describe( 'TreeWalker', () => {
 		} );
 	} );
 
+	describe( '`shallow` iterates only through elements in the range', () => {
+		it( '`shallow` only iterates elements in the range (forward)', () => {
+			const walker = new TreeWalker( {
+				boundaries: new Range(
+					new Position( root, 0 ),
+					new Position( img1, 0 )
+				),
+				shallow: true
+			} );
+
+			const items = Array.from( walker );
+
+			expect( items.length ).to.equal( 1 );
+			expect( items[ 0 ].type ).to.equal( 'elementStart' );
+			expect( items[ 0 ].item ).to.equal( img1 );
+		} );
+
+		it( '`shallow` only iterates elements in the range (backwards)', () => {
+			const walker = new TreeWalker( {
+				boundaries: new Range(
+					new Position( root, 0 ),
+					new Position( img1, 0 )
+				),
+				shallow: true,
+				direction: 'backward'
+			} );
+
+			const items = Array.from( walker );
+
+			expect( items.length ).to.equal( 1 );
+			expect( items[ 0 ].type ).to.equal( 'elementStart' );
+			expect( items[ 0 ].item ).to.equal( img1 );
+		} );
+	} );
+
 	describe( 'iterate omitting child nodes and elementEnd `shallow`', () => {
 		let expected;
 
