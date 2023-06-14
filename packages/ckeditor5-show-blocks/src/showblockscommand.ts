@@ -16,7 +16,7 @@ import { Command, type Editor } from 'ckeditor5/src/core';
  */
 export default class ShowBlocksCommand extends Command {
 	/**
-	 * @TODO
+	 * Flag indicating whether the command is active, i.e. content blocks are displayed.
 	 */
 	declare public value: boolean;
 
@@ -33,7 +33,7 @@ export default class ShowBlocksCommand extends Command {
 	}
 
 	/**
-	 * @TODO
+	 * Toggles the visibility of content blocks.
 	 */
 	public override execute(): void {
 		const CLASS_NAME = 'ck-show-blocks';
