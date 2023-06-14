@@ -56,14 +56,14 @@ describe( 'ShowBlocksCommand', () => {
 		it( 'should set "ck-show-blocks" class on the root when executed for the first time', () => {
 			editor.execute( 'showBlocks' );
 
-			expect( editor.editing.view.document.roots.get( 'main' )._classes.has( 'ck-show-blocks' ) ).to.be.true;
+			expect( editor.editing.view.document.roots.get( 'main' ).hasClass( 'ck-show-blocks' ) ).to.be.true;
 		} );
 
 		it( 'should remove "ck-show-blocks" class on the root when executed for the second time', () => {
 			editor.execute( 'showBlocks' );
 			editor.execute( 'showBlocks' );
 
-			expect( editor.editing.view.document.roots.get( 'main' )._classes.has( 'ck-show-blocks' ) ).to.be.false;
+			expect( editor.editing.view.document.roots.get( 'main' ).hasClass( 'ck-show-blocks' ) ).to.be.false;
 		} );
 
 		it( 'should set value to true when executed for the first time', () => {
@@ -118,7 +118,7 @@ describe( 'ShowBlocksCommand', () => {
 				multirootEditor.execute( 'showBlocks' );
 
 				for ( const root of multirootEditor.editing.view.document.roots ) {
-					expect( root._classes.has( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).to.be.true;
+					expect( root.hasClass( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).to.be.true;
 				}
 			} );
 
@@ -127,7 +127,7 @@ describe( 'ShowBlocksCommand', () => {
 				multirootEditor.execute( 'showBlocks' );
 
 				for ( const root of multirootEditor.editing.view.document.roots ) {
-					expect( root._classes.has( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).to.be.false;
+					expect( root.hasClass( 'ck-show-blocks' ), `Class was not set properly on ${ root.rootName } root` ).to.be.false;
 				}
 			} );
 		} );
