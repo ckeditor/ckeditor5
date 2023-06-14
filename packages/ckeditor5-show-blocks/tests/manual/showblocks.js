@@ -240,8 +240,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		editor.execute( 'showBlocks' );
 	} )
 	.catch( err => {
 		console.error( err );
@@ -266,8 +264,6 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		editor.execute( 'showBlocks' );
 	} )
 	.catch( err => {
 		console.error( err );
