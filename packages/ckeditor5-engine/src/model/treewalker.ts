@@ -213,11 +213,6 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 			return { done: true, value: undefined };
 		}
 
-		// We are past the walker boundary. This can happen when `this.shallow` is `true`.
-		if ( this.boundaries && this.boundaries.end.isBefore( position ) ) {
-			return { done: true, value: undefined };
-		}
-
 		// Get node just after the current position.
 		// Use a highly optimized version instead of checking the text node first and then getting the node after. See #6582.
 		const textNodeAtPosition = getTextNodeAtPosition( position, parent );
@@ -229,6 +224,10 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 				( position.path as Array<number> ).push( 0 );
 				this._visitedParent = node;
 			} else {
+				if ( this.boundaries && previousPosition.offset > this.boundaries.end.offset ) {
+					return { done: true, value: undefined };
+				}
+
 				position.offset++;
 			}
 
