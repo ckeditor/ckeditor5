@@ -550,8 +550,7 @@
 					"name": "Update guides",
 					"id": "update-guides",
 					"slug": "guides",
-					"order": 30,
-					"folded": true
+					"order": 30
 				}
 			]
 		},
