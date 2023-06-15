@@ -72,7 +72,9 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
-				'showBlocks', 'undo', 'redo',
+				'showBlocks',
+				'|',
+				'undo', 'redo',
 				'|',
 				'sourceEditing',
 				'|',
@@ -250,15 +252,15 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, ShowBlocks ],
 		toolbar: [
+			'showBlocks',
+			'|',
+			'undo', 'redo',
+			'|',
 			'heading',
 			'|',
 			'bold', 'italic', 'numberedList', 'bulletedList',
 			'|',
-			'link', 'blockquote', 'uploadImage', 'insertTable', 'mediaEmbed',
-			'|',
-			'undo', 'redo',
-			'|',
-			'showBlocks'
+			'link', 'blockquote', 'uploadImage', 'insertTable', 'mediaEmbed'
 		],
 		language: 'ar'
 	} )
