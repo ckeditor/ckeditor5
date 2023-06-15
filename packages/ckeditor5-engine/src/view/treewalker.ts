@@ -215,6 +215,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 				if ( this.boundaries && previousPosition.offset > this.boundaries.end.offset ) {
 					return { done: true, value: undefined };
 				}
+
 				position.offset++;
 			}
 
