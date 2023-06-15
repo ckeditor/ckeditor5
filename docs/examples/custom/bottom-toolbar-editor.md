@@ -7,7 +7,7 @@ menu-title: Bottom toolbar with button grouping
 modified_at: 2021-12-09
 ---
 
-# Editor with bottom toolbar and button grouping
+# Editor with a bottom toolbar and button grouping
 
 The following custom editor example showcases an editor instance with the main toolbar displayed at the bottom of the editing window. To make it possible, the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} was used with the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar main toolbar} injected after the editing root into the DOM. Learn more about the {@link framework/document-editor decoupled UI in CKEditor 5} to find out the details of this process.
 

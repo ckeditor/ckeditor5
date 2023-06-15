@@ -525,6 +525,12 @@
 					"id": "examples-framework",
 					"slug": "framework",
 					"order": 300
+				},
+				{
+					"name": "Experiments",
+					"id": "experiments",
+					"slug": "experiments",
+					"order": 400
 				}
 			]
 		},
