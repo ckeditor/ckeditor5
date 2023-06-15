@@ -24,6 +24,7 @@ import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 
 import PasteFromOffice from '../../src/pastefromoffice';
 import { generateTests } from '../_utils/utils';
+import * as fixtures from '../_utils/fixtures';
 
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 
@@ -37,7 +38,8 @@ describe( 'PasteFromOffice - integration', () => {
 		},
 		skip: {
 			safari: [ 'italicStartingText', 'multipleStylesSingleLine', 'multipleStylesMultiline' ] // Skip due to spacing issue (#13).
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -52,7 +54,8 @@ describe( 'PasteFromOffice - integration', () => {
 			firefox: [],
 			safari: [],
 			edge: [ 'adjacentGroups' ]
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -64,7 +67,8 @@ describe( 'PasteFromOffice - integration', () => {
 		},
 		skip: {
 			safari: [ 'combined' ] // Skip due to spacing issue (#13).
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -76,7 +80,8 @@ describe( 'PasteFromOffice - integration', () => {
 		},
 		skip: {
 			safari: [ 'heading3Styled' ] // Skip due to spacing issue (#13).
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -85,7 +90,8 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, Italic, Underline, PasteFromOffice ]
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -94,7 +100,8 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, ShiftEnter, PasteFromOffice ]
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -103,7 +110,8 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, List, PasteFromOffice ]
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -112,7 +120,8 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, List, Table, Bold, PasteFromOffice ]
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -122,7 +131,8 @@ describe( 'PasteFromOffice - integration', () => {
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Table, TableProperties, TableCellProperties, Bold, PasteFromOffice,
 				FontColor, FontBackgroundColor ]
-		}
+		},
+		fixtures
 	} );
 
 	// See: https://github.com/ckeditor/ckeditor5/issues/7684.
@@ -132,7 +142,8 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Table, Bold, PasteFromOffice, FontColor, FontBackgroundColor ]
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -141,7 +152,8 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice, PageBreak ]
-		}
+		},
+		fixtures
 	} );
 
 	generateTests( {
@@ -150,6 +162,7 @@ describe( 'PasteFromOffice - integration', () => {
 		browsers,
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, ShiftEnter, PasteFromOffice ]
-		}
+		},
+		fixtures
 	} );
 } );
