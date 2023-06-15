@@ -53,7 +53,6 @@ import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 import ClickObserver from '../../ckeditor5-engine/src/view/observer/clickobserver';
 import { GeneralHtmlSupport } from '../../ckeditor5-html-support/src/index';
@@ -116,7 +115,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Subscript,
 		FindAndReplace,
 		RemoveFormat,
-		SourceEditing,
 		Iframe,
 		ScratchBlocks,
 		ContentTemplates,
@@ -159,7 +157,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'undo',
 				'redo',
 				'|',
-				'sourceEditing',
 				'removeFormat',
 				'|',
 				'style',
