@@ -18,7 +18,7 @@ import { fixtures as fontWithoutTableProperties } from '../_data/font-without-ta
 import { fixtures as googleDocsBrParagraphs } from '../_data/paste-from-google-docs/br-paragraph/index';
 
 // Generic fixtures.
-export const fixtures = {
+export const generic = {
 	'basic-styles': basicStyles,
 	image,
 	link,
@@ -33,7 +33,7 @@ export const fixtures = {
 };
 
 // Browser specific fixtures.
-export const browserFixtures = {
+export const browser = {
 	'basic-styles': basicStylesBrowser,
 	image: imageBrowser,
 	link: linkBrowser,
