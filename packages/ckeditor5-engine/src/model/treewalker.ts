@@ -225,7 +225,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 				this._visitedParent = node;
 			} else {
 				// We are past the walker boundaries
-				if ( this.boundaries && this.boundaries.end.isBefore( previousPosition ) ) {
+				if ( this.boundaries && this.boundaries.end.isBefore( position ) ) {
 					return { done: true, value: undefined };
 				}
 
