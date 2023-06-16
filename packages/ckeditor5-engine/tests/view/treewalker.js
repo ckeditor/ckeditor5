@@ -766,6 +766,48 @@ describe( 'TreeWalker', () => {
 			expect( items[ 0 ].item ).to.equal( img1 );
 		} );
 
+		it( '`shallow` only iterates elements in the range that ends inside some element (forward)', () => {
+			const p2 = new ContainerElement( doc, 'p', null, [ new Text( doc, '' ) ] );
+			const p3 = new ContainerElement( doc, 'p', null, [ new Text( doc, '' ) ] );
+
+			root._insertChild( 2, [ p2, p3 ] );
+
+			const walker = new TreeWalker( {
+				boundaries: new Range(
+					new Position( root, 1 ),
+					new Position( paragraph, 3 )
+				),
+				shallow: true
+			} );
+
+			const items = Array.from( walker );
+
+			expect( items.length ).to.equal( 1 );
+			expect( items[ 0 ].type ).to.equal( 'elementStart' );
+			expect( items[ 0 ].item ).to.equal( paragraph );
+		} );
+
+		it( '`shallow` only iterates elements in the range ends deep inside some element (forward)', () => {
+			const p2 = new ContainerElement( doc, 'p', null, [ new Text( doc, '' ) ] );
+			const p3 = new ContainerElement( doc, 'p', null, [ new Text( doc, '' ) ] );
+
+			root._insertChild( 2, [ p2, p3 ] );
+
+			const walker = new TreeWalker( {
+				boundaries: new Range(
+					new Position( root, 1 ),
+					new Position( img2, 0 )
+				),
+				shallow: true
+			} );
+
+			const items = Array.from( walker );
+
+			expect( items.length ).to.equal( 1 );
+			expect( items[ 0 ].type ).to.equal( 'elementStart' );
+			expect( items[ 0 ].item ).to.equal( paragraph );
+		} );
+
 		it( '`shallow` only iterates elements in the range (backwards)', () => {
 			const walker = new TreeWalker( {
 				boundaries: new Range(

@@ -212,7 +212,8 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			if ( !this.shallow ) {
 				position = new Position( node, 0 );
 			} else {
-				if ( this.boundaries && previousPosition.offset > this.boundaries.end.offset ) {
+				// We are past the walker boundaries
+				if ( this.boundaries && this.boundaries.end.isBefore( position ) ) {
 					return { done: true, value: undefined };
 				}
 
