@@ -50,6 +50,10 @@ import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckedit
 import { Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
@@ -68,7 +72,9 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
-				'showBlocks', 'undo', 'redo',
+				'showBlocks',
+				'|',
+				'undo', 'redo',
 				'|',
 				'sourceEditing',
 				'|',
@@ -233,6 +239,30 @@ ClassicEditor
 				}
 			]
 		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-rtl' ), {
+		cloudServices: CS_CONFIG,
+		plugins: [ ArticlePluginSet, ImageUpload, CloudServices, EasyImage, ShowBlocks ],
+		toolbar: [
+			'showBlocks',
+			'|',
+			'undo', 'redo',
+			'|',
+			'heading',
+			'|',
+			'bold', 'italic', 'numberedList', 'bulletedList',
+			'|',
+			'link', 'blockquote', 'uploadImage', 'insertTable', 'mediaEmbed'
+		],
+		language: 'ar'
 	} )
 	.then( editor => {
 		window.editor = editor;

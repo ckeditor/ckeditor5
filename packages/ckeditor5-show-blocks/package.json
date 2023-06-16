@@ -23,19 +23,21 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "^38.0.1"
+    "ckeditor5": "^38.0.1",
+    "@ckeditor/ckeditor5-ui": "^38.0.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^38.0.1",
+    "@ckeditor/ckeditor5-editor-multi-root": "^38.0.1",
     "@ckeditor/ckeditor5-essentials": "^38.0.0",
     "@ckeditor/ckeditor5-core": "^38.0.1",
     "@ckeditor/ckeditor5-paragraph": "^38.0.1",
-    "@ckeditor/ckeditor5-ui": "^38.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^38.0.1",
     "@ckeditor/ckeditor5-heading": "^38.0.1",
     "@ckeditor/ckeditor5-utils": "^38.0.1",
     "@ckeditor/ckeditor5-image": "^38.0.1",
+    "@ckeditor/ckeditor5-easy-image": "^38.0.1",
     "@ckeditor/ckeditor5-cloud-services": "^38.0.1",
     "@ckeditor/ckeditor5-alignment": "^38.0.1",
     "@ckeditor/ckeditor5-autoformat": "^38.0.1",

@@ -54,12 +54,22 @@ describe( 'ShowBlocksUI', () => {
 			expect( button.tooltip ).to.be.true;
 		} );
 
-		it( 'should have #isEnabled bound to the command state', () => {
+		it( 'should have #isEnabled bound to the command isEnabled', () => {
 			expect( button.isEnabled ).to.be.true;
 
 			editor.commands.get( 'showBlocks' ).isEnabled = false;
 
 			expect( button.isEnabled ).to.be.false;
+		} );
+
+		it( 'should have #isOn bound to the command value', () => {
+			editor.commands.get( 'showBlocks' ).value = false;
+
+			expect( button.isOn ).to.be.false;
+
+			editor.commands.get( 'showBlocks' ).value = true;
+
+			expect( button.isOn ).to.be.true;
 		} );
 
 		it( 'should execute the "showBlocks" command and focus the editing view', () => {

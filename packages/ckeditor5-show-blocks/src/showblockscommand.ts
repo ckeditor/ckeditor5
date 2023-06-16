@@ -7,7 +7,7 @@
  * @module show-blocks/showblockscommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core';
 
 /**
  * The show blocks command.
@@ -16,7 +16,40 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class ShowBlocksCommand extends Command {
 	/**
-	 * @TODO
+	 * Flag indicating whether the command is active, i.e. content blocks are displayed.
 	 */
-	public override execute(): void {}
+	declare public value: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
+
+		this.value = false;
+	}
+
+	/**
+	 * Toggles the visibility of content blocks.
+	 */
+	public override execute(): void {
+		const CLASS_NAME = 'ck-show-blocks';
+		const view = this.editor.editing.view;
+
+		view.change( writer => {
+			// Multiroot support.
+			for ( const root of view.document.roots ) {
+				if ( !root.hasClass( CLASS_NAME ) ) {
+					writer.addClass( CLASS_NAME, root );
+					this.value = true;
+				} else {
+					writer.removeClass( CLASS_NAME, root );
+					this.value = false;
+				}
+			}
+		} );
+	}
 }
