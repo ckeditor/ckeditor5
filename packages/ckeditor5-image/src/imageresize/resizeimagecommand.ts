@@ -58,7 +58,7 @@ export default class ResizeImageCommand extends Command {
 	 * @param options.width The new width of the image.
 	 * @fires execute
 	 */
-	public override execute( options: { width: string | null; height: string | null } ): void {
+	public override execute( options: { width: string | null } ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
@@ -66,18 +66,13 @@ export default class ResizeImageCommand extends Command {
 
 		this.value = {
 			width: options.width,
-			height: options.height
+			height: null
 		};
 
 		if ( imageElement ) {
 			model.change( writer => {
 				writer.setAttribute( 'resizedWidth', options.width, imageElement );
-
-				if ( options.height ) {
-					writer.setAttribute( 'resizedHeight', options.height, imageElement );
-				} else {
-					writer.removeAttribute( 'resizedHeight', imageElement );
-				}
+				writer.removeAttribute( 'resizedHeight', imageElement );
 			} );
 		}
 	}
