@@ -40,7 +40,7 @@ import {
 	ImageToolbar,
 	ImageUpload,
 	PictureEditing,
-	AutoImage
+	AutoImage,
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -68,6 +68,8 @@ import { Exercise } from './plugins/exercise/index';
 import { Modal } from './plugins/modal';
 // @ts-ignore
 import { StyledLink } from './plugins/styledLink/index';
+// @ts-ignore
+import { Source } from './plugins/source/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -121,6 +123,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Exercise,
 		Modal,
 		StyledLink,
+		Source,
 	];
 
 	public static override defaultConfig = {
@@ -167,6 +170,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'exercise',
 				'modal',
 				'styledLink',
+				'source',
 			],
 		},
 		image: {
