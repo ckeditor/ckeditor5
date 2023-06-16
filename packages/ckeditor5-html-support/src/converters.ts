@@ -19,7 +19,8 @@ import type {
 	UpcastConversionApi,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement
+	ViewElement,
+	Item
 } from 'ckeditor5/src/engine';
 import { toWidget } from 'ckeditor5/src/widget';
 import {
@@ -102,7 +103,7 @@ export function createObjectView( viewName: string, modelElement: Element, write
 export function viewToAttributeInlineConverter(
 	{ view: viewName, model: attributeKey }: DataSchemaInlineElementDefinition,
 	dataFilter: DataFilter
-) {
+): ( dispatcher: UpcastDispatcher ) => void {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			let viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
@@ -125,19 +126,46 @@ export function viewToAttributeInlineConverter(
 				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 			}
 
+			// Convert empty inline element if it has any attributes.
+			if ( data.modelRange!.isCollapsed && Object.keys( viewAttributes ).length ) {
+				const modelElement = conversionApi.writer.createElement( 'htmlEmptyElement' );
+
+				if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
+					return;
+				}
+
+				// TODO How to preserve spaces around? They are trimmed by DOM converter while parsing HTML string.
+
+				const parts = conversionApi.getSplitParts( modelElement );
+
+				data.modelRange = conversionApi.writer.createRange(
+					data.modelRange!.start,
+					conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
+				);
+
+				conversionApi.updateConversionResult( modelElement, data );
+				setAttributeOnItem( modelElement, viewAttributes, conversionApi );
+
+				return;
+			}
+
 			// Set attribute on each item in range according to the schema.
 			for ( const node of data.modelRange!.getItems() ) {
-				if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
-					// Node's children are converted recursively, so node can already include model attribute.
-					// We want to extend it, not replace.
-					const nodeAttributes = node.getAttribute( attributeKey );
-					const attributesToAdd = mergeViewElementAttributes( viewAttributes, nodeAttributes || {} );
-
-					conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
-				}
+				setAttributeOnItem( node, viewAttributes, conversionApi );
 			}
 		}, { priority: 'low' } );
 	};
+
+	function setAttributeOnItem( node: Item, viewAttributes: GHSViewAttributes, conversionApi: UpcastConversionApi ): void {
+		if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
+			// Node's children are converted recursively, so node can already include model attribute.
+			// We want to extend it, not replace.
+			const nodeAttributes = node.getAttribute( attributeKey );
+			const attributesToAdd = mergeViewElementAttributes( viewAttributes, nodeAttributes || {} );
+
+			conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
+		}
+	}
 }
 
 /**

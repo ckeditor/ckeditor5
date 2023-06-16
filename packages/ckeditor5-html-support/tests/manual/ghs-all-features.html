@@ -15,12 +15,24 @@
 		.text-italic {
 			font-style: italic;
 		}
+		i.inline-icon {
+			display: inline-block;
+			width: 1em;
+			height: 1em;
+			background: red;
+		}
 	</style>
 </head>
 <div style="display: flex">
 	<div style="width: 40%; margin-right: 20px">
 		<div id="editor">
-			<p style="color:blue;">Feature paragraph</p>
+			<p><i class="inline-icon"></i> empty inline at start</p>
+			<p>Text with <i class="inline-icon"></i> empty inline inside</p>
+			<p>Text with empty inline a the end <i class="inline-icon"></i></p>
+			<p><i></i> ignores empty inline without any attributes</p>
+		</div>
+		<div id="-editor" style="display: none">
+			<p style="color:blue;"><i class="inline-icon"></i>Feature paragraph</p>
 
 			<h2 style="color:green">Feature heading1</h2>
 			<h3 style="color:green">Feature heading2</h3>

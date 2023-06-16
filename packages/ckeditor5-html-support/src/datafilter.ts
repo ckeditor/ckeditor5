@@ -47,6 +47,7 @@ import {
 
 import {
 	getHtmlAttributeName,
+	setViewAttributes,
 	type GHSViewAttributes
 } from './utils';
 
@@ -662,12 +663,39 @@ export default class DataFilter extends Plugin {
 			schema.setAttributeProperties( attributeKey, definition.attributeProperties );
 		}
 
+		if ( !schema.isRegistered( 'htmlEmptyElement' ) ) {
+			schema.register( 'htmlEmptyElement', {
+				allowWhere: '$text',
+				allowAttributesOf: '$text',
+				isInline: true
+			} );
+		}
+
 		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this ) );
 
-		conversion.for( 'downcast' ).attributeToElement( {
-			model: attributeKey,
-			view: attributeToViewInlineConverter( definition )
-		} );
+		conversion.for( 'downcast' )
+			.attributeToElement( {
+				model: attributeKey,
+				view: attributeToViewInlineConverter( definition )
+			} )
+			.elementToElement( {
+				model: 'htmlEmptyElement',
+				view: ( item, { writer, consumable } ) => {
+					if ( !item.hasAttribute( attributeKey ) ) {
+						return;
+					}
+
+					// TODO Handle keyboard arrows navigation for elements styled as display: inline-block
+
+					const viewElement = writer.createEmptyElement( definition.view! );
+					const attributeValue = item.getAttribute( attributeKey ) as GHSViewAttributes;
+
+					consumable.consume( item, `attribute:${ attributeKey }` );
+					setViewAttributes( writer, attributeValue, viewElement );
+
+					return viewElement;
+				}
+			} );
 	}
 }
 
