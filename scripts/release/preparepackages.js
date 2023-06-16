@@ -17,7 +17,7 @@ const updateVersionReferences = require( './utils/updateversionreferences' );
 const buildTsAndDllForCkeditor5Root = require( './utils/buildtsanddllforckeditor5root' );
 const getCKEditor5PackageJson = require( './utils/getckeditor5packagejson' );
 const parseArguments = require( './utils/parsearguments' );
-const isCKEditor5Package = require( './utils/isckeditor5package' );
+const isCKEditor5PackageFactory = require( './utils/isckeditor5packagefactory' );
 const compileTypeScriptCallback = require( './utils/compiletypescriptcallback' );
 const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
@@ -77,12 +77,12 @@ const tasks = new Listr( [
 				},
 				{
 					title: 'Updating dependencies.',
-					task: () => {
+					task: async () => {
 						return releaseTools.updateDependencies( {
 							// We do not use caret ranges by purpose. See: #14046.
 							version: latestVersion,
 							packagesDirectory: PACKAGES_DIRECTORY,
-							shouldUpdateVersionCallback: isCKEditor5Package
+							shouldUpdateVersionCallback: await isCKEditor5PackageFactory()
 						} );
 					}
 				},
