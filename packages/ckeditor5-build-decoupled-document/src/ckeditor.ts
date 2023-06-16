@@ -69,6 +69,7 @@ import { Modal } from './plugins/modal';
 // @ts-ignore
 import { StyledLink } from './plugins/styledLink/index';
 // @ts-ignore
+import { FullScreen } from './plugins/fullScreen/index';
 import { Source } from './plugins/source/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
@@ -123,6 +124,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Exercise,
 		Modal,
 		StyledLink,
+		FullScreen,
 		Source,
 	];
 
@@ -170,6 +172,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'exercise',
 				'modal',
 				'styledLink',
+				'fullScreen',
 				'source',
 			],
 		},
