@@ -18,7 +18,7 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding;
 
-	before( () => {
+	beforeEach( () => {
 		doc = new Document( new StylesProcessor() );
 		root = createViewRoot( doc );
 
@@ -220,7 +220,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range starts between elements', () => {
 			let expected, range;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{
 						type: 'elementStart',
@@ -295,7 +295,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range starts inside the text', () => {
 			let expected, range;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{
 						type: 'text',
@@ -362,7 +362,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range ends inside the text', () => {
 			let expected, range;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{
 						type: 'elementStart',
@@ -430,7 +430,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range starts and ends inside the same text', () => {
 			let expected, range;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{
 						type: 'text',
@@ -553,7 +553,7 @@ describe( 'TreeWalker', () => {
 		describe( 'whole root', () => {
 			let expected;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{
 						type: 'elementStart',
@@ -672,7 +672,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range', () => {
 			let range, expected;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{
 						type: 'text',
@@ -767,8 +767,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( '`shallow` only iterates elements in the range that ends inside some element (forward)', () => {
-			const p2 = new ContainerElement( doc, 'p', null, [ new Text( doc, '' ) ] );
-			const p3 = new ContainerElement( doc, 'p', null, [ new Text( doc, '' ) ] );
+			const p2 = new ContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
+			const p3 = new ContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
 
 			root._insertChild( 2, [ p2, p3 ] );
 
@@ -788,8 +788,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( '`shallow` only iterates elements in the range ends deep inside some element (forward)', () => {
-			const p2 = new ContainerElement( doc, 'p', null, [ new Text( doc, '' ) ] );
-			const p3 = new ContainerElement( doc, 'p', null, [ new Text( doc, '' ) ] );
+			const p2 = new ContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
+			const p3 = new ContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
 
 			root._insertChild( 2, [ p2, p3 ] );
 
@@ -829,7 +829,7 @@ describe( 'TreeWalker', () => {
 	describe( 'iterate omitting child nodes and elementEnd `shallow`', () => {
 		let expected;
 
-		before( () => {
+		beforeEach( () => {
 			expected = [
 				{
 					type: 'elementStart',
@@ -873,7 +873,7 @@ describe( 'TreeWalker', () => {
 		describe( 'merged text', () => {
 			let expected;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{
 						type: 'elementStart',
@@ -950,7 +950,7 @@ describe( 'TreeWalker', () => {
 		describe( 'single character', () => {
 			let expected;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{
 						type: 'elementStart',
