@@ -9,7 +9,7 @@
 
 'use strict';
 
-const path = require( 'path' );
+const upath = require( 'upath' );
 const { EventEmitter } = require( 'events' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { Listr } = require( 'listr2' );
@@ -31,9 +31,8 @@ EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
 
 const abortController = new AbortController();
 
-// TODO: If nightly: generate a version number. See: #14179.
-const latestVersion = releaseTools.getLastFromChangelog();
-const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
+let latestVersion;
+let versionChangelog;
 
 process.on( 'SIGINT', () => {
 	abortController.abort( 'SIGINT' );
@@ -115,7 +114,7 @@ const tasks = new Listr( [
 						return releaseTools.executeInParallel( {
 							packagesDirectory: PACKAGES_DIRECTORY,
 							packagesDirectoryFilter: packageDirectory => {
-								return path.basename( packageDirectory ).startsWith( 'ckeditor5-build-' );
+								return upath.basename( packageDirectory ).startsWith( 'ckeditor5-build-' );
 							},
 							signal: abortController.signal,
 							listrTask: task,
@@ -199,10 +198,18 @@ const tasks = new Listr( [
 	}
 ] );
 
-tasks.run()
-	.catch( err => {
+( async () => {
+	try {
+		latestVersion = cliArguments.nightly ?
+			await releaseTools.getNextNightly() :
+			releaseTools.getLastFromChangelog();
+
+		versionChangelog = releaseTools.getChangesForVersion( latestVersion );
+
+		await tasks.run();
+	} catch ( err ) {
 		process.exitCode = 1;
 
-		console.log( '' );
 		console.error( err );
-	} );
+	}
+} )();
