@@ -89,7 +89,7 @@
     "@ckeditor/ckeditor5-dev-ci": "^38.0.0",
     "@ckeditor/ckeditor5-dev-dependency-checker": "^38.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-release-tools": "ckeditor/ckeditor5-dev#ck/14179",
+    "@ckeditor/ckeditor5-dev-release-tools": "https://gitpkg.now.sh/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-release-tools?ck/14179",
     "@ckeditor/ckeditor5-dev-tests": "^38.0.0",
     "@ckeditor/ckeditor5-dev-transifex": "^38.0.0",
     "@ckeditor/ckeditor5-dev-translations": "^38.0.0",
