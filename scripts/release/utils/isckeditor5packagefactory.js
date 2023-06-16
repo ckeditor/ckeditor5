@@ -14,7 +14,7 @@ const { glob } = require( 'glob' );
 /**
  * Checks whether provided package name is the CKEditor 5 dependency.
  *
- * @returns {Promise<Function>}
+ * @returns {Promise.<Function>}
  */
 module.exports = async function isCKEditor5PackageFactory() {
 	const allCKEditor5NamePatterns = [
