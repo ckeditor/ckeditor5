@@ -47,6 +47,10 @@ describe( 'TreeWalker', () => {
 		rootEnding = new Position( root, [ 2 ] );
 	} );
 
+	afterEach( () => {
+		model.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
 			expectToThrowCKEditorError( () => {
