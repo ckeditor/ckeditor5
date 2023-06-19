@@ -251,6 +251,16 @@ describe( 'ColorUI', () => {
 				expect( spy.callCount ).to.equal( 1 );
 			} );
 
+			it( 'should close dropdown when "save button" is pressed', () => {
+				dropdown.isOpen = true;
+
+				dropdown.colorTableView.fire( 'execute', {
+					source: 'saveButton'
+				} );
+
+				expect( dropdown.isOpen ).to.be.false;
+			} );
+
 			it( 'should call appendColorPicker when dropdown is opened', async () => {
 				// This test uses scoped `element`, `editor` and `dropdown` elements on purpose.
 				const element = document.createElement( 'div' );

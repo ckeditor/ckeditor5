@@ -828,7 +828,7 @@ describe( 'table properties', () => {
 							const { borderColorInput } = view;
 							const { panelView } = borderColorInput.fieldView.dropdownView;
 
-							expect( panelView.children.first.label ).to.equal( 'Restore default' );
+							expect( panelView.children.first.colorGridsPageView.removeColorButtonView.label ).to.equal( 'Restore default' );
 						} );
 					} );
 				} );
@@ -838,7 +838,7 @@ describe( 'table properties', () => {
 						const { backgroundInput } = view;
 						const { panelView } = backgroundInput.fieldView.dropdownView;
 
-						expect( panelView.children.first.label ).to.equal( 'Restore default' );
+						expect( panelView.children.first.colorGridsPageView.removeColorButtonView.label ).to.equal( 'Restore default' );
 					} );
 				} );
 			} );

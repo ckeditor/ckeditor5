@@ -7,10 +7,8 @@
  * @module font/utils
  */
 
-import ColorTableView from './ui/colortableview';
-
 import type { FontFamilyOption, FontSizeOption } from './fontconfig';
-import type { ColorDefinition, ColorPickerConfig, DropdownView } from 'ckeditor5/src/ui';
+import { ColorTableView, type ColorDefinition, type ColorPickerConfig, type DropdownView } from 'ckeditor5/src/ui';
 import type { ArrayOrItem } from 'ckeditor5/src/utils';
 import type {
 	ViewAttributeElement,
@@ -100,9 +98,9 @@ export function renderDowncastElement( styleAttr: string ) {
 }
 
 /**
- * A helper that adds {@link module:font/ui/colortableview~ColorTableView} to the color dropdown with proper initial values.
+ * A helper that adds {@link module:ui/colortable/colortableview~ColorTableView} to the color dropdown with proper initial values.
  *
- * @param config.dropdownView The dropdown view to which a {@link module:font/ui/colortableview~ColorTableView} will be added.
+ * @param config.dropdownView The dropdown view to which a {@link module:ui/colortable/colortableview~ColorTableView} will be added.
  * @param config.colors An array with definitions representing colors to be displayed in the color table.
  * @param config.removeButtonLabel The label for the button responsible for removing the color.
  * @param config.documentColorsLabel The label for the section with document colors.

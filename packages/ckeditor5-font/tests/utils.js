@@ -10,9 +10,9 @@ import {
 	renderDowncastElement
 } from './../src/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ColorTableView from './../src/ui/colortableview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Locale } from '@ckeditor/ckeditor5-utils';
+import { ColorTableView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();

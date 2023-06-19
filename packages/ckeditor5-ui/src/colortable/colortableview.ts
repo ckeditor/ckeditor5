@@ -4,36 +4,36 @@
  */
 
 /**
- * @module font/ui/colortableview
+ * @module ui/colortable/colortableview
  */
 
-import { icons } from 'ckeditor5/src/core';
-import {
-	ButtonView,
-	ColorGridView,
-	ColorTileView,
-	FocusCycler,
-	LabelView,
-	Template,
-	View,
-	ViewCollection,
-	ColorPickerView,
-	icons as uiIcons,
-	type ColorDefinition,
-	type ColorPickerConfig
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import type { Model } from 'ckeditor5/src/engine';
+import ButtonView from '../button/buttonview';
+import ColorGridView, { type ColorDefinition } from '../colorgrid/colorgridview';
+import ColorTileView from '../colorgrid/colortileview';
+import FocusCycler from '../focuscycler';
+import LabelView from '../label/labelview';
+import Template from '../template';
+import View from '../view';
+import ViewCollection from '../viewcollection';
+import ColorPickerView from '../colorpicker/colorpickerview';
+import type { ColorPickerViewConfig } from '../colorpicker/utils';
+import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
+import type { Model } from '@ckeditor/ckeditor5-engine';
 
-import DocumentColorCollection from '../documentcolorcollection';
+import DocumentColorCollection from './documentcolorcollection';
 
-import '../../theme/fontcolor.css';
+import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import colorPaletteIcon from '../../theme/icons/color-palette.svg';
+
+import '../../theme/components/colortable/colortable.css';
 
 /**
  * A class which represents a view with the following sub–components:
  *
- * * A {@link module:font/ui/colortableview~ColorTableView#colorGridsPageView color grids component},
- * * A {@link module:font/ui/colortableview~ColorTableView#colorPickerPageView color picker component}.
+ * * A {@link module:ui/colortable/colortableview~ColorTableView#colorGridsPageView color grids component},
+ * * A {@link module:ui/colortable/colortableview~ColorTableView#colorPickerPageView color picker component}.
  */
 export default class ColorTableView extends View {
 	/**
@@ -97,7 +97,7 @@ export default class ColorTableView extends View {
 	/**
 	 * The configuration of color picker feature.
 	 */
-	private _colorPickerConfig: ColorPickerConfig | false;
+	private _colorPickerConfig: ColorPickerViewConfig | false;
 
 	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
@@ -113,14 +113,22 @@ export default class ColorTableView extends View {
 	 */
 	constructor(
 		locale: Locale,
-		{ colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount, colorPickerLabel, colorPickerConfig }: {
+		{
+			colors,
+			columns,
+			removeButtonLabel,
+			documentColorsLabel,
+			documentColorsCount,
+			colorPickerLabel,
+			colorPickerConfig
+		}: {
 			colors: Array<ColorDefinition>;
 			columns: number;
 			removeButtonLabel: string;
 			colorPickerLabel: string;
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
-			colorPickerConfig: ColorPickerConfig | false;
+			colorPickerConfig: ColorPickerViewConfig | false;
 		}
 	) {
 		super( locale );
@@ -288,7 +296,7 @@ export default class ColorTableView extends View {
 
 	/**
 	 * Refreshes the state of the selected color in one or both {@link module:ui/colorgrid/colorgridview~ColorGridView}s
-	 * available in the {@link module:font/ui/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
+	 * available in the {@link module:ui/colortable/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
 	 * of them.
 	 */
 	public updateSelectedColors(): void {
@@ -347,7 +355,8 @@ class ColorGridsPageView extends View {
 	public columns: number;
 
 	/**
-	 * A collection of definitions that store the document colors.
+	 * Preserves the reference to {@link module:ui/colortable/documentcolorcollection~DocumentColorCollection} used to collect
+	 * definitions that store the document colors.
 	 *
 	 * @readonly
 	 */
@@ -521,7 +530,7 @@ class ColorGridsPageView extends View {
 
 	/**
 	 * Refreshes the state of the selected color in one or both {@link module:ui/colorgrid/colorgridview~ColorGridView}s
-	 * available in the {@link module:font/ui/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
+	 * available in the {@link module:ui/colortable/colortableview~ColorTableView}. It guarantees that the selection will occur only in one
 	 * of them.
 	 */
 	public updateSelectedColors(): void {
@@ -623,7 +632,7 @@ class ColorGridsPageView extends View {
 		this.colorPickerButtonView.set( {
 			label: this._colorPickerLabel,
 			withText: true,
-			icon: uiIcons.colorPaletteIcon,
+			icon: colorPaletteIcon,
 			class: 'ck-color-table__color-picker'
 		} );
 
@@ -640,7 +649,7 @@ class ColorGridsPageView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: icons.eraser,
+			icon: removeButtonIcon,
 			label: this._removeButtonLabel
 		} );
 
@@ -817,7 +826,7 @@ class ColorPickerPageView extends View {
 	 *
 	 * @readonly
 	 */
-	private _pickerConfig: ColorPickerConfig | false;
+	private _pickerConfig: ColorPickerViewConfig | false;
 
 	/**
 	 * @param locale The localization services instance.
@@ -838,7 +847,7 @@ class ColorPickerPageView extends View {
 				focusTracker: FocusTracker;
 				focusables: ViewCollection;
 				keystrokes: KeystrokeHandler;
-				colorPickerConfig: ColorPickerConfig | false;
+				colorPickerConfig: ColorPickerViewConfig | false;
 			}
 	) {
 		super( locale );
@@ -878,7 +887,9 @@ class ColorPickerPageView extends View {
 	public override render(): void {
 		super.render();
 
-		const colorPickerView = new ColorPickerView( this.locale, this._pickerConfig as ColorPickerConfig );
+		const colorPickerView = new ColorPickerView( this.locale, {
+			...this._pickerConfig
+		} as ColorPickerViewConfig );
 
 		this.colorPickerView = colorPickerView;
 		this.colorPickerView.render();
@@ -951,8 +962,12 @@ class ColorPickerPageView extends View {
 			this._focusables.add( slider );
 		}
 
-		this.focusTracker.add( this.colorPickerView!.hexInputRow.children.get( 1 )!.element! );
-		this._focusables.add( this.colorPickerView!.hexInputRow.children.get( 1 )! );
+		const input = this.colorPickerView!.hexInputRow.children.get( 1 )!;
+
+		if ( input.element! ) {
+			this.focusTracker.add( input.element );
+			this._focusables.add( input );
+		}
 
 		this.focusTracker.add( this.saveButtonView.element! );
 		this._focusables.add( this.saveButtonView );
@@ -998,16 +1013,17 @@ class ColorPickerPageView extends View {
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
-			icon: icons.check,
+			icon: checkButtonIcon,
 			class: 'ck-button-save',
+			type: 'button',
 			withText: false,
-			label: t( 'Accept' ),
-			type: 'submit'
+			label: t( 'Accept' )
 		} );
 
 		cancelButtonView.set( {
-			icon: icons.cancel,
+			icon: cancelButtonIcon,
 			class: 'ck-button-cancel',
+			type: 'button',
 			withText: false,
 			label: t( 'Cancel' )
 		} );

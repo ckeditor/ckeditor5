@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+.ck.ck-color-table {
+	& .ck-button.ck-color-table__remove-color,
+	& .ck-button.ck-color-table__color-picker {
+		width: 100%;
+	}
+
+	& .ck-button.ck-color-table__color-picker {
+		padding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+
+		&:not(:focus) {
+			border-top: 1px solid var(--ck-color-base-border);
+		}
+
+		& .ck.ck-icon {
+			@mixin ck-dir ltr {
+				margin-right: var(--ck-spacing-standard);
+			}
+
+			@mixin ck-dir rtl {
+				margin-left: var(--ck-spacing-standard);
+			}
+		}
+	}
+
+	& label.ck.ck-color-grid__label {
+		font-weight: unset;
+	}
+
+	& .ck.ck-color-picker {
+		padding: 8px;
+
+		& .hex-color-picker {
+			height: 100px;
+			min-width: 180px;
+
+			&::part(saturation) {
+				border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
+			}
+
+			&::part(hue) {
+				border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+			}
+
+			&::part(saturation-pointer),
+			&::part(hue-pointer) {
+				width: 15px;
+				height: 15px;
+			}
+		}
+	}
+
+	& .ck.ck-color-table_action-bar {
+		padding: 0 8px 8px;
+	}
+}

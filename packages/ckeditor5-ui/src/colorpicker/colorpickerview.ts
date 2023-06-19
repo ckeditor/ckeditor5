@@ -7,7 +7,7 @@
  * @module ui/colorpicker/colorpickerview
  */
 
-import { convertColor, convertToHex, type ColorPickerConfig, type ColorPickerOutputFormat } from './utils';
+import { convertColor, convertToHex, type ColorPickerViewConfig, type ColorPickerOutputFormat } from './utils';
 
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
@@ -22,6 +22,9 @@ import '../../theme/components/colorpicker/colorpicker.css';
 
 const waitingTime = 150;
 
+/**
+ * A class which represents a color picker with an input field for defining custom colors.
+ */
 export default class ColorPickerView extends View {
 	/**
 	 * Element with saturation and hue sliders.
@@ -32,7 +35,7 @@ export default class ColorPickerView extends View {
 	 * Container for a `#` sign prefix and an input for displaying and defining custom colors
 	 * in HEX format.
 	 */
-	declare public hexInputRow: ColorPickerInputRowView;
+	public hexInputRow: ColorPickerInputRowView;
 
 	/**
 	 * Current color state in color picker.
@@ -58,15 +61,14 @@ export default class ColorPickerView extends View {
 	declare public _hexColor: string;
 
 	/**
-	* Debounced event method. The `colorPickerEvent()` method is called the specified `waitingTime` after
-	* `debouncedPickerEvent()` is called, unless a new action happens in the meantime.
-	*/
-	declare private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
+	 * Debounced event method. Updates color property in component.
+	 */
+	private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
 
 	/**
 	 * The output format (the one in which colors are applied in the model) of color picker.
 	 */
-	declare private _format: ColorPickerOutputFormat;
+	private _format: ColorPickerOutputFormat;
 
 	/**
 	 * Creates a view of color picker.
@@ -74,19 +76,22 @@ export default class ColorPickerView extends View {
 	 * @param locale
 	 * @param config
 	 */
-	constructor( locale: Locale | undefined, config: ColorPickerConfig ) {
+	constructor( locale: Locale | undefined, config: ColorPickerViewConfig ) {
 		super( locale );
 
-		this.set( 'color', '' );
-
-		this.set( '_hexColor', '' );
+		this.set( {
+			color: '',
+			_hexColor: ''
+		} );
 
 		this._format = config.format || 'hsl';
 
 		this.hexInputRow = this._createInputRow();
-
 		const children = this.createCollection();
-		children.add( this.hexInputRow );
+
+		if ( !config.hideInput ) {
+			children.add( this.hexInputRow );
+		}
 
 		this.setTemplate( {
 			tag: 'div',
@@ -140,7 +145,11 @@ export default class ColorPickerView extends View {
 		this._createSlidersView();
 
 		if ( this.element ) {
-			this.element.insertBefore( this.picker, this.hexInputRow.element );
+			if ( this.hexInputRow.element ) {
+				this.element.insertBefore( this.picker, this.hexInputRow.element );
+			} else {
+				this.element.appendChild( this.picker );
+			}
 
 			// Create custom stylesheet with a look of focused pointer in color picker and append it into the color picker shadowDom
 			const styleSheetForFocusedColorPicker = document.createElement( 'style' );
@@ -306,7 +315,7 @@ class SliderView extends View {
 	}
 }
 
-// View abstaction over the `#` character before color input.
+// View abstraction over the `#` character before color input.
 class HashView extends View {
 	constructor( locale?: Locale ) {
 		super( locale );
