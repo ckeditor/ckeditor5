@@ -7,7 +7,7 @@ export default class Source extends Plugin {
 		const editor = this.editor;
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		const open = editor.config._config.source.onOpen;
+		const open = editor.config._config.source?.onOpen;
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'source', () => {

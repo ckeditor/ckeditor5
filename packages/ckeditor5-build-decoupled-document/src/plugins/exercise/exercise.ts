@@ -7,7 +7,7 @@ export default class Exercise extends Plugin {
 		const editor = this.editor;
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		const open = editor.config._config.exercise.onOpen;
+		const open = editor.config._config.exercise?.onOpen;
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'exercise', () => {

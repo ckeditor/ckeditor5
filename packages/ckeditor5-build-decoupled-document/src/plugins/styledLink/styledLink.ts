@@ -11,24 +11,24 @@ export default class StyledLink extends Plugin {
 		const editor = this.editor;
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		const open = editor.config._config.styledLink.onOpen;
+		const open = editor.config._config.styledLink?.onOpen;
 		// The button must be registered among the UI components of the editor
 		// to be displayed in the toolbar.
-		editor.ui.componentFactory.add('styledLink', () => {
+		editor.ui.componentFactory.add( 'styledLink', () => {
 			// The button will be an instance of ButtonView.
 			const button = new ButtonView();
 
-			button.set({
+			button.set( {
 				label: 'Styled Link',
 				withText: false,
-				icon,
-			});
+				icon
+			} );
 
-			button.on('execute', () => {
+			button.on( 'execute', () => {
 				open();
-			});
+			} );
 
 			return button;
-		});
+		} );
 	}
 }
