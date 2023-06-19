@@ -154,8 +154,8 @@ export default class DataFilter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DataFilter' {
-		return 'DataFilter';
+	public static get pluginName() {
+		return 'DataFilter' as const;
 	}
 
 	/**

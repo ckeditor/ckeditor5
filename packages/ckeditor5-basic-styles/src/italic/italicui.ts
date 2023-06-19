@@ -22,8 +22,8 @@ export default class ItalicUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ItalicUI' {
-		return 'ItalicUI';
+	public static get pluginName() {
+		return 'ItalicUI' as const;
 	}
 
 	/**

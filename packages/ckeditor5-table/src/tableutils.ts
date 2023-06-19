@@ -36,8 +36,8 @@ export default class TableUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableUtils' {
-		return 'TableUtils';
+	public static get pluginName() {
+		return 'TableUtils' as const;
 	}
 
 	/**

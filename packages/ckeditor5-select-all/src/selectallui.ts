@@ -23,8 +23,8 @@ export default class SelectAllUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SelectAllUI' {
-		return 'SelectAllUI';
+	public static get pluginName() {
+		return 'SelectAllUI' as const;
 	}
 
 	/**

@@ -30,8 +30,8 @@ export default class HeadingUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HeadingUI' {
-		return 'HeadingUI';
+	public static get pluginName() {
+		return 'HeadingUI' as const;
 	}
 
 	/**

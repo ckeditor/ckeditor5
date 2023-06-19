@@ -24,8 +24,8 @@ export default class TableCellWidthEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCellWidthEditing' {
-		return 'TableCellWidthEditing';
+	public static get pluginName() {
+		return 'TableCellWidthEditing' as const;
 	}
 
 	/**

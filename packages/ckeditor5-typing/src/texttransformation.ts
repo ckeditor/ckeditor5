@@ -91,8 +91,8 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TextTransformation' {
-		return 'TextTransformation';
+	public static get pluginName() {
+		return 'TextTransformation' as const;
 	}
 
 	/**

@@ -35,8 +35,8 @@ export default class DocumentListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DocumentListElementSupport' {
-		return 'DocumentListElementSupport';
+	public static get pluginName() {
+		return 'DocumentListElementSupport' as const;
 	}
 
 	/**

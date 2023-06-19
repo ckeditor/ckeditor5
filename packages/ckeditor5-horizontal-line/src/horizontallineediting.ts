@@ -22,8 +22,8 @@ export default class HorizontalLineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HorizontalLineEditing' {
-		return 'HorizontalLineEditing';
+	public static get pluginName() {
+		return 'HorizontalLineEditing' as const;
 	}
 
 	/**

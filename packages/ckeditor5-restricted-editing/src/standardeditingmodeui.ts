@@ -22,8 +22,8 @@ export default class StandardEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StandardEditingModeUI' {
-		return 'StandardEditingModeUI';
+	public static get pluginName() {
+		return 'StandardEditingModeUI' as const;
 	}
 
 	/**

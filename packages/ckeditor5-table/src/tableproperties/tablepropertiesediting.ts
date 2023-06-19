@@ -50,8 +50,8 @@ export default class TablePropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TablePropertiesEditing' {
-		return 'TablePropertiesEditing';
+	public static get pluginName() {
+		return 'TablePropertiesEditing' as const;
 	}
 
 	/**

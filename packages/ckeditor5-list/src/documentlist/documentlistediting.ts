@@ -96,8 +96,8 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DocumentListEditing' {
-		return 'DocumentListEditing';
+	public static get pluginName() {
+		return 'DocumentListEditing' as const;
 	}
 
 	/**

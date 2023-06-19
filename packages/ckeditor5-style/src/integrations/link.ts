@@ -27,8 +27,8 @@ export default class LinkStyleSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'LinkStyleSupport' {
-		return 'LinkStyleSupport';
+	public static get pluginName() {
+		return 'LinkStyleSupport' as const;
 	}
 
 	/**

@@ -31,8 +31,8 @@ export default class TableToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableToolbar' {
-		return 'TableToolbar';
+	public static get pluginName() {
+		return 'TableToolbar' as const;
 	}
 
 	/**

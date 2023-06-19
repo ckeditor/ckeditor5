@@ -119,7 +119,7 @@ export default class Undo extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Undo' {
-		return 'Undo';
+	public static get pluginName() {
+		return 'Undo' as const;
 	}
 }

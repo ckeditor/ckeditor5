@@ -22,8 +22,8 @@ export default class DocumentListPropertiesUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DocumentListPropertiesUtils' {
-		return 'DocumentListPropertiesUtils';
+	public static get pluginName() {
+		return 'DocumentListPropertiesUtils' as const;
 	}
 
 	/**

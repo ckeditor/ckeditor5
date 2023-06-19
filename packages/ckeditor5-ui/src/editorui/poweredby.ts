@@ -7,7 +7,7 @@
  * @module ui/editorui/poweredby
  */
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 import {
 	Rect,
 	DomEmitterMixin,
@@ -22,7 +22,6 @@ import View from '../view';
 import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
-import type { UiConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;

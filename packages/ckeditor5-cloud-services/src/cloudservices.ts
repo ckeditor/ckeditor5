@@ -65,8 +65,8 @@ export default class CloudServices extends ContextPlugin implements CloudService
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CloudServices' {
-		return 'CloudServices';
+	public static get pluginName() {
+		return 'CloudServices' as const;
 	}
 
 	/**

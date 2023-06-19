@@ -35,8 +35,8 @@ export default class ImageStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageStyleUI' {
-		return 'ImageStyleUI';
+	public static get pluginName() {
+		return 'ImageStyleUI' as const;
 	}
 
 	/**

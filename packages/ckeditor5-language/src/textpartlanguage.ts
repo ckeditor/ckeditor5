@@ -38,7 +38,7 @@ export default class TextPartLanguage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TextPartLanguage' {
-		return 'TextPartLanguage';
+	public static get pluginName() {
+		return 'TextPartLanguage' as const;
 	}
 }

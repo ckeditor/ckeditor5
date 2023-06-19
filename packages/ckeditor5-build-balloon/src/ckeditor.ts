@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import BalloonEditorBase from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import { BalloonEditor as BalloonEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';

@@ -49,8 +49,8 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlockEditing' {
-		return 'CodeBlockEditing';
+	public static get pluginName() {
+		return 'CodeBlockEditing' as const;
 	}
 
 	/**

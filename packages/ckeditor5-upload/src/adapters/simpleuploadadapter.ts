@@ -50,8 +50,8 @@ export default class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SimpleUploadAdapter' {
-		return 'SimpleUploadAdapter';
+	public static get pluginName() {
+		return 'SimpleUploadAdapter' as const;
 	}
 
 	/**

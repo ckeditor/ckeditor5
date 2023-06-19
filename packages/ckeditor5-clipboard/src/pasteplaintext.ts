@@ -23,8 +23,8 @@ export default class PastePlainText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PastePlainText' {
-		return 'PastePlainText';
+	public static get pluginName() {
+		return 'PastePlainText' as const;
 	}
 
 	/**
