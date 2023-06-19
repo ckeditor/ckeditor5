@@ -14,7 +14,7 @@ import {
 	FontSize,
 	FontFamily,
 	FontColor,
-	FontBackgroundColor
+	FontBackgroundColor,
 } from '@ckeditor/ckeditor5-font';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -22,7 +22,9 @@ import {
 	Bold,
 	Italic,
 	Strikethrough,
-	Underline
+	Underline,
+	Superscript,
+	Subscript,
 } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -31,12 +33,14 @@ import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageResize,
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
-	PictureEditing
+	PictureEditing,
+	AutoImage,
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -47,17 +51,32 @@ import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 
+import ClickObserver from '../../ckeditor5-engine/src/view/observer/clickobserver';
+import { GeneralHtmlSupport } from '../../ckeditor5-html-support/src/index';
 // @ts-ignore
 import { Iframe } from '@ftrprf/ckeditor5-iframe/src/index';
 // @ts-ignore
 import { ScratchBlocks } from '@ftrprf/ckeditor5-scratch-blocks/src/index';
 // @ts-ignore
 import { contentTemplates as ContentTemplates } from '@ftrprf/ckeditor5-content-templates/src/index';
+// @ts-ignore
+import { Exercise } from './plugins/exercise/index';
+// @ts-ignore
+import { Modal } from './plugins/modal';
+// @ts-ignore
+import { StyledLink } from './plugins/styledLink/index';
+// @ts-ignore
+import { FullScreen } from './plugins/fullScreen/index';
+import { Source } from './plugins/source/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
 		Essentials,
+		GeneralHtmlSupport,
+		ClickObserver,
 		Alignment,
 		FontSize,
 		FontFamily,
@@ -76,6 +95,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		EasyImage,
 		Heading,
 		Image,
+		ImageInsert,
+		AutoImage,
 		ImageCaption,
 		ImageResize,
 		ImageStyle,
@@ -93,9 +114,18 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Table,
 		TableToolbar,
 		TextTransformation,
+		Superscript,
+		Subscript,
+		FindAndReplace,
+		RemoveFormat,
 		Iframe,
 		ScratchBlocks,
-		ContentTemplates
+		ContentTemplates,
+		Exercise,
+		Modal,
+		StyledLink,
+		FullScreen,
+		Source,
 	];
 
 	public static override defaultConfig = {
@@ -112,6 +142,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'italic',
 				'underline',
 				'strikethrough',
+				'subscript',
+				'superscript',
 				'|',
 				'alignment',
 				'|',
@@ -122,18 +154,27 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'indent',
 				'|',
 				'link',
-				'blockquote',
 				'uploadImage',
+				'insertImage',
 				'insertTable',
 				'mediaEmbed',
 				'|',
 				'undo',
 				'redo',
 				'|',
+				'removeFormat',
+				'|',
+				'style',
+				'|',
 				'iframe',
 				'scratchBlocks',
-				'contentTemplates'
-			]
+				'contentTemplates',
+				'exercise',
+				'modal',
+				'styledLink',
+				'fullScreen',
+				'source',
+			],
 		},
 		image: {
 			resizeUnit: 'px' as const,
@@ -143,20 +184,21 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
-			]
+				'imageTextAlternative',
+			],
 		},
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
 		},
 		list: {
 			properties: {
 				styles: true,
 				startIndex: true,
-				reversed: true
-			}
+				reversed: true,
+			},
 		},
+
 		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en'
+		language: 'en',
 	};
 }
