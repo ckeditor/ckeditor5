@@ -175,7 +175,7 @@ export default class TablePropertiesUI extends Plugin {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
 			defaultTableProperties: this._defaultTableProperties,
-			colorPicker: hasColorPicker ? ( config.colorPicker || {} ) : false
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
 		} );
 		const t = editor.t;
 

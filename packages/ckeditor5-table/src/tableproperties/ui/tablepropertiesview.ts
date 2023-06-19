@@ -73,7 +73,7 @@ export interface TablePropertiesViewOptions {
 	/**
 	 * The default color picker config.
 	 */
-	colorPicker: false | ColorPickerConfig;
+	colorPickerConfig: false | ColorPickerConfig;
 }
 
 /**
@@ -418,7 +418,7 @@ export default class TablePropertiesView extends View {
 			colorConfig: this.options.borderColors,
 			columns: 5,
 			defaultColorValue: defaultBorder.color,
-			colorPickerConfig: this.options.colorPicker
+			colorPickerConfig: this.options.colorPickerConfig
 		} );
 		const locale = this.locale;
 		const t = this.t!;
@@ -536,7 +536,7 @@ export default class TablePropertiesView extends View {
 			colorConfig: this.options.backgroundColors,
 			columns: 5,
 			defaultColorValue: this.options.defaultTableProperties.backgroundColor,
-			colorPickerConfig: this.options.colorPicker
+			colorPickerConfig: this.options.colorPickerConfig
 		} );
 
 		const backgroundInput = new LabeledFieldView( locale, backgroundInputCreator );

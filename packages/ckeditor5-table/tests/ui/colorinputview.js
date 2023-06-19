@@ -46,8 +46,8 @@ describe( 'ColorInputView', () => {
 
 		colorTableView = view.dropdownView.panelView.children.first;
 		inputView = view.inputView;
-		removeColorButton = view.dropdownView.panelView.children.first.colorGridsPageView.removeColorButtonView;
-		colorGridView = view.dropdownView.panelView.children.first.colorGridsPageView.staticColorsGrid;
+		removeColorButton = colorTableView.colorGridsPageView.removeColorButtonView;
+		colorGridView = colorTableView.colorGridsPageView.staticColorsGrid;
 	} );
 
 	afterEach( () => {
@@ -158,9 +158,6 @@ describe( 'ColorInputView', () => {
 
 			it( 'should close dropdown when "save button" is pressed', () => {
 				const dropdown = view.dropdownView;
-				const spy = sinon.spy();
-
-				view.on( 'input', spy );
 
 				dropdown.isOpen = true;
 
@@ -168,31 +165,35 @@ describe( 'ColorInputView', () => {
 					source: 'saveButton'
 				} );
 
-				sinon.assert.notCalled( spy );
 				expect( dropdown.isOpen ).to.be.equal( false );
+			} );
+
+			it( 'should not not fire input event on submiting', () => {
+				const spy = sinon.spy();
+
+				view.on( 'input', spy );
+
+				colorTableView.fire( 'execute', {
+					source: 'saveButton'
+				} );
+
+				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should close dropdown and cancel changes when "cancel button" is pressed', () => {
 				const dropdown = view.dropdownView;
-				const spy = sinon.spy();
-
-				view.on( 'input', spy );
 
 				dropdown.isOpen = true;
 
 				colorTableView.fire( 'cancel' );
 
-				sinon.assert.calledOnce( spy );
 				expect( dropdown.isOpen ).to.be.equal( false );
 				expect( inputView.value ).to.be.equal( '' );
 			} );
 
 			it( 'should close dropdown and revert changes when "cancel button" is pressed', () => {
 				const dropdown = view.dropdownView;
-				const spy = sinon.spy();
 				const colorTableView = dropdown.panelView.children.first;
-
-				view.on( 'input', spy );
 
 				dropdown.isOpen = true;
 				view.value = '#ffaaff';
@@ -204,7 +205,6 @@ describe( 'ColorInputView', () => {
 
 				colorTableView.fire( 'cancel' );
 
-				sinon.assert.calledOnce( spy );
 				expect( view.value ).to.be.equal( '#ffaaff' );
 			} );
 

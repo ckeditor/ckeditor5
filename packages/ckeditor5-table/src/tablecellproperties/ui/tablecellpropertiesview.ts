@@ -60,7 +60,7 @@ export interface TableCellPropertiesViewOptions {
 	borderColors: Array<NormalizedColorOption>;
 	backgroundColors: Array<NormalizedColorOption>;
 	defaultTableCellProperties: TableCellPropertiesOptions;
-	colorPicker: false | ColorPickerConfig;
+	colorPickerConfig: false | ColorPickerConfig;
 }
 
 /**
@@ -457,7 +457,7 @@ export default class TableCellPropertiesView extends View {
 			colorConfig: this.options.borderColors,
 			columns: 5,
 			defaultColorValue: defaultBorder.color,
-			colorPickerConfig: this.options.colorPicker
+			colorPickerConfig: this.options.colorPickerConfig
 		} );
 		const locale = this.locale;
 		const t = this.t!;
@@ -575,7 +575,7 @@ export default class TableCellPropertiesView extends View {
 			colorConfig: this.options.backgroundColors,
 			columns: 5,
 			defaultColorValue: this.options.defaultTableCellProperties.backgroundColor,
-			colorPickerConfig: this.options.colorPicker
+			colorPickerConfig: this.options.colorPickerConfig
 		} );
 
 		const backgroundInput = new LabeledFieldView( locale, colorInputCreator );

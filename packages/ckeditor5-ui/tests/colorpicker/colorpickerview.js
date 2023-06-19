@@ -313,7 +313,7 @@ describe( 'ColorPickerView', () => {
 			expect( view.color ).to.equal( '#ff0000' );
 		} );
 
-		it( 'should render without input', () => {
+		it( 'should render without input if "hideInput" is set on true', () => {
 			const view = new ColorPickerView( locale, { format: 'hex', hideInput: true } );
 
 			view.render();

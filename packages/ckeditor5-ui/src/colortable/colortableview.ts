@@ -965,7 +965,7 @@ class ColorPickerPageView extends View {
 		const input = this.colorPickerView!.hexInputRow.children.get( 1 )!;
 
 		if ( input.element! ) {
-			this.focusTracker.add( input.element! );
+			this.focusTracker.add( input.element );
 			this._focusables.add( input );
 		}
 

@@ -207,7 +207,7 @@ export default class ColorInputView extends View {
 		const locale = this.locale!;
 		const t = locale.t;
 		const bind = this.bindTemplate;
-		const colorGrid = this._createColorGrid( locale );
+		const colorTable = this._createColorTable( locale );
 		const dropdown = createDropdown( locale );
 		const colorPreview = new View();
 
@@ -245,16 +245,16 @@ export default class ColorInputView extends View {
 		dropdown.buttonView.tooltip = true;
 
 		dropdown.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
-		dropdown.panelView.children.add( colorGrid );
+		dropdown.panelView.children.add( colorTable );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );
 
-		this._focusables.add( colorGrid );
+		this._focusables.add( colorTable );
 
-		this.focusTracker.add( colorGrid.element! );
+		this.focusTracker.add( colorTable.element! );
 
 		dropdown.on( 'change:isOpen', ( evt, name, isVisible ) => {
 			if ( !isVisible ) {
-				colorGrid!.showColorGrids();
+				colorTable!.showColorGrids();
 			}
 		} );
 
@@ -300,14 +300,14 @@ export default class ColorInputView extends View {
 	}
 
 	/**
-	 * Creates and configures the color grid inside the {@link #dropdownView}.
+	 * Creates and configures the panel with "color grid" and "color picker" inside the {@link #dropdownView}.
 	 */
-	private _createColorGrid( locale: Locale ) {
+	private _createColorTable( locale: Locale ) {
 		const t = locale.t;
 		const defaultColor = this.options.defaultColorValue || '';
 		const removeColorButtonLabel = defaultColor ? t( 'Restore default' ) : t( 'Remove color' );
 
-		const colorGrid = new ColorTableView( locale, {
+		const colorTable = new ColorTableView( locale, {
 			colors: this.options.colorDefinitions,
 			columns: this.options.columns,
 			removeButtonLabel: removeColorButtonLabel,
@@ -318,9 +318,9 @@ export default class ColorInputView extends View {
 			}
 		} );
 
-		colorGrid!.appendUI();
+		colorTable.appendUI();
 
-		colorGrid.on( 'execute', ( _, data ) => {
+		colorTable.on( 'execute', ( _, data ) => {
 			if ( data.source === 'saveButton' ) {
 				this.dropdownView.isOpen = false;
 				return;
@@ -328,6 +328,9 @@ export default class ColorInputView extends View {
 
 			this.value = data.value || defaultColor;
 
+			/**
+			 * Color is applied to the property.
+			 */
 			this.fire( 'input' );
 
 			if ( data.source !== 'colorPicker' ) {
@@ -341,7 +344,7 @@ export default class ColorInputView extends View {
 		 */
 		let backupColor = this.value;
 
-		colorGrid.on( 'cancel', () => {
+		colorTable.on( 'cancel', () => {
 			/**
 			 * Revert color to previous value before changes in color picker.
 			 */
@@ -352,7 +355,7 @@ export default class ColorInputView extends View {
 			this.dropdownView.isOpen = false;
 		} );
 
-		colorGrid.colorGridsPageView.colorPickerButtonView!.on( 'execute', () => {
+		colorTable.colorGridsPageView.colorPickerButtonView!.on( 'execute', () => {
 			/**
 			 * Save color value before changes in color picker.
 			 */
@@ -361,7 +364,7 @@ export default class ColorInputView extends View {
 
 		// colorGrid.bind( 'selectedColor' ).to( this, 'value' );
 
-		return colorGrid;
+		return colorTable;
 	}
 
 	/**

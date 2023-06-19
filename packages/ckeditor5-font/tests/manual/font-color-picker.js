@@ -9,7 +9,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import FontColor from '../../src/fontcolor';
 import FontBackgroundColor from '../../src/fontbackgroundcolor';
-import { TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor-with-default-picker' ), {
@@ -17,9 +16,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet,
 			FontColor,
-			FontBackgroundColor,
-			TableProperties,
-			TableCellProperties
+			FontBackgroundColor
 		],
 		toolbar: [
 			'heading',
@@ -32,13 +29,9 @@ ClassicEditor
 			'bulletedList',
 			'numberedList',
 			'blockQuote',
-			'insertTable',
 			'undo',
 			'redo'
 		],
-		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
-		},
 		fontColor: {
 			columns: 3
 		}

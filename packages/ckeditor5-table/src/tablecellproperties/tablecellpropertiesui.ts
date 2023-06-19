@@ -186,7 +186,7 @@ export default class TableCellPropertiesUI extends Plugin {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
 			defaultTableCellProperties: this._defaultTableCellProperties,
-			colorPicker: hasColorPicker ? ( config.colorPicker || {} ) : false
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
 		} );
 		const t = editor.t;
 
