@@ -328,9 +328,7 @@ export default class ColorInputView extends View {
 
 			this.value = data.value || defaultColor;
 
-			/**
-			 * Color is applied to the property.
-			 */
+			// Trigger the listener that actually applies the set value.
 			this.fire( 'input' );
 
 			if ( data.source !== 'colorPicker' ) {

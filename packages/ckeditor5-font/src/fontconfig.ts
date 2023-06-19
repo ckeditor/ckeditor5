@@ -154,6 +154,11 @@ export interface FontColorConfig {
 	 */
 	columns?: number;
 
+	/**
+	 * Configuration of the color picker feature.
+	 *
+	 * If set to `false` the picker will not appear.
+	 */
 	colorPicker?: false | ColorPickerConfig;
 }
 
