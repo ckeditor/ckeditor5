@@ -219,9 +219,9 @@ export interface TablePropertiesConfig {
 	defaultProperties?: TablePropertiesOptions;
 
 	/**
-	 * The configuration of the color picker displayed in border and background color interfaces. The color picker can
-	 * be turned off (set this config to `false`) or configured to output colors in a different format (see
-	 * {@link module:ui/colorpicker/utils~ColorPickerConfig} to learn more).
+	 * Configuration of the color picker in the table properties balloon.
+	 *
+	 * If set to `false` the picker will not appear.
 	 */
 	colorPicker?: false | ColorPickerConfig;
 }
@@ -280,8 +280,9 @@ export interface TableCellPropertiesConfig {
 	defaultProperties?: TableCellPropertiesOptions;
 
 	/**
-	 * The configuration of {@link module:ui/colorpicker/colorpickerview~ColorPickerView}. Color picker could
-	 * be turned off or could be defined output color format ( e.g. "hex", "rgb" ).
+	 * Configuration of the color picker in the table cell properties balloon.
+	 *
+	 * If set to `false` the picker will not appear.
 	 */
 	colorPicker?: false | ColorPickerConfig;
 }
