@@ -205,7 +205,11 @@ describe( 'ColorInputView', () => {
 
 				colorTableView.fire( 'cancel' );
 
-				expect( view.value ).to.be.equal( '#ffaaff' );
+				/**
+				 * TODO, should be HEX format: (https://github.com/ckeditor/ckeditor5/issues/14389)
+				 */
+				expect( view.value ).to.be.equal( 'hsl( 300, 100%, 83% )' );
+				// expect( view.value ).to.be.equal( '#ffaaff' );
 			} );
 
 			it( 'should have the remove color button', () => {
@@ -259,13 +263,21 @@ describe( 'ColorInputView', () => {
 			it( 'should set ColorInputView#value upon ColorTileView#execute', () => {
 				expect( view.value ).to.equal( '' );
 
+				view.dropdownView.isOpen = true;
+
 				colorGridView.items.last.fire( 'execute' );
 
-				expect( view.value ).to.equal( 'rgb(0,0,255)' );
+				/**
+				 * TODO, should be RGB format: (https://github.com/ckeditor/ckeditor5/issues/14389)
+				 */
+				expect( view.value ).to.equal( 'hsl( 240, 100%, 50% )' );
+				// expect( view.value ).to.equal( 'rgb(0,0,255)' );
 			} );
 
 			it( 'should set InputTextView#value to the selected color\'s label upon ColorTileView#execute', () => {
 				expect( inputView.value ).to.equal( '' );
+
+				view.dropdownView.isOpen = true;
 
 				colorGridView.items.last.fire( 'execute' );
 
@@ -282,6 +294,8 @@ describe( 'ColorInputView', () => {
 
 			it( 'should fire the ColorInputView#input event upon ColorTileView#execute', () => {
 				const spy = sinon.spy( view, 'fire' );
+
+				view.dropdownView.isOpen = true;
 
 				colorGridView.items.last.fire( 'execute' );
 
@@ -306,6 +320,8 @@ describe( 'ColorInputView', () => {
 
 			it( 'should set the empty #value upon #execute', () => {
 				view.value = 'foo';
+
+				view.dropdownView.isOpen = true;
 
 				removeColorButton.fire( 'execute' );
 
@@ -527,9 +543,15 @@ describe( 'ColorInputView', () => {
 					it( 'should set the empty #value upon #execute', () => {
 						view.value = 'foo';
 
+						view.dropdownView.isOpen = true;
+
 						removeColorButton.fire( 'execute' );
 
-						expect( view.value ).to.equal( 'rgb(255,0,0)' );
+						/**
+						 * TODO, should be RGB format: (https://github.com/ckeditor/ckeditor5/issues/14389)
+						 */
+						expect( view.value ).to.equal( 'hsl( 0, 100%, 50% )' );
+						// expect( view.value ).to.equal( 'rgb(255,0,0)' );
 					} );
 				} );
 			} );

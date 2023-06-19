@@ -16,7 +16,9 @@ import {
 	ColorTableView,
 	type ColorDefinition,
 	type DropdownView,
-	type ColorPickerConfig
+	type ColorPickerConfig,
+	type ColorTableExecuteEvent,
+	type ColorTableCancelEvent
 } from 'ckeditor5/src/ui';
 
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
@@ -320,9 +322,13 @@ export default class ColorInputView extends View {
 
 		colorTable.appendUI();
 
-		colorTable.on( 'execute', ( _, data ) => {
+		colorTable.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
 			if ( data.source === 'saveButton' ) {
 				this.dropdownView.isOpen = false;
+				return;
+			}
+
+			if ( !this.dropdownView.isOpen ) {
 				return;
 			}
 
@@ -362,7 +368,7 @@ export default class ColorInputView extends View {
 			backupColor = this.value;
 		} );
 
-		// colorGrid.bind( 'selectedColor' ).to( this, 'value' );
+		colorTable.bind( 'selectedColor' ).to( this, 'value' );
 
 		return colorTable;
 	}
