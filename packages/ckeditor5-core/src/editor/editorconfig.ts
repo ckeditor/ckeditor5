@@ -458,12 +458,12 @@ export interface EditorConfig {
 	 * 	.catch( ... );
 	 * ```
 	 *
-	 * Options which can be set using the UI config:
+	 * Options which can be set using the UI configuration:
 	 *
-	 * * **`ui.viewportOffset`** &ndash; The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar
-	 * or other absolutely positioned UI elements.
+	 * * **`ui.viewportOffset`** &ndash; The offset (in pixels) of the viewport from every direction. It is
+	 * used when positioning a sticky toolbar or other absolutely positioned UI elements.
 	 * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
-	 * (e.g. the top menu). Thanks to setting the UI viewport offset the toolbar and other contextual balloons will not be positioned
+	 * (e.g. the top menu). Thanks to setting the UI viewport offset, the toolbar and other contextual balloons will not be positioned
 	 * underneath or above the page's UI.
 	 *
 	 * 	```ts
@@ -472,28 +472,28 @@ export interface EditorConfig {
 	 * 	}
 	 * 	```
 	 *
-	 * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding
+	 * 	**Note:** If you want to modify the viewport offset in runtime (after the editor was created), you can do that by overriding
 	 * 	{@link module:ui/editorui/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
 	 *
-	 * * **`ui.poweredBy`** &ndash; The configuration of the project logo displayed over editor's editing are in open-source integrations.
-	 * It allows customizing the position of the logo to minimize the risk of collision with editor content
-	 * and UI.
+	 * * **`ui.poweredBy`** &ndash; The configuration of the project logo displayed over the editor's editing area in
+	 *  open-source integrations. It allows customizing the position of the logo to minimize the risk of collision with the
+	 *  editor content and UI.
 	 *
 	 * 	The following configuration properties are supported:
 	 *
-	 * 	* **`position`** &ndash; Position of the project's logo (default: `'border'`).
-	 * 		* When `'inside'` the logo will be displayed within the boundaries of the editing area.
-	 * 		* When `'border'` the logo will be displayed over the bottom border of the editing area.
+	 * 	* **`position`** &ndash; The position of the project's logo (default: `'border'`).
+	 * 		* When `'inside'`, the logo will be displayed within the boundaries of the editing area.
+	 * 		* When `'border'`, the logo will be displayed over the bottom border of the editing area.
 	 *
-	 * 	* **`side`** (`'left'` or `'right'`, default: `'right'`) &ndash; Allows choosing the side of the editing area the
-	 * 	logo will be displayed to.
+	 * 	* **`side`** (`'left'` or `'right'`, default: `'right'`) &ndash; The side of the editing area where the
+	 * 	logo will be displayed.
 	 *
 	 * 		**Note**: If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
 	 * 		language, the side switches to `'left'` by default.
 	 *
-	 * 	* **`label`** (default: `'Powered by'`) &ndash; Allows changing the label displayed next to the project's logo.
+	 * 	* **`label`** (default: `'Powered by'`) &ndash; The label displayed next to the project's logo.
 	 *
-	 * 		**Note**: Set the value to `null` to display the logo without a text.
+	 * 		**Note**: Set the value to `null` to display the logo without any text.
 	 *
 	 * 	* **`verticalOffset`** (default: `5`) &ndash; The vertical distance the logo can be moved away from its default position.
 	 *
@@ -515,13 +515,13 @@ export interface EditorConfig {
 	ui?: UiConfig;
 
 	/**
-	 * Enables updating the source element after the editor destroy.
+	 * Enables updating the source element after the editor is destroyed.
 	 *
 	 * Enabling this option might have some security implications, as the editor doesn't have control over all data
 	 * in the output.
 	 *
-	 * Be careful, especially while using
-	 * {@glink features/markdown Markdown}, {@glink features/html/general-html-support General HTML Support} or
+	 * Be careful, especially while using the
+	 * {@glink features/markdown Markdown}, {@glink features/html/general-html-support General HTML Support}, or
 	 * {@glink features/html/html-embed HTML embed} features.
 	 */
 	updateSourceElementOnDestroy?: boolean;
@@ -536,7 +536,7 @@ export interface EditorConfig {
 }
 
 /**
- * The `config.initialData` option cannot be used together with initial data passed as the first parameter of
+ * The `config.initialData` option cannot be used together with the initial data passed as the first parameter of
  * {@link module:core/editor/editor~Editor.create `Editor.create()`}.
  *
  * @error editor-create-initial-data
@@ -548,7 +548,7 @@ export interface EditorConfig {
  * ```ts
  * ClassicEditor
  * 	.create( document.querySelector( '#editor' ), {
- * 		language: ... // Editor language configuration.
+ * 		language: ... // The editor language configuration.
  * 	} )
  * 	.then( editor => {
  * 		console.log( editor );
@@ -563,14 +563,14 @@ export interface EditorConfig {
 export interface LanguageConfig {
 
 	/**
-	 * Allows to use different language for the editor UI.
+	 * Allows to use a different language for the editor UI.
 	 *
 	 * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 	 */
 	ui?: string;
 
 	/**
-	 * Allows to use different language of the editor content.
+	 * Allows to use a different language of the editor content.
 	 *
 	 * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 	 */
@@ -597,17 +597,17 @@ export type ToolbarConfigItem = string | {
 export interface PoweredByConfig {
 
 	/**
-	 * Position of the project's logo.
+	 * The position of the project's logo.
 	 *
-	 * * When `'inside'` the logo will be displayed within the boundaries of the editing area.
-	 * * When `'border'` the logo will be displayed over the bottom border of the editing area.
+	 * * When `'inside'`, the logo will be displayed within the boundaries of the editing area.
+	 * * When `'border'`, the logo will be displayed over the bottom border of the editing area.
 	 *
 	 * @default 'border'
 	 */
 	position: 'inside' | 'border';
 
 	/**
-	 * Allows choosing the side of the editing area the logo will be displayed to.
+	 * Allows choosing the side of the editing area where the logo will be displayed.
 	 *
 	 * **Note:** If {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} is set to an RTL (right-to-left)
 	 * language, the side switches to `'left'` by default.
@@ -649,22 +649,22 @@ export interface PoweredByConfig {
 export interface ViewportOffsetConfig {
 
 	/**
-	 * Bottom offset in pixels.
+	 * The bottom offset in pixels.
 	 */
 	bottom?: number;
 
 	/**
-	 * Left offset in pixels.
+	 * The left offset in pixels.
 	 */
 	left?: number;
 
 	/**
-	 * Right offset in pixels.
+	 * The right offset in pixels.
 	 */
 	right?: number;
 
 	/**
-	 * Top offset in pixels.
+	 * The top offset in pixels.
 	 */
 	top?: number;
 }

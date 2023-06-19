@@ -1,7 +1,7 @@
 ---
 menu-title: CSS frameworks
 category: integrations
-order: 60
+order: 80
 ---
 
 # Compatibility with CSS frameworks
