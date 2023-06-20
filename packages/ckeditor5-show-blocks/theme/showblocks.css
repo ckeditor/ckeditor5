@@ -98,19 +98,6 @@
 		@mixin block-name-background UL;
 	}
 
-	& ol,
-	& ul {
-		padding-inline-start: 40px;
-
-		@mixin ck-dir ltr {
-			margin-left: 0;
-		}
-
-		@mixin ck-dir rtl {
-			margin-right: 0;
-		}
-	}
-
 	& p {
 		@mixin block-name-background P;
 	}

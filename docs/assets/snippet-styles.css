@@ -193,6 +193,21 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	}
 }
 
+.ck.ck-editor__editable.ck-show-blocks ul,
+.ck.ck-editor__editable.ck-show-blocks ol {
+	padding-inline-start: 40px;
+}
+
+.ck.ck-editor__editable.ck-show-blocks[dir=ltr] ul,
+.ck.ck-editor__editable.ck-show-blocks[dir=ltr] ol {
+	margin-left: 0;
+}
+
+.ck.ck-editor__editable.ck-show-blocks[dir=rtl] ul,
+.ck.ck-editor__editable.ck-show-blocks[dir=rtl] ol {
+	margin-right: 0;
+}
+
 /* examples/builds/inline-editor.html */
 .live-snippet .image-style-left, .live-snippet .image-style-right {
 	float: left;
