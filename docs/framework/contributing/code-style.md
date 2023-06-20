@@ -1135,3 +1135,27 @@ export default class Delete extends Plugin {
 	}
 }
 ```
+
+### Imports within a package: `ckeditor5-rules/no-scoped-imports-within-package`
+
+All imports defined in every package, that point to a file from the same package, must be relative. You cannot use the scoped imports, if the target file is located in the same package as the import declaration. The resolved scoped import points to the package inside the `node_modules`, but not to the current working directory, and the source code in these two places may differ from each other.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+// Assume we edit a file located in the path: `packages/ckeditor5-alignment/src/alignment.ts`.
+
+// Both imports are incorrect.
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+// Assume we edit a file located in the path: `packages/ckeditor5-alignment/src/alignment.ts`.
+
+import AlignmentEditing from './alignmentediting';
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/14329)

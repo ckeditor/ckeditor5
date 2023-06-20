@@ -796,6 +796,66 @@ describe( 'DocumentListElementSupport', () => {
 		} );
 	} );
 
+	describe( '#14349 and #14346', () => {
+		it( 'splitting a list does not remove styles', () => {
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			editor.setData(
+				'<ol>' +
+					'<li class="background-list-item">1.1</li>' +
+					'<li class="background-list-item">1.2</li>' +
+					'<li class="background-list-item">1.3</li>' +
+				'</ol>'
+			);
+
+			model.change( writer => {
+				writer.setSelection( model.document.getRoot().getChild( 1 ), 0 );
+			} );
+
+			editor.commands.get( 'numberedList' ).execute( { forceValue: false } );
+
+			expect( editor.getData() ).to.equal(
+				'<ol>' +
+					'<li class="background-list-item">1.1</li>' +
+				'</ol>' +
+				'<p>1.2</p>' +
+				'<ol>' +
+					'<li class="background-list-item">1.3</li>' +
+				'</ol>'
+			);
+		} );
+
+		it( 'removing item from a list does not remove styles of other elements list', () => {
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			editor.setData(
+				'<ol>' +
+					'<li class="background-list-item">1.1</li>' +
+					'<li class="background-list-item">1.2</li>' +
+					'<li class="background-list-item">1.3</li>' +
+				'</ol>'
+			);
+
+			model.change( writer => {
+				writer.setSelection( model.document.getRoot().getChild( 0 ), 0 );
+			} );
+
+			editor.commands.get( 'numberedList' ).execute( { forceValue: false } );
+
+			expect( editor.getData() ).to.equal(
+				'<p>1.1</p>' +
+				'<ol>' +
+					'<li class="background-list-item">1.2</li>' +
+					'<li class="background-list-item">1.3</li>' +
+				'</ol>'
+			);
+		} );
+	} );
+
 	function paragraph( text, id, indent, type, listAttributes ) {
 		const attributeName = type === 'bulleted' ?
 			'htmlUlAttributes' :
