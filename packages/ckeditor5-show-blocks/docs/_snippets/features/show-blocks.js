@@ -9,9 +9,11 @@
 import ClassicEditor from '../build-classic';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
-ClassicEditor.builtinPlugins.push( ShowBlocks );
+ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditing );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-show-blocks' ), {
@@ -20,6 +22,7 @@ ClassicEditor
 			items: [
 				'showBlocks',
 				'|', 'undo', 'redo',
+				'|', 'sourceEditing',
 				'|', 'heading',
 				'|', 'bold', 'italic',
 				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
@@ -30,20 +33,35 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
+			]
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item && item.buttonView && item.buttonView.label === 'Show blocks' ),
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Show blocks' ),
 			text: 'Click here to show content blocks.',
 			editor,
 			tippyOptions: {
 				placement: 'bottom-start'
 			}
 		} );
+
+		// window.attachTourBalloon( {
+		// 	target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Page break' ),
+		// 	text: 'Click to insert a page break.',
+		// 	editor
+		// } );
 	} )
 	.catch( err => {
 		console.error( err.stack );

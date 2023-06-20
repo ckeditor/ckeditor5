@@ -6,11 +6,11 @@ contributeUrl: false
 modified_at: 2023-06-20
 ---
 
-The show blocks feature allows to visualize all block-level elements by surrounding them with an outline and displaying their element name at the top-left.
+The show blocks feature allows to visualize all block-level elements (except for widgets) by surrounding them with an outline and displaying their element name at the top-left.
 
 ## Demo
 
-To see the show blocks plugin in action, toggle the block elements visibility with {@icon @ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg Show blocks} toolbar button. The editor content is still editable, so you can see how the blocks adjust to their internals on the go.
+To see the show blocks plugin in action, toggle the block elements visibility with {@icon @ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg Show blocks} toolbar button. The editor content is still editable, so you can see how the blocks adjust to their internals on the go. The outlines are not visible in PDF and Word exports, so don't worry about forgetting to disable them.
 
 {@snippet features/show-blocks}
 
