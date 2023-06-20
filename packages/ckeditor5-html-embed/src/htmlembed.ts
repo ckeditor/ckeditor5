@@ -31,7 +31,7 @@ export default class HtmlEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HtmlEmbed' {
-		return 'HtmlEmbed';
+	public static get pluginName() {
+		return 'HtmlEmbed' as const;
 	}
 }

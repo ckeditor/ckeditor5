@@ -26,8 +26,8 @@ export default class SpecialCharactersMathematical extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersMathematical' {
-		return 'SpecialCharactersMathematical';
+	public static get pluginName() {
+		return 'SpecialCharactersMathematical' as const;
 	}
 
 	/**

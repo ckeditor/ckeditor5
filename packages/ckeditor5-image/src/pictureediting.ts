@@ -78,8 +78,8 @@ export default class PictureEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PictureEditing' {
-		return 'PictureEditing';
+	public static get pluginName() {
+		return 'PictureEditing' as const;
 	}
 
 	/**

@@ -22,8 +22,8 @@ export default class HighlightEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HighlightEditing' {
-		return 'HighlightEditing';
+	public static get pluginName() {
+		return 'HighlightEditing' as const;
 	}
 
 	/**

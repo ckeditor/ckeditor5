@@ -22,8 +22,8 @@ export default class BoldEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BoldEditing' {
-		return 'BoldEditing';
+	public static get pluginName() {
+		return 'BoldEditing' as const;
 	}
 
 	/**

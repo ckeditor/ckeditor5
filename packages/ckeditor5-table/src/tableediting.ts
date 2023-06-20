@@ -47,8 +47,8 @@ export default class TableEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableEditing' {
-		return 'TableEditing';
+	public static get pluginName() {
+		return 'TableEditing' as const;
 	}
 
 	/**

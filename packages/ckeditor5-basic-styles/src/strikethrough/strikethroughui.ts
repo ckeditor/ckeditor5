@@ -22,8 +22,8 @@ export default class StrikethroughUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StrikethroughUI' {
-		return 'StrikethroughUI';
+	public static get pluginName() {
+		return 'StrikethroughUI' as const;
 	}
 
 	/**

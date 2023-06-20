@@ -25,8 +25,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { ViewDocumentLayoutChangedEvent } from '@ckeditor/ckeditor5-engine';
-import type { ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine/src/view/view';
+import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.

@@ -119,8 +119,8 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BlockToolbar' {
-		return 'BlockToolbar';
+	public static get pluginName() {
+		return 'BlockToolbar' as const;
 	}
 
 	/**

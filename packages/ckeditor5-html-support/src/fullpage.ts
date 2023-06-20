@@ -18,8 +18,8 @@ export default class FullPage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FullPage' {
-		return 'FullPage';
+	public static get pluginName() {
+		return 'FullPage' as const;
 	}
 
 	/**

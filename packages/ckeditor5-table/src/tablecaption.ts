@@ -20,8 +20,8 @@ export default class TableCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCaption' {
-		return 'TableCaption';
+	public static get pluginName() {
+		return 'TableCaption' as const;
 	}
 
 	/**

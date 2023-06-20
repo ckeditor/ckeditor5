@@ -44,8 +44,8 @@ export default class CKBoxUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKBoxUploadAdapter' {
-		return 'CKBoxUploadAdapter';
+	public static get pluginName() {
+		return 'CKBoxUploadAdapter' as const;
 	}
 
 	/**

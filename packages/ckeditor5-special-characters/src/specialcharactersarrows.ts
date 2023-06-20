@@ -26,8 +26,8 @@ export default class SpecialCharactersArrows extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersArrows' {
-		return 'SpecialCharactersArrows';
+	public static get pluginName() {
+		return 'SpecialCharactersArrows' as const;
 	}
 
 	/**

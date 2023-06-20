@@ -26,8 +26,8 @@ export default class ImageCaptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageCaptionUI' {
-		return 'ImageCaptionUI';
+	public static get pluginName() {
+		return 'ImageCaptionUI' as const;
 	}
 
 	/**

@@ -31,6 +31,7 @@
     "@ckeditor/ckeditor5-remove-format": "^38.0.1",
     "@ckeditor/ckeditor5-restricted-editing": "^38.0.1",
     "@ckeditor/ckeditor5-select-all": "^38.0.1",
+    "@ckeditor/ckeditor5-show-blocks": "^0.0.1",
     "@ckeditor/ckeditor5-source-editing": "^38.0.1",
     "@ckeditor/ckeditor5-special-characters": "^38.0.1",
     "@ckeditor/ckeditor5-undo": "^38.0.1",

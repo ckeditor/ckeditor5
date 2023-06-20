@@ -29,8 +29,8 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FindAndReplaceUI' {
-		return 'FindAndReplaceUI';
+	public static get pluginName() {
+		return 'FindAndReplaceUI' as const;
 	}
 
 	/**

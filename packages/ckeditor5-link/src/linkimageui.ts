@@ -42,8 +42,8 @@ export default class LinkImageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'LinkImageUI' {
-		return 'LinkImageUI';
+	public static get pluginName() {
+		return 'LinkImageUI' as const;
 	}
 
 	/**

@@ -31,8 +31,8 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageInsertUI' {
-		return 'ImageInsertUI';
+	public static get pluginName() {
+		return 'ImageInsertUI' as const;
 	}
 
 	/**

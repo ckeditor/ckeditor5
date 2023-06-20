@@ -22,8 +22,8 @@ export default class SuperscriptUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SuperscriptUI' {
-		return 'SuperscriptUI';
+	public static get pluginName() {
+		return 'SuperscriptUI' as const;
 	}
 
 	/**

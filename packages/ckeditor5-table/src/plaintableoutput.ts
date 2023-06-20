@@ -19,8 +19,8 @@ export default class PlainTableOutput extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PlainTableOutput' {
-		return 'PlainTableOutput';
+	public static get pluginName() {
+		return 'PlainTableOutput' as const;
 	}
 
 	/**

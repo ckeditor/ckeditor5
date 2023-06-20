@@ -31,7 +31,7 @@ export default class FontColor extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontColor' {
-		return 'FontColor';
+	public static get pluginName() {
+		return 'FontColor' as const;
 	}
 }
