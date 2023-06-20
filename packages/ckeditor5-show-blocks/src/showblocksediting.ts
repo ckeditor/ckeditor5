@@ -17,8 +17,8 @@ export default class ShowBlocksEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ShowBlocksEditing' {
-		return 'ShowBlocksEditing';
+	public static get pluginName() {
+		return 'ShowBlocksEditing' as const;
 	}
 
 	/**

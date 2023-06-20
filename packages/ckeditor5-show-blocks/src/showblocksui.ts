@@ -23,8 +23,8 @@ export default class ShowBlocksUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ShowBlocksUI' {
-		return 'ShowBlocksUI';
+	public static get pluginName() {
+		return 'ShowBlocksUI' as const;
 	}
 
 	/**
