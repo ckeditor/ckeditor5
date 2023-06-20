@@ -7,24 +7,28 @@ export default class Exercise extends Plugin {
 		const editor = this.editor;
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		const open = editor.config._config.exercise?.onOpen;
-		// The button must be registered among the UI components of the editor
-		// to be displayed in the toolbar.
-		editor.ui.componentFactory.add( 'exercise', () => {
-			// The button will be an instance of ButtonView.
-			const button = new ButtonView();
+		if ( editor.config._config.exercise && editor.config._config.exercise.onOpen ) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			const open = editor.config._config.exercise.onOpen;
+			// The button must be registered among the UI components of the editor
+			// to be displayed in the toolbar.
+			editor.ui.componentFactory.add( 'exercise', () => {
+				// The button will be an instance of ButtonView.
+				const button = new ButtonView();
 
-			button.set( {
-				label: 'Exercise',
-				withText: false,
-				icon
+				button.set( {
+					label: 'Exercise',
+					withText: false,
+					icon
+				} );
+
+				button.on( 'execute', () => {
+					open();
+				} );
+
+				return button;
 			} );
-
-			button.on( 'execute', () => {
-				open();
-			} );
-
-			return button;
-		} );
+		}
 	}
 }
