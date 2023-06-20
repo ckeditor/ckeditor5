@@ -78,7 +78,8 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 
 			// Blurred to some element outside editor editable elements.
 			if ( !relatedViewElement ) {
-				this._timeoutId = setTimeout( () => this.flush(), 0 );
+				// Flushing it immediately so there is no blinking of selection replaced with marker.
+				this.flush();
 			} else {
 				this._timeoutId = setTimeout( () => this.flush(), 50 );
 			}

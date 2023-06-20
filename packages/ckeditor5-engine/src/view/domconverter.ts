@@ -1097,6 +1097,27 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Remove DOM selection from blurred editable, so it won't interfere with clicking on dropdowns (especially on iOS).
+	 *
+	 * @internal
+	 */
+	public _clearDomSelection(): void {
+		const domEditable = this.mapViewToDom( this.document.selection.editableElement! );
+
+		if ( !domEditable ) {
+			return;
+		}
+
+		const domSelection = domEditable.ownerDocument.defaultView!.getSelection()!;
+		const newViewSelection = this.domSelectionToView( domSelection );
+		const selectionInEditable = newViewSelection && newViewSelection.rangeCount > 0;
+
+		if ( selectionInEditable ) {
+			domSelection.removeAllRanges();
+		}
+	}
+
+	/**
 	 * Returns `true` when `node.nodeType` equals `Node.ELEMENT_NODE`.
 	 *
 	 * @param node Node to check.

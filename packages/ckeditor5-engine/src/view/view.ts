@@ -30,7 +30,7 @@ import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
 import MutationObserver from './observer/mutationobserver';
 import SelectionObserver from './observer/selectionobserver';
-import FocusObserver from './observer/focusobserver';
+import FocusObserver, { type ViewDocumentBlurEvent } from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
 import InputObserver from './observer/inputobserver';
 import ArrowKeysObserver from './observer/arrowkeysobserver';
@@ -214,6 +214,16 @@ export default class View extends ObservableMixin() {
 		// Trigger re-render if only the focus changed.
 		this.listenTo<ObservableChangeEvent>( this.document, 'change:isFocused', () => {
 			this._hasChangedSinceTheLastRendering = true;
+		} );
+
+		// Remove ranges from DOM selection if editor is blurred.
+		this.listenTo<ViewDocumentBlurEvent>( this.document, 'blur', ( evt, data ) => {
+			const relatedViewElement = this.domConverter.mapDomToView( data.domEvent.relatedTarget as HTMLElement );
+
+			// Do not modify DOM selection if focus is moved to other editable of the same editor.
+			if ( !relatedViewElement ) {
+				this.domConverter._clearDomSelection();
+			}
 		} );
 	}
 
