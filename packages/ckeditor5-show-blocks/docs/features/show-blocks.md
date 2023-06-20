@@ -2,15 +2,14 @@
 title: Show blocks
 menu-title: Show blocks
 category: features
-contributeUrl: false
 modified_at: 2023-06-20
 ---
 
-The show blocks feature allows to visualize all block-level elements (except for widgets) by surrounding them with an outline and displaying their element name at the top-left.
+The show blocks feature allows the content creators to visualize all block-level elements (except for widgets) by surrounding them with an outline and displaying their element name at the top-left corner of the box.
 
 ## Demo
 
-To see the show blocks plugin in action, toggle the block elements visibility with {@icon @ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg Show blocks} toolbar button. The editor content is still editable, so you can see how the blocks adjust to their internals on the go. The outlines are not visible in PDF and Word exports, so don't worry about forgetting to disable them.
+To see the show blocks feature in action, toggle the block elements visibility with the show block {@icon @ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg Show blocks} toolbar button. The content remains editable, so you can see how the blocks adjust to the content structure on the go. These outlines are not visible in the {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features, so there is no need to disable them.
 
 {@snippet features/show-blocks}
 
@@ -19,6 +18,10 @@ To see the show blocks plugin in action, toggle the block elements visibility wi
 </info-box>
 
 ## Installation
+
+<info-box info>
+	The show blocks feature is currently not enabled in any builds, so you need to install it by hand<!-- enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only-->.
+</info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-show-blocks`](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks) package:
 
@@ -47,7 +50,17 @@ ClassicEditor
 	Read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration}.
 </info-box>
 
+## Known issues
+
+At present, the show blocks feature does not support widgets. It means it will currently not show block outlines for images due to the way these are handled by CKEditor 5.
+
 ## Related features
+
+Other CKEditor 5 features related to HTML editing that you may want to check:
+
+* {@link features/general-html-support General HTML Support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor 5 plugins.
+* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
+* {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor 5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
 
 ## Common API
 
