@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-show-blocks.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks)
 
-This package implements the show blocks feature for CKEditor 5.
+This package implements the show blocks feature for CKEditor 5. It allows to visualize all block-level elements by surrounding them with an outline and displaying their element name at the top-left.
 
 ## Demo
 
