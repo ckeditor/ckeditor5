@@ -5,6 +5,7 @@
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import ShowBlocksEditing from '../src/showblocksediting';
@@ -19,7 +20,7 @@ describe( 'ShowBlocksUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ ShowBlocksEditing, ShowBlocksUI ]
+				plugins: [ ShowBlocksEditing, ShowBlocksUI, SourceEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -68,6 +69,18 @@ describe( 'ShowBlocksUI', () => {
 			expect( button.isOn ).to.be.false;
 
 			editor.commands.get( 'showBlocks' ).value = true;
+
+			expect( button.isOn ).to.be.true;
+		} );
+
+		it( 'should have #isOn bound to the mode of SourceEditing plugin', async () => {
+			editor.commands.get( 'showBlocks' ).value = true;
+
+			editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+
+			expect( button.isOn ).to.be.false;
+
+			editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
 
 			expect( button.isOn ).to.be.true;
 		} );
