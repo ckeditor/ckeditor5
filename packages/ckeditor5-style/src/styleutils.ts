@@ -12,7 +12,7 @@ import type { Element, MatcherPattern, DocumentSelection, Selectable } from 'cke
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
 import type { TemplateDefinition } from 'ckeditor5/src/ui';
 
-import type { DataFilter, DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import type { DataFilter, DataSchema, GeneralHtmlSupport, DataSchemaBlockElementDefinition } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig';
 import { isObject } from 'lodash-es';
@@ -99,7 +99,13 @@ export default class StyleUtils extends Plugin {
 					if ( typeof appliesToBlock == 'string' ) {
 						modelElements.push( appliesToBlock );
 					} else if ( ghsDefinition.isBlock ) {
+						const ghsBlockDefinition: DataSchemaBlockElementDefinition = ghsDefinition;
+
 						modelElements.push( ghsDefinition.model );
+
+						if ( ghsBlockDefinition.paragraphLikeModel ) {
+							modelElements.push( ghsBlockDefinition.paragraphLikeModel );
+						}
 					}
 				} else {
 					ghsAttributes.push( ghsDefinition.model );
