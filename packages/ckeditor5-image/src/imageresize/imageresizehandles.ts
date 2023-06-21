@@ -10,6 +10,7 @@
 import type { Element, ViewContainerElement, ViewElement } from 'ckeditor5/src/engine';
 import { Plugin } from 'ckeditor5/src/core';
 import { WidgetResize } from 'ckeditor5/src/widget';
+import ImageUtils from '../imageutils';
 
 import ImageLoadObserver, { type ImageLoadedEvent } from '../image/imageloadobserver';
 import type ResizeImageCommand from './resizeimagecommand';
@@ -37,7 +38,7 @@ export default class ImageResizeHandles extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ WidgetResize ] as const;
+		return [ WidgetResize, ImageUtils ] as const;
 	}
 
 	/**
@@ -63,6 +64,7 @@ export default class ImageResizeHandles extends Plugin {
 	private _setupResizerCreator(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		editingView.addObserver( ImageLoadObserver );
 
@@ -128,6 +130,19 @@ export default class ImageResizeHandles extends Plugin {
 				if ( !widgetView.hasClass( RESIZED_IMAGE_CLASS ) ) {
 					editingView.change( writer => {
 						writer.addClass( RESIZED_IMAGE_CLASS, widgetView );
+					} );
+				}
+			} );
+
+			resizer.on( 'begin', () => {
+				const img = imageUtils.findViewImgElement( imageView )!;
+				const aspectRatio = img.getStyle( 'aspect-ratio' );
+				const widthAttr = imageModel.getAttribute( 'width' );
+				const heightAttr = imageModel.getAttribute( 'height' );
+
+				if ( widthAttr && heightAttr && !aspectRatio ) {
+					editingView.change( writer => {
+						writer.setStyle( 'aspect-ratio', `${ widthAttr }/${ heightAttr }`, img );
 					} );
 				}
 			} );
