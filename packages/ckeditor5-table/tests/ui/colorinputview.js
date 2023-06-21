@@ -206,7 +206,7 @@ describe( 'ColorInputView', () => {
 				colorTableView.fire( 'cancel' );
 
 				/**
-				 * TODO, should be HEX format: (https://github.com/ckeditor/ckeditor5/issues/14389)
+				 * TODO, should be HEX format: (https://github.com/ckeditor/ckeditor5/issues/14432)
 				 */
 				expect( view.value ).to.be.equal( 'hsl( 300, 100%, 83% )' );
 				// expect( view.value ).to.be.equal( '#ffaaff' );
@@ -268,7 +268,7 @@ describe( 'ColorInputView', () => {
 				colorGridView.items.last.fire( 'execute' );
 
 				/**
-				 * TODO, should be RGB format: (https://github.com/ckeditor/ckeditor5/issues/14389)
+				 * TODO, should be RGB format: (https://github.com/ckeditor/ckeditor5/issues/14432)
 				 */
 				expect( view.value ).to.equal( 'hsl( 240, 100%, 50% )' );
 				// expect( view.value ).to.equal( 'rgb(0,0,255)' );
@@ -548,7 +548,7 @@ describe( 'ColorInputView', () => {
 						removeColorButton.fire( 'execute' );
 
 						/**
-						 * TODO, should be RGB format: (https://github.com/ckeditor/ckeditor5/issues/14389)
+						 * TODO, should be RGB format: (https://github.com/ckeditor/ckeditor5/issues/14432)
 						 */
 						expect( view.value ).to.equal( 'hsl( 0, 100%, 50% )' );
 						// expect( view.value ).to.equal( 'rgb(255,0,0)' );

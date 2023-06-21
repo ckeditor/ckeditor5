@@ -348,7 +348,7 @@ export default class ColorInputView extends View {
 		 */
 		let backupColor = this.value;
 
-		colorTable.on( 'cancel', () => {
+		colorTable.on<ColorTableCancelEvent>( 'cancel', () => {
 			/**
 			 * Revert color to previous value before changes in color picker.
 			 */
