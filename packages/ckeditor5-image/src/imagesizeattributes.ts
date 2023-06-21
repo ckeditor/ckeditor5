@@ -62,6 +62,27 @@ export default class ImageSizeAttributes extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					styles: {
+						width: /.+/
+					}
+				},
+				model: {
+					key: 'width',
+					value: ( viewElement: ViewElement ) => {
+						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+						if ( widthStyle && heightStyle ) {
+							return widthStyle;
+						}
+
+						return null;
+					}
+				}
+			} )
+			.attributeToAttribute( {
+				view: {
 					name: viewElementName,
 					attributes: {
 						width: /.+/
@@ -70,6 +91,27 @@ export default class ImageSizeAttributes extends Plugin {
 				model: {
 					key: 'width',
 					value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'width' )
+				}
+			} )
+			.attributeToAttribute( {
+				view: {
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					styles: {
+						height: /.+/
+					}
+				},
+				model: {
+					key: 'height',
+					value: ( viewElement: ViewElement ) => {
+						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+						if ( widthStyle && heightStyle ) {
+							return heightStyle;
+						}
+
+						return null;
+					}
 				}
 			} )
 			.attributeToAttribute( {
@@ -86,18 +128,13 @@ export default class ImageSizeAttributes extends Plugin {
 			} );
 
 		// Dedicated converter to propagate attributes to the <img> element.
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
-			attachDowncastConverter( dispatcher, 'width', 'width', false );
-			attachDowncastConverter( dispatcher, 'height', 'height', false );
-		} );
-
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			attachDowncastConverter( dispatcher, 'width', 'width', true );
-			attachDowncastConverter( dispatcher, 'height', 'height', true );
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			attachDowncastConverter( dispatcher, 'width', 'width' );
+			attachDowncastConverter( dispatcher, 'height', 'height' );
 		} );
 
 		function attachDowncastConverter(
-			dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string, setAspectRatio: boolean
+			dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string
 		) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ modelAttributeName }:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
@@ -114,18 +151,16 @@ export default class ImageSizeAttributes extends Plugin {
 					viewWriter.removeAttribute( viewAttributeName, img );
 				}
 
-				if ( !setAspectRatio ) {
-					return;
-				}
-
 				const width = data.item.getAttribute( 'width' );
 				const height = data.item.getAttribute( 'height' );
+				const isResized = data.item.hasAttribute( 'resizedWidth' );
 				const aspectRatio = img.getStyle( 'aspect-ratio' );
 
-				if ( width && height && !aspectRatio ) {
+				if ( width && height && !aspectRatio && isResized ) {
 					viewWriter.setStyle( 'aspect-ratio', `${ width }/${ height }`, img );
 				}
 			} );
 		}
 	}
 }
+

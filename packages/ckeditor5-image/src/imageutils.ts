@@ -293,6 +293,17 @@ export default class ImageUtils extends Plugin {
 
 		return super.destroy();
 	}
+
+	/**
+	 * Returns parsed value of the size, but only if it contains unit: px.
+	 */
+	public getSizeInPx( size: string | undefined ): number | null {
+		if ( size && size.endsWith( 'px' ) ) {
+			return parseInt( size );
+		}
+
+		return null;
+	}
 }
 
 /**
