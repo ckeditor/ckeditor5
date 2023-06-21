@@ -31,7 +31,7 @@
 			min-width: 100%;
 
 			/* Preserve aspect ratio after introducing width and height attributes for image element. */
-			height: auto;
+			/*height: auto;*/
 		}
 	}
 
@@ -65,7 +65,7 @@
 			max-width: 100%;
 
 			/* Preserve aspect ratio after introducing width and height attributes for image element. */
-			height: auto;
+			/*height: auto;*/
 		}
 	}
 }
