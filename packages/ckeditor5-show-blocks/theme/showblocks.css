@@ -31,7 +31,7 @@
 	}
 }
 
-.ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks :not(.ck-widget) {
+.ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) {
 	& address {
 		@mixin block-name-background ADDRESS;
 	}
