@@ -38,6 +38,7 @@ import TabObserver from './observer/tabobserver';
 
 import {
 	CKEditorError,
+	env,
 	ObservableMixin,
 	scrollViewportToShowTarget,
 	type ObservableChangeEvent
@@ -217,14 +218,17 @@ export default class View extends ObservableMixin() {
 		} );
 
 		// Remove ranges from DOM selection if editor is blurred.
-		this.listenTo<ViewDocumentBlurEvent>( this.document, 'blur', ( evt, data ) => {
-			const relatedViewElement = this.domConverter.mapDomToView( data.domEvent.relatedTarget as HTMLElement );
+		// See https://github.com/ckeditor/ckeditor5/issues/5753.
+		if ( env.isiOS ) {
+			this.listenTo<ViewDocumentBlurEvent>( this.document, 'blur', ( evt, data ) => {
+				const relatedViewElement = this.domConverter.mapDomToView( data.domEvent.relatedTarget as HTMLElement );
 
-			// Do not modify DOM selection if focus is moved to other editable of the same editor.
-			if ( !relatedViewElement ) {
-				this.domConverter._clearDomSelection();
-			}
-		} );
+				// Do not modify DOM selection if focus is moved to other editable of the same editor.
+				if ( !relatedViewElement ) {
+					this.domConverter._clearDomSelection();
+				}
+			} );
+		}
 	}
 
 	/**

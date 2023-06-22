@@ -9,7 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { delay, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import type { ViewDocumentSelectionChangeEvent, DowncastAddMarkerEvent } from '@ckeditor/ckeditor5-engine';
+import type { DowncastAddMarkerEvent } from '@ckeditor/ckeditor5-engine';
 
 import '../theme/fakevisualselection.css';
 
@@ -24,8 +24,8 @@ export default class FakeVisualSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FakeVisualSelection' {
-		return 'FakeVisualSelection';
+	public static get pluginName() {
+		return 'FakeVisualSelection' as const;
 	}
 
 	/**
@@ -35,20 +35,10 @@ export default class FakeVisualSelection extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 
-		this.listenTo<ObservableChangeEvent>( view.document, 'change:isFocused', ( evt, prop, isFocused ) => {
-			if ( !isFocused ) {
+		this.listenTo<ObservableChangeEvent>( view, 'change:hasDomSelection', ( evt, prop, hasDomSelection ) => {
+			if ( !hasDomSelection ) {
 				this._showFakeVisualSelection();
-			}
-		}, { priority: 'low' } );
-
-		this.listenTo<ObservableChangeEvent>( view.document, 'change:isFocused', ( evt, prop, isFocused ) => {
-			if ( isFocused ) {
-				this._hideFakeVisualSelectionDelayed();
-			}
-		}, { priority: 'high' } );
-
-		this.listenTo<ViewDocumentSelectionChangeEvent>( view.document, 'selectionChange', () => {
-			if ( view.document.isFocused ) {
+			} else {
 				this._hideFakeVisualSelectionDelayed();
 			}
 		} );
@@ -81,8 +71,8 @@ export default class FakeVisualSelection extends Plugin {
 			.markerToHighlight( {
 				model: VISUAL_SELECTION_MARKER_NAME,
 				view: {
-					classes: [ 'ck-fake-visual-selection' ]
-					// priority: 5
+					classes: [ 'ck-fake-visual-selection' ],
+					priority: 50
 				}
 			} )
 			// Renders a fake visual selection marker on a collapsed selection.
@@ -110,6 +100,8 @@ export default class FakeVisualSelection extends Plugin {
 	 */
 	private _showFakeVisualSelection(): void {
 		const model = this.editor.model;
+
+		this._hideFakeVisualSelectionDelayed.cancel();
 
 		model.change( writer => {
 			const range = model.document.selection.getFirstRange()!;
