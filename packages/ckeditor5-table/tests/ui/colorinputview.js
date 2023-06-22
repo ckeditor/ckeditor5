@@ -302,12 +302,11 @@ describe( 'ColorInputView', () => {
 				sinon.assert.calledWithExactly( spy.lastCall, 'input' );
 			} );
 
-			it.skip( 'should have #selectedColor bound to the #value', () => {
+			it( 'should set #selectedColor to the #value upon dropdown opening', () => {
 				view.value = 'rgb(0,255,0)';
-				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,255,0)' );
+				view.dropdownView.isOpen = true;
 
-				view.value = 'rgb(0,0,255)';
-				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,0,255)' );
+				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,255,0)' );
 			} );
 		} );
 
