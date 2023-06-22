@@ -25,6 +25,8 @@ export default abstract class EditorUIView extends View {
 	 */
 	public readonly body: BodyCollection;
 
+	public readonly bodyCollectionWrapper: any;
+
 	declare public locale: Locale;
 	declare public t: LocaleTranslate;
 
@@ -35,9 +37,10 @@ export default abstract class EditorUIView extends View {
 	 *
 	 * @param locale The locale instance.
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, bodyCollectionWrapper: any ) {
 		super( locale );
 
+		this.bodyCollectionWrapper = bodyCollectionWrapper;
 		this.body = new BodyCollection( locale );
 	}
 
@@ -47,7 +50,7 @@ export default abstract class EditorUIView extends View {
 	public override render(): void {
 		super.render();
 
-		this.body.attachToDom();
+		this.body.attachToDom( this.bodyCollectionWrapper );
 	}
 
 	/**

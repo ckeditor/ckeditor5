@@ -66,7 +66,7 @@ export default class BodyCollection extends ViewCollection {
 	 * Attaches the body collection to the DOM body element. You need to execute this method to render the content of
 	 * the body collection.
 	 */
-	public attachToDom(): void {
+	public attachToDom( bodyCollectionWrapper: any ): void {
 		this._bodyCollectionContainer = new Template( {
 			tag: 'div',
 			attributes: {
@@ -81,14 +81,18 @@ export default class BodyCollection extends ViewCollection {
 			children: this
 		} ).render() as HTMLElement;
 
-		let wrapper = document.querySelector( '.ck-body-wrapper' );
+		if ( bodyCollectionWrapper ) {
+			bodyCollectionWrapper.appendChild( this._bodyCollectionContainer );
+		} else {
+			let wrapper = document.querySelector( '.ck-body-wrapper' );
 
-		if ( !wrapper ) {
-			wrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
-			document.body.appendChild( wrapper );
+			if ( !wrapper ) {
+				wrapper = createElement( document, 'div', { class: 'ck-body-wrapper' } );
+				document.body.appendChild( wrapper );
+			}
+
+			wrapper.appendChild( this._bodyCollectionContainer );
 		}
-
-		wrapper.appendChild( this._bodyCollectionContainer );
 	}
 
 	/**
