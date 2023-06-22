@@ -78,9 +78,15 @@ export default class FakeVisualSelection extends Plugin {
 			// Renders a fake visual selection marker on a collapsed selection.
 			.markerToElement( {
 				model: VISUAL_SELECTION_MARKER_NAME,
-				view: {
-					name: 'span',
-					classes: [ 'ck-fake-visual-selection', 'ck-fake-visual-selection_collapsed' ]
+				view: ( data, { writer } ) => {
+					// Do not convert non-collapsed marker, so it won't consume the whole marker range if it starts with an element.
+					if ( !data.markerRange.isCollapsed ) {
+						return;
+					}
+
+					return writer.createUIElement( 'span', {
+						class: 'ck-fake-visual-selection ck-fake-visual-selection_collapsed'
+					} );
 				}
 			} );
 	}
@@ -109,24 +115,11 @@ export default class FakeVisualSelection extends Plugin {
 			if ( model.markers.has( VISUAL_SELECTION_MARKER_NAME ) ) {
 				writer.updateMarker( VISUAL_SELECTION_MARKER_NAME, { range } );
 			} else {
-				if ( range.start.isAtEnd ) {
-					const startPosition = range.start.getLastMatchingPosition(
-						( { item } ) => !model.schema.isContent( item ),
-						{ boundaries: range }
-					);
-
-					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-						usingOperation: false,
-						affectsData: false,
-						range: writer.createRange( startPosition, range.end )
-					} );
-				} else {
-					writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
-						usingOperation: false,
-						affectsData: false,
-						range
-					} );
-				}
+				writer.addMarker( VISUAL_SELECTION_MARKER_NAME, {
+					usingOperation: false,
+					affectsData: false,
+					range
+				} );
 			}
 		} );
 	}

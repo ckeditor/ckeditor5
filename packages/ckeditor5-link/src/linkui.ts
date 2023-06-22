@@ -551,21 +551,37 @@ export default class LinkUI extends Plugin {
 	 */
 	private _getBalloonPositionData(): Partial<PositionOptions> {
 		const view = this.editor.editing.view;
+		const model = this.editor.model;
 		const viewDocument = view.document;
+		let target: PositionOptions[ 'target' ];
 
-		// Make sure the target is calculated on demand at the last moment because a cached DOM range
-		// (which is very fragile) can desynchronize with the state of the editing view if there was
-		// any rendering done in the meantime. This can happen, for instance, when an inline widget
-		// gets unlinked.
-		const target = () => {
-			const targetLink = this._getSelectedLinkElement();
+		if ( model.markers.has( 'fake-visual-selection' ) ) {
+			// There are cases when we highlight selection using a marker (#7705, #4721).
+			// This will position the balloon in relation to visible parts of marker and ignore parts
+			// that are not visually represented, for example marker that starts at the end of some block
+			// will not affect the visible range that starts in the next line.
+			const markerViewElements = Array.from( this.editor.editing.mapper.markerNameToElements( 'fake-visual-selection' )! );
+			const newRange = view.createRange(
+				view.createPositionBefore( markerViewElements[ 0 ] ),
+				view.createPositionAfter( markerViewElements[ markerViewElements.length - 1 ] )
+			);
 
-			return targetLink ?
-				// When selection is inside link element, then attach panel to this element.
-				view.domConverter.mapViewToDom( targetLink )! :
-				// Otherwise attach panel to the selection.
-				view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
-		};
+			target = view.domConverter.viewRangeToDom( newRange );
+		} else {
+			// Make sure the target is calculated on demand at the last moment because a cached DOM range
+			// (which is very fragile) can desynchronize with the state of the editing view if there was
+			// any rendering done in the meantime. This can happen, for instance, when an inline widget
+			// gets unlinked.
+			target = () => {
+				const targetLink = this._getSelectedLinkElement();
+
+				return targetLink ?
+					// When selection is inside link element, then attach panel to this element.
+					view.domConverter.mapViewToDom( targetLink )! :
+					// Otherwise attach panel to the selection.
+					view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
+			};
+		}
 
 		return { target };
 	}
