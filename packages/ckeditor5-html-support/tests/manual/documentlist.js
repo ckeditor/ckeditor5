@@ -34,7 +34,6 @@ ClassicEditor
 			'sourceEditing', '|',
 			'numberedList', 'bulletedList', '|',
 			'outdent', 'indent', '|',
-			'outdent', 'indent', '|',
 			'bold', 'italic', 'strikethrough'
 		],
 		list: {
