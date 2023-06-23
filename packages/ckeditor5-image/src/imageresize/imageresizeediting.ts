@@ -133,7 +133,9 @@ export default class ImageResizeEditing extends Plugin {
 					viewWriter.addClass( 'image_resized', figure );
 				} else {
 					viewWriter.removeStyle( 'height', figure );
-					viewWriter.removeClass( 'image_resized', figure );
+					if ( !figure.getStyle( 'width' ) ) {
+						viewWriter.removeClass( 'image_resized', figure );
+					}
 				}
 			} )
 		);
@@ -184,6 +186,38 @@ export default class ImageResizeEditing extends Plugin {
 						}
 
 						return viewElement.getStyle( 'height' );
+					}
+				}
+			} )
+			.attributeToAttribute( {
+				view: {
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					styles: {
+						height: /.+/
+					}
+				},
+				model: {
+					key: 'resizedWidth',
+					value: ( viewElement: ViewElement ) => {
+						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+						if ( !widthStyle && !heightStyle ) {
+							return null;
+						}
+
+						const img = imageUtils.findViewImgElement( viewElement )!;
+						const widthAttr = img.getAttribute( 'width' );
+						const heightAttr = img.getAttribute( 'height' );
+						const imgHasAttributes = widthAttr || heightAttr;
+
+						if ( heightStyle && !viewElement.getStyle( 'width' ) ) {
+							if ( imgHasAttributes ) {
+								return Math.round( parseInt( widthAttr! ) * heightStyle / parseInt( heightAttr! ) ) + 'px';
+							}
+						}
+
+						return null;
 					}
 				}
 			} );
