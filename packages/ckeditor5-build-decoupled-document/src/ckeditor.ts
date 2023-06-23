@@ -30,6 +30,7 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Style } from '@ckeditor/ckeditor5-style';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
 	Image,
@@ -75,6 +76,7 @@ import { Source } from './plugins/source/index';
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
 		Essentials,
+		Style,
 		GeneralHtmlSupport,
 		ClickObserver,
 		Alignment,
