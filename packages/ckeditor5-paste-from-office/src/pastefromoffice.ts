@@ -76,7 +76,9 @@ export default class PasteFromOffice extends Plugin {
 				const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
 
 				if ( activeNormalizer ) {
-					data._parsedData = parseHtml( htmlString, viewDocument.stylesProcessor );
+					if ( !data._parsedData ) {
+						data._parsedData = parseHtml( htmlString, viewDocument.stylesProcessor );
+					}
 
 					activeNormalizer.execute( data );
 

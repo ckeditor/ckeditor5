@@ -519,6 +519,10 @@ describe( 'ColorTableView', () => {
 				expect( saveButton.element.classList.contains( 'ck-button-save' ) ).to.be.true;
 			} );
 
+			it( 'should have a proper type', () => {
+				expect( saveButton.type ).to.be.equal( 'button' );
+			} );
+
 			it( 'should have proper settings', () => {
 				expect( saveButton.withText ).to.be.false;
 				expect( saveButton.icon ).to.equal( icons.check );
