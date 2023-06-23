@@ -11,11 +11,13 @@ import { Plugin, type Editor } from 'ckeditor5/src/core';
 
 import {
 	Matcher,
+	type Element,
 	type MatcherPattern,
 	type UpcastConversionApi,
 	type ViewElement,
 	type MatchResult,
-	type ViewConsumable
+	type ViewConsumable,
+	type DowncastConversionApi
 } from 'ckeditor5/src/engine';
 
 import {
@@ -24,7 +26,7 @@ import {
 	isValidAttributeName
 } from 'ckeditor5/src/utils';
 
-import { Widget } from 'ckeditor5/src/widget';
+import { toWidget, Widget } from 'ckeditor5/src/widget';
 
 import {
 	viewToModelObjectConverter,
@@ -659,43 +661,60 @@ export default class DataFilter extends Plugin {
 			allowAttributes: attributeKey
 		} );
 
+		schema.setAttributeProperties( attributeKey, { doNotStoreObjectAttributeInSelection: true } );
+
 		if ( definition.attributeProperties ) {
 			schema.setAttributeProperties( attributeKey, definition.attributeProperties );
 		}
 
 		if ( !schema.isRegistered( 'htmlEmptyElement' ) ) {
 			schema.register( 'htmlEmptyElement', {
-				allowWhere: '$text',
-				allowAttributesOf: '$text',
-				isInline: true
+				inheritAllFrom: '$inlineObject'
 			} );
 		}
 
 		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this ) );
 
-		conversion.for( 'downcast' )
-			.attributeToElement( {
-				model: attributeKey,
-				view: attributeToViewInlineConverter( definition )
-			} )
+		conversion.for( 'downcast' ).attributeToElement( {
+			model: attributeKey,
+			view: attributeToViewInlineConverter( definition )
+		} );
+
+		conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'htmlEmptyElement',
-				view: ( item, { writer, consumable } ) => {
-					if ( !item.hasAttribute( attributeKey ) ) {
+				view: ( item, conversionApi ) => {
+					const viewElement = createModelEmptyElement( item, conversionApi );
+
+					if ( !viewElement ) {
 						return;
 					}
 
-					// TODO Handle keyboard arrows navigation for elements styled as display: inline-block
-
-					const viewElement = writer.createEmptyElement( definition.view! );
-					const attributeValue = item.getAttribute( attributeKey ) as GHSViewAttributes;
-
-					consumable.consume( item, `attribute:${ attributeKey }` );
-					setViewAttributes( writer, attributeValue, viewElement );
-
-					return viewElement;
+					return toWidget( viewElement, conversionApi.writer );
 				}
 			} );
+
+		conversion.for( 'dataDowncast' )
+			.elementToElement( {
+				model: 'htmlEmptyElement',
+				view: createModelEmptyElement
+			} );
+
+		function createModelEmptyElement( item: Element, { writer, consumable }: DowncastConversionApi ) {
+			if ( !item.hasAttribute( attributeKey ) ) {
+				return;
+			}
+
+			const viewElement = writer.createContainerElement( definition.view! );
+			const attributeValue = item.getAttribute( attributeKey ) as GHSViewAttributes;
+
+			consumable.consume( item, `attribute:${ attributeKey }` );
+			setViewAttributes( writer, attributeValue, viewElement );
+
+			viewElement.getFillerOffset = () => null;
+
+			return viewElement;
+		}
 	}
 }
 

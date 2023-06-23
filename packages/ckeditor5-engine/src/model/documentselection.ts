@@ -1237,7 +1237,8 @@ function getTextAttributes( node: Item | null, schema: Schema ): Iterable<[strin
 
 	// Collect all attributes that can be applied to the text node.
 	for ( const [ key, value ] of node.getAttributes() ) {
-		if ( schema.checkAttribute( '$text', key ) ) {
+		// TODO Find better name for `doNotStoreObjectAttributeInSelection`.
+		if ( schema.checkAttribute( '$text', key ) && !schema.getAttributeProperties( key ).doNotStoreObjectAttributeInSelection ) {
 			attributes.push( [ key, value ] );
 		}
 	}
