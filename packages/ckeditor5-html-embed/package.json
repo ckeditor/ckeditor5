@@ -27,7 +27,7 @@
     "@ckeditor/ckeditor5-ui": "^38.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^38.0.1",
     "@ckeditor/ckeditor5-widget": "^38.0.1",
-    "lodash-es": "^4.17.15",
+    "lodash-es": "^4.17.21",
     "sanitize-html": "^2.1.0",
     "typescript": "^4.8.4",
     "webpack": "^5.58.1",
