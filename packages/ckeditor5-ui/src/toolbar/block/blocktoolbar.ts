@@ -381,6 +381,7 @@ export default class BlockToolbar extends Plugin {
 		this.panelView.show();
 
 		const editableElement = this._getSelectedEditableElement();
+
 		this.toolbarView.maxWidth = this._getToolbarMaxWidth( editableElement );
 
 		this.panelView.pin( {

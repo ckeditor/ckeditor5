@@ -73,7 +73,7 @@ export default class ResizeObserver {
 	/**
 	 * The element observed by this observer.
 	 */
-	get element(): Element {
+	public get element(): Element {
 		return this._element;
 	}
 
