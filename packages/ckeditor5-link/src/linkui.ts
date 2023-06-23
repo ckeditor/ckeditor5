@@ -24,6 +24,7 @@ import {
 } from 'ckeditor5/src/ui';
 import type { PositionOptions } from 'ckeditor5/src/utils';
 import { isWidget } from 'ckeditor5/src/widget';
+import type { FakeVisualSelection } from 'ckeditor5/src/typing';
 
 import LinkFormView from './ui/linkformview';
 import LinkActionsView from './ui/linkactionsview';
@@ -551,28 +552,27 @@ export default class LinkUI extends Plugin {
 	 */
 	private _getBalloonPositionData(): Partial<PositionOptions> {
 		const view = this.editor.editing.view;
-		const model = this.editor.model;
 		const viewDocument = view.document;
-		let target: PositionOptions[ 'target' ];
 
-		if ( model.markers.has( 'fake-visual-selection' ) ) {
-			// There are cases when we highlight selection using a marker (#7705, #4721).
-			// This will position the balloon in relation to visible parts of marker and ignore parts
-			// that are not visually represented, for example marker that starts at the end of some block
-			// will not affect the visible range that starts in the next line.
-			const markerViewElements = Array.from( this.editor.editing.mapper.markerNameToElements( 'fake-visual-selection' )! );
-			const newRange = view.createRange(
-				view.createPositionBefore( markerViewElements[ 0 ] ),
-				view.createPositionAfter( markerViewElements[ markerViewElements.length - 1 ] )
-			);
+		// There are cases when we highlight selection using a marker (#7705, #4721).
+		// This will position the balloon in relation to visible parts of marker and ignore parts
+		// that are not visually represented, for example marker that starts at the end of some block
+		// will not affect the visible range that starts in the next line.
+		const fakeVisualSelection: FakeVisualSelection = this.editor.plugins.get( 'FakeVisualSelection' );
+		const viewRange = fakeVisualSelection.getVisualSelectionRange();
 
-			target = view.domConverter.viewRangeToDom( newRange );
-		} else {
-			// Make sure the target is calculated on demand at the last moment because a cached DOM range
-			// (which is very fragile) can desynchronize with the state of the editing view if there was
-			// any rendering done in the meantime. This can happen, for instance, when an inline widget
-			// gets unlinked.
-			target = () => {
+		if ( viewRange ) {
+			return {
+				target: view.domConverter.viewRangeToDom( viewRange )
+			};
+		}
+
+		// Make sure the target is calculated on demand at the last moment because a cached DOM range
+		// (which is very fragile) can desynchronize with the state of the editing view if there was
+		// any rendering done in the meantime. This can happen, for instance, when an inline widget
+		// gets unlinked.
+		return {
+			target: () => {
 				const targetLink = this._getSelectedLinkElement();
 
 				return targetLink ?
@@ -580,10 +580,8 @@ export default class LinkUI extends Plugin {
 					view.domConverter.mapViewToDom( targetLink )! :
 					// Otherwise attach panel to the selection.
 					view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange()! );
-			};
-		}
-
-		return { target };
+			}
+		};
 	}
 
 	/**
