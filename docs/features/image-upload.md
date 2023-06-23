@@ -43,8 +43,6 @@ CKBox is the most complete solution for not just image upload but also file mana
 
 It is a modern file uploader with a clean interface, automatic support for responsive images, and top-notch UX.
 
-{@img assets/img/ckbox.png 1067 CKBox, modern file upload and management tool with native CKEditor 5 integration}
-
 Thanks to the native CKEditor 5 integration, CKBox supports drag&drop file upload as well as pasting images from the clipboard, Microsoft Word, or Google Docs.
 
 With CKBox, users can upload files and categorize them into different groups. They can also change the way the files are displayed, for example, by setting the image thumbnail size or deciding how many files are shown on one page. Files can be uploaded, deleted, renamed, and tagged. File properties like dimensions, upload date, or size are also easily accessible and can be used to sort the files view alongside a regular search.
@@ -62,15 +60,6 @@ There are two ways you can integrate CKEditor 5 with CKFinder:
 
 {@link features/ckfinder **Learn how to integrate CKEditor 5 with CKFinder in your project**}.
 
-### Easy Image
-
-The {@link features/easy-image Easy Image} feature aims to make the image upload as effortless and intuitive as possible.
-
-Easy Image securely uploads images, takes care of rescaling and optimizing them as well as providing various image sizes (responsive images), and delivers uploaded images through a blazing-fast CDN.
-
-Easy Image does not provide any user interface or file management options. It was replaced by a much more powerful and feature-rich [CKBox](#ckbox).
-
-{@link features/easy-image **Learn how to use Easy Image in your project**}.
 ### Simple adapter
 
 The {@link features/simple-upload-adapter simple upload adapter} allows uploading images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal editor configuration.
