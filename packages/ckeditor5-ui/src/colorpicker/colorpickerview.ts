@@ -38,7 +38,8 @@ export default class ColorPickerView extends View {
 	public hexInputRow: ColorPickerInputRowView;
 
 	/**
-	 * Current color state in color picker.
+	 * Current color selected in the color picker. It can be set by the component itself
+	 * (through the palette or input) or from the outside (e.g. to reflect the current selection color).
 	 */
 	declare public color: string;
 
@@ -61,7 +62,11 @@ export default class ColorPickerView extends View {
 	declare public _hexColor: string;
 
 	/**
-	 * Debounced event method. Updates color property in component.
+	 * Debounced function updating the `color` property in the component
+	 * and firing the ColorPickerColorSelectedEvent. Executed whenever color in component
+	 * is changed by the user interaction (through the palette or input).
+	 *
+	 * @private
 	 */
 	private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
 
@@ -103,23 +108,29 @@ export default class ColorPickerView extends View {
 		} );
 
 		this._debounceColorPickerEvent = debounce( ( color: string ) => {
+			// At first, set the color internally in the component. It's converted to the configured output format.
 			this.set( 'color', color );
+
+			// Then let the outside world know that the user changed the color.
+			this.fire<ColorPickerColorSelectedEvent>( 'colorSelected', { color: this.color } );
 		}, waitingTime, {
 			leading: true
 		} );
 
-		// Sets color in the picker if color was updated.
+		// The `color` property holds the color in the configured output format.
+		// Ensure it before actually setting the value.
 		this.on( 'set:color', ( evt, propertyName, newValue ) => {
-			// The color needs always to be kept in the output format.
 			evt.return = convertColor( newValue, this._format );
 		} );
 
+		// The `_hexColor` property is bound to the `color` one, but requires conversion.
 		this.on( 'change:color', () => {
 			this._hexColor = convertColorToCommonHexFormat( this.color );
 		} );
 
 		this.on( 'change:_hexColor', () => {
-			// Should update color in color picker when its not focused
+			// Update the selected color in the color picker palette when it's not focused.
+			// It means the user typed the color in the input.
 			if ( document.activeElement !== this.picker ) {
 				this.picker.setAttribute( 'color', this._hexColor );
 			}
@@ -366,3 +377,16 @@ class ColorPickerInputRowView extends View {
 		} );
 	}
 }
+
+/**
+ * Fired whenever the color was selected through the color picker palette
+ * or color picker input.
+ *
+ * @eventName ~ColorPicker#colorSelected
+ */
+export type ColorPickerColorSelectedEvent = {
+	name: 'colorSelected';
+	args: [ {
+		color: string;
+	} ];
+};

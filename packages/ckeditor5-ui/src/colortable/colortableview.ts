@@ -1050,9 +1050,9 @@ class ColorPickerPageView extends View {
 	 * @fires execute
 	 */
 	private _executeUponColorChange() {
-		this.colorPickerView!.on( 'change:color', ( evt, evtName, newValue ) => {
+		this.colorPickerView!.on( 'colorSelected', ( evt, data ) => {
 			this.fire<ColorTableExecuteEvent>( 'execute', {
-				value: newValue,
+				value: data.color,
 				source: 'colorPicker'
 			} );
 		} );
