@@ -43,11 +43,11 @@ export default class ImageSizeAttributes extends Plugin {
 	 */
 	private _registerSchema(): void {
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'width', 'height', 'aspectRatio' ] } );
+			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'width', 'height' ] } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'width', 'height', 'aspectRatio' ] } );
+			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'width', 'height' ] } );
 		}
 	}
 
@@ -60,18 +60,6 @@ export default class ImageSizeAttributes extends Plugin {
 		const viewElementName = imageType === 'imageBlock' ? 'figure' : 'img';
 
 		editor.conversion.for( 'upcast' )
-			.attributeToAttribute( {
-				view: {
-					name: viewElementName,
-					styles: {
-						'aspect-ratio': /.+/
-					}
-				},
-				model: {
-					key: 'aspectRatio',
-					value: ( viewElement: ViewElement ) => viewElement.getStyle( 'aspect-ratio' )
-				}
-			} )
 			.attributeToAttribute( {
 				view: {
 					name: imageType === 'imageBlock' ? 'figure' : 'img',
@@ -148,24 +136,6 @@ export default class ImageSizeAttributes extends Plugin {
 				}
 			} );
 
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on<DowncastAttributeEvent>( `attribute:aspectRatio:${ imageType }`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-					return;
-				}
-
-				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
-				const img = imageUtils.findViewImgElement( viewElement )!;
-
-				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( 'aspect-ratio', data.attributeNewValue as string, img );
-				} else {
-					viewWriter.removeAttribute( 'aspect-ratio', img );
-				}
-			} );
-		} );
-
 		// Dedicated converter to propagate attributes to the <img> element.
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			attachDowncastConverter( dispatcher, 'width', 'width' );
@@ -188,10 +158,6 @@ export default class ImageSizeAttributes extends Plugin {
 					viewWriter.setAttribute( viewAttributeName, data.attributeNewValue, img );
 				} else {
 					viewWriter.removeAttribute( viewAttributeName, img );
-				}
-
-				if ( img.getAttribute( 'aspectRatio' ) ) {
-					return;
 				}
 
 				const width = data.item.getAttribute( 'width' );
