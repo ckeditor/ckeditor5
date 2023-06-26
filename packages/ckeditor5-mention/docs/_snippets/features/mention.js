@@ -28,7 +28,7 @@ ClassicEditor
 				{
 					marker: '@',
 					feed: [ '@Barney', '@Lily', '@Marry Ann', '@Marshall', '@Robin', '@Ted' ],
-					minimumCharacters: 1
+					minimumCharacters: 0
 				}
 			]
 		}
