@@ -9,7 +9,7 @@ Changelog
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: The `htmlAttributes` model property has been replaced by `htmlXAttributes`, where the `X` represents the name of the view element. Clients will need to modify their code accordingly by replacing all instances of `htmlAttributes` with `htmlXAttributes` for the respective view elements.
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: The `htmlAttributes` model property has been replaced by `html*Attributes`, where the `*` represents the name of the view element. Clients will need to modify their code accordingly by replacing all instances of `htmlAttributes` with `html*Attributes` for the respective view elements.
 
 ### Features
 
