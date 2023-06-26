@@ -119,7 +119,20 @@ export default class ImageResizeEditing extends Plugin {
 			} )
 		);
 
-		editor.conversion.for( 'downcast' ).add( dispatcher =>
+		editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
+			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewElement = conversionApi.mapper.toViewElement( data.item );
+
+				viewWriter.setStyle( 'height', data.attributeNewValue, viewElement );
+			} )
+		);
+
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
 			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
@@ -127,12 +140,13 @@ export default class ImageResizeEditing extends Plugin {
 
 				const viewWriter = conversionApi.writer;
 				const figure = conversionApi.mapper.toViewElement( data.item );
+				const img = imageUtils.findViewImgElement( figure );
+				const target = imageType === 'imageInline' ? img : figure;
 
 				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( 'height', data.attributeNewValue, figure );
-					viewWriter.addClass( 'image_resized', figure );
+					viewWriter.setStyle( 'height', data.attributeNewValue, target );
 				} else {
-					viewWriter.removeStyle( 'height', figure );
+					viewWriter.removeStyle( 'height', target );
 
 					if ( !figure.getStyle( 'width' ) ) {
 						viewWriter.removeClass( 'image_resized', figure );
