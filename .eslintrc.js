@@ -27,7 +27,7 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: [ '**/tests/**/*.js' ],
+			files: [ '**/tests/**/*.@(js|ts)' ],
 			rules: {
 				'no-unused-expressions': 'off',
 				'ckeditor5-rules/ckeditor-imports': 'off',
