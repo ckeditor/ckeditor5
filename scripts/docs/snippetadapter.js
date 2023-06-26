@@ -14,7 +14,7 @@ const { bundler, loaders, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const glob = require( 'glob' );
+const { globSync } = require( 'glob' );
 const { addTypeScriptLoader } = require( './utils' );
 
 const DEFAULT_LANGUAGE = 'en';
@@ -545,8 +545,7 @@ function getPackageDependenciesPaths() {
 		absolute: true
 	};
 
-	return glob.sync( 'packages/*/node_modules', globOptions )
-		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) )
+	return globSync( [ 'packages/*/node_modules', 'external/*/packages/*/node_modules' ], globOptions )
 		.map( p => path.normalize( p ) );
 }
 

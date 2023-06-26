@@ -34,7 +34,7 @@ export default class ImageStyle extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageStyle' {
-		return 'ImageStyle';
+	public static get pluginName() {
+		return 'ImageStyle' as const;
 	}
 }

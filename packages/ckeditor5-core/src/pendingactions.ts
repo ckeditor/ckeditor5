@@ -79,8 +79,8 @@ export default class PendingActions extends ContextPlugin implements Iterable<Pe
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PendingActions' {
-		return 'PendingActions';
+	public static get pluginName() {
+		return 'PendingActions' as const;
 	}
 
 	/**

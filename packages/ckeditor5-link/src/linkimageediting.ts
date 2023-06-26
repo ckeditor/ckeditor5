@@ -46,8 +46,8 @@ export default class LinkImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'LinkImageEditing' {
-		return 'LinkImageEditing';
+	public static get pluginName() {
+		return 'LinkImageEditing' as const;
 	}
 
 	/**

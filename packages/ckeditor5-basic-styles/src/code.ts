@@ -33,7 +33,7 @@ export default class Code extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Code' {
-		return 'Code';
+	public static get pluginName() {
+		return 'Code' as const;
 	}
 }

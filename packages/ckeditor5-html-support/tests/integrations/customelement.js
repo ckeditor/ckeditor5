@@ -6,6 +6,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import { Link } from '@ckeditor/ckeditor5-link';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler';
@@ -29,7 +30,7 @@ describe( 'CustomElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ CodeBlock, Paragraph, GeneralHtmlSupport ]
+				plugins: [ CodeBlock, Paragraph, Link, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -263,8 +264,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element data-foo="foo">bar</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -286,8 +287,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element foo="bar">baz</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -311,8 +312,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element data-foo="bar">baz</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -337,8 +338,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element class="foo">bar</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -358,8 +359,8 @@ describe( 'CustomElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
-					' htmlAttributes="(1)"' +
 					' htmlContent="<custom-foo-element style="background:red;">bar</custom-foo-element>"' +
+					' htmlCustomElementAttributes="(1)"' +
 					' htmlElementName="custom-foo-element"></htmlCustomElement>',
 				attributes: {
 					1: {
@@ -371,6 +372,23 @@ describe( 'CustomElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<custom-foo-element style="background:red;">bar</custom-foo-element>' );
+		} );
+
+		it( 'should allow linking custom element', () => {
+			dataFilter.allowElement( /.*/ );
+
+			editor.setData( '<a href="bar"><custom-foo-element>bar</custom-foo-element></a>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
+				data: '<htmlCustomElement' +
+					' htmlContent="<custom-foo-element>bar</custom-foo-element>"' +
+					' htmlElementName="custom-foo-element"' +
+					' linkHref="bar"' +
+					'></htmlCustomElement>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( '<a href="bar"><custom-foo-element>bar</custom-foo-element></a>' );
 		} );
 
 		it( 'should disallow attributes', () => {

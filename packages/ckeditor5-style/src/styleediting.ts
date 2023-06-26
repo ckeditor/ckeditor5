@@ -29,8 +29,8 @@ export default class StyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StyleEditing' {
-		return 'StyleEditing';
+	public static get pluginName() {
+		return 'StyleEditing' as const;
 	}
 
 	/**

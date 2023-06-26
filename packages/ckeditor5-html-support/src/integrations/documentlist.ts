@@ -18,7 +18,7 @@ import type {
 	DocumentListIndentCommand
 } from '@ckeditor/ckeditor5-list';
 
-import { type GHSViewAttributes, setViewAttributes } from '../utils';
+import { getHtmlAttributeName, setViewAttributes } from '../utils';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 
 /**
@@ -35,8 +35,8 @@ export default class DocumentListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DocumentListElementSupport' {
-		return 'DocumentListElementSupport';
+	public static get pluginName() {
+		return 'DocumentListElementSupport' as const;
 	}
 
 	/**
@@ -53,49 +53,52 @@ export default class DocumentListElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 		const documentListEditing: DocumentListEditing = editor.plugins.get( 'DocumentListEditing' );
+		const viewElements = [ 'ul', 'ol', 'li' ];
 
 		// Register downcast strategy.
 		// Note that this must be done before document list editing registers conversion in afterInit.
 		documentListEditing.registerDowncastStrategy( {
 			scope: 'item',
 			attributeName: 'htmlLiAttributes',
-
-			setAttributeOnDowncast( writer, attributeValue: GHSViewAttributes, viewElement ) {
-				setViewAttributes( writer, attributeValue, viewElement );
-			}
+			setAttributeOnDowncast: setViewAttributes
 		} );
 
 		documentListEditing.registerDowncastStrategy( {
 			scope: 'list',
-			attributeName: 'htmlListAttributes',
+			attributeName: 'htmlUlAttributes',
+			setAttributeOnDowncast: setViewAttributes
+		} );
 
-			setAttributeOnDowncast( writer, viewAttributes: GHSViewAttributes, viewElement ) {
-				setViewAttributes( writer, viewAttributes, viewElement );
-			}
+		documentListEditing.registerDowncastStrategy( {
+			scope: 'list',
+			attributeName: 'htmlOlAttributes',
+			setAttributeOnDowncast: setViewAttributes
 		} );
 
 		dataFilter.on<DataFilterRegisterEvent>( 'register', ( evt, definition ) => {
-			if ( ![ 'ul', 'ol', 'li' ].includes( definition.view! ) ) {
+			if ( !viewElements.includes( definition.view! ) ) {
 				return;
 			}
 
 			evt.stop();
 
 			// Do not register same converters twice.
-			if ( schema.checkAttribute( '$block', 'htmlListAttributes' ) ) {
+			if ( schema.checkAttribute( '$block', 'htmlLiAttributes' ) ) {
 				return;
 			}
 
-			schema.extend( '$block', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
-			schema.extend( '$blockObject', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
-			schema.extend( '$container', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
+			const allowAttributes = viewElements.map( element => getHtmlAttributeName( element ) );
+
+			schema.extend( '$block', { allowAttributes } );
+			schema.extend( '$blockObject', { allowAttributes } );
+			schema.extend( '$container', { allowAttributes } );
 
 			conversion.for( 'upcast' ).add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>(
-					'element:ul', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' }
+					'element:ul', viewToModelListAttributeConverter( 'htmlUlAttributes', dataFilter ), { priority: 'low' }
 				);
 				dispatcher.on<UpcastElementEvent>(
-					'element:ol', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' }
+					'element:ol', viewToModelListAttributeConverter( 'htmlOlAttributes', dataFilter ), { priority: 'low' }
 				);
 				dispatcher.on<UpcastElementEvent>(
 					'element:li', viewToModelListAttributeConverter( 'htmlLiAttributes', dataFilter ), { priority: 'low' }
@@ -140,10 +143,14 @@ export default class DocumentListElementSupport extends Plugin {
 				}
 
 				if ( previousNodeInList.getAttribute( 'listType' ) == node.getAttribute( 'listType' ) ) {
-					const value = previousNodeInList.getAttribute( 'htmlListAttributes' );
+					const attribute = getAttributeFromListType( previousNodeInList.getAttribute( 'listType' ) );
+					const value = previousNodeInList.getAttribute( attribute );
 
-					if ( !isEqual( node.getAttribute( 'htmlListAttributes' ), value ) ) {
-						writer.setAttribute( 'htmlListAttributes', value, node );
+					if (
+						!isEqual( node.getAttribute( attribute ), value ) &&
+						writer.model.schema.checkAttribute( node, attribute )
+					) {
+						writer.setAttribute( attribute, value, node );
 						evt.return = true;
 					}
 				}
@@ -151,10 +158,30 @@ export default class DocumentListElementSupport extends Plugin {
 				if ( previousNodeInList.getAttribute( 'listItemId' ) == node.getAttribute( 'listItemId' ) ) {
 					const value = previousNodeInList.getAttribute( 'htmlLiAttributes' );
 
-					if ( !isEqual( node.getAttribute( 'htmlLiAttributes' ), value ) ) {
+					if (
+						!isEqual( node.getAttribute( 'htmlLiAttributes' ), value ) &&
+						writer.model.schema.checkAttribute( node, 'htmlLiAttributes' )
+					) {
 						writer.setAttribute( 'htmlLiAttributes', value, node );
 						evt.return = true;
 					}
+				}
+			}
+		} );
+
+		// Remove `ol` attributes from `ul` elements and vice versa.
+		documentListEditing.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
+			for ( const { node } of listNodes ) {
+				const listType = node.getAttribute( 'listType' );
+
+				if ( listType === 'bulleted' && node.getAttribute( 'htmlOlAttributes' ) ) {
+					writer.removeAttribute( 'htmlOlAttributes', node );
+					evt.return = true;
+				}
+
+				if ( listType === 'numbered' && node.getAttribute( 'htmlUlAttributes' ) ) {
+					writer.removeAttribute( 'htmlUlAttributes', node );
+					evt.return = true;
 				}
 			}
 		} );
@@ -175,10 +202,16 @@ export default class DocumentListElementSupport extends Plugin {
 		this.listenTo( indentList, 'afterExecute', ( evt, changedBlocks ) => {
 			editor.model.change( writer => {
 				for ( const node of changedBlocks ) {
+					const attribute = getAttributeFromListType( node.getAttribute( 'listType' ) );
+
+					if ( !editor.model.schema.checkAttribute( node, attribute ) ) {
+						continue;
+					}
+
 					// Just reset the attribute.
 					// If there is a previous indented list that this node should be merged into,
 					// the postfixer will unify all the attributes of both sub-lists.
-					writer.setAttribute( 'htmlListAttributes', {}, node );
+					writer.setAttribute( attribute, {}, node );
 				}
 			} );
 		} );
@@ -191,8 +224,8 @@ export default class DocumentListElementSupport extends Plugin {
  *
  * @returns Returns a conversion callback.
  */
-function viewToModelListAttributeConverter( attributeName: string, dataFilter: DataFilter ) {
-	const callback: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
+function viewToModelListAttributeConverter( attributeName: string, dataFilter: DataFilter ): GetCallback<UpcastElementEvent> {
+	return ( evt, data, conversionApi ) => {
 		const viewElement = data.viewItem;
 
 		if ( !data.modelRange ) {
@@ -213,9 +246,18 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 				continue;
 			}
 
-			conversionApi.writer.setAttribute( attributeName, viewAttributes || {}, item );
+			if ( conversionApi.writer.model.schema.checkAttribute( item, attributeName ) ) {
+				conversionApi.writer.setAttribute( attributeName, viewAttributes || {}, item );
+			}
 		}
 	};
+}
 
-	return callback;
+/**
+ * Returns HTML attribute name based on provided list type.
+ */
+function getAttributeFromListType( listType: 'bulleted' | 'numbered' ) {
+	return listType === 'bulleted' ?
+		'htmlUlAttributes' :
+		'htmlOlAttributes';
 }

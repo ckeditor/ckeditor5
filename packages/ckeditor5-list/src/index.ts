@@ -10,6 +10,7 @@
 export { default as DocumentList } from './documentlist';
 export { default as DocumentListEditing, type DocumentListEditingPostFixerEvent } from './documentlist/documentlistediting';
 export { default as DocumentListIndentCommand } from './documentlist/documentlistindentcommand';
+export { default as AdjacentListsSupport } from './documentlist/adjacentlistssupport';
 export { default as DocumentListProperties } from './documentlistproperties';
 export { default as DocumentListPropertiesEditing } from './documentlistproperties/documentlistpropertiesediting';
 export { default as DocumentListUtils } from './documentlist/documentlistutils';
@@ -26,7 +27,7 @@ export { default as TodoList } from './todolist';
 export { default as TodoListEditing } from './todolist/todolistediting';
 export { default as TodoListUI } from './todolist/todolistui';
 
-export type { ListConfig } from './listconfig';
+export type { ListConfig, ListPropertiesConfig } from './listconfig';
 export type { default as ListStyle } from './liststyle';
 export type { default as DocumentListCommand } from './documentlist/documentlistcommand';
 export type { default as DocumentListMergeCommand } from './documentlist/documentlistmergecommand';

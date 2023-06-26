@@ -25,8 +25,8 @@ export default class IndentUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'IndentUI' {
-		return 'IndentUI';
+	public static get pluginName() {
+		return 'IndentUI' as const;
 	}
 
 	/**

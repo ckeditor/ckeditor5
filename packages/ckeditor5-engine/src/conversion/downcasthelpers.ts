@@ -271,7 +271,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 * } );
 	 * ```
 	 *
-	 * The `slorFor()` function can also take a callback that allows filtering which children of the model element
+	 * The `createSlot()` function can also take a callback that allows filtering which children of the model element
 	 * should be converted into this slot.
 	 *
 	 * Imagine a table feature where for this model structure:

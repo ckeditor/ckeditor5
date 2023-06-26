@@ -133,6 +133,30 @@ describe( 'InputObserver', () => {
 				expect( viewRange2.end.offset ).to.equal( 2 );
 			} );
 
+			it( 'should provide fixed editing view ranges corresponding to DOM ranges passed along with the DOM event', () => {
+				const domRange = global.document.createRange();
+
+				// [<div contenteditable="true">
+				// <p>fo]o</p>
+				domRange.setStartBefore( domEditable );
+				domRange.setEnd( domEditable.firstChild.firstChild, 2 );
+
+				fireMockNativeBeforeInput( {
+					getTargetRanges: () => [ domRange ]
+				} );
+
+				expect( evtData.targetRanges ).to.have.length( 1 );
+
+				const viewRange = evtData.targetRanges[ 0 ];
+
+				expect( viewRange ).to.be.instanceOf( Range );
+
+				expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.start.offset ).to.equal( 2 );
+				expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.end.offset ).to.equal( 2 );
+			} );
+
 			it( 'should provide a range encompassing the selected object when selection is fake', () => {
 				const domRange = global.document.createRange();
 

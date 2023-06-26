@@ -22,8 +22,8 @@ export default class Style extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Style' {
-		return 'Style';
+	public static get pluginName() {
+		return 'Style' as const;
 	}
 
 	/**

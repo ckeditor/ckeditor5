@@ -41,8 +41,8 @@ export default class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'IndentBlock' {
-		return 'IndentBlock';
+	public static get pluginName() {
+		return 'IndentBlock' as const;
 	}
 
 	/**

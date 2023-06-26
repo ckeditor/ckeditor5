@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import MultiRootEditorBase from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
+import { MultiRootEditor as MultiRootEditorBase } from '@ckeditor/ckeditor5-editor-multi-root';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';

@@ -22,8 +22,8 @@ export default class TextPartLanguageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TextPartLanguageUI' {
-		return 'TextPartLanguageUI';
+	public static get pluginName() {
+		return 'TextPartLanguageUI' as const;
 	}
 
 	/**

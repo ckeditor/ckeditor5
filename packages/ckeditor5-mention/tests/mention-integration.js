@@ -13,6 +13,7 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -331,6 +332,63 @@ describe( 'Mention feature - integration', () => {
 
 					expect( panelView.isVisible ).to.be.false;
 				} );
+		} );
+	} );
+
+	describe( 'with table', () => {
+		beforeEach( () => {
+			return ClassicTestEditor
+				.create( div, {
+					plugins: [ Paragraph, Table, Mention ],
+					mention: {
+						feeds: [
+							{
+								marker: '@',
+								feed: [ '@Barney' ]
+							}
+						]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		it( 'should not throw on backspace: selection after table containing 2 mentions in the last cell', () => {
+			const viewDocument = editor.editing.view.document;
+
+			// Insert table with 2 mentions in the last cell
+			expect( () => {
+				editor.setData(
+					'<figure class="table"><table><tbody><tr><td>' +
+						'<span class="mention" data-mention="@Barney">@Barney</span> ' +
+						'<span class="mention" data-mention="@Barney">@Barney</span>' +
+					'</td></tr></tbody></table></figure><p>&nbsp;</p>' );
+			} ).not.to.throw();
+
+			// Set selection after the table
+			editor.model.change( writer => {
+				const paragraph = editor.model.document.getRoot().getChild( 1 );
+
+				writer.setSelection( paragraph, 0 );
+			} );
+
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+
+			expect( () => {
+				viewDocument.fire( 'delete', deleteEvent );
+			} ).not.to.throw();
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td>' +
+					'<span class="mention" data-mention="@Barney">@Barney</span> ' +
+					'<span class="mention" data-mention="@Barney">@Barney</span>' +
+				'</td></tr></tbody></table></figure>'
+			);
 		} );
 	} );
 } );

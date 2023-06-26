@@ -33,8 +33,8 @@ export default class FontSize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontSize' {
-		return 'FontSize';
+	public static get pluginName() {
+		return 'FontSize' as const;
 	}
 
 	/**

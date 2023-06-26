@@ -42,8 +42,8 @@ export default class FindAndReplace extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FindAndReplace' {
-		return 'FindAndReplace';
+	public static get pluginName() {
+		return 'FindAndReplace' as const;
 	}
 
 	/**

@@ -57,8 +57,8 @@ export default class SpecialCharacters extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharacters' {
-		return 'SpecialCharacters';
+	public static get pluginName() {
+		return 'SpecialCharacters' as const;
 	}
 
 	/**

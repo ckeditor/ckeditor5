@@ -22,8 +22,8 @@ import StyleElementSupport from './integrations/style';
 import DocumentListElementSupport from './integrations/documentlist';
 import CustomElementSupport from './integrations/customelement';
 import type { DataSchemaInlineElementDefinition } from './dataschema';
-import type { DocumentSelection, Item, Model, Range, Selectable, Writer } from 'ckeditor5/src/engine';
-import { modifyGhsAttribute } from './utils';
+import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine';
+import { getHtmlAttributeName, modifyGhsAttribute } from './utils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
 
@@ -37,8 +37,8 @@ export default class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'GeneralHtmlSupport' {
-		return 'GeneralHtmlSupport';
+	public static get pluginName() {
+		return 'GeneralHtmlSupport' as const;
 	}
 
 	/**
@@ -90,7 +90,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			return inlineDefinition.model;
 		}
 
-		return 'htmlAttributes';
+		return getHtmlAttributeName( viewElementName );
 	}
 
 	/**

@@ -520,17 +520,20 @@ export default {
 		{
 			model: 'htmlLiAttributes',
 			view: 'li',
-			appliesToBlock: true
+			appliesToBlock: true,
+			coupledAttribute: 'listItemId'
 		},
 		{
-			model: 'htmlListAttributes',
+			model: 'htmlOlAttributes',
 			view: 'ol',
-			appliesToBlock: true
+			appliesToBlock: true,
+			coupledAttribute: 'listItemId'
 		},
 		{
-			model: 'htmlListAttributes',
+			model: 'htmlUlAttributes',
 			view: 'ul',
-			appliesToBlock: true
+			appliesToBlock: true,
+			coupledAttribute: 'listItemId'
 		},
 		{
 			model: 'htmlFigureAttributes',
@@ -954,6 +957,7 @@ export default {
 			view: '$customElement',
 			modelSchema: {
 				allowWhere: [ '$text', '$block' ],
+				allowAttributesOf: '$inlineObject',
 				isInline: true
 			}
 		}
