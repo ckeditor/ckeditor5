@@ -330,10 +330,6 @@ export default class ColorInputView extends View {
 				return;
 			}
 
-			if ( !this.dropdownView.isOpen ) {
-				return;
-			}
-
 			this.value = data.value || defaultColor;
 
 			// Trigger the listener that actually applies the set value.
