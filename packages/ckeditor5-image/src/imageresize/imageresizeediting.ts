@@ -133,7 +133,10 @@ export default class ImageResizeEditing extends Plugin {
 					viewWriter.addClass( 'image_resized', figure );
 				} else {
 					viewWriter.removeStyle( 'height', figure );
-					viewWriter.removeClass( 'image_resized', figure );
+
+					if ( !figure.getStyle( 'width' ) ) {
+						viewWriter.removeClass( 'image_resized', figure );
+					}
 				}
 			} )
 		);
