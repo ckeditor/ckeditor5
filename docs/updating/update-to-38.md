@@ -15,11 +15,15 @@ modified_at: 2023-06-26
 
 ## Update to CKEditor 5 v38.1.0
 
-### Breaking changes in the General HTML support feature
+### Changes in the General HTML support feature
 
-The CKEditor 5 v38.1.0 release introduces a minor breaking change. The `htmlAttributes` model property has been replaced by `htmlXAttributes`, where the `X` represents the name of the view element.
+The CKEditor 5 version 38.1.0 introduces a minor breaking change. Until this release, the {@link features/general-html-support General HTML Support} (GHS) plugin kept all HTML-specific data in the `htmlAttributes` model attribute, regardless of the element type. However, this approach made it difficult to ensure that attributes did not leak to elements of other types. For example, if you applied some styles to a list, you probably expect new elements in that list to have the same styles, but you do not want them present in the next paragraph or heading.
 
-In order to upgrade to the latest version, integrators need to modify their code by replacing all current instances of `htmlAttributes` with proper `htmlXAttributes` for the respective view elements.
+GHS used to deal with this problem on a case-by-case basis. However, to fix this once and for all, in this release, we have renamed `htmlAttributes` to `html*Attributes`. The `*` stands for an element name, for example, `htmlH1Attributes` or `htmlUlAttributes`. This allows the feature to easily determine whether a given attribute is allowed on any given element.
+
+For example, `htmlH1Attributes` is allowed on `H1` elements, but not on paragraph elements.
+
+Upgrading to CKEditor 5 v38.1.0 you will need to modify your GHS-related code accordingly by replacing all instances of `htmlAttributes` with proper `html*Attributes` for the respective view elements.
 
 ## Update to CKEditor 5 v38.0.0
 
