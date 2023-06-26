@@ -259,7 +259,7 @@ const editors = [
 		id: 'inline104',
 		title: '[Inline] natural size | only resize in px (only height style)',
 		config: configPx,
-		data: '<p><img style="width:200px;" src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/birds/parrot_2.jpg" alt=""></p>'
+		data: '<p><img style="height:200px;" src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/birds/parrot_2.jpg" alt=""></p>'
 	},
 	{
 		id: 'inline105',
