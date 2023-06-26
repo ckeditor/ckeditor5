@@ -5,7 +5,7 @@ Changelog
 
 ### Release highlights
 
-* **Show block** - The show blocks feature allows the content creators to visualize all block-level elements (except for widgets) by surrounding them with an outline and displaying their element name at the top-left corner of the box.
+* **Show blocks** - The show blocks feature allows the content creators to visualize all block-level elements (except for widgets) by surrounding them with an outline and displaying their element name at the top-left corner of the box.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
