@@ -110,15 +110,6 @@ export default class ImageSizeAttributes extends Plugin {
 							return heightStyle;
 						}
 
-						const img = imageUtils.findViewImgElement( viewElement )!;
-						const imgHasAttributes = img.getAttribute( 'width' ) || img.getAttribute( 'height' );
-
-						if ( heightStyle && !viewElement.getStyle( 'width' ) ) {
-							if ( !imgHasAttributes ) {
-								return heightStyle;
-							}
-						}
-
 						return null;
 					}
 				}

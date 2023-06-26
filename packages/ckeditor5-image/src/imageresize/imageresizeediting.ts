@@ -179,10 +179,6 @@ export default class ImageResizeEditing extends Plugin {
 							return null;
 						}
 
-						if ( heightStyle ) {
-							return null;
-						}
-
 						return viewElement.getStyle( 'height' );
 					}
 				}
