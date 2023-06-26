@@ -2,7 +2,7 @@
 category: update-guides
 menu-title: Update to v38.x
 order: 86
-modified_at: 2023-05-12
+modified_at: 2023-06-26
 ---
 
 # Update to CKEditor 5 v38.x
@@ -15,7 +15,7 @@ modified_at: 2023-05-12
 
 ## Update to CKEditor 5 v38.1.0
 
-### Breaking changes
+### Breaking changes in the General HTML support feature
 
 The CKEditor 5 v38.1.0 release introduces a minor breaking change. The `htmlAttributes` model property has been replaced by `htmlXAttributes`, where the `X` represents the name of the view element.
 
