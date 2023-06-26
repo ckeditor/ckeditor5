@@ -24,11 +24,17 @@ import type {
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { determineImageTypeForInsertionAtSelection } from './image/utils';
+import { DomEmitterMixin, type DomEmitter, global } from 'ckeditor5/src/utils';
 
 /**
  * A set of helpers related to images.
  */
 export default class ImageUtils extends Plugin {
+	/**
+	 * DOM Emitter.
+	 */
+	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
+
 	/**
 	 * @inheritDoc
 	 */
@@ -121,10 +127,49 @@ export default class ImageUtils extends Plugin {
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
+				this.loadImageAndSetSizeAttributes( imageElement );
+
 				return imageElement;
 			}
 
 			return null;
+		} );
+	}
+
+	/**
+	 * Loads image file based on `src`, reads original image sizes and sets them as `width` and `height`.
+	 *
+	 * The `src` attribute may not be available if the user is using an upload adapter. In such a case,
+	 * this method is called again after the upload process is complete and the `src` attribute is available.
+	 */
+	public loadImageAndSetSizeAttributes( imageElement: Element ): void {
+		const src = imageElement.getAttribute( 'src' ) as string;
+
+		if ( !src ) {
+			return;
+		}
+
+		if ( imageElement.getAttribute( 'width' ) || imageElement.getAttribute( 'height' ) ) {
+			return;
+		}
+
+		const img = new global.window.Image();
+
+		this._domEmitter.listenTo( img, 'load', ( evt, data ) => {
+			this._setWidthAndHeight( imageElement, img.naturalWidth, img.naturalHeight );
+			this._domEmitter.stopListening( img, 'load' );
+		} );
+
+		img.src = src;
+	}
+
+	/**
+	 * Sets image `width` and `height` attributes.
+	 */
+	private _setWidthAndHeight( imageElement: Element, width: number, height: number ): void {
+		this.editor.model.enqueueChange( { isUndoable: false }, writer => {
+			writer.setAttribute( 'width', width, imageElement );
+			writer.setAttribute( 'height', height, imageElement );
 		} );
 	}
 
@@ -238,6 +283,15 @@ export default class ImageUtils extends Plugin {
 				return item as ViewElement;
 			}
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		this._domEmitter.stopListening();
+
+		return super.destroy();
 	}
 }
 

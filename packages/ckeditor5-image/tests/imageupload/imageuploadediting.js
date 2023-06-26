@@ -487,6 +487,32 @@ describe( 'ImageUploadEditing', () => {
 		expect( loader.status ).to.equal( 'idle' );
 	} );
 
+	it( 'should set image width and height after server response', async () => {
+		const file = createNativeFileMock();
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png' } ) );
+		} );
+
+		await timeout( 100 );
+
+		expect( getModelData( model ) ).to.equal(
+			'<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]foo bar</paragraph>'
+		);
+
+		function timeout( ms ) {
+			return new Promise( res => setTimeout( res, ms ) );
+		}
+	} );
+
 	it( 'should support adapter response with the normalized `urls` property', async () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
