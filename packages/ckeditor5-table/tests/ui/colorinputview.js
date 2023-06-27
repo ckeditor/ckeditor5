@@ -214,6 +214,18 @@ describe( 'ColorInputView', () => {
 				expect( removeColorButton.label ).to.equal( 'Remove color' );
 			} );
 
+			it( 'should remove color', () => {
+				const dropdown = view.dropdownView;
+				const colorTableView = dropdown.panelView.children.first;
+
+				view.value = '#ffaaff';
+				dropdown.isOpen = true;
+
+				colorTableView.colorGridsPageView.removeColorButtonView.fire( 'execute' );
+
+				expect( view.value ).to.be.equal( '' );
+			} );
+
 			describe( 'position', () => {
 				it( 'should be SouthWest in LTR', () => {
 					locale.uiLanguageDirection = 'ltr';
