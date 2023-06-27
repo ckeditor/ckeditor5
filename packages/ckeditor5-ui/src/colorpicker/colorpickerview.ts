@@ -63,7 +63,7 @@ export default class ColorPickerView extends View {
 
 	/**
 	 * Debounced function updating the `color` property in the component
-	 * and firing the ColorPickerColorSelectedEvent. Executed whenever color in component
+	 * and firing the `ColorPickerColorSelectedEvent`. Executed whenever color in component
 	 * is changed by the user interaction (through the palette or input).
 	 *
 	 * @private
@@ -381,10 +381,14 @@ class ColorPickerInputRowView extends View {
 }
 
 /**
- * Fired whenever the color was selected through the color picker palette
- * or color picker input.
+ * An event fired whenever the color was selected through the color picker palette
+ * or the color picker input.
  *
- * @eventName ~ColorPicker#colorSelected
+ * This even fires only when the user changes the color. It does not fire when the color
+ * is changed programmatically, e.g. via
+ * {@link module:ui/colorpicker/colorpickerview~ColorPickerView#color}.
+ *
+ * @eventName ~ColorPickerView#colorSelected
  */
 export type ColorPickerColorSelectedEvent = {
 	name: 'colorSelected';

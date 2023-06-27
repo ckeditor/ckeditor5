@@ -15,7 +15,7 @@ import LabelView from '../label/labelview';
 import Template from '../template';
 import View from '../view';
 import ViewCollection from '../viewcollection';
-import ColorPickerView from '../colorpicker/colorpickerview';
+import { default as ColorPickerView, type ColorPickerColorSelectedEvent } from '../colorpicker/colorpickerview';
 import type { ColorPickerViewConfig } from '../colorpicker/utils';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { Model } from '@ckeditor/ckeditor5-engine';
@@ -1045,12 +1045,13 @@ class ColorPickerPageView extends View {
 	}
 
 	/**
-	 * Fires the `execute` event if color in color picker changed.
+	 * Fires the `execute` event if color in color picker has been changed
+	 * by the user.
 	 *
 	 * @fires execute
 	 */
 	private _executeUponColorChange() {
-		this.colorPickerView!.on( 'colorSelected', ( evt, data ) => {
+		this.colorPickerView!.on<ColorPickerColorSelectedEvent>( 'colorSelected', ( evt, data ) => {
 			this.fire<ColorTableExecuteEvent>( 'execute', {
 				value: data.color,
 				source: 'colorPicker'
