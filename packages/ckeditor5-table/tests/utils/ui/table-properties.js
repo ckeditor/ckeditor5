@@ -519,7 +519,8 @@ describe( 'table utils', () => {
 				const panelView = labeledField.fieldView.dropdownView.panelView;
 				const colorPicker = panelView.children.get( 0 ).colorPickerPageView.colorPickerView;
 
-				expect( colorPicker._format ).to.equal( 'hex' );
+				colorPicker.color = 'hsl(180, 75%, 60%)';
+				expect( colorPicker.color ).to.equal( '#4CE6E6' );
 			} );
 		} );
 	} );
