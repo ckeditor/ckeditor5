@@ -8,11 +8,11 @@ meta-description: Managing the "Powered by CKEditor" logo
 
 ## Why the "Powered by CKEditor" logo?
 
-Starting from version v38.0.0 onwards, all **open source** installations of CKEditor 5 display a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor. You can [read more about it](https://github.com/ckeditor/ckeditor5/issues/14082) on GitHub.
+Starting from version v38.0.0 onwards, all **open-source** installations of CKEditor 5 display a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. The label links directly to the [CKEditor website](https://ckeditor.com/). The new branding approach is designed to make sure the entire community knows who is powering and modernizing their rich text editor.
 
 {@img assets/img/powered-by-ckeditor.png Placement of the "Powered by CKEditor" logo within the editor}
 
-This logo is only visible when the editor is focused and only in the editable. The editor needs to have a minimum size of 350px x 50px to display the logo. It will be shown in all editor types.
+This logo is only visible when the editor is focused and only in the editable. The editor needs to have a minimum size of 350px x 50px to display the logo. It will be shown in all editor types. You can observe this behavior in practice in the demo editors further in this guide.
 
 The logo **will not be displayed for customers with commercial licenses**, but please read on as certain actions need to be taken to white-label your CKEditor 5 installation. You can [reach out to our Technical Support team](https://ckeditor.com/contact/) if you have any questions.
 
@@ -22,48 +22,48 @@ To remove the logo, you need to obtain a commercial license and then configure t
 
 Refer to the {@link support/license-key-and-activation License key and activation} guide for details on where to find the license key and how to use it in your configuration.
 
-## How to configure the layout of the "Powered by CKEditor" logo?
+## How to configure the "Powered by CKEditor" logo?
 
-For open source, free users, the "Powered by CKEditor" logo will always be displayed. There is, however, some degree of control over it.
+For free, open-source users, the "Powered by CKEditor" logo will always be displayed when the editor is in focus. You can, however, adjust some aspects of it to suit your editor integration better.
 
-Complete configuration reference is available in the {@link module:core/editor/editorconfig~EditorConfig#ui API documentation}. In short, you can configure the following properties:
+### Layout customization
+
+You can configure the following properties of the logo:
 
 * The **position** relative to the editor’s bottom edge. The default is over the edge. The logo can also be displayed inside the container.
-* The logo **offset** toward the configured editable's corner.
+* The logo **offset** relative to the configured editable's corner.
 * The **alignment**: left or right side of the editable area.
+* The **label** text, displayed before the CKEditor logo.
 
-To change the default position and display the logo inside the container, use this configuration option:
+The complete reference is available in the {@link module:core/editor/editorconfig~EditorConfig#ui API documentation}.
 
-```js
-config.ui.poweredBy.position: 'inside'
-```
+The example below shows how the logo can be adjusted using the available editor configuration. Focus the editor to display the customized logo.
 
-To customize the logo offset, use the following settings:
+{@snippet build-classic-source}
 
-```js
-config.ui.poweredBy.verticalOffset: 10,
-config.ui.poweredBy.horizontalOffset: 10
-```
+{@snippet support/managing-ckeditor-logo-position}
 
-The value of the offset is set in pixels.
-
-To change the alignment:
+And this is the configuration code necessary:
 
 ```js
-config.ui.poweredBy.side: 'left'
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		/* ... */
+		ui: {
+			poweredBy: {
+				position: 'inside',
+				side: 'left',
+				label: 'This is'
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
-The default option is `right`.
+### Styling customization
 
-You can also customize the text displayed on the logo's label:
-
-```js
-config.ui.poweredBy.label: 'Created with'
-```
-
-All the above changes should be done in the {@link module:core/editor/editorconfig~EditorConfig editor configuration} file.
-
-A set of ready-made CSS variables is available. You can use it to customize the style of the "Powered by CKEditor" logo.
+A set of ready-made CSS variables is available for integrators. You can use it to customize the style of the "Powered by CKEditor" logo.
 
 ```css
 /*
@@ -80,40 +80,30 @@ A set of ready-made CSS variables is available. You can use it to customize the 
 }
 ```
 
-### Customization example
+If you need, you can dive even deeper to make it coherent with your product. For instance, this is how the logo can be modified to fit the "dark mode" theme.
 
-Below you will find an example of how the "Powered by CKEditor" logo can be customized in CSS:
+{@snippet support/managing-ckeditor-logo-styling}
+
+It was achieved with just a few style rules:
 
 ```css
-/*
- * Customized values.
- */
-:root {
-	--ck-powered-by-line-height: 10px;
-	--ck-powered-by-padding-vertical: 8px;
-	--ck-powered-by-padding-horizontal: 12px;
-	--ck-powered-by-text-color: hsl(133, 100%, 31%);
-	--ck-powered-by-border-radius: 20px 0 0 0;
-	--ck-powered-by-background: linear-gradient(57deg, hsla(181, 70%, 45%, 0) 0%, hsl(41, 98%, 58%) 100%);
-	--ck-powered-by-border-color: hsl(0, 0%, 45%) transparent transparent hsl(0, 0%, 45%) ;
-}
+	/* "Powered by CKEditor" logo customization. */
+	.ck.ck-balloon-panel.ck-powered-by-balloon {
+		/* You can use your own variables here as well. */
+		--ck-powered-by-background: hsl(270, 1%, 29%);
+		--ck-powered-by-border-color: hsl(270, 1%, 29%);
+	}
+
+	.ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by .ck-powered-by__label {
+		text-transform: none;
+		font-family: var(--main-font-family);
+		padding-left: 2px;
+		color: var(--main-text-color);
+	}
+
+	.ck.ck-balloon-panel.ck-powered-by-balloon .ck.ck-powered-by .ck-icon {
+		filter: brightness(10);
+	}
 ```
 
-Here is an example of the editor's configuration:
-
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		/* ... */
-		ui: {
-			poweredBy: {
-				position: 'inside'
-			}
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-The final effect:
-{@img assets/img/powered-by-ckeditor-customized.png Placement of the customized "Powered by CKEditor" logo within the editor}
+Refer to the {@link framework/theme-customization Theme customization} guide to learn how to adjust the editor theme.

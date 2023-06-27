@@ -14,16 +14,16 @@ This article explains how to activate a commercial license of CKEditor 5 and the
 	* {@link features/revision-history Revision history}
 * {@link features/pagination Pagination}
 * The Productivity Pack that includes:
-	* {@link features/template Content templates}
 	* {@link features/document-outline Document outline}
 	* {@link features/format-painter Format painter}
 	* {@link features/slash-commands Slash commands}
 	* {@link features/table-of-contents Table of contents}
+	* {@link features/template Templates}
 
 Other premium features such as {@link features/real-time-collaboration real-time collaboration}, {@link features/export-word export to Word}, {@link features/export-pdf export to PDF}, or {@link features/import-word import from Word} are authenticated on the server side. Please refer to respective feature guides for installation details.
 
 <info-box>
-	CKEditor 5 can be used without activation as {@link support/license-and-legal open source software under the GPL license}. It will then {@link support/managing-ckeditor-logo display a small logo in the editor area}.
+	CKEditor 5 (without premium features listed above) can be used without activation as {@link support/license-and-legal open source software under the GPL license}. It will then {@link support/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 </info-box>
 
 ## Obtaining a license
@@ -44,7 +44,7 @@ If you are using the trial, refer to the [CKEditor 5 Premium Features free trial
 
 ## Obtaining a license key
 
-Follow this guide to get the license key necessary to activate your purchased premium features or to white-label CKEditor 5.
+Follow this guide to get the license key necessary to activate your purchased premium features or to white-label CKEditor 5 (remove the "Powered by CKEditor" logo).
 
 ### Log in to the CKEditor Ecosystem dashboard
 
