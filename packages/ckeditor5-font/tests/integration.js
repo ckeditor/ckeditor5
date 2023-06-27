@@ -261,7 +261,7 @@ describe( 'Integration test Font', () => {
 
 			expect( getData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 
 		it( 'should properly discard changes', () => {
