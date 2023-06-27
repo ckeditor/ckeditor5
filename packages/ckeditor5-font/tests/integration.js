@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, CustomEvent */
 
 import Font from '../src/font';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -228,8 +228,20 @@ describe( 'Integration test Font', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]</paragraph>' );
 		} );
 
-		it( 'should set colors in model in configured format', () => {
-			setModelData( model,
+		it( 'should set colors in model in configured format', async () => {
+			const editor = await ClassicTestEditor.create( element, {
+				plugins: [ Font, ArticlePluginSet ],
+				fontColor: {
+					colorPicker: {
+						format: 'lab'
+					}
+				},
+				image: {
+					toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
+				}
+			} );
+
+			setModelData( editor.model,
 				'<paragraph>' +
 					'<$text>[foo]</$text>' +
 				'</paragraph>'
@@ -238,10 +250,18 @@ describe( 'Integration test Font', () => {
 			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
 
 			dropdown.isOpen = true;
-			dropdown.colorTableView.colorPickerPageView.colorPickerView._format = 'lab';
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
 
-			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
+			const event = new CustomEvent( 'color-changed', {
+				detail: {
+					value: '#113322'
+				}
+			} );
+
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.picker.dispatchEvent( event );
+
+			expect( getData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
+
+			editor.destroy();
 		} );
 
 		it( 'should properly discard changes', () => {
