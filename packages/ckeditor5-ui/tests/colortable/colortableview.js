@@ -345,9 +345,9 @@ describe( 'ColorTableView', () => {
 
 		it( 'should set selected color after changes in color picker', () => {
 			colorTableView._appendColorPicker();
-			colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#113322' );
+			colorTableView.colorPickerPageView.colorPickerView.fire( 'colorSelected', { color: '#113322' } );
 
-			expect( colorTableView.selectedColor ).to.equal( 'hsl( 150, 50%, 13% )' );
+			expect( colorTableView.selectedColor ).to.equal( '#113322' );
 		} );
 
 		it( 'should set the current color when color picker is created', () => {

@@ -300,9 +300,9 @@ describe( 'Integration test Font', () => {
 			dropdown.colorTableView.fire( 'showColorPicker' );
 
 			// Execute multiple color changes.
-			dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#113322' );
-			dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#654321' );
-			dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#123456' );
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.fire( 'colorSelected', { color: '#113322' } );
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.fire( 'colorSelected', { color: '#654321' } );
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.fire( 'colorSelected', { color: '#123456' } );
 
 			editor.commands.get( 'undo' ).execute();
 
