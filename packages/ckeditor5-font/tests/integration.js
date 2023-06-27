@@ -223,7 +223,14 @@ describe( 'Integration test Font', () => {
 			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
 
 			dropdown.isOpen = true;
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
+
+			const event = new CustomEvent( 'color-changed', {
+				detail: {
+					value: '#113322'
+				}
+			} );
+
+			dropdown.colorTableView.colorPickerPageView.colorPickerView.picker.dispatchEvent( event );
 
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]</paragraph>' );
 		} );
