@@ -181,7 +181,8 @@ describe( 'ColorUI', () => {
 		describe( 'color picker', () => {
 			it( 'should execute command if the color gets changed when dropdown is open', () => {
 				const spy = sinon.spy( editor, 'execute' );
-				dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#a37474';
+
+				dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#a37474' );
 
 				sinon.assert.calledWithExactly( spy, 'testColorCommand', sinon.match( { value: 'hsl( 0, 20%, 55% )' } ) );
 			} );
@@ -246,7 +247,7 @@ describe( 'ColorUI', () => {
 			it( 'should avoid call the command multiple times', () => {
 				const spy = sinon.spy( editor, 'execute' );
 				// Color format normalization could result with command being called multiple times.
-				dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#a37474';
+				dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#a37474' );
 
 				expect( spy.callCount ).to.equal( 1 );
 			} );

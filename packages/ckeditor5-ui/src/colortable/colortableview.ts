@@ -1055,6 +1055,7 @@ class ColorPickerPageView extends View {
 				value: data.color,
 				source: 'colorPicker'
 			} );
+			this.set( 'selectedColor', data.color );
 		} );
 	}
 }

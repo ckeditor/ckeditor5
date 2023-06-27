@@ -223,7 +223,7 @@ describe( 'Integration test Font', () => {
 			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
 
 			dropdown.isOpen = true;
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
+			dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#113322' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]</paragraph>' );
 		} );
@@ -239,7 +239,7 @@ describe( 'Integration test Font', () => {
 
 			dropdown.isOpen = true;
 			dropdown.colorTableView.colorPickerPageView.colorPickerView._format = 'lab';
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
+			dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#113322' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
 		} );
@@ -273,9 +273,9 @@ describe( 'Integration test Font', () => {
 			dropdown.colorTableView.fire( 'showColorPicker' );
 
 			// Execute multiple color changes.
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#113322';
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#654321';
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = '#123456';
+			dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#113322' );
+			dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#654321' );
+			dropdown.colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#123456' );
 
 			editor.commands.get( 'undo' ).execute();
 

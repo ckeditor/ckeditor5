@@ -343,6 +343,13 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.colorPickerPageView.items.length ).to.equal( 2 );
 		} );
 
+		it( 'should set selected color after changes in color picker', () => {
+			colorTableView._appendColorPicker();
+			colorTableView.colorPickerPageView.colorPickerView._debounceColorPickerEvent( '#113322' );
+
+			expect( colorTableView.selectedColor ).to.equal( 'hsl( 150, 50%, 13% )' );
+		} );
+
 		it( 'should set the current color when color picker is created', () => {
 			colorTableView.selectedColor = '#660000';
 			colorTableView._appendColorPicker();
