@@ -22,6 +22,7 @@
     "show-blocks"
   ],
   "main": "src/index.ts",
+  "type": "module",
   "dependencies": {
     "ckeditor5": "38.1.0",
     "@ckeditor/ckeditor5-ui": "38.1.0"
