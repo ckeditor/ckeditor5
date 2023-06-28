@@ -106,6 +106,7 @@
     "@ckeditor/ckeditor5-react": "^3.0.0",
     "@ckeditor/ckeditor5-real-time-collaboration": "38.1.0",
     "@ckeditor/ckeditor5-revision-history": "38.1.0",
+    "@ckeditor/ckeditor5-show-blocks": "38.1.0",
     "@ckeditor/ckeditor5-slash-command": "38.1.0",
     "@ckeditor/ckeditor5-template": "38.1.0",
     "@ckeditor/ckeditor5-track-changes": "38.1.0",
