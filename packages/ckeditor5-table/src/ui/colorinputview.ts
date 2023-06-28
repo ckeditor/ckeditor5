@@ -255,8 +255,10 @@ export default class ColorInputView extends View {
 		this.focusTracker.add( colorTable.element! );
 
 		dropdown.on( 'change:isOpen', ( evt, name, isVisible ) => {
-			if ( !isVisible ) {
-				colorTable!.showColorGrids();
+			if ( isVisible ) {
+				colorTable.updateSelectedColors();
+			} else {
+				colorTable.showColorGrids();
 			}
 		} );
 
@@ -325,10 +327,6 @@ export default class ColorInputView extends View {
 		colorTable.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
 			if ( data.source === 'saveButton' ) {
 				this.dropdownView.isOpen = false;
-				return;
-			}
-
-			if ( !this.dropdownView.isOpen ) {
 				return;
 			}
 

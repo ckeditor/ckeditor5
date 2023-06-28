@@ -195,21 +195,16 @@ describe( 'ColorInputView', () => {
 				const dropdown = view.dropdownView;
 				const colorTableView = dropdown.panelView.children.first;
 
-				dropdown.isOpen = true;
 				view.value = '#ffaaff';
+				dropdown.isOpen = true;
 
 				// Open color picker by clicking on button "color picker".
 				colorTableView.colorGridsPageView.colorPickerButtonView.fire( 'execute' );
-
-				view.value = '#123456';
+				colorTableView.colorPickerPageView.colorPickerView.fire( 'colorSelected', { color: 'hsl( 250, 100%, 83% )' } );
 
 				colorTableView.fire( 'cancel' );
 
-				/**
-				 * TODO, should be HEX format: (https://github.com/ckeditor/ckeditor5/issues/14432)
-				 */
-				expect( view.value ).to.be.equal( 'hsl( 300, 100%, 83% )' );
-				// expect( view.value ).to.be.equal( '#ffaaff' );
+				expect( view.value ).to.be.equal( '#ffaaff' );
 			} );
 
 			it( 'should have the remove color button', () => {
@@ -217,6 +212,18 @@ describe( 'ColorInputView', () => {
 
 				expect( removeColorButton ).to.be.instanceOf( ButtonView );
 				expect( removeColorButton.label ).to.equal( 'Remove color' );
+			} );
+
+			it( 'should remove color', () => {
+				const dropdown = view.dropdownView;
+				const colorTableView = dropdown.panelView.children.first;
+
+				view.value = '#ffaaff';
+				dropdown.isOpen = true;
+
+				colorTableView.colorGridsPageView.removeColorButtonView.fire( 'execute' );
+
+				expect( view.value ).to.be.equal( '' );
 			} );
 
 			describe( 'position', () => {
@@ -267,11 +274,7 @@ describe( 'ColorInputView', () => {
 
 				colorGridView.items.last.fire( 'execute' );
 
-				/**
-				 * TODO, should be RGB format: (https://github.com/ckeditor/ckeditor5/issues/14432)
-				 */
-				expect( view.value ).to.equal( 'hsl( 240, 100%, 50% )' );
-				// expect( view.value ).to.equal( 'rgb(0,0,255)' );
+				expect( view.value ).to.equal( 'rgb(0,0,255)' );
 			} );
 
 			it( 'should set InputTextView#value to the selected color\'s label upon ColorTileView#execute', () => {
@@ -302,12 +305,11 @@ describe( 'ColorInputView', () => {
 				sinon.assert.calledWithExactly( spy.lastCall, 'input' );
 			} );
 
-			it.skip( 'should have #selectedColor bound to the #value', () => {
+			it( 'should set #selectedColor to the #value upon dropdown opening', () => {
 				view.value = 'rgb(0,255,0)';
-				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,255,0)' );
+				view.dropdownView.isOpen = true;
 
-				view.value = 'rgb(0,0,255)';
-				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,0,255)' );
+				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,255,0)' );
 			} );
 		} );
 
@@ -547,11 +549,7 @@ describe( 'ColorInputView', () => {
 
 						removeColorButton.fire( 'execute' );
 
-						/**
-						 * TODO, should be RGB format: (https://github.com/ckeditor/ckeditor5/issues/14432)
-						 */
-						expect( view.value ).to.equal( 'hsl( 0, 100%, 50% )' );
-						// expect( view.value ).to.equal( 'rgb(255,0,0)' );
+						expect( view.value ).to.equal( 'rgb(255,0,0)' );
 					} );
 				} );
 			} );

@@ -38,7 +38,8 @@ export default class ColorPickerView extends View {
 	public hexInputRow: ColorPickerInputRowView;
 
 	/**
-	 * Current color state in color picker.
+	 * Current color selected in the color picker. It can be set by the component itself
+	 * (through the palette or input) or from the outside (e.g. to reflect the current selection color).
 	 */
 	declare public color: string;
 
@@ -61,14 +62,20 @@ export default class ColorPickerView extends View {
 	declare public _hexColor: string;
 
 	/**
-	 * Debounced event method. Updates color property in component.
+	 * Debounced function updating the `color` property in the component
+	 * and firing the `ColorPickerColorSelectedEvent`. Executed whenever color in component
+	 * is changed by the user interaction (through the palette or input).
+	 *
+	 * @private
 	 */
 	private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
 
 	/**
-	 * The output format (the one in which colors are applied in the model) of color picker.
+	 * A reference to the configuration of the color picker specified in the constructor.
+	 *
+	 * @private
 	 */
-	private _format: ColorPickerOutputFormat;
+	private _config: ColorPickerViewConfig;
 
 	/**
 	 * Creates a view of color picker.
@@ -76,15 +83,13 @@ export default class ColorPickerView extends View {
 	 * @param locale
 	 * @param config
 	 */
-	constructor( locale: Locale | undefined, config: ColorPickerViewConfig ) {
+	constructor( locale: Locale | undefined, config: ColorPickerViewConfig = {} ) {
 		super( locale );
 
 		this.set( {
 			color: '',
 			_hexColor: ''
 		} );
-
-		this._format = config.format || 'hsl';
 
 		this.hexInputRow = this._createInputRow();
 		const children = this.createCollection();
@@ -102,24 +107,32 @@ export default class ColorPickerView extends View {
 			children
 		} );
 
+		this._config = config;
+
 		this._debounceColorPickerEvent = debounce( ( color: string ) => {
+			// At first, set the color internally in the component. It's converted to the configured output format.
 			this.set( 'color', color );
+
+			// Then let the outside world know that the user changed the color.
+			this.fire<ColorPickerColorSelectedEvent>( 'colorSelected', { color: this.color } );
 		}, waitingTime, {
 			leading: true
 		} );
 
-		// Sets color in the picker if color was updated.
+		// The `color` property holds the color in the configured output format.
+		// Ensure it before actually setting the value.
 		this.on( 'set:color', ( evt, propertyName, newValue ) => {
-			// The color needs always to be kept in the output format.
-			evt.return = convertColor( newValue, this._format );
+			evt.return = convertColor( newValue, this._config.format || 'hsl' );
 		} );
 
+		// The `_hexColor` property is bound to the `color` one, but requires conversion.
 		this.on( 'change:color', () => {
 			this._hexColor = convertColorToCommonHexFormat( this.color );
 		} );
 
 		this.on( 'change:_hexColor', () => {
-			// Should update color in color picker when its not focused
+			// Update the selected color in the color picker palette when it's not focused.
+			// It means the user typed the color in the input.
 			if ( document.activeElement !== this.picker ) {
 				this.picker.setAttribute( 'color', this._hexColor );
 			}
@@ -182,7 +195,7 @@ export default class ColorPickerView extends View {
 		// See: https://github.com/cksource/ckeditor5-internal/issues/3245, https://github.com/ckeditor/ckeditor5/issues/14119,
 		// https://github.com/cksource/ckeditor5-internal/issues/3268.
 		/* istanbul ignore next -- @preserve */
-		if ( env.isGecko || env.isiOS || env.isSafari ) {
+		if ( !this._config.hideInput && ( env.isGecko || env.isiOS || env.isSafari ) ) {
 			const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
 
 			input.focus();
@@ -366,3 +379,20 @@ class ColorPickerInputRowView extends View {
 		} );
 	}
 }
+
+/**
+ * An event fired whenever the color was selected through the color picker palette
+ * or the color picker input.
+ *
+ * This even fires only when the user changes the color. It does not fire when the color
+ * is changed programmatically, e.g. via
+ * {@link module:ui/colorpicker/colorpickerview~ColorPickerView#color}.
+ *
+ * @eventName ~ColorPickerView#colorSelected
+ */
+export type ColorPickerColorSelectedEvent = {
+	name: 'colorSelected';
+	args: [ {
+		color: string;
+	} ];
+};
