@@ -133,11 +133,11 @@ export default class ImageResizeHandles extends Plugin {
 					} );
 				}
 
-				const img = imageUtils.findViewImgElement( imageView )!;
+				const target = imageModel.name === 'imageInline' ? imageView : widgetView;
 
-				if ( img.getStyle( 'height' ) ) {
+				if ( target.getStyle( 'height' ) ) {
 					editingView.change( writer => {
-						writer.removeStyle( 'height', img );
+						writer.removeStyle( 'height', target );
 					} );
 				}
 			} );
