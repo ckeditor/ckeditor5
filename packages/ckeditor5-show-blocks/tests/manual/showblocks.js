@@ -60,7 +60,7 @@ ClassicEditor
 			Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption,
 			ImageStyle, ImageToolbar, Indent, Italic, Link, DocumentList, MediaEmbed,
 			Paragraph, Table, TableToolbar, Alignment, AutoImage, AutoLink,
-			CloudServices, Code, CodeBlock, Essentials, ExportPdf,
+			CloudServices, Code, CodeBlock, Essentials, ExportPdf, EasyImage,
 			ExportWord, ImportWord, FindAndReplace, Font, Highlight, HorizontalLine,
 			HtmlEmbed, GeneralHtmlSupport, ImageInsert, ImageResize, ImageUpload, IndentBlock,
 			LinkImage, DocumentListProperties, Mention, PageBreak, PasteFromOffice,
@@ -238,7 +238,8 @@ ClassicEditor
 					classes: true
 				}
 			]
-		}
+		},
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -95,6 +95,9 @@ const tasks = new Listr( [
 
 			task.output = `Release page: ${ releaseUrl }`;
 		},
+		options: {
+			persistentOutput: true
+		},
 		skip: cliArguments.nightly
 	}
 ] );
