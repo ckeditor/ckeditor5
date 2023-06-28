@@ -11,7 +11,6 @@ Changelog
 
 ![image](https://github.com/ckeditor/ckeditor5/assets/9881379/c3569142-052a-4708-976d-0593f9997e3c)
 
-
 #### Adjacent lists support
 
 CKEditor 5 introduces an opt-in feature specifically for list handling during Word import or pasting. This feature influences how adjacent lists of the same type (either ordered or unordered) are processed. By default, such lists merge together, but you can prevent this.
