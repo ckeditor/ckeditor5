@@ -16,15 +16,15 @@ Changelog
 
 CKEditor 5 introduces an opt-in feature specifically for list handling during Word import or pasting. This feature influences how adjacent lists of the same type (either ordered or unordered) are processed. By default, such lists merge together, but you can prevent this.
 
-To enable this feature, the `AdjacentListsSupport` plugin needs to be added to your CKEditor 5 configuration. This allows you to maintain distinct lists, even when they are of the same type and positioned adjacently. However, please note that this feature only works with the `DocumentLists` implementation. We are considering making it the default setting in future updates, based on user feedback and experience we collect. Let us know your opinion on the https://github.com/ckeditor/ckeditor5/issues/14478 issue.
+To enable this feature, the `AdjacentListsSupport` plugin [needs to be added to your CKEditor 5 configuration](https://ckeditor.com/docs/ckeditor5/latest/features/lists/document-lists.html#list-merging). This allows you to maintain distinct lists, even when they are of the same type and positioned adjacently. However, please note that this feature only works with the `DocumentLists` implementation. We are considering making it the default setting in future updates, based on user feedback and experience we collect. Let us know your opinion on the https://github.com/ckeditor/ckeditor5/issues/14478 issue.
 
 #### Comments archive integration guide
 
-We released [a new guide](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-archive.html?docId=e63a3869b7ae93549620cc9e3a7f265f9) showcasing how you can customize comments archive UI to display the archive panel in a custom container, to better fit your application layout.
+We released [a new guide](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-archive.html) showcasing how you can customize comments archive UI to display the archive panel in a custom container, to better fit your application layout.
 
 #### Fixing API scrolling integration with custom viewport offsets
 
-This is a significant UX improvement that enhances the scrolling behavior of Document Outline and Table of Contents in the organization's documentation. Clicking on a heading in the Document Outline and Table of Contents now displays a collapsed caret, which was previously located under the header section. Additionally, the fix improves other cases, such as proper scrolling when pressing enter while the editor is focused and scrolled away.
+We introduced a significant UX improvement that enhances the scrolling behavior of the Document Outline and Table of Contents features in the organization's documentation. Now, clicking on a heading in the Document Outline and Table of Contents displays a collapsed caret, which was previously located under the header section. Additionally, the fix improves other cases, such as proper scrolling when pressing enter while the editor is focused and scrolled away.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
