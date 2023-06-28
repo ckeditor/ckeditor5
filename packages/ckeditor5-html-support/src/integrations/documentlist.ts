@@ -146,7 +146,10 @@ export default class DocumentListElementSupport extends Plugin {
 					const attribute = getAttributeFromListType( previousNodeInList.getAttribute( 'listType' ) );
 					const value = previousNodeInList.getAttribute( attribute );
 
-					if ( !isEqual( node.getAttribute( attribute ), value ) ) {
+					if (
+						!isEqual( node.getAttribute( attribute ), value ) &&
+						writer.model.schema.checkAttribute( node, attribute )
+					) {
 						writer.setAttribute( attribute, value, node );
 						evt.return = true;
 					}
@@ -155,7 +158,10 @@ export default class DocumentListElementSupport extends Plugin {
 				if ( previousNodeInList.getAttribute( 'listItemId' ) == node.getAttribute( 'listItemId' ) ) {
 					const value = previousNodeInList.getAttribute( 'htmlLiAttributes' );
 
-					if ( !isEqual( node.getAttribute( 'htmlLiAttributes' ), value ) ) {
+					if (
+						!isEqual( node.getAttribute( 'htmlLiAttributes' ), value ) &&
+						writer.model.schema.checkAttribute( node, 'htmlLiAttributes' )
+					) {
 						writer.setAttribute( 'htmlLiAttributes', value, node );
 						evt.return = true;
 					}
@@ -198,6 +204,10 @@ export default class DocumentListElementSupport extends Plugin {
 				for ( const node of changedBlocks ) {
 					const attribute = getAttributeFromListType( node.getAttribute( 'listType' ) );
 
+					if ( !editor.model.schema.checkAttribute( node, attribute ) ) {
+						continue;
+					}
+
 					// Just reset the attribute.
 					// If there is a previous indented list that this node should be merged into,
 					// the postfixer will unify all the attributes of both sub-lists.
@@ -236,7 +246,9 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 				continue;
 			}
 
-			conversionApi.writer.setAttribute( attributeName, viewAttributes || {}, item );
+			if ( conversionApi.writer.model.schema.checkAttribute( item, attributeName ) ) {
+				conversionApi.writer.setAttribute( attributeName, viewAttributes || {}, item );
+			}
 		}
 	};
 }

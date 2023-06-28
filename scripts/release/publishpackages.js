@@ -80,7 +80,7 @@ const tasks = new Listr( [
 		title: 'Pushing changes.',
 		task: () => {
 			return releaseTools.push( {
-				releaseBranch: 'release',
+				releaseBranch: cliArguments.branch,
 				version: latestVersion
 			} );
 		},
@@ -96,6 +96,9 @@ const tasks = new Listr( [
 			} );
 
 			task.output = `Release page: ${ releaseUrl }`;
+		},
+		options: {
+			persistentOutput: true
 		},
 		skip: cliArguments.nightly
 	}

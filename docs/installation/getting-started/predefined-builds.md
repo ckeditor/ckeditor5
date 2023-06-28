@@ -1264,6 +1264,16 @@ The table below presents the list of all plugins included in various builds. <!-
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">✅</td>
 			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">ShowBlocks</a> +</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
 			<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/slash-commands.html">SlashCommand</a></td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>

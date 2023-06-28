@@ -856,6 +856,163 @@ describe( 'DocumentListElementSupport', () => {
 		} );
 	} );
 
+	describe( '#14434', () => {
+		it( 'doesnt crash the editor when adding new element to the nested list', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>1.1</li>' +
+					'<li>2.1</li>' +
+				'</ul>'
+			);
+
+			model.change( writer => {
+				writer.setSelection( model.document.getRoot().getChild( 1 ), 'end' );
+			} );
+
+			editor.commands.execute( 'indentList' );
+			editor.commands.execute( 'enter' );
+
+			expect( editor.getData() ).to.equal(
+				'<ul>' +
+					'<li>1.1' +
+						'<ul>' +
+							'<li>2.1</li>' +
+							'<li>&nbsp;</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'doesnt add empty html*Attributes to nested list when its not allowed in schema', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>1.1</li>' +
+					'<li>2.1</li>' +
+				'</ul>'
+			);
+
+			model.change( writer => {
+				writer.setSelection( model.document.getRoot().getChild( 1 ), 'end' );
+			} );
+
+			editor.commands.execute( 'indentList' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
+					'1.1' +
+					'</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">' +
+					'2.1' +
+					'</paragraph>',
+				attributes: {}
+			} );
+		} );
+
+		it( 'doesnt crash the editor when element inside a list has disallowed attribute', async () => {
+			// Create editor with custom plugin that disallows `ul` and `li` attributes on H2 elements
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [
+						Paragraph,
+						GeneralHtmlSupport,
+						DocumentListEditing,
+						function disallowUlAndLiElementsOnH2Elements( editor ) {
+							editor.model.schema.addAttributeCheck( ( context, attributeName ) => {
+								if ( attributeName === 'htmlUlAttributes' && context.endsWith( 'htmlH2' ) ) {
+									return false;
+								}
+
+								if ( attributeName === 'htmlLiAttributes' && context.endsWith( 'htmlH2' ) ) {
+									return false;
+								}
+							} );
+						}
+					]
+				} );
+
+			const dataFilter = editor.plugins.get( 'DataFilter' );
+
+			// Allow everything
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			// Set data with H2 that doesn't allow `li` or `ul` attributes
+			editor.setData(
+				'<ul data-foo="data">' +
+					'<li>a</li>' +
+					'<li data-foo="bar">' +
+						'<p>Paragraph</p>' +
+						'<h2>Heading</h2>' +
+					'</li>' +
+					'<li>c</li>' +
+					'<li>d</li>' +
+				'</ul>'
+			);
+
+			expect( getModelDataWithAttributes( editor.model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlLiAttributes="(1)" htmlUlAttributes="(2)" listIndent="0" listItemId="a00" listType="bulleted">' +
+						'a' +
+					'</paragraph>' +
+					'<paragraph htmlLiAttributes="(3)" htmlUlAttributes="(4)" listIndent="0" listItemId="a01" listType="bulleted">' +
+						'Paragraph' +
+					'</paragraph>' +
+					'<htmlH2 listIndent="0" listItemId="a01" listType="bulleted">Heading</htmlH2>' +
+					'<paragraph htmlLiAttributes="(5)" listIndent="0" listItemId="a02" listType="bulleted">c</paragraph>' +
+					'<paragraph htmlLiAttributes="(6)" listIndent="0" listItemId="a03" listType="bulleted">d</paragraph>',
+				attributes: {
+					1: {},
+					2: {
+						attributes: {
+							'data-foo': 'data'
+						}
+					},
+					3: {
+						attributes: {
+							'data-foo': 'bar'
+						}
+					},
+					4: {
+						attributes: {
+							'data-foo': 'data'
+						}
+					},
+
+					/**
+					 * Elements after H2 will lose their li and ul attributes, but this is a known
+					 * limitation and has little potential to cause problems. Lists will retain
+					 * their attributes during downcast as long as the first element in the list
+					 * has them, like the paragraph before H2 in this test.
+					 */
+
+					5: {},
+					6: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.be.equal(
+				'<ul data-foo="data">' +
+					'<li>a</li>' +
+					'<li data-foo="bar">' +
+						'<p>Paragraph</p>' +
+						'<h2>Heading</h2>' +
+					'</li>' +
+					'<li>c</li>' +
+					'<li>d</li>' +
+				'</ul>'
+			);
+
+			await editorElement.remove();
+			await editor.destroy();
+		} );
+	} );
+
 	function paragraph( text, id, indent, type, listAttributes ) {
 		const attributeName = type === 'bulleted' ?
 			'htmlUlAttributes' :
