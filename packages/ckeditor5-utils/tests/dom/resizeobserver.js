@@ -173,6 +173,14 @@ describe( 'ResizeObserver()', () => {
 		} );
 	} );
 
+	describe( 'element', () => {
+		it( 'should return observed element', () => {
+			const observer = new ResizeObserver( elementA, () => {} );
+
+			expect( observer.element ).to.equal( elementA );
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should make the observer stop responding to resize of an element', () => {
 			const callbackA = sinon.spy();

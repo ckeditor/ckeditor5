@@ -19,8 +19,8 @@ export default class TodoListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TodoListUI' {
-		return 'TodoListUI';
+	public static get pluginName() {
+		return 'TodoListUI' as const;
 	}
 
 	/**

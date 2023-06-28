@@ -30,7 +30,7 @@ export default class HorizontalLine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HorizontalLine' {
-		return 'HorizontalLine';
+	public static get pluginName() {
+		return 'HorizontalLine' as const;
 	}
 }

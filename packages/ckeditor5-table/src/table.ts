@@ -44,7 +44,7 @@ export default class Table extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Table' {
-		return 'Table';
+	public static get pluginName() {
+		return 'Table' as const;
 	}
 }

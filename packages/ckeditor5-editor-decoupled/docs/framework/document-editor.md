@@ -7,7 +7,7 @@ order: 30
 
 The {@link examples/builds/document-editor document editor example} showcases the {@link installation/getting-started/predefined-builds#document-editor document editor build} designed for document editing with a customized UI representing the layout of a sheet of paper. It was created on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} class and makes the best of what it offers: the freedom to choose the location of the crucial UI elements in the application.
 
-In this tutorial you will learn how to create your own document editor with a customized user interface, step–by–step.
+In this tutorial, you will learn how to create your own document editor with a customized user interface, step–by–step.
 
 {@snippet examples/document-editor}
 
@@ -50,7 +50,7 @@ DecoupledEditor
 You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:ui/editorui/editorui~EditorUI#event:ready `EditorUI#ready`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
 
 <info-box>
-	Document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.
+	Document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/easy-image Easy Image documentation} to learn more.
 </info-box>
 
 ## The user interface

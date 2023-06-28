@@ -6,6 +6,7 @@
 /* global document, window, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
 
 import EditorUI from '../../../src/editorui/editorui';
 import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
@@ -760,6 +761,96 @@ describe( 'BlockToolbar', () => {
 			blockToolbar.destroy();
 
 			sinon.assert.calledOnce( destroySpy );
+		} );
+	} );
+
+	describe( 'multi-root integration', () => {
+		it( 'should not throw if there are not roots in the editor', () => {
+			return MultiRootEditor.create( {}, {
+				plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
+				blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
+			} ).then( newEditor => {
+				return newEditor.destroy();
+			} );
+		} );
+
+		it( 'should set a proper toolbar max-width based on selected editable', async () => {
+			const elFoo = document.createElement( 'div' );
+			elFoo.innerHTML = '<p>Foo</p>';
+			document.body.appendChild( elFoo );
+
+			const elBar = document.createElement( 'div' );
+			elBar.innerHTML = '<p>Bar</p>';
+			document.body.appendChild( elBar );
+
+			const multiRootEditor = await MultiRootEditor.create( { foo: elFoo, bar: elBar }, {
+				plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
+				blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
+			} );
+
+			blockToolbar = multiRootEditor.plugins.get( BlockToolbar );
+			multiRootEditor.ui.focusTracker.isFocused = true;
+
+			const viewFoo = multiRootEditor.ui.getEditableElement( 'foo' );
+			const viewBar = multiRootEditor.ui.getEditableElement( 'bar' );
+
+			testUtils.sinon.stub( viewFoo, 'getBoundingClientRect' ).returns( {
+				left: 100,
+				width: 200
+			} );
+
+			testUtils.sinon.stub( viewBar, 'getBoundingClientRect' ).returns( {
+				left: 100,
+				width: 300
+			} );
+
+			testUtils.sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+				left: 60,
+				width: 40
+			} );
+
+			// Starting, default value.
+			expect( blockToolbar.toolbarView.maxWidth ).to.equal( 'auto' );
+
+			multiRootEditor.model.change( writer => {
+				writer.setSelection( multiRootEditor.model.document.getRoot( 'foo' ).getChild( 0 ), 0 );
+			} );
+
+			// Fire the callback after the selection was moved to `foo` root.
+			resizeCallback( [ {
+				target: viewFoo
+			} ] );
+
+			// Expected value given the size of `foo` editable.
+			expect( blockToolbar.toolbarView.maxWidth ).to.equal( '240px' );
+
+			// Resize `bar` editable.
+			// It is not observed at the moment as the selection is in `foo` root.
+			// This callback should not affect the toolbar size.
+			resizeCallback( [ {
+				target: viewBar
+			} ] );
+
+			// Expected value same as previously.
+			expect( blockToolbar.toolbarView.maxWidth ).to.equal( '240px' );
+
+			// Move selection to `bar` root.
+			multiRootEditor.model.change( writer => {
+				writer.setSelection( multiRootEditor.model.document.getRoot( 'bar' ).getChild( 0 ), 0 );
+			} );
+
+			// Resize `bar` editable.
+			resizeCallback( [ {
+				target: viewBar
+			} ] );
+
+			// Expected value given the size of `bar` editable.
+			expect( blockToolbar.toolbarView.maxWidth ).to.equal( '340px' );
+
+			elFoo.remove();
+			elBar.remove();
+
+			return multiRootEditor.destroy();
 		} );
 	} );
 } );

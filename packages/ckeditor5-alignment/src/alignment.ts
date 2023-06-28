@@ -32,7 +32,7 @@ export default class Alignment extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Alignment' {
-		return 'Alignment';
+	public static get pluginName() {
+		return 'Alignment' as const;
 	}
 }

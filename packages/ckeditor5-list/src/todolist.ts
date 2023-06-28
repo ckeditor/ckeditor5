@@ -29,7 +29,7 @@ export default class TodoList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TodoList' {
-		return 'TodoList';
+	public static get pluginName() {
+		return 'TodoList' as const;
 	}
 }

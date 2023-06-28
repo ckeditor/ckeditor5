@@ -34,8 +34,8 @@ export default class ImageElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageElementSupport' {
-		return 'ImageElementSupport';
+	public static get pluginName() {
+		return 'ImageElementSupport' as const;
 	}
 
 	/**

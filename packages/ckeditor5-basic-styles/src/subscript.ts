@@ -28,7 +28,7 @@ export default class Subscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Subscript' {
-		return 'Subscript';
+	public static get pluginName() {
+		return 'Subscript' as const;
 	}
 }

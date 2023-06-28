@@ -68,8 +68,8 @@ export default class LinkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'LinkEditing' {
-		return 'LinkEditing';
+	public static get pluginName() {
+		return 'LinkEditing' as const;
 	}
 
 	/**

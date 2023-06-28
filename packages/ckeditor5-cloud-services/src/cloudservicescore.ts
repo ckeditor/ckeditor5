@@ -19,8 +19,8 @@ export default class CloudServicesCore extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CloudServicesCore' {
-		return 'CloudServicesCore';
+	public static get pluginName() {
+		return 'CloudServicesCore' as const;
 	}
 
 	/**

@@ -25,8 +25,8 @@ export default class CloudServicesUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CloudServicesUploadAdapter' {
-		return 'CloudServicesUploadAdapter';
+	public static get pluginName() {
+		return 'CloudServicesUploadAdapter' as const;
 	}
 
 	/**

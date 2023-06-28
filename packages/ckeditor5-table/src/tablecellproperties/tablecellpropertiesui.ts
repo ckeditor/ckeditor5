@@ -96,8 +96,8 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCellPropertiesUI' {
-		return 'TableCellPropertiesUI';
+	public static get pluginName() {
+		return 'TableCellPropertiesUI' as const;
 	}
 
 	/**

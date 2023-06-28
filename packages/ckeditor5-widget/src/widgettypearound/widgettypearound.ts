@@ -99,8 +99,8 @@ export default class WidgetTypeAround extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'WidgetTypeAround' {
-		return 'WidgetTypeAround';
+	public static get pluginName() {
+		return 'WidgetTypeAround' as const;
 	}
 
 	/**

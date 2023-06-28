@@ -35,8 +35,8 @@ export default class Base64UploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Base64UploadAdapter' {
-		return 'Base64UploadAdapter';
+	public static get pluginName() {
+		return 'Base64UploadAdapter' as const;
 	}
 
 	/**

@@ -43,8 +43,8 @@ export default class CKBoxEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKBoxEditing' {
-		return 'CKBoxEditing';
+	public static get pluginName() {
+		return 'CKBoxEditing' as const;
 	}
 
 	/**

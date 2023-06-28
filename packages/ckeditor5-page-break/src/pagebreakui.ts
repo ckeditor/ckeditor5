@@ -19,8 +19,8 @@ export default class PageBreakUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PageBreakUI' {
-		return 'PageBreakUI';
+	public static get pluginName() {
+		return 'PageBreakUI' as const;
 	}
 
 	/**
