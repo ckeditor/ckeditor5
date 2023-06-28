@@ -5,7 +5,7 @@ order: 88
 modified_at: 2022-12-14
 ---
 
-## Update to CKEditor 5 v36.0.0
+# Update to CKEditor 5 v36.0.0
 
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.

@@ -58,4 +58,4 @@ msgstr "Colori del docmento"
 
 msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
 msgid "Accept"
-msgstr ""
+msgstr "Accetta"
