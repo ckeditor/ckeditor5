@@ -15,7 +15,7 @@
     "@ckeditor/ckeditor5-core": "^38.0.1",
     "@ckeditor/ckeditor5-engine": "^38.0.1",
     "@ckeditor/ckeditor5-utils": "^38.0.1",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.15"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autoformat": "^38.0.1",

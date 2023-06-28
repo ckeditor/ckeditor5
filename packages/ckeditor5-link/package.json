@@ -14,7 +14,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "^38.0.1",
     "ckeditor5": "^38.0.1",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.15"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^38.0.1",
