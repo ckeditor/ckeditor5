@@ -24,14 +24,17 @@ module.exports = function parseArguments( cliArguments ) {
 		],
 
 		string: [
-			'packages',
-			'npm-tag'
+			'branch',
+			'from',
+			'npm-tag',
+			'packages'
 		],
 
 		default: {
 			nightly: false,
 			concurrency: require( 'os' ).cpus().length / 2,
 			packages: null,
+			branch: 'release',
 			'npm-tag': 'staging'
 		}
 	};
@@ -54,6 +57,10 @@ module.exports = function parseArguments( cliArguments ) {
  * @property {Boolean} nightly
  *
  * @property {Number} concurrency
+ *
+ * @property {String} [from]
+ *
+ * @property {String} [branch='release']
  *
  * @property {String} [npmTag='staging']
  *

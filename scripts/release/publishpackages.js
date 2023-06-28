@@ -78,7 +78,7 @@ const tasks = new Listr( [
 		title: 'Pushing changes.',
 		task: () => {
 			return releaseTools.push( {
-				releaseBranch: 'release',
+				releaseBranch: cliArguments.branch,
 				version: latestVersion
 			} );
 		},
