@@ -132,6 +132,14 @@ export default class ImageResizeHandles extends Plugin {
 						writer.addClass( RESIZED_IMAGE_CLASS, widgetView );
 					} );
 				}
+
+				const img = imageUtils.findViewImgElement( imageView )!;
+
+				if ( img.getStyle( 'height' ) ) {
+					editingView.change( writer => {
+						writer.removeStyle( 'height', img );
+					} );
+				}
 			} );
 
 			resizer.on( 'begin', () => {
