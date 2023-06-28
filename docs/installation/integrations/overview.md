@@ -23,7 +23,7 @@ We plan to provide more integrations with time. We would like to [hear your idea
 
 ## How do I use CKEditor 5 if my framework does not have an official integration?
 
-CKEditor 5 should be compatible with your framework, and initializing it usually requires a single method call. A tighter integration of CKEditor 5 with your framework may require using an existing or writing a new adapter (integration layer) to communicate your framework with CKEditor 5.
+CKEditor 5 should be compatible with your framework and initializing it usually requires a single method call. A tighter integration of CKEditor 5 with your framework may require using an existing or writing a new adapter (integration layer) to communicate your framework with CKEditor 5.
 
 When checking how to integrate CKEditor 5 with your framework, you can follow these steps:
 

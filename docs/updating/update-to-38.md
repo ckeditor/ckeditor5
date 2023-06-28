@@ -19,7 +19,7 @@ For the entire list of changes introduced in version 38.0.0, see the [release no
 
 Listed below is the minor breaking change that requires your attention when upgrading to CKEditor 5 v38.1.0.
 
-### Changes in the General HTML support feature
+### Changes in the General HTML Support feature
 
 The CKEditor 5 version 38.1.0 introduces a minor breaking change. Until this release, the {@link features/general-html-support General HTML Support} (GHS) plugin kept all HTML-specific data in the `htmlAttributes` model attribute, regardless of the element type. However, this approach made it difficult to ensure that attributes did not leak to elements of other types. For example, if you applied some styles to a list, you probably expect new elements in that list to have the same styles, but you do not want them present in the next paragraph or heading.
 
