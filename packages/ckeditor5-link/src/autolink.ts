@@ -79,8 +79,8 @@ export default class AutoLink extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'AutoLink' {
-		return 'AutoLink';
+	public static get pluginName() {
+		return 'AutoLink' as const;
 	}
 
 	/**

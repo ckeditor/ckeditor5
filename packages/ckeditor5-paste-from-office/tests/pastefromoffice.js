@@ -16,8 +16,10 @@ import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfr
 import CodeBlockUI from '@ckeditor/ckeditor5-code-block/src/codeblockui';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { priorities } from '@ckeditor/ckeditor5-utils';
+import { DomConverter } from '@ckeditor/ckeditor5-engine';
 
-/* global document */
+/* global document, DOMParser */
 
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
@@ -52,6 +54,37 @@ describe( 'PasteFromOffice', () => {
 
 	it( 'should load Clipboard plugin', () => {
 		expect( editor.plugins.get( ClipboardPipeline ) ).to.be.instanceOf( ClipboardPipeline );
+	} );
+
+	it( 'should work on already parsed data if another plugin hooked into #inputTransformation with a higher priority', () => {
+		const clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+		const viewDocument = editor.editing.view.document;
+
+		// Simulate a plugin that hooks into the pipeline earlier and parses the data.
+		clipboardPipeline.on( 'inputTransformation', ( evt, data ) => {
+			const domParser = new DOMParser();
+			const htmlDocument = domParser.parseFromString( '<p>Existing data</p>', 'text/html' );
+			const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+			const fragment = htmlDocument.createDocumentFragment();
+
+			data._parsedData = {
+				body: domConverter.domToView( fragment, { skipComments: true } ),
+				bodyString: '<body>Already parsed data</body>',
+				styles: [],
+				stylesString: ''
+			};
+		}, { priority: priorities.get( 'high' ) + 1 } );
+
+		const eventData = {
+			content: htmlDataProcessor.toView( '<meta name=Generator content="Microsoft Word 15">' ),
+			dataTransfer: createDataTransfer( { 'text/html': '<meta name=Generator content="Microsoft Word 15">' } )
+		};
+
+		// Trigger some event that would normally trigger the paste from office plugin.
+		clipboard.fire( 'inputTransformation', eventData );
+
+		// Verify if the PFO plugin works on an already parsed data.
+		expect( eventData._parsedData.bodyString ).to.equal( '<body>Already parsed data</body>' );
 	} );
 
 	describe( 'isTransformedWithPasteFromOffice - flag', () => {

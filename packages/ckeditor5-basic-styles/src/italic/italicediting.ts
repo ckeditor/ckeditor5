@@ -22,8 +22,8 @@ export default class ItalicEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ItalicEditing' {
-		return 'ItalicEditing';
+	public static get pluginName() {
+		return 'ItalicEditing' as const;
 	}
 
 	/**

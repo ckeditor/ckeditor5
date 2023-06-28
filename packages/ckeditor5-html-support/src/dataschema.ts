@@ -54,8 +54,8 @@ export default class DataSchema extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DataSchema' {
-		return 'DataSchema';
+	public static get pluginName() {
+		return 'DataSchema' as const;
 	}
 
 	/**

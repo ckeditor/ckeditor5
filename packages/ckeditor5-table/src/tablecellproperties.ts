@@ -26,8 +26,8 @@ export default class TableCellProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCellProperties' {
-		return 'TableCellProperties';
+	public static get pluginName() {
+		return 'TableCellProperties' as const;
 	}
 
 	/**

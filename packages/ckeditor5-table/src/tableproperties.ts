@@ -26,8 +26,8 @@ export default class TableProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableProperties' {
-		return 'TableProperties';
+	public static get pluginName() {
+		return 'TableProperties' as const;
 	}
 
 	/**

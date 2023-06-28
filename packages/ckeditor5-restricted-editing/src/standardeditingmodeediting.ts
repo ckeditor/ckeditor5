@@ -22,8 +22,8 @@ export default class StandardEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StandardEditingModeEditing' {
-		return 'StandardEditingModeEditing';
+	public static get pluginName() {
+		return 'StandardEditingModeEditing' as const;
 	}
 
 	/**

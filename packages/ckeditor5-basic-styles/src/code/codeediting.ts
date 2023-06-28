@@ -25,8 +25,8 @@ export default class CodeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeEditing' {
-		return 'CodeEditing';
+	public static get pluginName() {
+		return 'CodeEditing' as const;
 	}
 
 	/**

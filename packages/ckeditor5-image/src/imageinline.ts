@@ -37,7 +37,7 @@ export default class ImageInline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageInline' {
-		return 'ImageInline';
+	public static get pluginName() {
+		return 'ImageInline' as const;
 	}
 }

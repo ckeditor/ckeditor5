@@ -20,8 +20,8 @@ export default class CKBoxUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKBoxUI' {
-		return 'CKBoxUI';
+	public static get pluginName() {
+		return 'CKBoxUI' as const;
 	}
 
 	/**

@@ -8,5 +8,7 @@
  */
 
 export { default as PasteFromOffice } from './pastefromoffice';
+export { Normalizer, type NormalizerData } from './normalizer';
+export { parseHtml } from './filters/parse';
 
 import './augmentation';
