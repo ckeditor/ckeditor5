@@ -21,7 +21,9 @@ const PATTERNS_TO_SKIP = [
 	'@ckeditor/ckeditor5-react',
 	'@ckeditor/ckeditor5-vue',
 	'@ckeditor/ckeditor5-vue2',
-	'@ckeditor/ckeditor5-inspector'
+	'@ckeditor/ckeditor5-inspector',
+	// Packages not belonging to the CKEditor 5 repository.
+	'@ckeditor/ckeditor5-mermaid'
 ];
 
 /**
