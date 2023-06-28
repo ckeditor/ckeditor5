@@ -20,6 +20,7 @@ export default class Source extends Plugin {
 				button.set( {
 					label: 'Source',
 					withText: false,
+					tooltip: true,
 					icon
 				} );
 

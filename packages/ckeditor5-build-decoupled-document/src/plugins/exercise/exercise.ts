@@ -20,6 +20,7 @@ export default class Exercise extends Plugin {
 				button.set( {
 					label: 'Exercise',
 					withText: false,
+					tooltip: true,
 					icon
 				} );
 

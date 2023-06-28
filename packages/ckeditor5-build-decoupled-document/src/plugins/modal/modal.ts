@@ -20,6 +20,7 @@ export default class Modal extends Plugin {
 				button.set( {
 					label: 'Modal',
 					withText: false,
+					tooltip: true,
 					icon
 				} );
 

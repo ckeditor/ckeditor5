@@ -21,6 +21,7 @@ export default class FullScreen extends Plugin {
 				button.set( {
 					label: 'FullScreen',
 					withText: false,
+					tooltip: true,
 					icon: maximizeIcon
 				} );
 

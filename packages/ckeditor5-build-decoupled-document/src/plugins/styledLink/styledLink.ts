@@ -24,6 +24,7 @@ export default class StyledLink extends Plugin {
 				button.set( {
 					label: 'Styled Link',
 					withText: false,
+					tooltip: true,
 					icon
 				} );
 
