@@ -17,6 +17,7 @@ import {
 	type View
 } from 'ckeditor5/src/ui';
 import type { Batch } from 'ckeditor5/src/engine';
+import type { UndoEditing } from 'ckeditor5/src/undo';
 
 import TableCellPropertiesView from './ui/tablecellpropertiesview';
 import {
@@ -191,14 +192,20 @@ export default class TableCellPropertiesUI extends Plugin {
 		// Render the view so its #element is available for the clickOutsideHandler.
 		view.render();
 
+		const undoEditing: UndoEditing = this.editor.plugins.get( 'UndoEditing' );
+
 		this.listenTo( view, 'submit', () => {
+			if ( this._undoStepBatch!.operations.length ) {
+				undoEditing.commitBatch( this._undoStepBatch! );
+			}
+
 			this._hideView();
 		} );
 
 		this.listenTo( view, 'cancel', () => {
 			// https://github.com/ckeditor/ckeditor5/issues/6180
 			if ( this._undoStepBatch!.operations.length ) {
-				editor.execute( 'undo', this._undoStepBatch );
+				undoEditing.rollbackBatch( this._undoStepBatch! );
 			}
 
 			this._hideView();
@@ -344,8 +351,10 @@ export default class TableCellPropertiesUI extends Plugin {
 			position: getBalloonCellPositionData( editor )
 		} );
 
+		const undoEditing: UndoEditing = this.editor.plugins.get( 'UndoEditing' );
+
 		// Create a new batch. Clicking "Cancel" will undo this batch.
-		this._undoStepBatch = editor.model.createBatch();
+		this._undoStepBatch = undoEditing.createTransactionBatch();
 
 		// Basic a11y.
 		this.view.focus();

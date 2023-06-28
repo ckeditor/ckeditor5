@@ -173,10 +173,11 @@ export default abstract class BaseCommand extends Command {
 	 * Undoes a batch by reversing that batch, transforming reversed batch and finally applying it.
 	 * This is a helper method for {@link #execute}.
 	 *
+	 * @internal
 	 * @param batchToUndo The batch to be undone.
 	 * @param undoingBatch The batch that will contain undoing changes.
 	 */
-	protected _undo( batchToUndo: Batch, undoingBatch: Batch ): void {
+	public _undo( batchToUndo: Batch, undoingBatch: Batch ): void {
 		const model = this.editor.model;
 		const document = model.document;
 

@@ -7,14 +7,15 @@
  * @module undo/undoediting
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import UndoCommand, { type UndoCommandRevertEvent } from './undocommand';
 import RedoCommand from './redocommand';
 
 import type {
 	Batch,
-	ModelApplyOperationEvent
+	ModelApplyOperationEvent,
+	DocumentChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -109,5 +110,33 @@ export default class UndoEditing extends Plugin {
 		editor.keystrokes.set( 'CTRL+Z', 'undo' );
 		editor.keystrokes.set( 'CTRL+Y', 'redo' );
 		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
+	}
+
+	public createTransactionBatch(): Batch {
+		return this.editor.model.createBatch( { isUndoable: false, isLocal: false } );
+	}
+
+	public commitBatch( batch: Batch ): void {
+		const model = this.editor.model;
+
+		model.enqueueChange( batch, () => {
+			( batch as any ).isUndoable = true;
+			( batch as any ).isLocal = true;
+
+			this._undoCommand.addBatch( batch );
+			this._redoCommand.clearStack();
+
+			model.document.fire<DocumentChangeEvent>( 'change:data', batch );
+		} );
+	}
+
+	public rollbackBatch( batch: Batch ): void {
+		const model = this.editor.model;
+
+		model.enqueueChange( batch, () => {
+			this._undoCommand._undo( batch, batch );
+
+			model.document.fire<DocumentChangeEvent>( 'change:data', batch );
+		} );
 	}
 }
