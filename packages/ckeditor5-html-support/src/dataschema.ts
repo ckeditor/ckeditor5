@@ -7,7 +7,7 @@
  * @module html-support/dataschema
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { toArray } from 'ckeditor5/src/utils';
 import defaultConfig from './schemadefinitions';
 import { mergeWith } from 'lodash-es';
@@ -54,8 +54,8 @@ export default class DataSchema extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DataSchema' {
-		return 'DataSchema';
+	public static get pluginName() {
+		return 'DataSchema' as const;
 	}
 
 	/**
@@ -291,7 +291,7 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	/**
 	 * The name of the model attribute that generates the same view element. GHS inline attribute
 	 * will be removed from the model tree as soon as the coupled attribute is removed. See
-	 * {@link module:html-support/datafilter~DataFilter#_registerModelPostFixer GHS post-fixer} for more details.
+	 * {@link module:html-support/datafilter~DataFilter#_registerCoupledAttributesPostFixer GHS post-fixer} for more details.
 	 */
 	coupledAttribute?: string;
 

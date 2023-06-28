@@ -86,8 +86,8 @@ export default class DragDropTarget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DragDropTarget' {
-		return 'DragDropTarget';
+	public static get pluginName() {
+		return 'DragDropTarget' as const;
 	}
 
 	/**

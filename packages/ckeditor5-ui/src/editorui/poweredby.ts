@@ -7,7 +7,7 @@
  * @module ui/editorui/poweredby
  */
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 import {
 	Rect,
 	DomEmitterMixin,
@@ -22,7 +22,6 @@ import View from '../view';
 import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
-import type { UiConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
@@ -110,9 +109,10 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 */
 	private _handleEditorReady(): void {
 		const editor = this.editor;
+		const forceVisible = !!editor.config.get( 'ui.poweredBy.forceVisible' );
 
 		/* istanbul ignore next -- @preserve */
-		if ( verifyLicense( editor.config.get( 'licenseKey' ) ) === 'VALID' ) {
+		if ( !forceVisible && verifyLicense( editor.config.get( 'licenseKey' ) ) === 'VALID' ) {
 			return;
 		}
 
@@ -148,7 +148,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 	 * Creates an instance of the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panel}
 	 * with the "powered by" view inside ready for positioning.
 	 */
-	private _createBalloonView() {
+	private _createBalloonView(): void {
 		const editor = this.editor;
 		const balloon = this._balloonView = new BalloonPanelView();
 		const poweredByConfig = getNormalizedConfig( editor );
@@ -168,7 +168,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 	/**
 	 * Attempts to display the balloon with the "powered by" view.
 	 */
-	private _showBalloon() {
+	private _showBalloon(): void {
 		if ( !this._lastFocusedEditableElement ) {
 			return;
 		}
@@ -187,7 +187,7 @@ export default class PoweredBy extends DomEmitterMixin() {
 	/**
 	 * Hides the "powered by" balloon if already visible.
 	 */
-	private _hideBalloon() {
+	private _hideBalloon(): void {
 		if ( this._balloonView ) {
 			this._balloonView!.unpin();
 		}

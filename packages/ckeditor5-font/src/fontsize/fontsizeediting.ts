@@ -42,8 +42,8 @@ export default class FontSizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontSizeEditing' {
-		return 'FontSizeEditing';
+	public static get pluginName() {
+		return 'FontSizeEditing' as const;
 	}
 
 	/**

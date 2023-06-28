@@ -25,8 +25,8 @@ export default class FontBackgroundColorEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontBackgroundColorEditing' {
-		return 'FontBackgroundColorEditing';
+	public static get pluginName() {
+		return 'FontBackgroundColorEditing' as const;
 	}
 
 	/**

@@ -236,6 +236,11 @@ ClassicEditor
 		style: {
 			definitions: [
 				{
+					name: 'Callout',
+					element: 'div',
+					classes: [ 'callout' ]
+				},
+				{
 					name: 'Link',
 					element: 'a',
 					classes: [ 'styled-link' ]

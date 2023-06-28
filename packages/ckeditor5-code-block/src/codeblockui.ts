@@ -28,8 +28,8 @@ export default class CodeBlockUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlockUI' {
-		return 'CodeBlockUI';
+	public static get pluginName() {
+		return 'CodeBlockUI' as const;
 	}
 
 	/**

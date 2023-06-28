@@ -22,8 +22,8 @@ export default class UnderlineUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'UnderlineUI' {
-		return 'UnderlineUI';
+	public static get pluginName() {
+		return 'UnderlineUI' as const;
 	}
 
 	/**

@@ -630,8 +630,8 @@ export type PluginEntry<TContext> = [ PluginConstructor<TContext>, PluginInterfa
  *
  * ```ts
  * class MyPlugin extends Plugin {
- * 	public static pluginName(): 'MyPlugin' {
- * 		return 'MyPlugin';
+ * 	public static pluginName() {
+ * 		return 'MyPlugin' as const;
  * 	}
  * }
  *

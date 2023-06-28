@@ -275,7 +275,7 @@ describe( 'ColorTableView', () => {
 			expect( colorPicker._hexColor, '`_hexColor` property value is incorrect' ).to.equal( '#660000' );
 		} );
 
-		it( 'should propagate the selected color to color picker if it changes', () => {
+		it( 'should propagate the selected color to color picker component if it changes', () => {
 			colorTableView.selectedColor = '#660000';
 			colorTableView._appendColorPicker();
 			colorTableView.selectedColor = '#660055';
@@ -284,6 +284,16 @@ describe( 'ColorTableView', () => {
 
 			expect( colorPicker.color, '`color` property value is incorrect' ).to.equal( 'hsl( 310, 100%, 20% )' );
 			expect( colorPicker._hexColor, '`_hexColor` property value is incorrect' ).to.equal( '#660055' );
+		} );
+
+		it( 'should propagate the selected color to color picker HTML if it changes', () => {
+			colorTableView.selectedColor = '#660000';
+			colorTableView._appendColorPicker();
+			colorTableView.selectedColor = '#660055';
+
+			const colorPicker = colorTableView.colorPickerPageView.colorPickerView;
+
+			expect( colorPicker.picker.getAttribute( 'color' ) ).to.equal( '#660055' );
 		} );
 
 		it( 'should navigate forwards using the Tab key', () => {
@@ -507,6 +517,10 @@ describe( 'ColorTableView', () => {
 		describe( 'save button', () => {
 			it( 'should have a proper class name', () => {
 				expect( saveButton.element.classList.contains( 'ck-button-save' ) ).to.be.true;
+			} );
+
+			it( 'should have a proper type', () => {
+				expect( saveButton.type ).to.be.equal( 'button' );
 			} );
 
 			it( 'should have proper settings', () => {

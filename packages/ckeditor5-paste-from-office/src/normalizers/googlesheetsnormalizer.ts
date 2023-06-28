@@ -12,6 +12,7 @@ import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine';
 import removeXmlns from '../filters/removexmlns';
 import removeGoogleSheetsTag from '../filters/removegooglesheetstag';
 import removeInvalidTableWidth from '../filters/removeinvalidtablewidth';
+import removeStyleBlock from '../filters/removestyleblock';
 import type { Normalizer, NormalizerData } from '../normalizer';
 
 const googleSheetsMatch = /<google-sheets-html-origin/i;
@@ -48,6 +49,7 @@ export default class GoogleSheetsNormalizer implements Normalizer {
 		removeGoogleSheetsTag( documentFragment, writer );
 		removeXmlns( documentFragment, writer );
 		removeInvalidTableWidth( documentFragment, writer );
+		removeStyleBlock( documentFragment, writer );
 
 		data.content = documentFragment;
 	}

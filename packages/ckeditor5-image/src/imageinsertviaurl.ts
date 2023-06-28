@@ -25,8 +25,8 @@ export default class ImageInsertViaUrl extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageInsertViaUrl' {
-		return 'ImageInsertViaUrl';
+	public static get pluginName() {
+		return 'ImageInsertViaUrl' as const;
 	}
 
 	/**

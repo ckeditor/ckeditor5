@@ -17,6 +17,7 @@ import {
 } from '../converters';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import type { DataSchemaBlockElementDefinition } from '../dataschema';
+import { getHtmlAttributeName } from '../utils';
 
 /**
  * Provides the General HTML Support integration for elements which can behave like sectioning element (e.g. article) or
@@ -46,8 +47,8 @@ export default class DualContentModelElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DualContentModelElementSupport' {
-		return 'DualContentModelElementSupport';
+	public static get pluginName() {
+		return 'DualContentModelElementSupport' as const;
 	}
 
 	/**
@@ -92,7 +93,7 @@ export default class DualContentModelElementSupport extends Plugin {
 				},
 				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 				// this listener is called before it. If not, some elements will be transformed into a paragraph.
-				converterPriority: priorities.get( 'low' ) + 0.5
+				converterPriority: priorities.low + 0.5
 			} );
 
 			conversion.for( 'downcast' ).elementToElement( {
@@ -139,7 +140,7 @@ export default class DualContentModelElementSupport extends Plugin {
 		const dataFilter = editor.plugins.get( DataFilter );
 
 		editor.model.schema.extend( definition.model, {
-			allowAttributes: 'htmlAttributes'
+			allowAttributes: getHtmlAttributeName( definition.view! )
 		} );
 
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, dataFilter ) );

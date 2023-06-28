@@ -20,8 +20,8 @@ export default class HorizontalLineUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HorizontalLineUI' {
-		return 'HorizontalLineUI';
+	public static get pluginName() {
+		return 'HorizontalLineUI' as const;
 	}
 
 	/**

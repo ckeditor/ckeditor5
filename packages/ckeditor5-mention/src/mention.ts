@@ -42,8 +42,8 @@ export default class Mention extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Mention' {
-		return 'Mention';
+	public static get pluginName() {
+		return 'Mention' as const;
 	}
 
 	/**

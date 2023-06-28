@@ -31,8 +31,8 @@ export default class ScriptElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ScriptElementSupport' {
-		return 'ScriptElementSupport';
+	public static get pluginName() {
+		return 'ScriptElementSupport' as const;
 	}
 
 	/**
@@ -49,7 +49,7 @@ export default class ScriptElementSupport extends Plugin {
 			schema.register( 'htmlScript', definition.modelSchema );
 
 			schema.extend( 'htmlScript', {
-				allowAttributes: [ 'htmlAttributes', 'htmlContent' ],
+				allowAttributes: [ 'htmlScriptAttributes', 'htmlContent' ],
 				isContent: true
 			} );
 

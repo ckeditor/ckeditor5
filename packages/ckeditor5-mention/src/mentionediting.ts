@@ -37,8 +37,8 @@ export default class MentionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MentionEditing' {
-		return 'MentionEditing';
+	public static get pluginName() {
+		return 'MentionEditing' as const;
 	}
 
 	/**

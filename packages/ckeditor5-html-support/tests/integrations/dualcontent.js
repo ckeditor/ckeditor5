@@ -158,8 +158,8 @@ describe( 'DualContentModelElementSupport', () => {
 		editor.setData( '<div data-foo><p>foobar</p></div><div data-foo>foobar</div>' );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<htmlDiv htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>' +
-			'<htmlDivParagraph htmlAttributes="(2)">foobar</htmlDivParagraph>',
+			data: '<htmlDiv htmlDivAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>' +
+			'<htmlDivParagraph htmlDivAttributes="(2)">foobar</htmlDivParagraph>',
 			attributes: {
 				1: {
 					attributes: { 'data-foo': '' }

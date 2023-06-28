@@ -36,8 +36,8 @@ export default class ImageUploadEditing extends Plugin {
 		return [ FileRepository, Notification, ClipboardPipeline, ImageUtils ] as const;
 	}
 
-	public static get pluginName(): 'ImageUploadEditing' {
-		return 'ImageUploadEditing';
+	public static get pluginName() {
+		return 'ImageUploadEditing' as const;
 	}
 
 	/**

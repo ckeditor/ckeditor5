@@ -29,7 +29,7 @@ export default class Link extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Link' {
-		return 'Link';
+	public static get pluginName() {
+		return 'Link' as const;
 	}
 }

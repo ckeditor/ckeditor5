@@ -22,8 +22,8 @@ export default class SubscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SubscriptEditing' {
-		return 'SubscriptEditing';
+	public static get pluginName() {
+		return 'SubscriptEditing' as const;
 	}
 
 	/**

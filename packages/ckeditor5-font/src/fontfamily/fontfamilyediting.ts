@@ -26,8 +26,8 @@ export default class FontFamilyEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontFamilyEditing' {
-		return 'FontFamilyEditing';
+	public static get pluginName() {
+		return 'FontFamilyEditing' as const;
 	}
 
 	/**

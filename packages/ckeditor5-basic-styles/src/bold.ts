@@ -31,7 +31,7 @@ export default class Bold extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Bold' {
-		return 'Bold';
+	public static get pluginName() {
+		return 'Bold' as const;
 	}
 }

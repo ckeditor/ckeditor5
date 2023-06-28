@@ -45,7 +45,10 @@ import {
 	type DataSchemaInlineElementDefinition
 } from './dataschema';
 
-import type { GHSViewAttributes } from './utils';
+import {
+	getHtmlAttributeName,
+	type GHSViewAttributes
+} from './utils';
 
 import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
 
@@ -144,14 +147,15 @@ export default class DataFilter extends Plugin {
 
 		this._registerElementsAfterInit();
 		this._registerElementHandlers();
-		this._registerModelPostFixer();
+		this._registerCoupledAttributesPostFixer();
+		this._registerAssociatedHtmlAttributesPostFixer();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DataFilter' {
-		return 'DataFilter';
+	public static get pluginName() {
+		return 'DataFilter' as const;
 	}
 
 	/**
@@ -319,7 +323,7 @@ export default class DataFilter extends Plugin {
 			}, {
 				// With the highest priority listener we are able to register elements right before
 				// running data conversion.
-				priority: priorities.get( 'highest' ) + 1
+				priority: priorities.highest + 1
 			} );
 		}
 	}
@@ -343,7 +347,7 @@ export default class DataFilter extends Plugin {
 			// * Make sure no other features hook into this event before GHS because otherwise the
 			// downcast conversion (for these features) could run before GHS registered its converters
 			// (https://github.com/ckeditor/ckeditor5/issues/11356).
-			priority: priorities.get( 'highest' ) + 1
+			priority: priorities.highest + 1
 		} );
 	}
 
@@ -407,7 +411,7 @@ export default class DataFilter extends Plugin {
 	 * The `htmlA` attribute would stay in the model and would cause GHS to generate an `<a>` element.
 	 * This is incorrect from UX point of view, as the user wanted to remove the whole link (not only `href`).
 	 */
-	private _registerModelPostFixer() {
+	private _registerCoupledAttributesPostFixer() {
 		const model = this.editor.model;
 
 		model.document.registerPostFixer( writer => {
@@ -436,6 +440,63 @@ export default class DataFilter extends Plugin {
 							writer.removeAttribute( attributeKey, item );
 							changed = true;
 						}
+					}
+				}
+			}
+
+			return changed;
+		} );
+	}
+
+	/**
+	 * Removes `html*Attributes` attributes from incompatible elements.
+	 *
+	 * For example, consider the following HTML:
+	 *
+	 * ```html
+	 * <heading2 htmlH2Attributes="...">foobar[]</heading2>
+	 * ```
+	 *
+	 * Pressing `enter` creates a new `paragraph` element that inherits
+	 * the `htmlH2Attributes` attribute from `heading2`.
+	 *
+	 * ```html
+	 * <heading2 htmlH2Attributes="...">foobar</heading2>
+	 * <paragraph htmlH2Attributes="...">[]</paragraph>
+	 * ```
+	 *
+	 * This postfixer ensures that this doesn't happen, and that elements can
+	 * only have `html*Attributes` associated with them,
+	 * e.g.: `htmlPAttributes` for `<p>`, `htmlDivAttributes` for `<div>`, etc.
+	 *
+	 * With it enabled, pressing `enter` at the end of `<heading2>` will create
+	 * a new paragraph without the `htmlH2Attributes` attribute.
+	 *
+	 * ```html
+	 * <heading2 htmlH2Attributes="...">foobar</heading2>
+	 * <paragraph>[]</paragraph>
+	 * ```
+	 */
+	private _registerAssociatedHtmlAttributesPostFixer() {
+		const model = this.editor.model;
+
+		model.document.registerPostFixer( writer => {
+			const changes = model.document.differ.getChanges();
+			let changed = false;
+
+			for ( const change of changes ) {
+				if ( change.type !== 'insert' || change.name === '$text' ) {
+					continue;
+				}
+
+				for ( const attr of change.attributes.keys() ) {
+					if ( !attr.startsWith( 'html' ) || !attr.endsWith( 'Attributes' ) ) {
+						continue;
+					}
+
+					if ( !model.schema.checkAttribute( change.name, attr ) ) {
+						writer.removeAttribute( attr, change.position.nodeAfter! );
+						changed = true;
 					}
 				}
 			}
@@ -498,7 +559,7 @@ export default class DataFilter extends Plugin {
 		}
 
 		schema.extend( definition.model, {
-			allowAttributes: [ 'htmlAttributes', 'htmlContent' ]
+			allowAttributes: [ getHtmlAttributeName( viewName ), 'htmlContent' ]
 		} );
 
 		// Store element content in special `$rawContent` custom property to
@@ -512,16 +573,15 @@ export default class DataFilter extends Plugin {
 			model: viewToModelObjectConverter( definition ),
 			// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 			// this listener is called before it. If not, some elements will be transformed into a paragraph.
-			converterPriority: priorities.get( 'low' ) + 1
+			// `+ 2` is used to take priority over `_addDefaultH1Conversion` in the Heading plugin.
+			converterPriority: priorities.low + 2
 		} );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition as DataSchemaBlockElementDefinition, this ) );
 
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: modelName,
-				attributes: [
-					'htmlAttributes'
-				]
+				attributes: [ getHtmlAttributeName( viewName ) ]
 			},
 			view: toObjectWidgetConverter( editor, definition as DataSchemaInlineElementDefinition )
 		} );
@@ -556,7 +616,8 @@ export default class DataFilter extends Plugin {
 				view: viewName,
 				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 				// this listener is called before it. If not, some elements will be transformed into a paragraph.
-				converterPriority: priorities.get( 'low' ) + 1
+				// `+ 2` is used to take priority over `_addDefaultH1Conversion` in the Heading plugin.
+				converterPriority: priorities.low + 2
 			} );
 
 			conversion.for( 'downcast' ).elementToElement( {
@@ -570,7 +631,7 @@ export default class DataFilter extends Plugin {
 		}
 
 		schema.extend( definition.model, {
-			allowAttributes: 'htmlAttributes'
+			allowAttributes: getHtmlAttributeName( viewName )
 		} );
 
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );

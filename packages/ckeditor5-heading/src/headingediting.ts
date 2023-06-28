@@ -26,8 +26,8 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HeadingEditing' {
-		return 'HeadingEditing';
+	public static get pluginName() {
+		return 'HeadingEditing' as const;
 	}
 
 	/**
@@ -117,7 +117,7 @@ export default class HeadingEditing extends Plugin {
 			view: 'h1',
 			// With a `low` priority, `paragraph` plugin autoparagraphing mechanism is executed. Make sure
 			// this listener is called before it. If not, `h1` will be transformed into a paragraph.
-			converterPriority: priorities.get( 'low' ) + 1
+			converterPriority: priorities.low + 1
 		} );
 	}
 }

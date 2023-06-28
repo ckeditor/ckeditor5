@@ -27,8 +27,8 @@ export default class StyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StyleUI' {
-		return 'StyleUI';
+	public static get pluginName() {
+		return 'StyleUI' as const;
 	}
 
 	/**

@@ -37,8 +37,8 @@ export default class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableKeyboard' {
-		return 'TableKeyboard';
+	public static get pluginName() {
+		return 'TableKeyboard' as const;
 	}
 
 	/**

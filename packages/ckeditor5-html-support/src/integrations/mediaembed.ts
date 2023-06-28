@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import DataSchema from '../dataschema';
-import { updateViewAttributes, type GHSViewAttributes } from '../utils';
+import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } from '../utils';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
@@ -36,8 +36,8 @@ export default class MediaEmbedElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MediaEmbedElementSupport' {
-		return 'MediaEmbedElementSupport';
+	public static get pluginName() {
+		return 'MediaEmbedElementSupport' as const;
 	}
 
 	/**
@@ -75,7 +75,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 
 			schema.extend( 'media', {
 				allowAttributes: [
-					'htmlAttributes',
+					getHtmlAttributeName( mediaElementName ),
 					'htmlFigureAttributes'
 				]
 			} );
@@ -92,7 +92,7 @@ function viewToModelMediaAttributesConverter( dataFilter: DataFilter, mediaEleme
 	const upcastMedia: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 		const viewMediaElement = data.viewItem;
 
-		preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
+		preserveElementAttributes( viewMediaElement, getHtmlAttributeName( mediaElementName ) );
 
 		function preserveElementAttributes( viewElement: ViewElement, attributeName: string ) {
 			const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
@@ -133,7 +133,7 @@ function viewToModelFigureAttributesConverter( dataFilter: DataFilter ) {
 
 function modelToViewMediaAttributeConverter( mediaElementName: string ) {
 	return ( dispatcher: DowncastDispatcher ) => {
-		addAttributeConversionDispatcherHandler( mediaElementName, 'htmlAttributes' );
+		addAttributeConversionDispatcherHandler( mediaElementName, getHtmlAttributeName( mediaElementName ) );
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 
 		function addAttributeConversionDispatcherHandler( elementName: string, attributeName: string ) {

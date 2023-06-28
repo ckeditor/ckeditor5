@@ -39,8 +39,8 @@ export default class TableElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableElementSupport' {
-		return 'TableElementSupport';
+	public static get pluginName() {
+		return 'TableElementSupport' as const;
 	}
 
 	/**
@@ -69,7 +69,7 @@ export default class TableElementSupport extends Plugin {
 
 			schema.extend( 'table', {
 				allowAttributes: [
-					'htmlAttributes',
+					'htmlTableAttributes',
 					// Figure, thead and tbody elements don't have model counterparts.
 					// We will be preserving attributes on table element using these attribute keys.
 					'htmlFigureAttributes', 'htmlTheadAttributes', 'htmlTbodyAttributes'
@@ -132,7 +132,7 @@ function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 
 			const viewTableElement = data.viewItem;
 
-			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
+			preserveElementAttributes( viewTableElement, 'htmlTableAttributes' );
 
 			for ( const childNode of viewTableElement.getChildren() ) {
 				if ( childNode.is( 'element', 'thead' ) ) {
@@ -187,7 +187,7 @@ function viewToModelFigureAttributeConverter( dataFilter: DataFilter ) {
  */
 function modelToViewTableAttributeConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
-		addAttributeConversionDispatcherHandler( 'table', 'htmlAttributes' );
+		addAttributeConversionDispatcherHandler( 'table', 'htmlTableAttributes' );
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 		addAttributeConversionDispatcherHandler( 'thead', 'htmlTheadAttributes' );
 		addAttributeConversionDispatcherHandler( 'tbody', 'htmlTbodyAttributes' );

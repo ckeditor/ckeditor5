@@ -29,8 +29,8 @@ export default class CKBox extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKBox' {
-		return 'CKBox';
+	public static get pluginName() {
+		return 'CKBox' as const;
 	}
 
 	/**
