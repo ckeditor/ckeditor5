@@ -29,15 +29,9 @@ const cliArguments = parseArguments( process.argv.slice( 2 ) );
 // `executeInParallel()` is executed thrice.
 EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
 
-const abortController = new AbortController();
-
 // TODO: If nightly: generate a version number. See: #14179.
 const latestVersion = releaseTools.getLastFromChangelog();
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
-
-process.on( 'SIGINT', () => {
-	abortController.abort( 'SIGINT' );
-} );
 
 const taskOptions = {
 	rendererOptions: {
@@ -52,7 +46,7 @@ const tasks = new Listr( [
 			const errors = await releaseTools.validateRepositoryToRelease( {
 				version: latestVersion,
 				changes: versionChangelog,
-				branch: 'release'
+				branch: cliArguments.branch
 			} );
 
 			if ( !errors.length ) {
@@ -117,7 +111,6 @@ const tasks = new Listr( [
 							packagesDirectoryFilter: packageDirectory => {
 								return path.basename( packageDirectory ).startsWith( 'ckeditor5-build-' );
 							},
-							signal: abortController.signal,
 							listrTask: task,
 							taskToExecute: buildCKEditor5BuildsCallback,
 							concurrency: 2
@@ -129,7 +122,6 @@ const tasks = new Listr( [
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: PACKAGES_DIRECTORY,
-							signal: abortController.signal,
 							listrTask: task,
 							taskToExecute: compileTypeScriptCallback,
 							concurrency: cliArguments.concurrency
@@ -152,7 +144,6 @@ const tasks = new Listr( [
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: RELEASE_DIRECTORY,
-							signal: abortController.signal,
 							listrTask: task,
 							taskToExecute: updatePackageEntryPoint,
 							concurrency: cliArguments.concurrency
@@ -164,7 +155,6 @@ const tasks = new Listr( [
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
 							packagesDirectory: RELEASE_DIRECTORY,
-							signal: abortController.signal,
 							listrTask: task,
 							taskToExecute: prepareDllBuildsCallback,
 							concurrency: cliArguments.concurrency
