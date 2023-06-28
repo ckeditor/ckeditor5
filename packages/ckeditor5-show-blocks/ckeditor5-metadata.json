@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "showBlocks",
-					"iconPath": "theme/icons/showblocks.svg"
+					"iconPath": "theme/icons/show-blocks.svg"
 				}
 			]
 		}
