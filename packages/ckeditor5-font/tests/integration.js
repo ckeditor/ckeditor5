@@ -230,7 +230,7 @@ describe( 'Integration test Font', () => {
 				}
 			} );
 
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.picker.dispatchEvent( event );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
 
 			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]</paragraph>' );
 		} );
@@ -264,7 +264,7 @@ describe( 'Integration test Font', () => {
 				}
 			} );
 
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.picker.dispatchEvent( event );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
 
 			expect( getData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab( 18% -17 7 )">foo</$text>]</paragraph>' );
 
@@ -281,10 +281,10 @@ describe( 'Integration test Font', () => {
 			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
 
 			dropdown.isOpen = true;
-			dropdown.colorTableView.fire( 'showColorPicker' );
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.color = 'hsl( 100, 30%, 43% )';
+			dropdown.colorSelectorView.fire( 'colorPicker:show' );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.color = 'hsl( 100, 30%, 43% )';
 
-			dropdown.colorTableView.colorPickerPageView.cancelButtonView.fire( 'execute' );
+			dropdown.colorSelectorView.colorPickerFragmentView.cancelButtonView.fire( 'execute' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>' +
 			'[<$text fontColor="hsl( 50, 10%, 23% )">foo</$text><$text fontColor="hsl( 150, 50%, 13% )">foo</$text>]' +
@@ -297,12 +297,12 @@ describe( 'Integration test Font', () => {
 			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
 
 			dropdown.isOpen = true;
-			dropdown.colorTableView.fire( 'showColorPicker' );
+			dropdown.colorSelectorView.fire( 'colorPicker:show' );
 
 			// Execute multiple color changes.
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.fire( 'colorSelected', { color: '#113322' } );
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.fire( 'colorSelected', { color: '#654321' } );
-			dropdown.colorTableView.colorPickerPageView.colorPickerView.fire( 'colorSelected', { color: '#123456' } );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#113322' } );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#654321' } );
+			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: '#123456' } );
 
 			editor.commands.get( 'undo' ).execute();
 

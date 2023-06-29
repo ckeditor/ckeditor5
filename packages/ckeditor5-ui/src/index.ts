@@ -27,11 +27,11 @@ export { default as ColorPickerView } from './colorpicker/colorpickerview';
 export type { ColorPickerConfig, ColorPickerViewConfig, ColorPickerOutputFormat } from './colorpicker/utils';
 
 export {
-	default as ColorTableView,
-	type ColorTableExecuteEvent,
-	type ColorTableCancelEvent,
-	type ColorTableShowColorPickerEvent
-} from './colortable/colortableview';
+	default as ColorSelectorView,
+	type ColorSelectorExecuteEvent,
+	type ColorSelectorColorPickerCancelEvent,
+	type ColorSelectorColorPickerShowEvent
+} from './colorselector/colorselectorview';
 
 export { default as ComponentFactory } from './componentfactory';
 

@@ -7,14 +7,14 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { ColorTableView } from '@ckeditor/ckeditor5-ui';
+import { ColorSelectorView } from '@ckeditor/ckeditor5-ui';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import TestColorPlugin from '../_utils/testcolorplugin';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'ColorTableView', () => {
-	let locale, colorTableView;
+describe( 'ColorSelectorView', () => {
+	let locale, colorSelectorView;
 
 	const colorDefinitions = [
 		{
@@ -65,7 +65,7 @@ describe( 'ColorTableView', () => {
 
 	beforeEach( () => {
 		locale = { t() {} };
-		colorTableView = new ColorTableView( locale, {
+		colorSelectorView = new ColorSelectorView( locale, {
 			colors: colorDefinitions,
 			columns: 5,
 			removeButtonLabel: 'Remove color',
@@ -76,15 +76,15 @@ describe( 'ColorTableView', () => {
 			}
 		} );
 		// Grids rendering is deferred (#6192) therefore render happens before appending grids.
-		colorTableView.render();
-		colorTableView.appendGrids();
+		colorSelectorView.render();
+		colorSelectorView._appendColorGridsFragment();
 
-		document.body.appendChild( colorTableView.element );
+		document.body.appendChild( colorSelectorView.element );
 	} );
 
 	afterEach( () => {
-		colorTableView.destroy();
-		colorTableView.element.remove();
+		colorSelectorView.destroy();
+		colorSelectorView.element.remove();
 	} );
 
 	testUtils.createSinonSandbox();
@@ -122,7 +122,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'should not create document colors section', () => {
-			const colorTableView = dropdown.colorTableView.colorGridsPageView;
+			const colorSelectorView = dropdown.colorSelectorView.colorGridsFragmentView;
 
 			setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
@@ -133,8 +133,8 @@ describe( 'ColorTableView', () => {
 
 			dropdown.isOpen = true;
 
-			expect( colorTableView.documentColorsCount ).to.equal( 0 );
-			expect( colorTableView.documentColorsLabel ).to.be.undefined;
+			expect( colorSelectorView.documentColorsCount ).to.equal( 0 );
+			expect( colorSelectorView.documentColorsLabel ).to.be.undefined;
 		} );
 	} );
 } );

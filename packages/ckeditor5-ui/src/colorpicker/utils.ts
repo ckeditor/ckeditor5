@@ -36,7 +36,7 @@ export type ColorPickerConfig = {
 /**
  * Configuration of the color picker view.
  *
- * It can be forced to apply colors in the editor in a particular format and hide input.
+ * It can be used to enforce a particular color format or hide the color input.
  */
 export type ColorPickerViewConfig = ColorPickerConfig & {
 	hideInput?: boolean;

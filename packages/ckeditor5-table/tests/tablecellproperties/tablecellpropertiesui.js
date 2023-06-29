@@ -936,7 +936,7 @@ describe( 'table cell properties', () => {
 				tableCellPropertiesUI._showView();
 
 				const panelView = tableCellPropertiesUI.view.borderColorInput.fieldView.dropdownView.panelView;
-				const colorPicker = panelView.children.get( 0 ).colorPickerPageView.element;
+				const colorPicker = panelView.children.get( 0 ).colorPickerFragmentView.element;
 
 				expect( colorPicker ).to.be.null;
 			} );

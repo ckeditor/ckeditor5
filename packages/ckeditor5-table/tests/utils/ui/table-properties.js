@@ -517,7 +517,7 @@ describe( 'table utils', () => {
 
 			it( 'should have proper format in color picker', () => {
 				const panelView = labeledField.fieldView.dropdownView.panelView;
-				const colorPicker = panelView.children.get( 0 ).colorPickerPageView.colorPickerView;
+				const colorPicker = panelView.children.get( 0 ).colorPickerFragmentView.colorPickerView;
 
 				colorPicker.color = 'hsl(180, 75%, 60%)';
 				expect( colorPicker.color ).to.equal( '#4CE6E6' );

@@ -13,12 +13,12 @@ import {
 	createDropdown,
 	FocusCycler,
 	ViewCollection,
-	ColorTableView,
+	ColorSelectorView,
 	type ColorDefinition,
 	type DropdownView,
 	type ColorPickerConfig,
-	type ColorTableExecuteEvent,
-	type ColorTableCancelEvent
+	type ColorSelectorExecuteEvent,
+	type ColorSelectorColorPickerCancelEvent
 } from 'ckeditor5/src/ui';
 
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
@@ -209,7 +209,7 @@ export default class ColorInputView extends View {
 		const locale = this.locale!;
 		const t = locale.t;
 		const bind = this.bindTemplate;
-		const colorTable = this._createColorTable( locale );
+		const colorSelector = this._createColorSelector( locale );
 		const dropdown = createDropdown( locale );
 		const colorPreview = new View();
 
@@ -247,18 +247,18 @@ export default class ColorInputView extends View {
 		dropdown.buttonView.tooltip = true;
 
 		dropdown.panelPosition = locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw';
-		dropdown.panelView.children.add( colorTable );
+		dropdown.panelView.children.add( colorSelector );
 		dropdown.bind( 'isEnabled' ).to( this, 'isReadOnly', value => !value );
 
-		this._focusables.add( colorTable );
+		this._focusables.add( colorSelector );
 
-		this.focusTracker.add( colorTable.element! );
+		this.focusTracker.add( colorSelector.element! );
 
 		dropdown.on( 'change:isOpen', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
-				colorTable.updateSelectedColors();
+				colorSelector.updateSelectedColors();
 			} else {
-				colorTable.showColorGrids();
+				colorSelector.showColorGridsFragment();
 			}
 		} );
 
@@ -306,12 +306,12 @@ export default class ColorInputView extends View {
 	/**
 	 * Creates and configures the panel with "color grid" and "color picker" inside the {@link #dropdownView}.
 	 */
-	private _createColorTable( locale: Locale ) {
+	private _createColorSelector( locale: Locale ) {
 		const t = locale.t;
 		const defaultColor = this.options.defaultColorValue || '';
 		const removeColorButtonLabel = defaultColor ? t( 'Restore default' ) : t( 'Remove color' );
 
-		const colorTable = new ColorTableView( locale, {
+		const colorSelector = new ColorSelectorView( locale, {
 			colors: this.options.colorDefinitions,
 			columns: this.options.columns,
 			removeButtonLabel: removeColorButtonLabel,
@@ -322,10 +322,10 @@ export default class ColorInputView extends View {
 			}
 		} );
 
-		colorTable.appendUI();
+		colorSelector.appendUI();
 
-		colorTable.on<ColorTableExecuteEvent>( 'execute', ( evt, data ) => {
-			if ( data.source === 'saveButton' ) {
+		colorSelector.on<ColorSelectorExecuteEvent>( 'execute', ( evt, data ) => {
+			if ( data.source === 'colorPickerSaveButton' ) {
 				this.dropdownView.isOpen = false;
 				return;
 			}
@@ -346,7 +346,7 @@ export default class ColorInputView extends View {
 		 */
 		let backupColor = this.value;
 
-		colorTable.on<ColorTableCancelEvent>( 'cancel', () => {
+		colorSelector.on<ColorSelectorColorPickerCancelEvent>( 'colorPicker:cancel', () => {
 			/**
 			 * Revert color to previous value before changes in color picker.
 			 */
@@ -357,16 +357,16 @@ export default class ColorInputView extends View {
 			this.dropdownView.isOpen = false;
 		} );
 
-		colorTable.colorGridsPageView.colorPickerButtonView!.on( 'execute', () => {
+		colorSelector.colorGridsFragmentView.colorPickerButtonView!.on( 'execute', () => {
 			/**
 			 * Save color value before changes in color picker.
 			 */
 			backupColor = this.value;
 		} );
 
-		colorTable.bind( 'selectedColor' ).to( this, 'value' );
+		colorSelector.bind( 'selectedColor' ).to( this, 'value' );
 
-		return colorTable;
+		return colorSelector;
 	}
 
 	/**

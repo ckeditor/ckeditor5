@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/colortable/documentcolorcollection
+ * @module ui/colorselector/documentcolorcollection
  */
 
 import type { ColorDefinition } from '../colorgrid/colorgridview';
