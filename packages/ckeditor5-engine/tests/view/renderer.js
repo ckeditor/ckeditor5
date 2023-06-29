@@ -2226,17 +2226,11 @@ describe( 'Renderer', () => {
 		describe( 'similar selection', () => {
 			// Use spies to check selection updates. Some selection positions are not achievable in some
 			// browsers (e.g. <p>Foo<b>{}Bar</b></p> in Chrome) so asserting dom selection after rendering would fail.
-			let selectionCollapseSpy, selectionExtendSpy;
+			let selectionSpy;
 
 			afterEach( () => {
-				if ( selectionCollapseSpy ) {
-					selectionCollapseSpy.restore();
-					selectionCollapseSpy = null;
-				}
-
-				if ( selectionExtendSpy ) {
-					selectionExtendSpy.restore();
-					selectionExtendSpy = null;
+				if ( selectionSpy ) {
+					selectionSpy.restore();
 				}
 			} );
 
@@ -2263,8 +2257,7 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 0 ] );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
 
-				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
-				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo<attribute:b>{}bar</attribute:b></container:p>
 				selection._setTo( [
@@ -2274,10 +2267,8 @@ describe( 'Renderer', () => {
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
 
-				expect( selectionCollapseSpy.calledOnce ).to.true;
-				expect( selectionCollapseSpy.calledWith( domB.childNodes[ 0 ], 0 ) ).to.true;
-				expect( selectionExtendSpy.calledOnce ).to.true;
-				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 0 ) ).to.true;
+				expect( selectionSpy.calledOnce ).to.true;
+				expect( selectionSpy.calledWith( domB.childNodes[ 0 ], 0, domB.childNodes[ 0 ], 0 ) ).to.true;
 			} );
 
 			it( 'should always render collapsed selection even if it is similar (with empty element)', () => {
@@ -2302,8 +2293,7 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domB.childNodes[ 0 ] );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( INLINE_FILLER_LENGTH );
 
-				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
-				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo{}<attribute:b></attribute:b></container:p>
 				selection._setTo( [
@@ -2313,10 +2303,8 @@ describe( 'Renderer', () => {
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
 
-				expect( selectionCollapseSpy.calledOnce ).to.true;
-				expect( selectionCollapseSpy.calledWith( domP.childNodes[ 0 ], 3 ) ).to.true;
-				expect( selectionExtendSpy.calledOnce ).to.true;
-				expect( selectionExtendSpy.calledWith( domP.childNodes[ 0 ], 3 ) ).to.true;
+				expect( selectionSpy.calledOnce ).to.true;
+				expect( selectionSpy.calledWith( domP.childNodes[ 0 ], 3, domP.childNodes[ 0 ], 3 ) ).to.true;
 			} );
 
 			it( 'should always render non-collapsed selection if it not is similar', () => {
@@ -2342,8 +2330,7 @@ describe( 'Renderer', () => {
 				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 0 ] );
 				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
 
-				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
-				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>
 				selection._setTo( [
@@ -2353,10 +2340,8 @@ describe( 'Renderer', () => {
 				renderer.markToSync( 'children', viewP );
 				renderer.render();
 
-				expect( selectionCollapseSpy.calledOnce ).to.true;
-				expect( selectionCollapseSpy.calledWith( domP.childNodes[ 0 ], 2 ) ).to.true;
-				expect( selectionExtendSpy.calledOnce ).to.true;
-				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 1 ) ).to.true;
+				expect( selectionSpy.calledOnce ).to.true;
+				expect( selectionSpy.calledWith( domP.childNodes[ 0 ], 2, domB.childNodes[ 0 ], 1 ) ).to.true;
 			} );
 
 			it( 'should always render selection (even if it is same in view) if current dom selection is in incorrect place', () => {
