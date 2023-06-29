@@ -67,3 +67,37 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+### Introduction of color pickers to table and table cell properties features
+
+Starting with TODO, {@glink tables/tables-styling advanced table styling tools} will display a color picker in their user interfaces for color–related text fields.
+
+Just like with [the introduction of color pickers to font color and font background color features](#introduction-of-color-pickers-to-font-color-and-font-background-color-features), we allow you to decide whether this new functionality works for your integration and to opt–out of it.
+
+You can set {@link module:table/tableconfig~TablePropertiesConfig#colorPicker
+} and {@link module:table/tableconfig~TableCellPropertiesConfig#colorPicker
+} configuration options to `false` to get get rid of color pickers in all table styling tools:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		table: {
+			/* ... */
+
+			tableProperties: {
+				// Disable the color picker for the table properties feature.
+				colorPicker: false
+			},
+
+			tableCellProperties: {
+				// Disable the color picker for the table cell properties feature.
+				colorPicker: false
+			}
+		}
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'insertTable', 'undo', 'redo'
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
