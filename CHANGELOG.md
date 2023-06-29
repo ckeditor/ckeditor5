@@ -3,6 +3,14 @@ Changelog
 
 ## [38.2.0-alpha.0](https://github.com/ckeditor/ckeditor5/compare/v38.1.0...v38.2.0-alpha.0) (2023-06-29)
 
+### Release highlights
+
+This release is intended to improve compatibility with Vite and Vitest by correctly reporting CKEditor packages as ESM modules.
+
+Please note that this release is based on `v38.1.0` and is marked as alpha, which means that it is an experimental version and some unexpected results may occur when using it.
+
+We appreciate any feedback that will help us improve the final form of the project.
+
 ### Bug fixes
 
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Sidebar `min-height` should be correctly updated after switching between various annotations display modes.
