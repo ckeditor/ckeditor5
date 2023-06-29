@@ -19,7 +19,7 @@ const VISUAL_SELECTION_MARKER_NAME = 'fake-visual-selection';
  * Displays a fake visual selection when the editable is blurred.
  */
 export default class FakeVisualSelection extends Plugin {
-	private readonly _hideFakeVisualSelectionDelayed = delay( () => this._hideFakeVisualSelection(), 0 );
+	private readonly _hideFakeVisualSelectionDelayed = delay( () => this._hideFakeVisualSelection(), 40 );
 
 	/**
 	 * @inheritDoc
