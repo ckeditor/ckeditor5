@@ -87,11 +87,12 @@ export default class ColorPickerFragmentView extends View {
 	protected _focusables: ViewCollection;
 
 	/**
-	 * Color picker's config.
+	 * A reference to the configuration of {@link #colorPickerView}. `false` when the view was
+	 * configured without a color picker.
 	 *
 	 * @readonly
 	 */
-	private _pickerConfig: ColorPickerViewConfig | false;
+	private _colorPickerViewConfig: ColorPickerViewConfig | false;
 
 	/**
 	 * Creates an instance of the view.
@@ -100,7 +101,8 @@ export default class ColorPickerFragmentView extends View {
 	 * @param focusTracker Tracks information about the DOM focus in the list.
 	 * @param focusables A collection of views that can be focused in the view..
 	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-	 * @param colorPickerConfig The configuration of color picker feature.
+	 * @param colorPickerViewConfig The configuration of color picker feature. If set to `false`, the color picker
+	 * will not be rendered.
 	 */
 	constructor(
 		locale: Locale,
@@ -108,14 +110,14 @@ export default class ColorPickerFragmentView extends View {
 			focusTracker,
 			focusables,
 			keystrokes,
-			colorPickerConfig
+			colorPickerViewConfig
 		}:
-			{
-				focusTracker: FocusTracker;
-				focusables: ViewCollection;
-				keystrokes: KeystrokeHandler;
-				colorPickerConfig: ColorPickerViewConfig | false;
-			}
+		{
+			focusTracker: FocusTracker;
+			focusables: ViewCollection;
+			keystrokes: KeystrokeHandler;
+			colorPickerViewConfig: ColorPickerViewConfig | false;
+		}
 	) {
 		super( locale );
 
@@ -127,7 +129,7 @@ export default class ColorPickerFragmentView extends View {
 		this.set( 'selectedColor', undefined );
 
 		this._focusables = focusables;
-		this._pickerConfig = colorPickerConfig;
+		this._colorPickerViewConfig = colorPickerViewConfig;
 
 		const bind = this.bindTemplate;
 		const { saveButtonView, cancelButtonView } = this._createActionButtons();
@@ -155,7 +157,7 @@ export default class ColorPickerFragmentView extends View {
 		super.render();
 
 		const colorPickerView = new ColorPickerView( this.locale, {
-			...this._pickerConfig
+			...this._colorPickerViewConfig
 		} as ColorPickerViewConfig );
 
 		this.colorPickerView = colorPickerView;

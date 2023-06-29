@@ -316,7 +316,7 @@ export default class ColorInputView extends View {
 			columns: this.options.columns,
 			removeButtonLabel: removeColorButtonLabel,
 			colorPickerLabel: t( 'Color picker' ),
-			colorPickerConfig: this.options.colorPickerConfig === false ? false : {
+			colorPickerViewConfig: this.options.colorPickerConfig === false ? false : {
 				...this.options.colorPickerConfig,
 				hideInput: true
 			}

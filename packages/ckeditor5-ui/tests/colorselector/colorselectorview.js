@@ -59,7 +59,7 @@ describe( 'ColorSelectorView', () => {
 			removeButtonLabel: 'Remove color',
 			documentColorsLabel: 'Document colors',
 			documentColorsCount: 4,
-			colorPickerConfig: {
+			colorPickerViewConfig: {
 				format: 'hsl'
 			}
 		} );

@@ -137,7 +137,7 @@ export default class ColorUI extends Plugin {
 				colorPickerLabel: t( 'Color picker' ),
 				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : '',
 				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount,
-				colorPickerConfig: hasColorPicker ? ( componentConfig.colorPicker || {} ) : false
+				colorPickerViewConfig: hasColorPicker ? ( componentConfig.colorPicker || {} ) : false
 			} );
 
 			this.colorSelectorView.bind( 'selectedColor' ).to( command, 'value' );

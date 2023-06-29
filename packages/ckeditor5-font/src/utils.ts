@@ -8,7 +8,7 @@
  */
 
 import type { FontFamilyOption, FontSizeOption } from './fontconfig';
-import { ColorSelectorView, type ColorDefinition, type ColorPickerConfig, type DropdownView } from 'ckeditor5/src/ui';
+import { ColorSelectorView, type ColorDefinition, type ColorPickerViewConfig, type DropdownView } from 'ckeditor5/src/ui';
 import type { ArrayOrItem } from 'ckeditor5/src/utils';
 import type {
 	ViewAttributeElement,
@@ -106,10 +106,14 @@ export function renderDowncastElement( styleAttr: string ) {
  * @param config.removeButtonLabel The label for the button responsible for removing the color.
  * @param config.documentColorsLabel The label for the section with document colors.
  * @param config.documentColorsCount The number of document colors inside the dropdown.
+ * @param config.colorPickerViewConfig Configuration of the color picker view.
  * @returns The new color selector view.
  */
 export function addColorSelectorToDropdown(
-	{ dropdownView, colors, columns, removeButtonLabel, colorPickerLabel, documentColorsLabel, documentColorsCount, colorPickerConfig }: {
+	{
+		dropdownView, colors, columns, removeButtonLabel, colorPickerLabel,
+		documentColorsLabel, documentColorsCount, colorPickerViewConfig
+	}: {
 		dropdownView: ColorSelectorDropdownView;
 		colors: Array<ColorDefinition>;
 		columns: number;
@@ -117,7 +121,7 @@ export function addColorSelectorToDropdown(
 		colorPickerLabel: string;
 		documentColorsLabel?: string;
 		documentColorsCount?: number;
-		colorPickerConfig: ColorPickerConfig | false;
+		colorPickerViewConfig: ColorPickerViewConfig | false;
 	}
 ): ColorSelectorView {
 	const locale = dropdownView.locale!;
@@ -128,7 +132,7 @@ export function addColorSelectorToDropdown(
 		colorPickerLabel,
 		documentColorsLabel,
 		documentColorsCount,
-		colorPickerConfig
+		colorPickerViewConfig
 	} );
 
 	dropdownView.colorSelectorView = colorSelectorView;

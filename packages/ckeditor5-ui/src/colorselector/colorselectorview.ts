@@ -43,7 +43,7 @@ import '../../theme/components/colorselector/colorselector.css';
  * 	removeButtonLabel: 'Remove color',
  * 	documentColorsLabel: 'Document colors',
  * 	documentColorsCount: 4,
- * 	colorPickerConfig: {
+ * 	colorPickerViewConfig: {
  * 		format: 'hsl'
  * 	}
  * } );
@@ -129,9 +129,9 @@ export default class ColorSelectorView extends View {
 	protected _focusables: ViewCollection;
 
 	/**
-	 * The configuration of color picker feature.
+	 * The configuration of color picker sub-component.
 	 */
-	private _colorPickerConfig: ColorPickerViewConfig | false;
+	private _colorPickerViewConfig: ColorPickerViewConfig | false;
 
 	/**
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
@@ -143,7 +143,7 @@ export default class ColorSelectorView extends View {
 	 * @param colorPickerLabel The label of the button responsible for color picker appearing.
 	 * @param documentColorsLabel The label for the section with the document colors.
 	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
-	 * @param colorPickerConfig The configuration of color picker feature. If set to `false`, the color picker will be hidden.
+	 * @param colorPickerViewConfig The configuration of color picker feature. If set to `false`, the color picker will be hidden.
 	 */
 	constructor(
 		locale: Locale,
@@ -154,7 +154,7 @@ export default class ColorSelectorView extends View {
 			documentColorsLabel,
 			documentColorsCount,
 			colorPickerLabel,
-			colorPickerConfig
+			colorPickerViewConfig
 		}: {
 			colors: Array<ColorDefinition>;
 			columns: number;
@@ -162,7 +162,7 @@ export default class ColorSelectorView extends View {
 			documentColorsLabel?: string;
 			documentColorsCount?: number;
 			colorPickerLabel: string;
-			colorPickerConfig: ColorPickerViewConfig | false;
+			colorPickerViewConfig: ColorPickerViewConfig | false;
 		}
 	) {
 		super( locale );
@@ -172,7 +172,7 @@ export default class ColorSelectorView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		this._focusables = new ViewCollection();
-		this._colorPickerConfig = colorPickerConfig;
+		this._colorPickerViewConfig = colorPickerViewConfig;
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -196,7 +196,7 @@ export default class ColorSelectorView extends View {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokes: this.keystrokes,
-			colorPickerConfig
+			colorPickerViewConfig
 		} );
 
 		this.set( '_isColorGridsFragmentVisible', true );
@@ -268,7 +268,7 @@ export default class ColorSelectorView extends View {
 	public appendUI(): void {
 		this._appendColorGridsFragment();
 
-		if ( this._colorPickerConfig ) {
+		if ( this._colorPickerViewConfig ) {
 			this._appendColorPickerFragment();
 		}
 	}
