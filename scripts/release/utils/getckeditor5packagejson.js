@@ -7,14 +7,16 @@
 
 'use strict';
 
-const fs = require( 'fs' );
+const fs = require( 'fs-extra' );
 const upath = require( 'upath' );
 
 /**
  * @returns {Object}
  */
 module.exports = function getCKEditor5PackageJson() {
-	const pkgJson = require( '../../../package.json' );
+	const pkgJson = fs.readJsonSync(
+		upath.join( __dirname, '..', '..', '..', 'package.json' )
+	);
 
 	return {
 		name: pkgJson.name,
