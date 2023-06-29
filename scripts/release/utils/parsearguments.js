@@ -48,6 +48,10 @@ module.exports = function parseArguments( cliArguments ) {
 	options.npmTag = options[ 'npm-tag' ];
 	delete options[ 'npm-tag' ];
 
+	if ( options.nightly ) {
+		options.npmTag = 'nightly';
+	}
+
 	return options;
 };
 
@@ -62,7 +66,7 @@ module.exports = function parseArguments( cliArguments ) {
  *
  * @property {String} [branch='release']
  *
- * @property {String} [npmTag='staging']
+ * @property {String} [npmTag='staging'|'nightly']
  *
  * @property {Array.<String>|null} packages
  */
