@@ -49,7 +49,10 @@ module.exports = function triggerCkeditor5ContinuousIntegration( repository, las
 		},
 		body: JSON.stringify( {
 			branch: 'master',
-			message: `Repository: ${ repository }\n\nCommit: https://github.com/${ repository }/commit/${ lastCommit }.`
+			properties: {
+				triggeringRepository: repository,
+				triggeringCommit: lastCommit
+			}
 		} )
 	};
 
