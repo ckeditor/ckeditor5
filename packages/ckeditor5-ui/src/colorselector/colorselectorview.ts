@@ -278,7 +278,7 @@ export default class ColorSelectorView extends View {
 	 *
 	 * **Note**: It requires {@link #appendUI} to be called first.
 	 *
-	 * See {@link #showColorGridsFragment}, {@link #event:showColorPicker}.
+	 * See {@link #showColorGridsFragment}, {@link ~ColorSelectorView#event:colorPicker:show}.
 	 */
 	public showColorPickerFragment(): void {
 		if ( !this.colorPickerFragmentView.colorPickerView ) {
@@ -392,7 +392,7 @@ export type ColorSelectorExecuteEvent = {
  * Fired when the user pressed the "Cancel" button in the
  * {@link module:ui/colorselector/colorselectorview~ColorSelectorView#colorPickerFragmentView}.
  *
- * @eventName ~ColorSelectorView#cancel
+ * @eventName ~ColorSelectorView#colorPicker:cancel
  */
 export type ColorSelectorColorPickerCancelEvent = {
 	name: 'colorPicker:cancel';
@@ -404,7 +404,7 @@ export type ColorSelectorColorPickerCancelEvent = {
  *
  * See {@link ~ColorSelectorView#showColorPickerFragment}.
  *
- * @eventName ~ColorSelectorView#showColorPicker
+ * @eventName ~ColorSelectorView#colorPicker:show
  */
 export type ColorSelectorColorPickerShowEvent = {
 	name: 'colorPicker:show';
