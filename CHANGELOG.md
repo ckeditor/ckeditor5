@@ -5,7 +5,25 @@ Changelog
 
 ### Release highlights
 
-* **Show blocks** - The show blocks feature allows the content creators to visualize all block-level elements (except for widgets) by surrounding them with an outline and displaying their element name at the top-left corner of the box.
+#### Show blocks
+
+[The show blocks feature](https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html) allows the content creators to visualize all block-level elements (except for widgets) by surrounding them with an outline and displaying their element name at the top-left corner of the box.
+
+![image](https://github.com/ckeditor/ckeditor5/assets/9881379/c3569142-052a-4708-976d-0593f9997e3c)
+
+#### Adjacent lists support
+
+CKEditor 5 introduces an opt-in feature specifically for list handling during Word import or pasting. This feature influences how adjacent lists of the same type (either ordered or unordered) are processed. By default, such lists merge together, but you can prevent this.
+
+To enable this feature, the `AdjacentListsSupport` plugin [needs to be added to your CKEditor 5 configuration](https://ckeditor.com/docs/ckeditor5/latest/features/lists/document-lists.html#list-merging). This allows you to maintain distinct lists, even when they are of the same type and positioned adjacently. However, please note that this feature only works with the `DocumentLists` implementation. We are considering making it the default setting in future updates, based on user feedback and experience we collect. Let us know your opinion on the https://github.com/ckeditor/ckeditor5/issues/14478 issue.
+
+#### Comments archive integration guide
+
+We released [a new guide](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-archive.html) showcasing how you can customize comments archive UI to display the archive panel in a custom container, to better fit your application layout.
+
+#### Fixing API scrolling integration with custom viewport offsets
+
+We introduced a significant UX improvement that enhances the scrolling behavior of the Document Outline and Table of Contents features in the organization's documentation. Now, clicking on a heading in the Document Outline and Table of Contents displays a collapsed caret, which was previously located under the header section. Additionally, the fix improves other cases, such as proper scrolling when pressing enter while the editor is focused and scrolled away.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
