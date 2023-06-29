@@ -172,6 +172,8 @@ describe( 'utils', () => {
 
 					// Dropdown is still open.
 					expect( dropdownView.isOpen ).to.be.true;
+
+					element.remove();
 				} );
 			} );
 
