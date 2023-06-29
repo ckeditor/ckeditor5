@@ -106,7 +106,9 @@ const tasks = new Listr( [
 
 ( async () => {
 	try {
-		githubToken = await provideToken();
+		if ( !cliArguments.nightly ) {
+			githubToken = await provideToken();
+		}
 
 		await tasks.run();
 	} catch ( err ) {
