@@ -17,7 +17,7 @@ To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core
 {@snippet features/image-insert-via-url}
 
 <info-box info>
-	The demos in this guide only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	The demos in this guide only present a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
 </info-box>
 
 ### Installation
