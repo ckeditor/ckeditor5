@@ -178,6 +178,38 @@ describe( 'ColorUI', () => {
 			dropdown.element.remove();
 		} );
 
+		it( 'should show the color grids fragment of the color selector when opened', () => {
+			global.document.body.appendChild( dropdown.element );
+
+			const showGridsSpy = sinon.spy( dropdown.colorSelectorView, 'showColorGridsFragment' );
+
+			dropdown.isOpen = false;
+
+			sinon.assert.notCalled( showGridsSpy );
+
+			dropdown.isOpen = true;
+
+			sinon.assert.calledOnce( showGridsSpy );
+
+			dropdown.element.remove();
+		} );
+
+		it( 'should update selected colors of the color selector when opened', () => {
+			global.document.body.appendChild( dropdown.element );
+
+			const updateColorSpy = sinon.spy( dropdown.colorSelectorView, 'updateSelectedColors' );
+
+			dropdown.isOpen = false;
+
+			sinon.assert.notCalled( updateColorSpy );
+
+			dropdown.isOpen = true;
+
+			sinon.assert.calledOnce( updateColorSpy );
+
+			dropdown.element.remove();
+		} );
+
 		describe( 'color picker', () => {
 			it( 'should execute command if the color gets changed when dropdown is open', () => {
 				const spy = sinon.spy( editor, 'execute' );

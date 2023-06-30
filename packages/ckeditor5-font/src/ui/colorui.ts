@@ -203,7 +203,6 @@ export default class ColorUI extends Plugin {
 					}
 
 					this.colorSelectorView!.updateSelectedColors();
-				} else {
 					this.colorSelectorView!.showColorGridsFragment();
 				}
 			} );
