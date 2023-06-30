@@ -88,6 +88,36 @@ describe( 'ImageSizeAttributes', () => {
 						'</paragraph>'
 					);
 				} );
+
+				it( 'should upcast width & height styles if they both are set', () => {
+					editor.setData(
+						'<p>Lorem <img style="width:200px;height:100px;" src="/assets/sample.png" "> ipsum</p>'
+					);
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>' +
+							'Lorem ' +
+							'<imageInline height="100" src="/assets/sample.png" width="200"></imageInline>' +
+							' ipsum' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should not upcast width style if height style is missing', () => {
+					editor.setData(
+						'<p>Lorem <img style="width:200px;" src="/assets/sample.png" "> ipsum</p>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'width' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast height style if width style is missing', () => {
+					editor.setData(
+						'<p>Lorem <img style="height:200px;" src="/assets/sample.png" "> ipsum</p>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'height' ) ).to.be.undefined;
+				} );
 			} );
 
 			describe( 'block images', () => {
@@ -109,6 +139,32 @@ describe( 'ImageSizeAttributes', () => {
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
 						'<imageBlock height="50px" src="/assets/sample.png"></imageBlock>'
 					);
+				} );
+
+				it( 'should upcast width & height styles if they both are set', () => {
+					editor.setData(
+						'<figure class="image"><img style="width:200px;height:100px;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock height="100" src="/assets/sample.png" width="200"></imageBlock>'
+					);
+				} );
+
+				it( 'should not upcast width style if height style is missing', () => {
+					editor.setData(
+						'<figure class="image"><img style="width:200px;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast height style if width style is missing', () => {
+					editor.setData(
+						'<figure class="image"><img style="height:200px;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'height' ) ).to.be.undefined;
 				} );
 			} );
 		} );
