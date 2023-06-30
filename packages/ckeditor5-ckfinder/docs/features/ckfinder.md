@@ -40,7 +40,7 @@ This demo shows the [full integration](#configuring-the-full-integration) with t
 {@snippet features/ckfinder}
 
 <info-box info>
-	These demos only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	These demos only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information

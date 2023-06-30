@@ -29,7 +29,7 @@ Images can also be pre-resized using styling, as shown below (the last three ima
 {@snippet features/image-resize}
 
 <info-box info>
-	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 You can configure resizing images by handles in two different ways in the CKEditor 5 WYSIWYG editor:
