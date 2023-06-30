@@ -18,6 +18,7 @@ import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageInlineEditing from '../../src/image/imageinlineediting';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
 import { IMAGE_SRC_FIXTURE } from './_utils/utils';
@@ -84,55 +85,127 @@ describe( 'ImageResizeEditing', () => {
 			editor = await createEditor();
 		} );
 
-		it( 'upcasts 100px width correctly', () => {
-			editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+		describe( 'width', () => {
+			it( 'upcasts 100px width correctly', () => {
+				editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 
-			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '100px' );
-		} );
-
-		it( 'upcasts 50% width correctly', () => {
-			editor.setData( `<figure class="image" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
-
-			expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
-		} );
-
-		it( 'downcasts 100px width correctly', () => {
-			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageBlock>` );
-
-			expect( editor.getData() )
-				.to.equal( `<figure class="image image_resized" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
-		} );
-
-		it( 'downcasts 50% width correctly', () => {
-			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
-
-			expect( editor.getData() )
-				.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
-		} );
-
-		it( 'removes style and extra class when no longer resized', () => {
-			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
-
-			const imageModel = editor.model.document.getRoot().getChild( 0 );
-
-			editor.model.change( writer => {
-				writer.removeAttribute( 'resizedWidth', imageModel );
+				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '100px' );
 			} );
 
-			expect( editor.getData() )
-				.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			it( 'upcasts 50% width correctly', () => {
+				editor.setData( `<figure class="image" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
+			} );
+
+			it( 'downcasts 100px width correctly', () => {
+				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageBlock>` );
+
+				expect( editor.getData() )
+					.to.equal( `<figure class="image image_resized" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			} );
+
+			it( 'downcasts 50% width correctly', () => {
+				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+
+				expect( editor.getData() )
+					.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			} );
+
+			it( 'removes style and extra class when no longer resized', () => {
+				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+
+				const imageModel = editor.model.document.getRoot().getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.removeAttribute( 'resizedWidth', imageModel );
+				} );
+
+				expect( editor.getData() )
+					.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			} );
+
+			it( 'doesn\'t downcast consumed tokens', () => {
+				editor.conversion.for( 'downcast' ).add( dispatcher =>
+					dispatcher.on( 'attribute:resizedWidth:imageBlock', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'attribute:resizedWidth:imageBlock' );
+					}, { priority: 'high' } )
+				);
+				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+
+				expect( editor.getData() )
+					.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+			} );
 		} );
 
-		it( 'doesn\'t downcast consumed tokens', () => {
-			editor.conversion.for( 'downcast' ).add( dispatcher =>
-				dispatcher.on( 'attribute:resizedWidth:imageBlock', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, 'attribute:resizedWidth:imageBlock' );
-				}, { priority: 'high' } )
-			);
-			setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+		describe( 'height', () => {
+			describe( 'data downcast', () => {
+				it( 'downcasts 100px height correctly', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
 
-			expect( editor.getData() )
-				.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+					expect( editor.getData() )
+						.to.equal( `<figure class="image" style="height:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				} );
+
+				it( 'downcasts 50% height correctly', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					expect( editor.getData() )
+						.to.equal( `<figure class="image" style="height:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				} );
+
+				it( 'doesn\'t downcast consumed tokens', () => {
+					editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
+						dispatcher.on( 'attribute:resizedHeight:imageBlock', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageBlock' );
+						}, { priority: 'high' } )
+					);
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					expect( editor.getData() )
+						.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+				} );
+			} );
+
+			describe( 'editing downcast', () => {
+				it( 'downcasts 100px height correctly', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget ck-widget_selected image" contenteditable="false" style="height:100px">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'downcasts 50% height correctly', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget ck-widget_selected image" contenteditable="false" style="height:50%">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'</figure>'
+					);
+				} );
+
+				it( 'doesn\'t downcast consumed tokens', () => {
+					editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
+						dispatcher.on( 'attribute:resizedHeight:imageBlock', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageBlock' );
+						}, { priority: 'high' } )
+					);
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'</figure>'
+					);
+				} );
+			} );
 		} );
 	} );
 
