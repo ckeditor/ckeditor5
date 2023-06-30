@@ -98,6 +98,12 @@ describe( 'ImageResizeEditing', () => {
 				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
 			} );
 
+			it( 'does not upcast width if height is set too', () => {
+				editor.setData( `<figure class="image" style="height:100px;width:200px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedWidth' ) ).to.be.undefined;
+			} );
+
 			it( 'downcasts 100px width correctly', () => {
 				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageBlock>` );
 
@@ -139,6 +145,26 @@ describe( 'ImageResizeEditing', () => {
 		} );
 
 		describe( 'height', () => {
+			describe( 'upcast', () => {
+				it( 'upcasts 100px height correctly', () => {
+					editor.setData( `<figure class="image" style="height:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedHeight' ) ).to.equal( '100px' );
+				} );
+
+				it( 'upcasts 50% height correctly', () => {
+					editor.setData( `<figure class="image" style="height:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedHeight' ) ).to.equal( '50%' );
+				} );
+
+				it( 'does not upcast height if width is set too', () => {
+					editor.setData( `<figure class="image" style="height:100px;width:200px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'resizedHeight' ) ).to.be.undefined;
+				} );
+			} );
+
 			describe( 'data downcast', () => {
 				it( 'downcasts 100px height correctly', () => {
 					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
@@ -231,6 +257,16 @@ describe( 'ImageResizeEditing', () => {
 				expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedWidth' ) ).to.equal( '50%' );
 			} );
 
+			it( 'does not upcast width if height is set too', () => {
+				editor.setData(
+					'<p>Lorem <span class="image-inline">' +
+						`<img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;height:200px;">` +
+					'</span> ipsum</p>'
+				);
+
+				expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedWidth' ) ).to.be.undefined;
+			} );
+
 			it( 'downcasts 100px resizedWidth correctly', () => {
 				setData( editor.model,
 					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageInline></paragraph>`
@@ -282,6 +318,35 @@ describe( 'ImageResizeEditing', () => {
 		} );
 
 		describe( 'height', () => {
+			describe( 'upcast', () => {
+				it( 'upcasts 100px height correctly', () => {
+					editor.setData(
+						`<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="height:100px;"></span> ipsum</p>`
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedHeight' ) )
+						.to.equal( '100px' );
+				} );
+
+				it( 'upcasts 50% height correctly', () => {
+					editor.setData(
+						`<p>Lorem <span class="image-inline"><img src="${ IMAGE_SRC_FIXTURE }" style="height:50%;"></span> ipsum</p>`
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedHeight' ) ).to.equal( '50%' );
+				} );
+
+				it( 'does not upcast height if width is set too', () => {
+					editor.setData(
+						'<p>Lorem <span class="image-inline">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }" style="height:100px;width:200px;">` +
+						'</span> ipsum</p>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'resizedHeight' ) ).to.be.undefined;
+				} );
+			} );
+
 			describe( 'data downcast', () => {
 				it( 'downcasts 100px resizedHeight correctly', () => {
 					setData( editor.model,
