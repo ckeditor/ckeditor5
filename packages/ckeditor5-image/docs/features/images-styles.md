@@ -98,7 +98,7 @@ You can change the style of an individual image using the contextual toolbar tha
 </div>
 
 <info-box info>
-	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 The editor above does not require any configuration, using one of the following builds: classic, inline, balloon, or balloon-block, for example:

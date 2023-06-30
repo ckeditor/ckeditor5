@@ -24,7 +24,8 @@ module.exports = async function updateVersionReferences( { version, releaseDate 
 		{
 			file: 'README.md',
 			pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/,
-			value: version
+			value: version,
+			skip: version.startsWith( '0.0.0-nightly' )
 		},
 		{
 			file: upath.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
@@ -40,7 +41,11 @@ module.exports = async function updateVersionReferences( { version, releaseDate 
 
 	const updatedFiles = new Set();
 
-	for ( const { file, pattern, value } of filesToUpdate ) {
+	for ( const { file, pattern, value, skip } of filesToUpdate ) {
+		if ( skip ) {
+			continue;
+		}
+
 		const absolutePath = upath.join( ROOT_DIRECTORY, file );
 
 		if ( !( await checkFileExists( absolutePath ) ) ) {
