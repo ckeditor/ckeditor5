@@ -7,7 +7,7 @@
  * @module ui/colorpicker/colorpickerview
  */
 
-import { convertColor, convertToHex, type ColorPickerViewConfig, type ColorPickerOutputFormat } from './utils';
+import { convertColor, convertToHex, type ColorPickerViewConfig } from './utils';
 
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
