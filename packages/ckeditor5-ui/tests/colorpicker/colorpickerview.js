@@ -7,6 +7,7 @@
 
 import ColorPickerView from './../../src/colorpicker/colorpickerview';
 import 'vanilla-colorful/hex-color-picker.js';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Locale } from '@ckeditor/ckeditor5-utils';
@@ -38,9 +39,15 @@ describe( 'ColorPickerView', () => {
 			expect( [ ...input.classList ] ).to.include( 'color-picker-hex-input' );
 		} );
 
-		it( 'assigns a proper default format value', () => {
-			const pickerView = new ColorPickerView( locale, {} );
-			expect( pickerView._format ).to.equal( 'hsl' );
+		it( 'uses a default color format (HSL)', () => {
+			const view = new ColorPickerView( locale );
+			view.render();
+
+			view.color = 'red';
+
+			expect( view.color ).to.equal( 'hsl( 0, 100%, 50% )' );
+
+			view.destroy();
 		} );
 	} );
 
@@ -312,6 +319,14 @@ describe( 'ColorPickerView', () => {
 
 			expect( view.color ).to.equal( '#ff0000' );
 		} );
+
+		it( 'should render without input if "hideInput" is set on true', () => {
+			const view = new ColorPickerView( locale, { format: 'hex', hideInput: true } );
+
+			view.render();
+
+			expect( view.element.children.length ).to.equal( 1 );
+		} );
 	} );
 
 	describe( 'focus()', () => {
@@ -323,6 +338,34 @@ describe( 'ColorPickerView', () => {
 			view.focus();
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not throw on Firefox/Safari/iOS if the input was hidden via config', () => {
+			const view = new ColorPickerView( locale, { hideInput: true } );
+
+			view.render();
+			document.body.appendChild( view.element );
+
+			testUtils.sinon.stub( env, 'isGecko' ).value( true );
+			testUtils.sinon.stub( env, 'isiOS' ).value( false );
+			testUtils.sinon.stub( env, 'isSafari' ).value( false );
+
+			expect( () => view.focus() ).to.not.throw();
+
+			testUtils.sinon.stub( env, 'isGecko' ).value( false );
+			testUtils.sinon.stub( env, 'isiOS' ).value( true );
+			testUtils.sinon.stub( env, 'isSafari' ).value( false );
+
+			expect( () => view.focus() ).to.not.throw();
+
+			testUtils.sinon.stub( env, 'isGecko' ).value( false );
+			testUtils.sinon.stub( env, 'isiOS' ).value( false );
+			testUtils.sinon.stub( env, 'isSafari' ).value( true );
+
+			expect( () => view.focus() ).to.not.throw();
+
+			view.destroy();
+			view.element.remove();
 		} );
 	} );
 
@@ -343,46 +386,38 @@ describe( 'ColorPickerView', () => {
 
 		describe( 'output format integration', () => {
 			it( 'respects rgb output format', () => {
-				view._format = 'rgb';
-				view.color = '#001000';
-
-				expect( view.color ).to.equal( 'rgb( 0, 16, 0 )' );
+				testOutputFormat( 'rgb', '#001000', 'rgb( 0, 16, 0 )' );
 			} );
 
 			it( 'respects hex output format', () => {
-				view._format = 'hex';
-				view.color = '#0000f1';
-
-				expect( view.color ).to.equal( '#0000f1' );
+				testOutputFormat( 'hex', '#0000f1', '#0000f1' );
 			} );
 
 			it( 'respects hsl output format', () => {
-				view._format = 'hsl';
-				view.color = '#3D9BFF';
-
-				expect( view.color ).to.equal( 'hsl( 211, 100%, 62% )' );
+				testOutputFormat( 'hsl', '#3D9BFF', 'hsl( 211, 100%, 62% )' );
 			} );
 
 			it( 'respects hwb output format', () => {
-				view._format = 'hwb';
-				view.color = '#5cb291';
-
-				expect( view.color ).to.equal( 'hwb( 157, 36, 30 )' );
+				testOutputFormat( 'hwb', '#5cb291', 'hwb( 157, 36, 30 )' );
 			} );
 
 			it( 'respects lab output format', () => {
-				view._format = 'lab';
-				view.color = '#bfe972';
-
-				expect( view.color ).to.equal( 'lab( 87% -32 53 )' );
+				testOutputFormat( 'lab', '#bfe972', 'lab( 87% -32 53 )' );
 			} );
 
 			it( 'respects lch output format', () => {
-				view._format = 'lch';
-				view.color = '#be0909';
-
-				expect( view.color ).to.equal( 'lch( 40% 81 39 )' );
+				testOutputFormat( 'lch', '#be0909', 'lch( 40% 81 39 )' );
 			} );
+
+			function testOutputFormat( format, inputColor, outputColor ) {
+				const view = new ColorPickerView( locale, { format } );
+				view.render();
+
+				view.color = inputColor;
+				expect( view.color ).to.equal( outputColor );
+
+				view.destroy();
+			}
 		} );
 
 		it( 'normalizes format for subsequent changes to the same color but in different format', () => {
