@@ -145,12 +145,6 @@ export default class ImageResizeEditing extends Plugin {
 
 				if ( data.attributeNewValue !== null ) {
 					viewWriter.setStyle( 'height', data.attributeNewValue, target );
-				} else {
-					viewWriter.removeStyle( 'height', target );
-
-					if ( !figure.getStyle( 'width' ) ) {
-						viewWriter.removeClass( 'image_resized', figure );
-					}
 				}
 			} )
 		);
