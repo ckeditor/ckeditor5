@@ -14,9 +14,9 @@ The ability to have responsive images in the rich-text editor content is a great
 
 ## Demo
 
-Add an image to the content with the CKBox toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg}. Change the demo viewport and observe how the editor automatically serves the right-sized image. 
+Add an image to the content with the CKBox toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg}. Change the demo viewport and observe how the editor automatically serves the size-adjusted image. 
 
-<!-- {@snippet features/image-link} -->
+{@snippet features/image-responsive}
 
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
