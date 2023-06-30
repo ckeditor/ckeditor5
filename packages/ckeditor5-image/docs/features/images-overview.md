@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Basics
+meta-title: Images in CKEditor 5
+meta-description: Find out all about images in CKEditor 5.
 order: 10
 modified_at: 2021-06-17
 ---
@@ -164,6 +166,15 @@ The availability of these plugins varies in different {@link installation/gettin
 				<td>❌</td>
 				<td>❌</td>
 				<td>❌</td>
+				<td>✅</td>
+			</tr>
+			<tr>
+				<th colspan="2">{@link module:ckbox/ckbox~CKBox}</th>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
 				<td>✅</td>
 			</tr>
 		</tbody>

@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Text alternative
+meta-title: Imahge text alternative in CKEditor 5
+meta-description: Fing out how to make your content more accessible with image text alternative.
 order: 20
 ---
 {@snippet features/build-image-source}

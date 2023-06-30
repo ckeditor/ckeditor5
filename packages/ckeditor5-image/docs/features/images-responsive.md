@@ -1,17 +1,20 @@
 ---
 category: features-images
 menu-title: Responsive images
+meta-title: Responsive images in CKEditor 5
+meta-description: Learn how responsive images can make your content better.
 order: 55
+modified_at: 2023-06-30
 ---
 {@snippet features/build-image-source}
 
 # Responsive images
 
-The ability to have responsive images in the rich-text editor content is a great modern feature provided by the {@link features/ckbox CKBox file manager}. With a single image upload, several optimized versions of that image are created, each for a different size of the display. All this is transparent to the end user who uploaded the image.
+The ability to have responsive images in the rich-text editor content is a great modern feature provided by the {@link features/ckbox CKBox file manager}. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The browser will automatically load the image with dimensions most suitable for the presented page resolution, which makes the image load much faster. Bigger images are suitable for desktop users, so image details are visible. Using the same image on a mobile device with a smaller screen resolution would be a waste of bandwidth — a smaller image loads faster, improving the experience of your visitors. All this is transparent to the end user who uploaded the image.
 
 ## Demo
 
-Add an image to the content with the CKBox toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg}. Change the demo viewport and observe how the editor automatically serves the right-sized image.
+Add an image to the content with the CKBox toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg}. Change the demo viewport and observe how the editor automatically serves the right-sized image. 
 
 <!-- {@snippet features/image-link} -->
 
@@ -66,7 +69,7 @@ Regardless of the original file format, the responsive versions will be served a
 	The CKBox file manager is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
-For detailed information on how to configure and use CKBox, please refer to the {@link features/ckbox CKBox file manager} guide.
+For detailed information on how to configure and use CKBox, please refer to the {@link features/ckbox#installation CKBox file manager} installation guide.
 
 
 ## Contribute
