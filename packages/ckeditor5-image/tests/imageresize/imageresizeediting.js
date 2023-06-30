@@ -208,9 +208,21 @@ describe( 'ImageResizeEditing', () => {
 			await newEditor.destroy();
 		} );
 
+		it( 'allows the resizedHeight attribute when ImageBlock plugin is enabled', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageBlockEditing, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageBlock' ], 'resizedHeight' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
 		it( 'allows the resizedWidth attribute when ImageInline plugin is enabled', async () => {
 			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageInlineEditing, ImageResizeEditing ] } );
 			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedWidth' ) ).to.be.true;
+			await newEditor.destroy();
+		} );
+
+		it( 'allows the resizedHeight attribute when ImageInline plugin is enabled', async () => {
+			const newEditor = await ClassicEditor.create( editorElement, { plugins: [ ImageInlineEditing, ImageResizeEditing ] } );
+			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedHeight' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
 	} );
