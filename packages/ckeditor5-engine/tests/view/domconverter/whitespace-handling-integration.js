@@ -489,6 +489,18 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				}
 			} );
 		} );
+
+		it( 'in preformatted blocks', () => {
+			editor.model.schema.register( 'pre', { inheritAllFrom: '$block' } );
+			editor.conversion.elementToElement( { model: 'pre', view: 'pre' } );
+
+			editor.setData( '<pre>    foo\n    bar\n    </pre>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<pre>    foo\n    bar\n    </pre>' );
+
+			expect( editor.getData() ).to.equal( '<pre>    foo\n    bar\n    </pre>' );
+		} );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/1024
