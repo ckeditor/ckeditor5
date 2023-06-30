@@ -281,13 +281,13 @@ export default class ColorSelectorView extends View {
 	 * See {@link #showColorGridsFragment}, {@link ~ColorSelectorView#event:colorPicker:show}.
 	 */
 	public showColorPickerFragment(): void {
-		if ( !this.colorPickerFragmentView.colorPickerView ) {
+		if ( !this.colorPickerFragmentView.colorPickerView || this._isColorPickerFragmentVisible ) {
 			return;
 		}
 
-		this.set( '_isColorPickerFragmentVisible', true );
+		this._isColorPickerFragmentVisible = true;
 		this.colorPickerFragmentView.focus();
-		this.set( '_isColorGridsFragmentVisible', false );
+		this._isColorGridsFragmentVisible = false;
 	}
 
 	/**
@@ -298,9 +298,13 @@ export default class ColorSelectorView extends View {
 	 * **Note**: It requires {@link #appendUI} to be called first.
 	 */
 	public showColorGridsFragment(): void {
-		this.set( '_isColorGridsFragmentVisible', true );
+		if ( this._isColorGridsFragmentVisible ) {
+			return;
+		}
+
+		this._isColorGridsFragmentVisible = true;
 		this.colorGridsFragmentView.focus();
-		this.set( '_isColorPickerFragmentVisible', false );
+		this._isColorPickerFragmentVisible = false;
 	}
 
 	/**

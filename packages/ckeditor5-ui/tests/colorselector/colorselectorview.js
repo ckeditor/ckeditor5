@@ -153,68 +153,78 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		describe( 'showColorGridsFragment()', () => {
-			it( 'color picker should be hidden', () => {
+			it( 'should do nothing if grids are already visible', () => {
 				colorSelectorView.showColorGridsFragment();
 
-				expect( colorSelectorView.colorPickerFragmentView.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( colorSelectorView.colorGridsFragmentView.isVisible ).to.be.true;
+
+				const gridsFocusSpy = sinon.spy( colorSelectorView.colorGridsFragmentView, 'focus' );
+				const isPickerVisibleSpy = sinon.spy();
+				const areGridsVisibleSpy = sinon.spy();
+
+				colorSelectorView.colorGridsFragmentView.on( 'change:isVisible', areGridsVisibleSpy );
+				colorSelectorView.colorPickerFragmentView.on( 'change:isVisible', isPickerVisibleSpy );
+
+				colorSelectorView.showColorGridsFragment();
+
+				sinon.assert.notCalled( areGridsVisibleSpy );
+				sinon.assert.notCalled( gridsFocusSpy );
+				sinon.assert.notCalled( isPickerVisibleSpy );
 			} );
 
-			it( 'color picker should be hidden by default', () => {
-				expect( colorSelectorView.colorPickerFragmentView.element.classList.contains( 'ck-hidden' ) ).to.be.true;
-			} );
+			it( 'should show the grids first, then focus them, then hide the picker', () => {
+				colorSelectorView.showColorPickerFragment();
 
-			describe( '#_isColorGridsFragmentVisible', () => {
-				it( 'should be set on true', () => {
-					// should be set on true by defualt
-					expect( colorSelectorView._isColorGridsFragmentVisible ).to.be.true;
+				const gridsFocusSpy = sinon.spy( colorSelectorView.colorGridsFragmentView, 'focus' );
+				const isPickerVisibleSpy = sinon.spy();
+				const areGridsVisibleSpy = sinon.spy();
 
-					colorSelectorView.showColorGridsFragment();
+				colorSelectorView.colorGridsFragmentView.on( 'change:isVisible', areGridsVisibleSpy );
+				colorSelectorView.colorPickerFragmentView.on( 'change:isVisible', isPickerVisibleSpy );
 
-					expect( colorSelectorView._isColorGridsFragmentVisible ).to.be.true;
-				} );
-			} );
+				colorSelectorView.showColorGridsFragment();
 
-			describe( '#_isColorPickerFragmentVisible', () => {
-				it( 'should be set on false', () => {
-					// should be set on false by defualt
-					expect( colorSelectorView._isColorPickerFragmentVisible ).to.be.false;
+				sinon.assert.callOrder( areGridsVisibleSpy, gridsFocusSpy, isPickerVisibleSpy );
 
-					colorSelectorView.showColorGridsFragment();
-
-					expect( colorSelectorView._isColorPickerFragmentVisible ).to.be.false;
-				} );
+				expect( colorSelectorView.colorGridsFragmentView.isVisible ).to.be.true;
+				expect( colorSelectorView.colorPickerFragmentView.isVisible ).to.be.false;
 			} );
 		} );
 
 		describe( 'showColorPickerFragment()', () => {
-			it( 'color grid should be hidden', () => {
+			it( 'should do nothing if the picker is already visible', () => {
 				colorSelectorView.showColorPickerFragment();
 
-				expect( colorSelectorView.colorGridsFragmentView.element.classList.contains( 'ck-hidden' ) ).to.be.true;
-			} );
+				expect( colorSelectorView.colorPickerFragmentView.isVisible ).to.be.true;
 
-			describe( '#_isColorPickerFragmentVisible', () => {
-				it( 'should be set on true', () => {
-					colorSelectorView.showColorPickerFragment();
+				const pickerFocusSpy = sinon.spy( colorSelectorView.colorPickerFragmentView, 'focus' );
+				const isPickerVisibleSpy = sinon.spy();
+				const areGridsVisibleSpy = sinon.spy();
 
-					expect( colorSelectorView._isColorPickerFragmentVisible ).to.be.true;
-				} );
-			} );
+				colorSelectorView.colorGridsFragmentView.on( 'change:isVisible', areGridsVisibleSpy );
+				colorSelectorView.colorPickerFragmentView.on( 'change:isVisible', isPickerVisibleSpy );
 
-			describe( '#isColorGridsPageVisible', () => {
-				it( 'should be set on false', () => {
-					colorSelectorView.showColorPickerFragment();
-
-					expect( colorSelectorView._isColorGridsFragmentVisible ).to.be.false;
-				} );
-			} );
-
-			it( 'should not to show the color picker', () => {
-				colorSelectorView.colorPickerFragmentView.colorPickerView = null;
 				colorSelectorView.showColorPickerFragment();
 
-				expect( colorSelectorView._isColorPickerFragmentVisible ).to.be.false;
-				expect( colorSelectorView._isColorGridsFragmentVisible ).to.be.true;
+				sinon.assert.notCalled( areGridsVisibleSpy );
+				sinon.assert.notCalled( pickerFocusSpy );
+				sinon.assert.notCalled( isPickerVisibleSpy );
+			} );
+
+			it( 'should show the picker first, then focus it, then hide the grids', () => {
+				const pickerFocusSpy = sinon.spy( colorSelectorView.colorPickerFragmentView, 'focus' );
+				const isPickerVisibleSpy = sinon.spy();
+				const areGridsVisibleSpy = sinon.spy();
+
+				colorSelectorView.colorGridsFragmentView.on( 'change:isVisible', areGridsVisibleSpy );
+				colorSelectorView.colorPickerFragmentView.on( 'change:isVisible', isPickerVisibleSpy );
+
+				colorSelectorView.showColorPickerFragment();
+
+				sinon.assert.callOrder( isPickerVisibleSpy, pickerFocusSpy, areGridsVisibleSpy );
+
+				expect( colorSelectorView.colorGridsFragmentView.isVisible ).to.be.false;
+				expect( colorSelectorView.colorPickerFragmentView.isVisible ).to.be.true;
 			} );
 		} );
 	} );
