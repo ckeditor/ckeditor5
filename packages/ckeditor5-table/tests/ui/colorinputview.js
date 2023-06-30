@@ -146,11 +146,14 @@ describe( 'ColorInputView', () => {
 				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).to.be.false;
 			} );
 
-			it( 'should show color grids when dropdown is closed', () => {
+			it( 'should show color grids when dropdown is open', () => {
 				const spy = sinon.spy( colorSelectorView, 'showColorGridsFragment' );
 				const dropdown = view.dropdownView;
 
 				dropdown.isOpen = true;
+
+				sinon.assert.calledOnce( spy );
+
 				dropdown.isOpen = false;
 
 				sinon.assert.calledOnce( spy );

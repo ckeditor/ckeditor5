@@ -257,7 +257,6 @@ export default class ColorInputView extends View {
 		dropdown.on( 'change:isOpen', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
 				colorSelector.updateSelectedColors();
-			} else {
 				colorSelector.showColorGridsFragment();
 			}
 		} );
