@@ -10,6 +10,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageBlockEditing from '../src/image/imageblockediting';
 import ImageInlineEditing from '../src/image/imageinlineediting';
 import ImageSizeAttributes from '../src/imagesizeattributes';
+import ImageResizeEditing from '../src/imageresize/imageresizeediting';
 import ImageUtils from '../src/imageutils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -254,6 +255,55 @@ describe( 'ImageSizeAttributes', () => {
 					expect( editor.getData() )
 						.to.equal( '<p><img src="/assets/sample.png"></p>' );
 				} );
+
+				describe( 'with image resize plugin', () => {
+					let editor, view;
+
+					beforeEach( async () => {
+						editor = await VirtualTestEditor.create( {
+							plugins: [ Paragraph, ImageInlineEditing, ImageSizeAttributes, ImageResizeEditing ]
+						} );
+
+						view = editor.editing.view;
+					} );
+
+					afterEach( async () => {
+						await editor.destroy();
+					} );
+
+					it( 'should add aspect-ratio if attributes are set and image is resized', () => {
+						editor.setData(
+							'<p><img class="image_resized" width="100" height="200" style="width:50px" src="/assets/sample.png" "></p>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<p><span class="ck-widget image-inline image_resized" contenteditable="false" style="width:50px">' +
+								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+							'</span></p>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<p><img class="image_resized" style="aspect-ratio:100/200;width:50px;" ' +
+								'src="/assets/sample.png" width="100" height="200"></p>'
+						);
+					} );
+
+					it( 'should not add aspect-ratio if attributes are set but image is not resized', () => {
+						editor.setData(
+							'<p><img class="image_resized" width="100" height="200" src="/assets/sample.png" "></p>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<p><span class="ck-widget image-inline" contenteditable="false">' +
+								'<img height="200" src="/assets/sample.png" width="100"></img>' +
+							'</span></p>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<p><img src="/assets/sample.png" width="100" height="200"></p>'
+						);
+					} );
+				} );
 			} );
 
 			describe( 'block images', () => {
@@ -339,6 +389,58 @@ describe( 'ImageSizeAttributes', () => {
 
 					expect( editor.getData() )
 						.to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+				} );
+
+				describe( 'with image resize plugin', () => {
+					let editor, view;
+
+					beforeEach( async () => {
+						editor = await VirtualTestEditor.create( {
+							plugins: [ Paragraph, ImageBlockEditing, ImageSizeAttributes, ImageResizeEditing ]
+						} );
+
+						view = editor.editing.view;
+					} );
+
+					afterEach( async () => {
+						await editor.destroy();
+					} );
+
+					it( 'should add aspect-ratio if attributes are set and image is resized', () => {
+						editor.setData(
+							'<figure class="image" style="width: 50px;"><img width="100" height="200" src="/assets/sample.png"></figure>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<figure class="ck-widget image image_resized" contenteditable="false" style="width:50px">' +
+								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+							'</figure>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image image_resized" style="width:50px;">' +
+								'<img style="aspect-ratio:100/200;" src="/assets/sample.png" width="100" height="200">' +
+							'</figure>'
+						);
+					} );
+
+					it( 'should not add aspect-ratio if attributes are set but image is not resized', () => {
+						editor.setData(
+							'<figure class="image"><img width="100" height="200" src="/assets/sample.png"></figure>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<figure class="ck-widget image" contenteditable="false">' +
+								'<img height="200" src="/assets/sample.png" width="100"></img>' +
+							'</figure>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								'<img src="/assets/sample.png" width="100" height="200">' +
+							'</figure>'
+						);
+					} );
 				} );
 			} );
 		} );
