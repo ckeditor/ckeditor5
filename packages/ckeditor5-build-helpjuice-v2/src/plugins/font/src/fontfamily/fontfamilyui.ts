@@ -6,7 +6,7 @@
 /**
  * @module font/fontfamily/fontfamilyui
  */
-// @ts-ignore
+
 import { Plugin } from 'ckeditor5/src/core';
 import { Collection } from 'ckeditor5/src/utils';
 import { Model, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui';
@@ -40,15 +40,19 @@ export default class FontFamilyUI extends Plugin {
 		const options = this._getLocalizedOptions();
 
 		const command: FontFamilyCommand = editor.commands.get( FONT_FAMILY )!;
+		const accessibleLabel = t( 'Font Family' );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
 			const dropdownView = createDropdown( locale );
 
-			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ) );
+			addListToDropdown( dropdownView, () => _prepareListOptions( options, command ), {
+				role: 'menu',
+				ariaLabel: accessibleLabel
+			} );
 
 			dropdownView.buttonView.set( {
-				label: t( 'Font Family' ),
+				label: accessibleLabel,
 				icon: fontFamilyIcon,
 				tooltip: true
 			} );
@@ -65,7 +69,7 @@ export default class FontFamilyUI extends Plugin {
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( ( evt.source as any ).commandName, { value: ( evt.source as any ).commandParam } );
 				editor.editing.view.focus();
-			} );
+			});
 
 			// Show label on dropdown's button.
 			dropdownView.buttonView.set( 'withText', true );
@@ -124,6 +128,7 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 				commandName: FONT_FAMILY,
 				commandParam: option.model,
 				label: option.title,
+				role: 'menuitemradio',
 				withText: true
 			} )
 		};

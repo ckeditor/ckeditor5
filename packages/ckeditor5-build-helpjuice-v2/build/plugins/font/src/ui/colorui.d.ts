@@ -7,7 +7,7 @@
  */
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { type FONT_BACKGROUND_COLOR, type FONT_COLOR } from '../utils';
-import type ColorTableView from './colortableview';
+import { type default as ColorTableView } from './colortableview';
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
  *
@@ -40,6 +40,10 @@ export default class ColorUI extends Plugin {
      * Keeps a reference to {@link module:font/ui/colortableview~ColorTableView}.
      */
     colorTableView: ColorTableView | undefined;
+    /**
+     * Keeps all changes in color picker in one batch while dropdown is open.
+     */
+    private _undoStepBatch;
     /**
      * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
      *

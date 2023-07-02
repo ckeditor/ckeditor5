@@ -6,6 +6,7 @@
  * @module font/fontcommand
  */
 import { Command, type Editor } from 'ckeditor5/src/core';
+import { type Batch } from 'ckeditor5/src/engine';
 /**
  * The base font command.
  */
@@ -42,5 +43,6 @@ export default abstract class FontCommand extends Command {
      */
     execute(options?: {
         value?: string;
+        batch?: Batch;
     }): void;
 }

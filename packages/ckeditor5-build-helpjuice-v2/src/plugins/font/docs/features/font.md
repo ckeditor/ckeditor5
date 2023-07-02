@@ -9,7 +9,7 @@ The font feature lets you change font family, size, and color (including backgro
 
 ## Demo
 
-Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color}.
+Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-ui/theme/icons/color-palette.svg Color picker}.
 
 {@snippet features/font}
 
@@ -355,6 +355,35 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+### Color picker
+
+Colors from outside of the preconfigured palette can be set using the "Color picker" option available at the bottom of the color selection dropdown.
+
+Color picker applies colors in the **HSL** format as it is default for the font color feature. This can be changed using the {@link module:ui/colorpicker/utils~ColorPickerConfig `config.fontColor.colorPicker.format`} option. Available color formats are defined in the {@link module:ui/colorpicker/utils~ColorPickerOutputFormat} type. Note that this change will not affect the color input &ndash; it always accepts only values given in the `hex` format (with or without the `#` sign at the beginning).
+
+To disable the color picker entirely for the given feature, set the {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontColor.colorPicker`} (or {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontBackgroundColor.colorPicker`}) option to `false`.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontColor: {
+			colorPicker: {
+				// Use 'hex' format for output instead of 'hsl'.
+				format: 'hex'
+			}
+		},
+		fontBackgroundColor: {
+			// Don't display the color picker.
+			colorPicker: false
+		},
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Installation
 
 <info-box info>
@@ -407,6 +436,7 @@ Here are some more CKEditor 5 features that can help you format your content:
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
+* {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 ## Common API

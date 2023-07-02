@@ -7,7 +7,7 @@
  */
 import ColorTableView from './ui/colortableview';
 import type { FontFamilyOption, FontSizeOption } from './fontconfig';
-import type { ColorDefinition, DropdownView } from 'ckeditor5/src/ui';
+import type { ColorDefinition, ColorPickerConfig, DropdownView } from 'ckeditor5/src/ui';
 import type { ArrayOrItem } from 'ckeditor5/src/utils';
 import type { ViewAttributeElement, ViewElement, MatcherPattern, ViewElementDefinition, DowncastConversionApi } from 'ckeditor5/src/engine';
 /**
@@ -64,13 +64,15 @@ export declare function renderDowncastElement(styleAttr: string): (modelAttribut
  * @param config.documentColorsCount The number of document colors inside the dropdown.
  * @returns The new color table view.
  */
-export declare function addColorTableToDropdown({ dropdownView, colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount }: {
+export declare function addColorTableToDropdown({ dropdownView, colors, columns, removeButtonLabel, colorPickerLabel, documentColorsLabel, documentColorsCount, colorPickerConfig }: {
     dropdownView: ColorTableDropdownView;
     colors: Array<ColorDefinition>;
     columns: number;
     removeButtonLabel: string;
+    colorPickerLabel: string;
     documentColorsLabel?: string;
     documentColorsCount?: number;
+    colorPickerConfig: ColorPickerConfig | false;
 }): ColorTableView;
 export type ColorTableDropdownView = DropdownView & {
     colorTableView?: ColorTableView;
