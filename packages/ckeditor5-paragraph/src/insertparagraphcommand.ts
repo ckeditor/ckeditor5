@@ -72,11 +72,11 @@ export default class InsertParagraphCommand extends Command {
 				return;
 			}
 
-			if ( position.isAtStart && position.path.length > 1 && ( position.nodeAfter! as Text ).data ) {
+			if ( position.isAtStart && position.path.length > 1 && ( position.nodeAfter as Text )?.data ) {
 				// When position is at the start of the line we want to insert paragraph before
 				// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
 				position = writer.createPositionFromPath( allowedParent, position.getParentPath() );
-			} else if ( position.isAtEnd && position.path.length > 1 && ( position.nodeBefore! as Text ).data ) {
+			} else if ( position.isAtEnd && position.path.length > 1 && ( position.nodeBefore as Text )?.data ) {
 				// When position is at the end of the line we want to insert paragraph after
 				// <paragraph>foo[]</paragraph> ---> <paragraph>foo</paragraph><paragraph>[]</paragraph>
 				const parentPath = position.getParentPath();
