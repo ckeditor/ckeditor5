@@ -59,20 +59,38 @@ export default class InsertParagraphCommand extends Command {
 
 		model.change( writer => {
 			const paragraph = writer.createElement( 'paragraph' );
+			const parent = position.parent;
 
 			if ( attributes ) {
 				model.schema.setAllowedAttributes( paragraph, attributes, writer );
 			}
 
-			if ( !model.schema.checkChild( position.parent as Element, paragraph ) ) {
-				const allowedParent = model.schema.findAllowedParent( position, paragraph );
+			const allowedParent = model.schema.findAllowedParent( position, paragraph );
 
-				// It could be there's no ancestor limit that would allow paragraph.
-				// In theory, "paragraph" could be disallowed even in the "$root".
-				if ( !allowedParent ) {
-					return;
-				}
+			// It could be there's no ancestor limit that would allow paragraph.
+			// In theory, "paragraph" could be disallowed even in the "$root".
+			if ( !allowedParent ) {
+				return;
+			}
 
+			if ( position.offset === 0 && position.path.length > 1 ) {
+				// When position is at the start of the line we want to insert paragraph before
+				// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
+				position = writer.createPositionFromPath( allowedParent, position.getParentPath() );
+			} else if ( parent.maxOffset === position.offset && position.path.length > 1 ) {
+				// When position is at the end of the line we want to insert paragraph after
+				// <paragraph>foo[]</paragraph> ---> <paragraph>foo</paragraph><paragraph>[]</paragraph>
+				const length = position.getParentPath().length;
+				const path = [ ...position.getParentPath().slice( 0, length - 1 ), position.getParentPath()[ length - 1 ] + 1 ];
+				position = writer.createPositionFromPath( allowedParent, path );
+			} else if ( !model.schema.checkChild( position.parent as Element, paragraph ) ) {
+				// When position is inside the content we want to split it
+				// <paragraph>fo[]o</paragraph>
+				//            |
+				//			  ↓
+				// <paragraph>fo</paragraph>
+				// <paragraph>[]</paragraph>
+				// <paragraph>o</paragraph>
 				position = writer.split( position, allowedParent ).position;
 			}
 

@@ -70,6 +70,32 @@ describe( 'InsertParagraphCommand', () => {
 			);
 		} );
 
+		it( 'should insert paragraph when position is at the end of line', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getFirstPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the start of line', () => {
+			setData( model, '<paragraph>[]foo</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>' +
+				'<paragraph>foo</paragraph>'
+			);
+		} );
+
 		it( 'should do nothing if the paragraph is not allowed at the provided position', () => {
 			// Create a situation where "paragraph" is disallowed even in the "root".
 			schema.addChildCheck( ( context, childDefinition ) => {
