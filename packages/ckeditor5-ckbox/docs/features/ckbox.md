@@ -1,6 +1,8 @@
 ---
 category: features-file-management
 menu-title: CKBox
+meta-title: CKBox in CKEditor 5
+meta-description: Learn all about using the CKBox file manager and service with CKEditor 5
 modified_at: 2022-06-20
 order: 10
 badges: [ premium ]
