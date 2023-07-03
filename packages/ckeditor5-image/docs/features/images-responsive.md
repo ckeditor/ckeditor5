@@ -14,7 +14,7 @@ The ability to have responsive images in the rich-text editor content is a great
 
 ## Demo
 
-Add an image to the content with the CKBox toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg}. Change the demo viewport and observe how the editor automatically serves the size-adjusted image. 
+Observe the responsive image in the demo. You can also add another one with the CKBox toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg}. Change the demo viewport and observe how the editor automatically serves the size-adjusted image. Resize your browser window to change the editor viewport and see the service feed the right optimized image.
 
 {@snippet features/image-responsive}
 
@@ -39,24 +39,24 @@ Responsive images delivered by the CKBox service are transparent to your applica
 
 The `srcset` attribute specifies the image variants dedicated to the various screen sizes for the web browser to choose from (360px, 720px, 1080px, 1440px, etc.).
 
-For instance, the `image.png` file uploaded by the user will have the following markup:
+For instance, the `image.jgeg` file uploaded by the user will have the following markup:
 
 ```html
-<picture>
-	<source srcset="https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/147.webp  147w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/291.webp  291w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/435.webp  435w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/579.webp  579w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/723.webp  723w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/867.webp  867w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/1011.webp  1011w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/1155.webp  1155w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/1299.webp  1299w,
-	https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/1443.webp 1443w"
-	sizes="(max-width: 1443px) 100vw, 1443px"
-	type="image/webp"><img data-ckbox-resource-id="VB2OIjfIpHMR"
-	src="https://ckbox.cloud/rc1DFuFpHqcR3Mah6y0e/assets/VB2OIjfIpHMR/images/1443.png">
- </picture>
+	<picture>
+		<source srcset="https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/160.webp 160w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/320.webp 320w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/480.webp 480w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/640.webp 640w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/800.webp 800w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/960.webp 960w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/1120.webp 1120w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/1280.webp 1280w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/1440.webp 1440w,
+		https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/1600.webp 1600w"
+		sizes="(max-width: 1600px) 100vw, 1600px"
+		type="image/webp">
+		<img src="https://ckbox.cloud/huTfIec9s6SodytaMc9x/assets/1aUrKtJqioMR/images/1600.jpeg" alt="Snowdrop" data-ckbox-resource-id="M0tgMczsDphw">
+	</picture>
 ```
 
 The variety of the image sizes in the `srcset` attribute allows the web browser to choose the best one for the particular screen size. As a result, it loads faster and with less data transferred. Read the {@link @ckbox features/images/responsive-images CKBox responsive images} guide to learn how are the intermediate file sizes calculated.
