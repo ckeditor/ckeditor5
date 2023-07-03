@@ -90,7 +90,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 Work as you like it - choose user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
 
-{@img assets/img/toolbar.png 800 CKEditor 5 customizable UI.}
+{@img assets/img/full-toolbar.png 938 CKEditor 5 customizable UI.}
 
 ### Cross-platform interoperability
 
