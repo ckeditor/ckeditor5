@@ -27,9 +27,9 @@ The `nightly` releases are published daily and are built upon the current codeba
 
 Sometimes, to test specific new features or important in the upcoming stable release, `alpha` versions are released, too. While they would typically be based on a tested code, they are still not `stable` and hence the same caution is advised when trying these out.
 
-The release candidate (`rc`) versions are often those ones that will become `stable` during the upcoming release.
+The release candidate (`rc`) versions are often the ones that will become `stable` during the upcoming release.
 
-The `rc` and `alpha` versions are named by appending the number type denominator to the previous stable version. The `nightly` ones are marked with a daily date.
+The `rc` and `alpha` versions are named by appending a numbered type denominator to the previous stable version. The `nightly` ones are marked with a daily date.
 
 ## Update guides
 
