@@ -20,7 +20,7 @@
     "@ckeditor/ckeditor5-basic-styles": "38.2.0-alpha.0",
     "@ckeditor/ckeditor5-clipboard": "38.2.0-alpha.0",
     "@ckeditor/ckeditor5-core": "38.2.0-alpha.0",
-    "@ckeditor/ckeditor5-dev-utils": "38.2.0-alpha.0",
+    "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "38.2.0-alpha.0",
     "@ckeditor/ckeditor5-editor-classic": "38.2.0-alpha.0",
     "@ckeditor/ckeditor5-engine": "38.2.0-alpha.0",
