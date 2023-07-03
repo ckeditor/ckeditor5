@@ -12,7 +12,7 @@ badges: [ premium ]
 
 # CKBox file manager
 
-The CKBox feature lets you easily upload various files and insert images and links to other files into your content.
+The CKBox feature lets you easily upload various files and insert images and links to other files into your content. CKBox is a dedicated asset manager supporting file and image upload. It also offers image conversion and optimization capabilities and a responsive images mechanism for CKEditor 5.
 
 <info-box>
 	This is a premium feature and you need a subscription to use it. You can [purchase it here](https://ckeditor.com/pricing/) for your open-source CKEditor implementation. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) if:
