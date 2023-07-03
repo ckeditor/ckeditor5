@@ -91,6 +91,11 @@ export default class StickyPanelView extends View {
 	declare public viewportTopOffset: number;
 
 	/**
+	 * @TODO
+	 */
+	declare public scrollContainerTopOffset: number;
+
+	/**
 	 * Controls the `margin-left` CSS style of the panel.
 	 *
 	 * @private
@@ -119,6 +124,11 @@ export default class StickyPanelView extends View {
 	 * @observable
 	 */
 	declare public _hasViewportTopOffset: boolean;
+
+	/**
+	 * @TODO
+	 */
+	declare public _hasAnyTopOffset: boolean;
 
 	/**
 	 * The DOM bounding client rect of the {@link module:ui/view~View#element} of the panel.
@@ -156,10 +166,12 @@ export default class StickyPanelView extends View {
 		this.set( 'limiterElement', null );
 		this.set( 'limiterBottomOffset', 50 );
 		this.set( 'viewportTopOffset', 0 );
+		this.set( 'scrollContainerTopOffset', 0 );
 
 		this.set( '_marginLeft', null );
 		this.set( '_isStickyToTheLimiter', false );
 		this.set( '_hasViewportTopOffset', false );
+		this.set( '_hasAnyTopOffset', false );
 
 		this.content = this.createCollection();
 
@@ -195,8 +207,8 @@ export default class StickyPanelView extends View {
 						return isSticky ? toPx( this._contentPanelPlaceholder.getBoundingClientRect().width ) : null;
 					} ),
 
-					top: bind.to( '_hasViewportTopOffset', _hasViewportTopOffset => {
-						return _hasViewportTopOffset ? toPx( this.viewportTopOffset ) : null;
+					top: bind.to( '_hasAnyTopOffset', _hasAnyTopOffset => {
+						return _hasAnyTopOffset ? toPx( this.viewportTopOffset + this.scrollContainerTopOffset ) : null;
 					} ),
 
 					bottom: bind.to( '_isStickyToTheLimiter', _isStickyToTheLimiter => {
@@ -236,6 +248,7 @@ export default class StickyPanelView extends View {
 
 		// Update sticky state of the panel as the window is being scrolled.
 		this.listenTo( global.window, 'scroll', () => {
+			this.scrollContainerTopOffset = 0;
 			this._checkIfShouldBeSticky();
 		} );
 
@@ -243,30 +256,44 @@ export default class StickyPanelView extends View {
 		this.listenTo<ObservableChangeEvent>( this, 'change:isActive', () => {
 			this._checkIfShouldBeSticky();
 		} );
+
+		// @TODO
+		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
+			if ( domEvt.target instanceof HTMLElement ) {
+				this._checkIfShouldBeSticky( domEvt.target );
+			}
+		}, { useCapture: true } );
 	}
 
 	/**
 	 * Analyzes the environment to decide whether the panel should
 	 * be sticky or not.
 	 */
-	private _checkIfShouldBeSticky(): void {
+	private _checkIfShouldBeSticky( scrollTarget?: HTMLElement ): void {
 		const panelRect = this._panelRect = this._contentPanel.getBoundingClientRect();
 		let limiterRect: DOMRect;
 
 		if ( !this.limiterElement ) {
 			this.isSticky = false;
 		} else {
-			limiterRect = this._limiterRect = this.limiterElement.getBoundingClientRect();
+			// @TODO
+			if ( scrollTarget && scrollTarget.contains( this.limiterElement ) ) {
+				limiterRect = scrollTarget.getBoundingClientRect();
 
-			// The panel must be active to become sticky.
-			this.isSticky = this.isActive &&
-				// The limiter's top edge must be beyond the upper edge of the visible viewport (+the viewportTopOffset).
-				limiterRect.top < this.viewportTopOffset &&
-				// The model#limiterElement's height mustn't be smaller than the panel's height and model#limiterBottomOffset.
-				// There's no point in entering the sticky mode if the model#limiterElement is very, very small, because
-				// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterBottomOffset, the panel
-				// would be positioned before the model#limiterElement.
-				this._panelRect.height + this.limiterBottomOffset < limiterRect.height;
+				this.isSticky = this.isActive && scrollTarget.scrollTop > 0;
+			} else {
+				limiterRect = this._limiterRect = this.limiterElement.getBoundingClientRect();
+
+				// The panel must be active to become sticky.
+				this.isSticky = this.isActive &&
+					// The limiter's top edge must be beyond the upper edge of the visible viewport (+the viewportTopOffset).
+					limiterRect.top < this.viewportTopOffset &&
+					// The model#limiterElement's height mustn't be smaller than the panel's height and model#limiterBottomOffset.
+					// There's no point in entering the sticky mode if the model#limiterElement is very, very small, because
+					// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterBottomOffset, the panel
+					// would be positioned before the model#limiterElement.
+					this._panelRect.height + this.limiterBottomOffset < limiterRect.height;
+			}
 		}
 
 		// Stick the panel to the top edge of the viewport simulating CSS position:sticky.
@@ -276,12 +303,22 @@ export default class StickyPanelView extends View {
 				limiterRect!.bottom < panelRect.height + this.limiterBottomOffset + this.viewportTopOffset;
 			this._hasViewportTopOffset = !this._isStickyToTheLimiter && !!this.viewportTopOffset;
 			this._marginLeft = this._isStickyToTheLimiter ? null : toPx( -global.window.scrollX );
+
+			if ( scrollTarget ) {
+				this.scrollContainerTopOffset = limiterRect!.top;
+			}
+			this._hasAnyTopOffset = !!this._hasViewportTopOffset || !!this.scrollContainerTopOffset;
 		}
 		// Detach the panel from the top edge of the viewport.
 		else {
 			this._isStickyToTheLimiter = false;
 			this._hasViewportTopOffset = false;
+			this._hasAnyTopOffset = false;
 			this._marginLeft = null;
+
+			if ( scrollTarget && scrollTarget.scrollTop === 0 ) {
+				this.scrollContainerTopOffset = 0;
+			}
 		}
 	}
 }
