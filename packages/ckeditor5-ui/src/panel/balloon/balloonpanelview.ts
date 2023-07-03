@@ -15,11 +15,12 @@ import {
 	global,
 	isRange,
 	toUnit,
+	Rect,
+	findClosestScrollableAncestor,
 	type Locale,
 	type ObservableChangeEvent,
 	type PositionOptions,
-	type PositioningFunction,
-	type Rect
+	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'lodash-es';
@@ -253,10 +254,12 @@ export default class BalloonPanelView extends View {
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
 
+		const hideTheBalloon = shouldBalloonBeHidden( options );
+
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
-		const left = parseInt( optimalPosition.left as any );
-		const top = parseInt( optimalPosition.top as any );
+		const left = hideTheBalloon ? -99999 : parseInt( optimalPosition.left as any );
+		const top = hideTheBalloon ? -99999 : parseInt( optimalPosition.top as any );
 
 		const position = optimalPosition.name as this[ 'position' ];
 		const config: { withArrow?: boolean } = optimalPosition.config || {};
@@ -1166,4 +1169,56 @@ export function generatePositions( options: {
 	function getSouthTop( targetRect: Rect ) {
 		return targetRect.bottom + heightOffset;
 	}
+}
+
+/**
+ * Check if passed element has scroll
+ * @param element HTML element to check
+ * @returns True if element has vertical scroll
+ */
+function hasElementVerticalScroll( element: HTMLElement ): boolean {
+	// Compare the height to see if the element has scrollable content
+	const hasScrollableContent = element.scrollHeight > element.clientHeight;
+
+	// It's not enough because the element's `overflow-y` style can be set as
+	// * `hidden`
+	// * `hidden !important`
+	// In those cases, the scrollbar isn't shown
+	const overflowYStyle = window.getComputedStyle( element ).overflowY;
+	const isOverflowHidden = overflowYStyle.indexOf( 'hidden' ) !== -1;
+
+	return hasScrollableContent && !isOverflowHidden;
+}
+
+/**
+ * Returns true when a BalloonPanel and element that it is pinned to is outside the visible area.
+ */
+function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
+	const limiterElement = options.limiter ? getDomElement( options.limiter ) : defaultLimiterElement;
+	const targetElement = typeof options.target === 'function' ? options.target() : options.target;
+	const hasEditorVerticalScroll = hasElementVerticalScroll( limiterElement! );
+
+	// Check if editor is scrollable if not get closest scrollable ancestor.
+	const scrollableWrapper = hasEditorVerticalScroll ?
+		findClosestScrollableAncestor( limiterElement!.firstChild as HTMLElement ) :
+		findClosestScrollableAncestor( limiterElement! );
+
+	if ( scrollableWrapper ) {
+		const scrollableWrapperRect = new Rect( scrollableWrapper! );
+		const targetRect = new Rect( targetElement as HTMLElement );
+
+		if ( // scroll up
+			( targetRect.top + targetRect.height ) < scrollableWrapperRect.top ||
+			// scroll down
+			( targetRect.top ) > scrollableWrapperRect.bottom ||
+			// scroll right
+			( targetRect.left + ( targetRect.width / 2 ) ) < scrollableWrapperRect.left ||
+			// scroll left
+			( targetRect.right - ( targetRect.width / 2 ) ) > scrollableWrapperRect.right
+		) {
+			return true;
+		}
+	}
+
+	return false;
 }
