@@ -40,6 +40,10 @@ CKEditor 5 provides support for alternate image text using the {@link module:ima
 	This feature follows the markup proposed by the [Editor Recommendations](https://ckeditor.github.io/editor-recommendations/features/image.html) project.
 </info-box>
 
+### Utilizing CKBox to manage text alternatives
+
+When using the {@link features/ckbox CKBox file manager}, you can use its {@link @ckbox features/file-management/metadata#description metadata management tools} to set or change the text alternative. CKBox automatically adds the metadata to the `alt` tag.
+
 ## Installation
 
 This feature is available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}. If your integration uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
