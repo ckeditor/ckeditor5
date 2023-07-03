@@ -76,7 +76,6 @@ export default class InsertParagraphCommand extends Command {
 				// NOTE: In case when paragraph is empty.
 				// <paragraph>[]</paragraph> ---> <paragraph></paragraph><paragraph>[]</paragraph>
 				position = createPositionBellow( writer, position, allowedParent );
-				console.log( position );
 			} else if ( position.isAtStart && position.path.length > 1 && ( position.nodeAfter as Text ).data ) {
 				// When position is at the start of the line we want to insert paragraph above.
 				// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
