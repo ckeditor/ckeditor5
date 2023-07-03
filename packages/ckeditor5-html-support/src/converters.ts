@@ -134,8 +134,6 @@ export function viewToAttributeInlineConverter(
 					return;
 				}
 
-				// TODO How to preserve spaces around? They are trimmed by DOM converter while parsing HTML string.
-
 				const parts = conversionApi.getSplitParts( modelElement );
 
 				data.modelRange = conversionApi.writer.createRange(

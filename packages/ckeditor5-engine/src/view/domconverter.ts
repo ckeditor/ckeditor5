@@ -142,9 +142,9 @@ export default class DomConverter {
 	private readonly _rawContentElementMatcher = new Matcher();
 
 	/**
-	 * A set of encountered raw content DOM nodes. It is used for preventing left trimming of the following text node.
+	 * TODO
 	 */
-	private readonly _encounteredRawContentDomNodes = new WeakSet<DomNode>();
+	private readonly _inlineObjectElementMatcher = new Matcher();
 
 	/**
 	 * Creates a DOM converter.
@@ -667,10 +667,19 @@ export default class DomConverter {
 		// Get the first yielded value or a returned value.
 		const node = generator.next().value;
 
+		if ( !node ) {
+			return null;
+		}
+
 		// Trigger children handling.
 		generator.next();
 
-		this._processInlineNodes( null, inlineNodes );
+		this._processDomInlineNodes( null, inlineNodes );
+
+		// Text not got trimmed to an empty string so there is no result node.
+		if ( node.is( '$text' ) && node.data.length == 0 ) {
+			return null;
+		}
 
 		return node;
 	}
@@ -724,11 +733,7 @@ export default class DomConverter {
 			let nestInlineScope = false;
 
 			if ( viewElement ) {
-				// TODO extract this condition to helper
-				if (
-					viewElement.is( 'element' ) &&
-					( viewElement.name == 'br' || this.inlineObjectElements.includes( viewElement.name ) )
-				) {
+				if ( this._isInlineObjectElement( viewElement ) ) {
 					inlineNodes.push( viewElement );
 				}
 
@@ -759,8 +764,7 @@ export default class DomConverter {
 					}
 				}
 
-				// TODO extract this condition to helper
-				if ( viewElement.name == 'br' || this.inlineObjectElements.includes( viewElement.name ) ) {
+				if ( this._isInlineObjectElement( viewElement ) ) {
 					inlineNodes.push( viewElement );
 					nestInlineScope = true;
 				}
@@ -771,9 +775,6 @@ export default class DomConverter {
 					const rawContent = isComment( domNode ) ? domNode.data : ( domNode as DomElement ).innerHTML;
 
 					viewElement._setCustomProperty( '$rawContent', rawContent );
-
-					// Store a DOM node to prevent left trimming of the following text node.
-					this._encounteredRawContentDomNodes.add( domNode );
 
 					return viewElement;
 				}
@@ -803,7 +804,7 @@ export default class DomConverter {
 		options: Parameters<DomConverter[ 'domToView' ]>[ 1 ],
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
-		this._processInlineNodes( domElement, inlineNodes );
+		this._processDomInlineNodes( domElement, inlineNodes );
 
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
 			const domChild = domElement.childNodes[ i ];
@@ -820,13 +821,13 @@ export default class DomConverter {
 			}
 		}
 
-		this._processInlineNodes( domElement, inlineNodes );
+		this._processDomInlineNodes( domElement, inlineNodes );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _processInlineNodes( domParent: DomElement | null, inlineNodes: Array<ViewNode> ) {
+	private _processDomInlineNodes( domParent: DomElement | null, inlineNodes: Array<ViewNode> ) {
 		if ( !inlineNodes.length ) {
 			return;
 		}
@@ -841,6 +842,7 @@ export default class DomConverter {
 			const node = inlineNodes[ i ];
 
 			if ( !node.is( '$text' ) ) {
+				prevNodeEndsWithSpace = false;
 				continue;
 			}
 
@@ -860,8 +862,8 @@ export default class DomConverter {
 				const prevNode = i > 0 ? inlineNodes[ i - 1 ] : null;
 				const nextNode = i + 1 < inlineNodes.length ? inlineNodes[ i + 1 ] : null;
 
-				const shouldLeftTrim = this._checkShouldLeftTrimDomText( node, prevNode, prevNodeEndsWithSpace );
-				const shouldRightTrim = this._checkShouldRightTrimDomText( node, nextNode );
+				const shouldLeftTrim = !prevNode || prevNode.is( 'element' ) && prevNode.name == 'br' || prevNodeEndsWithSpace;
+				const shouldRightTrim = nextNode ? false : !startsWithFiller( node.data );
 
 				// If the previous dom text node does not exist or it ends by whitespace character, remove space character from the
 				// beginning of this text node. Such space character is treated as a whitespace.
@@ -907,7 +909,7 @@ export default class DomConverter {
 			// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
 			// changed to normal space. All left &nbsp; are &nbsp; inserted intentionally.
 
-			if ( data.length == 0 ) {
+			if ( data.length == 0 && node.parent ) {
 				node._remove();
 				inlineNodes.splice( i, 1 );
 				i--;
@@ -1398,6 +1400,13 @@ export default class DomConverter {
 	}
 
 	/**
+	 * TODO
+	 */
+	public registerInlineObjectMatcher( pattern: MatcherPattern ): void {
+		this._inlineObjectElementMatcher.add( pattern );
+	}
+
+	/**
 	 * Returns the block {@link module:engine/view/filler filler} node based on the current {@link #blockFillerMode} setting.
 	 */
 	private _getBlockFiller(): DomNode {
@@ -1518,38 +1527,6 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Helper function which checks if a DOM text node, preceded by the given `prevNode` should
-	 * be trimmed from the left side.
-	 *
-	 * @param prevNode Either DOM text or `<br>` or one of `#inlineObjectElements`.
-	 */
-	private _checkShouldLeftTrimDomText( node: ViewText, prevNode: ViewNode | null, lastNodeEndsWithSpace: boolean ): boolean {
-		if ( !prevNode ) {
-			return true;
-		}
-
-		if ( prevNode.is( 'element' ) ) {
-			return prevNode.name === 'br';
-		}
-
-		return lastNodeEndsWithSpace;
-	}
-
-	/**
-	 * Helper function which checks if a DOM text node, succeeded by the given `nextNode` should
-	 * be trimmed from the right side.
-	 *
-	 * @param nextNode Either DOM text or `<br>` or one of `#inlineObjectElements`.
-	 */
-	private _checkShouldRightTrimDomText( node: ViewText, nextNode: ViewNode | null ): boolean {
-		if ( nextNode ) {
-			return false;
-		}
-
-		return !startsWithFiller( new Text( node.data ) );
-	}
-
-	/**
 	 * Helper function. For given {@link module:engine/view/text~Text view text node}, it finds previous or next sibling
 	 * that is contained in the same container element. If there is no such sibling, `null` is returned.
 	 *
@@ -1596,8 +1573,14 @@ export default class DomConverter {
 	/**
 	 * Returns `true` if a DOM node belongs to {@link #inlineObjectElements}. `false` otherwise.
 	 */
-	private _isInlineObjectElement( node: DomNode ): boolean {
-		return this.isElement( node ) && this.inlineObjectElements.includes( node.tagName.toLowerCase() );
+	private _isInlineObjectElement( node: ViewNode | ViewDocumentFragment ): node is ViewElement {
+		if ( !node.is( 'element' ) ) {
+			return false;
+		}
+
+		return node.name == 'br' ||
+			this.inlineObjectElements.includes( node.name ) ||
+			!!this._inlineObjectElementMatcher.match( node );
 	}
 
 	/**

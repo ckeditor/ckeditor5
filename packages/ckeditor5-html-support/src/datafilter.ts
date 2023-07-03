@@ -673,6 +673,12 @@ export default class DataFilter extends Plugin {
 			} );
 		}
 
+		// TODO temporary test
+		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( {
+			name: 'i',
+			classes: 'inline-icon'
+		} );
+
 		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this ) );
 
 		conversion.for( 'downcast' ).attributeToElement( {
