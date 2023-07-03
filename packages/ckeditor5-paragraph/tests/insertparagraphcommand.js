@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import InsertParagraphCommand from '../src/insertparagraphcommand';
+import InsertParagraphCommand, { createPositionBellow } from '../src/insertparagraphcommand';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -94,6 +94,33 @@ describe( 'InsertParagraphCommand', () => {
 				'<paragraph>[]</paragraph>' +
 				'<paragraph>foo</paragraph>'
 			);
+		} );
+
+		it( 'should insert paragraph when position is at the start of line asd', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph></paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'Should create position bellow', () => {
+			model.change( writer => {
+				let position = model.createPositionFromPath( root, [ 0, 2 ] );
+				let expectedPosition = model.createPositionFromPath( root, [ 1 ] );
+				expect( createPositionBellow( writer, position, root ), '[ 0, 2 ] --> [ 1 ]' )
+					.to.eql( expectedPosition );
+
+				position = model.createPositionFromPath( root, [ 1, 2, 3 ] );
+				expectedPosition = model.createPositionFromPath( root, [ 1, 3 ] );
+				expect( createPositionBellow( writer, position, root ), '[ 1, 2, 3 ] --> [ 1, 3 ]' )
+					.to.eql( expectedPosition );
+			} );
 		} );
 
 		it( 'should do nothing if the paragraph is not allowed at the provided position', () => {
