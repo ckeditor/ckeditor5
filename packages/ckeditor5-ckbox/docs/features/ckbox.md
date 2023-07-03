@@ -1,7 +1,7 @@
 ---
 category: features-file-management
 menu-title: CKBox
-meta-title: CKBox in CKEditor 5
+meta-title: CKBox file manager in CKEditor 5
 meta-description: Learn all about using the CKBox file manager and service with CKEditor 5
 modified_at: 2022-06-20
 order: 10
@@ -10,7 +10,7 @@ badges: [ premium ]
 
 {@snippet features/build-ckbox-source}
 
-# CKBox
+# CKBox file manager
 
 The CKBox feature lets you easily insert images and links to other files into your content.
 
