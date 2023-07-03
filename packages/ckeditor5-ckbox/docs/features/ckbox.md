@@ -27,7 +27,7 @@ The CKBox feature lets you easily insert images and links to other files into yo
 
 ## How CKBox enhances CKEditor 5
 
-CKBox replaces the basic CKEditor 5 image upload feature. It provides image and file upload and management capabilities:
+CKBox replaces the basic CKEditor 5 image upload feature. It provides images and files upload and management capabilities:
 
 * Enables drag & drop uploads of images and other files.
 * Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
@@ -79,7 +79,7 @@ The CKBox feature requires one of the following plugins to be loaded to work cor
 * {@link module:image/imageinline~ImageInline The `ImageInline` feature}
 * {@link module:image/image~Image The `Image` feature} (a glue plugin that loads both the `ImageBlock` and `ImageInline` features)
 
-These plugins are, by default, loaded with the predefined builds, such as `ClassicEditor`. If you do not have any of them in your editor, install one and add it to your plugin list.
+These plugins are, by default, loaded with predefined builds, such as `ClassicEditor`. If you do not have any of them in your editor, install one and add it to your plugin list.
 
 Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `ArticlePluginSet`, `PictureEditing`, `ImageUpload`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefined builds, these need to be added manually.
 
@@ -104,7 +104,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Further in the document the dependency plugins will be ommitted in code listings for clarity.
+Further in the document, the dependency plugins will be omitted in code listings for clarity.
 
 ## Configuration
 
