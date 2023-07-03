@@ -74,7 +74,6 @@ export default class InsertParagraphCommand extends Command {
 
 			if ( position.isAtStart && position.isAtEnd && position.path.length > 1 ) {
 				// NOTE: In case when paragraph is empty.
-				// When position is at the start and at the end of the line we want to insert paragraph after.
 				// <paragraph>[]</paragraph> ---> <paragraph></paragraph><paragraph>[]</paragraph>
 				position = createPositionBellow( writer, position, allowedParent );
 				console.log( position );
