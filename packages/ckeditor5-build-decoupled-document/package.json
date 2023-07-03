@@ -53,9 +53,11 @@
     "@ckeditor/ckeditor5-style": "^37.1.0",
     "@ckeditor/ckeditor5-table": "^37.1.0",
     "@ckeditor/ckeditor5-typing": "^37.1.0",
+    "@ftrprf/ckeditor5-audio": "^0.0.2",
     "@ftrprf/ckeditor5-content-templates": "0.0.1",
     "@ftrprf/ckeditor5-iframe": "https://github.com/FTRPRF/ckeditor5-iframe.git",
-    "@ftrprf/ckeditor5-scratch-blocks": "0.0.3"
+    "@ftrprf/ckeditor5-scratch-blocks": "0.0.3",
+    "@ftrprf/ckeditor5-video": "^0.0.3"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^37.1.0",
