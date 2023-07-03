@@ -892,5 +892,54 @@ describe( 'table cell properties', () => {
 				} );
 			} );
 		} );
+
+		describe( 'table properties without color picker', () => {
+			let editor, editorElement, contextualBalloon, tableCellPropertiesUI;
+
+			beforeEach( () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing ],
+						table: {
+							tableCellProperties: {
+								colorPicker: false
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						contextualBalloon = editor.plugins.get( ContextualBalloon );
+						tableCellPropertiesUI = editor.plugins.get( TableCellPropertiesUI );
+						tableCellPropertiesView = tableCellPropertiesUI.view;
+
+						// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+						testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
+						testUtils.sinon.stub( contextualBalloon.view, 'pin' ).returns( {} );
+					} );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
+
+				return editor.destroy();
+			} );
+
+			it( 'should define table.tableCellProperties.colorPicker', () => {
+				expect( editor.config.get( 'table.tableCellProperties.colorPicker' ) ).to.be.false;
+			} );
+
+			it( 'should not have color picker in dropdown', () => {
+				tableCellPropertiesUI._showView();
+
+				const panelView = tableCellPropertiesUI.view.borderColorInput.fieldView.dropdownView.panelView;
+				const colorPicker = panelView.children.get( 0 ).colorPickerFragmentView.element;
+
+				expect( colorPicker ).to.be.null;
+			} );
+		} );
 	} );
 } );

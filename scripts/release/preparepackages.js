@@ -9,7 +9,7 @@
 
 'use strict';
 
-const path = require( 'path' );
+const upath = require( 'upath' );
 const { EventEmitter } = require( 'events' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { Listr } = require( 'listr2' );
@@ -17,7 +17,7 @@ const updateVersionReferences = require( './utils/updateversionreferences' );
 const buildTsAndDllForCkeditor5Root = require( './utils/buildtsanddllforckeditor5root' );
 const getCKEditor5PackageJson = require( './utils/getckeditor5packagejson' );
 const parseArguments = require( './utils/parsearguments' );
-const isCKEditor5Package = require( './utils/isckeditor5package' );
+const isCKEditor5PackageFactory = require( './utils/isckeditor5packagefactory' );
 const compileTypeScriptCallback = require( './utils/compiletypescriptcallback' );
 const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
@@ -29,9 +29,8 @@ const cliArguments = parseArguments( process.argv.slice( 2 ) );
 // `executeInParallel()` is executed thrice.
 EventEmitter.defaultMaxListeners = ( cliArguments.concurrency * 3 + 1 );
 
-// TODO: If nightly: generate a version number. See: #14179.
-const latestVersion = releaseTools.getLastFromChangelog();
-const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
+let latestVersion;
+let versionChangelog;
 
 const taskOptions = {
 	rendererOptions: {
@@ -72,12 +71,12 @@ const tasks = new Listr( [
 				},
 				{
 					title: 'Updating dependencies.',
-					task: () => {
+					task: async () => {
 						return releaseTools.updateDependencies( {
 							// We do not use caret ranges by purpose. See: #14046.
 							version: latestVersion,
 							packagesDirectory: PACKAGES_DIRECTORY,
-							shouldUpdateVersionCallback: isCKEditor5Package
+							shouldUpdateVersionCallback: await isCKEditor5PackageFactory()
 						} );
 					}
 				},
@@ -109,7 +108,7 @@ const tasks = new Listr( [
 						return releaseTools.executeInParallel( {
 							packagesDirectory: PACKAGES_DIRECTORY,
 							packagesDirectoryFilter: packageDirectory => {
-								return path.basename( packageDirectory ).startsWith( 'ckeditor5-build-' );
+								return upath.basename( packageDirectory ).startsWith( 'ckeditor5-build-' );
 							},
 							listrTask: task,
 							taskToExecute: buildCKEditor5BuildsCallback,
@@ -184,15 +183,22 @@ const tasks = new Listr( [
 					...ctx.updatedFiles
 				]
 			} );
-		},
-		skip: cliArguments.nightly
+		}
 	}
 ] );
 
-tasks.run()
-	.catch( err => {
+( async () => {
+	try {
+		latestVersion = cliArguments.nightly ?
+			await releaseTools.getNextNightly() :
+			releaseTools.getLastFromChangelog();
+
+		versionChangelog = releaseTools.getChangesForVersion( latestVersion );
+
+		await tasks.run();
+	} catch ( err ) {
 		process.exitCode = 1;
 
-		console.log( '' );
 		console.error( err );
-	} );
+	}
+} )();
