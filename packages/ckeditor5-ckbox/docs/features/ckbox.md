@@ -12,7 +12,7 @@ badges: [ premium ]
 
 # CKBox file manager
 
-The CKBox feature lets you easily insert images and links to other files into your content.
+The CKBox feature lets you easily upload various files and insert images and links to other files into your content.
 
 <info-box>
 	This is a premium feature and you need a subscription to use it. You can [purchase it here](https://ckeditor.com/pricing/) for your open-source CKEditor implementation. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) if:
@@ -27,7 +27,7 @@ The CKBox feature lets you easily insert images and links to other files into yo
 
 ## How CKBox enhances CKEditor 5
 
-CKBox replaces the basic CKEditor 5 image upload feature. It provides images and files upload and management capabilities:
+As a full-fledged file manager, CKBox also replaces the basic CKEditor 5 image upload feature. It provides images and files upload and management capabilities:
 
 * Enables drag & drop uploads of images and other files.
 * Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
@@ -41,7 +41,7 @@ To find out more about CKBox, the brand-new file manager, visit the [CKBox websi
 
 To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. See detailed instructions in the demo below.
 
-Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} will now also upload images into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
+Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} will now also upload images right into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
 
 {@snippet features/ckbox}
 
