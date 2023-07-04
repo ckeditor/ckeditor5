@@ -29,6 +29,7 @@ import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
+const OFF_THE_SCREEN_POSITION = -99999;
 
 /**
  * The balloon panel view class.
@@ -258,8 +259,8 @@ export default class BalloonPanelView extends View {
 
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
-		const left = hideTheBalloon ? -99999 : parseInt( optimalPosition.left as any );
-		const top = hideTheBalloon ? -99999 : parseInt( optimalPosition.top as any );
+		const left = hideTheBalloon ? OFF_THE_SCREEN_POSITION : parseInt( optimalPosition.left as any );
+		const top = hideTheBalloon ? OFF_THE_SCREEN_POSITION : parseInt( optimalPosition.top as any );
 
 		const position = optimalPosition.name as this[ 'position' ];
 		const config: { withArrow?: boolean } = optimalPosition.config || {};
@@ -1178,23 +1179,18 @@ export function generatePositions( options: {
  */
 function hasElementVerticalScroll( element: HTMLElement ): boolean {
 	// Compare the height to see if the element has scrollable content
-	const hasScrollableContent = element.scrollHeight > element.clientHeight;
-
-	// It's not enough because the element's `overflow-y` style can be set as
-	// * `hidden`
-	// * `hidden !important`
-	// In those cases, the scrollbar isn't shown
-	const overflowYStyle = window.getComputedStyle( element ).overflowY;
-	const isOverflowHidden = overflowYStyle.indexOf( 'hidden' ) !== -1;
-
-	return hasScrollableContent && !isOverflowHidden;
+	return element.scrollHeight > element.clientHeight;
 }
 
 /**
  * Returns true when a BalloonPanel and element that it is pinned to is outside the visible area.
  */
 function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
-	const limiterElement = options.limiter ? getDomElement( options.limiter ) : defaultLimiterElement;
+	if ( !( options.limiter instanceof HTMLElement ) ) {
+		return false;
+	}
+
+	const limiterElement = getDomElement( options.limiter );
 	const targetElement = typeof options.target === 'function' ? options.target() : options.target;
 	const hasEditorVerticalScroll = hasElementVerticalScroll( limiterElement! );
 
