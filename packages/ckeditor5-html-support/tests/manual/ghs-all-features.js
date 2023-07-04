@@ -38,6 +38,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import HtmlComment from '../../src/htmlcomment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -51,7 +52,7 @@ ClassicEditor
 			ImageUpload, CloudServices,
 			RemoveFormat,
 			SourceEditing,
-			GeneralHtmlSupport
+			GeneralHtmlSupport, HtmlComment
 		],
 		toolbar: [
 			'sourceEditing',

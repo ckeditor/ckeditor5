@@ -770,11 +770,19 @@ export default class DomConverter {
 				}
 
 				// Treat this element's content as a raw data if it was registered as such.
-				// Comment node is also treated as an element with raw data.
-				if ( this._isViewElementWithRawContent( viewElement, options ) || isComment( domNode ) ) {
-					const rawContent = isComment( domNode ) ? domNode.data : ( domNode as DomElement ).innerHTML;
+				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
+					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
 
-					viewElement._setCustomProperty( '$rawContent', rawContent );
+					if ( !nestInlineScope && !this.blockElements.includes( viewElement.name ) ) {
+						inlineNodes.push( viewElement );
+					}
+
+					return viewElement;
+				}
+
+				// Comment node is also treated as an element with raw data.
+				if ( isComment( domNode ) ) {
+					viewElement._setCustomProperty( '$rawContent', domNode.data );
 
 					return viewElement;
 				}
@@ -1541,17 +1549,17 @@ export default class DomConverter {
 		} );
 
 		for ( const value of treeWalker ) {
+			// <br> found – it works like a block boundary, so do not scan further.
+			if ( value.item.is( 'element', 'br' ) ) {
+				return null;
+			}
 			// Found an inline object (for example an image).
-			if ( value.item.is( 'element' ) && this.inlineObjectElements.includes( value.item.name ) ) {
+			else if ( this._isInlineObjectElement( value.item ) ) {
 				return value.item;
 			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 			// text node in its container element.
 			else if ( value.item.is( 'containerElement' ) ) {
-				return null;
-			}
-			// <br> found – it works like a block boundary, so do not scan further.
-			else if ( value.item.is( 'element', 'br' ) ) {
 				return null;
 			}
 			// Found a text node in the same container element.
@@ -1573,7 +1581,7 @@ export default class DomConverter {
 	/**
 	 * Returns `true` if a DOM node belongs to {@link #inlineObjectElements}. `false` otherwise.
 	 */
-	private _isInlineObjectElement( node: ViewNode | ViewDocumentFragment ): node is ViewElement {
+	private _isInlineObjectElement( node: ViewNode | ViewTextProxy | ViewDocumentFragment ): node is ViewElement {
 		if ( !node.is( 'element' ) ) {
 			return false;
 		}

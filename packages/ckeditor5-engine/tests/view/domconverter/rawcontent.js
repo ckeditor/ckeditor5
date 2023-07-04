@@ -255,9 +255,6 @@ describe( 'DOMConverter raw content matcher', () => {
 				converter.registerRawContentMatcher( {
 					name: 'span'
 				} );
-				converter.registerInlineObjectMatcher( {
-					name: 'span'
-				} );
 
 				const domP = createElement( document, 'p', {}, [
 					document.createTextNode( '  foo  ' ),
@@ -275,9 +272,6 @@ describe( 'DOMConverter raw content matcher', () => {
 
 			it( 'should not trim whitespaces before or after raw content inline element with deeper nesting', () => {
 				converter.registerRawContentMatcher( {
-					name: 'span'
-				} );
-				converter.registerInlineObjectMatcher( {
 					name: 'span'
 				} );
 
