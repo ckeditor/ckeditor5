@@ -5,21 +5,21 @@
 
 /* globals console */
 
-import { transform, transformSets } from '../../../src/model/operation/transform';
+import { transform, transformSets } from '../../../src/model/operation/transform.js';
 
-import Model from '../../../src/model/model';
-import RootElement from '../../../src/model/rootelement';
-import Node from '../../../src/model/node';
-import Position from '../../../src/model/position';
-import Range from '../../../src/model/range';
+import Model from '../../../src/model/model.js';
+import RootElement from '../../../src/model/rootelement.js';
+import Node from '../../../src/model/node.js';
+import Position from '../../../src/model/position.js';
+import Range from '../../../src/model/range.js';
 
-import InsertOperation from '../../../src/model/operation/insertoperation';
-import AttributeOperation from '../../../src/model/operation/attributeoperation';
-import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
-import MarkerOperation from '../../../src/model/operation/markeroperation';
-import MoveOperation from '../../../src/model/operation/moveoperation';
-import RenameOperation from '../../../src/model/operation/renameoperation';
-import NoOperation from '../../../src/model/operation/nooperation';
+import InsertOperation from '../../../src/model/operation/insertoperation.js';
+import AttributeOperation from '../../../src/model/operation/attributeoperation.js';
+import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation.js';
+import MarkerOperation from '../../../src/model/operation/markeroperation.js';
+import MoveOperation from '../../../src/model/operation/moveoperation.js';
+import RenameOperation from '../../../src/model/operation/renameoperation.js';
+import NoOperation from '../../../src/model/operation/nooperation.js';
 
 describe( 'transform', () => {
 	let model, doc, root, op, nodeA, nodeB, expected;

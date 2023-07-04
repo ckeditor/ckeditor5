@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	DiffItem,
@@ -21,14 +21,14 @@ import type {
 	UpcastElementEvent,
 	ViewElement,
 	Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import ListEditing from '../list/listediting';
-import ListStyleCommand from './liststylecommand';
-import ListReversedCommand from './listreversedcommand';
-import ListStartCommand from './liststartcommand';
-import { getSiblingListItem, getSiblingNodes } from '../list/utils';
-import type { ListPropertiesConfig } from '../listconfig';
+import ListEditing from '../list/listediting.js';
+import ListStyleCommand from './liststylecommand.js';
+import ListReversedCommand from './listreversedcommand.js';
+import ListStartCommand from './liststartcommand.js';
+import { getSiblingListItem, getSiblingNodes } from '../list/utils.js';
+import type { ListPropertiesConfig } from '../listconfig.js';
 
 const DEFAULT_LIST_TYPE = 'default';
 

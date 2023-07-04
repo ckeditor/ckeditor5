@@ -7,11 +7,11 @@
 * @module table/tablecaption/tablecaptionui
 */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type ToggleTableCaptionCommand from './toggletablecaptioncommand';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import type ToggleTableCaptionCommand from './toggletablecaptioncommand.js';
 
-import { getCaptionFromModelSelection } from './utils';
+import { getCaptionFromModelSelection } from './utils.js';
 
 /**
   * The table caption UI plugin. It introduces the `'toggleTableCaption'` UI button.

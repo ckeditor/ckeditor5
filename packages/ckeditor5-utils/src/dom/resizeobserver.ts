@@ -7,7 +7,7 @@
  * @module utils/dom/resizeobserver
  */
 
-import global from './global';
+import global from './global.js';
 
 /**
  * A helper class which instances allow performing custom actions when native DOM elements are resized.

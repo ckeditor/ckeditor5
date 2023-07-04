@@ -33,10 +33,10 @@ The {@link installation/advanced/dll-builds DLL builds} support was introduced f
 
 ```js
 // ❌ Old imports:
-import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
+import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory.js';
 // ✅ New imports:
-import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
-import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory';
+import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory.js';
+import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory.js';
 ```
 
 ### Changed mechanism for setting and clearing the editor read-only mode

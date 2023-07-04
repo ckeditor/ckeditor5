@@ -7,13 +7,13 @@
  * @module paste-from-office/normalizers/googlesheetsnormalizer
  */
 
-import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine';
+import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
 
-import removeXmlns from '../filters/removexmlns';
-import removeGoogleSheetsTag from '../filters/removegooglesheetstag';
-import removeInvalidTableWidth from '../filters/removeinvalidtablewidth';
-import removeStyleBlock from '../filters/removestyleblock';
-import type { Normalizer, NormalizerData } from '../normalizer';
+import removeXmlns from '../filters/removexmlns.js';
+import removeGoogleSheetsTag from '../filters/removegooglesheetstag.js';
+import removeInvalidTableWidth from '../filters/removeinvalidtablewidth.js';
+import removeStyleBlock from '../filters/removestyleblock.js';
+import type { Normalizer, NormalizerData } from '../normalizer.js';
 
 const googleSheetsMatch = /<google-sheets-html-origin/i;
 

@@ -5,16 +5,16 @@
 
 /* globals document, console */
 
-import DomConverter from '../../../src/view/domconverter';
-import ViewEditable from '../../../src/view/editableelement';
-import ViewDocument from '../../../src/view/document';
-import ViewUIElement from '../../../src/view/uielement';
-import ViewContainerElement from '../../../src/view/containerelement';
-import DowncastWriter from '../../../src/view/downcastwriter';
-import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import DomConverter from '../../../src/view/domconverter.js';
+import ViewEditable from '../../../src/view/editableelement.js';
+import ViewDocument from '../../../src/view/document.js';
+import ViewUIElement from '../../../src/view/uielement.js';
+import ViewContainerElement from '../../../src/view/containerelement.js';
+import DowncastWriter from '../../../src/view/downcastwriter.js';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;

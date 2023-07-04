@@ -5,8 +5,8 @@
 
 /* globals console */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import utils from '../../src/imagestyle/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import utils from '../../src/imagestyle/utils.js';
 
 describe( 'ImageStyle utils', () => {
 	const { getDefaultStylesConfiguration, DEFAULT_OPTIONS, DEFAULT_ICONS } = utils;

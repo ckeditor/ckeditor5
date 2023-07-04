@@ -7,10 +7,10 @@
  * @module horizontal-line/horizontallineui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
-import type HorizontalLineCommand from './horizontallinecommand';
+import type HorizontalLineCommand from './horizontallinecommand.js';
 import horizontalLineIcon from '../theme/icons/horizontalline.svg';
 
 /**

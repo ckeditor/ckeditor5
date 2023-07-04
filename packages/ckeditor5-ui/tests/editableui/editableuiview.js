@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
-import ViewRootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
-import EditableUIView from '../../src/editableui/editableuiview';
-import View from '../../src/view';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import ViewRootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
+import EditableUIView from '../../src/editableui/editableuiview.js';
+import View from '../../src/view.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'EditableUIView', () => {
 	let view, editableElement, editingView, editingViewRoot, locale;

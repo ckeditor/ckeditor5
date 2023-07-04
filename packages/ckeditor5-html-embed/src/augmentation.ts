@@ -9,7 +9,7 @@ import type {
 	HtmlEmbedConfig,
 	HtmlEmbedEditing,
 	HtmlEmbedUI
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {

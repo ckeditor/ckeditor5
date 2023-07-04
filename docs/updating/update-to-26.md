@@ -41,22 +41,22 @@ Therefore, when upgrading to version 26.0.0, you may stumble upon the {@link sup
 Before, when you were passing plugins directly to `Editor.create()` via `config.plugins`, this would be your setup:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
+import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading.js';
+import ImagePlugin from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import ImageStylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle.js';
+import ImageToolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
+import LinkPlugin from '@ckeditor/ckeditor5-link/src/link.js';
+import ListPlugin from '@ckeditor/ckeditor5-list/src/list.js';
+import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor'), {
@@ -114,26 +114,26 @@ Based on the list above (or the error being thrown when you upgraded your packag
 After the upgrade, the setup should therefore look like this:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
+import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading.js';
+import ImagePlugin from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import ImageStylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle.js';
+import ImageToolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
+import LinkPlugin from '@ckeditor/ckeditor5-link/src/link.js';
+import ListPlugin from '@ckeditor/ckeditor5-list/src/list.js';
+import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 // ADDED
-import ImageUploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
-import CloudServicesPlugin from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import ImageUploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import CloudServicesPlugin from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor'), {

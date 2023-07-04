@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Plugin from '../src/plugin';
-import Editor from '../src/editor/editor';
+import Plugin from '../src/plugin.js';
+import Editor from '../src/editor/editor.js';
 
 describe( 'Plugin', () => {
 	let editor;

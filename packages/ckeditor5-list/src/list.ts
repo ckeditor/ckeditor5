@@ -7,10 +7,10 @@
  * @module list/list
  */
 
-import ListEditing from './list/listediting';
-import ListUI from './list/listui';
+import ListEditing from './list/listediting.js';
+import ListUI from './list/listui.js';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 /**
  * The list feature.

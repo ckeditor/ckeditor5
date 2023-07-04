@@ -7,7 +7,7 @@ import {
 	getListTypeFromListStyleType,
 	getTypeAttributeFromListStyleType,
 	getListStyleTypeFromTypeAttribute
-} from '../../../src/documentlistproperties/utils/style';
+} from '../../../src/documentlistproperties/utils/style.js';
 
 describe( 'DocumentListProperties - utils - style', () => {
 	describe( 'getListTypeFromListStyleType()', () => {

@@ -7,7 +7,7 @@
  * @module link/linkconfig
  */
 
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
+import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 /**
  * The configuration of the {@link module:link/link~Link link feature}.

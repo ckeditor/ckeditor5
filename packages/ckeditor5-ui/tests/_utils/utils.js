@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import View from '../../src/view';
+import View from '../../src/view.js';
 
 /**
  * Test utils for CKEditor UI.

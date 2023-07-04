@@ -10,9 +10,9 @@
 /* globals window */
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { CKEditorError } from 'ckeditor5/src/utils';
-import type { EditorWatchdogRestartEvent } from './editorwatchdog';
-import type { ContextWatchdogItemErrorEvent, ContextWatchdogItemRestartEvent } from './contextwatchdog';
+import type { CKEditorError } from 'ckeditor5/src/utils.js';
+import type { EditorWatchdogRestartEvent } from './editorwatchdog.js';
+import type { ContextWatchdogItemErrorEvent, ContextWatchdogItemRestartEvent } from './contextwatchdog.js';
 
 /**
  * An abstract watchdog class that handles most of the error handling process and the state of the underlying component.

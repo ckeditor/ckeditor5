@@ -7,7 +7,7 @@
  * @module utils/diff
  */
 
-import fastDiff from './fastdiff';
+import fastDiff from './fastdiff.js';
 
 // The following code is based on the "O(NP) Sequence Comparison Algorithm"
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.

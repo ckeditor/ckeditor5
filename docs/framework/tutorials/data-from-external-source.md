@@ -139,7 +139,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import ExternalDataWidget from './external-data-widget/externaldatawidget';
+import ExternalDataWidget from './external-data-widget/externaldatawidget.js';
 
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
@@ -195,8 +195,8 @@ The master (glue) plugin:
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import ExternalDataWidgetEditing from './externaldatawidgetediting';
-import ExternalDataWidgetUI from './externaldatawidgetui';
+import ExternalDataWidgetEditing from './externaldatawidgetediting.js';
+import ExternalDataWidgetUI from './externaldatawidgetui.js';
 
 export default class ExternalDataWidget extends Plugin {
 	static get requires() {
@@ -452,7 +452,7 @@ Import the newly created command and add it to the editor commands:
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
-import ExternalDataWidgetCommand from './externaldatawidgetcommand';                   // ADDED
+import ExternalDataWidgetCommand from './externaldatawidgetcommand.js';                   // ADDED
 import './theme/externaldatawidget.css';
 
 export default class ExternalDataWidgetEditing extends Plugin {
@@ -541,7 +541,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import ExternalDataWidgetCommand from './externaldatawidgetcommand';
+import ExternalDataWidgetCommand from './externaldatawidgetcommand.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

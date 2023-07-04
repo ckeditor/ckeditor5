@@ -26,13 +26,13 @@ import {
 
 import type { EditorUI } from '@ckeditor/ckeditor5-ui';
 
-import Context from '../context';
-import PluginCollection from '../plugincollection';
-import CommandCollection, { type CommandsMap } from '../commandcollection';
-import EditingKeystrokeHandler from '../editingkeystrokehandler';
+import Context from '../context.js';
+import PluginCollection from '../plugincollection.js';
+import CommandCollection, { type CommandsMap } from '../commandcollection.js';
+import EditingKeystrokeHandler from '../editingkeystrokehandler.js';
 
-import type { LoadedPlugins, PluginConstructor } from '../plugin';
-import type { EditorConfig } from './editorconfig';
+import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
+import type { EditorConfig } from './editorconfig.js';
 
 /**
  * The class representing a basic, generic editor.

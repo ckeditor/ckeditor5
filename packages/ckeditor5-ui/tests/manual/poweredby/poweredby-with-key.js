@@ -5,8 +5,8 @@
 
 /* globals console, window, document, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ImageResize } from '@ckeditor/ckeditor5-image';
 
 const licenseKey = window.prompt( 'Enter valid key' ); // eslint-disable-line no-alert

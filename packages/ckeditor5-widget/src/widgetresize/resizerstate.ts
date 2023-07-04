@@ -9,7 +9,7 @@
 
 import { ObservableMixin, Rect } from '@ckeditor/ckeditor5-utils';
 
-import type { ResizerOptions } from '../widgetresize';
+import type { ResizerOptions } from '../widgetresize.js';
 
 /**
  * Stores the internal state of a single resizable object.

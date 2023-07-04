@@ -10,7 +10,7 @@
 import { BoldEditing, ItalicEditing, UnderlineEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 // Interfaces to extend basic Editor API.
 // Helper function that binds editor with HTMLForm element.
 import { DataApiMixin, Editor, ElementApiMixin, attachToForm } from '@ckeditor/ckeditor5-core';

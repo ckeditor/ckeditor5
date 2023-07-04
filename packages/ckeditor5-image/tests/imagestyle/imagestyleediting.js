@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
-import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
-import imageStyleUtils from '../../src/imagestyle/utils';
-import ImageEditing from '../../src/image/imageediting';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ImageUtils from '../../src/imageutils';
+import ImageStyleEditing from '../../src/imagestyle/imagestyleediting.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import ImageInlineEditing from '../../src/image/imageinlineediting.js';
+import ImageStyleCommand from '../../src/imagestyle/imagestylecommand.js';
+import imageStyleUtils from '../../src/imagestyle/utils.js';
+import ImageEditing from '../../src/image/imageediting.js';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
+import ImageUtils from '../../src/imageutils.js';
 
 describe( 'ImageStyleEditing', () => {
 	describe( 'plugin', () => {

@@ -7,16 +7,16 @@
  * @module html-support/integrations/style
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 import {
 	createObjectView,
 	modelToViewBlockAttributeConverter,
 	viewToModelBlockAttributeConverter,
 	viewToModelObjectConverter
-} from '../converters';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import type { DataSchemaBlockElementDefinition } from '../dataschema';
+} from '../converters.js';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import type { DataSchemaBlockElementDefinition } from '../dataschema.js';
 
 /**
  * Provides the General HTML Support for `style` elements.

@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import DocumentFragment from '../../src/model/documentfragment';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import TreeWalker from '../../src/model/treewalker';
-import Position from '../../src/model/position';
-import Range from '../../src/model/range';
+import Model from '../../src/model/model.js';
+import DocumentFragment from '../../src/model/documentfragment.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import TreeWalker from '../../src/model/treewalker.js';
+import Position from '../../src/model/position.js';
+import Range from '../../src/model/range.js';
 
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'TreeWalker', () => {
 	let model, doc, root, img1, paragraph, ba, r, img2, x,

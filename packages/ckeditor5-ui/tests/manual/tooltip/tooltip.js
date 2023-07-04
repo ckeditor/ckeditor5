@@ -5,12 +5,12 @@
 
 /* globals console, window, document, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties.js';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
 
 initEditor( '#editor' );
 initEditor( '#editor-scrollable-parent' );

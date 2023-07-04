@@ -13,10 +13,10 @@ import {
 	type ViewDocument,
 	type ViewDocumentFragment,
 	type MatcherPattern
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import markdown2html from './markdown2html/markdown2html';
-import html2markdown, { turndownService } from './html2markdown/html2markdown';
+import markdown2html from './markdown2html/markdown2html.js';
+import html2markdown, { turndownService } from './html2markdown/html2markdown.js';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.

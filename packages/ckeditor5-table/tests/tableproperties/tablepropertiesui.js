@@ -5,22 +5,22 @@
 
 /* globals document, Event */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
 
-import Table from '../../src/table';
-import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting';
-import TablePropertiesUI from '../../src/tableproperties/tablepropertiesui';
-import TablePropertiesUIView from '../../src/tableproperties/ui/tablepropertiesview';
-import { defaultColors } from '../../src/utils/ui/table-properties';
+import Table from '../../src/table.js';
+import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting.js';
+import TablePropertiesUI from '../../src/tableproperties/tablepropertiesui.js';
+import TablePropertiesUIView from '../../src/tableproperties/ui/tablepropertiesview.js';
+import { defaultColors } from '../../src/utils/ui/table-properties.js';
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesUI', () => {

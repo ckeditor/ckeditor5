@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TodoListEditing from '../../src/todolist/todolistediting';
-import CheckTodoListCommand from '../../src/todolist/checktodolistcommand';
+import TodoListEditing from '../../src/todolist/todolistediting.js';
+import CheckTodoListCommand from '../../src/todolist/checktodolistcommand.js';
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'CheckTodoListCommand', () => {
 	let editor, model, command;

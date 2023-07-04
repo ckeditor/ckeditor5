@@ -10,7 +10,7 @@
  */
 
 import type { CloudServices, CloudServicesCore, InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	Range,
 	type DocumentSelection,
@@ -22,13 +22,13 @@ import {
 	type UpcastElementEvent,
 	type ViewElement,
 	type Writer
-} from 'ckeditor5/src/engine';
-import { CKEditorError, logError } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/engine.js';
+import { CKEditorError, logError } from 'ckeditor5/src/utils.js';
 
-import type { CKBoxAssetDefinition } from './ckboxconfig';
+import type { CKBoxAssetDefinition } from './ckboxconfig.js';
 
-import CKBoxCommand from './ckboxcommand';
-import CKBoxUploadAdapter from './ckboxuploadadapter';
+import CKBoxCommand from './ckboxcommand.js';
+import CKBoxUploadAdapter from './ckboxuploadadapter.js';
 
 /**
  * The CKBox editing feature. It introduces the {@link module:ckbox/ckboxcommand~CKBoxCommand CKBox command} and

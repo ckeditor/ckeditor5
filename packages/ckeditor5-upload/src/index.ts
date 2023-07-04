@@ -12,10 +12,10 @@ export {
 	type UploadAdapter,
 	type UploadResponse,
 	type FileLoader
-} from './filerepository';
-export { default as FileDialogButtonView } from './ui/filedialogbuttonview';
-export { default as Base64UploadAdapter } from './adapters/base64uploadadapter';
-export { default as SimpleUploadAdapter } from './adapters/simpleuploadadapter';
-export type { SimpleUploadConfig } from './uploadconfig';
+} from './filerepository.js';
+export { default as FileDialogButtonView } from './ui/filedialogbuttonview.js';
+export { default as Base64UploadAdapter } from './adapters/base64uploadadapter.js';
+export { default as SimpleUploadAdapter } from './adapters/simpleuploadadapter.js';
+export type { SimpleUploadConfig } from './uploadconfig.js';
 
-import './augmentation';
+import './augmentation.js';

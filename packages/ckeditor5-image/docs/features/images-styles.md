@@ -104,7 +104,7 @@ You can change the style of an individual image using the contextual toolbar tha
 The editor above does not require any configuration, using one of the following builds: classic, inline, balloon, or balloon-block, for example:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ) )

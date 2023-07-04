@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import stubUid from '../_utils/uid';
-import { ListItemUid } from '../../../src/documentlist/utils/model';
+import stubUid from '../_utils/uid.js';
+import { ListItemUid } from '../../../src/documentlist/utils/model.js';
 
 describe( 'stubUid()', () => {
 	testUtils.createSinonSandbox();

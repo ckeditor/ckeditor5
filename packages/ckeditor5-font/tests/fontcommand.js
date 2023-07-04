@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FontCommand from '../src/fontcommand';
+import FontCommand from '../src/fontcommand.js';
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Command from '@ckeditor/ckeditor5-core/src/command.js';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontCommand', () => {
 	let editor, model, doc, root, command;

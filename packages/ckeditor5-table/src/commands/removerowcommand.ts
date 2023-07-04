@@ -7,9 +7,9 @@
  * @module table/commands/removerowcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type { Element, Node } from 'ckeditor5/src/engine';
-import type TableUtils from '../tableutils';
+import { Command } from 'ckeditor5/src/core.js';
+import type { Element, Node } from 'ckeditor5/src/engine.js';
+import type TableUtils from '../tableutils.js';
 
 /**
  * The remove row command.

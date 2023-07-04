@@ -11,9 +11,9 @@ import type {
 	EditingController,
 	Element,
 	Model
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import TableWalker from '../tablewalker';
+import TableWalker from '../tablewalker.js';
 
 /**
  * A table headings refresh handler which marks the table cells or rows in the differ to have it re-rendered

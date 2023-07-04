@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
+import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
 /**
  * @module html-support/integrations/integrationutils

@@ -10,7 +10,7 @@
 import {
 	Plugin,
 	type MultiCommand
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
 import type {
 	DowncastAttributeEvent,
@@ -24,29 +24,29 @@ import type {
 	ViewDocumentTabEvent,
 	ViewElement,
 	Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
-import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
-import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils';
+import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
+import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
+import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils.js';
 
-import DocumentListIndentCommand from './documentlistindentcommand';
-import DocumentListCommand from './documentlistcommand';
-import DocumentListMergeCommand from './documentlistmergecommand';
-import DocumentListSplitCommand from './documentlistsplitcommand';
-import DocumentListUtils from './documentlistutils';
+import DocumentListIndentCommand from './documentlistindentcommand.js';
+import DocumentListCommand from './documentlistcommand.js';
+import DocumentListMergeCommand from './documentlistmergecommand.js';
+import DocumentListSplitCommand from './documentlistsplitcommand.js';
+import DocumentListUtils from './documentlistutils.js';
 import {
 	bogusParagraphCreator,
 	listItemDowncastConverter,
 	listItemUpcastConverter,
 	listUpcastCleanList,
 	reconvertItemsOnDataChange
-} from './converters';
+} from './converters.js';
 import {
 	findAndAddListHeadToMap,
 	fixListIndents,
 	fixListItemIds
-} from './utils/postfixers';
+} from './utils/postfixers.js';
 import {
 	getAllListItemBlocks,
 	isFirstBlockOfListItem,
@@ -56,16 +56,16 @@ import {
 	isListItemBlock,
 	removeListAttributes,
 	type ListElement
-} from './utils/model';
+} from './utils/model.js';
 import {
 	getViewElementIdForListType,
 	getViewElementNameForListType
-} from './utils/view';
+} from './utils/view.js';
 
 import ListWalker, {
 	iterateSiblingListBlocks,
 	ListBlocksIterable
-} from './utils/listwalker';
+} from './utils/listwalker.js';
 
 import '../../theme/documentlist.css';
 import '../../theme/list.css';

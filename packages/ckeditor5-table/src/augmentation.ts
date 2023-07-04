@@ -61,7 +61,7 @@ import type {
 	TableBorderWidthCommand,
 	TableHeightCommand,
 	TableWidthCommand
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {

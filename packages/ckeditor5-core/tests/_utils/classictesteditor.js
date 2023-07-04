@@ -5,16 +5,16 @@
 
 /* eslint-disable new-cap */
 
-import Editor from '../../src/editor/editor';
-import ElementApiMixin from '../../src/editor/utils/elementapimixin';
-import DataApiMixin from '../../src/editor/utils/dataapimixin';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+import Editor from '../../src/editor/editor.js';
+import ElementApiMixin from '../../src/editor/utils/elementapimixin.js';
+import DataApiMixin from '../../src/editor/utils/dataapimixin.js';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview.js';
+import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer.js';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement.js';
 import { isElement } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 /**
  * A simplified classic editor. Useful for testing features.

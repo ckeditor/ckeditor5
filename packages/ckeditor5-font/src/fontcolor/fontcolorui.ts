@@ -7,9 +7,9 @@
  * @module font/fontcolor/fontcolorui
  */
 
-import ColorUI from '../ui/colorui';
-import { FONT_COLOR } from '../utils';
-import type { Editor } from 'ckeditor5/src/core';
+import ColorUI from '../ui/colorui.js';
+import { FONT_COLOR } from '../utils.js';
+import type { Editor } from 'ckeditor5/src/core.js';
 
 import fontColorIcon from '../../theme/icons/font-color.svg';
 

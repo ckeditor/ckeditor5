@@ -7,8 +7,8 @@
  * @module list/todolist/checktodolistcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
 
 const attributeKey = 'todoListChecked';
 

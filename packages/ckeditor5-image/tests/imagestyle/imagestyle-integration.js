@@ -5,13 +5,13 @@
 
 /* globals document, window, setTimeout */
 
-import Image from '../../src/image';
-import ImageStyle from '../../src/imagestyle';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog';
-import Context from '@ckeditor/ckeditor5-core/src/context';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Image from '../../src/image.js';
+import ImageStyle from '../../src/imagestyle.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
+import Context from '@ckeditor/ckeditor5-core/src/context.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'ImageStyle integration', () => {
 	describe( 'with Watchdog plugin', () => {

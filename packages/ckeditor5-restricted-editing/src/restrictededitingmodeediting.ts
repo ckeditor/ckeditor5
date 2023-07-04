@@ -12,7 +12,7 @@ import {
 	type Command,
 	type Editor,
 	type EditingKeystrokeCallback
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 import type {
 	DocumentSelection,
 	Marker,
@@ -21,24 +21,24 @@ import type {
 	Range,
 	SchemaAttributeCheckCallback,
 	SchemaChildCheckCallback
-} from 'ckeditor5/src/engine';
-import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils';
-import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing';
+} from 'ckeditor5/src/engine.js';
+import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
+import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing.js';
 import type {
 	ClipboardContentInsertionEvent,
 	ViewDocumentClipboardOutputEvent,
 	ClipboardPipeline
-} from 'ckeditor5/src/clipboard';
+} from 'ckeditor5/src/clipboard.js';
 
-import RestrictedEditingModeNavigationCommand from './restrictededitingmodenavigationcommand';
+import RestrictedEditingModeNavigationCommand from './restrictededitingmodenavigationcommand.js';
 import {
 	extendMarkerOnTypingPostFixer,
 	resurrectCollapsedMarkerPostFixer,
 	setupExceptionHighlighting,
 	upcastHighlightToMarker
-} from './restrictededitingmode/converters';
-import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils';
-import type { RestrictedEditingConfig } from './restrictededitingconfig';
+} from './restrictededitingmode/converters.js';
+import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils.js';
+import type { RestrictedEditingConfig } from './restrictededitingconfig.js';
 
 const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
 

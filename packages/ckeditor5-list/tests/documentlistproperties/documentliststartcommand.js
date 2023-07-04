@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import DocumentListStartCommand from '../../src/documentlistproperties/documentliststartcommand';
-import { modelList } from '../documentlist/_utils/utils';
+import DocumentListStartCommand from '../../src/documentlistproperties/documentliststartcommand.js';
+import { modelList } from '../documentlist/_utils/utils.js';
 
 describe( 'DocumentListStartCommand', () => {
 	let editor, model, listStartCommand;

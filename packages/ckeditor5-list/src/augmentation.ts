@@ -37,7 +37,7 @@ import type {
 	ListReversedCommand,
 	DocumentListReversedCommand,
 	CheckTodoListCommand
-} from '.';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
   interface EditorConfig {

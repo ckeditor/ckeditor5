@@ -20,13 +20,13 @@ import {
 	outdentFollowingItems,
 	removeListAttributes,
 	splitListItemBefore
-} from '../../../src/documentlist/utils/model';
-import { modelList } from '../_utils/utils';
-import stubUid from '../_utils/uid';
+} from '../../../src/documentlist/utils/model.js';
+import { modelList } from '../_utils/utils.js';
+import stubUid from '../_utils/uid.js';
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { stringify as stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stringify as stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DocumentList - utils - model', () => {
 	let model, schema;

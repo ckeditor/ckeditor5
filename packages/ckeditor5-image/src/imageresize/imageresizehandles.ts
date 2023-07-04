@@ -7,12 +7,12 @@
  * @module image/imageresize/imageresizehandles
  */
 
-import type { Element, ViewContainerElement, ViewElement } from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
-import { WidgetResize } from 'ckeditor5/src/widget';
+import type { Element, ViewContainerElement, ViewElement } from 'ckeditor5/src/engine.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { WidgetResize } from 'ckeditor5/src/widget.js';
 
-import ImageLoadObserver, { type ImageLoadedEvent } from '../image/imageloadobserver';
-import type ResizeImageCommand from './resizeimagecommand';
+import ImageLoadObserver, { type ImageLoadedEvent } from '../image/imageloadobserver.js';
+import type ResizeImageCommand from './resizeimagecommand.js';
 
 const RESIZABLE_IMAGES_CSS_SELECTOR =
 	'figure.image.ck-widget > img,' +

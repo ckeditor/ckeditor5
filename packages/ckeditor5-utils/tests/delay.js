@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import delay from '../src/delay';
+import delay from '../src/delay.js';
 
 describe( 'utils', () => {
 	describe( 'delay', () => {

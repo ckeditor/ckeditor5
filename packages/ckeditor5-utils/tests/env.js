@@ -5,10 +5,10 @@
 
 import env, {
 	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent
-} from '../src/env';
+} from '../src/env.js';
 
-import global from '../src/dom/global';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '../src/dom/global.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();

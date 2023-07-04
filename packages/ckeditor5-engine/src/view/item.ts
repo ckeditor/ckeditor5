@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Node from './node';
-import type TextProxy from './textproxy';
+import type Node from './node.js';
+import type TextProxy from './textproxy.js';
 
 /**
  * @module engine/view/item

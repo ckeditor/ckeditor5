@@ -5,10 +5,10 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import Essentials from '../../src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Essentials from '../../src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 // Note: We need to load paragraph because we don't have inline editors yet.
 ClassicEditor

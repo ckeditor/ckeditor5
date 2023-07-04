@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ElementReplacer from '../src/elementreplacer';
+import ElementReplacer from '../src/elementreplacer.js';
 
 describe( 'ElementReplacer', () => {
 	let replacer;

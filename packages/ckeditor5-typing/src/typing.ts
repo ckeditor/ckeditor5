@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import Input from './input';
-import Delete from './delete';
+import Input from './input.js';
+import Delete from './delete.js';
 
 /**
  * The typing feature. It handles typing.

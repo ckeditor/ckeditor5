@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 
-import { getData as getModelData, setData as setModelData } from '../../src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '../../src/dev-utils/model.js';
 
 describe( 'Bug ckeditor5#5564', () => {
 	let editor;

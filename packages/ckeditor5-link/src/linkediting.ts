@@ -10,7 +10,7 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 import {
 	MouseObserver,
 	type Model,
@@ -23,23 +23,23 @@ import {
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentClickEvent,
 	type ViewDocumentSelectionChangeEvent
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 import {
 	Input,
 	TwoStepCaretMovement,
 	inlineHighlight,
 	findAttributeRange,
 	type ViewDocumentDeleteEvent
-} from 'ckeditor5/src/typing';
+} from 'ckeditor5/src/typing.js';
 import {
 	ClipboardPipeline,
 	type ClipboardContentInsertionEvent
-} from 'ckeditor5/src/clipboard';
-import { keyCodes, env } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/clipboard.js';
+import { keyCodes, env } from 'ckeditor5/src/utils.js';
 
-import LinkCommand from './linkcommand';
-import UnlinkCommand from './unlinkcommand';
-import ManualDecorator from './utils/manualdecorator';
+import LinkCommand from './linkcommand.js';
+import UnlinkCommand from './unlinkcommand.js';
+import ManualDecorator from './utils/manualdecorator.js';
 import {
 	createLinkElement,
 	ensureSafeUrl,
@@ -49,7 +49,7 @@ import {
 	addLinkProtocolIfApplicable,
 	type NormalizedLinkDecoratorAutomaticDefinition,
 	type NormalizedLinkDecoratorManualDefinition
-} from './utils';
+} from './utils.js';
 
 import '../theme/link.css';
 

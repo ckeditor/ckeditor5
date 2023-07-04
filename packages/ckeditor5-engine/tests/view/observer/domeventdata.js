@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import DomEventData from '../../../src/view/observer/domeventdata';
-import View from '../../../src/view/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import DomEventData from '../../../src/view/observer/domeventdata.js';
+import View from '../../../src/view/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DomEventData', () => {
 	let view, viewDocument, viewBody, domRoot;

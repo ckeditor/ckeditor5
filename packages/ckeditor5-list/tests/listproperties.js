@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ListProperties from '../src/listproperties';
-import ListPropertiesEditing from '../src/listproperties/listpropertiesediting';
-import ListPropertiesUI from '../src/listproperties/listpropertiesui';
+import ListProperties from '../src/listproperties.js';
+import ListPropertiesEditing from '../src/listproperties/listpropertiesediting.js';
+import ListPropertiesUI from '../src/listproperties/listpropertiesui.js';
 
 describe( 'ListProperties', () => {
 	it( 'should be named', () => {

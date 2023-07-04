@@ -7,10 +7,10 @@
  * @module style/integrations/documentlist
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
 import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
-import type { TemplateDefinition } from 'ckeditor5/src/ui';
+import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
@@ -20,9 +20,9 @@ import StyleUtils, {
 	type StyleUtilsIsActiveForBlockEvent,
 	type StyleUtilsIsEnabledForBlockEvent,
 	type StyleUtilsGetStylePreviewEvent
-} from '../styleutils';
+} from '../styleutils.js';
 
-import type { StyleDefinition } from '../styleconfig';
+import type { StyleDefinition } from '../styleconfig.js';
 
 export default class DocumentListStyleSupport extends Plugin {
 	private _documentListUtils!: DocumentListUtils;

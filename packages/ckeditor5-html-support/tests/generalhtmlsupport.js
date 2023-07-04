@@ -5,8 +5,8 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { GeneralHtmlSupport } from '../src';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { GeneralHtmlSupport } from '../src/index.js';
 
 describe( 'GeneralHtmlSupport', () => {
 	let editor, element, dataSchema, generalHtmlSupport;

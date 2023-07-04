@@ -5,10 +5,10 @@
 
 /* globals console, document */
 
-import View from '../../../src/view/view';
-import DomEventObserver from '../../../src/view/observer/domeventobserver';
-import createViewRoot from '../../view/_utils/createroot';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import View from '../../../src/view/view.js';
+import DomEventObserver from '../../../src/view/observer/domeventobserver.js';
+import createViewRoot from '../../view/_utils/createroot.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 const view = new View( new StylesProcessor() );
 const viewDocument = view.document;

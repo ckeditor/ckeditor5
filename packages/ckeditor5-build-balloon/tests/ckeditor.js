@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import BalloonEditor from '../src/ckeditor';
-import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
-import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import BalloonEditor from '../src/ckeditor.js';
+import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory.js';
 
 import '@ckeditor/ckeditor5-image';
 

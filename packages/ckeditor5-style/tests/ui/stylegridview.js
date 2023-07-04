@@ -6,8 +6,8 @@
 import { ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { Locale, FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import StyleGridButtonView from '../../src/ui/stylegridbuttonview';
-import StyleGridView from '../../src/ui/stylegridview';
+import StyleGridButtonView from '../../src/ui/stylegridbuttonview.js';
+import StyleGridView from '../../src/ui/stylegridview.js';
 
 describe( 'StyleGridView', () => {
 	let locale, grid;

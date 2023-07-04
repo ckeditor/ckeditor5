@@ -5,7 +5,7 @@
 
 /* global document */
 
-import FocusTracker from '../../../src/focustracker';
+import FocusTracker from '../../../src/focustracker.js';
 
 const focusTracker = new FocusTracker();
 const counters = document.querySelectorAll( '.status b' );

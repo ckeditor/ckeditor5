@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import CharacterInfoView from '../../src/ui/characterinfoview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import CharacterInfoView from '../../src/ui/characterinfoview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'CharacterInfoView', () => {
 	let view;

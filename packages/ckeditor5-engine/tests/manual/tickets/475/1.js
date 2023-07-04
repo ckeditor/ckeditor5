@@ -5,16 +5,16 @@
 
 /* globals document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Range from '../../../../src/model/range';
-import LivePosition from '../../../../src/model/liveposition';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Range from '../../../../src/model/range.js';
+import LivePosition from '../../../../src/model/liveposition.js';
 
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 
 class Link extends Plugin {
 	init() {

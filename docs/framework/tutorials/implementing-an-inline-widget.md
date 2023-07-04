@@ -138,7 +138,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Placeholder from './placeholder/placeholder';
+import Placeholder from './placeholder/placeholder.js';
 
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
@@ -192,8 +192,8 @@ The master (glue) plugin:
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import PlaceholderEditing from './placeholderediting';
-import PlaceholderUI from './placeholderui';
+import PlaceholderEditing from './placeholderediting.js';
+import PlaceholderUI from './placeholderui.js';
 
 export default class Placeholder extends Plugin {
 	static get requires() {
@@ -430,7 +430,7 @@ Import the created command and add it to the editor commands:
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget  } from '@ckeditor/ckeditor5-widget';
 
-import PlaceholderCommand from './placeholdercommand';                         // ADDED
+import PlaceholderCommand from './placeholdercommand.js';                         // ADDED
 import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
@@ -508,7 +508,7 @@ import {
     viewToModelPositionOutsideModelElement
 } from '@ckeditor/ckeditor5-widget';
 
-import PlaceholderCommand from './placeholdercommand';
+import PlaceholderCommand from './placeholdercommand.js';
 import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
@@ -630,7 +630,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Placeholder from './placeholder/placeholder';
+import Placeholder from './placeholder/placeholder.js';
 
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 

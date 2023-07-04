@@ -805,8 +805,8 @@ While importing modules from the same package, it is allowed to use relative pat
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import Position from './position';
-import insertContent from './utils/insertcontent';
+import Position from './position.js';
+import insertContent from './utils/insertcontent.js';
 ```
 
 While importing modules from other packages, it is not allowed to use relative paths, and the import must be done using the package name, like this:
@@ -816,7 +816,7 @@ While importing modules from other packages, it is not allowed to use relative p
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import CKEditorError from '../../../ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '../../../ckeditor5-utils/src/ckeditorerror.js';
 ```
 
 Even if the import statement works locally, it will throw an error when developers install packages from npm.
@@ -897,7 +897,7 @@ import { Plugin } from 'ckeditor5/packages/ckeditor5-core';
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 ```
 
 Also, non-DLL packages should not import between non-DLL packages to avoid code duplications when building DLL builds.
@@ -919,7 +919,7 @@ When importing a DLL package from another DLL package, an import statement must 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -941,7 +941,7 @@ History of changes:
 It is allowed to import modules from other packages:
 
 ```js
-import { toArray } from 'ckeditor5/src/utils';
+import { toArray } from 'ckeditor5/src/utils.js';
 ```
 
 However, some packages cannot import modules from CKEditor 5 as it could lead to code duplication and errors in runtime. Hence, the rule disables this kind of import.
@@ -953,7 +953,7 @@ Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 ```js
 // Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
 
-import { toArray } from 'ckeditor5/src/utils';
+import { toArray } from 'ckeditor5/src/utils.js';
 import { toArray } from '@ckeditor/ckeditor5-utils';
 ```
 
@@ -970,7 +970,7 @@ File was processed with these loaders:
 You may need an additional loader to handle the result of these loaders.
 |  */
 |
-> /* @if CK_DEBUG */  import { CKEditorError } from 'ckeditor5/src/utils';
+> /* @if CK_DEBUG */  import { CKEditorError } from 'ckeditor5/src/utils.js';
 |
 | /**
 ```
@@ -1053,13 +1053,13 @@ Importing anything from the `src` directory, in order to extend a CKEditor 5 bui
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-alignment/docs/_snippets/features/text-alignment.js`.
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor.js';
 ```
 
 ```js
 // Assume we edit a file located in the path: `docs/_snippets/features/placeholder.js`.
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor.js';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
@@ -1088,7 +1088,7 @@ This rule forces all imports from `@ckeditor/*` packages to be done through the 
 
 ```ts
 // Importing from the `/src/` folder is not allowed.
-import Table from '@ckeditor/ckeditor5-table/src/table';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -1147,7 +1147,7 @@ All imports defined in every package, that point to a file from the same package
 
 // Both imports are incorrect.
 import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -1155,7 +1155,7 @@ import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting
 ```ts
 // Assume we edit a file located in the path: `packages/ckeditor5-alignment/src/alignment.ts`.
 
-import AlignmentEditing from './alignmentediting';
+import AlignmentEditing from './alignmentediting.js';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/14329)

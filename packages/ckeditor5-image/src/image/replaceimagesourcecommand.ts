@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type ImageUtils from '../imageutils';
+import { Command } from 'ckeditor5/src/core.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * @module image/image/replaceimagesourcecommand

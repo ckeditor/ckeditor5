@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EditorUI from '../../src/editorui/editorui';
+import EditorUI from '../../src/editorui/editorui.js';
 
-import ComponentFactory from '../../src/componentfactory';
-import ToolbarView from '../../src/toolbar/toolbarview';
-import TooltipManager from '../../src/tooltipmanager';
-import PoweredBy from '../../src/editorui/poweredby';
+import ComponentFactory from '../../src/componentfactory.js';
+import ToolbarView from '../../src/toolbar/toolbarview.js';
+import TooltipManager from '../../src/tooltipmanager.js';
+import PoweredBy from '../../src/editorui/poweredby.js';
 
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 /* global document, console */
 

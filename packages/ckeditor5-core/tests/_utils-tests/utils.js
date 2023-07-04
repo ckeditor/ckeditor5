@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import testUtils from '../_utils/utils';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import testUtils from '../_utils/utils.js';
+import mix from '@ckeditor/ckeditor5-utils/src/mix.js';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();

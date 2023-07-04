@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import DocumentFragment from '../../../src/model/documentfragment';
-import Element from '../../../src/model/element';
-import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Model from '../../../src/model/model.js';
+import DocumentFragment from '../../../src/model/documentfragment.js';
+import Element from '../../../src/model/element.js';
+import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'RootAttributeOperation', () => {
 	let model, doc, root;

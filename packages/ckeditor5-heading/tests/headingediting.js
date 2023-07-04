@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import HeadingEditing from '../src/headingediting';
-import HeadingCommand from '../src/headingcommand';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import HeadingEditing from '../src/headingediting.js';
+import HeadingCommand from '../src/headingcommand.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'HeadingEditing', () => {
 	let editor, model;

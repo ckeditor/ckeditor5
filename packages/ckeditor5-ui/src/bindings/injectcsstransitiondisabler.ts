@@ -7,8 +7,8 @@
  * @module ui/bindings/injectcsstransitiondisabler
  */
 
-import type View from '../view';
-import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin';
+import type View from '../view.js';
+import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin.js';
 
 /**
  * A decorator that brings the possibility to temporarily disable CSS transitions using
@@ -25,7 +25,7 @@ import type { ViewWithCssTransitionDisabler } from './csstransitiondisablermixin
  * {@link module:ui/view~View#setTemplate} is called:
  *
  * ```ts
- * import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler';
+ * import injectCssTransitionDisabler from '@ckeditor/ckeditor5-ui/src/bindings/injectcsstransitiondisabler.js';
  *
  * class MyView extends View {
  * 	constructor() {

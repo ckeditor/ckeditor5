@@ -5,7 +5,7 @@
 
 /* global document */
 
-import isComment from '../../src/dom/iscomment';
+import isComment from '../../src/dom/iscomment.js';
 
 describe( 'isComment()', () => {
 	let text, element, documentFragment, comment;

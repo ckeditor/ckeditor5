@@ -7,11 +7,11 @@
  * @module special-characters/ui/specialcharactersview
  */
 
-import { View, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import type CharacterGridView from './charactergridview';
-import type CharacterInfoView from './characterinfoview';
-import type SpecialCharactersNavigationView from './specialcharactersnavigationview';
+import { View, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import type CharacterGridView from './charactergridview.js';
+import type CharacterInfoView from './characterinfoview.js';
+import type SpecialCharactersNavigationView from './specialcharactersnavigationview.js';
 
 /**
  * A view that glues pieces of the special characters dropdown panel together:

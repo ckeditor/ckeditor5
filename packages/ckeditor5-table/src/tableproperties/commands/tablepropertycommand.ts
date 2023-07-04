@@ -7,8 +7,8 @@
  * @module table/tableproperties/commands/tablepropertycommand
  */
 
-import type { Batch, Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Batch, Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 export interface TablePropertyCommandExecuteOptions {
 	batch?: Batch;

@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import MultiRootEditor from '../src/ckeditor';
-import BaseMultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
-import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import MultiRootEditor from '../src/ckeditor.js';
+import BaseMultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory.js';
 
 describe( 'MultiRootEditor build', () => {
 	let editor, fooElement, barElement;

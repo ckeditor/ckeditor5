@@ -5,9 +5,9 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import MediaEmbed from '../../src/mediaembed';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import MediaEmbed from '../../src/mediaembed.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

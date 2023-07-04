@@ -9,13 +9,13 @@
 
 /* globals console */
 
-import ComponentFactory from '../componentfactory';
-import TooltipManager from '../tooltipmanager';
-import PoweredBy from './poweredby';
+import ComponentFactory from '../componentfactory.js';
+import TooltipManager from '../tooltipmanager.js';
+import PoweredBy from './poweredby.js';
 
-import type EditorUIView from './editoruiview';
-import type ToolbarView from '../toolbar/toolbarview';
-import type { UIViewRenderEvent } from '../view';
+import type EditorUIView from './editoruiview.js';
+import type ToolbarView from '../toolbar/toolbarview.js';
+import type { UIViewRenderEvent } from '../view.js';
 
 import {
 	ObservableMixin,

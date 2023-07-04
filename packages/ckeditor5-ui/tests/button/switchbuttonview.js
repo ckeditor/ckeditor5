@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import SwitchButtonView from '../../src/button/switchbuttonview';
-import View from '../../src/view';
+import SwitchButtonView from '../../src/button/switchbuttonview.js';
+import View from '../../src/view.js';
 
 describe( 'SwitchButtonView', () => {
 	let locale, view;

@@ -32,7 +32,7 @@ import {
 	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
-import LineView from './lineview';
+import LineView from './lineview.js';
 
 import { throttle } from 'lodash-es';
 

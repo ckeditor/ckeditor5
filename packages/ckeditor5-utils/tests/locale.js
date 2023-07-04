@@ -5,12 +5,12 @@
 
 /* globals console */
 
-import Locale from '../src/locale';
+import Locale from '../src/locale.js';
 import {
 	add as addTranslations,
 	_clear as clearTranslations
-} from '../src/translation-service';
-import { expectToThrowCKEditorError } from './_utils/utils';
+} from '../src/translation-service.js';
+import { expectToThrowCKEditorError } from './_utils/utils.js';
 
 describe( 'Locale', () => {
 	afterEach( () => {

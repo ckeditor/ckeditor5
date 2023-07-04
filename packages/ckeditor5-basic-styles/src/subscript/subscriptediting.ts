@@ -7,8 +7,8 @@
  * @module basic-styles/subscript/subscriptediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import AttributeCommand from '../attributecommand';
+import { Plugin } from 'ckeditor5/src/core.js';
+import AttributeCommand from '../attributecommand.js';
 
 const SUBSCRIPT = 'subscript';
 

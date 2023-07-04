@@ -7,11 +7,19 @@
  * @module image/imageinsert/ui/imageinsertpanelview
  */
 
-import { icons } from 'ckeditor5/src/core';
-import { ButtonView, View, ViewCollection, submitHandler, FocusCycler, type InputTextView, type LabeledFieldView } from 'ckeditor5/src/ui';
-import { Collection, FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core.js';
+import {
+	ButtonView,
+	View,
+	ViewCollection,
+	submitHandler,
+	FocusCycler,
+	type InputTextView,
+	type LabeledFieldView
+} from 'ckeditor5/src/ui.js';
+import { Collection, FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
-import ImageInsertFormRowView from './imageinsertformrowview';
+import ImageInsertFormRowView from './imageinsertformrowview.js';
 
 import '../../../theme/imageinsert.css';
 

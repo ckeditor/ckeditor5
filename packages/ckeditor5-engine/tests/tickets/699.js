@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import { getData as getModelData } from '../../src/dev-utils/model';
-import { getData as getViewData } from '../../src/dev-utils/view';
+import { getData as getModelData } from '../../src/dev-utils/model.js';
+import { getData as getViewData } from '../../src/dev-utils/view.js';
 
 describe( 'Bug ckeditor5-engine#699', () => {
 	let element;

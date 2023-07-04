@@ -7,9 +7,9 @@
  * @module list/listproperties/ui/collapsibleview
  */
 
-import type { Locale } from 'ckeditor5/src/utils';
+import type { Locale } from 'ckeditor5/src/utils.js';
 
-import { View, ButtonView, type ViewCollection } from 'ckeditor5/src/ui';
+import { View, ButtonView, type ViewCollection } from 'ckeditor5/src/ui.js';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import dropdownArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';

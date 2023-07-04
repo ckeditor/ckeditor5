@@ -7,9 +7,9 @@
  * @module table/tablecellproperties/commands/tablecellpropertycommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element, Batch } from 'ckeditor5/src/engine';
-import type TableUtils from '../../tableutils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { Element, Batch } from 'ckeditor5/src/engine.js';
+import type TableUtils from '../../tableutils.js';
 
 /**
  * The table cell attribute command.

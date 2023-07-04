@@ -7,8 +7,8 @@
  * @module image/imagetextalternative/imagetextalternativecommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type ImageUtils from '../imageutils';
+import { Command } from 'ckeditor5/src/core.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The image text alternative command. It is used to change the `alt` attribute of `<imageBlock>` and `<imageInline>` model elements.

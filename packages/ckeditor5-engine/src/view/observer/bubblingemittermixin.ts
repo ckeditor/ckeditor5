@@ -22,12 +22,12 @@ import {
 	type Mixed
 } from '@ckeditor/ckeditor5-utils';
 
-import BubblingEventInfo, { type EventPhase } from './bubblingeventinfo';
-import type Document from '../document';
-import type Node from '../node';
-import type Range from '../range';
-import type Element from '../element';
-import type DocumentSelection from '../documentselection';
+import BubblingEventInfo, { type EventPhase } from './bubblingeventinfo.js';
+import type Document from '../document.js';
+import type Node from '../node.js';
+import type Range from '../range.js';
+import type Element from '../element.js';
+import type DocumentSelection from '../documentselection.js';
 
 const contextsSymbol = Symbol( 'bubbling contexts' );
 

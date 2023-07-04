@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { testDataProcessor } from '../_utils/utils';
+import { testDataProcessor } from '../_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'code', () => {

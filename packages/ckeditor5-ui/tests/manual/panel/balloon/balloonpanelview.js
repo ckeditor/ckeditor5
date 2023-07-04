@@ -5,7 +5,7 @@
 
 /* globals document, setTimeout */
 
-import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
+import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview.js';
 
 const defaultPositions = BalloonPanelView.defaultPositions;
 const container = document.querySelector( '#container' );

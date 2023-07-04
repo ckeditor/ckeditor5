@@ -5,31 +5,31 @@
 
 /* globals document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Image from '../../src/image';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import ImageInsert from '../../src/imageinsert';
-import ImageInsertViaUrl from '../../src/imageinsertviaurl';
-import ImageInsertUI from '../../src/imageinsert/imageinsertui';
-import ImageInsertPanelView from '../../src/imageinsert/ui/imageinsertpanelview';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Image from '../../src/image.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview.js';
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import ImageInsert from '../../src/imageinsert.js';
+import ImageInsertViaUrl from '../../src/imageinsertviaurl.js';
+import ImageInsertUI from '../../src/imageinsert/imageinsertui.js';
+import ImageInsertPanelView from '../../src/imageinsert/ui/imageinsertpanelview.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview.js';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
-import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import Link from '@ckeditor/ckeditor5-link/src/link';
+import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
 
 describe( 'ImageInsertUI', () => {
 	let editor, editorElement, fileRepository, dropdown;

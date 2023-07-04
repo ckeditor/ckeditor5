@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import HtmlEmbed from '../src/htmlembed';
-import HtmlEmbedUI from '../src/htmlembedui';
-import HtmlEmbedEditing from '../src/htmlembedediting';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import HtmlEmbed from '../src/htmlembed.js';
+import HtmlEmbedUI from '../src/htmlembedui.js';
+import HtmlEmbedEditing from '../src/htmlembedediting.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 
 describe( 'HtmlEmbed', () => {
 	it( 'should require HtmlEmbedEditing, HtmlEmbedUI and Widget', () => {

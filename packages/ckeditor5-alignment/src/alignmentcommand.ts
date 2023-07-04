@@ -7,12 +7,12 @@
  * @module alignment/alignmentcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
-import type { Element, Writer } from 'ckeditor5/src/engine';
+import { Command } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
+import type { Element, Writer } from 'ckeditor5/src/engine.js';
 
-import { isDefault } from './utils';
-import type { SupportedOption } from './alignmentconfig';
+import { isDefault } from './utils.js';
+import type { SupportedOption } from './alignmentconfig.js';
 
 const ALIGNMENT = 'alignment';
 

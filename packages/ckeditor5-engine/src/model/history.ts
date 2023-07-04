@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type Operation from './operation/operation';
+import type Operation from './operation/operation.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 

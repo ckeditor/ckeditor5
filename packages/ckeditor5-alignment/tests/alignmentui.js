@@ -5,13 +5,13 @@
 
 /* global document */
 
-import AlignmentEditing from '../src/alignmentediting';
-import AlignmentUI from '../src/alignmentui';
+import AlignmentEditing from '../src/alignmentediting.js';
+import AlignmentUI from '../src/alignmentui.js';
 
 import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
 import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'Alignment UI', () => {
 	let editor, command, element, button;

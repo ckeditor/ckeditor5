@@ -8,10 +8,10 @@ import {
 	FONT_BACKGROUND_COLOR,
 	addColorTableToDropdown,
 	renderDowncastElement
-} from './../src/utils';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ColorTableView from './../src/ui/colortableview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+} from './../src/utils.js';
+import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils.js';
+import ColorTableView from './../src/ui/colortableview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'utils', () => {

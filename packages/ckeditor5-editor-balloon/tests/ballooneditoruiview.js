@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
-import BalloonEditorUIView from '../src/ballooneditoruiview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import BalloonEditorUIView from '../src/ballooneditoruiview.js';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BalloonEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;

@@ -7,7 +7,7 @@
  * @module indent/indentcommandbehavior/indentusingoffset
  */
 
-import type { IndentBehavior } from './indentbehavior';
+import type { IndentBehavior } from './indentbehavior.js';
 
 /**
  * The block indentation behavior that uses offsets to set indentation.

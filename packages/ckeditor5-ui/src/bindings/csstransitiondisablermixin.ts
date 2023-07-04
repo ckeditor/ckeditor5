@@ -9,7 +9,7 @@
 
 import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
 
-import type View from '../view';
+import type View from '../view.js';
 
 /**
  * A mixin that brings the possibility to temporarily disable CSS transitions using

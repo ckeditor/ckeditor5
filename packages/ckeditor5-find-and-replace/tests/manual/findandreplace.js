@@ -5,15 +5,15 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import FindAndReplace from '../../src/findandreplace';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import FindAndReplace from '../../src/findandreplace.js';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 
 // Note: We need to load paragraph because we don't have inline editors yet.
 ClassicEditor

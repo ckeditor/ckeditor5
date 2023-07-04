@@ -5,7 +5,7 @@
 
 /* global document, window */
 
-import isNode from '../../src/dom/isnode';
+import isNode from '../../src/dom/isnode.js';
 
 describe( 'isNode()', () => {
 	it( 'detects native DOM nodes', () => {

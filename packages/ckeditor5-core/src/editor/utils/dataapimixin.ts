@@ -7,7 +7,7 @@
  * @module core/editor/utils/dataapimixin
  */
 
-import type Editor from '../editor';
+import type Editor from '../editor.js';
 
 import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
 

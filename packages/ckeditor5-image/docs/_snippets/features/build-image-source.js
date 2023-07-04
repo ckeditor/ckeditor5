@@ -11,7 +11,7 @@ import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( ImageResize );
 ClassicEditor.builtinPlugins.push( ImageInsert );

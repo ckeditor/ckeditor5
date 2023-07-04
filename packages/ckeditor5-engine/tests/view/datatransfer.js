@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DataTransfer from '../../src/view/datatransfer';
+import DataTransfer from '../../src/view/datatransfer.js';
 
 describe( 'DataTransfer', () => {
 	describe( 'constructor', () => {

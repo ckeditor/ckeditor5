@@ -7,7 +7,7 @@
  * @module engine/model/nodelist
  */
 
-import Node from './node';
+import Node from './node.js';
 
 import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
 

@@ -15,7 +15,7 @@ import {
 	type EmitterMixinDelegateChain
 } from '@ckeditor/ckeditor5-utils';
 
-import type View from './view';
+import type View from './view.js';
 
 /**
  * Collects {@link module:ui/view~View} instances.

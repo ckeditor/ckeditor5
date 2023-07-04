@@ -5,13 +5,13 @@
 
 /* global document */
 
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import FontSize from '../../src/fontsize';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import FontSize from '../../src/fontsize.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'FontSize - integration', () => {
 	let editor, model, element;

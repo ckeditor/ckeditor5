@@ -5,9 +5,9 @@
 
 /* global setTimeout */
 
-import WidgetResize from '../../../src/widgetresize';
+import WidgetResize from '../../../src/widgetresize.js';
 
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
 
 export const resizerMouseSimulator = {
 	down( editor, domTarget, options = {} ) {

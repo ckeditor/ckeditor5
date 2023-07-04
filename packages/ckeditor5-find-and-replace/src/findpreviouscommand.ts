@@ -7,7 +7,7 @@
  * @module find-and-replace/findpreviouscommand
 */
 
-import FindNextCommand from './findnextcommand';
+import FindNextCommand from './findnextcommand.js';
 
 /**
  * The find previous command. Moves the highlight to the previous search result.

@@ -8,7 +8,7 @@
  */
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type Command from './command';
+import type Command from './command.js';
 
 /**
  * Collection of commands. Its instance is available in {@link module:core/editor/editor~Editor#commands `editor.commands`}.

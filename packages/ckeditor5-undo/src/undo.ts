@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import UndoEditing from './undoediting';
-import UndoUI from './undoui';
+import UndoEditing from './undoediting.js';
+import UndoUI from './undoui.js';
 
 /**
  * The undo feature.

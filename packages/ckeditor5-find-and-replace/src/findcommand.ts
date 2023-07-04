@@ -7,13 +7,13 @@
  * @module find-and-replace/findcommand
 */
 
-import type { Item } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Collection } from 'ckeditor5/src/utils';
+import type { Item } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { Collection } from 'ckeditor5/src/utils.js';
 
-import type FindAndReplaceState from './findandreplacestate';
-import type { ResultType } from './findandreplace';
-import type FindAndReplaceUtils from './findandreplaceutils';
+import type FindAndReplaceState from './findandreplacestate.js';
+import type { ResultType } from './findandreplace.js';
+import type FindAndReplaceUtils from './findandreplaceutils.js';
 
 /**
  * The find command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.

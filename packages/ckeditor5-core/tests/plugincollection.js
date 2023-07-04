@@ -5,12 +5,12 @@
 
 /* globals setTimeout */
 
-import Editor from '../src/editor/editor';
-import PluginCollection from '../src/plugincollection';
-import Context from '../src/context';
-import Plugin from '../src/plugin';
-import ContextPlugin from '../src/contextplugin';
-import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Editor from '../src/editor/editor.js';
+import PluginCollection from '../src/plugincollection.js';
+import Context from '../src/context.js';
+import Plugin from '../src/plugin.js';
+import ContextPlugin from '../src/contextplugin.js';
+import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 let editor, availablePlugins;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginJ, PluginK, PluginX, PluginFoo, AnotherPluginFoo;

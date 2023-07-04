@@ -7,7 +7,7 @@
  * @module utils/dom/findclosestscrollableancestor
  */
 
-import global from './global';
+import global from './global.js';
 
 /**
  * Returns the closest scrollable ancestor of a DOM element.

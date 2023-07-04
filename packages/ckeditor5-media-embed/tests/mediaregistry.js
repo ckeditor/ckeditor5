@@ -5,7 +5,7 @@
 
 /* globals console */
 
-import MediaRegistry from '../src/mediaregistry';
+import MediaRegistry from '../src/mediaregistry.js';
 
 describe( 'MediaRegistry', () => {
 	describe( 'constructor()', () => {

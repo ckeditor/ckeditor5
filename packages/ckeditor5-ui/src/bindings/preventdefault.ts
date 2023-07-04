@@ -7,8 +7,8 @@
  * @module ui/bindings/preventdefault
  */
 
-import type { ListenerBinding } from '../template';
-import type View from '../view';
+import type { ListenerBinding } from '../template.js';
+import type View from '../view.js';
 
 /**
  * A helper which executes a native `Event.preventDefault()` if the target of an event equals the
@@ -17,7 +17,7 @@ import type View from '../view';
  *
  * ```ts
  * // In a class extending View.
- * import preventDefault from '@ckeditor/ckeditor5-ui/src/bindings/preventdefault';
+ * import preventDefault from '@ckeditor/ckeditor5-ui/src/bindings/preventdefault.js';
  *
  * // ...
  *

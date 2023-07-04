@@ -368,7 +368,7 @@ Finally, we add our balloon and the form view to the `init()` method.
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui'; // ADDED
-import FormView from './abbreviationview';								// ADDED
+import FormView from './abbreviationview.js';								// ADDED
 
 export default class AbbreviationUI extends Plugin {
 	static get requires() {

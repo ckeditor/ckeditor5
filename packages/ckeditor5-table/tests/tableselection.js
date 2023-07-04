@@ -5,19 +5,19 @@
 
 /* globals document */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData,
 	stringify as stringifyModel
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../src/tableediting';
-import TableSelection from '../src/tableselection';
-import { assertSelectedCells, modelTable } from './_utils/utils';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import TableEditing from '../src/tableediting.js';
+import TableSelection from '../src/tableselection.js';
+import { assertSelectedCells, modelTable } from './_utils/utils.js';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 
 describe( 'TableSelection', () => {
 	let editorElement, editor, model, tableSelection, modelRoot;

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DowncastWriter from '../../../src/view/downcastwriter';
-import { parse } from '../../../src/dev-utils/view';
-import Document from '../../../src/view/document';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import DowncastWriter from '../../../src/view/downcastwriter.js';
+import { parse } from '../../../src/dev-utils/view.js';
+import Document from '../../../src/view/document.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DowncastWriter', () => {
 	describe( 'rename()', () => {

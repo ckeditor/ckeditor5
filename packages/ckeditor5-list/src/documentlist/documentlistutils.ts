@@ -7,16 +7,16 @@
  * @module list/documentlist/documentlistutils
  */
 
-import type { Element, Node } from 'ckeditor5/src/engine';
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
+import type { Element, Node } from 'ckeditor5/src/engine.js';
+import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	expandListBlocksToCompleteItems,
 	expandListBlocksToCompleteList,
 	isFirstBlockOfListItem,
 	isListItemBlock
-} from './utils/model';
+} from './utils/model.js';
 
 /**
  * A set of helpers related to document lists.

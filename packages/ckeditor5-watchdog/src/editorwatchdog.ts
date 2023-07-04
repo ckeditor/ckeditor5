@@ -10,17 +10,17 @@
 /* globals console */
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { CKEditorError } from 'ckeditor5/src/utils';
+import type { CKEditorError } from 'ckeditor5/src/utils.js';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type {
 	Editor,
 	EditorConfig,
 	Context
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
-import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
-import Watchdog, { type WatchdogConfig } from './watchdog';
+import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';
+import Watchdog, { type WatchdogConfig } from './watchdog.js';
 
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
 

@@ -32,7 +32,7 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ViewDocumentClipboardOutputEvent } from './clipboardpipeline';
+import ClipboardPipeline, { type ClipboardContentInsertionEvent, type ViewDocumentClipboardOutputEvent } from './clipboardpipeline.js';
 import ClipboardObserver, {
 	type ViewDocumentDragEndEvent,
 	type ViewDocumentDragEnterEvent,
@@ -40,7 +40,7 @@ import ClipboardObserver, {
 	type ViewDocumentDragLeaveEvent,
 	type ViewDocumentDragStartEvent,
 	type ViewDocumentClipboardInputEvent
-} from './clipboardobserver';
+} from './clipboardobserver.js';
 
 import { throttle, type DebouncedFunc } from 'lodash-es';
 

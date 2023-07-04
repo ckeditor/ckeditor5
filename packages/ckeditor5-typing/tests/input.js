@@ -5,13 +5,13 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import Input from '../src/input';
-import InsertTextCommand from '../src/inserttextcommand';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import Input from '../src/input.js';
+import InsertTextCommand from '../src/inserttextcommand.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'Input', () => {
 	testUtils.createSinonSandbox();

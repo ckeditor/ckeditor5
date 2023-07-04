@@ -5,13 +5,13 @@
 
 /* globals document */
 
-import ListProperties from '../../src/listproperties';
-import ListPropertiesUI from '../../src/listproperties/listpropertiesui';
+import ListProperties from '../../src/listproperties.js';
+import ListPropertiesUI from '../../src/listproperties/listpropertiesui.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { View, ButtonView, LabeledFieldView, SwitchButtonView } from '@ckeditor/ckeditor5-ui';
 
 import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
@@ -26,8 +26,8 @@ import listStyleUpperRomanIcon from '../../theme/icons/liststyleupperroman.svg';
 import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'ListPropertiesUI', () => {
 	let editorElement, editor, model, listStyleCommand, listPropertiesView;

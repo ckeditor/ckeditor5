@@ -5,16 +5,16 @@
 
 /* globals document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Image from '../../src/image';
-import ImageUploadUI from '../../src/imageinsert/imageinsertui';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import { prepareIntegrations, createLabeledInputView } from '../../src/imageinsert/utils';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import Image from '../../src/image.js';
+import ImageUploadUI from '../../src/imageinsert/imageinsertui.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
+import { prepareIntegrations, createLabeledInputView } from '../../src/imageinsert/utils.js';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
 
 describe( 'Upload utils', () => {
 	describe( 'prepareIntegrations()', () => {

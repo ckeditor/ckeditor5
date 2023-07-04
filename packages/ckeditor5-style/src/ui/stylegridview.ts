@@ -7,11 +7,11 @@
  * @module style/ui/stylegridview
  */
 
-import { View, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import { View, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
-import StyleGridButtonView from './stylegridbuttonview';
-import type { NormalizedStyleDefinition } from '../styleutils';
+import StyleGridButtonView from './stylegridbuttonview.js';
+import type { NormalizedStyleDefinition } from '../styleutils.js';
 
 import '../../theme/stylegrid.css';
 

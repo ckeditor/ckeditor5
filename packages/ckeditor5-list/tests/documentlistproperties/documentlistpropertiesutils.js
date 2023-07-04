@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { DocumentListPropertiesUtils } from '../../src';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { DocumentListPropertiesUtils } from '../../src/index.js';
 
 describe( 'DocumentListPropertiesUtils', () => {
 	let editor, plugin;

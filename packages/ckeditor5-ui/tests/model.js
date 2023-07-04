@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../src/model';
+import Model from '../src/model.js';
 
 let Car, car;
 

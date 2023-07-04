@@ -5,9 +5,9 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import type Batch from '../batch';
-import type Document from '../document';
-import type { Selectable } from '../selection';
+import type Batch from '../batch.js';
+import type Document from '../document.js';
+import type { Selectable } from '../selection.js';
 
 /**
  * @module engine/model/operation/operation

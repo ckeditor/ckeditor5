@@ -434,7 +434,7 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { CustomPlugin } from 'ckeditor5-custom-package';
-import { OtherCustomPlugin } from '../relative/path/to/some/othercustomplugin';
+import { OtherCustomPlugin } from '../relative/path/to/some/othercustomplugin.js';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 

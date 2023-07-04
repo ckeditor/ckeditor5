@@ -5,13 +5,13 @@
 
 /* globals window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Table from '@ckeditor/ckeditor5-table/src/table';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
-import StandardEditingMode from '../../src/standardeditingmode';
-import RestrictedEditingMode from '../../src/restrictededitingmode';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import StandardEditingMode from '../../src/standardeditingmode.js';
+import RestrictedEditingMode from '../../src/restrictededitingmode.js';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );

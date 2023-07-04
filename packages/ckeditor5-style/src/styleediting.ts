@@ -7,16 +7,16 @@
  * @module style/styleediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
-import StyleCommand from './stylecommand';
-import StyleUtils from './styleutils';
-import type { StyleConfig } from './styleconfig';
+import StyleCommand from './stylecommand.js';
+import StyleUtils from './styleutils.js';
+import type { StyleConfig } from './styleconfig.js';
 
-import DocumentListStyleSupport from './integrations/documentlist';
-import TableStyleSupport from './integrations/table';
-import LinkStyleSupport from './integrations/link';
+import DocumentListStyleSupport from './integrations/documentlist.js';
+import TableStyleSupport from './integrations/table.js';
+import LinkStyleSupport from './integrations/link.js';
 
 /**
  * The style engine feature.

@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import { getCsrfToken, getCookie, setCookie } from '../src/utils';
+import { getCsrfToken, getCookie, setCookie } from '../src/utils.js';
 
 describe( 'utils', () => {
 	beforeEach( () => {

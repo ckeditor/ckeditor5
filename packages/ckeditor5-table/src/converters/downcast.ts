@@ -7,12 +7,12 @@
  * @module table/converters/downcast
  */
 
-import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
-import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction } from 'ckeditor5/src/engine';
+import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
+import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
-import TableWalker from './../tablewalker';
-import type TableUtils from '../tableutils';
-import type { AdditionalSlot } from '../tableediting';
+import TableWalker from './../tablewalker.js';
+import type TableUtils from '../tableutils.js';
+import type { AdditionalSlot } from '../tableediting.js';
 
 /**
  * Model table element to view table element conversion helper.

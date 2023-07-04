@@ -5,10 +5,10 @@
 
 /* global document, Event */
 
-import FocusTracker from '../src/focustracker';
-import global from '../src/dom/global';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { expectToThrowCKEditorError } from './_utils/utils';
+import FocusTracker from '../src/focustracker.js';
+import global from '../src/dom/global.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { expectToThrowCKEditorError } from './_utils/utils.js';
 
 describe( 'FocusTracker', () => {
 	let focusTracker, container, containerFirstInput, containerSecondInput;

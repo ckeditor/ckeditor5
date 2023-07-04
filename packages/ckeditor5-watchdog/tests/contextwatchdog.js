@@ -5,10 +5,10 @@
 
 /* globals document, setTimeout, window, console */
 
-import ContextWatchdog from '../src/contextwatchdog';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Context from '@ckeditor/ckeditor5-core/src/context';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ContextWatchdog from '../src/contextwatchdog.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Context from '@ckeditor/ckeditor5-core/src/context.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'ContextWatchdog', () => {
 	let element1, element2;

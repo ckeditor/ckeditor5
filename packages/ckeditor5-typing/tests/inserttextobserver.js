@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import InsertTextObserver from '../src/inserttextobserver';
-import { fireBeforeInputDomEvent, fireCompositionEndDomEvent } from './_utils/utils';
+import InsertTextObserver from '../src/inserttextobserver.js';
+import { fireBeforeInputDomEvent, fireCompositionEndDomEvent } from './_utils/utils.js';
 
-import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'InsertTextObserver', () => {
 	let view, viewDocument, insertTextEventSpy;

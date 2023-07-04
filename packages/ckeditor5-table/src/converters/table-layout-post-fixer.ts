@@ -13,10 +13,10 @@ import type {
 	Writer,
 	DiffItem,
 	DiffItemAttribute
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import TableWalker from './../tablewalker';
-import { createEmptyTableCell, updateNumericAttribute } from '../utils/common';
+import TableWalker from './../tablewalker.js';
+import { createEmptyTableCell, updateNumericAttribute } from '../utils/common.js';
 
 /**
  * Injects a table layout post-fixer into the model.

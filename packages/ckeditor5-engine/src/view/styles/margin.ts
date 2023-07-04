@@ -7,8 +7,8 @@
  * @module engine/view/styles/margin
  */
 
-import type { StylesProcessor } from '../stylesmap';
-import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils';
+import type { StylesProcessor } from '../stylesmap.js';
+import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils.js';
 
 /**
  * Adds a margin CSS styles processing rules.

@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Input from '@ckeditor/ckeditor5-typing/src/input';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Input from '@ckeditor/ckeditor5-typing/src/input.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import LinkEditing from '../src/linkediting';
-import AutoLink from '../src/autolink';
+import LinkEditing from '../src/linkediting.js';
+import AutoLink from '../src/autolink.js';
 
 describe( 'AutoLink', () => {
 	let editor;

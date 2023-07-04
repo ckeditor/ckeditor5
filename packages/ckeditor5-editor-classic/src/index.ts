@@ -7,4 +7,4 @@
  * @module editor-classic
  */
 
-export { default as ClassicEditor } from './classiceditor';
+export { default as ClassicEditor } from './classiceditor.js';

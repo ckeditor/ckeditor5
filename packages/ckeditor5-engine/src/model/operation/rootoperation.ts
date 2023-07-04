@@ -7,11 +7,11 @@
  * @module engine/model/operation/rootoperation
  */
 
-import Operation from './operation';
+import Operation from './operation.js';
 
-import type Document from '../document';
+import type Document from '../document.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection';
+import type { Selectable } from '../selection.js';
 
 /**
  * Operation that creates (or attaches) or detaches a root element.

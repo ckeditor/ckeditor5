@@ -7,9 +7,9 @@
  * @module engine/view/observer/clickobserver
  */
 
-import DomEventObserver from './domeventobserver';
-import type DomEventData from './domeventdata';
-import type { BubblingEvent } from './bubblingemittermixin';
+import DomEventObserver from './domeventobserver.js';
+import type DomEventData from './domeventdata.js';
+import type { BubblingEvent } from './bubblingemittermixin.js';
 
 /**
  * {@link module:engine/view/document~Document#event:click Click} event observer.

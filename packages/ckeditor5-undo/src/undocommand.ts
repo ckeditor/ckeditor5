@@ -7,7 +7,7 @@
  * @module undo/undocommand
  */
 
-import BaseCommand from './basecommand';
+import BaseCommand from './basecommand.js';
 import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 /**

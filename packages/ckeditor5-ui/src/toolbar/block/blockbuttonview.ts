@@ -7,7 +7,7 @@
  * @module ui/toolbar/block/blockbuttonview
  */
 
-import ButtonView from '../../button/buttonview';
+import ButtonView from '../../button/buttonview.js';
 
 import { toUnit, type Locale } from '@ckeditor/ckeditor5-utils';
 

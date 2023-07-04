@@ -25,14 +25,14 @@ import {
 
 import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
 
-import BlockButtonView from './blockbuttonview';
-import BalloonPanelView from '../../panel/balloon/balloonpanelview';
-import ToolbarView from '../toolbarview';
-import clickOutsideHandler from '../../bindings/clickoutsidehandler';
-import normalizeToolbarConfig from '../normalizetoolbarconfig';
+import BlockButtonView from './blockbuttonview.js';
+import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import ToolbarView from '../toolbarview.js';
+import clickOutsideHandler from '../../bindings/clickoutsidehandler.js';
+import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
-import type { ButtonExecuteEvent } from '../../button/button';
-import type { EditorUIUpdateEvent } from '../../editorui/editorui';
+import type { ButtonExecuteEvent } from '../../button/button.js';
+import type { EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
 const toPx = toUnit( 'px' );
 const { pilcrow } = icons;

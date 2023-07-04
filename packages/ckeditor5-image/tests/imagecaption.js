@@ -5,10 +5,10 @@
 
 /* global window */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageCaption from '../src/imagecaption';
-import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
-import ImageCaptionUI from '../src/imagecaption/imagecaptionui';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ImageCaption from '../src/imagecaption.js';
+import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting.js';
+import ImageCaptionUI from '../src/imagecaption/imagecaptionui.js';
 
 describe( 'ImageCaption', () => {
 	let editor, editorElement;

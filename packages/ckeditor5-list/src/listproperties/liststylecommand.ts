@@ -7,8 +7,8 @@
  * @module list/listproperties/liststylecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils.js';
 
 /**
  * The list style command. It changes the `listStyle` attribute of the selected list items.

@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import HeadingEditing from '../src/headingediting';
-import HeadingButtonsUI from '../src/headingbuttonsui';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { getLocalizedOptions } from '../src/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import HeadingEditing from '../src/headingediting.js';
+import HeadingButtonsUI from '../src/headingbuttonsui.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { getLocalizedOptions } from '../src/utils.js';
 import iconHeading2 from '../theme/icons/heading2.svg';
 
 describe( 'HeadingButtonUI', () => {

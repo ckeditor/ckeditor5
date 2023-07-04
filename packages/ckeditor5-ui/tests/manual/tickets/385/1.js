@@ -5,9 +5,9 @@
 
 /* globals window, document, console:false */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import BalloonToolbar from '../../../../src/toolbar/balloon/balloontoolbar';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import BalloonToolbar from '../../../../src/toolbar/balloon/balloontoolbar.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

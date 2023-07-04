@@ -6,7 +6,7 @@
 /* globals window */
 
 import { Autosave } from '@ckeditor/ckeditor5-autosave';
-import ClassicEditor from '../../build-classic';
+import ClassicEditor from '../../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Autosave );
 

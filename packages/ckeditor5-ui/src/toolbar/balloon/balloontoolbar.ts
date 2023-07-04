@@ -7,12 +7,12 @@
  * @module ui/toolbar/balloon/balloontoolbar
  */
 
-import ContextualBalloon from '../../panel/balloon/contextualballoon';
-import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview';
-import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview';
-import normalizeToolbarConfig from '../normalizetoolbarconfig';
+import ContextualBalloon from '../../panel/balloon/contextualballoon.js';
+import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview.js';
+import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview.js';
+import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
 
-import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui';
+import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
 import {
 	Plugin,

@@ -5,17 +5,17 @@
 
 /* global document, MouseEvent, Event */
 
-import EditorUI from '../../src/editorui/editorui';
-import View from '../../src/view';
-import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import EditorUI from '../../src/editorui/editorui.js';
+import View from '../../src/view.js';
+import BalloonPanelView from '../../src/panel/balloon/balloonpanelview.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import TooltipManager from '../../src/tooltipmanager';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import TooltipManager from '../../src/tooltipmanager.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
 
 describe( 'TooltipManager', () => {

@@ -7,12 +7,12 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
-import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { ButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui.js';
 
-import { isSupported, normalizeAlignmentOptions } from './utils';
-import type { SupportedOption } from './alignmentconfig';
-import type AlignmentCommand from './alignmentcommand';
+import { isSupported, normalizeAlignmentOptions } from './utils.js';
+import type { SupportedOption } from './alignmentconfig.js';
+import type AlignmentCommand from './alignmentcommand.js';
 
 const iconsMap = new Map( [
 	[ 'left', icons.alignLeft ],

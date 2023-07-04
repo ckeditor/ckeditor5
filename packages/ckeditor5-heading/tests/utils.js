@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Heading from '../src/heading';
-import { getLocalizedOptions } from '../src/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Heading from '../src/heading.js';
+import { getLocalizedOptions } from '../src/utils.js';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();

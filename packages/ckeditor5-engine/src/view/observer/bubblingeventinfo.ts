@@ -8,9 +8,9 @@
  */
 
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
-import type Document from '../document';
-import type Node from '../node';
-import type Range from '../range';
+import type Document from '../document.js';
+import type Node from '../node.js';
+import type Range from '../range.js';
 
 /**
  * The event object passed to bubbling event callbacks. It is used to provide information about the event as well as a tool to

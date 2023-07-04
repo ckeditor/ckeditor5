@@ -7,9 +7,9 @@
  * @module code-block/utils
  */
 
-import type { Editor } from 'ckeditor5/src/core';
-import type { CodeBlockLanguageDefinition } from './codeblockconfig';
-import { first } from 'ckeditor5/src/utils';
+import type { Editor } from 'ckeditor5/src/core.js';
+import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
+import { first } from 'ckeditor5/src/utils.js';
 import type {
 	DocumentSelection,
 	Element,
@@ -20,7 +20,7 @@ import type {
 	UpcastWriter,
 	ViewDocumentFragment,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 /**
  * Returns code block languages as defined in `config.codeBlock.languages` but processed:

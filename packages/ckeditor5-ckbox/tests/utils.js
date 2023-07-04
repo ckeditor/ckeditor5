@@ -5,8 +5,8 @@
 
 /* global btoa */
 
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import { getEnvironmentId, getImageUrls } from '../src/utils';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { getEnvironmentId, getImageUrls } from '../src/utils.js';
 
 describe( 'utils', () => {
 	let token;

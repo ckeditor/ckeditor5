@@ -7,7 +7,7 @@
  * @module engine/model/text
  */
 
-import Node, { type NodeAttributes } from './node';
+import Node, { type NodeAttributes } from './node.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 

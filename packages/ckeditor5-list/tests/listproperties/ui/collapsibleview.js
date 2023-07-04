@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import CollapsibleView from '../../../src/listproperties/ui/collapsibleview';
+import CollapsibleView from '../../../src/listproperties/ui/collapsibleview.js';
 
 import { ButtonView, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import dropdownArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';

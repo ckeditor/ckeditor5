@@ -182,8 +182,8 @@ Let's define the 3 plugins.
 ```js
 // abbreviation/abbreviation.js
 
-import AbbreviationEditing from './abbreviationediting';
-import AbbreviationUI from './abbreviationui';
+import AbbreviationEditing from './abbreviationediting.js';
+import AbbreviationUI from './abbreviationui.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class Abbreviation extends Plugin {
@@ -229,7 +229,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Abbreviation from './simplebox/abbreviation'; // ADDED
+import Abbreviation from './simplebox/abbreviation.js'; // ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -419,7 +419,7 @@ Import the command and register it in the `AbbreviationEditing` plugin:
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import AbbreviationCommand from './abbreviationcommand';                 // ADDED
+import AbbreviationCommand from './abbreviationcommand.js';                 // ADDED
 
 export default class Abbreviation extends Plugin {
 

@@ -7,12 +7,12 @@
  * @module indent/indentblock
  */
 
-import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
-import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine';
+import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
+import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
 
-import IndentBlockCommand from './indentblockcommand';
-import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
-import IndentUsingClasses from './indentcommandbehavior/indentusingclasses';
+import IndentBlockCommand from './indentblockcommand.js';
+import IndentUsingOffset from './indentcommandbehavior/indentusingoffset.js';
+import IndentUsingClasses from './indentcommandbehavior/indentusingclasses.js';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
 const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];

@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document, setTimeout */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 let HTTP_SERVER_LAG = 500;
 let isDirty = false;

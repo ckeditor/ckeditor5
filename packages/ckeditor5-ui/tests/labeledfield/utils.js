@@ -7,13 +7,13 @@ import {
 	createLabeledInputText,
 	createLabeledInputNumber,
 	createLabeledDropdown
-} from '../../src/labeledfield/utils';
+} from '../../src/labeledfield/utils.js';
 
-import LabeledFieldView from '../../src/labeledfield/labeledfieldview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import InputTextView from '../../src/inputtext/inputtextview';
-import InputNumberView from '../../src/inputnumber/inputnumberview';
-import DropdownView from '../../src/dropdown/dropdownview';
+import LabeledFieldView from '../../src/labeledfield/labeledfieldview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import InputTextView from '../../src/inputtext/inputtextview.js';
+import InputNumberView from '../../src/inputnumber/inputnumberview.js';
+import DropdownView from '../../src/dropdown/dropdownview.js';
 
 describe( 'LabeledFieldView utils', () => {
 	let locale;

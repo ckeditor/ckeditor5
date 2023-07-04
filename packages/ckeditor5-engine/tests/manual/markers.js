@@ -5,18 +5,18 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import List from '@ckeditor/ckeditor5-list/src/list.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 
-import Position from '../../src/model/position';
-import Range from '../../src/model/range';
+import Position from '../../src/model/position.js';
+import Range from '../../src/model/range.js';
 
 const markerNames = [];
 let model = null;

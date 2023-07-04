@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import DecoupledEditorUIView from '../src/decouplededitoruiview';
-import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import DecoupledEditorUIView from '../src/decouplededitoruiview.js';
+import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DecoupledEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;

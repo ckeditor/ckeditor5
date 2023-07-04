@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import Document from '@ckeditor/ckeditor5-engine/src/view/document';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import { stringify, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import Document from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
+import { stringify, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import MarkdownDataProcessor from '../../../src/gfmdataprocessor';
+import MarkdownDataProcessor from '../../../src/gfmdataprocessor.js';
 
 const markdownTextArea = document.getElementById( 'markdown' );
 const viewTextArea = document.getElementById( 'view' );

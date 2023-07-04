@@ -5,7 +5,7 @@
 
 /* globals window, document, console */
 
-import ClassicEditor from '../../build/ckeditor';
+import ClassicEditor from '../../build/ckeditor.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {

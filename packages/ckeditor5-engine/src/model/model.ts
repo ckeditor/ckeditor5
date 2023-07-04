@@ -7,30 +7,30 @@
  * @module engine/model/model
  */
 
-import Batch, { type BatchType } from './batch';
-import Document from './document';
-import MarkerCollection from './markercollection';
-import ModelPosition, { type PositionOffset, type PositionStickiness } from './position';
-import ModelRange from './range';
-import ModelSelection, { type PlaceOrOffset, type Selectable } from './selection';
-import OperationFactory from './operation/operationfactory';
-import DocumentSelection from './documentselection';
-import Schema from './schema';
-import Writer from './writer';
-import Node from './node';
+import Batch, { type BatchType } from './batch.js';
+import Document from './document.js';
+import MarkerCollection from './markercollection.js';
+import ModelPosition, { type PositionOffset, type PositionStickiness } from './position.js';
+import ModelRange from './range.js';
+import ModelSelection, { type PlaceOrOffset, type Selectable } from './selection.js';
+import OperationFactory from './operation/operationfactory.js';
+import DocumentSelection from './documentselection.js';
+import Schema from './schema.js';
+import Writer from './writer.js';
+import Node from './node.js';
 
-import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
-import { injectSelectionPostFixer } from './utils/selection-post-fixer';
-import deleteContent from './utils/deletecontent';
-import getSelectedContent from './utils/getselectedcontent';
-import insertContent from './utils/insertcontent';
-import insertObject from './utils/insertobject';
-import modifySelection from './utils/modifyselection';
+import { autoParagraphEmptyRoots } from './utils/autoparagraphing.js';
+import { injectSelectionPostFixer } from './utils/selection-post-fixer.js';
+import deleteContent from './utils/deletecontent.js';
+import getSelectedContent from './utils/getselectedcontent.js';
+import insertContent from './utils/insertcontent.js';
+import insertObject from './utils/insertobject.js';
+import modifySelection from './utils/modifyselection.js';
 
-import type ModelDocumentFragment from './documentfragment';
-import type Item from './item';
-import type ModelElement from './element';
-import type Operation from './operation/operation';
+import type ModelDocumentFragment from './documentfragment.js';
+import type Item from './item.js';
+import type ModelElement from './element.js';
+import type Operation from './operation/operation.js';
 
 import {
 	CKEditorError,

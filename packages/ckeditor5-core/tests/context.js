@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Context from '../src/context';
-import ContextPlugin from '../src/contextplugin';
-import Plugin from '../src/plugin';
-import Config from '@ckeditor/ckeditor5-utils/src/config';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
-import VirtualTestEditor from './_utils/virtualtesteditor';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Context from '../src/context.js';
+import ContextPlugin from '../src/contextplugin.js';
+import Plugin from '../src/plugin.js';
+import Config from '@ckeditor/ckeditor5-utils/src/config.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import VirtualTestEditor from './_utils/virtualtesteditor.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'Context', () => {
 	describe( 'config', () => {

@@ -154,7 +154,7 @@ They allow for "stringifying" the {@link framework/architecture/editing-engine#m
 For instance, to take a peek at the editor model, you could use the {@link module:engine/dev-utils/model~getData `getData()`} helper:
 
 ```js
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 // More imports.
 // ...

@@ -258,7 +258,7 @@ Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text
 
 	```js
 	// Before v29.0.0
-	import { isImage } from './utils';
+	import { isImage } from './utils.js';
 
 	const selectedElement = editor.model.document.selection.getSelectedElement();
 
@@ -283,7 +283,7 @@ Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text
 
 	```js
 	// Before v29.0.0
-	import { insertImage } from './utils';
+	import { insertImage } from './utils.js';
 
 	const src = 'path/to/image.jpg';
 	const model = ths.editor.model;
@@ -321,8 +321,8 @@ This decoupling does not have an impact on integrations based on {@link installa
 However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
 ```js
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -345,8 +345,8 @@ This decoupling does not have an impact on integrations based on {@link installa
 However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get CKFinder working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
 ```js
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfider';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfider.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

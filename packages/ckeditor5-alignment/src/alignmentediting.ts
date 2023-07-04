@@ -7,12 +7,12 @@
  * @module alignment/alignmentediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { AttributeDescriptor } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { AttributeDescriptor } from 'ckeditor5/src/engine.js';
 
-import AlignmentCommand from './alignmentcommand';
-import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils';
-import type { AlignmentFormat, SupportedOption } from './alignmentconfig';
+import AlignmentCommand from './alignmentcommand.js';
+import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils.js';
+import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 
 /**
  * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds

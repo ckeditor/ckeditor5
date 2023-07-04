@@ -5,9 +5,9 @@
 
 /* globals CSSStyleSheet */
 
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
 
-import { parseHtml } from '../../src/filters/parse';
+import { parseHtml } from '../../src/filters/parse.js';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'parse', () => {

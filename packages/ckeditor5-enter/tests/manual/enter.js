@@ -5,14 +5,14 @@
 
 /* globals console:false, document, window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '../../src/enter';
-import ShiftEnter from '../../src/shiftenter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '../../src/enter.js';
+import ShiftEnter from '../../src/shiftenter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

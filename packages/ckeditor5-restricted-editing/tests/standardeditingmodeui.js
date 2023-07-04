@@ -5,13 +5,13 @@
 
 /* globals document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import StandardEditingModeUI from '../src/standardeditingmodeui';
-import StandardEditingModeEditing from '../src/standardeditingmodeediting';
+import StandardEditingModeUI from '../src/standardeditingmodeui.js';
+import StandardEditingModeEditing from '../src/standardeditingmodeediting.js';
 
 describe( 'StandardEditingModeUI', () => {
 	let editor, buttonView, editorElement;

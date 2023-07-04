@@ -24,7 +24,7 @@ The presented combination of the UI and editor's features works best for integra
 
 ```js
 
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { Alignment } from '@ckeditor/ckeditor5-alignment';

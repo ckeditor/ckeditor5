@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import IframeView from '../../src/iframe/iframeview';
+import IframeView from '../../src/iframe/iframeview.js';
 
 describe( 'IframeView', () => {
 	let view;

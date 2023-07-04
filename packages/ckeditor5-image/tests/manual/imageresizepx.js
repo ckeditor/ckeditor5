@@ -5,17 +5,17 @@
 
 /* global document, console, window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import ImageResize from '../../src/imageresize';
-import ImageUpload from '../../src/imageupload';
+import ImageResize from '../../src/imageresize.js';
+import ImageUpload from '../../src/imageupload.js';
 
 const commonConfig = {
 	plugins: [

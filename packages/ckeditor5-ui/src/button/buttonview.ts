@@ -7,12 +7,12 @@
  * @module ui/button/buttonview
  */
 
-import View from '../view';
-import IconView from '../icon/iconview';
+import View from '../view.js';
+import IconView from '../icon/iconview.js';
 
-import type { TemplateDefinition } from '../template';
-import type ViewCollection from '../viewcollection';
-import type { default as Button, ButtonExecuteEvent } from './button';
+import type { TemplateDefinition } from '../template.js';
+import type ViewCollection from '../viewcollection.js';
+import type { default as Button, ButtonExecuteEvent } from './button.js';
 
 import {
 	env,

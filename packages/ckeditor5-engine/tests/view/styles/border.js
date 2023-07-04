@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
-import { addBorderRules } from '../../../src/view/styles/border';
+import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap.js';
+import { addBorderRules } from '../../../src/view/styles/border.js';
 
 describe( 'Border styles normalization', () => {
 	let styles;

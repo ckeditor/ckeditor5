@@ -7,9 +7,9 @@
  * @module font/fontsize/fontsizecommand
  */
 
-import type { Editor } from 'ckeditor5/src/core';
-import FontCommand from '../fontcommand';
-import { FONT_SIZE } from '../utils';
+import type { Editor } from 'ckeditor5/src/core.js';
+import FontCommand from '../fontcommand.js';
+import { FONT_SIZE } from '../utils.js';
 
 /**
  * The font size command. It is used by {@link module:font/fontsize/fontsizeediting~FontSizeEditing}

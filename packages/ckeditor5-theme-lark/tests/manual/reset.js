@@ -5,4 +5,4 @@
 
 // Importing View to make sure resets are imported and injected
 // eslint-disable-next-line
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';

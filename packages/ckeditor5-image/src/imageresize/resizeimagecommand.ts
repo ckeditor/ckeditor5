@@ -7,9 +7,9 @@
  * @module image/imageresize/resizeimagecommand
  */
 
-import { Command } from 'ckeditor5/src/core';
+import { Command } from 'ckeditor5/src/core.js';
 
-import type ImageUtils from '../imageutils';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The resize image command. Currently, it only supports the width attribute.

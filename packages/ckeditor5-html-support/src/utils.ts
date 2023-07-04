@@ -13,7 +13,7 @@ import type {
 	Item,
 	ViewElement,
 	Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 import { startCase, cloneDeep } from 'lodash-es';
 
 export interface GHSViewAttributes {

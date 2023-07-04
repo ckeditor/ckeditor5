@@ -5,10 +5,10 @@
 
 /* globals document */
 
-import View from '../../../src/view/view';
-import { setData } from '../../../src/dev-utils/view';
-import createViewRoot from '../../view/_utils/createroot';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import View from '../../../src/view/view.js';
+import { setData } from '../../../src/dev-utils/view.js';
+import createViewRoot from '../../view/_utils/createroot.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 const iframe = document.getElementById( 'iframe' );
 iframe.srcdoc = '<div contenteditable="true" id="editor"></div>';

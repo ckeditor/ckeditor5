@@ -5,16 +5,16 @@
 
 /* global document */
 
-import FontFamilyEditing from '../../src/fontfamily/fontfamilyediting';
-import FontFamilyUI from '../../src/fontfamily/fontfamilyui';
+import FontFamilyEditing from '../../src/fontfamily/fontfamilyediting.js';
+import FontFamilyUI from '../../src/fontfamily/fontfamilyui.js';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontFamilyUI', () => {
 	let editor, command, element;

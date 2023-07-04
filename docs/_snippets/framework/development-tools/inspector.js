@@ -6,8 +6,8 @@
 /* globals console, window, document */
 
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import ClassicEditor from '../../build-classic';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import ClassicEditor from '../../build-classic.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {

@@ -5,23 +5,23 @@
 
 /* globals document */
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
 
-import ImageInsertPanelView from '../../../src/imageinsert/ui/imageinsertpanelview';
-import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import ImageInsertPanelView from '../../../src/imageinsert/ui/imageinsertpanelview.js';
+import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
-import { createLabeledInputView } from '../../../src/imageinsert/utils';
+import { createLabeledInputView } from '../../../src/imageinsert/utils.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ImageInsertPanelView', () => {
 	let view;

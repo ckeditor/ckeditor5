@@ -25,16 +25,16 @@ Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](
 
 ```js
 // ❌ Old import paths:
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
-import ListUI from '@ckeditor/ckeditor5-list/src/listui';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolistediting';
-import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listpropertiesediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting.js';
+import ListUI from '@ckeditor/ckeditor5-list/src/listui.js';
+import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolistediting.js';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listpropertiesediting.js';
 
 // ✅ New import paths (with subdirectories):
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import ListUI from '@ckeditor/ckeditor5-list/src/list/listui';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting';
-import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import ListUI from '@ckeditor/ckeditor5-list/src/list/listui.js';
+import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting.js';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
 ```
 
 <info-box>
@@ -51,88 +51,88 @@ From now on, additional plugins will be required when the following CKEditor 5 c
 
 	```js
 	// ❌ Old imports:
-	import TrackChanges from '@ckeditor/ckeditor5-track-changes/src/trackchanges';
+	import TrackChanges from '@ckeditor/ckeditor5-track-changes/src/trackchanges.js';
 	// ✅ New imports:
-	import TrackChanges from '@ckeditor/ckeditor5-track-changes/src/trackchanges';
-	import Comments from '@ckeditor/ckeditor5-comments/src/comments';
+	import TrackChanges from '@ckeditor/ckeditor5-track-changes/src/trackchanges.js';
+	import Comments from '@ckeditor/ckeditor5-comments/src/comments.js';
 	```
 
 * **{@link module:real-time-collaboration/realtimecollaborativeediting~RealTimeCollaborativeEditing}** will also require {@link module:cloud-services/cloudservices~CloudServices}:
 
 	```js
 	// ❌ Old imports:
-	import RealTimeCollaborativeEditing from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativeediting';
+	import RealTimeCollaborativeEditing from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativeediting.js';
 	// ✅ New imports:
-	import RealTimeCollaborativeEditing from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativeediting';
-	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+	import RealTimeCollaborativeEditing from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativeediting.js';
+	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 	```
 
 * **{@link module:real-time-collaboration/realtimecollaborativecomments~RealTimeCollaborativeComments}** will also require {@link module:cloud-services/cloudservices~CloudServices} and {@link module:comments/comments~Comments}:
 
 	```js
 	// ❌ Old imports:
-	import RealTimeCollaborativeComments from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments';
+	import RealTimeCollaborativeComments from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments.js';
 	// ✅ New imports:
-	import RealTimeCollaborativeComments from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments';
-	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-	import Comments from '@ckeditor/ckeditor5-comments/src/comments';
+	import RealTimeCollaborativeComments from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments.js';
+	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+	import Comments from '@ckeditor/ckeditor5-comments/src/comments.js';
 	```
 
 * **{@link module:real-time-collaboration/realtimecollaborativetrackchanges~RealTimeCollaborativeTrackChanges}** will also require {@link module:cloud-services/cloudservices~CloudServices}, {@link module:comments/comments~Comments}, and {@link module:track-changes/trackchanges~TrackChanges}:
 
 	```js
 	// ❌ Old imports:
-	import RealTimeCollaborativeTrackChanges from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges';
+	import RealTimeCollaborativeTrackChanges from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges.js';
 	// ✅ New imports:
-	import RealTimeCollaborativeTrackChanges from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges';
-	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-	import Comments from '@ckeditor/ckeditor5-comments/src/comments';
-	import TrackChanges from '@ckeditor/ckeditor5-track-changes/src/trackchanges';
+	import RealTimeCollaborativeTrackChanges from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges.js';
+	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+	import Comments from '@ckeditor/ckeditor5-comments/src/comments.js';
+	import TrackChanges from '@ckeditor/ckeditor5-track-changes/src/trackchanges.js';
 	```
 
 * **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory~RealTimeCollaborativeRevisionHistory}** will also require {@link module:cloud-services/cloudservices~CloudServices}:
 
 	```js
 	// ❌ Old imports:
-	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
+	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory.js';
 	// ✅ New imports:
-	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
-	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory.js';
+	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 	```
 
 * **{@link module:real-time-collaboration/realtimecollaborativecomments/cloudservicescommentsadapter~CloudServicesCommentsAdapter}** will also require {@link module:cloud-services/cloudservices~CloudServices} and {@link module:comments/comments/commentsrepository~CommentsRepository}:
 
 	```js
 	// ❌ Old imports:
-	import CloudServicesCommentsAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments/cloudservicescommentsadapter';
+	import CloudServicesCommentsAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments/cloudservicescommentsadapter.js';
 	// ✅ New imports:
-	import CloudServicesCommentsAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments/cloudservicescommentsadapter';
-	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-	import CommentsRepository from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository';
+	import CloudServicesCommentsAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments/cloudservicescommentsadapter.js';
+	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+	import CommentsRepository from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository.js';
 	```
 
 * **{@link module:real-time-collaboration/realtimecollaborativetrackchanges/cloudservicestrackchangesadapter~CloudServicesTrackChangesAdapter}** will also require {@link module:cloud-services/cloudservices~CloudServices}, {@link module:comments/comments/commentsrepository~CommentsRepository}, and {@link module:track-changes/trackchangesediting~TrackChangesEditing}:
 
 	```js
 	// ❌ Old imports:
-	import CloudServicesTrackChangesAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges/cloudservicestrackchangesadapter';
+	import CloudServicesTrackChangesAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges/cloudservicestrackchangesadapter.js';
 
 	// ✅ New imports:
-	import CloudServicesTrackChangesAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges/cloudservicestrackchangesadapter';
-	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-	import CommentsRepository from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository';
-	import TrackChangesEditing from '@ckeditor/ckeditor5-track-changes/src/trackchangesediting';
+	import CloudServicesTrackChangesAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges/cloudservicestrackchangesadapter.js';
+	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+	import CommentsRepository from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository.js';
+	import TrackChangesEditing from '@ckeditor/ckeditor5-track-changes/src/trackchangesediting.js';
 	```
 
 * **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter~CloudServicesRevisionHistoryAdapter}** will also require {@link module:cloud-services/cloudservices~CloudServices}:
 
 	```js
 	// ❌ Old imports:
-	import CloudServicesRevisionHistoryAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter';
+	import CloudServicesRevisionHistoryAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter.js';
 
 	// ✅ New imports:
-	import CloudServicesRevisionHistoryAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter';
-	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+	import CloudServicesRevisionHistoryAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter.js';
+	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 	```
 
 ### Mandatory consumption of all model items in the downcast conversion pipeline
@@ -224,10 +224,10 @@ Since the cross-package dependencies inside the project were removed, the config
 After the update, you should configure the comments editor using the `config.comments.editorConfig` option:
 
 ```js
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import List from '@ckeditor/ckeditor5-list/src/list';
+import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import List from '@ckeditor/ckeditor5-list/src/list.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	// ...

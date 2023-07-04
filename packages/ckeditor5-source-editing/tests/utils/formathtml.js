@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { formatHtml } from '../../src/utils/formathtml';
+import { formatHtml } from '../../src/utils/formathtml.js';
 
 describe( 'SourceEditing utils', () => {
 	describe( 'formatHtml()', () => {

@@ -5,8 +5,8 @@
 
 /* global document */
 
-import Config from '../src/config';
-import areConnectedThroughProperties from '../src/areconnectedthroughproperties';
+import Config from '../src/config.js';
+import areConnectedThroughProperties from '../src/areconnectedthroughproperties.js';
 
 describe( 'Config', () => {
 	let config;

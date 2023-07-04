@@ -7,29 +7,29 @@
  * @module link/linkui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
 	type ViewDocumentClickEvent,
 	type ViewElement,
 	type ViewPosition
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler
-} from 'ckeditor5/src/ui';
-import type { PositionOptions } from 'ckeditor5/src/utils';
-import { isWidget } from 'ckeditor5/src/widget';
+} from 'ckeditor5/src/ui.js';
+import type { PositionOptions } from 'ckeditor5/src/utils.js';
+import { isWidget } from 'ckeditor5/src/widget.js';
 
-import LinkFormView from './ui/linkformview';
-import LinkActionsView from './ui/linkactionsview';
-import type LinkCommand from './linkcommand';
-import type UnlinkCommand from './unlinkcommand';
-import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils';
+import LinkFormView from './ui/linkformview.js';
+import LinkActionsView from './ui/linkactionsview.js';
+import type LinkCommand from './linkcommand.js';
+import type UnlinkCommand from './unlinkcommand.js';
+import { addLinkProtocolIfApplicable, isLinkElement, LINK_KEYSTROKE } from './utils.js';
 
 import linkIcon from '../theme/icons/link.svg';
 

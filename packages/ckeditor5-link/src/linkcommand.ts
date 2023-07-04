@@ -7,14 +7,14 @@
  * @module link/linkcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { findAttributeRange } from 'ckeditor5/src/typing';
-import { Collection, first, toMap } from 'ckeditor5/src/utils';
-import type { Range, DocumentSelection, Model, Writer } from 'ckeditor5/src/engine';
+import { Command } from 'ckeditor5/src/core.js';
+import { findAttributeRange } from 'ckeditor5/src/typing.js';
+import { Collection, first, toMap } from 'ckeditor5/src/utils.js';
+import type { Range, DocumentSelection, Model, Writer } from 'ckeditor5/src/engine.js';
 
-import AutomaticDecorators from './utils/automaticdecorators';
-import { isLinkableElement } from './utils';
-import type ManualDecorator from './utils/manualdecorator';
+import AutomaticDecorators from './utils/automaticdecorators.js';
+import { isLinkableElement } from './utils.js';
+import type ManualDecorator from './utils/manualdecorator.js';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.

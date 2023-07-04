@@ -7,10 +7,10 @@
  * @module list/documentlistproperties/converters
  */
 
-import type { UpcastElementEvent } from 'ckeditor5/src/engine';
-import type { GetCallback } from 'ckeditor5/src/utils';
+import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
 
-import type { AttributeStrategy } from './documentlistpropertiesediting';
+import type { AttributeStrategy } from './documentlistpropertiesediting.js';
 
 /**
  * Returns a converter that consumes the `style`, `reversed`, and `start` attributes.

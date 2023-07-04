@@ -14,11 +14,11 @@ import type {
 	Node,
 	Writer,
 	Item
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
+import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import ListWalker, { iterateSiblingListBlocks } from './listwalker';
+import ListWalker, { iterateSiblingListBlocks } from './listwalker.js';
 
 /**
  * The list item ID generator.

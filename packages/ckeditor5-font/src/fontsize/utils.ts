@@ -7,8 +7,8 @@
  * @module font/fontsize/utils
  */
 
-import { CKEditorError } from 'ckeditor5/src/utils';
-import { type FontSizeOption } from '../fontconfig';
+import { CKEditorError } from 'ckeditor5/src/utils.js';
+import { type FontSizeOption } from '../fontconfig.js';
 
 /**
  * Normalizes and translates the {@link module:font/fontconfig~FontSizeConfig#options configuration options}

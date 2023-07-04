@@ -9,7 +9,7 @@
 
 /* globals window, global */
 
-import CKEditorError from './ckeditorerror';
+import CKEditorError from './ckeditorerror.js';
 
 const version = '38.2.0-alpha.0';
 
@@ -42,7 +42,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 *
 	 * ```ts
 	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
 	 * ```
 	 *
 	 * Then your project loads some CKEditor 5 packages twice. How does it happen?
@@ -72,11 +72,11 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * The correct way to do so is to import an editor and plugins and run them together like this:
 	 *
 	 * ```ts
-	 * import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 * import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-	 * import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 * import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 * import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+	 * import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+	 * import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+	 * import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 	 *
 	 * ClassicEditor
 	 * 	.create( document.querySelector( '#editor' ), {
@@ -96,10 +96,10 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 *
 	 * ```ts
 	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 * import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-	 * import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 * import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+	 * import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+	 * import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+	 * import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 	 * ```
 	 *
 	 * This creates the same situation as in the previous section because you use a build together with source plugins.

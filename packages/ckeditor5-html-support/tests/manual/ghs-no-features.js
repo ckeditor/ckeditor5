@@ -5,11 +5,11 @@
 
 /* globals console:false, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

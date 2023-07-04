@@ -5,16 +5,16 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import LinkImage from '../src/linkimage';
-import LinkImageUI from '../src/linkimageui';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import LinkImage from '../src/linkimage.js';
+import LinkImageUI from '../src/linkimageui.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
 
 describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;

@@ -5,8 +5,8 @@
 
 /* global Event */
 
-import preventDefault from '../../src/bindings/preventdefault';
-import View from '../../src/view';
+import preventDefault from '../../src/bindings/preventdefault.js';
+import View from '../../src/view.js';
 
 describe( 'preventDefault', () => {
 	it( 'prevents default of a native DOM event', () => {

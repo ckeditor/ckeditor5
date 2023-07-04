@@ -7,9 +7,9 @@
  * @module ui/editorui/editoruiview
  */
 
-import View from '../view';
-import BodyCollection from './bodycollection';
-import type EditableUIView from '../editableui/editableuiview';
+import View from '../view.js';
+import BodyCollection from './bodycollection.js';
+import type EditableUIView from '../editableui/editableuiview.js';
 
 import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 

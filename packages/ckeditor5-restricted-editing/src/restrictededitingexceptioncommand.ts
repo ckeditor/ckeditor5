@@ -7,8 +7,8 @@
  * @module restricted-editing/restrictededitingexceptioncommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type { TreeWalkerValue } from 'ckeditor5/src/engine';
+import { Command } from 'ckeditor5/src/core.js';
+import type { TreeWalkerValue } from 'ckeditor5/src/engine.js';
 
 /**
  * The command that toggles exceptions from the restricted editing on text.

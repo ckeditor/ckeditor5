@@ -5,16 +5,16 @@
 
 /* global document */
 
-import DocumentListEditing from '../../../src/documentlist/documentlistediting';
+import DocumentListEditing from '../../../src/documentlist/documentlistediting.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import stubUid from '../_utils/uid';
+import stubUid from '../_utils/uid.js';
 
 describe( 'DocumentListEditing integrations: markers', () => {
 	let element, editor, model, root;

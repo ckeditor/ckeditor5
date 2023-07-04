@@ -7,9 +7,9 @@
  * @module ui/dropdown/dropdownpanelview
  */
 
-import View from '../view';
-import type ViewCollection from '../viewcollection';
-import type DropdownPanelFocusable from './dropdownpanelfocusable';
+import View from '../view.js';
+import type ViewCollection from '../viewcollection.js';
+import type DropdownPanelFocusable from './dropdownpanelfocusable.js';
 
 import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 

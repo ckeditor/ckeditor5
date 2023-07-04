@@ -7,11 +7,11 @@
  * @module link/ui/linkactionsview
  */
 
-import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import { ensureSafeUrl } from '../utils';
+import { ensureSafeUrl } from '../utils.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports

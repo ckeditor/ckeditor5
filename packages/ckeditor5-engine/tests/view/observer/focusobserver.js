@@ -5,13 +5,13 @@
 
 /* globals document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import FocusObserver from '../../../src/view/observer/focusobserver';
-import View from '../../../src/view/view';
-import createViewRoot from '../_utils/createroot';
-import { setData } from '../../../src/dev-utils/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import FocusObserver from '../../../src/view/observer/focusobserver.js';
+import View from '../../../src/view/view.js';
+import createViewRoot from '../_utils/createroot.js';
+import { setData } from '../../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'FocusObserver', () => {
 	let view, viewDocument, observer;

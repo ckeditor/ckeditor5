@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting.js';
 
 describe( 'ImageTextAlternativeCommand', () => {
 	let editor, model, command;

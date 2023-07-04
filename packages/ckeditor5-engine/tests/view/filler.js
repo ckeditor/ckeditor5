@@ -12,7 +12,7 @@ import {
 	isInlineFiller,
 	getDataWithoutFiller,
 	MARKED_NBSP_FILLER
-} from '../../src/view/filler';
+} from '../../src/view/filler.js';
 
 describe( 'filler', () => {
 	describe( 'INLINE_FILLER', () => {

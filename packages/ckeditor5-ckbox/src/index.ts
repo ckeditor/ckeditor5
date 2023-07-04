@@ -7,10 +7,10 @@
  * @module ckbox
  */
 
-export { default as CKBox } from './ckbox';
-export { default as CKBoxEditing } from './ckboxediting';
-export { default as CKBoxUI } from './ckboxui';
-export type { default as CKBoxCommand } from './ckboxcommand';
-export type { CKBoxConfig } from './ckboxconfig';
+export { default as CKBox } from './ckbox.js';
+export { default as CKBoxEditing } from './ckboxediting.js';
+export { default as CKBoxUI } from './ckboxui.js';
+export type { default as CKBoxCommand } from './ckboxcommand.js';
+export type { CKBoxConfig } from './ckboxconfig.js';
 
-import './augmentation';
+import './augmentation.js';

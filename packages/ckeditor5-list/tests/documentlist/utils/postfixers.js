@@ -7,16 +7,16 @@ import {
 	findAndAddListHeadToMap,
 	fixListIndents,
 	fixListItemIds
-} from '../../../src/documentlist/utils/postfixers';
+} from '../../../src/documentlist/utils/postfixers.js';
 import {
 	iterateSiblingListBlocks
-} from '../../../src/documentlist/utils/listwalker';
-import stubUid from '../_utils/uid';
-import { modelList } from '../_utils/utils';
+} from '../../../src/documentlist/utils/listwalker.js';
+import stubUid from '../_utils/uid.js';
+import { modelList } from '../_utils/utils.js';
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { stringify as stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stringify as stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DocumentList - utils - postfixers', () => {
 	let model, schema;

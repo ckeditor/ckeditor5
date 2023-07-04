@@ -7,9 +7,9 @@
  * @module list/documentlist
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import DocumentListEditing from './documentlist/documentlistediting';
-import ListUI from './list/listui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import DocumentListEditing from './documentlist/documentlistediting.js';
+import ListUI from './list/listui.js';
 
 /**
  * The document list feature.

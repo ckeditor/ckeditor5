@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap';
-import { addBackgroundRules } from '../../../src/view/styles/background';
+import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap.js';
+import { addBackgroundRules } from '../../../src/view/styles/background.js';
 
 describe( 'Background styles normalization', () => {
 	let styles;

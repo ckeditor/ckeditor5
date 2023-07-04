@@ -7,13 +7,13 @@
  * @module font/fontsize/fontsizeediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { CKEditorError } from 'ckeditor5/src/utils';
-import { isLength, isPercentage, type ViewElement } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { CKEditorError } from 'ckeditor5/src/utils.js';
+import { isLength, isPercentage, type ViewElement } from 'ckeditor5/src/engine.js';
 
-import FontSizeCommand from './fontsizecommand';
-import { normalizeOptions } from './utils';
-import { buildDefinition, FONT_SIZE, type FontConverterDefinition } from '../utils';
+import FontSizeCommand from './fontsizecommand.js';
+import { normalizeOptions } from './utils.js';
+import { buildDefinition, FONT_SIZE, type FontConverterDefinition } from '../utils.js';
 
 // Mapping of `<font size="..">` styling to CSS's `font-size` values.
 const styleFontSize = [

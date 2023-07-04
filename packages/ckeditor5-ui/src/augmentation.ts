@@ -8,7 +8,7 @@ import type {
 	BlockToolbar,
 	ContextualBalloon,
 	Notification
-} from './index';
+} from './index.js';
 
 import type {
 	ToolbarConfig

@@ -683,7 +683,7 @@ When using one of the {@link installation/getting-started/predefined-builds pred
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 // Import translations for the German language.
-import '@ckeditor/ckeditor5-build-classic/build/translations/de';
+import '@ckeditor/ckeditor5-build-classic/build/translations/de.js';
 
 // ...
 ```

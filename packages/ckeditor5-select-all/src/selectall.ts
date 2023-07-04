@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import SelectAllEditing from './selectallediting';
-import SelectAllUI from './selectallui';
+import SelectAllEditing from './selectallediting.js';
+import SelectAllUI from './selectallui.js';
 
 /**
  * The select all feature.

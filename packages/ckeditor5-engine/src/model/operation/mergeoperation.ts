@@ -7,15 +7,15 @@
  * @module engine/model/operation/mergeoperation
  */
 
-import Operation from './operation';
-import SplitOperation from './splitoperation';
-import Position from '../position';
-import Range from '../range';
-import { _move } from './utils';
+import Operation from './operation.js';
+import SplitOperation from './splitoperation.js';
+import Position from '../position.js';
+import Range from '../range.js';
+import { _move } from './utils.js';
 
-import type Document from '../document';
-import type Element from '../element';
-import type { Selectable } from '../selection';
+import type Document from '../document.js';
+import type Element from '../element.js';
+import type { Selectable } from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 

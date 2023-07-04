@@ -7,9 +7,9 @@
  * @module list/documentlistproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import DocumentListPropertiesEditing from './documentlistproperties/documentlistpropertiesediting';
-import ListPropertiesUI from './listproperties/listpropertiesui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import DocumentListPropertiesEditing from './documentlistproperties/documentlistpropertiesediting.js';
+import ListPropertiesUI from './listproperties/listpropertiesui.js';
 
 /**
  * The document list properties feature.

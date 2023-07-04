@@ -7,11 +7,11 @@
  * @module ui/dropdown/button/splitbuttonview
  */
 
-import View from '../../view';
-import ButtonView from '../../button/buttonview';
-import type ViewCollection from '../../viewcollection';
-import type Button from '../../button/button';
-import type DropdownButton from './dropdownbutton';
+import View from '../../view.js';
+import ButtonView from '../../button/buttonview.js';
+import type ViewCollection from '../../viewcollection.js';
+import type Button from '../../button/button.js';
+import type DropdownButton from './dropdownbutton.js';
 
 import {
 	KeystrokeHandler,

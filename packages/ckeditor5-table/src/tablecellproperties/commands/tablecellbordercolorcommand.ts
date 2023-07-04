@@ -7,11 +7,11 @@
  * @module table/tablecellproperties/commands/tablecellbordercolorcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import type { Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine.js';
+import type { Editor } from 'ckeditor5/src/core.js';
 
-import TableCellPropertyCommand from './tablecellpropertycommand';
-import { getSingleValue } from '../../utils/table-properties';
+import TableCellPropertyCommand from './tablecellpropertycommand.js';
+import { getSingleValue } from '../../utils/table-properties.js';
 
 /**
  * The table cell border color command.

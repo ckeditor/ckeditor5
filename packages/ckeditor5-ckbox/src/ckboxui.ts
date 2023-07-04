@@ -7,11 +7,11 @@
  * @module ckbox/ckboxui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
 import browseFilesIcon from '../theme/icons/browse-files.svg';
-import type CKBoxCommand from './ckboxcommand';
+import type CKBoxCommand from './ckboxcommand.js';
 
 /**
  * The CKBoxUI plugin. It introduces the `'ckbox'` toolbar button.

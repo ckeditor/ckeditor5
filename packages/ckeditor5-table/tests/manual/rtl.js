@@ -5,11 +5,11 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
-import TableProperties from '../../src/tableproperties';
-import TableCellProperties from '../../src/tablecellproperties';
+import TableProperties from '../../src/tableproperties.js';
+import TableCellProperties from '../../src/tablecellproperties.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
-import ShowBlocks from '../src/showblocks';
-import ShowBlocksEditing from '../src/showblocksediting';
-import ShowBlocksUI from '../src/showblocksui';
+import ShowBlocks from '../src/showblocks.js';
+import ShowBlocksEditing from '../src/showblocksediting.js';
+import ShowBlocksUI from '../src/showblocksui.js';
 
 describe( 'ShowBlocks', () => {
 	it( 'should be correctly named', () => {

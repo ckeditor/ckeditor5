@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { normalizeOptions } from '../../src/fontfamily/utils';
+import { normalizeOptions } from '../../src/fontfamily/utils.js';
 
 describe( 'FontFamily utils', () => {
 	describe( 'normalizeOptions()', () => {

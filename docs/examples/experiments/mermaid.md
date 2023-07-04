@@ -32,7 +32,7 @@ This example uses our own Mermaid plugin, [available on GitHub](https://github.c
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid';
+import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid.js';
 
 ClassicEditor
 	.create( document.querySelector( '#mermaid' ), {

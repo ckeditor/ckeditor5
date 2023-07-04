@@ -7,9 +7,9 @@
  * @module table/commands/selectrowcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Range, Element } from 'ckeditor5/src/engine';
-import type TableUtils from '../tableutils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { Range, Element } from 'ckeditor5/src/engine.js';
+import type TableUtils from '../tableutils.js';
 
 /**
  * The select row command.

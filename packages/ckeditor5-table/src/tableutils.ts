@@ -7,8 +7,8 @@
  * @module table/tableutils
  */
 
-import { CKEditorError } from 'ckeditor5/src/utils';
-import { Plugin } from 'ckeditor5/src/core';
+import { CKEditorError } from 'ckeditor5/src/utils.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DocumentSelection,
 	Element,
@@ -17,11 +17,11 @@ import type {
 	Range,
 	Selection,
 	Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import TableWalker, { type TableWalkerOptions } from './tablewalker';
-import { createEmptyTableCell, updateNumericAttribute } from './utils/common';
-import { removeEmptyColumns, removeEmptyRows } from './utils/structure';
+import TableWalker, { type TableWalkerOptions } from './tablewalker.js';
+import { createEmptyTableCell, updateNumericAttribute } from './utils/common.js';
+import { removeEmptyColumns, removeEmptyRows } from './utils/structure.js';
 
 type Cell = { cell: Element; rowspan: number };
 type CellsToMove = Map<number, Cell>;

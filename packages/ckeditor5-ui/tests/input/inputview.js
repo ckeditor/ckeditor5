@@ -5,8 +5,8 @@
 
 /* global Event */
 
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import InputView from '../../src/input/inputview';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import InputView from '../../src/input/inputview.js';
 
 describe( 'InputView', () => {
 	let view, ariaDescribedById;

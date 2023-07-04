@@ -5,21 +5,21 @@
 
 /* global document */
 
-import DocumentListEditing from '../../../src/documentlist/documentlistediting';
-import stubUid from '../_utils/uid';
-import { modelList } from '../_utils/utils';
+import DocumentListEditing from '../../../src/documentlist/documentlistediting.js';
+import stubUid from '../_utils/uid.js';
+import { modelList } from '../_utils/utils.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { Paragraph } from 'ckeditor5/src/paragraph';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import {
 	getData as getModelData,
 	setData as setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Indent MultiCommand integrations', () => {
 	const blocksChangedByCommands = [];

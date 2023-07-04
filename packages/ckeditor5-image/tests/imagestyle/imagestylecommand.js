@@ -5,10 +5,10 @@
 
 /* eslint-disable no-undef */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import utils from '../../src/imagestyle/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import utils from '../../src/imagestyle/utils.js';
 
 describe( 'ImageStyleCommand', () => {
 	const {

@@ -51,7 +51,7 @@ As of version 37.0.0, we provide native TypeScript types, hence community types 
 
 	```ts
 	// Instead of:
-	import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+	import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 
 	// Do:
 	import { Plugin } from '@ckeditor/ckeditor5-core';

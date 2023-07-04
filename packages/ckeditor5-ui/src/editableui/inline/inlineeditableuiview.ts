@@ -7,7 +7,7 @@
  * @module ui/editableui/inline/inlineeditableuiview
  */
 
-import EditableUIView from '../editableuiview';
+import EditableUIView from '../editableuiview.js';
 
 import type { View } from '@ckeditor/ckeditor5-engine';
 import type { Locale } from '@ckeditor/ckeditor5-utils';

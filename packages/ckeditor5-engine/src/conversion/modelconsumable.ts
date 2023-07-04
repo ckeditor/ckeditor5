@@ -7,14 +7,14 @@
  * @module engine/conversion/modelconsumable
  */
 
-import TextProxy from '../model/textproxy';
+import TextProxy from '../model/textproxy.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Item from '../model/item';
-import type Selection from '../model/selection';
-import type DocumentSelection from '../model/documentselection';
-import type Range from '../model/range';
+import type Item from '../model/item.js';
+import type Selection from '../model/selection.js';
+import type DocumentSelection from '../model/documentselection.js';
+import type Range from '../model/range.js';
 
 /**
  * Manages a list of consumable values for the {@link module:engine/model/item~Item model items}.

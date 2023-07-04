@@ -7,16 +7,16 @@
  * @module engine/view/documentfragment
  */
 
-import TypeCheckable from './typecheckable';
-import Text from './text';
-import TextProxy from './textproxy';
+import TypeCheckable from './typecheckable.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 
 import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Document, ChangeType } from './document';
+import type { default as Document, ChangeType } from './document.js';
 
-import type Item from './item';
-import type Node from './node';
+import type Item from './item.js';
+import type Node from './node.js';
 
 /**
  * Document fragment.

@@ -5,17 +5,17 @@
 
 /* global document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import FindAndReplace from '../src/findandreplace';
-import FindAndReplaceUI from '../src/findandreplaceui';
-import FindAndReplaceEditing from '../src/findandreplaceediting';
+import FindAndReplace from '../src/findandreplace.js';
+import FindAndReplaceUI from '../src/findandreplaceui.js';
+import FindAndReplaceEditing from '../src/findandreplaceediting.js';
 
 describe( 'FindAndReplace', () => {
 	// Data with 8 blocks that can contain $text.

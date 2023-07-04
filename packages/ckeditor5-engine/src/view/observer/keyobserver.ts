@@ -7,8 +7,8 @@
  * @module engine/view/observer/keyobserver
  */
 
-import DomEventObserver from './domeventobserver';
-import type DomEventData from './domeventdata';
+import DomEventObserver from './domeventobserver.js';
+import type DomEventData from './domeventdata.js';
 import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 
 /**

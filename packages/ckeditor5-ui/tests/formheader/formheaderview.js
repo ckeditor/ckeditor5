@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import View from '../../src/view';
-import ViewCollection from '../../src/viewcollection';
-import FormHeaderView from '../../src/formheader/formheaderview';
+import View from '../../src/view.js';
+import ViewCollection from '../../src/viewcollection.js';
+import FormHeaderView from '../../src/formheader/formheaderview.js';
 
 describe( 'FormHeaderView', () => {
 	let view, locale;

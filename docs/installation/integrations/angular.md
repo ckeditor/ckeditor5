@@ -114,7 +114,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from './app.component.js';
 
 @NgModule( {
   declarations: [
@@ -625,7 +625,7 @@ First, you need to add translation files to the bundle. This step can be achieve
 By importing translations for given languages directly in your component file:
 
 ```ts
-import '@ckeditor/ckeditor5-build-classic/build/translations/de';
+import '@ckeditor/ckeditor5-build-classic/build/translations/de.js';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // More imports.
 // ...

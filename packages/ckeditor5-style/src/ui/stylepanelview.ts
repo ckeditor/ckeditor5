@@ -7,12 +7,12 @@
  * @module style/ui/stylepanelview
  */
 
-import { FocusCycler, View, ViewCollection } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import { FocusCycler, View, ViewCollection } from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
-import StyleGroupView from './stylegroupview';
-import type StyleGridView from './stylegridview';
-import type { NormalizedStyleDefinitions } from '../styleutils';
+import StyleGroupView from './stylegroupview.js';
+import type StyleGridView from './stylegridview.js';
+import type { NormalizedStyleDefinitions } from '../styleutils.js';
 
 import '../../theme/stylepanel.css';
 

@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview';
-import CollapsibleView from '../../../src/listproperties/ui/collapsibleview';
+import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview.js';
+import CollapsibleView from '../../../src/listproperties/ui/collapsibleview.js';
 
 import {
 	ButtonView,

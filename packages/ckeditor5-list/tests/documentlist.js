@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DocumentList from '../src/documentlist';
-import ListUI from '../src/list/listui';
-import DocumentListEditing from '../src/documentlist/documentlistediting';
+import DocumentList from '../src/documentlist.js';
+import ListUI from '../src/list/listui.js';
+import DocumentListEditing from '../src/documentlist/documentlistediting.js';
 
 describe( 'DocumentList', () => {
 	it( 'should be named', () => {

@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import ClassicEditor from '../src/ckeditor';
-import BaseClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import ClassicEditor from '../src/ckeditor.js';
+import BaseClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory.js';
 
 describe( 'ClassicEditor build', () => {
 	let editor, editorElement;

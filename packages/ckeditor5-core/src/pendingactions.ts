@@ -7,7 +7,7 @@
  * @module core/pendingactions
  */
 
-import ContextPlugin from './contextplugin';
+import ContextPlugin from './contextplugin.js';
 
 import {
 	CKEditorError,

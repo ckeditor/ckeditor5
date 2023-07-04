@@ -7,19 +7,19 @@
  * @module engine/model/typecheckable
  */
 
-import type { Marker } from './markercollection';
-import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
-import type Element from './element';
-import type LivePosition from './liveposition';
-import type LiveRange from './liverange';
-import type Node from './node';
-import type Position from './position';
-import type Range from './range';
-import type RootElement from './rootelement';
-import type Selection from './selection';
-import type Text from './text';
-import type TextProxy from './textproxy';
+import type { Marker } from './markercollection.js';
+import type DocumentFragment from './documentfragment.js';
+import type DocumentSelection from './documentselection.js';
+import type Element from './element.js';
+import type LivePosition from './liveposition.js';
+import type LiveRange from './liverange.js';
+import type Node from './node.js';
+import type Position from './position.js';
+import type Range from './range.js';
+import type RootElement from './rootelement.js';
+import type Selection from './selection.js';
+import type Text from './text.js';
+import type TextProxy from './textproxy.js';
 
 export default abstract class TypeCheckable {
 	/**

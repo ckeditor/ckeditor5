@@ -9,7 +9,7 @@
  * @module ui/icon/iconview
  */
 
-import View from '../view';
+import View from '../view.js';
 
 import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 

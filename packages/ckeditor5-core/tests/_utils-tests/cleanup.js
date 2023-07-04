@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
-import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
-import { removeEditorBodyOrphans } from '../_utils/cleanup';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview.js';
+import { removeEditorBodyOrphans } from '../_utils/cleanup.js';
 
 describe( 'cleanup util', () => {
 	describe( 'removeEditorBodyOrphans()', () => {

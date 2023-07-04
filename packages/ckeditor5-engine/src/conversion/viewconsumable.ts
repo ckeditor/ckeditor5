@@ -9,11 +9,11 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Element from '../view/element';
-import type Node from '../view/node';
-import type Text from '../view/text';
-import type DocumentFragment from '../view/documentfragment';
-import type { Match } from '../view/matcher';
+import type Element from '../view/element.js';
+import type Node from '../view/node.js';
+import type Text from '../view/text.js';
+import type DocumentFragment from '../view/documentfragment.js';
+import type { Match } from '../view/matcher.js';
 
 import { isArray } from 'lodash-es';
 

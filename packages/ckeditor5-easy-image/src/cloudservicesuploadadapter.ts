@@ -7,8 +7,8 @@
 * @module easy-image/cloudservicesuploadadapter
 */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { FileRepository, type FileLoader, type UploadAdapter } from 'ckeditor5/src/upload';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { FileRepository, type FileLoader, type UploadAdapter } from 'ckeditor5/src/upload.js';
 import type { CloudServicesCore, CloudServices, UploadGateway, FileUploader } from '@ckeditor/ckeditor5-cloud-services';
 
 /**

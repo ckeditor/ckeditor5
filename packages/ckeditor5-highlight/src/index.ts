@@ -7,10 +7,10 @@
  * @module highlight
  */
 
-export { default as Highlight } from './highlight';
-export { default as HighlightEditing } from './highlightediting';
-export { default as HighlightUI } from './highlightui';
-export type { default as HighlightCommand } from './highlightcommand';
-export type { HighlightOption, HighlightConfig } from './highlightconfig';
+export { default as Highlight } from './highlight.js';
+export { default as HighlightEditing } from './highlightediting.js';
+export { default as HighlightUI } from './highlightui.js';
+export type { default as HighlightCommand } from './highlightcommand.js';
+export type { HighlightOption, HighlightConfig } from './highlightconfig.js';
 
-import './augmentation';
+import './augmentation.js';

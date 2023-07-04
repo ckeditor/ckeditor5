@@ -7,7 +7,7 @@
  * @module widget/widgettypearound/utils
  */
 
-import { isWidget } from '../utils';
+import { isWidget } from '../utils.js';
 
 import type {
 	DocumentSelection,

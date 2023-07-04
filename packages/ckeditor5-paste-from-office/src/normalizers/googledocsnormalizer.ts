@@ -7,12 +7,12 @@
  * @module paste-from-office/normalizers/googledocsnormalizer
  */
 
-import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine';
+import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
 
-import removeBoldWrapper from '../filters/removeboldwrapper';
-import transformBlockBrsToParagraphs from '../filters/br';
-import { unwrapParagraphInListItem } from '../filters/list';
-import type { Normalizer, NormalizerData } from '../normalizer';
+import removeBoldWrapper from '../filters/removeboldwrapper.js';
+import transformBlockBrsToParagraphs from '../filters/br.js';
+import { unwrapParagraphInListItem } from '../filters/list.js';
+import type { Normalizer, NormalizerData } from '../normalizer.js';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
 

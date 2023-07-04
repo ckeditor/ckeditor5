@@ -14,8 +14,8 @@ import {
 	type KeystrokeHandler
 } from '@ckeditor/ckeditor5-utils';
 
-import type View from './view';
-import type ViewCollection from './viewcollection';
+import type View from './view.js';
+import type ViewCollection from './viewcollection.js';
 
 /**
  * A utility class that helps cycling over focusable {@link module:ui/view~View views} in a

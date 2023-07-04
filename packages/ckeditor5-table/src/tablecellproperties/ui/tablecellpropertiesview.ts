@@ -22,24 +22,24 @@ import {
 	ViewCollection,
 	type FocusableView,
 	type NormalizedColorOption
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 import {
 	KeystrokeHandler,
 	FocusTracker,
 	type Locale,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 import {
 	fillToolbar,
 	getBorderStyleDefinitions,
 	getBorderStyleLabels,
 	getLabeledColorInputCreator
-} from '../../utils/ui/table-properties';
-import FormRowView from '../../ui/formrowview';
-import type ColorInputView from '../../ui/colorinputview';
-import type { TableCellPropertiesOptions } from '../../tableconfig';
+} from '../../utils/ui/table-properties.js';
+import FormRowView from '../../ui/formrowview.js';
+import type ColorInputView from '../../ui/colorinputview.js';
+import type { TableCellPropertiesOptions } from '../../tableconfig.js';
 
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';

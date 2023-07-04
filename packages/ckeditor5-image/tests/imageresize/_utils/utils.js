@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ImageLoadObserver from '../../../src/image/imageloadobserver';
+import ImageLoadObserver from '../../../src/image/imageloadobserver.js';
 
 // A 100x50 black png image
 export const IMAGE_SRC_FIXTURE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyCAQAAAAAPLY1AAAAQklEQVR42u3PQREAAAgDoK1/' +

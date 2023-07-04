@@ -7,10 +7,10 @@
  * @module ckfinder/ckfinderui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
-import type CKFinderCommand from './ckfindercommand';
+import type CKFinderCommand from './ckfindercommand.js';
 
 import browseFilesIcon from '../theme/icons/browse-files.svg';
 

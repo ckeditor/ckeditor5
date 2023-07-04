@@ -29,9 +29,9 @@ import {
 	type ViewPosition,
 	type ViewTypeCheckable,
 	type Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import type { GetCallback } from 'ckeditor5/src/utils';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
 
 import {
 	generateLiInUl,
@@ -39,7 +39,7 @@ import {
 	mergeViewLists,
 	getSiblingListItem,
 	positionAfterUiElements
-} from './utils';
+} from './utils.js';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.

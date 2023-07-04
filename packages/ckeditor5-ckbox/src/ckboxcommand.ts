@@ -10,9 +10,9 @@
  */
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import type { Writer } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { createElement, toMap } from 'ckeditor5/src/utils';
+import type { Writer } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { createElement, toMap } from 'ckeditor5/src/utils.js';
 
 import type {
 	CKBoxAssetDefinition,
@@ -21,10 +21,10 @@ import type {
 	CKBoxAssetLinkAttributesDefinition,
 	CKBoxAssetLinkDefinition,
 	CKBoxRawAssetDefinition
-} from './ckboxconfig';
+} from './ckboxconfig.js';
 
-import { getEnvironmentId, getImageUrls } from './utils';
-import type CKBoxEditing from './ckboxediting';
+import { getEnvironmentId, getImageUrls } from './utils.js';
+import type CKBoxEditing from './ckboxediting.js';
 
 declare global {
 	// eslint-disable-next-line no-var

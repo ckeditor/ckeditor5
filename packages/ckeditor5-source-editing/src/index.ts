@@ -7,6 +7,6 @@
  * @module source-editing
  */
 
-export { default as SourceEditing } from './sourceediting';
+export { default as SourceEditing } from './sourceediting.js';
 
-import './augmentation';
+import './augmentation.js';

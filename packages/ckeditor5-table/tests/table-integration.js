@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import TableEditing from '../src/tableediting';
-import { modelTable, viewTable } from './_utils/utils';
+import TableEditing from '../src/tableediting.js';
+import { modelTable, viewTable } from './_utils/utils.js';
 
 describe( 'Table feature – integration', () => {
 	describe( 'with clipboard', () => {

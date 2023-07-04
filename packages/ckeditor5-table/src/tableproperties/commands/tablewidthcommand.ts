@@ -7,9 +7,9 @@
  * @module table/tableproperties/commands/tablewidthcommand
  */
 
-import TablePropertyCommand from './tablepropertycommand';
-import { addDefaultUnitToNumericValue } from '../../utils/table-properties';
-import type { Editor } from 'ckeditor5/src/core';
+import TablePropertyCommand from './tablepropertycommand.js';
+import { addDefaultUnitToNumericValue } from '../../utils/table-properties.js';
+import type { Editor } from 'ckeditor5/src/core.js';
 
 /**
  * The table width command.

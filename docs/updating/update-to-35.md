@@ -108,7 +108,7 @@ Listed below are the most important changes that require your attention when upg
 **Before**:
 
 ```js
-import { EditorUI } from 'ckeditor5/src/core';
+import { EditorUI } from 'ckeditor5/src/core.js';
 
 export default class MyEditorUI extends EditorUI {
 	// ...
@@ -138,8 +138,8 @@ export default class MyEditorUI extends EditorUI {
 **After**:
 
 ```js
-import { EditorUI } from 'ckeditor5/src/core';
-// Or `import { EditorUI } from 'ckeditor5/src/ui';` if you update to v36.x;
+import { EditorUI } from 'ckeditor5/src/core.js';
+// Or `import { EditorUI } from 'ckeditor5/src/ui.js';` if you update to v36.x;
 
 export default class MyEditorUI extends EditorUI {
 	// ...
@@ -176,7 +176,7 @@ It may happen that your integration creates instances of `TooltipView` and injec
 
 ```js
 // ❌ Old tooltip API
-import { TooltipView } from 'ckeditor5/src/ui';
+import { TooltipView } from 'ckeditor5/src/ui.js';
 
 const tooltip = new TooltipView();
 

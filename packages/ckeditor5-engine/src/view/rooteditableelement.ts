@@ -7,9 +7,9 @@
  * @module engine/view/rooteditableelement
  */
 
-import EditableElement from './editableelement';
+import EditableElement from './editableelement.js';
 
-import type Document from './document';
+import type Document from './document.js';
 
 const rootNameSymbol = Symbol( 'rootName' );
 

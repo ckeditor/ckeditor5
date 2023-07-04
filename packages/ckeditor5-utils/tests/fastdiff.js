@@ -5,9 +5,9 @@
 
 /* global document */
 
-import fastDiff from '../src/fastdiff';
-import diff from '../src/diff';
-import diffToChanges from '../src/difftochanges';
+import fastDiff from '../src/fastdiff.js';
+import diff from '../src/diff.js';
+import diffToChanges from '../src/difftochanges.js';
 
 describe( 'fastDiff', () => {
 	describe( 'input types', () => {

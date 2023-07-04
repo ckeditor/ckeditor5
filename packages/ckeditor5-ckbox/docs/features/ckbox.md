@@ -84,7 +84,7 @@ Please also remember, that the CKBox plugin requires the following dependency pl
 Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
 ```js
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CKBox } from "@ckeditor/ckeditor5-ckbox";

@@ -7,7 +7,7 @@
  * @module ui/colorgrid/colortileview
  */
 
-import ButtonView from '../button/buttonview';
+import ButtonView from '../button/buttonview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

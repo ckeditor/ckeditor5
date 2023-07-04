@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import testUtils from '../../_utils/utils';
-import { createDropdown, addListToDropdown } from '../../../src/dropdown/utils';
+import Model from '../../../src/model.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import testUtils from '../../_utils/utils.js';
+import { createDropdown, addListToDropdown } from '../../../src/dropdown/utils.js';
 
 const ui = testUtils.createTestUIView( {
 	dropdownNW: '#dropdown-nw',

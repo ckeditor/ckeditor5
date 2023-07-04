@@ -5,7 +5,7 @@
 
 /* global document, setTimeout */
 
-import { getOptimalPosition } from '../../../src/dom/position';
+import { getOptimalPosition } from '../../../src/dom/position.js';
 
 const boxes = document.querySelectorAll( '.test-box' );
 const sources = document.querySelectorAll( '.source' );

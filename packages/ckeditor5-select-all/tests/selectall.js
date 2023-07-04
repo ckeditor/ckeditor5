@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import SelectAll from '../src/selectall';
-import SelectAllEditing from '../src/selectallediting';
-import SelectAllUI from '../src/selectallui';
+import SelectAll from '../src/selectall.js';
+import SelectAllEditing from '../src/selectallediting.js';
+import SelectAllUI from '../src/selectallui.js';
 
 describe( 'SelectAll', () => {
 	it( 'should require SelectAllEditing and SelectAllUI', () => {

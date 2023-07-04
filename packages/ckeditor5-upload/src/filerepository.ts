@@ -23,7 +23,7 @@ import {
 	type CollectionChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import FileReader from './filereader';
+import FileReader from './filereader.js';
 
 /**
  * File repository plugin. A central point for managing file upload.

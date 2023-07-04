@@ -7,7 +7,7 @@
  * @module ui/input/inputview
  */
 
-import View from '../view';
+import View from '../view.js';
 
 import {
 	FocusTracker,

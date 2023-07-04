@@ -5,11 +5,11 @@
 
 /* globals HTMLElement */
 
-import ViewRawElement from '../../../src/view/rawelement';
-import ViewContainer from '../../../src/view/containerelement';
-import DomConverter from '../../../src/view/domconverter';
-import ViewDocument from '../../../src/view/document';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import ViewRawElement from '../../../src/view/rawelement.js';
+import ViewContainer from '../../../src/view/containerelement.js';
+import DomConverter from '../../../src/view/domconverter.js';
+import ViewDocument from '../../../src/view/document.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DOMConverter RawElement integration', () => {
 	let converter, viewDocument;

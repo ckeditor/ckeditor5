@@ -7,10 +7,10 @@
  * @module restricted-editing/restrictededitingmode
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import RestrictedEditingModeEditing from './restrictededitingmodeediting';
-import RestrictedEditingModeUI from './restrictededitingmodeui';
+import RestrictedEditingModeEditing from './restrictededitingmodeediting.js';
+import RestrictedEditingModeUI from './restrictededitingmodeui.js';
 
 import '../theme/restrictedediting.css';
 

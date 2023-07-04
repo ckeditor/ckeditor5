@@ -25,7 +25,7 @@ However, prior to v28.0.0, in some packages, the `src/index.js` file was exporti
 
 ```js
 // Importing the default export.
-import BasicStyles from '@ckeditor/ckeditor5-basic-styles/src/index';
+import BasicStyles from '@ckeditor/ckeditor5-basic-styles/src/index.js';
 
 // And destructuring plugins from the module.
 const { Bold, Italic } = BasicStyles;
@@ -34,7 +34,7 @@ const { Bold, Italic } = BasicStyles;
 Starting from v28.0.0, all the packages use multiple exports so you can import the plugins directly:
 
 ```js
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles/src/index';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles/src/index.js';
 ```
 
 The list of affected packages:

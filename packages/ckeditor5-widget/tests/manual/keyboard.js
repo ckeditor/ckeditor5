@@ -5,11 +5,11 @@
 
 /* globals console, window, document */
 
-import Widget from '../../src/widget';
-import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '../../src/utils';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Widget from '../../src/widget.js';
+import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '../../src/utils.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 function BlockWidget( editor ) {
 	editor.model.schema.register( 'div', {

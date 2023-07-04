@@ -5,11 +5,11 @@
 
 /* globals setTimeout, window, console, document */
 
-import EditorWatchdog from '../src/editorwatchdog';
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import EditorWatchdog from '../src/editorwatchdog.js';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 // The error handling testing with mocha & chai is quite broken and hard to test.
 // sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.

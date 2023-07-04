@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import ComponentFactory from '../src/componentfactory';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import ComponentFactory from '../src/componentfactory.js';
 
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'ComponentFactory', () => {
 	let editor, factory;

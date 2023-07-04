@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import PasteFromOffice from '../../src/pastefromoffice';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import PasteFromOffice from '../../src/pastefromoffice.js';
 
-import { generateTests } from '../_utils/utils';
-import * as fixtures from '../_utils/fixtures';
+import { generateTests } from '../_utils/utils.js';
+import * as fixtures from '../_utils/fixtures.js';
 
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 

@@ -7,7 +7,7 @@
  * @module ui/label/labelview
  */
 
-import View from '../view';
+import View from '../view.js';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 

@@ -9,8 +9,8 @@
  * @module ui/view
  */
 
-import ViewCollection from './viewcollection';
-import Template, { type BindChain, type TemplateDefinition } from './template';
+import ViewCollection from './viewcollection.js';
+import Template, { type BindChain, type TemplateDefinition } from './template.js';
 
 import {
 	CKEditorError,

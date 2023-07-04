@@ -7,9 +7,9 @@
  * @module ui/tooltipmanager
  */
 
-import View from './view';
-import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview';
-import type { EditorUIUpdateEvent } from './editorui/editorui';
+import View from './view.js';
+import BalloonPanelView, { generatePositions } from './panel/balloon/balloonpanelview.js';
+import type { EditorUIUpdateEvent } from './editorui/editorui.js';
 
 import {
 	DomEmitterMixin,

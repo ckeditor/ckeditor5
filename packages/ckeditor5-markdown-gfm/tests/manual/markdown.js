@@ -5,16 +5,16 @@
 
 /* globals console, window, document, setTimeout */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import Markdown from '../../src/markdown';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist.js';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import Markdown from '../../src/markdown.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

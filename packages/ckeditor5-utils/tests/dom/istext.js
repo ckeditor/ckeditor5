@@ -5,7 +5,7 @@
 
 /* global document, Text */
 
-import isText from '../../src/dom/istext';
+import isText from '../../src/dom/istext.js';
 
 describe( 'isText()', () => {
 	it( 'detects native DOM Text', () => {

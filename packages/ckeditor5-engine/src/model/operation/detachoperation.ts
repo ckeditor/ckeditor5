@@ -7,14 +7,14 @@
  * @module engine/model/operation/detachoperation
  */
 
-import Operation from './operation';
-import Range from '../range';
-import { _remove } from './utils';
+import Operation from './operation.js';
+import Range from '../range.js';
+import { _remove } from './utils.js';
 
-import type Position from '../position';
+import type Position from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection';
+import type { Selectable } from '../selection.js';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 

@@ -7,6 +7,6 @@
  * @module markdown-gfm
  */
 
-export { default as Markdown } from './markdown';
+export { default as Markdown } from './markdown.js';
 
-import './augmentation';
+import './augmentation.js';

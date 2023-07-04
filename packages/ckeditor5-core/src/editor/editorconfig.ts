@@ -7,9 +7,9 @@
  * @module core/editor/editorconfig
  */
 
-import type Context from '../context';
-import type { PluginConstructor } from '../plugin';
-import type Editor from './editor';
+import type Context from '../context.js';
+import type { PluginConstructor } from '../plugin.js';
+import type Editor from './editor.js';
 
 /**
  * CKEditor configuration options.
@@ -263,9 +263,9 @@ export interface EditorConfig {
 	 *
 	 * ```ts
 	 * // A preset of plugins is a plugin as well.
-	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 * import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 	 * // The bold plugin.
-	 * import Bold from '@ckeditor/ckeditor5-editor-basic-styles/src/bold';
+	 * import Bold from '@ckeditor/ckeditor5-editor-basic-styles/src/bold.js';
 	 *
 	 * const config = {
 	 * 	plugins: [ Essentials, Bold ]

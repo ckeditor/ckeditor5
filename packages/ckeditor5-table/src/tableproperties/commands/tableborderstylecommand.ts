@@ -7,11 +7,11 @@
  * @module table/tableproperties/commands/tableborderstylecommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
+import type { Element } from 'ckeditor5/src/engine.js';
 
-import TablePropertyCommand from './tablepropertycommand';
-import { getSingleValue } from '../../utils/table-properties';
-import type { Editor } from 'ckeditor5/src/core';
+import TablePropertyCommand from './tablepropertycommand.js';
+import { getSingleValue } from '../../utils/table-properties.js';
+import type { Editor } from 'ckeditor5/src/core.js';
 
 /**
  * The table style border command.

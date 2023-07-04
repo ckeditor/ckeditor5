@@ -7,7 +7,7 @@
  * @module utils/verifylicense
  */
 
-import { releaseDate } from './version';
+import { releaseDate } from './version.js';
 
 /**
  * Possible states of the key after verification.

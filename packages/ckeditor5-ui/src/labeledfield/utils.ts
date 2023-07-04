@@ -7,13 +7,13 @@
  * @module ui/labeledfield/utils
  */
 
-import InputTextView from '../inputtext/inputtextview';
-import InputNumberView from '../inputnumber/inputnumberview';
-import { createDropdown } from '../dropdown/utils';
+import InputTextView from '../inputtext/inputtextview.js';
+import InputNumberView from '../inputnumber/inputnumberview.js';
+import { createDropdown } from '../dropdown/utils.js';
 
-import type LabeledFieldView from './labeledfieldview';
-import type DropdownView from '../dropdown/dropdownview';
-import type { InputViewInputEvent } from '../input/inputview';
+import type LabeledFieldView from './labeledfieldview.js';
+import type DropdownView from '../dropdown/dropdownview.js';
+import type { InputViewInputEvent } from '../input/inputview.js';
 
 /**
  * A helper for creating labeled inputs.

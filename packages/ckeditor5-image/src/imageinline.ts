@@ -7,11 +7,11 @@
  * @module image/imageinline
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Widget } from 'ckeditor5/src/widget.js';
 
-import ImageTextAlternative from './imagetextalternative';
-import ImageInlineEditing from './image/imageinlineediting';
+import ImageTextAlternative from './imagetextalternative.js';
+import ImageInlineEditing from './image/imageinlineediting.js';
 
 import '../theme/image.css';
 

@@ -7,8 +7,8 @@
  * @module core/multicommand
  */
 
-import Command from './command';
-import type Editor from './editor/editor';
+import Command from './command.js';
+import type Editor from './editor/editor.js';
 
 import {
 	insertToPriorityArray,

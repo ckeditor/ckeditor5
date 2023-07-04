@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import BlockButtonView from '../../../src/toolbar/block/blockbuttonview';
+import BlockButtonView from '../../../src/toolbar/block/blockbuttonview.js';
 
 describe( 'BlockButtonView', () => {
 	let view;

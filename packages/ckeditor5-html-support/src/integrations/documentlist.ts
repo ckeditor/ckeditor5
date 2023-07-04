@@ -8,9 +8,9 @@
  */
 
 import { isEqual } from 'lodash-es';
-import { Plugin } from 'ckeditor5/src/core';
-import type { UpcastElementEvent } from 'ckeditor5/src/engine';
-import type { GetCallback } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
 import type {
 	DocumentListEditing,
 	DocumentListEditingPostFixerEvent,
@@ -18,8 +18,8 @@ import type {
 	DocumentListIndentCommand
 } from '@ckeditor/ckeditor5-list';
 
-import { getHtmlAttributeName, setViewAttributes } from '../utils';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
+import { getHtmlAttributeName, setViewAttributes } from '../utils.js';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:list/documentlist~DocumentList Document List} feature.

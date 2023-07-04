@@ -7,10 +7,10 @@
  * @module show-blocks/showblocks
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import ShowBlocksEditing from './showblocksediting';
-import ShowBlocksUI from './showblocksui';
+import ShowBlocksEditing from './showblocksediting.js';
+import ShowBlocksUI from './showblocksui.js';
 
 /**
  * The show blocks feature.

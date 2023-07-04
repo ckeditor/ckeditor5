@@ -7,14 +7,14 @@
  * @module list/list/listutils
  */
 
-import type { Element, Model, Position } from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
+import type { Element, Model, Position } from 'ckeditor5/src/engine.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 import {
 	getListTypeFromListStyleType,
 	getSelectedListItems,
 	getSiblingNodes
-} from './utils';
+} from './utils.js';
 
 /**
  * A set of helpers related to document lists.

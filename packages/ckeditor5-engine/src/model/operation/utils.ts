@@ -7,16 +7,16 @@
  * @module engine/model/operation/utils
  */
 
-import Node from '../node';
-import Range from '../range';
-import Text from '../text';
-import TextProxy from '../textproxy';
+import Node from '../node.js';
+import Range from '../range.js';
+import Text from '../text.js';
+import TextProxy from '../textproxy.js';
 
-import type DocumentFragment from '../documentfragment';
-import type Element from '../element';
-import type Item from '../item';
-import type NodeList from '../nodelist';
-import type Position from '../position';
+import type DocumentFragment from '../documentfragment.js';
+import type Element from '../element.js';
+import type Item from '../item.js';
+import type NodeList from '../nodelist.js';
+import type Position from '../position.js';
 
 import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
 

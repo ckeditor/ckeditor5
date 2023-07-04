@@ -5,8 +5,8 @@
 
 /* globals console, document */
 
-import InlineEditor from '../../src/inlineeditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import InlineEditor from '../../src/inlineeditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 /*
  * Memory-leak safe version of inline editor manual test does not:

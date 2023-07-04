@@ -31,7 +31,7 @@ import {
 	type RectSource
 } from '@ckeditor/ckeditor5-utils';
 
-import { isWidget } from './utils';
+import { isWidget } from './utils.js';
 
 /**
  * Widget toolbar repository plugin. A central point for registering widget toolbars. This plugin handles the whole

@@ -7,20 +7,20 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
 	clickOutsideHandler,
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import TextAlternativeFormView from './ui/textalternativeformview';
-import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
-import type { CancelEvent, SubmitEvent } from '../imageinsert/ui/imageinsertpanelview';
-import type ImageTextAlternativeCommand from './imagetextalternativecommand';
-import type ImageUtils from '../imageutils';
+import TextAlternativeFormView from './ui/textalternativeformview.js';
+import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils.js';
+import type { CancelEvent, SubmitEvent } from '../imageinsert/ui/imageinsertpanelview.js';
+import type ImageTextAlternativeCommand from './imagetextalternativecommand.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The image text alternative UI plugin.

@@ -288,7 +288,7 @@ Here is the full source code of the `ProductPreviewEditing` editor plugin:
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
-import InsertProductPreviewCommand from './insertproductpreviewcommand';
+import InsertProductPreviewCommand from './insertproductpreviewcommand.js';
 
 export default class ProductPreviewEditing extends Plugin {
 	static get requires() {
@@ -436,7 +436,7 @@ The `<ProductList>` React component renders instances of `<ProductPreview>`. Whe
 // react/productlist.js
 
 import React from 'react';
-import ProductPreview from './productpreview';
+import ProductPreview from './productpreview.js';
 
 export default class ProductList extends React.Component {
 	render() {
@@ -524,11 +524,11 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 // CKEditor plugin implementing a product widget to be used in the editor content.
-import ProductPreviewEditing from './ckeditor/productpreviewediting';
+import ProductPreviewEditing from './ckeditor/productpreviewediting.js';
 
 // React components to render the list of products and the product preview.
-import ProductList from './react/productlist';
-import ProductPreview from './react/productpreview';
+import ProductList from './react/productlist.js';
+import ProductPreview from './react/productpreview.js';
 
 // The React application class. It renders the editor and the product list.
 class App extends React.Component {
@@ -898,11 +898,11 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 // CKEditor plugin implementing a product widget to be used in the editor content.
-import ProductPreviewEditing from './ckeditor/productpreviewediting';
+import ProductPreviewEditing from './ckeditor/productpreviewediting.js';
 
 // React components to render the list of products and the product preview.
-import ProductList from './react/productlist';
-import ProductPreview from './react/productpreview';
+import ProductList from './react/productlist.js';
+import ProductPreview from './react/productpreview.js';
 
 // The React application class. It renders the editor and the product list.
 class App extends React.Component {
@@ -1098,7 +1098,7 @@ ReactDOM.render(
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
-import InsertProductPreviewCommand from './insertproductpreviewcommand';
+import InsertProductPreviewCommand from './insertproductpreviewcommand.js';
 
 export default class ProductPreviewEditing extends Plugin {
 	static get requires() {
@@ -1232,7 +1232,7 @@ export default class InsertProductPreviewCommand extends Command {
 // react/productlist.js
 
 import React from 'react';
-import ProductPreview from './productpreview';
+import ProductPreview from './productpreview.js';
 
 export default class ProductList extends React.Component {
 	render() {

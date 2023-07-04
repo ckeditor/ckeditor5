@@ -5,10 +5,10 @@
 
 /* globals document, window */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Autosave from '../src/autosave';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Autosave from '../src/autosave.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
 
 describe( 'Autosave', () => {
 	let editor, element, autosave;

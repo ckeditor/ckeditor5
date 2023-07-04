@@ -7,14 +7,14 @@
  * @module engine/view/document
  */
 
-import DocumentSelection from './documentselection';
-import BubblingEmitterMixin from './observer/bubblingemittermixin';
+import DocumentSelection from './documentselection.js';
+import BubblingEmitterMixin from './observer/bubblingemittermixin.js';
 
 import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
-import type { StylesProcessor } from './stylesmap';
-import type RootEditableElement from './rooteditableelement';
-import type DowncastWriter from './downcastwriter';
+import type { StylesProcessor } from './stylesmap.js';
+import type RootEditableElement from './rooteditableelement.js';
+import type DowncastWriter from './downcastwriter.js';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 

@@ -5,11 +5,11 @@
 
 /* global document, Event */
 
-import clickOutsideHandler from '../../src/bindings/clickoutsidehandler';
+import clickOutsideHandler from '../../src/bindings/clickoutsidehandler.js';
 
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'clickOutsideHandler', () => {
 	let activator, actionSpy, contextElement1, contextElement2, contextElementsCallback;

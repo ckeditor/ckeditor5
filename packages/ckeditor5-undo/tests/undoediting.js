@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
-import UndoEditing from '../src/undoediting';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import UndoEditing from '../src/undoediting.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'UndoEditing', () => {
 	let editor, undo, model, root;

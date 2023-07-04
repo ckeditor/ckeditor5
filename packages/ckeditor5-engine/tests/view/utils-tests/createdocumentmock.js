@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import createDocumentMock from '../../../tests/view/_utils/createdocumentmock';
+import createDocumentMock from '../../../tests/view/_utils/createdocumentmock.js';
 
 describe( 'createDocumentMock', () => {
 	it( 'should create document mock', () => {

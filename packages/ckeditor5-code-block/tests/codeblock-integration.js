@@ -5,17 +5,17 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import CodeBlockUI from '../src/codeblockui';
-import CodeBlockEditing from '../src/codeblockediting';
+import CodeBlockUI from '../src/codeblockui.js';
+import CodeBlockEditing from '../src/codeblockediting.js';
 
 describe( 'CodeBlock - integration', () => {
 	describe( 'with Markdown GFM', () => {

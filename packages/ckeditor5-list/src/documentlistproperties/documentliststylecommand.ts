@@ -7,13 +7,13 @@
  * @module list/documentlistproperties/documentliststylecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
 import {
 	expandListBlocksToCompleteList,
 	isListItemBlock
-} from '../documentlist/utils/model';
-import { getListTypeFromListStyleType } from './utils/style';
+} from '../documentlist/utils/model.js';
+import { getListTypeFromListStyleType } from './utils/style.js';
 
 /**
  * The list style command. It changes `listStyle` attribute of the selected list items,

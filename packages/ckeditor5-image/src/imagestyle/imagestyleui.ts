@@ -7,13 +7,13 @@
  * @module image/imagestyle/imagestyleui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui.js';
 import { isObject, identity } from 'lodash-es';
-import ImageStyleEditing from './imagestyleediting';
-import utils from './utils';
-import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig';
-import type ImageStyleCommand from './imagestylecommand';
+import ImageStyleEditing from './imagestyleediting.js';
+import utils from './utils.js';
+import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
+import type ImageStyleCommand from './imagestylecommand.js';
 
 import '../../theme/imagestyle.css';
 

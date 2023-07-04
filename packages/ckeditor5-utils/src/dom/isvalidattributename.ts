@@ -7,7 +7,7 @@
  * @module utils/dom/isvalidattributename
  */
 
-import global from './global';
+import global from './global.js';
 
 /**
  * Checks if the given attribute name is valid in terms of HTML.

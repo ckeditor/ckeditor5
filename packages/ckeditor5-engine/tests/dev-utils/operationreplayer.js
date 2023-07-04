@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import OperationReplayer from '../../src/dev-utils/operationreplayer';
-import Model from '../../src/model/model';
+import OperationReplayer from '../../src/dev-utils/operationreplayer.js';
+import Model from '../../src/model/model.js';
 
 describe( 'OperationReplayer', () => {
 	describe( 'constructor()', () => {

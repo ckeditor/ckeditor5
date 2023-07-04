@@ -7,9 +7,9 @@
  * @module block-quote/blockquotecommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
-import type { DocumentFragment, Element, Position, Range, Schema, Writer } from 'ckeditor5/src/engine';
+import { Command } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
+import type { DocumentFragment, Element, Position, Range, Schema, Writer } from 'ckeditor5/src/engine.js';
 
 /**
  * The block quote command plugin.

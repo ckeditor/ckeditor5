@@ -10,7 +10,7 @@
 import { CKEditorError, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 
-import type View from './view';
+import type View from './view.js';
 
 /**
  * A helper class implementing the UI component ({@link module:ui/view~View view}) factory.

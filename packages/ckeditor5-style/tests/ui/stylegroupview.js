@@ -6,8 +6,8 @@
 import { LabelView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
-import StyleGridView from '../../src/ui/stylegridview';
-import StyleGroupView from '../../src/ui/stylegroupview';
+import StyleGridView from '../../src/ui/stylegridview.js';
+import StyleGroupView from '../../src/ui/stylegroupview.js';
 
 describe( 'StyleGroupView', () => {
 	let locale, group;

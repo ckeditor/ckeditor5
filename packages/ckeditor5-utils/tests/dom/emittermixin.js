@@ -7,9 +7,9 @@
 
 /* globals document, window, Event, MouseEvent */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import DomEmitterMixin from '../../src/dom/emittermixin';
-import EmitterMixin from '../../src/emittermixin';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import DomEmitterMixin from '../../src/dom/emittermixin.js';
+import EmitterMixin from '../../src/emittermixin.js';
 
 describe( 'DomEmitterMixin', () => {
 	const Emitter = EmitterMixin();

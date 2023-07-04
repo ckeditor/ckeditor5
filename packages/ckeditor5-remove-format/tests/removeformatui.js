@@ -5,14 +5,14 @@
 
 /* global document */
 
-import RemoveFormat from '../src/removeformat';
-import RemoveFormatUI from '../src/removeformatui';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import RemoveFormat from '../src/removeformat.js';
+import RemoveFormatUI from '../src/removeformatui.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	_clear as clearTranslations,
 	add as addTranslations
-} from '@ckeditor/ckeditor5-utils/src/translation-service';
+} from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 
 describe( 'RemoveFormatUI', () => {
 	let editor, command, element, button;

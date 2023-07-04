@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
-import ChangeBuffer from './utils/changebuffer';
+import ChangeBuffer from './utils/changebuffer.js';
 
 import type { DocumentSelection, Range, Selection } from '@ckeditor/ckeditor5-engine';
 

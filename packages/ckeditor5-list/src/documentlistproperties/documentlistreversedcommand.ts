@@ -7,12 +7,12 @@
  * @module list/documentlistproperties/documentlistreversedcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
+import { Command } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
 import {
 	expandListBlocksToCompleteList,
 	isListItemBlock
-} from '../documentlist/utils/model';
+} from '../documentlist/utils/model.js';
 
 /**
  * The list reversed command. It changes the `listReversed` attribute of the selected list items,

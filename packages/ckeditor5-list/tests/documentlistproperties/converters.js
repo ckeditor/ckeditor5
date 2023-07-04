@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import stubUid from '../documentlist/_utils/uid';
-import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
-import { modelList, setupTestHelpers } from '../documentlist/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import stubUid from '../documentlist/_utils/uid.js';
+import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting.js';
+import { modelList, setupTestHelpers } from '../documentlist/_utils/utils.js';
 
 describe( 'DocumentListPropertiesEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, test;

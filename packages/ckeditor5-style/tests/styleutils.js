@@ -5,10 +5,10 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import StyleUtils from '../src/styleutils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import StyleUtils from '../src/styleutils.js';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 describe( 'StyleUtils', () => {

@@ -7,11 +7,11 @@
  * @module page-break/pagebreakediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toWidget } from 'ckeditor5/src/widget';
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toWidget } from 'ckeditor5/src/widget.js';
+import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
-import PageBreakCommand from './pagebreakcommand';
+import PageBreakCommand from './pagebreakcommand.js';
 
 import '../theme/pagebreak.css';
 

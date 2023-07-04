@@ -5,18 +5,18 @@
 
 /* globals window, console */
 
-import Model from '../../../src/model';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Model from '../../../src/model.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 
-import testUtils from '../../_utils/utils';
+import testUtils from '../../_utils/utils.js';
 
 import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
 import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import ButtonView from '../../../src/button/buttonview';
-import SplitButtonView from '../../../src/dropdown/button/splitbuttonview';
+import ButtonView from '../../../src/button/buttonview.js';
+import SplitButtonView from '../../../src/dropdown/button/splitbuttonview.js';
 
-import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../../src/dropdown/utils';
+import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../../src/dropdown/utils.js';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',

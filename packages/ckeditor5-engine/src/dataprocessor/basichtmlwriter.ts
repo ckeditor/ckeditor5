@@ -9,7 +9,7 @@
 
 /* globals document */
 
-import type HtmlWriter from './htmlwriter';
+import type HtmlWriter from './htmlwriter.js';
 
 /**
  * Basic HTML writer. It uses the native `innerHTML` property for basic conversion

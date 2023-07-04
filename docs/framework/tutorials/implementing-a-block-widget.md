@@ -210,8 +210,8 @@ First, the master (glue) plugin. Its role is to simply load the "editing" and "U
 ```js
 // simplebox/simplebox.js
 
-import SimpleBoxEditing from './simpleboxediting';
-import SimpleBoxUI from './simpleboxui';
+import SimpleBoxEditing from './simpleboxediting.js';
+import SimpleBoxUI from './simpleboxui.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class SimpleBox extends Plugin {
@@ -259,7 +259,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import SimpleBox from './simplebox/simplebox';                                 // ADDED
+import SimpleBox from './simplebox/simplebox.js';                                 // ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -513,7 +513,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import SimpleBox from './simplebox/simplebox';
+import SimpleBox from './simplebox/simplebox.js';
 
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';                 // ADDED
 
@@ -790,7 +790,7 @@ Import the command and register it in the `SimpleBoxEditing` plugin:
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 
-import InsertSimpleBoxCommand from './insertsimpleboxcommand';                 // ADDED
+import InsertSimpleBoxCommand from './insertsimpleboxcommand.js';                 // ADDED
 
 export default class SimpleBoxEditing extends Plugin {
 	static get requires() {

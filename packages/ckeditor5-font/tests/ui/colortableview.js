@@ -5,23 +5,23 @@
 
 /* globals document,Event */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ColorTableView from './../../src/ui/colortableview';
-import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
-import { icons } from 'ckeditor5/src/core';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ColorTableView from './../../src/ui/colortableview.js';
+import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import ColorPickerView from '@ckeditor/ckeditor5-ui/src/colorpicker/colorpickerview';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import ColorPickerView from '@ckeditor/ckeditor5-ui/src/colorpicker/colorpickerview.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import TestColorPlugin from '../_utils/testcolorplugin';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import TestColorPlugin from '../_utils/testcolorplugin.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 

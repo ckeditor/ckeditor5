@@ -8,7 +8,7 @@
 /* config { "additionalLanguages": [ "ar", "es" ] } */
 
 import { Superscript } from '@ckeditor/ckeditor5-basic-styles';
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Superscript );
 

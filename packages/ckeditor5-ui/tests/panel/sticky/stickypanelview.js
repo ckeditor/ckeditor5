@@ -5,13 +5,13 @@
 
 /* globals document */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import StickyPanelView from '../../../src/panel/sticky/stickypanelview';
-import View from '../../../src/view';
-import LabelView from '../../../src/label/labelview';
-import ViewCollection from '../../../src/viewcollection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import StickyPanelView from '../../../src/panel/sticky/stickypanelview.js';
+import View from '../../../src/view.js';
+import LabelView from '../../../src/label/labelview.js';
+import ViewCollection from '../../../src/viewcollection.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
 
 describe( 'StickyPanelView', () => {
 	let view, element, contentElement, placeholderElement, limiterElement, locale, windowStub;

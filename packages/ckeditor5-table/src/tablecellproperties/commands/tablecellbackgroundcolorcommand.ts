@@ -7,9 +7,9 @@
  * @module table/tablecellproperties/commands/tablecellbackgroundcolorcommand
  */
 
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from 'ckeditor5/src/core.js';
 
-import TableCellPropertyCommand from './tablecellpropertycommand';
+import TableCellPropertyCommand from './tablecellpropertycommand.js';
 
 /**
  * The table cell background color command.

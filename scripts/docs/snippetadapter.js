@@ -465,7 +465,10 @@ function getWebpackConfig( snippets, config ) {
 				...getModuleResolvePaths()
 			],
 			alias: RESOLVE_ALIAS_MAP,
-			extensions: [ '.ts', '.js', '.json' ]
+			extensions: [ '.ts', '.js', '.json' ],
+			extensionAlias: {
+				'.js': [ '.js', '.ts' ]
+			}
 		},
 
 		resolveLoader: {
@@ -675,7 +678,10 @@ function getWebpackConfigForAssets( config ) {
 				...getPackageDependenciesPaths(),
 				...getModuleResolvePaths()
 			],
-			extensions: [ '.ts', '.js', '.json' ]
+			extensions: [ '.ts', '.js', '.json' ],
+			extensionAlias: {
+				'.js': [ '.js', '.ts' ]
+			}
 		},
 
 		resolveLoader: {

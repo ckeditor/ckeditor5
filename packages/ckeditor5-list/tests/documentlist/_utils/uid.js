@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { ListItemUid } from '../../../src/documentlist/utils/model';
+import { ListItemUid } from '../../../src/documentlist/utils/model.js';
 
 /**
  * Mocks the `ListItemUid.next()` with sequential numbers.

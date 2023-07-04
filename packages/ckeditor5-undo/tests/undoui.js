@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import UndoEditing from '../src/undoediting';
-import UndoUI from '../src/undoui';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import UndoEditing from '../src/undoediting.js';
+import UndoUI from '../src/undoui.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import undoIcon from '../theme/icons/undo.svg';
 import redoIcon from '../theme/icons/redo.svg';

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FontFamily from './../src/fontfamily';
-import FontFamilyEditing from './../src/fontfamily/fontfamilyediting';
-import FontFamilyUI from '../src/fontfamily/fontfamilyui';
+import FontFamily from './../src/fontfamily.js';
+import FontFamilyEditing from './../src/fontfamily/fontfamilyediting.js';
+import FontFamilyUI from '../src/fontfamily/fontfamilyui.js';
 
 describe( 'FontFamily', () => {
 	it( 'requires FontFamilyEditing and FontFamilyUI', () => {

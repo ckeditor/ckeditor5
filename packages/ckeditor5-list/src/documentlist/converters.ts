@@ -22,9 +22,9 @@ import {
 	type ViewDocumentFragment,
 	type ViewElement,
 	type ViewRange
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import type { GetCallback } from 'ckeditor5/src/utils';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
 
 import {
 	getAllListItemBlocks,
@@ -32,7 +32,7 @@ import {
 	isListItemBlock,
 	ListItemUid,
 	type ListElement
-} from './utils/model';
+} from './utils/model.js';
 
 import {
 	createListElement,
@@ -40,17 +40,17 @@ import {
 	getIndent,
 	isListView,
 	isListItemView
-} from './utils/view';
+} from './utils/view.js';
 
-import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
-import { findAndAddListHeadToMap } from './utils/postfixers';
+import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker.js';
+import { findAndAddListHeadToMap } from './utils/postfixers.js';
 
 import type {
 	default as DocumentListEditing,
 	DocumentListEditingCheckAttributesEvent,
 	DowncastStrategy,
 	ListItemAttributesMap
-} from './documentlistediting';
+} from './documentlistediting.js';
 
 /**
  * Returns the upcast converter for list items. It's supposed to work after the block converters (content inside list items) are converted.

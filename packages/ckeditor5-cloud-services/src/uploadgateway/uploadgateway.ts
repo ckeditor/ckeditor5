@@ -7,9 +7,9 @@
  * @module cloud-services/uploadgateway/uploadgateway
  */
 
-import FileUploader from './fileuploader';
-import type { InitializedToken } from '../token/token';
-import { CKEditorError } from 'ckeditor5/src/utils';
+import FileUploader from './fileuploader.js';
+import type { InitializedToken } from '../token/token.js';
+import { CKEditorError } from 'ckeditor5/src/utils.js';
 
 /**
  * UploadGateway abstracts file uploads to CKEditor Cloud Services.

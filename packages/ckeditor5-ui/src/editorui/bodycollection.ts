@@ -9,9 +9,9 @@
 
 /* globals document */
 
-import Template from '../template';
-import ViewCollection from '../viewcollection';
-import type View from '../view';
+import Template from '../template.js';
+import ViewCollection from '../viewcollection.js';
+import type View from '../view.js';
 
 import { createElement, type Locale } from '@ckeditor/ckeditor5-utils';
 

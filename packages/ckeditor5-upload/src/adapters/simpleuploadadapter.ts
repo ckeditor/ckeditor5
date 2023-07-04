@@ -10,8 +10,8 @@
 /* globals XMLHttpRequest, FormData */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository';
-import type { SimpleUploadConfig } from '../uploadconfig';
+import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository.js';
+import type { SimpleUploadConfig } from '../uploadconfig.js';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**

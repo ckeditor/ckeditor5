@@ -105,8 +105,8 @@ Let's define the 3 components.
 ```js
 // abbreviation/abbreviation.js
 
-import AbbreviationEditing from './abbreviationediting';
-import AbbreviationUI from './abbreviationui';
+import AbbreviationEditing from './abbreviationediting.js';
+import AbbreviationUI from './abbreviationui.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 export default class Abbreviation extends Plugin {
@@ -152,7 +152,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Abbreviation from './abbreviation/abbreviation'; // ADDED
+import Abbreviation from './abbreviation/abbreviation.js'; // ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -364,7 +364,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import Abbreviation from './simplebox/abbreviation';
+import Abbreviation from './simplebox/abbreviation.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

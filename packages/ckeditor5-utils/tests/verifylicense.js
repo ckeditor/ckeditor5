@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import verifyLicense from '../src/verifylicense';
+import verifyLicense from '../src/verifylicense.js';
 
 describe( 'utils', () => {
 	describe( 'verify', () => {

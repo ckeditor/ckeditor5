@@ -24,11 +24,11 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { Bold, Italic, Strikethrough, Superscript, Subscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 
-import DecoupledEditor from '../build-decoupled-document';
+import DecoupledEditor from '../build-decoupled-document.js';
 
 class FormattingOptions extends Plugin {
 	/**

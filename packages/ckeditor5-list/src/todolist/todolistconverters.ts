@@ -19,11 +19,11 @@ import type {
 	UpcastElementEvent,
 	View,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { createElement, type GetCallback } from 'ckeditor5/src/utils';
+import { createElement, type GetCallback } from 'ckeditor5/src/utils.js';
 
-import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../list/utils';
+import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../list/utils.js';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.

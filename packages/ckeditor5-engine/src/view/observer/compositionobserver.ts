@@ -7,9 +7,9 @@
  * @module engine/view/observer/compositionobserver
  */
 
-import DomEventObserver from './domeventobserver';
-import type View from '../view';
-import type DomEventData from './domeventdata';
+import DomEventObserver from './domeventobserver.js';
+import type View from '../view.js';
+import type DomEventData from './domeventdata.js';
 
 /**
  * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},

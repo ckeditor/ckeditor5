@@ -7,8 +7,8 @@
  * @module highlight/highlightcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type { TreeWalkerValue } from 'ckeditor5/src/engine';
+import { Command } from 'ckeditor5/src/core.js';
+import type { TreeWalkerValue } from 'ckeditor5/src/engine.js';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}

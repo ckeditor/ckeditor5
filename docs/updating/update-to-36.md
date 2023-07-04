@@ -27,7 +27,7 @@ The `EditorUI` class was moved from the `@ckeditor/ckeditor5-core` to the `@cked
 **Before**:
 
 ```js
-import { EditorUI } from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import { EditorUI } from '@ckeditor/ckeditor5-core/src/editor/editorui.js';
 
 export default class MyEditorUI extends EditorUI {}
 ```
@@ -35,7 +35,7 @@ export default class MyEditorUI extends EditorUI {}
 **After**:
 
 ```js
-import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
+import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
 
 export default class MyEditorUI extends EditorUI {}
 ```

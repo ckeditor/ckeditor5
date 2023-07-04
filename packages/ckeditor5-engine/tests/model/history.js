@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import History from '../../src/model/history';
-import Operation from '../../src/model/operation/operation';
+import History from '../../src/model/history.js';
+import Operation from '../../src/model/operation/operation.js';
 
 describe( 'History', () => {
 	let history;

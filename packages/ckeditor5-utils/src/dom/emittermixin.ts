@@ -14,12 +14,12 @@ import EmitterMixin, {
 	type CallbackOptions,
 	type BaseEvent,
 	type GetCallback
-} from '../emittermixin';
-import uid from '../uid';
-import isNode from './isnode';
-import isWindow from './iswindow';
-import type EventInfo from '../eventinfo';
-import type { Constructor, Mixed } from '../mix';
+} from '../emittermixin.js';
+import uid from '../uid.js';
+import isNode from './isnode.js';
+import isWindow from './iswindow.js';
+import type EventInfo from '../eventinfo.js';
+import type { Constructor, Mixed } from '../mix.js';
 
 const defaultEmitterClass = DomEmitterMixin( EmitterMixin() );
 

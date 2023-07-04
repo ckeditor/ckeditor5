@@ -7,6 +7,6 @@
  * @module autoformat
  */
 
-export { default as Autoformat } from './autoformat';
+export { default as Autoformat } from './autoformat.js';
 
-import './augmentation';
+import './augmentation.js';

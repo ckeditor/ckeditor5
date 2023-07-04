@@ -303,7 +303,7 @@ Now, let's initialize our `AbbreviationCommand`, by adding it to the list of edi
 // abreviation/abbreviationediting.js
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import AbbreviationCommand from './abbreviationcommand';			// ADDED
+import AbbreviationCommand from './abbreviationcommand.js';			// ADDED
 
 export default class AbbreviationEditing extends Plugin {
 	init() {

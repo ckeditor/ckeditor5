@@ -7,14 +7,14 @@
  * @module engine/model/utils/insertobject
  */
 
-import { findOptimalInsertionRange } from './findoptimalinsertionrange';
-import type DocumentSelection from '../documentselection';
-import type Selection from '../selection';
+import { findOptimalInsertionRange } from './findoptimalinsertionrange.js';
+import type DocumentSelection from '../documentselection.js';
+import type Selection from '../selection.js';
 
-import type Element from '../element';
-import type Model from '../model';
-import type Range from '../range';
-import type Writer from '../writer';
+import type Element from '../element.js';
+import type Model from '../model.js';
+import type Range from '../range.js';
+import type Writer from '../writer.js';
 
 import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 

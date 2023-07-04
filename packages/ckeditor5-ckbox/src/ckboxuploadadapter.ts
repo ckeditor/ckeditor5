@@ -9,20 +9,20 @@
  * @module ckbox/ckboxuploadadapter
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	FileRepository,
 	type FileLoader,
 	type UploadAdapter,
 	type UploadResponse
-} from 'ckeditor5/src/upload';
+} from 'ckeditor5/src/upload.js';
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/ckeditor5-image';
 
-import { logError } from 'ckeditor5/src/utils';
-import CKBoxEditing from './ckboxediting';
-import { getImageUrls } from './utils';
+import { logError } from 'ckeditor5/src/utils.js';
+import CKBoxEditing from './ckboxediting.js';
+import { getImageUrls } from './utils.js';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.

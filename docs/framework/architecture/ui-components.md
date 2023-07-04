@@ -785,7 +785,7 @@ By default, a toolbar has one row. However, it can span into multiple rows. You 
 
 ```js
 import { ButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
-import ToolbarLineBreakView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarlinebreakview';
+import ToolbarLineBreakView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarlinebreakview.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 const locale = new Locale();

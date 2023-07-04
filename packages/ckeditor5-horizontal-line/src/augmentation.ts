@@ -8,7 +8,7 @@ import type {
 	HorizontalLineCommand,
 	HorizontalLineEditing,
 	HorizontalLineUI
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

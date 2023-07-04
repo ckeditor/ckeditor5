@@ -5,8 +5,8 @@
 
 /* eslint-env commonjs, browser */
 
-import Token from '../../src/token/token';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Token from '../../src/token/token.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'Token', () => {
 	let requests;

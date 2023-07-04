@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 
 describe( 'ImageUploadFormRowView', () => {
 	let view, locale;

@@ -7,9 +7,9 @@
  * @module basic-styles/code
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import CodeEditing from './code/codeediting';
-import CodeUI from './code/codeui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import CodeEditing from './code/codeediting.js';
+import CodeUI from './code/codeui.js';
 
 import '../theme/code.css';
 

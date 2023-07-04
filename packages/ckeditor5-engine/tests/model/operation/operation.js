@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Batch from '../../../src/model/batch';
-import Operation from '../../../src/model/operation/operation';
+import Batch from '../../../src/model/batch.js';
+import Operation from '../../../src/model/operation/operation.js';
 
 describe( 'Operation', () => {
 	it( 'should save its base version', () => {

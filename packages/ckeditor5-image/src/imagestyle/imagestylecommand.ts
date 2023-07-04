@@ -7,10 +7,10 @@
  * @module image/imagestyle/imagestylecommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { ImageStyleOptionDefinition } from '../imageconfig';
-import type ImageUtils from '../imageutils';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { ImageStyleOptionDefinition } from '../imageconfig.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The image style command. It is used to apply {@link module:image/imageconfig~ImageStyleConfig#options image style option}

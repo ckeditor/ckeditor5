@@ -9,9 +9,9 @@
 
 /* globals setTimeout, clearTimeout */
 
-import DomEventObserver from './domeventobserver';
-import type DomEventData from './domeventdata';
-import type View from '../view';
+import DomEventObserver from './domeventobserver.js';
+import type DomEventData from './domeventdata.js';
+import type View from '../view.js';
 
 /**
  * {@link module:engine/view/document~Document#event:focus Focus}

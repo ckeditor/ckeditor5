@@ -5,17 +5,17 @@
 
 /* global document */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Style from '../../src/style';
+import Style from '../../src/style.js';
 
 describe( 'DocumentListStyleSupport', () => {
 	let editor, editorElement, command, model, doc, root;

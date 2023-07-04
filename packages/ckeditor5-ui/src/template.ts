@@ -9,8 +9,8 @@
 
 /* global document */
 
-import View from './view';
-import ViewCollection from './viewcollection';
+import View from './view.js';
+import ViewCollection from './viewcollection.js';
 
 import {
 	CKEditorError,

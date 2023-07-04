@@ -7,15 +7,15 @@
  * @module media-embed/mediaembedediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { UpcastElementEvent } from 'ckeditor5/src/engine';
-import { first, type GetCallback } from 'ckeditor5/src/utils';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 
-import { modelToViewUrlAttributeConverter } from './converters';
-import type { MediaEmbedConfig } from './mediaembedconfig';
-import MediaEmbedCommand from './mediaembedcommand';
-import MediaRegistry from './mediaregistry';
-import { toMediaWidget, createMediaFigureElement } from './utils';
+import { modelToViewUrlAttributeConverter } from './converters.js';
+import type { MediaEmbedConfig } from './mediaembedconfig.js';
+import MediaEmbedCommand from './mediaembedcommand.js';
+import MediaRegistry from './mediaregistry.js';
+import { toMediaWidget, createMediaFigureElement } from './utils.js';
 
 import '../theme/mediaembedediting.css';
 

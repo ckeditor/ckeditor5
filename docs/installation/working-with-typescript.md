@@ -55,7 +55,7 @@ When using TypeScript you need to import all modules provided by CKEditor 5 usin
 
 ```ts
 // Instead of:
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 
 // Do:
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';

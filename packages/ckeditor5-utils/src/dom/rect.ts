@@ -7,10 +7,10 @@
  * @module utils/dom/rect
  */
 
-import isRange from './isrange';
-import isWindow from './iswindow';
-import getBorderWidths from './getborderwidths';
-import isText from './istext';
+import isRange from './isrange.js';
+import isWindow from './iswindow.js';
+import getBorderWidths from './getborderwidths.js';
+import isText from './istext.js';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 

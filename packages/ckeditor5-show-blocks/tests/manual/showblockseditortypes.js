@@ -5,17 +5,17 @@
 
 /* globals console, window, document, CKEditorInspector */
 
-import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
-import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
+import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor.js';
+import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
 
-import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ShowBlocks from '../../src/showblocks';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ShowBlocks from '../../src/showblocks.js';
 
 window.editors = {};
 

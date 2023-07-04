@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import ListEditing from '../../src/list/listediting';
-import ListUI from '../../src/list/listui';
+import ListEditing from '../../src/list/listediting.js';
+import ListUI from '../../src/list/listui.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ListUI', () => {
 	let editorElement, editor, model, bulletedListButton, numberedListButton;

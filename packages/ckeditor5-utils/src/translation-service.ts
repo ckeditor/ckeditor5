@@ -9,8 +9,8 @@
  * @module utils/translation-service
  */
 
-import CKEditorError from './ckeditorerror';
-import global from './dom/global';
+import CKEditorError from './ckeditorerror.js';
+import global from './dom/global.js';
 
 declare global {
 	var CKEDITOR_TRANSLATIONS: {

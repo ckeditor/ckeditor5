@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import DomConverter from '../../../src/view/domconverter';
-import ViewDocument from '../../../src/view/document';
-import ViewElement from '../../../src/view/element';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import DomConverter from '../../../src/view/domconverter.js';
+import ViewDocument from '../../../src/view/document.js';
+import ViewElement from '../../../src/view/element.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 
 describe( 'DOMConverter raw content matcher', () => {
 	let converter, viewDocument;

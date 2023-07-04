@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import { assertTableStyle, modelTable, setTableWithObjectAttributes } from '../../_utils/utils';
-import TablePropertiesEditing from '../../../src/tableproperties/tablepropertiesediting';
-import TableBorderStyleCommand from '../../../src/tableproperties/commands/tableborderstylecommand';
+import { assertTableStyle, modelTable, setTableWithObjectAttributes } from '../../_utils/utils.js';
+import TablePropertiesEditing from '../../../src/tableproperties/tablepropertiesediting.js';
+import TableBorderStyleCommand from '../../../src/tableproperties/commands/tableborderstylecommand.js';
 
 describe( 'table properties', () => {
 	describe( 'commands', () => {

@@ -8,7 +8,7 @@ import type {
 	PageBreakEditing,
 	PageBreakUI,
 	PageBreakCommand
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

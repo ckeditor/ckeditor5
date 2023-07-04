@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import plainTextToHtml from '../../src/utils/plaintexttohtml';
+import plainTextToHtml from '../../src/utils/plaintexttohtml.js';
 
 describe( 'plainTextToHtml()', () => {
 	it( 'encodes < and >', () => {

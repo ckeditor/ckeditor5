@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import normalizeHtml from '../../tests/_utils/normalizehtml';
+import normalizeHtml from '../../tests/_utils/normalizehtml.js';
 
 describe( 'utils', () => {
 	describe( 'normalizeHtml', () => {

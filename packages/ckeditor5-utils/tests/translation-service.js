@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { _translate, add, _clear } from '../src/translation-service';
+import { _translate, add, _clear } from '../src/translation-service.js';
 
 describe( 'translation-service', () => {
 	afterEach( () => {

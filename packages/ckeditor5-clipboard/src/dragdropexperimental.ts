@@ -43,7 +43,7 @@ import {
 import ClipboardPipeline, {
 	type ClipboardContentInsertionEvent,
 	type ViewDocumentClipboardOutputEvent
-} from './clipboardpipeline';
+} from './clipboardpipeline.js';
 
 import ClipboardObserver, {
 	type ViewDocumentDragEndEvent,
@@ -52,9 +52,9 @@ import ClipboardObserver, {
 	type ViewDocumentDragLeaveEvent,
 	type ViewDocumentDragStartEvent,
 	type ViewDocumentClipboardInputEvent
-} from './clipboardobserver';
+} from './clipboardobserver.js';
 
-import DragDropTarget from './dragdroptarget';
+import DragDropTarget from './dragdroptarget.js';
 
 import '../theme/clipboard.css';
 

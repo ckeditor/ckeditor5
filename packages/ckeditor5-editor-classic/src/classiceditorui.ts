@@ -7,14 +7,14 @@
  * @module editor-classic/classiceditorui
  */
 
-import type { Editor, ElementApi } from 'ckeditor5/src/core';
-import { EditorUI, normalizeToolbarConfig, type EditorUIReadyEvent } from 'ckeditor5/src/ui';
+import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
+import { EditorUI, normalizeToolbarConfig, type EditorUIReadyEvent } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
 	type ViewScrollToTheSelectionEvent
-} from 'ckeditor5/src/engine';
-import { ElementReplacer, Rect, type EventInfo } from 'ckeditor5/src/utils';
-import type ClassicEditorUIView from './classiceditoruiview';
+} from 'ckeditor5/src/engine.js';
+import { ElementReplacer, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
+import type ClassicEditorUIView from './classiceditoruiview.js';
 
 /**
  * The classic editor UI class.

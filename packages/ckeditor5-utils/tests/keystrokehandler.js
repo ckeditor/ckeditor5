@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import EmitterMixin from '../src/emittermixin';
-import KeystrokeHandler from '../src/keystrokehandler';
-import { keyCodes } from '../src/keyboard';
-import env from '../src/env';
+import EmitterMixin from '../src/emittermixin.js';
+import KeystrokeHandler from '../src/keystrokehandler.js';
+import { keyCodes } from '../src/keyboard.js';
+import env from '../src/env.js';
 
 describe( 'KeystrokeHandler', () => {
 	const Emitter = EmitterMixin();

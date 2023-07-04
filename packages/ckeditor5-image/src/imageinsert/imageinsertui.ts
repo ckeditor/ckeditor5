@@ -7,16 +7,16 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import { Plugin, icons, type Command } from 'ckeditor5/src/core';
-import type { Locale } from 'ckeditor5/src/utils';
-import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView } from 'ckeditor5/src/ui';
+import { Plugin, icons, type Command } from 'ckeditor5/src/core.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView } from 'ckeditor5/src/ui.js';
 
-import ImageInsertPanelView from './ui/imageinsertpanelview';
-import { prepareIntegrations } from './utils';
-import type ImageUtils from '../imageutils';
-import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
-import type UploadImageCommand from '../imageupload/uploadimagecommand';
-import type InsertImageCommand from '../image/insertimagecommand';
+import ImageInsertPanelView from './ui/imageinsertpanelview.js';
+import { prepareIntegrations } from './utils.js';
+import type ImageUtils from '../imageutils.js';
+import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand.js';
+import type UploadImageCommand from '../imageupload/uploadimagecommand.js';
+import type InsertImageCommand from '../image/insertimagecommand.js';
 
 /**
  * The image insert dropdown plugin.

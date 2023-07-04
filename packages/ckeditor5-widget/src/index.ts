@@ -7,10 +7,10 @@
  * @module widget
  */
 
-export { default as Widget } from './widget';
-export { default as WidgetToolbarRepository } from './widgettoolbarrepository';
-export { default as WidgetResize } from './widgetresize';
-export { default as WidgetTypeAround } from './widgettypearound/widgettypearound';
-export * from './utils';
+export { default as Widget } from './widget.js';
+export { default as WidgetToolbarRepository } from './widgettoolbarrepository.js';
+export { default as WidgetResize } from './widgetresize.js';
+export { default as WidgetTypeAround } from './widgettypearound/widgettypearound.js';
+export * from './utils.js';
 
-import './augmentation';
+import './augmentation.js';

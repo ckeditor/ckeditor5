@@ -7,14 +7,14 @@
  * @module font/documentcolorcollection
  */
 
-import type { ColorDefinition } from 'ckeditor5/src/ui';
+import type { ColorDefinition } from 'ckeditor5/src/ui.js';
 import {
 	Collection,
 	ObservableMixin,
 	type CollectionAddEvent,
 	type CollectionRemoveEvent,
 	type CollectionChangeEvent
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
 /**
  * A collection to store document colors. It enforces colors to be unique.

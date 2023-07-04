@@ -7,7 +7,7 @@
  * @module paste-from-office/filters/removegooglesheetstag
  */
 
-import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
+import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js';
 
 /**
  * Removes the `<google-sheets-html-origin>` tag wrapper added by Google Sheets to a copied content.

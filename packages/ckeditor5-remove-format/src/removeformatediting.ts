@@ -7,9 +7,9 @@
  * @module remove-format/removeformatediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import RemoveFormatCommand from './removeformatcommand';
+import RemoveFormatCommand from './removeformatcommand.js';
 
 /**
  * The remove format editing plugin.

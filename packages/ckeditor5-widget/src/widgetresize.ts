@@ -11,9 +11,9 @@ import Resizer, {
 	type ResizerBeginEvent,
 	type ResizerCancelEvent,
 	type ResizerCommitEvent
-} from './widgetresize/resizer';
+} from './widgetresize/resizer.js';
 
-import type WidgetToolbarRepository from './widgettoolbarrepository';
+import type WidgetToolbarRepository from './widgettoolbarrepository.js';
 
 import {
 	Plugin,

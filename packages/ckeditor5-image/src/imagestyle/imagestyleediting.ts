@@ -7,14 +7,14 @@
  * @module image/imagestyle/imagestyleediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { Element, UpcastElementEvent } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { Element, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
-import ImageStyleCommand from './imagestylecommand';
-import ImageUtils from '../imageutils';
-import utils from './utils';
-import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
-import type { ImageStyleOptionDefinition } from '../imageconfig';
+import ImageStyleCommand from './imagestylecommand.js';
+import ImageUtils from '../imageutils.js';
+import utils from './utils.js';
+import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters.js';
+import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 
 /**
  * The image style engine plugin. It sets the default configuration, creates converters and registers

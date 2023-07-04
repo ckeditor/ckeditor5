@@ -9,9 +9,9 @@
 
 /* globals console */
 
-import toArray from './toarray';
-import { _translate, type Message } from './translation-service';
-import { getLanguageDirection, type LanguageDirection } from './language';
+import toArray from './toarray.js';
+import { _translate, type Message } from './translation-service.js';
+import { getLanguageDirection, type LanguageDirection } from './language.js';
 
 /**
  * Represents the localization services.
