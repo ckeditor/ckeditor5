@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Image captions
+meta-title: Image captions in CKEditor 5
+meta-description: Utilizing image captions to enhance your rich content.
 order: 30
 ---
 {@snippet features/build-image-source}
