@@ -4,6 +4,13 @@
  */
 
 .ck-content {
+	& picture {
+		/* The image should never exceed the width of the parent container */
+		& img {
+			max-width: 100%;
+		}
+	}
+
 	& .image {
 		display: table;
 		clear: both;
