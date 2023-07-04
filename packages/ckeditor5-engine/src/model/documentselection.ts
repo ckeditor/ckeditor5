@@ -1127,6 +1127,10 @@ class LiveSelection extends Selection {
 		const position = this.getFirstPosition()!;
 		const schema = this._model.schema;
 
+		if ( position.root.rootName == '$graveyard' ) {
+			return null;
+		}
+
 		let attrs = null;
 
 		if ( !this.isCollapsed ) {
