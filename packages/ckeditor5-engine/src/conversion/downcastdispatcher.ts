@@ -17,6 +17,7 @@ import type { default as MarkerCollection, Marker } from '../model/markercollect
 import type { TreeWalkerValue } from '../model/treewalker';
 import type DocumentSelection from '../model/documentselection';
 import type DowncastWriter from '../view/downcastwriter';
+import type RootElement from '../model/rootelement';
 import type Element from '../model/element';
 import type Item from '../model/item';
 import type Mapper from './mapper';
@@ -252,9 +253,15 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		markers: MarkerCollection,
 		writer: DowncastWriter
 	): void {
-		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition()! ) );
-
 		const conversionApi = this._createConversionApi( writer );
+		const modelRoot = selection.getFirstPosition()!.root as RootElement;
+
+		// Don't convert selection if it is in a model root that does not have a view root (for now this is only the graveyard root).
+		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
+			return;
+		}
+
+		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition()! ) );
 
 		this._addConsumablesForSelection( conversionApi.consumable, selection, markersAtSelection );
 

@@ -16,6 +16,7 @@ import ModelRange from '../../src/model/range';
 import ModelConsumable from '../../src/conversion/modelconsumable';
 
 import View from '../../src/view/view';
+import ViewRootEditableElement from '../../src/view/rooteditableelement';
 import ViewContainerElement from '../../src/view/containerelement';
 import DowncastWriter from '../../src/view/downcastwriter';
 import { StylesProcessor } from '../../src/view/stylesmap';
@@ -32,6 +33,11 @@ describe( 'DowncastDispatcher', () => {
 		apiObj = {};
 		dispatcher = new DowncastDispatcher( { mapper, apiObj } );
 		root = doc.createRoot();
+
+		// Bind view root and model root. This is normally done by the `EditingController`, but it is not used here.
+		const viewRoot = new ViewRootEditableElement( view.document, root.name );
+		viewRoot.rootName = root.rootName;
+		mapper.bindElements( root, viewRoot );
 
 		dispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
@@ -952,6 +958,20 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should not convert if selection is in a model root that does not have a corresponding view root', () => {
+			const newRoot = doc.createRoot( '$root', 'foo' );
+
+			model.change( writer => {
+				writer.setSelection( writer.createPositionAt( newRoot, 0 ) );
+			} );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
+
+			expect( dispatcher.fire.notCalled ).to.be.true;
 		} );
 
 		it( 'should prepare correct list of consumable values', () => {
