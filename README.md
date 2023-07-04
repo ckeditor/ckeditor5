@@ -140,19 +140,18 @@ The development repository of CKEditor 5 is located at [https://github.com/ckedi
 
 ### Development
 
-CKEditor 5 is a modular, multi-package, [monorepo](https://en.wikipedia.org/wiki/Monorepo) project. It consists of several packages that create the editing framework, based on which the feature packages are implemented.
+- add changes to ckeditor5-build-decoupled-document
+- add a workflow for the changes in .github
+- add the right environment variable to your studio .env file and get going.  The format for the value of the
+  environment variable will be:
+```.env
+https://ckeditorbuilddev.blob.core.windows.net/ckeditor/{name_you_picked}.js
+```
 
-The [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/development-environment.html) can be found in the documentation.
-
-See the [official contributors' guide](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/contributing.html) to learn how to contribute your code to the project.
-
-### Reporting issues and feature requests
-
-Report issues in [the `ckeditor5` repository](https://github.com/ckeditor/ckeditor5/issues). Read more on the [Getting support](https://ckeditor.com/docs/ckeditor5/latest/support/getting-support.html) guide.
-
-## License
-
-Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).
+eg:
+```.env
+https://ckeditorbuilddev.blob.core.windows.net/ckeditor/ckeditor5ImageResize.js
+```
 
 
 ## How to trigger a build
