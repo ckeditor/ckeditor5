@@ -10,7 +10,7 @@ modified_at: 2023-06-30
 
 # Responsive images
 
-The ability to have responsive images in the rich-text editor content is a great modern feature provided by the {@link features/ckbox CKBox asset manager}. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The browser will automatically load the image with dimensions most suitable for the presented page resolution, which makes the image load much faster. 
+The ability to have responsive images in the rich-text editor content is a great modern feature provided by the {@link features/ckbox CKBox asset manager}. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth. 
 
 ## Demo
 
