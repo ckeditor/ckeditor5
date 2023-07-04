@@ -64,7 +64,7 @@ The variety of the image sizes in the `srcset` attribute allows the web browser 
 Regardless of the original file format, the responsive versions will be served as `.webp`.
 
 <info-box>
-CKBox converts image formats and resizes images on the fly. Refer to the {@link @ckbox features/images/conversion CKBox image conversion} guide to find out how to do it.
+	CKBox converts image formats and resizes images on the fly. Refer to the {@link @ckbox features/images/conversion CKBox image conversion} guide to find out how to do it.
 </info-box>
 
 ## Installation
