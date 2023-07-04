@@ -14,7 +14,7 @@ import insertToPriorityArray from './inserttopriorityarray.js';
 import type { Constructor, Mixed } from './mix.js';
 
 // To check if component is loaded more than once.
-import './version';
+import './version.js';
 import CKEditorError from './ckeditorerror.js';
 
 const _listeningTo = Symbol( 'listeningTo' );

@@ -18,7 +18,7 @@ import {
 import { clone } from 'lodash-es';
 
 // To check if component is loaded more than once.
-import '@ckeditor/ckeditor5-utils/src/version';
+import '@ckeditor/ckeditor5-utils/src/version.js';
 
 import type { default as Document, ChangeType } from './document.js';
 import type DocumentFragment from './documentfragment.js';
