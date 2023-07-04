@@ -35,7 +35,7 @@ Responsive images have two main advantages over "traditional" image delivery:
 
 ## Responsive images in the markup
 
-Responsive images delivered by the CKBox service are transparent to your application. Once uploaded, the image appears in the editor content as a "regular" image but with some additional attributes like the `srcset`.
+The image appears in the editor content as a `<picture>` element. The `<picture>` element contains the original `<img>` and the `<source>` element, which defines alternative versions of images using the `srcset` attribute.
 
 The `srcset` attribute specifies the image variants dedicated to the various screen sizes for the web browser to choose from (360px, 720px, 1080px, 1440px, etc.).
 
