@@ -1186,7 +1186,7 @@ function hasElementVerticalScroll( element: HTMLElement ): boolean {
  * Returns true when a BalloonPanel and element that it is pinned to is outside the visible area.
  */
 function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
-	if ( !( options.limiter instanceof HTMLElement ) ) {
+	if ( !( options.limiter instanceof HTMLElement || options.limiter instanceof Function ) ) {
 		return false;
 	}
 
