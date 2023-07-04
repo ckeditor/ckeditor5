@@ -12,7 +12,7 @@
     "noImplicitAny": true,
     "noImplicitOverride": true,
     "strict": true,
-    "module": "NodeNext",
+    "module": "es6",
     "target": "es2019",
     "sourceMap": true,
     "allowJs": true,
