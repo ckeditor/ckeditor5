@@ -1653,6 +1653,18 @@ describe( 'Schema', () => {
 			'<paragraph></paragraph><paragraph>[]</paragraph>'
 		);
 
+		it( 'should return null for a position in graveyard even if there is a paragraph there', () => {
+			let range;
+
+			model.enqueueChange( { isUndoable: false }, writer => {
+				writer.insertElement( 'paragraph', model.document.graveyard, 0 );
+			} );
+
+			range = schema.getNearestSelectionRange( model.createPositionFromPath( model.document.graveyard, [ 0 ] ) );
+
+			expect( range ).to.be.null;
+		} );
+
 		describe( 'in case of objects which do not allow text inside', () => {
 			test(
 				'should select nearest object (o[]o) - both',

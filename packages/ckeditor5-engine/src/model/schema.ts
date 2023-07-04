@@ -760,6 +760,12 @@ export default class Schema extends ObservableMixin() {
 	 * @returns Nearest selection range or `null` if one cannot be found.
 	 */
 	public getNearestSelectionRange( position: Position, direction: 'both' | 'forward' | 'backward' = 'both' ): Range | null {
+		if ( position.root.rootName == '$graveyard' ) {
+			// No valid selection range in the graveyard.
+			// This is important when getting the document selection default range.
+			return null;
+		}
+
 		// Return collapsed range if provided position is valid.
 		if ( this.checkChild( position, '$text' ) ) {
 			return new Range( position );
