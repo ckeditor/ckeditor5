@@ -674,10 +674,7 @@ export default class DomConverter {
 		// Trigger children handling.
 		generator.next();
 
-		// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
-		if ( options.withChildren !== false ) {
-			this._processDomInlineNodes( null, inlineNodes );
-		}
+		this._processDomInlineNodes( null, inlineNodes, options );
 
 		// Text not got trimmed to an empty string so there is no result node.
 		if ( node.is( '$text' ) && node.data.length == 0 ) {
@@ -815,10 +812,7 @@ export default class DomConverter {
 		options: Parameters<DomConverter[ 'domToView' ]>[ 1 ] = {},
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
-		// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
-		if ( options.withChildren !== false ) {
-			this._processDomInlineNodes( domElement, inlineNodes );
-		}
+		this._processDomInlineNodes( domElement, inlineNodes, options );
 
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
 			const domChild = domElement.childNodes[ i ];
@@ -835,16 +829,17 @@ export default class DomConverter {
 			}
 		}
 
-		// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
-		if ( options.withChildren !== false ) {
-			this._processDomInlineNodes( domElement, inlineNodes );
-		}
+		this._processDomInlineNodes( domElement, inlineNodes, options );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _processDomInlineNodes( domParent: DomElement | null, inlineNodes: Array<ViewNode> ) {
+	private _processDomInlineNodes(
+		domParent: DomElement | null,
+		inlineNodes: Array<ViewNode>,
+		options: { withChildren?: boolean }
+	): void {
 		if ( !inlineNodes.length ) {
 			return;
 		}
@@ -882,15 +877,18 @@ export default class DomConverter {
 				const shouldLeftTrim = !prevNode || prevNode.is( 'element' ) && prevNode.name == 'br' || prevNodeEndsWithSpace;
 				const shouldRightTrim = nextNode ? false : !startsWithFiller( node.data );
 
-				// If the previous dom text node does not exist or it ends by whitespace character, remove space character from the
-				// beginning of this text node. Such space character is treated as a whitespace.
-				if ( shouldLeftTrim ) {
-					data = data.replace( /^ /, '' );
-				}
+				// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
+				if ( options.withChildren !== false ) {
+					// If the previous dom text node does not exist or it ends by whitespace character, remove space character from the
+					// beginning of this text node. Such space character is treated as a whitespace.
+					if ( shouldLeftTrim ) {
+						data = data.replace( /^ /, '' );
+					}
 
-				// If the next text node does not exist remove space character from the end of this text node.
-				if ( shouldRightTrim ) {
-					data = data.replace( / $/, '' );
+					// If the next text node does not exist remove space character from the end of this text node.
+					if ( shouldRightTrim ) {
+						data = data.replace( / $/, '' );
+					}
 				}
 
 				// At the beginning and end of a block element, Firefox inserts normal space + <br> instead of non-breaking space.
