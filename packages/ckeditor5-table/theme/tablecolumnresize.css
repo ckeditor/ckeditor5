@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-color-table-column-resizer-hover: var(--ck-color-base-active);
+	--ck-color-selector-column-resizer-hover: var(--ck-color-base-active);
 	--ck-table-column-resizer-width: 7px;
 
 	/* The offset used for absolute positioning of the resizer element, so that it is placed exactly above the cell border.
@@ -55,7 +55,7 @@
 
 .ck.ck-editor__editable .table .ck-table-column-resizer:hover,
 .ck.ck-editor__editable .table .ck-table-column-resizer__active {
-	background-color: var(--ck-color-table-column-resizer-hover);
+	background-color: var(--ck-color-selector-column-resizer-hover);
 	opacity: 0.25;
 }
 

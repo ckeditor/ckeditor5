@@ -34,7 +34,7 @@ const DEFAULT_COLORS = [
 ];
 
 describe( 'ColorInputView', () => {
-	let view, locale, colorGridView, removeColorButton, inputView;
+	let view, locale, colorGridView, removeColorButton, inputView, colorSelectorView;
 
 	beforeEach( () => {
 		locale = { t: val => val };
@@ -44,9 +44,10 @@ describe( 'ColorInputView', () => {
 		} );
 		view.render();
 
+		colorSelectorView = view.dropdownView.panelView.children.first;
 		inputView = view.inputView;
-		removeColorButton = view.dropdownView.panelView.children.first;
-		colorGridView = view.dropdownView.panelView.children.last;
+		removeColorButton = colorSelectorView.colorGridsFragmentView.removeColorButtonView;
+		colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
 	} );
 
 	afterEach( () => {
@@ -145,11 +146,87 @@ describe( 'ColorInputView', () => {
 				expect( noColorPreview.classList.contains( 'ck-hidden' ) ).to.be.false;
 			} );
 
+			it( 'should show color grids when dropdown is open', () => {
+				const spy = sinon.spy( colorSelectorView, 'showColorGridsFragment' );
+				const dropdown = view.dropdownView;
+
+				dropdown.isOpen = true;
+
+				sinon.assert.calledOnce( spy );
+
+				dropdown.isOpen = false;
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should close dropdown when "save button" is pressed', () => {
+				const dropdown = view.dropdownView;
+
+				dropdown.isOpen = true;
+
+				colorSelectorView.fire( 'execute', {
+					source: 'colorPickerSaveButton'
+				} );
+
+				expect( dropdown.isOpen ).to.be.equal( false );
+			} );
+
+			it( 'should not not fire input event on submiting', () => {
+				const spy = sinon.spy();
+
+				view.on( 'input', spy );
+
+				colorSelectorView.fire( 'execute', {
+					source: 'colorPickerSaveButton'
+				} );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should close dropdown and cancel changes when "cancel button" is pressed', () => {
+				const dropdown = view.dropdownView;
+
+				dropdown.isOpen = true;
+
+				colorSelectorView.fire( 'colorPicker:cancel' );
+
+				expect( dropdown.isOpen ).to.be.equal( false );
+				expect( inputView.value ).to.be.equal( '' );
+			} );
+
+			it( 'should close dropdown and revert changes when "cancel button" is pressed', () => {
+				const dropdown = view.dropdownView;
+				const colorSelectorView = dropdown.panelView.children.first;
+
+				view.value = '#ffaaff';
+				dropdown.isOpen = true;
+
+				// Open color picker by clicking on button "color picker".
+				colorSelectorView.colorGridsFragmentView.colorPickerButtonView.fire( 'execute' );
+				colorSelectorView.colorPickerFragmentView.colorPickerView.fire( 'colorSelected', { color: 'hsl( 250, 100%, 83% )' } );
+
+				colorSelectorView.fire( 'colorPicker:cancel' );
+
+				expect( view.value ).to.be.equal( '#ffaaff' );
+			} );
+
 			it( 'should have the remove color button', () => {
-				const removeColorButton = view.dropdownView.panelView.children.first;
+				const removeColorButton = view.dropdownView.panelView.children.first.colorGridsFragmentView.removeColorButtonView;
 
 				expect( removeColorButton ).to.be.instanceOf( ButtonView );
 				expect( removeColorButton.label ).to.equal( 'Remove color' );
+			} );
+
+			it( 'should remove color', () => {
+				const dropdown = view.dropdownView;
+				const colorSelectorView = dropdown.panelView.children.first;
+
+				view.value = '#ffaaff';
+				dropdown.isOpen = true;
+
+				colorSelectorView.colorGridsFragmentView.removeColorButtonView.fire( 'execute' );
+
+				expect( view.value ).to.be.equal( '' );
 			} );
 
 			describe( 'position', () => {
@@ -178,8 +255,7 @@ describe( 'ColorInputView', () => {
 
 			it( 'should register panelView children in #_focusables', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
-					view.dropdownView.panelView.children.first,
-					view.dropdownView.panelView.children.last
+					view.dropdownView.panelView.children.first
 				] );
 			} );
 
@@ -197,6 +273,8 @@ describe( 'ColorInputView', () => {
 			it( 'should set ColorInputView#value upon ColorTileView#execute', () => {
 				expect( view.value ).to.equal( '' );
 
+				view.dropdownView.isOpen = true;
+
 				colorGridView.items.last.fire( 'execute' );
 
 				expect( view.value ).to.equal( 'rgb(0,0,255)' );
@@ -204,6 +282,8 @@ describe( 'ColorInputView', () => {
 
 			it( 'should set InputTextView#value to the selected color\'s label upon ColorTileView#execute', () => {
 				expect( inputView.value ).to.equal( '' );
+
+				view.dropdownView.isOpen = true;
 
 				colorGridView.items.last.fire( 'execute' );
 
@@ -221,29 +301,32 @@ describe( 'ColorInputView', () => {
 			it( 'should fire the ColorInputView#input event upon ColorTileView#execute', () => {
 				const spy = sinon.spy( view, 'fire' );
 
+				view.dropdownView.isOpen = true;
+
 				colorGridView.items.last.fire( 'execute' );
 
 				sinon.assert.calledWithExactly( spy.lastCall, 'input' );
 			} );
 
-			it( 'should have #selectedColor bound to the #value', () => {
+			it( 'should set #selectedColor to the #value upon dropdown opening', () => {
 				view.value = 'rgb(0,255,0)';
-				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,255,0)' );
+				view.dropdownView.isOpen = true;
 
-				view.value = 'rgb(0,0,255)';
-				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,0,255)' );
+				expect( colorGridView.selectedColor ).to.equal( 'rgb(0,255,0)' );
 			} );
 		} );
 
 		describe( 'remove color button', () => {
 			it( 'should be created from the template', () => {
-				expect( removeColorButton.element.classList.contains( 'ck-input-color__remove-color' ) ).to.be.true;
+				expect( removeColorButton.element.classList.contains( 'ck-color-selector__remove-color' ) ).to.be.true;
 				expect( removeColorButton.withText ).to.be.true;
 				expect( removeColorButton.label ).to.equal( 'Remove color' );
 			} );
 
 			it( 'should set the empty #value upon #execute', () => {
 				view.value = 'foo';
+
+				view.dropdownView.isOpen = true;
 
 				removeColorButton.fire( 'execute' );
 
@@ -454,7 +537,7 @@ describe( 'ColorInputView', () => {
 					let removeColorButton;
 
 					beforeEach( () => {
-						removeColorButton = view.dropdownView.panelView.children.first;
+						removeColorButton = view.dropdownView.panelView.children.first.colorGridsFragmentView.removeColorButtonView;
 					} );
 
 					it( 'should replace "Remove color" with "Restore default"', () => {
@@ -464,6 +547,8 @@ describe( 'ColorInputView', () => {
 
 					it( 'should set the empty #value upon #execute', () => {
 						view.value = 'foo';
+
+						view.dropdownView.isOpen = true;
 
 						removeColorButton.fire( 'execute' );
 
@@ -485,7 +570,7 @@ describe( 'ColorInputView', () => {
 				view.render();
 				global.document.body.appendChild( view.element );
 
-				colorGridView = view.dropdownView.panelView.children.last;
+				colorGridView = view.dropdownView.panelView.children.first.colorGridsFragmentView.staticColorsGrid;
 			} );
 
 			afterEach( () => {

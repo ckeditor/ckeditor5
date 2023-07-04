@@ -13,6 +13,44 @@ modified_at: 2023-06-26
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor 5 v38.2.0
+
+For the entire list of changes introduced in version 38.0.0, see the [release notes for CKEditor 5 v38.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v38.2.0).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v38.2.0.
+
+### Introduction of color pickers to table and table cell properties features
+
+Starting with TODO, {@glink tables/tables-styling table styling tools} will display a color picker in their user interfaces for color-related text fields.
+
+Just like with [the introduction of color pickers to font color and font background color features](#introduction-of-color-pickers-to-font-color-and-font-background-color-features), we allow you to decide whether this new functionality works for your integration and to opt–out of it.
+
+You can set {@link module:table/tableconfig~TablePropertiesConfig#colorPicker} and {@link module:table/tableconfig~TableCellPropertiesConfig#colorPicker} configuration options to `false` to get rid of color pickers in all table styling tools:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		table: {
+			/* ... */
+
+			tableProperties: {
+				// Disable the color picker for the table properties feature.
+				colorPicker: false
+			},
+
+			tableCellProperties: {
+				// Disable the color picker for the table cell properties feature.
+				colorPicker: false
+			}
+		}
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'insertTable', 'undo', 'redo'
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Update to CKEditor 5 v38.1.0
 
 For the entire list of changes introduced in version 38.0.0, see the [release notes for CKEditor 5 v38.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v38.1.0).

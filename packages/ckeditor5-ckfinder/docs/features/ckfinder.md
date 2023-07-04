@@ -1,13 +1,15 @@
 ---
 category: features-file-management
 menu-title: CKFinder
+meta-title: CKFinder file manager in CKEditor 5
+meta-description: Learn all about using the CKFinder file manager and service with CKEditor 5
 order: 20
 badges: [ premium ]
 ---
 
 {@snippet features/build-ckfinder-source}
 
-# CKFinder
+# CKFinder file manager
 
 The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.
 
@@ -40,7 +42,7 @@ This demo shows the [full integration](#configuring-the-full-integration) with t
 {@snippet features/ckfinder}
 
 <info-box info>
-	These demos only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	These demos only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information

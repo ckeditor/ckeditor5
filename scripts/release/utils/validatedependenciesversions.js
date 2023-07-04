@@ -11,7 +11,7 @@ const { glob } = require( 'glob' );
 const { promises: { readFile } } = require( 'fs' );
 const semver = require( 'semver' );
 const { normalizeTrim } = require( 'upath' );
-const isCKEditor5Package = require( './isckeditor5package' );
+const isCKEditor5PackageFactory = require( './isckeditor5packagefactory' );
 
 /**
  * Validates if the versions of packages and their dependencies in specified directory match the provided version.
@@ -30,11 +30,13 @@ module.exports = async function validateDependenciesVersions( { packagesDirector
 		pkgJsonPaths.map( async pkgJsonPath => JSON.parse( await readFile( pkgJsonPath, 'utf8' ) ) )
 	);
 
+	const isCKEditor5Package = await isCKEditor5PackageFactory();
+
 	const errors = pkgJsons
 		.filter( pkgJson => !skipPackages.includes( pkgJson.name ) )
 		.flatMap( pkgJson => ( [
 			...validatePackageMatchVersion( version, pkgJson ),
-			...validateDependenciesMatchVersion( version, pkgJson, skipPackages )
+			...validateDependenciesMatchVersion( version, pkgJson, skipPackages, isCKEditor5Package )
 		] ) );
 
 	if ( errors.length ) {
@@ -64,9 +66,10 @@ function validatePackageMatchVersion( version, pkgJson ) {
  * @param {String} version
  * @param {Object} pkgJson
  * @param {Array.<String>} skipPackages
+ * @param {Function} isCKEditor5Package
  * @returns {Array.<String>}
  */
-function validateDependenciesMatchVersion( version, pkgJson, skipPackages ) {
+function validateDependenciesMatchVersion( version, pkgJson, skipPackages, isCKEditor5Package ) {
 	const dependencies = pkgJson.dependencies || {};
 	const devDependencies = pkgJson.devDependencies || {};
 	const peerDependencies = pkgJson.peerDependencies || {};
