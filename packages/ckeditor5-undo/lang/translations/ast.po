@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Asturian (https://www.transifex.com/ckeditor/teams/11143/ast/)\n"
+"Language-Team: Asturian (https://app.transifex.com/ckeditor/teams/11143/ast/)\n"
 "Language: ast\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

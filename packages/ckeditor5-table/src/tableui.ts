@@ -42,8 +42,8 @@ export default class TableUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableUI' {
-		return 'TableUI';
+	public static get pluginName() {
+		return 'TableUI' as const;
 	}
 
 	/**

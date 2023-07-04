@@ -790,8 +790,8 @@ function upcastDataToMarker( config: {
 		//
 		// This hack probably would not be needed if attributes are upcasted separately.
 		//
-		const basePriority = priorities.get( 'low' );
-		const maxPriority = priorities.get( 'highest' );
+		const basePriority = priorities.low;
+		const maxPriority = priorities.highest;
 		const priorityFactor = priorities.get( config.converterPriority ) / maxPriority; // Number in range [ -1, 1 ].
 
 		dispatcher.on<UpcastElementEvent>(

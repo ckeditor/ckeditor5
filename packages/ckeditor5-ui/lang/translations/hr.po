@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Croatian (https://www.transifex.com/ckeditor/teams/11143/hr/)\n"
+"Language-Team: Croatian (https://app.transifex.com/ckeditor/teams/11143/hr/)\n"
 "Language: hr\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
@@ -22,7 +22,7 @@ msgstr "Rich Text Editor"
 
 msgctxt "Accessible label of the specific editing area belonging to a container with an ARIA application role."
 msgid "Editor editing area: %0"
-msgstr ""
+msgstr "Područje Editora: %0"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
@@ -110,4 +110,8 @@ msgstr ""
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
+msgstr ""
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
 msgstr ""

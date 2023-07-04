@@ -32,8 +32,8 @@ export default class ImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageEditing' {
-		return 'ImageEditing';
+	public static get pluginName() {
+		return 'ImageEditing' as const;
 	}
 
 	/**

@@ -676,17 +676,17 @@ Full code example:
 
 ### Superbuild
 
-The superbuild, available instantly from CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
+The superbuild, available instantly from the CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
 
 <info-box>
-	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in your implementation, so using the superbuild should be considered for evaluation purposes and tests rather, than for the production environment.
+	Keep in mind that the superbuild contains a lot of code. You may not need all of it for your use case. It's best to use the superbuild for testing and evaluation purposes rather than in a production environment.
 
-	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out one of the other predefined builds instead.
+	For customized and efficient solutions in a production environment, we strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}. You can also try out other predefined builds instead.
 </info-box>
 
 #### Installation example
 
-Please refer to the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn CDN installation quick start} to learn how to utilize the superbuild.
+ To learn how to use the superbuild, refer to the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn CDN installation quick start guide}.
 
 ## List of plugins included in the CKEditor 5 predefined builds
 
@@ -1256,6 +1256,16 @@ The table below presents the list of all plugins included in various builds. <!-
 			</tr>
 			<tr>
 				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/revision-history/revision-history.html">RevisionHistory</a></td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">❌</td>
+				<td style="text-align:center; width:70px">✅</td>
+			</tr>
+			<tr>
+				<td><a href="https://ckeditor.com/docs/ckeditor5/latest/features/show-blocks.html">ShowBlocks</a> +</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>
 				<td style="text-align:center; width:70px">❌</td>

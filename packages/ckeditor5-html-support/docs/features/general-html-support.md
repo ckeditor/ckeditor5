@@ -19,7 +19,7 @@ The General HTML Support feature is configured using the `config.htmlSupport` pr
 {@snippet features/general-html-support}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -329,5 +329,6 @@ We are open to feedback, so if you find any issue, feel free to report it in the
 
 CKEditor 5 has other features related to HTML editing that you may want to check:
 
-* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over content editing.
-* {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
+* {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor 5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
+* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
+* {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.

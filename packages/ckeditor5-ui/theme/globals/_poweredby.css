@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-powered-by-line-height: 10px;
+	--ck-powered-by-padding-vertical: 2px;
+	--ck-powered-by-padding-horizontal: 4px;
+	--ck-powered-by-text-color: hsl(0, 0%, 31%);
+	--ck-powered-by-border-radius: var(--ck-border-radius);
+	--ck-powered-by-background: hsl(0, 0%, 100%);
+	--ck-powered-by-border-color: var(--ck-color-focus-border);
+}
+
+.ck.ck-balloon-panel.ck-powered-by-balloon {
+	--ck-border-radius: var(--ck-powered-by-border-radius);
+
+	box-shadow: none;
+	background: var(--ck-powered-by-background);
+	min-height: unset;
+	z-index: calc( var(--ck-z-modal) - 1 );
+
+	& .ck.ck-powered-by {
+		line-height: var(--ck-powered-by-line-height);
+
+		& a {
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			opacity: .66;
+			filter: grayscale(80%);
+			line-height: var(--ck-powered-by-line-height);
+			padding: var(--ck-powered-by-padding-vertical) var(--ck-powered-by-padding-horizontal);
+		}
+
+		& .ck-powered-by__label {
+			font-size: 7.5px;
+			letter-spacing: -.2px;
+			padding-left: 2px;
+			text-transform: uppercase;
+			font-weight: bold;
+			margin-right: 4px;
+			cursor: pointer;
+			line-height: normal;
+			color: var(--ck-powered-by-text-color);
+
+		}
+
+		& .ck-icon {
+			display: block;
+			cursor: pointer;
+		}
+
+		&:hover {
+			& a {
+				filter: grayscale(0%);
+				opacity: 1;
+			}
+		}
+	}
+
+	&[class*="position_inside"] {
+		border-color: transparent;
+	}
+
+	&[class*="position_border"] {
+		border: var(--ck-focus-ring);
+		border-color: var(--ck-powered-by-border-color);
+	}
+}
+

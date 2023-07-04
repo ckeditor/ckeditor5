@@ -78,34 +78,13 @@ DecoupledEditor.builtinPlugins = [
 DecoupledEditor.defaultConfig = {
 	toolbar: {
 		items: [
-			'heading',
-			'|',
-			'fontfamily',
-			'fontsize',
-			'fontColor',
-			'fontBackgroundColor',
-			'|',
-			'bold',
-			'italic',
-			'underline',
-			'strikethrough',
-			'|',
-			'alignment',
-			'|',
-			'numberedList',
-			'bulletedList',
-			'|',
-			'outdent',
-			'indent',
-			'|',
-			'link',
-			'blockquote',
-			'uploadImage',
-			'insertTable',
-			'mediaEmbed',
-			'|',
-			'undo',
-			'redo'
+			'undo', 'redo',
+			'|', 'heading',
+			'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+			'|', 'bold', 'italic', 'underline', 'strikethrough',
+			'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+			'|', 'alignment',
+			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
 	},
 	image: {

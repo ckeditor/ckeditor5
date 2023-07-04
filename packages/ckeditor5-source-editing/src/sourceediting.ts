@@ -31,8 +31,8 @@ export default class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SourceEditing' {
-		return 'SourceEditing';
+	public static get pluginName() {
+		return 'SourceEditing' as const;
 	}
 
 	/**
@@ -257,6 +257,8 @@ export default class SourceEditing extends Plugin {
 			// wrapper's `data-value` property.
 			domSourceEditingElementTextarea.addEventListener( 'input', () => {
 				domSourceEditingElementWrapper.dataset.value = domSourceEditingElementTextarea.value;
+
+				editor.ui.update();
 			} );
 
 			editingView.change( writer => {

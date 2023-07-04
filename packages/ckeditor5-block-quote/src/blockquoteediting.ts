@@ -24,8 +24,8 @@ export default class BlockQuoteEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BlockQuoteEditing' {
-		return 'BlockQuoteEditing';
+	public static get pluginName() {
+		return 'BlockQuoteEditing' as const;
 	}
 
 	/**

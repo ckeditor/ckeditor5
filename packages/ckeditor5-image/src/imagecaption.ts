@@ -29,7 +29,7 @@ export default class ImageCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageCaption' {
-		return 'ImageCaption';
+	public static get pluginName() {
+		return 'ImageCaption' as const;
 	}
 }

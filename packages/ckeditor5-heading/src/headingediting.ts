@@ -10,6 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 import { priorities } from 'ckeditor5/src/utils';
+import type { EnterCommandAfterExecuteEvent } from 'ckeditor5/src/enter';
 import type { HeadingOption } from './headingconfig';
 
 import HeadingCommand from './headingcommand';
@@ -25,8 +26,8 @@ export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HeadingEditing' {
-		return 'HeadingEditing';
+	public static get pluginName() {
+		return 'HeadingEditing' as const;
 	}
 
 	/**
@@ -94,7 +95,7 @@ export default class HeadingEditing extends Plugin {
 		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
 
 		if ( enterCommand ) {
-			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
+			this.listenTo<EnterCommandAfterExecuteEvent>( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.model.document.selection.getFirstPosition()!.parent;
 				const isHeading = options.some( option => positionParent.is( 'element', option.model ) );
 
@@ -116,7 +117,7 @@ export default class HeadingEditing extends Plugin {
 			view: 'h1',
 			// With a `low` priority, `paragraph` plugin autoparagraphing mechanism is executed. Make sure
 			// this listener is called before it. If not, `h1` will be transformed into a paragraph.
-			converterPriority: priorities.get( 'low' ) + 1
+			converterPriority: priorities.low + 1
 		} );
 	}
 }

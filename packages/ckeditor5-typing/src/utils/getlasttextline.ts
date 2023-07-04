@@ -39,15 +39,15 @@ import type { Model, Range } from '@ckeditor/ckeditor5-engine';
 export default function getLastTextLine( range: Range, model: Model ): LastTextLineData {
 	let start = range.start;
 
-	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
+	const text = Array.from( range.getWalker( { ignoreElementEnd: false } ) ).reduce( ( rangeText, { item } ) => {
 		// Trim text to a last occurrence of an inline element and update range start.
-		if ( !( node.is( '$text' ) || node.is( '$textProxy' ) ) ) {
-			start = model.createPositionAfter( node );
+		if ( !( item.is( '$text' ) || item.is( '$textProxy' ) ) ) {
+			start = model.createPositionAfter( item );
 
 			return '';
 		}
 
-		return rangeText + node.data;
+		return rangeText + item.data;
 	}, '' );
 
 	return { text, range: model.createRange( start, range.end ) };

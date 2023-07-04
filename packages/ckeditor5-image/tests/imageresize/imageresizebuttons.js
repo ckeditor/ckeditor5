@@ -143,6 +143,13 @@ describe( 'ImageResizeButtons', () => {
 			expect( dropdownView.buttonView.tooltip ).to.equal( 'Resize image' );
 		} );
 
+		it( 'should be created with proper aria attributes for dropdown button', () => {
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
+
+			expect( dropdownView.buttonView.ariaLabel ).to.equal( 'Resize image' );
+			expect( dropdownView.buttonView.ariaLabelledBy ).to.be.undefined;
+		} );
+
 		it( 'should be created with a proper aria-label', () => {
 			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
 
@@ -153,6 +160,18 @@ describe( 'ImageResizeButtons', () => {
 			dropdownView.isOpen = true;
 
 			expect( dropdownView.listView.ariaLabel ).to.equal( 'Image resize list' );
+		} );
+
+		it( 'should be created with a proper role', () => {
+			const dropdownView = editor.ui.componentFactory.create( 'resizeImage' );
+
+			// Make sure that list view is not created before first dropdown open.
+			expect( dropdownView.listView ).to.be.undefined;
+
+			// Trigger list view creation (lazy init).
+			dropdownView.isOpen = true;
+
+			expect( dropdownView.listView.role ).to.equal( 'menu' );
 		} );
 
 		it( 'should execute resize command with a proper value', () => {

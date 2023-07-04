@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Bengali (https://www.transifex.com/ckeditor/teams/11143/bn/)\n"
+"Language-Team: Bengali (https://app.transifex.com/ckeditor/teams/11143/bn/)\n"
 "Language: bn\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

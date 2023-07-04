@@ -7,8 +7,9 @@
  * @module html-support/integrations/heading
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
+import { Enter } from 'ckeditor5/src/enter';
 
 import DataSchema from '../dataschema';
 
@@ -20,14 +21,14 @@ export default class HeadingElementSupport extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ DataSchema ] as const;
+		return [ DataSchema, Enter ] as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'HeadingElementSupport' {
-		return 'HeadingElementSupport';
+	public static get pluginName() {
+		return 'HeadingElementSupport' as const;
 	}
 
 	/**
@@ -40,12 +41,18 @@ export default class HeadingElementSupport extends Plugin {
 			return;
 		}
 
-		const dataSchema = editor.plugins.get( DataSchema );
 		const options: Array<HeadingOption> = editor.config.get( 'heading.options' )!;
-		const headerModels = [];
 
-		// We are registering all elements supported by HeadingEditing
-		// to enable custom attributes for those elements.
+		this.registerHeadingElements( editor, options );
+	}
+
+	/**
+	 * Registers all elements supported by HeadingEditing to enable custom attributes for those elements.
+	 */
+	private registerHeadingElements( editor: Editor, options: Array<HeadingOption> ) {
+		const dataSchema = editor.plugins.get( DataSchema );
+
+		const headerModels = [];
 		for ( const option of options ) {
 			if ( 'model' in option && 'view' in option ) {
 				dataSchema.registerBlockElement( {

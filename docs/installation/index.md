@@ -11,18 +11,27 @@ meta-description: Learn how to install, integrate, configure, and develop CKEdit
 CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich-text editor with MVC architecture, custom data model, and virtual DOM, written from scratch in TypeScript with excellent webpack and Vite support. Find out the most convenient way to start using it!
 
 <span class="navigation-hint_mobile">
-<info-box>
-	Use the **main menu button in the upper-left corner** to navigate through the documentation.
-</info-box>
+	<info-box>
+		Use the **main menu button in the upper-left corner** to navigate through the documentation.
+	</info-box>
 </span>
 
+<!-- the wrapper class should be transformed into an additional infobox class if we will want to use it on other pages-->
+<div class="info-cta">
 <info-box>
-	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
+	**Migrating from CKEditor 4?** {@link updating/migration-from-ckeditor-4 Check the migration section}
 </info-box>
 
-## Migrating from CKEditor 4
+<info-box>
+	**Want to remove the "Powered by CKEditor" logo?** {@link support/managing-ckeditor-logo Check the dedicated guide}
+</info-box>
+</div>
 
-If you are an existing CKEditor 4 user who wants to migrate to CKEditor 5, refer to the {@link updating/migration-from-ckeditor-4 CKEditor 4 migration section} for tips about such an installation. The "Getting started" section is an introduction to CKEditor 5 and is mostly aimed at new users who want to install and configure their WYSIWYG editor. You may want to get familiar with these guides before the migration, too.
+<!--
+<info-box>
+    **Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
+</info-box>
+-->
 
 ## Start using CKEditor 5 instantly with CDN
 
@@ -38,7 +47,7 @@ Learn how to install a custom CKEditor 5 build easily with the use of {@link ins
 
 ## Integration with frameworks
 
-Get to know the supported {@link installation/frameworks/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor 5 with your software.
+Get to know the supported {@link installation/integrations/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor 5 with your software.
 
 ## Advanced installation concepts
 
@@ -51,6 +60,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
  * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
 
+<!--
 <script type="text/javascript">
 	const QUIZ_DEFAULT_HEADER = 'Installation method quiz';
 	const QUIZ_RESOLUTION_BUTTON_DEFINITIONS = [
@@ -159,7 +169,7 @@ Find out more about the {@link installation/plugins/plugins plugin development},
 		},
 
 		'quiz-resolution-usingFrameworks': {
-			content: 'Based on your answers, you should check out official {@link installation/frameworks/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out official {@link installation/integrations/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
@@ -360,5 +370,18 @@ div.quiz-pane[id="quiz-start"] p {
 	flex-direction: row;
 	flex-wrap: nowrap;
 	align-items: center;
+}
+</style>
+-->
+<style>
+.info-cta .info-box p{
+	display: flex;
+    justify-content: space-between;
+}
+
+@media only screen and (max-device-width: 960px) {
+	.info-cta .info-box p{
+		flex-direction: column;
+	}
 }
 </style>

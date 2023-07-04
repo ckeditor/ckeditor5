@@ -31,7 +31,7 @@ export default class Highlight extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Highlight' {
-		return 'Highlight';
+	public static get pluginName() {
+		return 'Highlight' as const;
 	}
 }

@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import BalloonEditorBase from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import { BalloonEditor as BalloonEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
@@ -65,27 +65,14 @@ export default class BalloonEditor extends BalloonEditorBase {
 
 	public static override defaultConfig = {
 		blockToolbar: [
-			'heading',
-			'|',
-			'bulletedList',
-			'numberedList',
-			'|',
-			'outdent',
-			'indent',
-			'|',
-			'uploadImage',
-			'blockQuote',
-			'insertTable',
-			'mediaEmbed',
-			'|',
-			'undo',
-			'redo'
+			'undo', 'redo',
+			'|', 'heading',
+			'|', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		],
 		toolbar: {
 			items: [
-				'bold',
-				'italic',
-				'link'
+				'bold', 'italic', 'link'
 			]
 		},
 		image: {

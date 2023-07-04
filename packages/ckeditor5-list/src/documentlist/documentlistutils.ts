@@ -11,7 +11,12 @@ import type { Element, Node } from 'ckeditor5/src/engine';
 import type { ArrayOrItem } from 'ckeditor5/src/utils';
 
 import { Plugin } from 'ckeditor5/src/core';
-import { expandListBlocksToCompleteList, isFirstBlockOfListItem, isListItemBlock } from './utils/model';
+import {
+	expandListBlocksToCompleteItems,
+	expandListBlocksToCompleteList,
+	isFirstBlockOfListItem,
+	isListItemBlock
+} from './utils/model';
 
 /**
  * A set of helpers related to document lists.
@@ -20,8 +25,8 @@ export default class DocumentListUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DocumentListUtils' {
-		return 'DocumentListUtils';
+	public static get pluginName() {
+		return 'DocumentListUtils' as const;
 	}
 
 	/**
@@ -49,6 +54,16 @@ export default class DocumentListUtils extends Plugin {
 	 */
 	public isListItemBlock( node: Node ): boolean {
 		return isListItemBlock( node );
+	}
+
+	/**
+	 * Expands the given list of selected blocks to include the leading and tailing blocks of partially selected list items.
+	 *
+	 * @param blocks The list of selected blocks.
+	 * @param options.withNested Whether should include nested list items.
+	 */
+	public expandListBlocksToCompleteItems( blocks: ArrayOrItem<Element>, options: { withNested?: boolean } = {} ): Array<Element> {
+		return expandListBlocksToCompleteItems( blocks, options );
 	}
 }
 

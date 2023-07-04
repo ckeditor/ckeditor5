@@ -17,6 +17,9 @@
         "external/ckeditor5-internal/packages/*",
         "external/collaboration-features/packages/*"
       ],
+      "@ckeditor/ckeditor-cloud-services-collaboration": [
+        "external/ckeditor-cloud-services-collaboration"
+      ],
       "@ckeditor/ckeditor-cloud-services-collaboration/*": [
         "external/ckeditor-cloud-services-collaboration/*"
       ]

@@ -12,9 +12,9 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { ImageUpload } from '@ckeditor/ckeditor5-image';
+import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
@@ -23,7 +23,7 @@ import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
-			ArticlePluginSet, SourceEditing, EasyImage, ImageUpload, CloudServices, Markdown,
+			ArticlePluginSet, SourceEditing, CKBox, ImageUpload, PictureEditing, CloudServices, Markdown,
 			Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
 		],
 		toolbar: {

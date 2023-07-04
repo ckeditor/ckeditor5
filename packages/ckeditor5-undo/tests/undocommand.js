@@ -209,6 +209,20 @@ describe( 'UndoCommand', () => {
 				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 			} );
 
+			it( 'should not revert changes when operation target was done on non-editable space', () => {
+				const batch = model.createBatch();
+				undo.addBatch( batch );
+				model.enqueueChange( batch, writer => {
+					writer.insertText( 'bar', p( 0 ) );
+				} );
+
+				model.document.isReadOnly = true;
+
+				undo.execute();
+
+				expect( getText( root ) ).to.equal( 'barbarofo' );
+			} );
+
 			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
 				undo.execute( batch1 );
 				// Remove attribute:

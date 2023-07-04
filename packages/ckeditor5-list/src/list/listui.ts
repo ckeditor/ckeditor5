@@ -22,8 +22,8 @@ export default class ListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ListUI' {
-		return 'ListUI';
+	public static get pluginName() {
+		return 'ListUI' as const;
 	}
 
 	/**

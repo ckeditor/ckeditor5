@@ -28,8 +28,8 @@ export default class ImageInsert extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageInsert' {
-		return 'ImageInsert';
+	public static get pluginName() {
+		return 'ImageInsert' as const;
 	}
 
 	/**

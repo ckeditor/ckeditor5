@@ -11,8 +11,9 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 
-import GoogleDocsNormalizer from './normalizers/googledocsnormalizer';
 import MSWordNormalizer from './normalizers/mswordnormalizer';
+import GoogleDocsNormalizer from './normalizers/googledocsnormalizer';
+import GoogleSheetsNormalizer from './normalizers/googlesheetsnormalizer';
 
 import { parseHtml } from './filters/parse';
 import type { Normalizer, NormalizerData } from './normalizer';
@@ -34,8 +35,8 @@ export default class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'PasteFromOffice' {
-		return 'PasteFromOffice';
+	public static get pluginName() {
+		return 'PasteFromOffice' as const;
 	}
 
 	/**
@@ -56,6 +57,7 @@ export default class PasteFromOffice extends Plugin {
 
 		normalizers.push( new MSWordNormalizer( viewDocument ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
+		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 
 		clipboardPipeline.on(
 			'inputTransformation',
@@ -74,7 +76,9 @@ export default class PasteFromOffice extends Plugin {
 				const activeNormalizer = normalizers.find( normalizer => normalizer.isActive( htmlString ) );
 
 				if ( activeNormalizer ) {
-					data._parsedData = parseHtml( htmlString, viewDocument.stylesProcessor );
+					if ( !data._parsedData ) {
+						data._parsedData = parseHtml( htmlString, viewDocument.stylesProcessor );
+					}
 
 					activeNormalizer.execute( data );
 

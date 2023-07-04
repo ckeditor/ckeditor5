@@ -20,8 +20,8 @@ export default class RemoveFormatEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'RemoveFormatEditing' {
-		return 'RemoveFormatEditing';
+	public static get pluginName() {
+		return 'RemoveFormatEditing' as const;
 	}
 
 	/**

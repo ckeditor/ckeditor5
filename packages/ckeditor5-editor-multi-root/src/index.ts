@@ -9,4 +9,6 @@
 
 export { default as MultiRootEditor } from './multirooteditor';
 
+export type { RootAttributes } from './multirooteditor';
+
 import './augmentation';

@@ -32,8 +32,8 @@ export default class StyleElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StyleElementSupport' {
-		return 'StyleElementSupport';
+	public static get pluginName() {
+		return 'StyleElementSupport' as const;
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class StyleElementSupport extends Plugin {
 			schema.register( 'htmlStyle', definition.modelSchema );
 
 			schema.extend( 'htmlStyle', {
-				allowAttributes: [ 'htmlAttributes', 'htmlContent' ],
+				allowAttributes: [ 'htmlStyleAttributes', 'htmlContent' ],
 				isContent: true
 			} );
 

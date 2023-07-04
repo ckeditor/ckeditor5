@@ -21,8 +21,8 @@ export default class IndentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'IndentEditing' {
-		return 'IndentEditing';
+	public static get pluginName() {
+		return 'IndentEditing' as const;
 	}
 
 	/**

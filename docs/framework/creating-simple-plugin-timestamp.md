@@ -94,7 +94,7 @@ After opening the `index.html` in the browser, you should be able to see the wor
 
 ## Creating a plugin
 
-All features in the CKEditor 5 are powered by plugins. In order to create our custom timestamp plugin, we need to import the base `Plugin` class.
+All features in the CKEditor 5 are powered by plugins. In order to create our custom timestamp plugin, we need to import the base {@link module:core/plugin~Plugin `Plugin`} class.
 
 We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it into the editor's plugins array.
 

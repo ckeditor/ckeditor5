@@ -10,7 +10,7 @@
 import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
 
 /**
- * Removes `<b>` tag wrapper added by Google Docs to a copied content.
+ * Removes the `<b>` tag wrapper added by Google Docs to a copied content.
  *
  * @param documentFragment element `data.content` obtained from clipboard
  */

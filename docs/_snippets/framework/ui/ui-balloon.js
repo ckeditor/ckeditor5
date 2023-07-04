@@ -6,10 +6,15 @@
 /* globals window, document */
 
 import {
-	BalloonPanelView, ButtonView, IconView,
+	BalloonPanelView,
+	ButtonView,
+	IconView,
 	LabeledFieldView,
 	Model,
-	SplitButtonView, SwitchButtonView, ToolbarSeparatorView,
+	SplitButtonView,
+	SwitchButtonView,
+	ToolbarSeparatorView,
+	ToolbarLineBreakView,
 	ToolbarView,
 	TooltipManager,
 	View,
@@ -19,7 +24,6 @@ import {
 	createLabeledInputNumber,
 	createLabeledInputText
 } from '@ckeditor/ckeditor5-ui';
-import ToolbarLineBreakView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarlinebreakview';
 import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
 
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';

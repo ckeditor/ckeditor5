@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Slovak (https://www.transifex.com/ckeditor/teams/11143/sk/)\n"
+"Language-Team: Slovak (https://app.transifex.com/ckeditor/teams/11143/sk/)\n"
 "Language: sk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
@@ -111,3 +111,7 @@ msgstr "Panel s nástrojmi obsahu bloku editora"
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
 msgstr "Kontextový panel nástrojov editora"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr ""

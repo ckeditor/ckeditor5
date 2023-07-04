@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import { DecoupledEditor as DecoupledEditorBase } from '@ckeditor/ckeditor5-editor-decoupled';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
@@ -71,34 +71,13 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override defaultConfig = {
 		toolbar: {
 			items: [
-				'heading',
-				'|',
-				'fontfamily',
-				'fontsize',
-				'fontColor',
-				'fontBackgroundColor',
-				'|',
-				'bold',
-				'italic',
-				'underline',
-				'strikethrough',
-				'|',
-				'alignment',
-				'|',
-				'numberedList',
-				'bulletedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'link',
-				'blockquote',
-				'uploadImage',
-				'insertTable',
-				'mediaEmbed',
-				'|',
-				'undo',
-				'redo'
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+				'|', 'bold', 'italic', 'underline', 'strikethrough',
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+				'|', 'alignment',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
 		image: {

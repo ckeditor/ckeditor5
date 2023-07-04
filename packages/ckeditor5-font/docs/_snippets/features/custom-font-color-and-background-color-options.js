@@ -185,7 +185,8 @@ ClassicEditor
 				}
 			],
 			columns: 9,
-			documentColors: 18
+			documentColors: 18,
+			colorPicker: false
 		},
 		fontColor: {
 			colors: [
@@ -210,7 +211,10 @@ ClassicEditor
 				'aqua'
 			],
 			columns: 4,
-			documentColors: 12
+			documentColors: 12,
+			colorPicker: {
+				format: 'hex'
+			}
 		}
 	} )
 	.then( editor => {
