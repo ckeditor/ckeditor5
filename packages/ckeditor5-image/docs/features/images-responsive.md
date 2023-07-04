@@ -10,7 +10,7 @@ modified_at: 2023-06-30
 
 # Responsive images
 
-The ability to have responsive images in the rich-text editor content is a great modern feature provided by the {@link features/ckbox CKBox asset manager}. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth. 
+The ability to have responsive images in the rich-text editor content is a great modern feature provided by the {@link features/ckbox CKBox asset manager}. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.
 
 ## Demo
 
@@ -61,7 +61,11 @@ For instance, the `image.jgeg` file uploaded by the user will have the following
 
 The variety of the image sizes in the `srcset` attribute allows the web browser to choose the best one for the particular screen size. As a result, it loads faster and with less data transferred. Read the {@link @ckbox features/images/responsive-images CKBox responsive images} guide to learn how are the intermediate file sizes calculated.
 
-Regardless of the original file format, the responsive versions will be served as `.webp`. While this format is standard, you can always call any file format supported by CKBox and display it. Refer to the {@link @ckbox features/images/conversion CKBox responsive images} guide to find out how to do it.
+Regardless of the original file format, the responsive versions will be served as `.webp`.
+
+<info-box>
+CKBox converts image formats and resizes images on the fly. Refer to the {@link @ckbox features/images/conversion CKBox image conversion} guide to find out how to do it.
+</info-box>
 
 ## Installation
 
