@@ -15,6 +15,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import ImageResize from '../../src/imageresize';
 import ImageSizeAttributes from '../../src/imagesizeattributes';
 import ImageUpload from '../../src/imageupload';
+import PictureEditing from '../../src/pictureediting';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -26,11 +27,10 @@ const commonConfig = {
 		ImageResize,
 		Code,
 		ImageSizeAttributes,
-		ImageUpload,
 		Indent,
 		IndentBlock,
 		CloudServices,
-		EasyImage,
+		PictureEditing,
 		PasteFromOffice
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
@@ -56,6 +56,7 @@ const configPx = {
 		IndentBlock,
 		CloudServices,
 		EasyImage,
+		PictureEditing,
 		PasteFromOffice
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
