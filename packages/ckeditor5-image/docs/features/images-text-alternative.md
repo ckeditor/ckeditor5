@@ -44,7 +44,7 @@ CKEditor 5 provides support for alternate image text using the {@link module:ima
 
 ### Utilizing CKBox to manage text alternatives
 
-When using the {@link features/ckbox CKBox file manager}, you can utilise its {@link @ckbox features/file-management/metadata#description metadata management tools} to set or change the text alternative. CKBox automatically adds the metadata `description` to the `alt` tag.
+When using the {@link features/ckbox CKBox file manager}, you can utilize its {@link @ckbox features/file-management/metadata#description metadata management tools} to set or change the text alternative. CKBox automatically adds the metadata `description` to the `alt` tag.
 
 ## Installation
 
