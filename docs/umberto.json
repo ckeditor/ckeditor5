@@ -168,6 +168,7 @@
 		"features/lists.html": "features/lists/lists.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/overview.html": "features/index.html",
+		"features/pasting/drag-drop.html": "features/drag-drop.html",
 		"features/pagination.html": "features/pagination/pagination.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
 		"features/paste-from-office.html": "features/pasting/paste-from-word.html",
