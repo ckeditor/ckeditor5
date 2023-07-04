@@ -674,7 +674,10 @@ export default class DomConverter {
 		// Trigger children handling.
 		generator.next();
 
-		this._processDomInlineNodes( null, inlineNodes );
+		// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
+		if ( options.withChildren !== false ) {
+			this._processDomInlineNodes( null, inlineNodes );
+		}
 
 		// Text not got trimmed to an empty string so there is no result node.
 		if ( node.is( '$text' ) && node.data.length == 0 ) {
@@ -809,10 +812,13 @@ export default class DomConverter {
 	 */
 	public* domChildrenToView(
 		domElement: DomElement,
-		options: Parameters<DomConverter[ 'domToView' ]>[ 1 ],
+		options: Parameters<DomConverter[ 'domToView' ]>[ 1 ] = {},
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
-		this._processDomInlineNodes( domElement, inlineNodes );
+		// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
+		if ( options.withChildren !== false ) {
+			this._processDomInlineNodes( domElement, inlineNodes );
+		}
 
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
 			const domChild = domElement.childNodes[ i ];
@@ -829,7 +835,10 @@ export default class DomConverter {
 			}
 		}
 
-		this._processDomInlineNodes( domElement, inlineNodes );
+		// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
+		if ( options.withChildren !== false ) {
+			this._processDomInlineNodes( domElement, inlineNodes );
+		}
 	}
 
 	/**
