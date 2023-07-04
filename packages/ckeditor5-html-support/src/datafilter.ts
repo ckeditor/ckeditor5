@@ -678,6 +678,10 @@ export default class DataFilter extends Plugin {
 			name: 'i',
 			classes: 'inline-icon'
 		} );
+		editor.editing.view.domConverter.registerInlineObjectMatcher( {
+			name: 'i',
+			classes: 'inline-icon'
+		} );
 
 		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this ) );
 
