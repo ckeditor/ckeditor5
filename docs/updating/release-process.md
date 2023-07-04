@@ -31,7 +31,7 @@ Sometimes, to test specific new features or important in the upcoming stable rel
 
 The release candidate (`rc`) versions are often the ones that will become `stable` during the upcoming release.
 
-The `rc` and `alpha` versions are named by appending a numbered type denominator to the previous stable version. The `nightly` ones are marked with a daily date.
+The `rc` and `alpha` versions are named by appending a numbered type denominator to the predicted next stable version. The `nightly` ones are marked with a daily date.
 
 ## Update guides
 
