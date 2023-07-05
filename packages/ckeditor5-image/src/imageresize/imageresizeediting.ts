@@ -97,7 +97,7 @@ export default class ImageResizeEditing extends Plugin {
 	 */
 	private _registerConverters( imageType: 'imageBlock' | 'imageInline' ) {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
