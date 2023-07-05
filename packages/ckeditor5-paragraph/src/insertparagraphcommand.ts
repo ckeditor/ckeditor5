@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { Element, Position, Text, Item } from '@ckeditor/ckeditor5-engine';
+import type { Element, Position, Item } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
@@ -59,17 +59,16 @@ export default class InsertParagraphCommand extends Command {
 
 		model.change( writer => {
 			const paragraph = writer.createElement( 'paragraph' );
-
-			if ( attributes ) {
-				model.schema.setAllowedAttributes( paragraph, attributes, writer );
-			}
-
 			const allowedParent = model.schema.findAllowedParent( position, paragraph );
 
 			// It could be there's no ancestor limit that would allow paragraph.
 			// In theory, "paragraph" could be disallowed even in the "$root".
 			if ( !allowedParent ) {
 				return;
+			}
+
+			if ( attributes ) {
+				model.schema.setAllowedAttributes( paragraph, attributes, writer );
 			}
 
 			if ( position.path.length < 2 ) {
@@ -79,26 +78,25 @@ export default class InsertParagraphCommand extends Command {
 				return;
 			}
 
-			if ( position.isAtStart && position.isAtEnd ) {
-				// NOTE: In case when paragraph is empty.
-				// <paragraph>[]</paragraph> ---> <paragraph></paragraph><paragraph>[]</paragraph>
+			// E.g.
+			// <paragraph>[]</paragraph> ---> <paragraph></paragraph><paragraph>[]</paragraph>
+			const isInEmptyBlock = position.isAtStart && position.isAtEnd;
+
+			// E.g.
+			// <paragraph>foo[]</paragraph> ---> <paragraph>foo</paragraph><paragraph>[]</paragraph>
+			const isAtEndOfTextBlock = position.isAtEnd && position.nodeBefore?.is( '$text' );
+
+			// E.g.
+			// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
+			const isAtStartOfTextBlock = position.isAtStart && position.nodeAfter?.is( '$text' );
+
+			const canBeChild = model.schema.checkChild( position.parent as Element, paragraph );
+
+			if ( isInEmptyBlock || isAtEndOfTextBlock ) {
 				position = writer.createPositionAfter( position.parent as Item );
-			} else if ( position.isAtStart && ( position.nodeAfter as Text ).data ) {
-				// When position is at the start of the line we want to insert paragraph above.
-				// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
-				position = writer.createPositionFromPath( allowedParent, position.getParentPath() );
-			} else if ( position.isAtEnd && ( position.nodeBefore as Text ).data ) {
-				// When position is at the end of the line we want to insert paragraph after.
-				// <paragraph>foo[]</paragraph> ---> <paragraph>foo</paragraph><paragraph>[]</paragraph>
-				position = writer.createPositionAfter( position.parent as Item );
-			} else if ( !model.schema.checkChild( position.parent as Element, paragraph ) ) {
-				// When position is inside the content we want to split it
-				// <paragraph>fo[]o</paragraph>
-				//            |
-				//			  ↓
-				// <paragraph>fo</paragraph>
-				// <paragraph>[]</paragraph>
-				// <paragraph>o</paragraph>
+			} else if ( isAtStartOfTextBlock ) {
+				position = writer.createPositionBefore( position.parent as Item );
+			} else if ( !canBeChild ) {
 				position = writer.split( position, allowedParent ).position;
 			}
 
