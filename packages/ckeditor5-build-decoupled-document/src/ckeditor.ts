@@ -79,6 +79,7 @@ import { StyledLink } from './plugins/styledLink/index';
 import { FullScreen } from './plugins/fullScreen/index';
 import { Source } from './plugins/source/index';
 
+
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
 		Essentials,
@@ -135,7 +136,15 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Modal,
 		StyledLink,
 		FullScreen,
-		Source
+		Source,
+		VideoToolbar,
+		Video,
+		VideoStyle,
+		VideoInsert,
+		Audio,
+		AudioInsert,
+		AudioStyle,
+		AudioToolbar
 	];
 
 	public static override defaultConfig = {
@@ -183,7 +192,10 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'styledLink',
 				'fullScreen',
 				'source',
-				'|'
+				'|',
+				'videoInsert',
+				'audio',
+				'audioInsert'
 			]
 		},
 		image: {
@@ -219,6 +231,11 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 					value: '62',
 					label: '62%'
 				},
+				{
+					name: 'resizeImage:100',
+					value: '100',
+					label: '100%'
+				}
 			],
 			toolbar: [
 				'imageStyle:inline',
