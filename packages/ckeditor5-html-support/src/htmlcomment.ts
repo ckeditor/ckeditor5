@@ -229,10 +229,11 @@ export default class HtmlComment extends Plugin {
 		}
 
 		let content = '';
-		for ( const rootName of this.editor.model.document.getRootNames() ) {
-			const root = editor.model.document.getRoot( rootName )!;
+
+		for ( const root of this.editor.model.document.getRoots() ) {
 			if ( root.hasAttribute( commentID ) ) {
 				content = root.getAttribute( commentID ) as string;
+
 				break;
 			}
 		}

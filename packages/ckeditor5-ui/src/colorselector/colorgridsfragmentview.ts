@@ -215,8 +215,7 @@ export default class ColorGridsFragmentView extends View {
 
 		this.documentColors.clear();
 
-		for ( const rootName of document.getRootNames() ) {
-			const root = document.getRoot( rootName )!;
+		for ( const root of document.getRoots() ) {
 			const range = model.createRangeIn( root );
 
 			for ( const node of range.getItems() ) {
