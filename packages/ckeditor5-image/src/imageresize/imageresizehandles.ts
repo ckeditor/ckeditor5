@@ -64,7 +64,7 @@ export default class ImageResizeHandles extends Plugin {
 	private _setupResizerCreator(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		editingView.addObserver( ImageLoadObserver );
 
