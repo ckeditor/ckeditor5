@@ -162,6 +162,9 @@ export default class ImageResizeEditing extends Plugin {
 						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
 						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
 
+						// If both image styles: width & height are set, they will override the image width & height attributes in the
+						// browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
+						// That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
 						if ( widthStyle && heightStyle ) {
 							return null;
 						}
@@ -185,6 +188,9 @@ export default class ImageResizeEditing extends Plugin {
 						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
 						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
 
+						// If both image styles: width & height are set, they will override the image width & height attributes in the
+						// browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
+						// That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
 						if ( widthStyle && heightStyle ) {
 							return null;
 						}
