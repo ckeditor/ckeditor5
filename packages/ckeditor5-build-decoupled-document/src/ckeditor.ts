@@ -187,7 +187,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'indent',
 				'|',
 				'link',
-				'uploadImage',
 				'insertImage',
 				'insertTable',
 				'mediaEmbed',
