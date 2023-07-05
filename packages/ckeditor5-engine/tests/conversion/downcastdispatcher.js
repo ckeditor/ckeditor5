@@ -1145,16 +1145,8 @@ describe( 'DowncastDispatcher', () => {
 			viewFigure._setCustomProperty( 'addHighlight', () => {} );
 			viewFigure._setCustomProperty( 'removeHighlight', () => {} );
 
-			// Create mapper mock.
-			dispatcher._conversionApi.mapper = {
-				toViewElement( modelElement ) {
-					if ( modelElement == image ) {
-						return viewFigure;
-					} else if ( modelElement == caption ) {
-						return viewCaption;
-					}
-				}
-			};
+			mapper.bindElements( image, viewFigure );
+			mapper.bindElements( caption, viewCaption );
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 1 ) );

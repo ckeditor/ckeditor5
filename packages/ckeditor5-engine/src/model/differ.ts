@@ -19,6 +19,7 @@ import type Item from './item';
 import type MergeOperation from './operation/mergeoperation';
 import type MoveOperation from './operation/moveoperation';
 import type Node from './node';
+import type RootElement from './rootelement';
 import type Operation from './operation/operation';
 import type RenameOperation from './operation/renameoperation';
 import type SplitOperation from './operation/splitoperation';
@@ -138,6 +139,9 @@ export default class Differ {
 			RootAttributeOperation
 		);
 
+		// Note: an operation that happens inside a non-loaded root will be ignored. If the operation happens partially inside
+		// a non-loaded root, that part will be ignored (this may happen for move or marker operations).
+		//
 		switch ( operation.type ) {
 			case 'insert': {
 				if ( this._isInInsertedElement( operation.position.parent ) ) {
@@ -248,6 +252,12 @@ export default class Differ {
 			}
 			case 'detachRoot':
 			case 'addRoot': {
+				const root = operation.affectedSelectable as RootElement;
+
+				if ( !root._isLoaded ) {
+					return;
+				}
+
 				this._bufferRootStateChange( operation.rootName, operation.isAdd );
 
 				break;
@@ -255,6 +265,10 @@ export default class Differ {
 			case 'addRootAttribute':
 			case 'removeRootAttribute':
 			case 'changeRootAttribute': {
+				if ( !operation.root._isLoaded ) {
+					return;
+				}
+
 				const rootName = operation.root.rootName;
 
 				this._bufferRootAttributeChange( rootName, operation.key, operation.oldValue, operation.newValue );
@@ -275,21 +289,28 @@ export default class Differ {
 	 * @param newMarkerData Marker data after the change.
 	 */
 	public bufferMarkerChange( markerName: string, oldMarkerData: MarkerData, newMarkerData: MarkerData ): void {
-		const buffered = this._changedMarkers.get( markerName );
+		if ( oldMarkerData.range && oldMarkerData.range.root.is( 'rootElement' ) && !oldMarkerData.range.root._isLoaded ) {
+			oldMarkerData.range = null;
+		}
+
+		if ( newMarkerData.range && newMarkerData.range.root.is( 'rootElement' ) && !newMarkerData.range.root._isLoaded ) {
+			newMarkerData.range = null;
+		}
+
+		let buffered = this._changedMarkers.get( markerName );
 
 		if ( !buffered ) {
-			this._changedMarkers.set( markerName, {
-				newMarkerData,
-				oldMarkerData
-			} );
+			buffered = { newMarkerData, oldMarkerData };
+
+			this._changedMarkers.set( markerName, buffered );
 		} else {
 			buffered.newMarkerData = newMarkerData;
+		}
 
-			if ( buffered.oldMarkerData.range == null && newMarkerData.range == null ) {
-				// The marker is going to be removed (`newMarkerData.range == null`) but it did not exist before the first buffered change
-				// (`buffered.oldMarkerData.range == null`). In this case, do not keep the marker in buffer at all.
-				this._changedMarkers.delete( markerName );
-			}
+		if ( buffered.oldMarkerData.range == null && newMarkerData.range == null ) {
+			// The marker is going to be removed (`newMarkerData.range == null`) but it did not exist before the first buffered change
+			// (`buffered.oldMarkerData.range == null`). In this case, do not keep the marker in buffer at all.
+			this._changedMarkers.delete( markerName );
 		}
 	}
 
@@ -710,9 +731,50 @@ export default class Differ {
 	}
 
 	/**
+	 * Buffers all the data related to given root like it was all just added to the editor.
+	 *
+	 * Following changes are buffered:
+	 *
+	 * * root is attached,
+	 * * all root content is inserted,
+	 * * all root attributes are added,
+	 * * all markers inside the root are added.
+	 *
+	 * @internal
+	 */
+	public _loadRoot( root: RootElement ) {
+		if ( !root.isAttached() ) {
+			return;
+		}
+
+		this._bufferRootStateChange( root.rootName, true );
+		this._markInsert( root, 0, root.maxOffset );
+
+		// Buffering root attribute changes makes sense and is actually needed, even though we buffer root state change above.
+		// Because the root state change is buffered, the root attributes changes are not returned by the differ.
+		// But, if the root attribute is removed in the same change block, or the root is detached, then the differ results would be wrong.
+		//
+		for ( const key of root.getAttributeKeys() ) {
+			this._bufferRootAttributeChange( root.rootName, key, null, root.getAttribute( key ) );
+		}
+
+		for ( const marker of this._markerCollection ) {
+			if ( marker.getRange().root == root ) {
+				const markerData = marker.getData();
+
+				this.bufferMarkerChange( marker.name, { ...markerData, range: null }, markerData );
+			}
+		}
+	}
+
+	/**
 	 * Saves and handles an insert change.
 	 */
 	private _markInsert( parent: Element | DocumentFragment, offset: number, howMany: number ) {
+		if ( parent.root.is( 'rootElement' ) && !parent.root._isLoaded ) {
+			return;
+		}
+
 		const changeItem = { type: 'insert', offset, howMany, count: this._changeCount++ } as const;
 
 		this._markChange( parent, changeItem );
@@ -722,6 +784,10 @@ export default class Differ {
 	 * Saves and handles a remove change.
 	 */
 	private _markRemove( parent: Element | DocumentFragment, offset: number, howMany: number ) {
+		if ( parent.root.is( 'rootElement' ) && !parent.root._isLoaded ) {
+			return;
+		}
+
 		const changeItem = { type: 'remove', offset, howMany, count: this._changeCount++ } as const;
 
 		this._markChange( parent, changeItem );
@@ -733,6 +799,10 @@ export default class Differ {
 	 * Saves and handles an attribute change.
 	 */
 	private _markAttribute( item: Item ): void {
+		if ( item.root.is( 'rootElement' ) && !item.root._isLoaded ) {
+			return;
+		}
+
 		const changeItem = { type: 'attribute', offset: item.startOffset!, howMany: item.offsetSize, count: this._changeCount++ } as const;
 
 		this._markChange( item.parent as Element, changeItem );
