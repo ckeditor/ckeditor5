@@ -730,7 +730,6 @@ export default class DomConverter {
 			}
 		} else {
 			let viewElement = this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) );
-			let nestInlineScope = false;
 
 			if ( viewElement ) {
 				if ( this._isInlineObjectElement( viewElement ) ) {
@@ -764,16 +763,11 @@ export default class DomConverter {
 					}
 				}
 
-				if ( this._isInlineObjectElement( viewElement ) ) {
-					inlineNodes.push( viewElement );
-					nestInlineScope = true;
-				}
-
 				// Treat this element's content as a raw data if it was registered as such.
 				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
 					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
 
-					if ( !nestInlineScope && !this.blockElements.includes( viewElement.name ) ) {
+					if ( !this.blockElements.includes( viewElement.name ) ) {
 						inlineNodes.push( viewElement );
 					}
 
@@ -791,8 +785,18 @@ export default class DomConverter {
 			yield viewElement;
 
 			if ( options.withChildren !== false ) {
-				for ( const child of this.domChildrenToView( domNode as DomElement, options, nestInlineScope ? [] : inlineNodes ) ) {
+				const nestedInlineNodes: Array<ViewNode> = [];
+
+				for ( const child of this.domChildrenToView( domNode as DomElement, options, nestedInlineNodes ) ) {
 					viewElement._appendChild( child );
+				}
+
+				// Check if this is an inline object after processing child nodes so matcher
+				// for inline objects can verify if the element is empty.
+				if ( this._isInlineObjectElement( viewElement ) ) {
+					inlineNodes.push( viewElement );
+				} else {
+					inlineNodes.push( ...nestedInlineNodes );
 				}
 			}
 		}
@@ -1620,8 +1624,8 @@ export default class DomConverter {
 	 * @param viewElement View element to check.
 	 * @param options Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
 	 */
-	private _isViewElementWithRawContent( viewElement: ViewElement, options: { withChildren?: boolean } ): boolean {
-		return options.withChildren !== false && !!this._rawContentElementMatcher.match( viewElement );
+	private _isViewElementWithRawContent( viewElement: ViewElement | ViewDocumentFragment, options: { withChildren?: boolean } ): boolean {
+		return options.withChildren !== false && viewElement.is( 'element' ) && !!this._rawContentElementMatcher.match( viewElement );
 	}
 
 	/**

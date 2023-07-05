@@ -67,6 +67,8 @@ export default class GeneralHtmlSupport extends Plugin {
 		const editor = this.editor;
 		const dataFilter = editor.plugins.get( DataFilter );
 
+		dataFilter.loadAllowedEmptyElementsConfig( editor.config.get( 'htmlSupport.allowEmpty' ) || [] );
+
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
 		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );

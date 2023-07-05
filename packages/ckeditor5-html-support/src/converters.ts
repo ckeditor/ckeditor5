@@ -101,7 +101,7 @@ export function createObjectView( viewName: string, modelElement: Element, write
  * @returns Returns a conversion callback.
 */
 export function viewToAttributeInlineConverter(
-	{ view: viewName, model: attributeKey }: DataSchemaInlineElementDefinition,
+	{ view: viewName, model: attributeKey, allowEmpty }: DataSchemaInlineElementDefinition,
 	dataFilter: DataFilter
 ): ( dispatcher: UpcastDispatcher ) => void {
 	return ( dispatcher: UpcastDispatcher ): void => {
@@ -126,8 +126,8 @@ export function viewToAttributeInlineConverter(
 				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 			}
 
-			// Convert empty inline element if it has any attributes.
-			if ( data.modelRange!.isCollapsed && Object.keys( viewAttributes ).length ) {
+			// Convert empty inline element if allowed.
+			if ( allowEmpty && data.modelRange!.isCollapsed ) {
 				const modelElement = conversionApi.writer.createElement( 'htmlEmptyElement' );
 
 				if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
@@ -164,6 +164,30 @@ export function viewToAttributeInlineConverter(
 			conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 		}
 	}
+}
+
+/**
+ * TODO
+ */
+export function emptyInlineModelElementToViewConverter(
+	{ model: attributeKey, view: viewName }: DataSchemaInlineElementDefinition,
+	asWidget?: boolean
+): ElementCreatorFunction {
+	return ( item: Element, { writer, consumable }: DowncastConversionApi ): ViewElement | null => {
+		if ( !item.hasAttribute( attributeKey ) ) {
+			return null;
+		}
+
+		const viewElement = writer.createContainerElement( viewName! );
+		const attributeValue = item.getAttribute( attributeKey ) as GHSViewAttributes;
+
+		consumable.consume( item, `attribute:${ attributeKey }` );
+		setViewAttributes( writer, attributeValue, viewElement );
+
+		viewElement.getFillerOffset = () => null;
+
+		return asWidget ? toWidget( viewElement, writer ) : viewElement;
+	};
 }
 
 /**

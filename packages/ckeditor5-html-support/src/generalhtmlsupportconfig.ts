@@ -7,7 +7,7 @@
  * @module html-support/generalhtmlsupportconfig
  */
 
-import type { MatcherPattern } from 'ckeditor5/src/engine';
+import type { MatcherObjectPattern } from 'ckeditor5/src/engine';
 
 /**
  * The configuration of the General HTML Support feature.
@@ -50,7 +50,7 @@ export interface GeneralHtmlSupportConfig {
 	 * ];
 	 * ```
 	 */
-	allow?: Array<MatcherPattern>;
+	allow?: Array<MatcherObjectPattern>;
 
 	/**
 	 * The configuration of disallowed content rules used by General HTML Support.
@@ -68,6 +68,10 @@ export interface GeneralHtmlSupportConfig {
 	 * ];
 	 * ```
 	 */
-	disallow?: Array<MatcherPattern>;
+	disallow?: Array<MatcherObjectPattern>;
 
+	/**
+	 * TODO
+	 */
+	allowEmpty?: Array<string>;
 }
