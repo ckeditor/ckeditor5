@@ -17,17 +17,14 @@ const { glob } = require( 'glob' );
  * @returns {Promise.<Function>}
  */
 module.exports = async function isCKEditor5PackageFactory() {
-	const allCKEditor5NamePatterns = [
-		/^@ckeditor\/ckeditor5-(.*)/,
-		/^ckeditor5(-collaboration)?$/
-	];
-
 	const pathToCKEditor5 = upath.resolve( __dirname, '../../..' );
 
-	const globPattern = require( `${ pathToCKEditor5 }/package.json` ).workspaces.packages
-		.map( pattern => `${ pattern }/package.json` );
-
-	const allPathsToPackageJson = await glob( globPattern, {
+	const allPathsToPackageJson = await glob( [
+		'package.json',
+		'packages/*/package.json',
+		'external/ckeditor5-internal/packages/*/package.json',
+		'external/collaboration-features/packages/*/package.json'
+	], {
 		cwd: pathToCKEditor5,
 		nodir: true,
 		absolute: true
@@ -39,10 +36,5 @@ module.exports = async function isCKEditor5PackageFactory() {
 
 	const allPackageNames = allPackageJson.map( packageJson => packageJson.name );
 
-	return packageName => {
-		const doesPackageMatchNaming = allCKEditor5NamePatterns.some( pattern => pattern.test( packageName ) );
-		const doesPackageExist = allPackageNames.includes( packageName );
-
-		return ( doesPackageMatchNaming && doesPackageExist );
-	};
+	return packageName => allPackageNames.includes( packageName );
 };
