@@ -13,7 +13,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-insert-via-url' ), {
-		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage', 'AutoImage' ],
+		removePlugins: [ 'ArticlePluginSet', 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage', 'AutoImage' ],
 		toolbar: {
 			items: [
 				'undo', 'redo',
