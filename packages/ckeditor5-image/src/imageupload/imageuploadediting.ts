@@ -9,7 +9,15 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 
-import { UpcastWriter, type Element, type Item, type Writer, type DataTransfer, type ViewElement } from 'ckeditor5/src/engine';
+import {
+	UpcastWriter,
+	type Element,
+	type Item,
+	type Writer,
+	type DataTransfer,
+	type ViewElement,
+	type NodeAttributes
+} from 'ckeditor5/src/engine';
 
 import { Notification } from 'ckeditor5/src/ui';
 import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard';
@@ -398,10 +406,15 @@ export default class ImageUploadEditing extends Plugin {
 			.join( ', ' );
 
 		if ( srcsetAttribute != '' ) {
-			writer.setAttributes( {
-				srcset: srcsetAttribute,
-				width: maxWidth
-			}, image );
+			const attributes: NodeAttributes = {
+				srcset: srcsetAttribute
+			};
+
+			if ( !image.hasAttribute( 'width' ) && !image.hasAttribute( 'height' ) ) {
+				attributes.width = maxWidth;
+			}
+
+			writer.setAttributes( attributes, image );
 		}
 	}
 }
