@@ -48,10 +48,9 @@ import { debounce, type DebouncedFunc } from 'lodash-es';
  * 			}
  * 		}
  * 	} );
- *	```
+ * ```
  *
- * Read more about this feature in the {@glink installation/getting-started/getting-and-setting-data#autosave-feature Autosave feature}
- * section of the {@glink installation/getting-started/getting-and-setting-data Saving and getting data}.
+ * Read more about this feature in the {@glink features/autosave Autosave} feature guide.
  */
 export default class Autosave extends Plugin {
 	/**
@@ -128,8 +127,8 @@ export default class Autosave extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Autosave' {
-		return 'Autosave';
+	public static get pluginName() {
+		return 'Autosave' as const;
 	}
 
 	/**
@@ -378,7 +377,7 @@ export interface AutosaveAdapter {
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  *
- * See also the demo of the {@glink installation/getting-started/getting-and-setting-data#autosave-feature autosave feature}.
+ * See also the demo of the {@glink features/autosave autosave feature}.
  */
 export interface AutosaveConfig {
 

@@ -31,8 +31,8 @@ export default class MediaEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MediaEmbedUI' {
-		return 'MediaEmbedUI';
+	public static get pluginName() {
+		return 'MediaEmbedUI' as const;
 	}
 
 	/**

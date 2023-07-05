@@ -16,7 +16,7 @@ Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the editor below a
 {@snippet features/text-transformation}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -164,7 +164,7 @@ npm install --save @ckeditor/ckeditor5-typing
 And add it to your plugin list configuration:
 
 ```js
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

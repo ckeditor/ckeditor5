@@ -16,7 +16,7 @@ The editor below is configured to output GitHub Flavored Markdown. Edit the cont
 {@snippet features/markdown}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -63,15 +63,14 @@ npm install --save @ckeditor/ckeditor5-markdown-gfm
 Then add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration, which will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
 // More imports.
 // ...
 
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {

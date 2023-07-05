@@ -23,7 +23,7 @@ Use the editor below to see the adapter in action. Open the web browser console 
 {@snippet features/base64-upload}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -41,7 +41,7 @@ npm install --save @ckeditor/ckeditor5-upload
 Add the {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter `Base64UploadAdapter`} to your plugin list:
 
 ```js
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
+import { Base64UploadAdapter } from '@ckeditor/ckeditor5-upload';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

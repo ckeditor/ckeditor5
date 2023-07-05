@@ -96,8 +96,8 @@ export default class MentionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'MentionUI' {
-		return 'MentionUI';
+	public static get pluginName() {
+		return 'MentionUI' as const;
 	}
 
 	/**

@@ -15,7 +15,7 @@ Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/ic
 {@snippet features/code-block}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
@@ -134,7 +134,7 @@ npm install --save @ckeditor/ckeditor5-code-block
 Then add it to your plugin list and the toolbar configuration:
 
 ```js
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

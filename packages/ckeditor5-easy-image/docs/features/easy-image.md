@@ -26,7 +26,7 @@ The demo below uses the {@link installation/getting-started/predefined-builds#cl
 {@snippet features/easy-image}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -134,8 +134,8 @@ npm install --save @ckeditor/ckeditor5-easy-image
 Then add {@link module:easy-image/easyimage~EasyImage} to your plugin list and [configure](#configuration) the feature. For instance:
 
 ```js
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Image } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

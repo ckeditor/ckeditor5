@@ -21,7 +21,7 @@ You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-me
 {@snippet features/media-embed}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -39,7 +39,7 @@ npm install --save @ckeditor/ckeditor5-media-embed
 Then add `MediaEmbed` to your plugin list and {@link module:media-embed/mediaembedconfig~MediaEmbedConfig configure} the feature (if needed):
 
 ```js
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

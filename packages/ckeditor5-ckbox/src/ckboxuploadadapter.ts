@@ -44,8 +44,8 @@ export default class CKBoxUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKBoxUploadAdapter' {
-		return 'CKBoxUploadAdapter';
+	public static get pluginName() {
+		return 'CKBoxUploadAdapter' as const;
 	}
 
 	/**
@@ -189,7 +189,7 @@ class Adapter implements UploadAdapter {
 		// If a user specifies the plugin configuration, find the first category that accepts the uploaded file.
 		if ( defaultCategories ) {
 			const userCategory = Object.keys( defaultCategories ).find( category => {
-				return defaultCategories[ category ].includes( extension );
+				return defaultCategories[ category ].find( e => e.toLowerCase() == extension );
 			} );
 
 			// If found, return its ID if the category exists on the server side.
@@ -205,7 +205,7 @@ class Adapter implements UploadAdapter {
 		}
 
 		// Otherwise, find the first category that accepts the uploaded file and returns its ID.
-		const category = allCategories.find( category => category.extensions.includes( extension ) );
+		const category = allCategories.find( category => category.extensions.find( e => e.toLowerCase() == extension ) );
 
 		if ( !category ) {
 			return null;
@@ -382,5 +382,5 @@ function getFileExtension( value: string ) {
 	const extensionRegExp = /\.(?<ext>[^.]+)$/;
 	const match = value.match( extensionRegExp );
 
-	return match!.groups!.ext;
+	return match!.groups!.ext.toLowerCase();
 }

@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Image captions
+meta-title: Image captions in CKEditor 5
+meta-description: Utilizing image captions to enhance your rich content.
 order: 30
 ---
 {@snippet features/build-image-source}
@@ -16,7 +18,7 @@ Click one of the images below and use the contextual image toolbar {@icon @ckedi
 {@snippet features/image-caption}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 <info-box hint>

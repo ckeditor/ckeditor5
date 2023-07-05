@@ -96,8 +96,8 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCellPropertiesUI' {
-		return 'TableCellPropertiesUI';
+	public static get pluginName() {
+		return 'TableCellPropertiesUI' as const;
 	}
 
 	/**
@@ -180,11 +180,13 @@ export default class TableCellPropertiesUI extends Plugin {
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+		const hasColorPicker = config.colorPicker !== false;
 
 		const view = new TableCellPropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
-			defaultTableCellProperties: this._defaultTableCellProperties
+			defaultTableCellProperties: this._defaultTableCellProperties,
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
 		} );
 		const t = editor.t;
 

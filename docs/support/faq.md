@@ -21,19 +21,15 @@ The height of the editing area can be easily controlled with CSS.
 
 CKEditor 5 implements a custom {@link framework/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
 
-Each kind of content must be handled by some feature. For instance the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
+Each kind of content must be handled by some feature. For example, the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
 
 If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them. Once you do that, CKEditor 5 will not filter anything out.
-
-## How to turn the source mode on?
-
-The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.
 
 ## The build I downloaded is missing some features. How do I add them?
 
 See the {@link installation/plugins/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
 
-You can learn which editor features are available in the {@link features/index feature index}.
+You can learn which editor features are available in which build in the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds Predefined builds} guide.
 
 ## How to insert some content into the editor?
 
@@ -71,29 +67,29 @@ editor.model.insertContent( modelFragment );
 
 ## How to list all instances of the editor?
 
-By default, CKEditor 5 has no global registry of editor instances. But if necessary, such feature can be easily implemented as explained in this [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
+By default, CKEditor 5 has no global registry of editor instances. But if necessary, such a feature can be easily implemented, as explained in this [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
 
 ## How to enable image drag&drop and upload? Where should I start?
 
-The {@link features/images-overview Image} and {@link features/image-upload Image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5 you need to configure one of the available upload adapters. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best image upload strategy for your project.
+The {@link features/images-overview image} and {@link features/image-upload image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5, you need to configure one of the available upload adapters. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best image upload strategy for your project.
 
 ## How to use CKEditor 5 with frameworks (Angular, React, Vue, etc.)?
 
-For the full list of official integrations see the {@link installation/frameworks/overview#official-wysiwyg-editor-integrations "Official integrations"} section.
+For the list of official integrations, see the {@link installation/integrations/overview#official-wysiwyg-editor-integrations "Official integrations"} section.
 
-If an official integration for the framework of your choice does not exist yet, make sure to read the {@link installation/frameworks/overview "Integrating CKEditor 5 with JavaScript frameworks"} guide. CKEditor 5 offers a rich JavaScript API and predefined builds that make it possible to use CKEditor 5 with whichever framework you need.
+If an official integration for the framework of your choice does not exist yet, read the {@link installation/integrations/overview "Integrating CKEditor 5 with JavaScript frameworks"} guide. CKEditor 5 offers a rich JavaScript API and predefined builds that make it possible to use CKEditor 5 with whichever framework you need.
 
-We plan to provide more official integrations with time. [Your feedback on what should we work on next](https://github.com/ckeditor/ckeditor5/issues/1002) will be most welcome!
+We plan to provide more official integrations with time. [Your feedback on what we should work on next](https://github.com/ckeditor/ckeditor5/issues/1002) will be most welcome!
 
-## How to get a full–featured editor build?
+## How to get a full-featured editor build?
 
-We have prepared a build containing almost all available plugins, and it is called the superbuild. Instructions on how to integrate it quickly can be found in the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn quick start guide}.
+We have prepared a build containing almost all available plugins, and it is called the superbuild. Read how to integrate it in the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn quick start guide}.
 
 In the {@link installation/getting-started/predefined-builds predefined builds} guide, there are details available about the {@link installation/getting-started/predefined-builds#superbuild superbuild}, together with the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds list of features included in the superbuild}, compared to other types of builds.
 
 ## How to customize the CKEditor 5 icons?
 
-The easiest way is to use webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. For example, to replace the bold icon use the following code in your `webpack.config.js`:
+The easiest way is to use webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. For example, to replace the bold icon, use the following code in your `webpack.config.js`:
 
 ```js
 ...
@@ -133,7 +129,7 @@ editorInstance.setData( '<p>Hello world!<p>' );
 
 ## How to add an attribute to the editor editable in DOM?
 
-If you have a reference to the editor instance, simply use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}:
+If you have a reference to the editor instance, use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}:
 
 ```js
 editor.editing.view.change( writer => {
@@ -156,3 +152,15 @@ editorInstance.editing.view.change( writer => {
 	writer.setAttribute( 'myAttribute', 'value', viewEditableRoot );
 } );
 ```
+
+## How to check the CKEditor version?
+
+To check your editor version, open the JavaScript console available in the browser's developer tools. This is usually done through the browser's menu or by right-clicking anywhere on the page and choosing the `Inpect` option from the dropdown.
+
+Enter the `CKEDITOR_VERSION` command to check the currently used CKEditor 5 version.
+
+{@img assets/img/version.png 468 CKEditor 5 version displayed in the developer console.}
+
+## How to turn the source mode on?
+
+The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.

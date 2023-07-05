@@ -29,7 +29,7 @@ export default class List extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'List' {
-		return 'List';
+	public static get pluginName() {
+		return 'List' as const;
 	}
 }

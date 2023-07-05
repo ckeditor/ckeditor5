@@ -21,7 +21,7 @@ To test pasting from Google Docs, open the [sample Google Docs document](https:/
 {@snippet features/paste-from-office}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -53,7 +53,7 @@ npm install --save @ckeditor/ckeditor5-paste-from-office
 Then add the {@link module:paste-from-office/pastefromoffice~PasteFromOffice `PasteFromOffice`} plugin to your plugin list:
 
 ```js
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

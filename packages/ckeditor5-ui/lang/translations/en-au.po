@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: English (Australia) (https://www.transifex.com/ckeditor/teams/11143/en_AU/)\n"
+"Language-Team: English (Australia) (https://app.transifex.com/ckeditor/teams/11143/en_AU/)\n"
 "Language: en_AU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -106,8 +106,12 @@ msgstr "Purple"
 
 msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
 msgid "Editor block content toolbar"
-msgstr ""
+msgstr "Editor block content toolbar"
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
+msgstr "Editor contextual toolbar"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
 msgstr ""

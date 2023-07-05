@@ -30,7 +30,7 @@ export default class SelectAll extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SelectAll' {
-		return 'SelectAll';
+	public static get pluginName() {
+		return 'SelectAll' as const;
 	}
 }

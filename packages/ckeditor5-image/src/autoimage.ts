@@ -37,8 +37,8 @@ export default class AutoImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'AutoImage' {
-		return 'AutoImage';
+	public static get pluginName() {
+		return 'AutoImage' as const;
 	}
 
 	/**

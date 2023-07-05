@@ -17,7 +17,7 @@ You can type the "@" character to invoke the mention autocomplete UI. The demo b
 {@snippet features/mention}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 
 	You can also check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
 </info-box>
@@ -482,7 +482,7 @@ npm install --save @ckeditor/ckeditor5-mention
 Then add `Mention` to your plugin list and {@link module:mention/mentionconfig~MentionConfig  configure} the feature:
 
 ```js
-import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+import { Mention } from '@ckeditor/ckeditor5-mention';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

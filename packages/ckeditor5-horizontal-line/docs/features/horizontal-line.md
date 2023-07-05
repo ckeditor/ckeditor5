@@ -14,7 +14,7 @@ To insert a horizontal line in the demo below, use the toolbar button {@icon @ck
 {@snippet features/horizontal-line}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -32,7 +32,7 @@ npm install --save @ckeditor/ckeditor5-horizontal-line
 And add it to your plugin list configuration:
 
 ```js
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

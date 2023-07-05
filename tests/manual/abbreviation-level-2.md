@@ -32,7 +32,7 @@ We will also pass the editor's {@link module:utils/locale~Locale} instance to th
 ```js
 // abbreviation/abbreviationview.js
 
-import View from '@ckeditor/ckeditor5-ui';
+import { View } from '@ckeditor/ckeditor5-ui';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -186,8 +186,8 @@ Import it into `AbbreviationUI`:
 ```js
 // abbreviation/abbreviationui.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import './styles.css';													// ADDED
 
 class AbbreviationUI extends Plugin {
@@ -272,8 +272,8 @@ This is where we ended up with our UI in the first part of the tutorial.
 ```js
 // abbreviation/abbreviationui.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 class AbbreviationUI extends Plugin {
 	init() {
@@ -316,10 +316,9 @@ Finally, let's add our balloon and form view to the `init()` method.
 ```js
 // abbreviation/abbreviationui.js
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui';             // ADDED
-import FormView from './abbreviationview';                          // ADDED
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui'; // ADDED
+import FormView from './abbreviationview';                          	// ADDED
 
 class AbbreviationUI extends Plugin {
 	static get requires() {

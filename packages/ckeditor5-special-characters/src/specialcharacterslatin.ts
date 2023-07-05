@@ -26,8 +26,8 @@ export default class SpecialCharactersLatin extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersLatin' {
-		return 'SpecialCharactersLatin';
+	public static get pluginName() {
+		return 'SpecialCharactersLatin' as const;
 	}
 
 	/**

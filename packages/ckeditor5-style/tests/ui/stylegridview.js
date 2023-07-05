@@ -18,12 +18,30 @@ describe( 'StyleGridView', () => {
 			{
 				name: 'Red heading',
 				element: 'h2',
-				classes: [ 'red-heading' ]
+				classes: [ 'red-heading' ],
+				previewTemplate: {
+					tag: 'h2',
+					attributes: {
+						class: 'red-heading'
+					},
+					children: [
+						{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+					]
+				}
 			},
 			{
 				name: 'Large heading',
 				element: 'h2',
-				classes: [ 'large-heading' ]
+				classes: [ 'large-heading' ],
+				previewTemplate: {
+					tag: 'h2',
+					attributes: {
+						class: 'large-heading'
+					},
+					children: [
+						{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+					]
+				}
 			}
 		] );
 	} );
@@ -123,12 +141,30 @@ describe( 'StyleGridView', () => {
 				{
 					name: 'Red heading',
 					element: 'h2',
-					classes: [ 'red-heading' ]
+					classes: [ 'red-heading' ],
+					previewTemplate: {
+						tag: 'h2',
+						attributes: {
+							class: 'red-heading'
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				},
 				{
 					name: 'Large heading',
 					element: 'h2',
-					classes: [ 'large-heading' ]
+					classes: [ 'large-heading' ],
+					previewTemplate: {
+						tag: 'h2',
+						attributes: {
+							class: 'large-heading'
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				}
 			] );
 
@@ -150,22 +186,58 @@ describe( 'StyleGridView', () => {
 					{
 						name: 'Red heading',
 						element: 'h2',
-						classes: [ 'red-heading' ]
+						classes: [ 'red-heading' ],
+						previewTemplate: {
+							tag: 'h2',
+							attributes: {
+								class: 'red-heading'
+							},
+							children: [
+								{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+							]
+						}
 					},
 					{
 						name: 'Yellow heading',
 						element: 'h2',
-						classes: [ 'yellow-heading' ]
+						classes: [ 'yellow-heading' ],
+						previewTemplate: {
+							tag: 'h2',
+							attributes: {
+								class: 'yellow-heading'
+							},
+							children: [
+								{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+							]
+						}
 					},
 					{
 						name: 'Green heading',
 						element: 'h2',
-						classes: [ 'green-heading' ]
+						classes: [ 'green-heading' ],
+						previewTemplate: {
+							tag: 'h2',
+							attributes: {
+								class: 'green-heading'
+							},
+							children: [
+								{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+							]
+						}
 					},
 					{
 						name: 'Large heading',
 						element: 'h2',
-						classes: [ 'large-heading' ]
+						classes: [ 'large-heading' ],
+						previewTemplate: {
+							tag: 'h2',
+							attributes: {
+								class: 'large-heading'
+							},
+							children: [
+								{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+							]
+						}
 					}
 				] );
 
@@ -220,12 +292,30 @@ describe( 'StyleGridView', () => {
 				{
 					name: 'Red heading',
 					element: 'h2',
-					classes: [ 'red-heading' ]
+					classes: [ 'red-heading' ],
+					previewTemplate: {
+						tag: 'h2',
+						attributes: {
+							class: 'red-heading'
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				},
 				{
 					name: 'Large heading',
 					element: 'h2',
-					classes: [ 'large-heading' ]
+					classes: [ 'large-heading' ],
+					previewTemplate: {
+						tag: 'h2',
+						attributes: {
+							class: 'large-heading'
+						},
+						children: [
+							{ text: 'AaBbCcDdEeFfGgHhIiJj' }
+						]
+					}
 				}
 			] );
 

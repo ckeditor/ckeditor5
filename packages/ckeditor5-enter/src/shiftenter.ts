@@ -22,8 +22,8 @@ export default class ShiftEnter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ShiftEnter' {
-		return 'ShiftEnter';
+	public static get pluginName() {
+		return 'ShiftEnter' as const;
 	}
 
 	public init(): void {

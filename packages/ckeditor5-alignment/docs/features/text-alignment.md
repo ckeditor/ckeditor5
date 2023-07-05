@@ -14,7 +14,7 @@ Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckedit
 {@snippet features/text-alignment}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Configuring alignment options
@@ -104,7 +104,7 @@ npm install --save @ckeditor/ckeditor5-alignment
 And add it to your plugin list and toolbar configuration:
 
 ```js
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

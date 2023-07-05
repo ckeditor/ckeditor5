@@ -30,7 +30,7 @@ export default class LinkImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'LinkImage' {
-		return 'LinkImage';
+	public static get pluginName() {
+		return 'LinkImage' as const;
 	}
 }

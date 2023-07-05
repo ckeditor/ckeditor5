@@ -34,8 +34,8 @@ export default class ImageCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageCaptionEditing' {
-		return 'ImageCaptionEditing';
+	public static get pluginName() {
+		return 'ImageCaptionEditing' as const;
 	}
 
 	/**

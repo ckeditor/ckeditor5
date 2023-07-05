@@ -826,7 +826,7 @@ Even if the import statement works locally, it will throw an error when develope
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
@@ -885,11 +885,11 @@ When importing modules from the `ckeditor5` package, all imports must come from 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 // The import uses the `ckeditor5` package, but the specified path does not exist when installing the package from npm.
 
-import Plugin from 'ckeditor5/packages/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/packages/ckeditor5-core';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -907,7 +907,7 @@ Also, non-DLL packages should not import between non-DLL packages to avoid code 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-link/src/linkimage.js`
 
-import { createImageViewElement } from '@ckeditor/ckeditor5-image/src/image/utils.js'
+import { createImageViewElement } from '@ckeditor/ckeditor5-image'
 ```
 
 To use the `createImageViewElement()` function, consider implementing a utils plugin that will expose the required function in the `ckeditor5-image` package.
@@ -927,7 +927,7 @@ import { Plugin } from 'ckeditor5/src/core';
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 ```
 
 History of changes:
@@ -955,7 +955,6 @@ Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 
 import { toArray } from 'ckeditor5/src/utils';
 import { toArray } from '@ckeditor/ckeditor5-utils';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
@@ -1006,7 +1005,9 @@ To create a code executed only in the debug mode, follow the description of the 
 
 ### Non public members marked as @internal : `ckeditor5-rules/non-public-members-as-internal`
 
-**This rule should only be used on `.ts` files.**
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
 
 In order to remove non public members from typings, the `@internal` tag has to be used in member's JSDoc.
 
@@ -1062,3 +1063,99 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
+
+### Declaring module augmentation for the core package: `ckeditor5-rules/allow-declare-module-only-in-augmentation-file`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+The main entry points (`index.ts` files) in most modules have a side effect import `import './augmentation'` which uses module augmentation to populate the editor types with information about available plugins, configurations and commands.
+
+This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined in this `augmentation.ts` file.
+
+### Importing from modules: `ckeditor5-rules/allow-imports-only-from-main-package-entry-point`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+As explained in the description of the `allow-declare-module-only-in-augmentation-file` rule, information about available plugins, configuration and commands is only available in the editor types when data from modules is imported from the main entry point.
+
+This rule forces all imports from `@ckeditor/*` packages to be done through the main entry point.
+
+👎&nbsp; Example of an incorrect code for this rule:
+
+```ts
+// Importing from the `/src/` folder is not allowed.
+import Table from '@ckeditor/ckeditor5-table/src/table';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+// ✔️ Importing from the main entry point is allowed.
+import { Table } from '@ckeditor/ckeditor5-table';
+```
+
+### Require `as const`: `ckeditor5-rules/require-as-const-returns-in-methods`
+
+<info-box warning>
+  This rule should only be used on `.ts` files.
+</info-box>
+
+In TypeScript, the types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but in some cases a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
+
+The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (e.g. `delete'` literal string instead of generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
+
+👎&nbsp; Examples of an incorrect code for this rule:
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName(): string {
+		return 'Delete';
+	}
+}
+```
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName(): 'Delete' {
+		return 'Delete';
+	}
+}
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+export default class Delete extends Plugin {
+	public static get pluginName() {
+		return 'Delete' as const;
+	}
+}
+```
+
+### Imports within a package: `ckeditor5-rules/no-scoped-imports-within-package`
+
+All imports defined in every package, that point to a file from the same package, must be relative. You cannot use the scoped imports, if the target file is located in the same package as the import declaration. The resolved scoped import points to the package inside the `node_modules`, but not to the current working directory, and the source code in these two places may differ from each other.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+// Assume we edit a file located in the path: `packages/ckeditor5-alignment/src/alignment.ts`.
+
+// Both imports are incorrect.
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+// Assume we edit a file located in the path: `packages/ckeditor5-alignment/src/alignment.ts`.
+
+import AlignmentEditing from './alignmentediting';
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/14329)

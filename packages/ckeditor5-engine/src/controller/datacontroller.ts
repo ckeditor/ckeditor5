@@ -10,7 +10,8 @@
 import {
 	CKEditorError,
 	EmitterMixin,
-	ObservableMixin
+	ObservableMixin,
+	logWarning
 } from '@ckeditor/ckeditor5-utils';
 
 import Mapper from '../conversion/mapper';
@@ -44,8 +45,6 @@ import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing';
 
 import HtmlDataProcessor from '../dataprocessor/htmldataprocessor';
 import type DataProcessor from '../dataprocessor/dataprocessor';
-
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document

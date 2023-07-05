@@ -15,7 +15,7 @@ Use the demo below to test the styles feature. Select a passage or a header and 
 {@snippet features/styles}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 <details>
@@ -237,7 +237,7 @@ npm install --save @ckeditor/ckeditor5-style
 Then add it to the editor configuration:
 
 ```js
-import Style from '@ckeditor/ckeditor5-style/src/style';
+import { Style } from '@ckeditor/ckeditor5-style';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

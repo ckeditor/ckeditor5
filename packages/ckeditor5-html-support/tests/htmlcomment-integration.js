@@ -41,6 +41,7 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 
 import HtmlComment from '../src/htmlcomment';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 describe( 'HtmlComment integration', () => {
 	describe( 'integration with BlockQuote', () => {
@@ -1432,6 +1433,51 @@ describe( 'HtmlComment integration', () => {
 					'paragraph' +
 					'<!-- c2 -->' +
 				'</p>'
+			);
+		} );
+	} );
+
+	describe( 'integration with Multi-root editor', () => {
+		let editor;
+
+		beforeEach( () => {
+			return MultiRootEditor
+				.create( {
+					main: '<!-- c1 --><p><!-- c2 -->main<!-- c3 --></p><!-- c4 -->',
+					second: '<!-- c1 --><p><!-- c2 -->second<!-- c3 --></p><!-- c4 -->'
+				}, {
+					plugins: [
+						HtmlComment, Paragraph
+					]
+				} )
+				.then( _editor => {
+					editor = _editor;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should work for multiple roots', async () => {
+			expect( editor.getData( { rootName: 'main' } ) ).to.equal(
+				'<!-- c1 -->' +
+				'<p>' +
+				'<!-- c2 -->' +
+				'main' +
+				'<!-- c3 -->' +
+				'</p>' +
+				'<!-- c4 -->'
+			);
+
+			expect( editor.getData( { rootName: 'second' } ) ).to.equal(
+				'<!-- c1 -->' +
+				'<p>' +
+				'<!-- c2 -->' +
+				'second' +
+				'<!-- c3 -->' +
+				'</p>' +
+				'<!-- c4 -->'
 			);
 		} );
 	} );

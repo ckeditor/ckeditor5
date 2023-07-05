@@ -212,13 +212,6 @@ export default class ListPropertiesView extends View {
 			this.focusables.add( this.startIndexFieldView );
 			this.focusTracker.add( this.startIndexFieldView.element! );
 
-			// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-			// of the DropdownView#panelView.
-			// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
-			this.listenTo( this.startIndexFieldView.element!, 'selectstart', ( evt, domEvt ) => {
-				domEvt.stopPropagation();
-			}, { priority: 'high' } );
-
 			const stopPropagation = ( data: Event ) => data.stopPropagation();
 
 			// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's

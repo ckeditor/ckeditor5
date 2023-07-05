@@ -5,6 +5,7 @@
 
 /* eslint-env node */
 
+const fs = require( 'fs/promises' );
 const path = require( 'path' );
 const mkdirp = require( 'mkdirp' );
 const webpack = require( 'webpack' );
@@ -12,7 +13,7 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-const { writeFile, getCkeditor5Plugins, normalizePath, addTypeScriptLoader } = require( './utils' );
+const { getCkeditor5Plugins, normalizePath, addTypeScriptLoader } = require( './utils' );
 const postCssContentStylesPlugin = require( './list-content-styles-plugin' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
@@ -137,7 +138,7 @@ module.exports = () => {
 				data += '\n';
 				data += atRulesDefinitions.join( '\n' );
 
-				return writeFile( OUTPUT_FILE_PATH, data )
+				return fs.writeFile( OUTPUT_FILE_PATH, data )
 					.then( resolve );
 			} )
 			.then( () => {
@@ -330,7 +331,7 @@ function generateCKEditor5Source( ckeditor5Modules, cwd ) {
 
 	sourceFileContent.push( '];' );
 
-	return writeFile( path.join( DESTINATION_DIRECTORY, 'source.js' ), sourceFileContent.join( '\n' ) )
+	return fs.writeFile( path.join( DESTINATION_DIRECTORY, 'source.js' ), sourceFileContent.join( '\n' ) )
 		.then( () => ckeditor5Modules );
 
 	function capitalize( value ) {

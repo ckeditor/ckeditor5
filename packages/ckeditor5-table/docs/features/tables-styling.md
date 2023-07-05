@@ -20,7 +20,7 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 {@snippet features/table-styling}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -38,10 +38,7 @@ npm install --save @ckeditor/ckeditor5-table
 Then add the `Table`, `TableToolbar`, **`TableProperties`**, and **`TableCellProperties`** plugins to your plugin list and configure the table toolbar:
 
 ```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import { Table, TableCellProperties, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

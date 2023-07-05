@@ -14,6 +14,10 @@ The CKEditor 5 testing environment uses a popular setup with [Karma](https://kar
 
 Each CKEditor 5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)), however, the test runner is available in the root of the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be easily reused outside of `ckeditor5`.
 
+<info-box hint>
+	Both automated and manual tests support TypeScript. Simply use the `.ts` extension.
+</info-box>
+
 ## Running automated tests
 
 In order to run the automated tests, use the `yarn run test [<args>...]` command.
@@ -121,7 +125,7 @@ It starts the server available at [http://localhost:8125](http://localhost:8125)
 A manual test consists of 3 files:
 
 * A `<name>.md` file with the test description.
-* A `<name>.js` file with the JavaScript part of the test (e.g. the code initializing an editor).
+* A `<name>.js` or `<name>.ts` file with the JavaScript/TypeScript part of the test (e.g. the code initializing an editor).
 * A `<name>.html` file with the HTML part of the test. It does not need to be an entire HTML page (with the doctype, etc.). It can include just the HTML elements that you want to define.
 
 All 3 files are combined together and create a single manual test.
@@ -159,9 +163,9 @@ An example JavaScript file:
 ```js
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

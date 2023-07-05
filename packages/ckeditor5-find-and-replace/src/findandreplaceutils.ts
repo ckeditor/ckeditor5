@@ -20,8 +20,8 @@ export default class FindAndReplaceUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FindAndReplaceUtils' {
-		return 'FindAndReplaceUtils';
+	public static get pluginName() {
+		return 'FindAndReplaceUtils' as const;
 	}
 
 	/**

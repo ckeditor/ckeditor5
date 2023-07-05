@@ -21,7 +21,8 @@ import {
 	View,
 	ViewCollection,
 	type FocusableView,
-	type NormalizedColorOption
+	type NormalizedColorOption,
+	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
 import {
 	KeystrokeHandler,
@@ -59,6 +60,7 @@ export interface TableCellPropertiesViewOptions {
 	borderColors: Array<NormalizedColorOption>;
 	backgroundColors: Array<NormalizedColorOption>;
 	defaultTableCellProperties: TableCellPropertiesOptions;
+	colorPickerConfig: false | ColorPickerConfig;
 }
 
 /**
@@ -454,10 +456,12 @@ export default class TableCellPropertiesView extends View {
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.borderColors,
 			columns: 5,
-			defaultColorValue: defaultBorder.color
+			defaultColorValue: defaultBorder.color,
+			colorPickerConfig: this.options.colorPickerConfig
 		} );
 		const locale = this.locale;
 		const t = this.t!;
+		const accessibleLabel = t( 'Style' );
 
 		// -- Group label ---------------------------------------------
 
@@ -469,14 +473,16 @@ export default class TableCellPropertiesView extends View {
 		const styleLabels = getBorderStyleLabels( t );
 		const borderStyleDropdown = new LabeledFieldView( locale, createLabeledDropdown );
 		borderStyleDropdown.set( {
-			label: t( 'Style' ),
+			label: accessibleLabel,
 			class: 'ck-table-form__border-style'
 		} );
 
 		borderStyleDropdown.fieldView.buttonView.set( {
+			ariaLabel: accessibleLabel,
+			ariaLabelledBy: undefined,
 			isOn: false,
 			withText: true,
-			tooltip: t( 'Style' )
+			tooltip: accessibleLabel
 		} );
 
 		borderStyleDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'borderStyle', value => {
@@ -489,7 +495,10 @@ export default class TableCellPropertiesView extends View {
 
 		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
 
-		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ), {
+			role: 'menu',
+			ariaLabel: accessibleLabel
+		} );
 
 		// -- Width ---------------------------------------------------
 
@@ -565,7 +574,8 @@ export default class TableCellPropertiesView extends View {
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
 			columns: 5,
-			defaultColorValue: this.options.defaultTableCellProperties.backgroundColor
+			defaultColorValue: this.options.defaultTableCellProperties.backgroundColor,
+			colorPickerConfig: this.options.colorPickerConfig
 		} );
 
 		const backgroundInput = new LabeledFieldView( locale, colorInputCreator );

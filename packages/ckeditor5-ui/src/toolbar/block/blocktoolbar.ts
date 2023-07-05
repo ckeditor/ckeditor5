@@ -19,7 +19,6 @@ import {
 	Rect,
 	ResizeObserver,
 	getOptimalPosition,
-	env,
 	toUnit,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
@@ -120,8 +119,8 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'BlockToolbar' {
-		return 'BlockToolbar';
+	public static get pluginName() {
+		return 'BlockToolbar' as const;
 	}
 
 	/**
@@ -189,25 +188,11 @@ export default class BlockToolbar extends Plugin {
 	 * **Note:** This needs to be done after all plugins are ready.
 	 */
 	public afterInit(): void {
-		const factory = this.editor.ui.componentFactory;
-		const config = this._blockToolbarConfig;
-
-		this.toolbarView.fillFromConfig( config, factory );
+		this.toolbarView.fillFromConfig( this._blockToolbarConfig, this.editor.ui.componentFactory );
 
 		// Hide panel before executing each button in the panel.
 		for ( const item of this.toolbarView.items ) {
 			item.on<ButtonExecuteEvent>( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
-		}
-
-		if ( !config.shouldNotGroupWhenFull ) {
-			this.listenTo( this.editor, 'ready', () => {
-				const editableElement = this.editor.ui.view.editable.element!;
-
-				// Set #toolbarView's max-width just after the initialization and update it on the editable resize.
-				this._resizeObserver = new ResizeObserver( editableElement, () => {
-					this.toolbarView.maxWidth = this._getToolbarMaxWidth();
-				} );
-			} );
 		}
 	}
 
@@ -240,13 +225,6 @@ export default class BlockToolbar extends Plugin {
 
 		toolbarView.ariaLabel = t( 'Editor block content toolbar' );
 
-		// When toolbar lost focus then panel should hide.
-		toolbarView.focusTracker.on( 'change:isFocused', ( evt, name, is ) => {
-			if ( !is ) {
-				this._hidePanel();
-			}
-		} );
-
 		return toolbarView;
 	}
 
@@ -278,29 +256,11 @@ export default class BlockToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
-		const bind = buttonView.bindTemplate;
 
 		buttonView.set( {
 			label: t( 'Edit block' ),
 			icon: pilcrow,
 			withText: false
-		} );
-
-		// Note that this piece over here overrides the default mousedown logic in ButtonView
-		// to make it work with BlockToolbar. See the implementation of the ButtonView class to learn more.
-		buttonView.extendTemplate( {
-			on: {
-				mousedown: bind.to( evt => {
-					// On Safari we have to force the focus on a button on click as it's the only browser
-					// that doesn't do that automatically. See #12115.
-					if ( env.isSafari && this.panelView.isVisible ) {
-						this.toolbarView.focus();
-					}
-
-					// Workaround to #12184, see https://github.com/ckeditor/ckeditor5/issues/12184#issuecomment-1199147964.
-					evt.preventDefault();
-				} )
-			}
 		} );
 
 		// Bind the panelView observable properties to the buttonView.
@@ -338,8 +298,8 @@ export default class BlockToolbar extends Plugin {
 			return;
 		}
 
-		// Hides the button when the editor switches to the read-only mode.
-		if ( editor.isReadOnly ) {
+		// Hides the button when the selection is in non-editable place.
+		if ( !editor.model.canEditAt( editor.model.document.selection ) ) {
 			this._hideButton();
 
 			return;
@@ -360,6 +320,9 @@ export default class BlockToolbar extends Plugin {
 
 		// Show block button.
 		this.buttonView.isVisible = true;
+
+		// Make sure that the block toolbar panel is resized properly.
+		this._setupToolbarResize();
 
 		// Attach block button to target DOM element.
 		this._attachButtonToElement( domTarget as any );
@@ -416,16 +379,28 @@ export default class BlockToolbar extends Plugin {
 		//
 		// https://github.com/ckeditor/ckeditor5/issues/6449, https://github.com/ckeditor/ckeditor5/issues/6575
 		this.panelView.show();
-		this.toolbarView.maxWidth = this._getToolbarMaxWidth();
+
+		const editableElement = this._getSelectedEditableElement();
+
+		this.toolbarView.maxWidth = this._getToolbarMaxWidth( editableElement );
 
 		this.panelView.pin( {
 			target: this.buttonView.element!,
-			limiter: this.editor.ui.getEditableElement()
+			limiter: editableElement
 		} );
 
 		if ( !wasVisible ) {
 			( this.toolbarView.items.get( 0 ) as any ).focus();
 		}
+	}
+
+	/**
+	 * Returns currently selected editable, based on the model selection.
+	 */
+	private _getSelectedEditableElement(): HTMLElement {
+		const selectedModelRootName = this.editor.model.document.selection.getFirstRange()!.root.rootName!;
+
+		return this.editor.ui.getEditableElement( selectedModelRootName )!;
 	}
 
 	/**
@@ -449,9 +424,9 @@ export default class BlockToolbar extends Plugin {
 	private _attachButtonToElement( targetElement: HTMLElement ) {
 		const contentStyles = window.getComputedStyle( targetElement );
 
-		const editableRect = new Rect( this.editor.ui.getEditableElement()! );
+		const editableRect = new Rect( this._getSelectedEditableElement() );
 		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
-		// When line height is not an integer then thread it as "normal".
+		// When line height is not an integer then treat it as "normal".
 		// MDN says that 'normal' == ~1.2 on desktop browsers.
 		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
 
@@ -481,13 +456,34 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Gets the {@link #toolbarView} max-width, based on
-	 * editable width plus distance between farthest edge of the {@link #buttonView} and the editable.
+	 * Creates a resize observer that observes selected editable and resizes the toolbar panel accordingly.
+	 */
+	private _setupToolbarResize() {
+		const editableElement = this._getSelectedEditableElement();
+
+		// Do this only if the automatic grouping is turned on.
+		if ( !this._blockToolbarConfig.shouldNotGroupWhenFull ) {
+			// If resize observer is attached to a different editable than currently selected editable, re-attach it.
+			if ( this._resizeObserver && this._resizeObserver.element !== editableElement ) {
+				this._resizeObserver.destroy();
+				this._resizeObserver = null;
+			}
+
+			if ( !this._resizeObserver ) {
+				this._resizeObserver = new ResizeObserver( editableElement, () => {
+					this.toolbarView.maxWidth = this._getToolbarMaxWidth( editableElement );
+				} );
+			}
+		}
+	}
+
+	/**
+	 * Gets the {@link #toolbarView} max-width, based on given `editableElement` width plus the distance between the farthest
+	 * edge of the {@link #buttonView} and the editable.
 	 *
 	 * @returns A maximum width that toolbar can have, in pixels.
 	 */
-	private _getToolbarMaxWidth() {
-		const editableElement = this.editor.ui.view.editable.element!;
+	private _getToolbarMaxWidth( editableElement: HTMLElement ) {
 		const editableRect = new Rect( editableElement );
 		const buttonRect = new Rect( this.buttonView.element! );
 		const isRTL = this.editor.locale.uiLanguageDirection === 'rtl';

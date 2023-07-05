@@ -23,6 +23,16 @@ export * from './colorgrid/utils';
 export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
 
+export { default as ColorPickerView } from './colorpicker/colorpickerview';
+export type { ColorPickerConfig, ColorPickerViewConfig, ColorPickerOutputFormat } from './colorpicker/utils';
+
+export {
+	default as ColorSelectorView,
+	type ColorSelectorExecuteEvent,
+	type ColorSelectorColorPickerCancelEvent,
+	type ColorSelectorColorPickerShowEvent
+} from './colorselector/colorselectorview';
+
 export { default as ComponentFactory } from './componentfactory';
 
 export { default as DropdownView } from './dropdown/dropdownview';
@@ -64,6 +74,7 @@ export { default as TooltipManager } from './tooltipmanager';
 export { default as Template, type TemplateDefinition } from './template';
 
 export { default as ToolbarView } from './toolbar/toolbarview';
+export { default as ToolbarLineBreakView } from './toolbar/toolbarlinebreakview';
 export { default as ToolbarSeparatorView } from './toolbar/toolbarseparatorview';
 export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarconfig';
 export { default as BalloonToolbar, type BalloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar';
@@ -71,5 +82,11 @@ export { default as BlockToolbar } from './toolbar/block/blocktoolbar';
 
 export { default as View, type UIViewRenderEvent } from './view';
 export { default as ViewCollection } from './viewcollection';
+
+import { default as colorPaletteIcon } from '../theme/icons/color-palette.svg';
+
+export const icons = {
+	colorPaletteIcon
+};
 
 import './augmentation';

@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Uyghur (https://www.transifex.com/ckeditor/teams/11143/ug/)\n"
+"Language-Team: Uyghur (https://app.transifex.com/ckeditor/teams/11143/ug/)\n"
 "Language: ug\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

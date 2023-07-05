@@ -5,26 +5,25 @@
 
 /* globals console, window, document, setTimeout */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { TodoList } from '@ckeditor/ckeditor5-list';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
-			ArticlePluginSet, SourceEditing, EasyImage, ImageUpload, CloudServices, Markdown,
+			ArticlePluginSet, SourceEditing, CKBox, ImageUpload, PictureEditing, CloudServices, Markdown,
 			Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
 		],
 		toolbar: {

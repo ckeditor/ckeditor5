@@ -15,7 +15,7 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 {@snippet features/find-and-replace}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -33,7 +33,7 @@ npm install --save @ckeditor/ckeditor5-find-and-replace
 Then add the `FindAndReplace` plugin to your plugin list:
 
 ```js
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

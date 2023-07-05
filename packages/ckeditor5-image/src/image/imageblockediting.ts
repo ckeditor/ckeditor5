@@ -47,8 +47,8 @@ export default class ImageBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageBlockEditing' {
-		return 'ImageBlockEditing';
+	public static get pluginName() {
+		return 'ImageBlockEditing' as const;
 	}
 
 	/**

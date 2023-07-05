@@ -7,9 +7,10 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 ![Dependency Status](https://img.shields.io/librariesio/release/npm/ckeditor5)
+![TypeScript Support](https://badgen.net/badge/Built%20With/TypeScript/blue)
 
 [![Join newsletter](https://img.shields.io/badge/join-newsletter-00cc99.svg)](http://eepurl.com/c3zRPr)
-[![Follow twitter](https://img.shields.io/badge/follow-twitter-00cc99.svg)](https://twitter.com/ckeditor)
+[![Follow Twitter](https://img.shields.io/badge/follow-twitter-00cc99.svg)](https://twitter.com/ckeditor)
 
 CKEditor 5 is an ultra-modern JavaScript rich-text editor with MVC architecture, a custom data model, and virtual DOM. It is written from scratch in TypeScript and has excellent webpack and Vite support. It provides every type of WYSIWYG editing solution imaginable with extensive collaboration support. From editors similar to Google Docs and Medium to Slack or Twitter-like applications, all is possible within a single editing framework. As a market leader, it is constantly expanded and updated.
 
@@ -23,6 +24,7 @@ CKEditor 5 is an ultra-modern JavaScript rich-text editor with MVC architecture,
 		- [CKEditor 5 online builder](#ckeditor-5-online-builder)
 		- [CKEditor 5 predefined builds](#ckeditor-5-predefined-builds)
 			- [Example installation](#example-installation)
+		- [TypeScript support](#typescript-support)
 		- [CKEditor 5 advanced installation](#ckeditor-5-advanced-installation)
 			- [CKEditor 5 Framework](#ckeditor-5-framework)
 	- [Documentation and FAQ](#documentation-and-faq)
@@ -68,7 +70,7 @@ In your HTML page, add an element that CKEditor should replace:
 Load the classic editor build (you can choose between the [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#npm), and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#zip-download)):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/37.1.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 ```
 
 Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html#static-function-create) method:
@@ -86,6 +88,10 @@ Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/a
 You’re ready to go!
 
 To find out how to start with other builds, check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) guide in the CKEditor 5 documentation.
+
+### TypeScript support
+
+CKEditor 5 is a TypeScript project. Starting from v37.0.0, it offers native type definitions. Check out our dedicated guide to read more about [TypeScript support](https://ckeditor.com/docs/ckeditor5/latest/installation/working-with-typescript.html).
 
 ### CKEditor 5 advanced installation
 

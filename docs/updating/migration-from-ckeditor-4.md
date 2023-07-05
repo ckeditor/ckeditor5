@@ -5,9 +5,19 @@
 category: ckeditor4-migration
 order: 10
 modified_at: 2023-03-21
+meta-title: Migration from CKEditor 4
+meta-description: Learn how the migrate from CKEditor 4 to the latest CKEditor 5 version without problems.
 ---
 
 # Migration from CKEditor 4
+
+This section of the documentation explains how to migrate to CKEditor 5.
+
+<info-box hint>
+	<strong>CKEditor 4 reached its End of Life (EOL) in June 2023</strong>. From then on, it receives no more updates, new features, bug fixes, and most importantly, security patches.
+
+	If you have an active CKEditor 4 subscription and need help, you can contact [our support team](https://ckeditor.com/contact/). If you are not ready to migrate yet, for a limited time we are offering a paid <strong>Extended Support Model</strong> that will protect you against security vulnerabilities and/or breaking third-party API changes.
+</info-box>
 
 When compared to its predecessor, CKEditor 5 should be considered **a totally new editor**. Every single aspect of it was redesigned &mdash; from installation, to integration, to features, to its data model, and finally to its API.
 
@@ -212,3 +222,5 @@ CKEditor 5 is a great, modern editing framework so migrating is a fantastic oppo
 If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &mdash; you can support it by upvoting the issue with &nbsp;👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
 
 The {@link updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4} article answers some frequently asked questions about the migration.
+
+[Contact the support team](https://ckeditor.com/contact/) if you want to learn more about licensing or the [Extended Support Model](https://ckeditor.com/ckeditor-4-support/).

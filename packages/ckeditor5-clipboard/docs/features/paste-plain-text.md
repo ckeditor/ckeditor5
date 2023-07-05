@@ -17,7 +17,7 @@ Copy some text from one of the styled paragraphs below and press <kbd>Ctrl</kbd>
 {@snippet features/paste-plain-text}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -43,7 +43,7 @@ npm install --save @ckeditor/ckeditor5-clipboard
 Then add the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin to your plugin list:
 
 ```js
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

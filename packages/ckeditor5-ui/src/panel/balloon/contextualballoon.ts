@@ -135,8 +135,8 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ContextualBalloon' {
-		return 'ContextualBalloon';
+	public static get pluginName() {
+		return 'ContextualBalloon' as const;
 	}
 
 	/**

@@ -14,7 +14,7 @@ Use the link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg
 {@snippet features/link}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Typing around links
@@ -276,8 +276,7 @@ npm install --save @ckeditor/ckeditor5-link
 Then add the `Link` and `AutoLink` plugins to your plugin list:
 
 ```js
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
+import { AutoLink, Link } from '@ckeditor/ckeditor5-link';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

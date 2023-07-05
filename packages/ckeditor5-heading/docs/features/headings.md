@@ -15,7 +15,7 @@ Use the toolbar dropdown to style a heading. You can also type one or more `#` c
 {@snippet features/default-headings}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Heading levels
@@ -164,7 +164,7 @@ npm install --save @ckeditor/ckeditor5-heading
 And add it to your plugin list and toolbar configuration:
 
 ```js
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import { Heading } from '@ckeditor/ckeditor5-heading';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -180,8 +180,8 @@ ClassicEditor
 To configure the toolbar buttons for styling text as headings and paragraphs, you need to import the following into your plugin list and configuration:
 
 ```js
-import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
-import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
+import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
+import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 ```
 
 <info-box info>

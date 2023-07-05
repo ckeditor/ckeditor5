@@ -14,7 +14,7 @@ Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} 
 {@snippet features/indent}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Configuring the block indentation feature
@@ -30,7 +30,7 @@ The rich-text editor from the {@link features/indent#demo demo} section above us
 You can change that value to, for example, `1em`:
 
 ```js
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import { Indent } from '@ckeditor/ckeditor5-indent';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -54,8 +54,7 @@ If you want more semantics in your content, use CSS classes instead of fixed ind
 Here is how you can configure the block indentation feature to set indentation by applying one of the defined CSS classes:
 
 ```js
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -129,8 +128,7 @@ npm install --save @ckeditor/ckeditor5-indent
 Then add it to your plugin list and the toolbar configuration:
 
 ```js
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

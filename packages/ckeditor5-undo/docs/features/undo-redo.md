@@ -16,7 +16,7 @@ Alternatively, use the well-known keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Z</kb
 {@snippet features/undo-redo}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -46,7 +46,7 @@ npm install --save @ckeditor/ckeditor5-undo
 Then add the `Undo` plugin to your plugin list and to the toolbar:
 
 ```js
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import { Undo } from '@ckeditor/ckeditor5-undo';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

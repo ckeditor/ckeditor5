@@ -172,7 +172,7 @@ You can test this feature in the demo below by adding a new table in the blank "
 {@snippet features/table-nesting}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ### Known issues
@@ -309,8 +309,7 @@ npm install --save @ckeditor/ckeditor5-table
 Then add the `Table` and `TableToolbar` plugins to your plugin list and configure the table toolbar:
 
 ```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -329,8 +328,7 @@ ClassicEditor
 To make every inserted table have `n` number of rows and columns as table headers by default, set an optional table config property `defaultHeadings` as follows:
 
 ```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

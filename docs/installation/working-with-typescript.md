@@ -19,6 +19,8 @@ CKEditor 5 is built using TypeScript and has native type definitions. All the of
 
 <info-box warning>
 	Starting with the v37.0.0 release, CKEditor 5 has built-in type definitions. If you used type definitions created by the community, you will need to replace them with native types. Check the {@link updating/update-to-37 Update to v37.0.0} guide.
+
+	The minimal TypeScript version required to run CKEditor 5 is v4.8.4.
 </info-box>
 
 ## Why use CKEditor 5 with TypeScript?
@@ -72,9 +74,9 @@ If you want to integrate CKEditor 5 directly in your TypeScript project, follow 
 
 The latest versions of our official components for Angular, React, and Vue 3 are migrated to TypeScript and use native CKEditor 5's type definitions. You don't need to provide custom definitions anymore. You can use the following guides:
 
-* {@link installation/frameworks/angular Angular component}
-* {@link installation/frameworks/react React component}
-* {@link installation/frameworks/vuejs-v3 Vue.js 3+ component}
+* {@link installation/integrations/angular Angular component}
+* {@link installation/integrations/react React component}
+* {@link installation/integrations/vuejs-v3 Vue.js 3+ component}
 
 ## Developing plugins using TypeScript
 

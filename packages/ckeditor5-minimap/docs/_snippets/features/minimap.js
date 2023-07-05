@@ -5,26 +5,20 @@
 
 /* globals window, document */
 
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
+import { ImageResize, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { TableCellProperties, TableProperties } from '@ckeditor/ckeditor5-table';
 
-import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
+import { Minimap } from '@ckeditor/ckeditor5-minimap';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 

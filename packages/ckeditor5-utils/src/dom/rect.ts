@@ -236,33 +236,62 @@ export default class Rect {
 	 * If there's no such visible rect, which is when the rect is limited by one or many of
 	 * the ancestors, `null` is returned.
 	 *
+	 * **Note**: This method does not consider the boundaries of the viewport (window).
+	 * To get a rect cropped by all ancestors and the viewport, use an intersection such as:
+	 *
+	 * ```ts
+	 * const visibleInViewportRect = new Rect( window ).getIntersection( new Rect( source ).getVisible() );
+	 * ```
+	 *
 	 * @returns A visible rect instance or `null`, if there's none.
 	 */
 	public getVisible(): Rect | null {
 		const source: RectSource & { parentNode?: Node | null; commonAncestorContainer?: Node | null } = this._source;
+
 		let visibleRect = this.clone();
 
 		// There's no ancestor to crop <body> with the overflow.
-		if ( !isBody( source ) ) {
-			let parent = source.parentNode || source.commonAncestorContainer;
+		if ( isBody( source ) ) {
+			return visibleRect;
+		}
 
-			// Check the ancestors all the way up to the <body>.
-			while ( parent && !isBody( parent ) ) {
-				const parentRect = new Rect( parent as HTMLElement );
-				const intersectionRect = visibleRect.getIntersection( parentRect );
+		let child: any = source;
+		let parent = source.parentNode || source.commonAncestorContainer;
+		let absolutelyPositionedChildElement;
 
-				if ( intersectionRect ) {
-					if ( intersectionRect.getArea() < visibleRect.getArea() ) {
-						// Reduce the visible rect to the intersection.
-						visibleRect = intersectionRect;
-					}
-				} else {
-					// There's no intersection, the rect is completely invisible.
-					return null;
-				}
-
-				parent = parent.parentNode;
+		// Check the ancestors all the way up to the <body>.
+		while ( parent && !isBody( parent ) ) {
+			if ( child instanceof HTMLElement && getElementPosition( child ) === 'absolute' ) {
+				absolutelyPositionedChildElement = child;
 			}
+
+			// The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
+			// Otherwise there's no chance of visual clipping and the parent can be skipped
+			// https://github.com/ckeditor/ckeditor5/issues/14107.
+			if (
+				absolutelyPositionedChildElement &&
+				( getElementPosition( parent as HTMLElement ) !== 'relative' || getElementOverflow( parent as HTMLElement ) === 'visible' )
+			) {
+				child = parent;
+				parent = parent.parentNode;
+				continue;
+			}
+
+			const parentRect = new Rect( parent as HTMLElement );
+			const intersectionRect = visibleRect.getIntersection( parentRect );
+
+			if ( intersectionRect ) {
+				if ( intersectionRect.getArea() < visibleRect.getArea() ) {
+					// Reduce the visible rect to the intersection.
+					visibleRect = intersectionRect;
+				}
+			} else {
+				// There's no intersection, the rect is completely invisible.
+				return null;
+			}
+
+			child = parent;
+			parent = parent.parentNode;
 		}
 
 		return visibleRect;
@@ -461,4 +490,18 @@ function isDomElement( value: any ): value is Element {
 	// Note: earlier we used `isElement()` from lodash library, however that function is less performant because
 	// it makes complicated checks to make sure that given value is a DOM element.
 	return value !== null && typeof value === 'object' && value.nodeType === 1 && typeof value.getBoundingClientRect === 'function';
+}
+
+/**
+ * Returns the value of the `position` style of an `HTMLElement`.
+ */
+function getElementPosition( element: HTMLElement ): string {
+	return element.ownerDocument.defaultView!.getComputedStyle( element ).position;
+}
+
+/**
+ * Returns the value of the `overflow` style of an `HTMLElement`.
+ */
+function getElementOverflow( element: HTMLElement ): string {
+	return element.ownerDocument.defaultView!.getComputedStyle( element ).overflow;
 }

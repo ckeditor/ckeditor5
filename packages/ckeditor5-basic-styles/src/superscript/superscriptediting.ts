@@ -22,8 +22,8 @@ export default class SuperscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SuperscriptEditing' {
-		return 'SuperscriptEditing';
+	public static get pluginName() {
+		return 'SuperscriptEditing' as const;
 	}
 
 	/**

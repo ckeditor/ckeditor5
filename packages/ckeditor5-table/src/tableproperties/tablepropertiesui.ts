@@ -94,8 +94,8 @@ export default class TablePropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TablePropertiesUI' {
-		return 'TablePropertiesUI';
+	public static get pluginName() {
+		return 'TablePropertiesUI' as const;
 	}
 
 	/**
@@ -169,11 +169,13 @@ export default class TablePropertiesUI extends Plugin {
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+		const hasColorPicker = config.colorPicker !== false;
 
 		const view = new TablePropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
-			defaultTableProperties: this._defaultTableProperties
+			defaultTableProperties: this._defaultTableProperties,
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
 		} );
 		const t = editor.t;
 

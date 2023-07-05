@@ -23,8 +23,8 @@ export default class StrikethroughEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StrikethroughEditing' {
-		return 'StrikethroughEditing';
+	public static get pluginName() {
+		return 'StrikethroughEditing' as const;
 	}
 
 	/**

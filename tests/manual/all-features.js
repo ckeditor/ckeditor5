@@ -31,6 +31,7 @@ import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+import ShowBlocks from '@ckeditor/ckeditor5-show-blocks/src/showblocks';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
@@ -61,7 +62,7 @@ ClassicEditor
 			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
-			PasteFromOffice, PageBreak, HorizontalLine,
+			PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
 			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport
 		],
@@ -84,7 +85,7 @@ ClassicEditor
 			'|',
 			'textPartLanguage',
 			'|',
-			'sourceEditing',
+			'sourceEditing', 'showBlocks',
 			'|',
 			'undo', 'redo', 'findAndReplace'
 		],

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-watchdog",
-  "version": "37.1.0",
+  "version": "38.1.0",
   "description": "A watchdog feature for CKEditor 5 editors. It keeps a CKEditor 5 editor instance running.",
   "keywords": [
     "ckeditor",
@@ -14,11 +14,11 @@
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^37.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^37.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^37.1.0",
-    "@ckeditor/ckeditor5-utils": "^37.1.0",
-    "ckeditor5": "^37.1.0",
+    "@ckeditor/ckeditor5-core": "38.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "38.1.0",
+    "@ckeditor/ckeditor5-paragraph": "38.1.0",
+    "@ckeditor/ckeditor5-utils": "38.1.0",
+    "ckeditor5": "38.1.0",
     "typescript": "^4.8.4"
   },
   "engines": {
@@ -43,7 +43,6 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json",
-    "postversion": "npm run build"
+    "build": "tsc -p ./tsconfig.json"
   }
 }

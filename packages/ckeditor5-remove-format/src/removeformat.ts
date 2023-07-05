@@ -31,7 +31,7 @@ export default class RemoveFormat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'RemoveFormat' {
-		return 'RemoveFormat';
+	public static get pluginName() {
+		return 'RemoveFormat' as const;
 	}
 }

@@ -28,7 +28,7 @@ export default class ListProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ListProperties' {
-		return 'ListProperties';
+	public static get pluginName() {
+		return 'ListProperties' as const;
 	}
 }

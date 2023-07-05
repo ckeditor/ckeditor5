@@ -48,8 +48,8 @@ export default class ImageTextAlternativeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageTextAlternativeUI' {
-		return 'ImageTextAlternativeUI';
+	public static get pluginName() {
+		return 'ImageTextAlternativeUI' as const;
 	}
 
 	/**

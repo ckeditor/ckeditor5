@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Resizing images
+meta-title: Resizing images in CKEditor 5
+meta-description: All about various ways of resizing images to fit the content better.
 order: 50
 modified_at: 2021-06-17
 ---
@@ -29,7 +31,7 @@ Images can also be pre-resized using styling, as shown below (the last three ima
 {@snippet features/image-resize}
 
 <info-box info>
-	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 You can configure resizing images by handles in two different ways in the CKEditor 5 WYSIWYG editor:
@@ -39,9 +41,7 @@ You can configure resizing images by handles in two different ways in the CKEdit
 * Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins, that won't load the unnecessary `ImageResizeButtons` plugin:
 
 ```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeediting';
-import ImageResizeHandles from '@ckeditor/ckeditor5-image/src/imageresize/imageresizehandles';
+import { Image, ImageResizeEditing, ImageResizeHandles } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -143,10 +143,7 @@ As a result, your plugin setup should look like this: `plugins: [ 'ImageResizeEd
 This will enable the image resize feature only by means of the chosen UI: either a [dropdown](#using-resize-dropdown) or [standalone buttons](#using-standalone-resize-buttons)) in the image toolbar.
 
 ```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageResizeEditing from '@ckeditor/ckeditor5-image/src/imageresize/imageresizeedititing';
-import ImageResizeButtons from '@ckeditor/ckeditor5-image/src/imageresize/imageresizebuttons';
+import { Image, ImageResizeButtons, ImageResizeEditing, ImageToolbar } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -289,6 +286,10 @@ Check out the difference in the live demo below:
 
 {@snippet features/image-resize-px}
 
+## Image optimization and responsive images
+
+When using the {@link features/ckbox CKBox file manager} service, it produces sets of resized, optimized images. The users can easily invoke these resized versions if needed. To learn more about these capabilities, refer to the {@link features/images-responsive responsive images} guide and the {@link @ckbox features/images/conversion CKBox conversion} guide.
+
 ## Installation
 
 <info-box>
@@ -298,8 +299,7 @@ Check out the difference in the live demo below:
 To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):
 
 ```js
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import { Image, ImageResize } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

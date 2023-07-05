@@ -15,7 +15,7 @@ Use the block quote toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/q
 {@snippet features/block-quote}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Nested block quotes
@@ -45,7 +45,7 @@ npm install --save @ckeditor/ckeditor5-block-quote
 And add it to your plugin list configuration:
 
 ```js
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

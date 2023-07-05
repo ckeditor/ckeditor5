@@ -2,7 +2,6 @@
 category: update-guides
 menu-title: Update to v37.x
 order: 87
-modified_at: 2023-04-03
 ---
 
 # Update to CKEditor 5 v37.0.0

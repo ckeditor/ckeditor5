@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: English (Australia) (https://www.transifex.com/ckeditor/teams/11143/en_AU/)\n"
+"Language-Team: English (Australia) (https://app.transifex.com/ckeditor/teams/11143/en_AU/)\n"
 "Language: en_AU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 

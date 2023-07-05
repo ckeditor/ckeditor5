@@ -39,8 +39,8 @@ export default class TableSelection extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableSelection' {
-		return 'TableSelection';
+	public static get pluginName() {
+		return 'TableSelection' as const;
 	}
 
 	/**
@@ -90,7 +90,6 @@ export default class TableSelection extends Plugin {
 		}
 
 		// This should never happen, but let's know if it ever happens.
-		// @if CK_DEBUG //	/* istanbul ignore next -- @preserve */
 		// @if CK_DEBUG //	if ( selectedCells.length != selection.rangeCount ) {
 		// @if CK_DEBUG //		console.warn( 'Mixed selection warning. The selection contains table cells and some other ranges.' );
 		// @if CK_DEBUG //	}

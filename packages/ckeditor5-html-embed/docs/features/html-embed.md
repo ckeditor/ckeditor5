@@ -15,7 +15,7 @@ Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/ic
 {@snippet features/html-embed}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -54,7 +54,7 @@ npm install --save @ckeditor/ckeditor5-html-embed
 And add it to your plugin list configuration:
 
 ```js
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

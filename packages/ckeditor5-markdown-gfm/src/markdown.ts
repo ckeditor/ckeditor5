@@ -28,7 +28,7 @@ export default class Markdown extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Markdown' {
-		return 'Markdown';
+	public static get pluginName() {
+		return 'Markdown' as const;
 	}
 }

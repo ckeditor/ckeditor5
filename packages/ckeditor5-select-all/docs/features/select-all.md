@@ -18,7 +18,7 @@ Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@ic
 {@snippet features/select-all}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -36,7 +36,7 @@ npm install --save @ckeditor/ckeditor5-select-all
 Then add the `SelectAll` plugin to your plugin list and to the toolbar:
 
 ```js
-import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall';
+import { SelectAll } from '@ckeditor/ckeditor5-select-all';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

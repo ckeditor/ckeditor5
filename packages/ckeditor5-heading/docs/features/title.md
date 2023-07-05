@@ -14,7 +14,7 @@ Use the editor below to create a document with distinct title and body sections.
 {@snippet features/title}
 
 <info-box info>
-	This demo only presents a very specific, limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a very specific, limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Keyboard navigation
@@ -55,7 +55,7 @@ npm install --save @ckeditor/ckeditor5-heading
 Then add the `Title` plugin to your plugin list:
 
 ```js
-import Title from '@ckeditor/ckeditor5-heading/src/title';
+import { Title } from '@ckeditor/ckeditor5-heading';
 
 ClassicEditor
     .create( document.querySelector( '#editor' ), {

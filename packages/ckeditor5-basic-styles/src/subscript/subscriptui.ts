@@ -22,8 +22,8 @@ export default class SubscriptUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SubscriptUI' {
-		return 'SubscriptUI';
+	public static get pluginName() {
+		return 'SubscriptUI' as const;
 	}
 
 	/**

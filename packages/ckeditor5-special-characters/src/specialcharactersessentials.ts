@@ -31,8 +31,8 @@ export default class SpecialCharactersEssentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'SpecialCharactersEssentials' {
-		return 'SpecialCharactersEssentials';
+	public static get pluginName() {
+		return 'SpecialCharactersEssentials' as const;
 	}
 
 	/**

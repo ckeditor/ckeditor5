@@ -17,7 +17,7 @@ To resize a column, simply hover your pointer over the column edge until it gets
 {@snippet features/table-column-resize}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 The column resize feature is compatible with the {@link features/export-word Export to Word} feature. The converter will respect the column width set in the editor and retain it in the created .DOCX file.
@@ -37,8 +37,7 @@ npm install --save @ckeditor/ckeditor5-table
 Then add the `Table` and **`TableColumnResize`** plugins to your plugin list and configure the table toolbar:
 
 ```js
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import { Table, TableColumnResize } from '@ckeditor/ckeditor5-table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

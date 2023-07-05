@@ -19,7 +19,7 @@ If needed, you can revert the automatic change by pressing <kbd>Backspace</kbd>.
 {@snippet features/autoformat}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Block formatting
@@ -58,7 +58,7 @@ npm install --save @ckeditor/ckeditor5-autoformat
 And add it to your plugin list:
 
 ```js
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

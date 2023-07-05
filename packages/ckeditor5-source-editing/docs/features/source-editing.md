@@ -17,7 +17,7 @@ You can also use one of the many CKEditor 5 features available in the toolbar an
 {@snippet features/source-editing}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -51,7 +51,7 @@ npm install --save @ckeditor/ckeditor5-source-editing
 And add it to your plugin list configuration:
 
 ```js
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -65,8 +65,8 @@ ClassicEditor
 To utilize the Markdown source editing mode just add the {@link features/markdown Markdown output} plugin to the editor.
 
 ```js
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -85,9 +85,9 @@ ClassicEditor
 
 There are other source-related CKEditor 5 features you may want to check:
 
-* {@link features/general-html-support General HTML support} &ndash; Allows enabling a generic support for additional HTML features not yet covered by official plugins.
+* {@link features/general-html-support General HTML support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor 5 plugins.
+* * {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor 5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.
-* {@link features/autoformat Autoformatting} &ndash; Allows using Markdown-like shortcodes to format the content on the go.
 * {@link features/markdown Markdown output} &ndash; Allows for Markdown output instead of HTML output.
 
 ## Common API

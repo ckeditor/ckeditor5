@@ -71,6 +71,13 @@ export default class ResizeObserver {
 	}
 
 	/**
+	 * The element observed by this observer.
+	 */
+	public get element(): Element {
+		return this._element;
+	}
+
+	/**
 	 * Destroys the observer which disables the `callback` passed to the {@link #constructor}.
 	 */
 	public destroy(): void {

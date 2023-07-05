@@ -23,7 +23,7 @@ You can also use Markdown code recognized by the {@link features/autoformat auto
 {@snippet features/lists-basic}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 After reading this guide, check out the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post where you will find more information about lists with examples.
@@ -107,7 +107,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `List` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import List from '@ckeditor/ckeditor5-list/src/list';
+import { List } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -133,7 +133,7 @@ npm install --save @ckeditor/ckeditor5-list
 Then add the `ListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
 
 ```js
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
+import { ListProperties } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
