@@ -16,8 +16,12 @@ import {
 	global,
 	toUnit,
 	type Locale,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	findClosestScrollableAncestor,
+	Rect
 } from '@ckeditor/ckeditor5-utils';
+
+import RectDrawer from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer';
 
 import '../../../theme/components/panel/stickypanel.css';
 
@@ -107,29 +111,22 @@ export default class StickyPanelView extends View {
 	 * @readonly
 	 * @observable
 	 */
-	declare public _isStickyToTheLimiter: boolean;
-
-	/**
-	 * Set `true` if the sticky panel uses the {@link #viewportTopOffset},
-	 * i.e. not {@link #_isStickyToTheLimiter} and the {@link #viewportTopOffset}
-	 * is not `0`.
-	 *
-	 * @private
-	 * @readonly
-	 * @observable
-	 */
-	declare public _hasViewportTopOffset: boolean;
+	declare public _isStickyToTheBottomOfLimiter: boolean;
 
 	/**
 	 * The DOM bounding client rect of the {@link module:ui/view~View#element} of the panel.
 	 */
-	private _panelRect?: DOMRect;
+	private _panelRect?: Rect;
 
 	/**
-	 * The DOM bounding client rect of the {@link #limiterElement}
-	 * of the panel.
+	 * TODO
 	 */
-	private _limiterRect?: DOMRect;
+	declare public _stickyTopOffset: number | null;
+
+	/**
+	 * TODO
+	 */
+	declare public _stickyBottomOffset: number | null;
 
 	/**
 	 * A dummy element which visually fills the space as long as the
@@ -158,8 +155,10 @@ export default class StickyPanelView extends View {
 		this.set( 'viewportTopOffset', 0 );
 
 		this.set( '_marginLeft', null );
-		this.set( '_isStickyToTheLimiter', false );
-		this.set( '_hasViewportTopOffset', false );
+		this.set( '_isStickyToTheBottomOfLimiter', false );
+
+		this.set( '_stickyTopOffset', null );
+		this.set( '_stickyBottomOffset', null );
 
 		this.content = this.createCollection();
 
@@ -188,20 +187,15 @@ export default class StickyPanelView extends View {
 					'ck-sticky-panel__content',
 					// Toggle class of the panel when "sticky" state changes in the view.
 					bind.if( 'isSticky', 'ck-sticky-panel__content_sticky' ),
-					bind.if( '_isStickyToTheLimiter', 'ck-sticky-panel__content_sticky_bottom-limit' )
+					bind.if( '_isStickyToTheBottomOfLimiter', 'ck-sticky-panel__content_sticky_bottom-limit' )
 				],
 				style: {
 					width: bind.to( 'isSticky', isSticky => {
 						return isSticky ? toPx( this._contentPanelPlaceholder.getBoundingClientRect().width ) : null;
 					} ),
 
-					top: bind.to( '_hasViewportTopOffset', _hasViewportTopOffset => {
-						return _hasViewportTopOffset ? toPx( this.viewportTopOffset ) : null;
-					} ),
-
-					bottom: bind.to( '_isStickyToTheLimiter', _isStickyToTheLimiter => {
-						return _isStickyToTheLimiter ? toPx( this.limiterBottomOffset ) : null;
-					} ),
+					top: bind.to( '_stickyTopOffset', value => value ? toPx( value ) : value ),
+					bottom: bind.to( '_stickyBottomOffset', value => value ? toPx( value ) : value ),
 
 					marginLeft: bind.to( '_marginLeft' )
 				}
@@ -234,10 +228,10 @@ export default class StickyPanelView extends View {
 		// Check if the panel should go into the sticky state immediately.
 		this._checkIfShouldBeSticky();
 
-		// Update sticky state of the panel as the window is being scrolled.
-		this.listenTo( global.window, 'scroll', () => {
-			this._checkIfShouldBeSticky();
-		} );
+		// Update sticky state of the panel as the window and ancestors are being scrolled.
+		this.listenTo( global.document, 'scroll', ( evt, data ) => {
+			this._checkIfShouldBeSticky( data.target as HTMLElement | Document );
+		}, { useCapture: true } );
 
 		// Synchronize with `model.isActive` because sticking an inactive panel is pointless.
 		this.listenTo<ObservableChangeEvent>( this, 'change:isActive', () => {
@@ -249,39 +243,171 @@ export default class StickyPanelView extends View {
 	 * Analyzes the environment to decide whether the panel should
 	 * be sticky or not.
 	 */
-	private _checkIfShouldBeSticky(): void {
-		const panelRect = this._panelRect = this._contentPanel.getBoundingClientRect();
-		let limiterRect: DOMRect;
+	private _checkIfShouldBeSticky( scrollTarget?: HTMLElement | Document ): void {
+		RectDrawer.clear();
 
 		if ( !this.limiterElement ) {
-			this.isSticky = false;
+			this._unstick();
+			this._log();
+
+			return;
+		}
+
+		const scrollableAncestors = getScrollableAncestors( this.limiterElement );
+
+		if ( scrollTarget && !scrollableAncestors.includes( scrollTarget ) ) {
+			console.log( 'Something else was scrolled' );
+
+			return;
+		}
+
+		const visibleAncestorsRect = getVisibleAncestorsRect( scrollableAncestors, this.viewportTopOffset );
+		const limiterRect = new Rect( this.limiterElement );
+
+		if ( visibleAncestorsRect ) {
+			RectDrawer.draw( visibleAncestorsRect,
+				{ outlineWidth: '3px', opacity: '.8', outlineColor: 'red', outlineOffset: '-3px' },
+				'Visible anc'
+			);
+		}
+
+		RectDrawer.draw( limiterRect,
+			{ outlineWidth: '3px', opacity: '.8', outlineColor: 'green', outlineOffset: '-3px' },
+			'Limiter'
+		);
+
+		if ( visibleAncestorsRect && limiterRect.top < visibleAncestorsRect.top ) {
+			const visibleLimiterRect = limiterRect.getIntersection( visibleAncestorsRect );
+
+			if ( visibleLimiterRect ) {
+				RectDrawer.draw( visibleLimiterRect,
+					{ outlineWidth: '3px', opacity: '.8', outlineColor: 'fuchsia', outlineOffset: '-3px' },
+					'Visible limiter'
+				);
+
+				const visibleAncestorsTop = visibleAncestorsRect.top;
+
+				this._panelRect = new Rect( this._contentPanel );
+
+				if ( visibleAncestorsTop + this._panelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
+					this._stickToBottomOfLimiter( limiterRect, visibleAncestorsRect );
+				} else {
+					this._stickToTopOfAncestors( visibleAncestorsTop );
+				}
+			} else {
+				console.log( 'No visible limiter' );
+				this._unstick();
+			}
 		} else {
-			limiterRect = this._limiterRect = this.limiterElement.getBoundingClientRect();
-
-			// The panel must be active to become sticky.
-			this.isSticky = this.isActive &&
-				// The limiter's top edge must be beyond the upper edge of the visible viewport (+the viewportTopOffset).
-				limiterRect.top < this.viewportTopOffset &&
-				// The model#limiterElement's height mustn't be smaller than the panel's height and model#limiterBottomOffset.
-				// There's no point in entering the sticky mode if the model#limiterElement is very, very small, because
-				// it would immediately set model#_isStickyToTheLimiter true and, given model#limiterBottomOffset, the panel
-				// would be positioned before the model#limiterElement.
-				this._panelRect.height + this.limiterBottomOffset < limiterRect.height;
+			console.log( 'No visible ancestors or limiter not touching yet' );
+			this._unstick();
 		}
 
-		// Stick the panel to the top edge of the viewport simulating CSS position:sticky.
-		// TODO: Possibly replaced by CSS in the future http://caniuse.com/#feat=css-sticky
-		if ( this.isSticky ) {
-			this._isStickyToTheLimiter =
-				limiterRect!.bottom < panelRect.height + this.limiterBottomOffset + this.viewportTopOffset;
-			this._hasViewportTopOffset = !this._isStickyToTheLimiter && !!this.viewportTopOffset;
-			this._marginLeft = this._isStickyToTheLimiter ? null : toPx( -global.window.scrollX );
+		this._log();
+	}
+
+	/**
+	 *
+	 * @param limiterRect
+	 * @param visibleAncestorsRect
+	 */
+	private _stickToBottomOfLimiter( limiterRect: Rect, visibleAncestorsRect: Rect ) {
+		this.isSticky = true;
+		this._isStickyToTheBottomOfLimiter = true;
+		this._stickyTopOffset = null;
+		this._stickyBottomOffset =
+			Math.max( limiterRect.bottom - visibleAncestorsRect.bottom, 0 ) + this.limiterBottomOffset;
+		this._marginLeft = toPx( -global.window.scrollX );
+	}
+
+	/**
+	 *
+	 * @param topOffset
+	 */
+	private _stickToTopOfAncestors( topOffset: number ) {
+		this.isSticky = true;
+		this._isStickyToTheBottomOfLimiter = false;
+		this._stickyTopOffset = topOffset;
+		this._stickyBottomOffset = null;
+		this._marginLeft = null;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _unstick() {
+		this.isSticky = false;
+		this._isStickyToTheBottomOfLimiter = false;
+		this._stickyTopOffset = null;
+		this._stickyBottomOffset = null;
+		this._marginLeft = null;
+	}
+
+	/**
+	 * TO BE REMOVED
+	 */
+	private _log() {
+		console.clear();
+		console.log( 'isSticky', this.isSticky );
+		console.log( '_stickyTopOffset', this._stickyTopOffset );
+		console.log( '_stickyBottomOffset', this._stickyBottomOffset );
+		console.log( '_isStickyToTheBottomOfLimiter', this._isStickyToTheBottomOfLimiter );
+		console.log( '_marginLeft', this._marginLeft );
+	}
+}
+
+/**
+ * TODO
+ *
+ * @param element
+ * @returns
+ */
+function getScrollableAncestors( element: HTMLElement ) {
+	const scrollableAncestors = [];
+	let scrollableAncestor = findClosestScrollableAncestor( element );
+
+	while ( scrollableAncestor && scrollableAncestor !== global.document.body ) {
+		scrollableAncestors.push( scrollableAncestor );
+		scrollableAncestor = findClosestScrollableAncestor( scrollableAncestor! );
+	}
+
+	scrollableAncestors.push( global.document );
+
+	return scrollableAncestors;
+}
+
+/**
+ * TODO
+ *
+ * @param scrollableAncestors
+ * @param viewportTopOffset
+ * @returns
+ */
+function getVisibleAncestorsRect( scrollableAncestors: Array<HTMLElement | Document>, viewportTopOffset: number ) {
+	const scrollableAncestorsRects = scrollableAncestors.map( ancestor => {
+		if ( ancestor instanceof Document ) {
+			const windowRect = new Rect( global.window );
+
+			windowRect.top += viewportTopOffset;
+			windowRect.height -= viewportTopOffset;
+
+			return windowRect;
+		} else {
+			return new Rect( ancestor );
 		}
-		// Detach the panel from the top edge of the viewport.
-		else {
-			this._isStickyToTheLimiter = false;
-			this._hasViewportTopOffset = false;
-			this._marginLeft = null;
+	} );
+
+	let scrollableAncestorsIntersectionRect: Rect | null = scrollableAncestorsRects[ 0 ];
+
+	for ( const scrollableAncestorRect of scrollableAncestorsRects ) {
+		RectDrawer.draw( scrollableAncestorRect, { outlineWidth: '1px', opacity: '.7' }, 'Anc' );
+	}
+
+	for ( const scrollableAncestorRect of scrollableAncestorsRects.slice( 1 ) ) {
+		if ( scrollableAncestorsIntersectionRect ) {
+			scrollableAncestorsIntersectionRect = scrollableAncestorsIntersectionRect.getIntersection( scrollableAncestorRect );
 		}
 	}
+
+	return scrollableAncestorsIntersectionRect;
 }
