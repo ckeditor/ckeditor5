@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { Element, Position, Text, Writer } from '@ckeditor/ckeditor5-engine';
+import type { Element, Position, Text, Item } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
@@ -72,18 +72,25 @@ export default class InsertParagraphCommand extends Command {
 				return;
 			}
 
-			if ( position.isAtStart && position.isAtEnd && position.path.length > 1 ) {
+			if ( position.path.length < 2 ) {
+				model.insertContent( paragraph, position );
+				writer.setSelection( paragraph, 'in' );
+
+				return;
+			}
+
+			if ( position.isAtStart && position.isAtEnd ) {
 				// NOTE: In case when paragraph is empty.
 				// <paragraph>[]</paragraph> ---> <paragraph></paragraph><paragraph>[]</paragraph>
-				position = createPositionBellow( writer, position, allowedParent );
-			} else if ( position.isAtStart && position.path.length > 1 && ( position.nodeAfter as Text ).data ) {
+				position = writer.createPositionAfter( position.parent as Item );
+			} else if ( position.isAtStart && ( position.nodeAfter as Text ).data ) {
 				// When position is at the start of the line we want to insert paragraph above.
 				// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
 				position = writer.createPositionFromPath( allowedParent, position.getParentPath() );
-			} else if ( position.isAtEnd && position.path.length > 1 && ( position.nodeBefore as Text ).data ) {
+			} else if ( position.isAtEnd && ( position.nodeBefore as Text ).data ) {
 				// When position is at the end of the line we want to insert paragraph after.
 				// <paragraph>foo[]</paragraph> ---> <paragraph>foo</paragraph><paragraph>[]</paragraph>
-				position = createPositionBellow( writer, position, allowedParent );
+				position = writer.createPositionAfter( position.parent as Item );
 			} else if ( !model.schema.checkChild( position.parent as Element, paragraph ) ) {
 				// When position is inside the content we want to split it
 				// <paragraph>fo[]o</paragraph>
@@ -100,13 +107,4 @@ export default class InsertParagraphCommand extends Command {
 			writer.setSelection( paragraph, 'in' );
 		} );
 	}
-}
-
-// Creates bellow position where should be inserted new paragraph.
-export function createPositionBellow( writer: Writer, position: Position, allowedParent: Element ): Position {
-	const parentPath = position.getParentPath();
-	const length = parentPath.length;
-	const path = [ ...parentPath.slice( 0, length - 1 ), parentPath[ length - 1 ] + 1 ];
-
-	return writer.createPositionFromPath( allowedParent, path );
 }
