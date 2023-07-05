@@ -144,7 +144,6 @@ describe( 'utils', () => {
 					const child = document.createElement( 'div' );
 					dropdownView.element.appendChild( child );
 
-					// Fire event from context element.
 					child.dispatchEvent( new Event( 'mousedown', {
 						bubbles: true
 					} ) );
@@ -153,7 +152,7 @@ describe( 'utils', () => {
 					expect( dropdownView.isOpen ).to.be.true;
 				} );
 
-				it( 'listens to view#isOpen and reacts to DOM events (context elements)', () => {
+				it( 'listens to view#isOpen and reacts to DOM events (focus tracker elements)', () => {
 					// Open the dropdown.
 					dropdownView.isOpen = true;
 
@@ -171,7 +170,7 @@ describe( 'utils', () => {
 					// Add the new document element to dropdown focus tracker.
 					dropdownView.focusTracker.add( documentElement );
 
-					// Fire event from document element.
+					// Fire event from outside of the dropdown.
 					documentElement.dispatchEvent( new Event( 'mousedown', {
 						bubbles: true
 					} ) );
