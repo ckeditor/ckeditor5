@@ -106,13 +106,11 @@ import '../../theme/components/dropdown/listdropdown.css';
  * @param locale The locale instance.
  * @param ButtonClass The dropdown button view class. Needs to implement the
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface.
- * @param contextElements The view collection of elements that should be supported by `clickOutsideHandler`.
  * @returns The dropdown view instance.
  */
 export function createDropdown(
 	locale: Locale | undefined,
-	ButtonClass: new ( locale?: Locale ) => DropdownButton & FocusableView = DropdownButtonView,
-	contextElements?: Collection<HTMLElement>
+	ButtonClass: new ( locale?: Locale ) => DropdownButton & FocusableView = DropdownButtonView
 ): DropdownView {
 	const buttonView = new ButtonClass( locale );
 
@@ -127,7 +125,7 @@ export function createDropdown(
 		buttonView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
 	}
 
-	addDefaultBehavior( dropdownView, contextElements );
+	addDefaultBehavior( dropdownView );
 
 	return dropdownView;
 }
@@ -435,8 +433,8 @@ export function focusChildOnDropdownOpen(
 /**
  * Add a set of default behaviors to dropdown view.
  */
-function addDefaultBehavior( dropdownView: DropdownView, contextElements?: Collection<HTMLElement> ) {
-	closeDropdownOnClickOutside( dropdownView, contextElements );
+function addDefaultBehavior( dropdownView: DropdownView ) {
+	closeDropdownOnClickOutside( dropdownView );
 	closeDropdownOnExecute( dropdownView );
 	closeDropdownOnBlur( dropdownView );
 	focusDropdownContentsOnArrows( dropdownView );
@@ -447,7 +445,7 @@ function addDefaultBehavior( dropdownView: DropdownView, contextElements?: Colle
 /**
  * Adds a behavior to a dropdownView that closes opened dropdown when user clicks outside the dropdown.
  */
-function closeDropdownOnClickOutside( dropdownView: DropdownView, contextElements?: Collection<HTMLElement> ) {
+function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
 	dropdownView.on<UIViewRenderEvent>( 'render', () => {
 		clickOutsideHandler( {
 			emitter: dropdownView,
@@ -456,7 +454,7 @@ function closeDropdownOnClickOutside( dropdownView: DropdownView, contextElement
 				dropdownView.isOpen = false;
 			},
 			contextElements: () => {
-				return [ dropdownView.element!, ...Array.from( contextElements || [] ) ];
+				return [ dropdownView.element!, ...Array.from( dropdownView.focusTracker._elements as Set<HTMLElement> ) ];
 			}
 		} );
 	} );

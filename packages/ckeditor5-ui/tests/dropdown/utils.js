@@ -29,7 +29,6 @@ import ListItemView from '../../src/list/listitemview';
 import ListSeparatorView from '../../src/list/listseparatorview';
 import ListView from '../../src/list/listview';
 import ViewCollection from '../../src/viewcollection';
-import { DropdownButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'utils', () => {
 	let locale, dropdownView;
@@ -155,25 +154,32 @@ describe( 'utils', () => {
 				} );
 
 				it( 'listens to view#isOpen and reacts to DOM events (context elements)', () => {
-					const contextElements = new Collection();
-
-					const element = document.createElement( 'div' );
-					document.body.appendChild( element );
-
-					contextElements.add( element );
-
-					const dropdownView = createDropdown( locale, DropdownButtonView, contextElements );
 					// Open the dropdown.
 					dropdownView.isOpen = true;
 
-					element.dispatchEvent( new Event( 'mousedown', {
+					// Event from view.element should be discarded.
+					dropdownView.element.dispatchEvent( new Event( 'mousedown', {
 						bubbles: true
 					} ) );
 
 					// Dropdown is still open.
 					expect( dropdownView.isOpen ).to.be.true;
 
-					element.remove();
+					const documentElement = document.createElement( 'div' );
+					document.body.appendChild( documentElement );
+
+					// Add the new document element to dropdown focus tracker.
+					dropdownView.focusTracker.add( documentElement );
+
+					// Fire event from document element.
+					documentElement.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					// Dropdown is still open.
+					expect( dropdownView.isOpen ).to.be.true;
+
+					documentElement.remove();
 				} );
 			} );
 
