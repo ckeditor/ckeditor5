@@ -39,6 +39,11 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: 50
+			}
 		}
 	} )
 	.then( editor => {
