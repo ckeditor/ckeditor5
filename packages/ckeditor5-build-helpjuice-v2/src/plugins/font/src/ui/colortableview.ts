@@ -1002,7 +1002,7 @@ class ColorPickerPageView extends View {
 			class: 'ck-button-save',
 			withText: false,
 			label: t( 'Accept' ),
-			type: 'submit'
+			type: 'button'
 		} );
 
 		cancelButtonView.set( {
