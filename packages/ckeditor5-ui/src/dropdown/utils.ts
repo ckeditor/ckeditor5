@@ -453,9 +453,10 @@ function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
 			callback: () => {
 				dropdownView.isOpen = false;
 			},
-			contextElements: () => {
-				return [ dropdownView.element!, ...Array.from( dropdownView.focusTracker._elements as Set<HTMLElement> ) ];
-			}
+			contextElements: () => [
+				dropdownView.element!,
+				...( dropdownView.focusTracker._elements as Set<HTMLElement> )
+			]
 		} );
 	} );
 }
