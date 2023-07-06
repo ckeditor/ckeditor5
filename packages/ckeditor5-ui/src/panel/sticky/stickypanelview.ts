@@ -273,10 +273,13 @@ export default class StickyPanelView extends View {
 		// @if CK_DEBUG_STICKYPANEL // 	'Limiter'
 		// @if CK_DEBUG_STICKYPANEL // );
 
+		console.log( visibleAncestorsRect, limiterRect.top < visibleAncestorsRect.top );
 		if ( visibleAncestorsRect && limiterRect.top < visibleAncestorsRect.top ) {
 			const visibleLimiterRect = limiterRect.getIntersection( visibleAncestorsRect );
+			console.log( 'a' );
 
 			if ( visibleLimiterRect ) {
+				console.log( 'b' );
 				// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( visibleLimiterRect,
 				// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '3px', opacity: '.8', outlineColor: 'fuchsia', outlineOffset: '-3px',
 				// @if CK_DEBUG_STICKYPANEL // 		backgroundColor: 'rgba(255, 0, 255, .3)' },
@@ -288,6 +291,7 @@ export default class StickyPanelView extends View {
 				this._panelRect = new Rect( this._contentPanel );
 
 				if ( visibleAncestorsTop + this._panelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
+					console.log( 'c' );
 					const stickyBottomOffset = Math.max( limiterRect.bottom - visibleAncestorsRect.bottom, 0 ) + this.limiterBottomOffset;
 
 					// @if CK_DEBUG_STICKYPANEL // const stickyBottomOffsetRect = new Rect( {
@@ -300,17 +304,22 @@ export default class StickyPanelView extends View {
 					// @if CK_DEBUG_STICKYPANEL // );
 
 					if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._panelRect.height ) {
+						console.log( 'd' );
 						this._stickToBottomOfLimiter( limiterRect, visibleAncestorsRect, stickyBottomOffset );
 					} else {
+						console.log( 'e' );
 						this._unstick();
 					}
 				} else {
+					console.log( 'f' );
 					this._stickToTopOfAncestors( visibleAncestorsTop );
 				}
 			} else {
+				console.log( 'g' );
 				this._unstick();
 			}
 		} else {
+			console.log( 'h' );
 			this._unstick();
 		}
 

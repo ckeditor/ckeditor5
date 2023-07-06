@@ -12,9 +12,10 @@ import LabelView from '../../../src/label/labelview';
 import ViewCollection from '../../../src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
 describe( 'StickyPanelView', () => {
-	let view, element, contentElement, placeholderElement, limiterElement, locale, windowStub;
+	let view, element, contentElement, placeholderElement, limiterElement, locale;
 
 	testUtils.createSinonSandbox();
 
@@ -33,14 +34,8 @@ describe( 'StickyPanelView', () => {
 		view._toolbarRect = { top: 10, right: 20, bottom: 30, left: 40, width: 50, height: 60 };
 		view._limiterRect = { top: 5, right: 10, bottom: 15, left: 20, width: 25, height: 30 };
 
-		windowStub = Object.create( DomEmitterMixin );
-
-		Object.assign( windowStub, {
-			scrollX: 0,
-			scrollY: 0
-		} );
-
-		testUtils.sinon.stub( global, 'window' ).value( windowStub );
+		sinon.stub( global.window, 'innerWidth' ).value( 1000 );
+		sinon.stub( global.window, 'innerHeight' ).value( 500 );
 
 		document.body.appendChild( element );
 	} );
@@ -74,7 +69,7 @@ describe( 'StickyPanelView', () => {
 			expect( view.limiterBottomOffset ).to.equal( 50 );
 			expect( view.viewportTopOffset ).to.equal( 0 );
 
-			expect( view._isStickyToTheLimiter ).to.be.false;
+			expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 			expect( view._hasViewportTopOffset ).to.be.false;
 			expect( view._marginLeft ).to.be.null;
 		} );
@@ -101,11 +96,11 @@ describe( 'StickyPanelView', () => {
 			expect( contentElement.classList.contains( 'ck-sticky-panel__content_sticky' ) ).to.be.true;
 		} );
 
-		it( 'update the class on view#_isStickyToTheLimiter change', () => {
-			view._isStickyToTheLimiter = false;
+		it( 'update the class on view#_isStickyToTheBottomOfLimiter change', () => {
+			view._isStickyToTheBottomOfLimiter = false;
 			expect( contentElement.classList.contains( 'ck-sticky-panel__content_sticky_bottom-limit' ) ).to.be.false;
 
-			view._isStickyToTheLimiter = true;
+			view._isStickyToTheBottomOfLimiter = true;
 			expect( contentElement.classList.contains( 'ck-sticky-panel__content_sticky_bottom-limit' ) ).to.be.true;
 		} );
 
@@ -129,11 +124,11 @@ describe( 'StickyPanelView', () => {
 			expect( contentElement.style.width ).to.equal( '100px' );
 		} );
 
-		it( 'update the styles.bottom on view#_isStickyToTheLimiter change', () => {
-			view._isStickyToTheLimiter = false;
+		it( 'update the styles.bottom on view#_isStickyToTheBottomOfLimiter change', () => {
+			view._isStickyToTheBottomOfLimiter = false;
 			expect( contentElement.style.bottom ).to.equal( '' );
 
-			view._isStickyToTheLimiter = true;
+			view._isStickyToTheBottomOfLimiter = true;
 			expect( contentElement.style.bottom ).to.equal( '50px' );
 		} );
 
@@ -302,7 +297,7 @@ describe( 'StickyPanelView', () => {
 			} );
 		} );
 
-		describe( 'view._isStickyToTheLimiter', () => {
+		describe( 'view._isStickyToTheBottomOfLimiter', () => {
 			it( 'is true if view.isSticky is true and reached the bottom edge of view.limiterElement', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 					top: -10,
@@ -315,12 +310,12 @@ describe( 'StickyPanelView', () => {
 				} );
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheLimiter ).to.be.true;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
 			} );
 
 			it( 'is false if view.isSticky is true and not reached the bottom edge of view.limiterElement', () => {
@@ -335,12 +330,12 @@ describe( 'StickyPanelView', () => {
 				} );
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 			} );
 
 			it( 'is false if view.isSticky is false', () => {
@@ -349,17 +344,17 @@ describe( 'StickyPanelView', () => {
 				} );
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 			} );
 		} );
 
 		describe( 'view._hasViewportTopOffset', () => {
-			it( 'is true if view._isStickyToTheLimiter is false and view.viewportTopOffset has been specified', () => {
+			it.only( 'is true if view._isStickyToTheBottomOfLimiter is false and view.viewportTopOffset has been specified', () => {
 				view.viewportTopOffset = 100;
 
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
@@ -375,11 +370,12 @@ describe( 'StickyPanelView', () => {
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheLimiter ).to.be.false;
-				expect( view._hasViewportTopOffset ).to.be.true;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
+				expect( view._stickyTopOffset ).to.equal( 100 );
+				expect( view._stickyBottomOffset ).to.be.null;
 			} );
 
-			it( 'is false if view._isStickyToTheLimiter is true and view.viewportTopOffset has been specified', () => {
+			it( 'is false if view._isStickyToTheBottomOfLimiter is true and view.viewportTopOffset has been specified', () => {
 				view.viewportTopOffset = 100;
 
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
@@ -395,11 +391,11 @@ describe( 'StickyPanelView', () => {
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheLimiter ).to.be.true;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
 				expect( view._hasViewportTopOffset ).to.be.false;
 			} );
 
-			it( 'is false if view._isStickyToTheLimiter is false and view.viewportTopOffset is 0', () => {
+			it( 'is false if view._isStickyToTheBottomOfLimiter is false and view.viewportTopOffset is 0', () => {
 				view.viewportTopOffset = 100;
 
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
@@ -415,13 +411,13 @@ describe( 'StickyPanelView', () => {
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 				expect( view._hasViewportTopOffset ).to.be.true;
 			} );
 		} );
 
 		describe( 'view._marginLeft', () => {
-			it( 'is set if view.isSticky is true view._isStickyToTheLimiter is false', () => {
+			it( 'is set if view.isSticky is true view._isStickyToTheBottomOfLimiter is false', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 					top: -10,
 					bottom: 80,
@@ -432,23 +428,21 @@ describe( 'StickyPanelView', () => {
 					height: 20
 				} );
 
-				Object.assign( windowStub, {
-					scrollX: 10,
-					scrollY: 0
-				} );
+				sinon.stub( global.window, 'scrollX' ).value( 10 );
+				sinon.stub( global.window, 'scrollY' ).value( 0 );
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 				expect( view._marginLeft ).to.equal( null );
 
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 				expect( view._marginLeft ).to.equal( '-10px' );
 			} );
 
-			it( 'is not set if view._isStickyToTheLimiter is true', () => {
+			it( 'is not set if view._isStickyToTheBottomOfLimiter is true', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 					top: -10,
 					bottom: 10,
@@ -465,13 +459,13 @@ describe( 'StickyPanelView', () => {
 				} );
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 				expect( view._marginLeft ).to.equal( null );
 
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheLimiter ).to.be.true;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
 				expect( view._marginLeft ).to.equal( null );
 			} );
 
@@ -481,13 +475,13 @@ describe( 'StickyPanelView', () => {
 				} );
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 				expect( view._marginLeft ).to.equal( null );
 
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheLimiter ).to.be.false;
+				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 				expect( view._marginLeft ).to.equal( null );
 			} );
 		} );
