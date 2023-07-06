@@ -246,7 +246,7 @@ export default class StickyPanelView extends View {
 	private _checkIfShouldBeSticky( scrollTarget?: HTMLElement | Document ): void {
 		// @if CK_DEBUG_STICKYPANEL // RectDrawer.clear();
 
-		if ( !this.limiterElement ) {
+		if ( !this.limiterElement || !this.isActive ) {
 			this._unstick();
 
 			return;
@@ -288,7 +288,22 @@ export default class StickyPanelView extends View {
 				this._panelRect = new Rect( this._contentPanel );
 
 				if ( visibleAncestorsTop + this._panelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
-					this._stickToBottomOfLimiter( limiterRect, visibleAncestorsRect );
+					const stickyBottomOffset = Math.max( limiterRect.bottom - visibleAncestorsRect.bottom, 0 ) + this.limiterBottomOffset;
+
+					// @if CK_DEBUG_STICKYPANEL // const stickyBottomOffsetRect = new Rect( {
+					// @if CK_DEBUG_STICKYPANEL // 	top: limiterRect.bottom - stickyBottomOffset, left: 0, right: 0,
+					// @if CK_DEBUG_STICKYPANEL // 	bottom: limiterRect.bottom - stickyBottomOffset, width: 1000, height: 1
+					// @if CK_DEBUG_STICKYPANEL // } );
+					// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( stickyBottomOffsetRect,
+					// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '1px', opacity: '.8', outlineColor: 'black' },
+					// @if CK_DEBUG_STICKYPANEL // 	'Sticky bottom offset'
+					// @if CK_DEBUG_STICKYPANEL // );
+
+					if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._panelRect.height ) {
+						this._stickToBottomOfLimiter( limiterRect, visibleAncestorsRect, stickyBottomOffset );
+					} else {
+						this._unstick();
+					}
 				} else {
 					this._stickToTopOfAncestors( visibleAncestorsTop );
 				}
@@ -298,6 +313,12 @@ export default class StickyPanelView extends View {
 		} else {
 			this._unstick();
 		}
+
+		// @if CK_DEBUG_STICKYPANEL // console.clear();
+		// @if CK_DEBUG_STICKYPANEL // console.log( 'isSticky', this.isSticky );
+		// @if CK_DEBUG_STICKYPANEL // console.log( '_isStickyToTheBottomOfLimiter', this._isStickyToTheBottomOfLimiter );
+		// @if CK_DEBUG_STICKYPANEL // console.log( '_stickyTopOffset', this._stickyTopOffset );
+		// @if CK_DEBUG_STICKYPANEL // console.log( '_stickyBottomOffset', this._stickyBottomOffset );
 	}
 
 	/**
@@ -305,12 +326,11 @@ export default class StickyPanelView extends View {
 	 * @param limiterRect
 	 * @param visibleAncestorsRect
 	 */
-	private _stickToBottomOfLimiter( limiterRect: Rect, visibleAncestorsRect: Rect ) {
+	private _stickToBottomOfLimiter( limiterRect: Rect, visibleAncestorsRect: Rect, stickyBottomOffset: number ) {
 		this.isSticky = true;
 		this._isStickyToTheBottomOfLimiter = true;
 		this._stickyTopOffset = null;
-		this._stickyBottomOffset =
-			Math.max( limiterRect.bottom - visibleAncestorsRect.bottom, 0 ) + this.limiterBottomOffset;
+		this._stickyBottomOffset = stickyBottomOffset;
 		this._marginLeft = toPx( -global.window.scrollX );
 	}
 
