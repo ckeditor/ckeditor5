@@ -10,6 +10,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageBlockEditing from '../src/image/imageblockediting';
 import ImageInlineEditing from '../src/image/imageinlineediting';
 import ImageSizeAttributes from '../src/imagesizeattributes';
+import ImageResizeEditing from '../src/imageresize/imageresizeediting';
 import ImageUtils from '../src/imageutils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -63,13 +64,13 @@ describe( 'ImageSizeAttributes', () => {
 			describe( 'inline images', () => {
 				it( 'should upcast width attribute correctly', () => {
 					editor.setData(
-						'<p>Lorem <img width="100px" src="/assets/sample.png" "> ipsum</p>'
+						'<p>Lorem <img width="100" src="/assets/sample.png" "> ipsum</p>'
 					);
 
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>' +
 							'Lorem ' +
-							'<imageInline src="/assets/sample.png" width="100px"></imageInline>' +
+							'<imageInline src="/assets/sample.png" width="100"></imageInline>' +
 							' ipsum' +
 						'</paragraph>'
 					);
@@ -77,38 +78,94 @@ describe( 'ImageSizeAttributes', () => {
 
 				it( 'should upcast height attribute correctly', () => {
 					editor.setData(
-						'<p>Lorem <img height="50px" src="/assets/sample.png" "> ipsum</p>'
+						'<p>Lorem <img height="50" src="/assets/sample.png" "> ipsum</p>'
 					);
 
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>' +
 							'Lorem ' +
-							'<imageInline height="50px" src="/assets/sample.png"></imageInline>' +
+							'<imageInline height="50" src="/assets/sample.png"></imageInline>' +
 							' ipsum' +
 						'</paragraph>'
 					);
+				} );
+
+				it( 'should upcast width & height styles if they both are set', () => {
+					editor.setData(
+						'<p>Lorem <img style="width:200px;height:100px;" src="/assets/sample.png" "> ipsum</p>'
+					);
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>' +
+							'Lorem ' +
+							'<imageInline height="100" src="/assets/sample.png" width="200"></imageInline>' +
+							' ipsum' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should not upcast width style if height style is missing', () => {
+					editor.setData(
+						'<p>Lorem <img style="width:200px;" src="/assets/sample.png" "> ipsum</p>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'width' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast height style if width style is missing', () => {
+					editor.setData(
+						'<p>Lorem <img style="height:200px;" src="/assets/sample.png" "> ipsum</p>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'height' ) ).to.be.undefined;
 				} );
 			} );
 
 			describe( 'block images', () => {
 				it( 'should upcast width attribute correctly', () => {
 					editor.setData(
-						'<figure class="image"><img width="100px" src="/assets/sample.png"></figure>'
+						'<figure class="image"><img width="100" src="/assets/sample.png"></figure>'
 					);
 
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock src="/assets/sample.png" width="100px"></imageBlock>'
+						'<imageBlock src="/assets/sample.png" width="100"></imageBlock>'
 					);
 				} );
 
 				it( 'should upcast height attribute correctly', () => {
 					editor.setData(
-						'<figure class="image"><img height="50px" src="/assets/sample.png"></figure>'
+						'<figure class="image"><img height="50" src="/assets/sample.png"></figure>'
 					);
 
 					expect( getData( model, { withoutSelection: true } ) ).to.equal(
-						'<imageBlock height="50px" src="/assets/sample.png"></imageBlock>'
+						'<imageBlock height="50" src="/assets/sample.png"></imageBlock>'
 					);
+				} );
+
+				it( 'should upcast width & height styles if they both are set', () => {
+					editor.setData(
+						'<figure class="image"><img style="width:200px;height:100px;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock height="100" src="/assets/sample.png" width="200"></imageBlock>'
+					);
+				} );
+
+				it( 'should not upcast width style if height style is missing', () => {
+					editor.setData(
+						'<figure class="image"><img style="width:200px;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'width' ) ).to.be.undefined;
+				} );
+
+				it( 'should not upcast height style if width style is missing', () => {
+					editor.setData(
+						'<figure class="image"><img style="height:200px;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'height' ) ).to.be.undefined;
 				} );
 			} );
 		} );
@@ -117,33 +174,33 @@ describe( 'ImageSizeAttributes', () => {
 			describe( 'inline images', () => {
 				it( 'should downcast width attribute correctly', () => {
 					editor.setData(
-						'<p>Lorem <img width="100px" src="/assets/sample.png" "> ipsum</p>'
+						'<p>Lorem <img width="100" src="/assets/sample.png" "> ipsum</p>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<p>Lorem <span class="ck-widget image-inline" contenteditable="false">' +
-							'<img src="/assets/sample.png" width="100px"></img>' +
+							'<img src="/assets/sample.png" width="100"></img>' +
 						'</span> ipsum</p>'
 					);
 
 					expect( editor.getData() ).to.equal(
-						'<p>Lorem <img src="/assets/sample.png" width="100px"> ipsum</p>'
+						'<p>Lorem <img src="/assets/sample.png" width="100"> ipsum</p>'
 					);
 				} );
 
 				it( 'should downcast height attribute correctly', () => {
 					editor.setData(
-						'<p>Lorem <img height="50px" src="/assets/sample.png" "> ipsum</p>'
+						'<p>Lorem <img height="50" src="/assets/sample.png" "> ipsum</p>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<p>Lorem <span class="ck-widget image-inline" contenteditable="false">' +
-							'<img height="50px" src="/assets/sample.png"></img>' +
+							'<img height="50" src="/assets/sample.png"></img>' +
 						'</span> ipsum</p>'
 					);
 
 					expect( editor.getData() ).to.equal(
-						'<p>Lorem <img src="/assets/sample.png" height="50px"> ipsum</p>'
+						'<p>Lorem <img src="/assets/sample.png" height="50"> ipsum</p>'
 					);
 				} );
 
@@ -153,7 +210,7 @@ describe( 'ImageSizeAttributes', () => {
 							conversionApi.consumable.consume( data.item, 'attribute:width:imageInline' );
 						}, { priority: 'high' } )
 					);
-					setData( model, '<paragraph><imageInline src="/assets/sample.png" width="100px"></imageInline></paragraph>' );
+					setData( model, '<paragraph><imageInline src="/assets/sample.png" width="100"></imageInline></paragraph>' );
 
 					expect( editor.getData() ).to.equal(
 						'<p><img src="/assets/sample.png"></p>'
@@ -166,7 +223,7 @@ describe( 'ImageSizeAttributes', () => {
 							conversionApi.consumable.consume( data.item, 'attribute:height:imageInline' );
 						}, { priority: 'high' } )
 					);
-					setData( model, '<paragraph><imageInline src="/assets/sample.png" height="50px"></imageInline></paragraph>' );
+					setData( model, '<paragraph><imageInline src="/assets/sample.png" height="50"></imageInline></paragraph>' );
 
 					expect( editor.getData() ).to.equal(
 						'<p><img src="/assets/sample.png"></p>'
@@ -174,7 +231,7 @@ describe( 'ImageSizeAttributes', () => {
 				} );
 
 				it( 'should remove width attribute properly', () => {
-					setData( model, '<paragraph><imageInline src="/assets/sample.png" width="100px"></imageInline></paragraph>' );
+					setData( model, '<paragraph><imageInline src="/assets/sample.png" width="100"></imageInline></paragraph>' );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
 
@@ -187,7 +244,7 @@ describe( 'ImageSizeAttributes', () => {
 				} );
 
 				it( 'should remove height attribute properly', () => {
-					setData( model, '<paragraph><imageInline src="/assets/sample.png" height="50px"></imageInline></paragraph>' );
+					setData( model, '<paragraph><imageInline src="/assets/sample.png" height="50"></imageInline></paragraph>' );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
 
@@ -198,38 +255,87 @@ describe( 'ImageSizeAttributes', () => {
 					expect( editor.getData() )
 						.to.equal( '<p><img src="/assets/sample.png"></p>' );
 				} );
+
+				describe( 'with image resize plugin', () => {
+					let editor, view;
+
+					beforeEach( async () => {
+						editor = await VirtualTestEditor.create( {
+							plugins: [ Paragraph, ImageInlineEditing, ImageSizeAttributes, ImageResizeEditing ]
+						} );
+
+						view = editor.editing.view;
+					} );
+
+					afterEach( async () => {
+						await editor.destroy();
+					} );
+
+					it( 'should add aspect-ratio if attributes are set and image is resized', () => {
+						editor.setData(
+							'<p><img class="image_resized" width="100" height="200" style="width:50px" src="/assets/sample.png" "></p>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<p><span class="ck-widget image-inline image_resized" contenteditable="false" style="width:50px">' +
+								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+							'</span></p>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<p><img class="image_resized" style="aspect-ratio:100/200;width:50px;" ' +
+								'src="/assets/sample.png" width="100" height="200"></p>'
+						);
+					} );
+
+					it( 'should not add aspect-ratio if attributes are set but image is not resized', () => {
+						editor.setData(
+							'<p><img class="image_resized" width="100" height="200" src="/assets/sample.png" "></p>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<p><span class="ck-widget image-inline" contenteditable="false">' +
+								'<img height="200" src="/assets/sample.png" width="100"></img>' +
+							'</span></p>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<p><img src="/assets/sample.png" width="100" height="200"></p>'
+						);
+					} );
+				} );
 			} );
 
 			describe( 'block images', () => {
 				it( 'should downcast width attribute correctly', () => {
 					editor.setData(
-						'<figure class="image"><img width="100px" src="/assets/sample.png"></figure>'
+						'<figure class="image"><img width="100" src="/assets/sample.png"></figure>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget image" contenteditable="false">' +
-							'<img src="/assets/sample.png" width="100px"></img>' +
+							'<img src="/assets/sample.png" width="100"></img>' +
 						'</figure>'
 					);
 
 					expect( editor.getData() ).to.equal(
-						'<figure class="image"><img src="/assets/sample.png" width="100px"></figure>'
+						'<figure class="image"><img src="/assets/sample.png" width="100"></figure>'
 					);
 				} );
 
 				it( 'should downcast height attribute correctly', () => {
 					editor.setData(
-						'<figure class="image"><img height="50px" src="/assets/sample.png"></figure>'
+						'<figure class="image"><img height="50" src="/assets/sample.png"></figure>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget image" contenteditable="false">' +
-							'<img height="50px" src="/assets/sample.png"></img>' +
+							'<img height="50" src="/assets/sample.png"></img>' +
 						'</figure>'
 					);
 
 					expect( editor.getData() ).to.equal(
-						'<figure class="image"><img src="/assets/sample.png" height="50px"></figure>'
+						'<figure class="image"><img src="/assets/sample.png" height="50"></figure>'
 					);
 				} );
 
@@ -239,7 +345,7 @@ describe( 'ImageSizeAttributes', () => {
 							conversionApi.consumable.consume( data.item, 'attribute:width:imageBlock' );
 						}, { priority: 'high' } )
 					);
-					setData( model, '<imageBlock src="/assets/sample.png" width="100px"></imageBlock>' );
+					setData( model, '<imageBlock src="/assets/sample.png" width="100"></imageBlock>' );
 
 					expect( editor.getData() ).to.equal(
 						'<figure class="image"><img src="/assets/sample.png"></figure>'
@@ -260,7 +366,7 @@ describe( 'ImageSizeAttributes', () => {
 				} );
 
 				it( 'should remove width attribute properly', () => {
-					setData( model, '<imageBlock src="/assets/sample.png" width="100px"></imageBlock>' );
+					setData( model, '<imageBlock src="/assets/sample.png" width="100"></imageBlock>' );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 );
 
@@ -273,7 +379,7 @@ describe( 'ImageSizeAttributes', () => {
 				} );
 
 				it( 'should remove height attribute properly', () => {
-					setData( model, '<imageBlock src="/assets/sample.png" height="50px"></imageBlock>' );
+					setData( model, '<imageBlock src="/assets/sample.png" height="50"></imageBlock>' );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 );
 
@@ -283,6 +389,58 @@ describe( 'ImageSizeAttributes', () => {
 
 					expect( editor.getData() )
 						.to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
+				} );
+
+				describe( 'with image resize plugin', () => {
+					let editor, view;
+
+					beforeEach( async () => {
+						editor = await VirtualTestEditor.create( {
+							plugins: [ Paragraph, ImageBlockEditing, ImageSizeAttributes, ImageResizeEditing ]
+						} );
+
+						view = editor.editing.view;
+					} );
+
+					afterEach( async () => {
+						await editor.destroy();
+					} );
+
+					it( 'should add aspect-ratio if attributes are set and image is resized', () => {
+						editor.setData(
+							'<figure class="image" style="width: 50px;"><img width="100" height="200" src="/assets/sample.png"></figure>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<figure class="ck-widget image image_resized" contenteditable="false" style="width:50px">' +
+								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+							'</figure>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image image_resized" style="width:50px;">' +
+								'<img style="aspect-ratio:100/200;" src="/assets/sample.png" width="100" height="200">' +
+							'</figure>'
+						);
+					} );
+
+					it( 'should not add aspect-ratio if attributes are set but image is not resized', () => {
+						editor.setData(
+							'<figure class="image"><img width="100" height="200" src="/assets/sample.png"></figure>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<figure class="ck-widget image" contenteditable="false">' +
+								'<img height="200" src="/assets/sample.png" width="100"></img>' +
+							'</figure>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								'<img src="/assets/sample.png" width="100" height="200">' +
+							'</figure>'
+						);
+					} );
 				} );
 			} );
 		} );

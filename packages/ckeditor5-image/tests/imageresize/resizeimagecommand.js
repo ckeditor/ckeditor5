@@ -115,5 +115,14 @@ describe( 'ResizeImageCommand', () => {
 			expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'resizedWidth' ) ).to.be.false;
 		} );
+
+		it( 'removes image resizedHeight', () => {
+			setData( model, '[<imageBlock resizedHeight="50px"></imageBlock>]' );
+
+			command.execute( { width: '100%' } );
+
+			expect( getData( model ) ).to.equal( '[<imageBlock resizedWidth="100%"></imageBlock>]' );
+			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'resizedHeight' ) ).to.be.false;
+		} );
 	} );
 } );

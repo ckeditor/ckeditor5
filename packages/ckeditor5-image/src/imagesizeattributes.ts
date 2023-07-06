@@ -62,6 +62,27 @@ export default class ImageSizeAttributes extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					styles: {
+						width: /.+/
+					}
+				},
+				model: {
+					key: 'width',
+					value: ( viewElement: ViewElement ) => {
+						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+						if ( widthStyle && heightStyle ) {
+							return widthStyle;
+						}
+
+						return null;
+					}
+				}
+			} )
+			.attributeToAttribute( {
+				view: {
 					name: viewElementName,
 					attributes: {
 						width: /.+/
@@ -70,6 +91,27 @@ export default class ImageSizeAttributes extends Plugin {
 				model: {
 					key: 'width',
 					value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'width' )
+				}
+			} )
+			.attributeToAttribute( {
+				view: {
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					styles: {
+						height: /.+/
+					}
+				},
+				model: {
+					key: 'height',
+					value: ( viewElement: ViewElement ) => {
+						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+						if ( widthStyle && heightStyle ) {
+							return heightStyle;
+						}
+
+						return null;
+					}
 				}
 			} )
 			.attributeToAttribute( {
@@ -91,7 +133,9 @@ export default class ImageSizeAttributes extends Plugin {
 			attachDowncastConverter( dispatcher, 'height', 'height' );
 		} );
 
-		function attachDowncastConverter( dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string ) {
+		function attachDowncastConverter(
+			dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string
+		) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ modelAttributeName }:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
@@ -106,7 +150,17 @@ export default class ImageSizeAttributes extends Plugin {
 				} else {
 					viewWriter.removeAttribute( viewAttributeName, img );
 				}
+
+				const width = data.item.getAttribute( 'width' );
+				const height = data.item.getAttribute( 'height' );
+				const isResized = data.item.hasAttribute( 'resizedWidth' );
+				const aspectRatio = img.getStyle( 'aspect-ratio' );
+
+				if ( width && height && !aspectRatio && isResized ) {
+					viewWriter.setStyle( 'aspect-ratio', `${ width }/${ height }`, img );
+				}
 			} );
 		}
 	}
 }
+

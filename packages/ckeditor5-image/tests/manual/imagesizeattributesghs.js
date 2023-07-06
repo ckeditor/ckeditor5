@@ -10,12 +10,12 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import ImageResize from '../../src/imageresize';
 import ImageSizeAttributes from '../../src/imagesizeattributes';
 import ImageUpload from '../../src/imageupload';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -29,8 +29,8 @@ const commonConfig = {
 		Indent,
 		IndentBlock,
 		CloudServices,
-		EasyImage,
-		PasteFromOffice
+		PasteFromOffice,
+		GeneralHtmlSupport
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
@@ -41,12 +41,33 @@ const commonConfig = {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 		tableToolbar: [ 'bold', 'italic' ]
 	},
+	htmlSupport: {
+		allow: [
+			// Enables all HTML features.
+			{
+				name: /.*/,
+				attributes: true,
+				classes: true,
+				styles: true
+			}
+		],
+		disallow: [
+			{
+				attributes: [
+					{ key: /^on(.*)/i, value: true },
+					{ key: /.*/, value: /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i },
+					{ key: /.*/, value: /data:(?!image\/(png|jpeg|gif|webp))/i }
+				]
+			},
+			{ name: 'script' }
+		]
+	},
 	cloudServices: CS_CONFIG
 };
 
 ( async function initTest() {
 	window.editor = await ClassicEditor
-		.create( document.querySelector( '#editor-width-height-attributes' ), commonConfig )
+		.create( document.querySelector( '#editor-ghs-with-width-height-attributes' ), commonConfig )
 		.catch( err => {
 			console.error( err.stack );
 		} );

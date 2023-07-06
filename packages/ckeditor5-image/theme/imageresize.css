@@ -3,6 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* Preserve aspect ratio of the resized image after introducing image height attribute. */
+.ck-content figure.image_resized img,
+.ck-content img.image_resized {
+	height: auto;
+}
+
 .ck-content .image.image_resized {
 	max-width: 100%;
 	/*
@@ -25,6 +31,12 @@
 }
 
 .ck.ck-editor__editable {
+	/* Preserve aspect ratio of the resized image after introducing image height attribute. */
+	& .image.image_resized img,
+	& .image-inline.image_resized img {
+		height: auto;
+	}
+
 	/* The resized inline image nested in the table should respect its parent size.
 	See https://github.com/ckeditor/ckeditor5/issues/9117. */
 	& td,

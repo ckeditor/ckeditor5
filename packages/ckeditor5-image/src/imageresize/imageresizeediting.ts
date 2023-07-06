@@ -82,11 +82,11 @@ export default class ImageResizeEditing extends Plugin {
 
 	private _registerSchema(): void {
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: 'resizedWidth' } );
+			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'resizedWidth', 'resizedHeight' ] } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.editor.model.schema.extend( 'imageInline', { allowAttributes: 'resizedWidth' } );
+			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'resizedWidth', 'resizedHeight' ] } );
 		}
 	}
 
@@ -97,6 +97,7 @@ export default class ImageResizeEditing extends Plugin {
 	 */
 	private _registerConverters( imageType: 'imageBlock' | 'imageInline' ) {
 		const editor = this.editor;
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		// Dedicated converter to propagate image's attribute to the img tag.
 		editor.conversion.for( 'downcast' ).add( dispatcher =>
@@ -118,6 +119,35 @@ export default class ImageResizeEditing extends Plugin {
 			} )
 		);
 
+		editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
+			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const viewWriter = conversionApi.writer;
+				const viewElement = conversionApi.mapper.toViewElement( data.item );
+
+				viewWriter.setStyle( 'height', data.attributeNewValue, viewElement );
+			} )
+		);
+
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
+			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				if ( data.attributeNewValue !== null ) {
+					const viewWriter = conversionApi.writer;
+					const figure = conversionApi.mapper.toViewElement( data.item );
+					const target = imageType === 'imageInline' ? imageUtils.findViewImgElement( figure ) : figure;
+
+					viewWriter.setStyle( 'height', data.attributeNewValue, target );
+				}
+			} )
+		);
+
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
@@ -128,7 +158,45 @@ export default class ImageResizeEditing extends Plugin {
 				},
 				model: {
 					key: 'resizedWidth',
-					value: ( viewElement: ViewElement ) => viewElement.getStyle( 'width' )
+					value: ( viewElement: ViewElement ) => {
+						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+						// If both image styles: width & height are set, they will override the image width & height attributes in the
+						// browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
+						// That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
+						if ( widthStyle && heightStyle ) {
+							return null;
+						}
+
+						return viewElement.getStyle( 'width' );
+					}
+				}
+			} );
+
+		editor.conversion.for( 'upcast' )
+			.attributeToAttribute( {
+				view: {
+					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					styles: {
+						height: /.+/
+					}
+				},
+				model: {
+					key: 'resizedHeight',
+					value: ( viewElement: ViewElement ) => {
+						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+						// If both image styles: width & height are set, they will override the image width & height attributes in the
+						// browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
+						// That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
+						if ( widthStyle && heightStyle ) {
+							return null;
+						}
+
+						return viewElement.getStyle( 'height' );
+					}
 				}
 			} );
 	}
