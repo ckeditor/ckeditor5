@@ -21,7 +21,7 @@ import {
 	Rect
 } from '@ckeditor/ckeditor5-utils';
 
-import RectDrawer from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer';
+// @if CK_DEBUG_STICKYPANEL // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default
 
 import '../../../theme/components/panel/stickypanel.css';
 
@@ -244,11 +244,10 @@ export default class StickyPanelView extends View {
 	 * be sticky or not.
 	 */
 	private _checkIfShouldBeSticky( scrollTarget?: HTMLElement | Document ): void {
-		RectDrawer.clear();
+		// @if CK_DEBUG_STICKYPANEL // RectDrawer.clear();
 
 		if ( !this.limiterElement ) {
 			this._unstick();
-			this._log();
 
 			return;
 		}
@@ -264,26 +263,27 @@ export default class StickyPanelView extends View {
 		const visibleAncestorsRect = getVisibleAncestorsRect( scrollableAncestors, this.viewportTopOffset );
 		const limiterRect = new Rect( this.limiterElement );
 
-		if ( visibleAncestorsRect ) {
-			RectDrawer.draw( visibleAncestorsRect,
-				{ outlineWidth: '3px', opacity: '.8', outlineColor: 'red', outlineOffset: '-3px' },
-				'Visible anc'
-			);
-		}
-
-		RectDrawer.draw( limiterRect,
-			{ outlineWidth: '3px', opacity: '.8', outlineColor: 'green', outlineOffset: '-3px' },
-			'Limiter'
-		);
+		// @if CK_DEBUG_STICKYPANEL // if ( visibleAncestorsRect ) {
+		// @if CK_DEBUG_STICKYPANEL // 	RectDrawer.draw( visibleAncestorsRect,
+		// @if CK_DEBUG_STICKYPANEL // 		{ outlineWidth: '3px', opacity: '.8', outlineColor: 'red', outlineOffset: '-3px' },
+		// @if CK_DEBUG_STICKYPANEL // 		'Visible anc'
+		// @if CK_DEBUG_STICKYPANEL // 	);
+		// @if CK_DEBUG_STICKYPANEL // }
+		// @if CK_DEBUG_STICKYPANEL //
+		// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( limiterRect,
+		// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '3px', opacity: '.8', outlineColor: 'green', outlineOffset: '-3px' },
+		// @if CK_DEBUG_STICKYPANEL // 	'Limiter'
+		// @if CK_DEBUG_STICKYPANEL // );
 
 		if ( visibleAncestorsRect && limiterRect.top < visibleAncestorsRect.top ) {
 			const visibleLimiterRect = limiterRect.getIntersection( visibleAncestorsRect );
 
 			if ( visibleLimiterRect ) {
-				RectDrawer.draw( visibleLimiterRect,
-					{ outlineWidth: '3px', opacity: '.8', outlineColor: 'fuchsia', outlineOffset: '-3px' },
-					'Visible limiter'
-				);
+				// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( visibleLimiterRect,
+				// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '3px', opacity: '.8', outlineColor: 'fuchsia', outlineOffset: '-3px',
+				// @if CK_DEBUG_STICKYPANEL // 		backgroundColor: 'rgba(255, 0, 255, .3)' },
+				// @if CK_DEBUG_STICKYPANEL // 	'Visible limiter'
+				// @if CK_DEBUG_STICKYPANEL // );
 
 				const visibleAncestorsTop = visibleAncestorsRect.top;
 
@@ -295,15 +295,11 @@ export default class StickyPanelView extends View {
 					this._stickToTopOfAncestors( visibleAncestorsTop );
 				}
 			} else {
-				console.log( 'No visible limiter' );
 				this._unstick();
 			}
 		} else {
-			console.log( 'No visible ancestors or limiter not touching yet' );
 			this._unstick();
 		}
-
-		this._log();
 	}
 
 	/**
@@ -341,18 +337,6 @@ export default class StickyPanelView extends View {
 		this._stickyTopOffset = null;
 		this._stickyBottomOffset = null;
 		this._marginLeft = null;
-	}
-
-	/**
-	 * TO BE REMOVED
-	 */
-	private _log() {
-		console.clear();
-		console.log( 'isSticky', this.isSticky );
-		console.log( '_stickyTopOffset', this._stickyTopOffset );
-		console.log( '_stickyBottomOffset', this._stickyBottomOffset );
-		console.log( '_isStickyToTheBottomOfLimiter', this._isStickyToTheBottomOfLimiter );
-		console.log( '_marginLeft', this._marginLeft );
 	}
 }
 
@@ -399,9 +383,11 @@ function getVisibleAncestorsRect( scrollableAncestors: Array<HTMLElement | Docum
 
 	let scrollableAncestorsIntersectionRect: Rect | null = scrollableAncestorsRects[ 0 ];
 
-	for ( const scrollableAncestorRect of scrollableAncestorsRects ) {
-		RectDrawer.draw( scrollableAncestorRect, { outlineWidth: '1px', opacity: '.7' }, 'Anc' );
-	}
+	// @if CK_DEBUG_STICKYPANEL // for ( const scrollableAncestorRect of scrollableAncestorsRects ) {
+	// @if CK_DEBUG_STICKYPANEL // 	RectDrawer.draw( scrollableAncestorRect, {
+	// @if CK_DEBUG_STICKYPANEL // 		outlineWidth: '1px', opacity: '.7', outlineStyle: 'dashed'
+	// @if CK_DEBUG_STICKYPANEL // 	}, 'Scrollable ancestor' );
+	// @if CK_DEBUG_STICKYPANEL // }
 
 	for ( const scrollableAncestorRect of scrollableAncestorsRects.slice( 1 ) ) {
 		if ( scrollableAncestorsIntersectionRect ) {
