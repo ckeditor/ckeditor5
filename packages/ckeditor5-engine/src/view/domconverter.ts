@@ -686,129 +686,6 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Internal generator for {@link #domToView}. Also used by {@link #domChildrenToView}.
-	 * Separates DOM nodes conversion from whitespaces processing.
-	 */
-	private* _domToView(
-		domNode: DomNode,
-		options: {
-			bind?: boolean;
-			withChildren?: boolean;
-			keepOriginalCase?: boolean;
-			skipComments?: boolean;
-		} = {},
-		inlineNodes: Array<ViewNode>
-	): IterableIterator<ViewNode | ViewDocumentFragment | null> {
-		if ( this.isBlockFiller( domNode ) ) {
-			return null;
-		}
-
-		// When node is inside a UIElement or a RawElement return that parent as it's view representation.
-		const hostElement = this.getHostViewElement( domNode );
-
-		if ( hostElement ) {
-			return hostElement;
-		}
-
-		if ( isComment( domNode ) && options.skipComments ) {
-			return null;
-		}
-
-		if ( isText( domNode ) ) {
-			if ( isInlineFiller( domNode ) ) {
-				return null;
-			} else {
-				const textData = domNode.data;
-
-				if ( textData === '' ) {
-					return null;
-				}
-
-				const textNode = new ViewText( this.document, textData );
-
-				inlineNodes.push( textNode );
-
-				return textNode;
-			}
-		} else {
-			let viewElement = this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) );
-
-			if ( viewElement ) {
-				if ( this._isInlineObjectElement( viewElement ) ) {
-					inlineNodes.push( viewElement );
-				}
-
-				return viewElement;
-			}
-
-			if ( this.isDocumentFragment( domNode ) ) {
-				// Create view document fragment.
-				viewElement = new ViewDocumentFragment( this.document );
-
-				if ( options.bind ) {
-					this.bindDocumentFragments( domNode, viewElement );
-				}
-			} else {
-				// Create view element.
-				viewElement = this._createViewElement( domNode, options );
-
-				if ( options.bind ) {
-					this.bindElements( domNode as DomElement, viewElement );
-				}
-
-				// Copy element's attributes.
-				const attrs = ( domNode as DomElement ).attributes;
-
-				if ( attrs ) {
-					for ( let l = attrs.length, i = 0; i < l; i++ ) {
-						viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
-					}
-				}
-
-				// Treat this element's content as a raw data if it was registered as such.
-				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
-					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
-
-					if ( !this.blockElements.includes( viewElement.name ) ) {
-						inlineNodes.push( viewElement );
-					}
-
-					return viewElement;
-				}
-
-				// Comment node is also treated as an element with raw data.
-				if ( isComment( domNode ) ) {
-					viewElement._setCustomProperty( '$rawContent', domNode.data );
-
-					return viewElement;
-				}
-			}
-
-			// Yield the element first so the flow of nested inline nodes is not reversed inside elements.
-			yield viewElement;
-
-			const nestedInlineNodes: Array<ViewNode> = [];
-
-			if ( options.withChildren !== false ) {
-				for ( const child of this.domChildrenToView( domNode as DomElement, options, nestedInlineNodes ) ) {
-					viewElement._appendChild( child );
-				}
-			}
-
-			// Check if this is an inline object after processing child nodes so matcher
-			// for inline objects can verify if the element is empty.
-			if ( this._isInlineObjectElement( viewElement ) ) {
-				inlineNodes.push( viewElement );
-			} else {
-				// It's an inline element that is not an object (like <b>, <i>) or a block element.
-				for ( const inlineNode of nestedInlineNodes ) {
-					inlineNodes.push( inlineNode );
-				}
-			}
-		}
-	}
-
-	/**
 	 * Converts children of the DOM element to view nodes using
 	 * the {@link module:engine/view/domconverter~DomConverter#domToView} method.
 	 * Additionally this method omits block {@link module:engine/view/filler filler}, if it exists in the DOM parent.
@@ -843,113 +720,6 @@ export default class DomConverter {
 
 		// Whitespace cleaning before leaving a block element (content of block element).
 		this._processDomInlineNodes( domElement, inlineNodes, options );
-	}
-
-	/**
-	 * TODO
-	 */
-	private _processDomInlineNodes(
-		domParent: DomElement | null,
-		inlineNodes: Array<ViewNode>,
-		options: { withChildren?: boolean }
-	): void {
-		if ( !inlineNodes.length ) {
-			return;
-		}
-
-		// Process text nodes only after reaching a block or document fragment,
-		// do not alter whitespaces while processing an inline element like <b> or <i>.
-		if ( domParent && !this.isDocumentFragment( domParent ) && !this._isBlockElement( domParent ) ) {
-			return;
-		}
-
-		let prevNodeEndsWithSpace = false;
-
-		for ( let i = 0; i < inlineNodes.length; i++ ) {
-			const node = inlineNodes[ i ];
-
-			if ( !node.is( '$text' ) ) {
-				prevNodeEndsWithSpace = false;
-				continue;
-			}
-
-			let data: string;
-			let nodeEndsWithSpace: boolean = false;
-
-			if ( _hasViewParentOfType( node, this.preElements ) ) {
-				data = getDataWithoutFiller( node.data );
-			} else {
-				// Change all consecutive whitespace characters (from the [ \n\t\r] set –
-				// see https://github.com/ckeditor/ckeditor5-engine/issues/822#issuecomment-311670249) to a single space character.
-				// That's how multiple whitespaces are treated when rendered, so we normalize those whitespaces.
-				// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
-				data = node.data.replace( /[ \n\t\r]{1,}/g, ' ' );
-				nodeEndsWithSpace = /[^\S\u00A0]/.test( data.charAt( data.length - 1 ) );
-
-				const prevNode = i > 0 ? inlineNodes[ i - 1 ] : null;
-				const nextNode = i + 1 < inlineNodes.length ? inlineNodes[ i + 1 ] : null;
-
-				const shouldLeftTrim = !prevNode || prevNode.is( 'element' ) && prevNode.name == 'br' || prevNodeEndsWithSpace;
-				const shouldRightTrim = nextNode ? false : !startsWithFiller( node.data );
-
-				// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
-				if ( options.withChildren !== false ) {
-					// If the previous dom text node does not exist or it ends by whitespace character, remove space character from the
-					// beginning of this text node. Such space character is treated as a whitespace.
-					if ( shouldLeftTrim ) {
-						data = data.replace( /^ /, '' );
-					}
-
-					// If the next text node does not exist remove space character from the end of this text node.
-					if ( shouldRightTrim ) {
-						data = data.replace( / $/, '' );
-					}
-				}
-
-				// At the beginning and end of a block element, Firefox inserts normal space + <br> instead of non-breaking space.
-				// This means that the text node starts/end with normal space instead of non-breaking space.
-				// This causes a problem because the normal space would be removed in `.replace` calls above. To prevent that,
-				// the inline filler is removed only after the data is initially processed (by the `.replace` above). See ckeditor5#692.
-				data = getDataWithoutFiller( data );
-
-				// At this point we should have removed all whitespaces from DOM text data.
-				//
-				// Now, We will reverse the process that happens in `_processDataFromViewText`.
-				//
-				// We have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
-				// First, change all ` \u00A0` pairs (space + &nbsp;) to two spaces. DOM converter changes two spaces from model/view to
-				// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them back to `  `.
-				data = data.replace( / \u00A0/g, '  ' );
-
-				const isNextNodeInlineObjectElement = nextNode && nextNode.is( 'element' ) && nextNode.name != 'br';
-				const isNextNodeStartingWithSpace = nextNode && nextNode.is( '$text' ) && nextNode.data.charAt( 0 ) == ' ';
-
-				// Then, let's change the last nbsp to a space.
-				if ( /[ \u00A0]\u00A0$/.test( data ) || !nextNode || isNextNodeInlineObjectElement || isNextNodeStartingWithSpace ) {
-					data = data.replace( /\u00A0$/, ' ' );
-				}
-
-				// Then, change &nbsp; character that is at the beginning of the text node to space character.
-				// We do that replacement only if this is the first node or the previous node ends on whitespace character.
-				if ( shouldLeftTrim || prevNode && prevNode.is( 'element' ) && prevNode.name != 'br' ) {
-					data = data.replace( /^\u00A0/, ' ' );
-				}
-			}
-
-			// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
-			// changed to normal space. All left &nbsp; are &nbsp; inserted intentionally.
-
-			if ( data.length == 0 && node.parent ) {
-				node._remove();
-				inlineNodes.splice( i, 1 );
-				i--;
-			} else {
-				node._data = data;
-				prevNodeEndsWithSpace = nodeEndsWithSpace;
-			}
-		}
-
-		inlineNodes.length = 0;
 	}
 
 	/**
@@ -1477,6 +1247,236 @@ export default class DomConverter {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Internal generator for {@link #domToView}. Also used by {@link #domChildrenToView}.
+	 * Separates DOM nodes conversion from whitespaces processing.
+	 */
+	private* _domToView(
+		domNode: DomNode,
+		options: {
+			bind?: boolean;
+			withChildren?: boolean;
+			keepOriginalCase?: boolean;
+			skipComments?: boolean;
+		} = {},
+		inlineNodes: Array<ViewNode>
+	): IterableIterator<ViewNode | ViewDocumentFragment | null> {
+		if ( this.isBlockFiller( domNode ) ) {
+			return null;
+		}
+
+		// When node is inside a UIElement or a RawElement return that parent as it's view representation.
+		const hostElement = this.getHostViewElement( domNode );
+
+		if ( hostElement ) {
+			return hostElement;
+		}
+
+		if ( isComment( domNode ) && options.skipComments ) {
+			return null;
+		}
+
+		if ( isText( domNode ) ) {
+			if ( isInlineFiller( domNode ) ) {
+				return null;
+			} else {
+				const textData = domNode.data;
+
+				if ( textData === '' ) {
+					return null;
+				}
+
+				const textNode = new ViewText( this.document, textData );
+
+				inlineNodes.push( textNode );
+
+				return textNode;
+			}
+		} else {
+			let viewElement = this.mapDomToView( domNode as ( DomElement | DomDocumentFragment ) );
+
+			if ( viewElement ) {
+				if ( this._isInlineObjectElement( viewElement ) ) {
+					inlineNodes.push( viewElement );
+				}
+
+				return viewElement;
+			}
+
+			if ( this.isDocumentFragment( domNode ) ) {
+				// Create view document fragment.
+				viewElement = new ViewDocumentFragment( this.document );
+
+				if ( options.bind ) {
+					this.bindDocumentFragments( domNode, viewElement );
+				}
+			} else {
+				// Create view element.
+				viewElement = this._createViewElement( domNode, options );
+
+				if ( options.bind ) {
+					this.bindElements( domNode as DomElement, viewElement );
+				}
+
+				// Copy element's attributes.
+				const attrs = ( domNode as DomElement ).attributes;
+
+				if ( attrs ) {
+					for ( let l = attrs.length, i = 0; i < l; i++ ) {
+						viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
+					}
+				}
+
+				// Treat this element's content as a raw data if it was registered as such.
+				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
+					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
+
+					if ( !this.blockElements.includes( viewElement.name ) ) {
+						inlineNodes.push( viewElement );
+					}
+
+					return viewElement;
+				}
+
+				// Comment node is also treated as an element with raw data.
+				if ( isComment( domNode ) ) {
+					viewElement._setCustomProperty( '$rawContent', domNode.data );
+
+					return viewElement;
+				}
+			}
+
+			// Yield the element first so the flow of nested inline nodes is not reversed inside elements.
+			yield viewElement;
+
+			const nestedInlineNodes: Array<ViewNode> = [];
+
+			if ( options.withChildren !== false ) {
+				for ( const child of this.domChildrenToView( domNode as DomElement, options, nestedInlineNodes ) ) {
+					viewElement._appendChild( child );
+				}
+			}
+
+			// Check if this is an inline object after processing child nodes so matcher
+			// for inline objects can verify if the element is empty.
+			if ( this._isInlineObjectElement( viewElement ) ) {
+				inlineNodes.push( viewElement );
+			} else {
+				// It's an inline element that is not an object (like <b>, <i>) or a block element.
+				for ( const inlineNode of nestedInlineNodes ) {
+					inlineNodes.push( inlineNode );
+				}
+			}
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _processDomInlineNodes(
+		domParent: DomElement | null,
+		inlineNodes: Array<ViewNode>,
+		options: { withChildren?: boolean }
+	): void {
+		if ( !inlineNodes.length ) {
+			return;
+		}
+
+		// Process text nodes only after reaching a block or document fragment,
+		// do not alter whitespaces while processing an inline element like <b> or <i>.
+		if ( domParent && !this.isDocumentFragment( domParent ) && !this._isBlockElement( domParent ) ) {
+			return;
+		}
+
+		let prevNodeEndsWithSpace = false;
+
+		for ( let i = 0; i < inlineNodes.length; i++ ) {
+			const node = inlineNodes[ i ];
+
+			if ( !node.is( '$text' ) ) {
+				prevNodeEndsWithSpace = false;
+				continue;
+			}
+
+			let data: string;
+			let nodeEndsWithSpace: boolean = false;
+
+			if ( _hasViewParentOfType( node, this.preElements ) ) {
+				data = getDataWithoutFiller( node.data );
+			} else {
+				// Change all consecutive whitespace characters (from the [ \n\t\r] set –
+				// see https://github.com/ckeditor/ckeditor5-engine/issues/822#issuecomment-311670249) to a single space character.
+				// That's how multiple whitespaces are treated when rendered, so we normalize those whitespaces.
+				// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
+				data = node.data.replace( /[ \n\t\r]{1,}/g, ' ' );
+				nodeEndsWithSpace = /[^\S\u00A0]/.test( data.charAt( data.length - 1 ) );
+
+				const prevNode = i > 0 ? inlineNodes[ i - 1 ] : null;
+				const nextNode = i + 1 < inlineNodes.length ? inlineNodes[ i + 1 ] : null;
+
+				const shouldLeftTrim = !prevNode || prevNode.is( 'element' ) && prevNode.name == 'br' || prevNodeEndsWithSpace;
+				const shouldRightTrim = nextNode ? false : !startsWithFiller( node.data );
+
+				// Do not try to clear whitespaces if this is flat mapping for the purpose of mutation observer and differ in rendering.
+				if ( options.withChildren !== false ) {
+					// If the previous dom text node does not exist or it ends by whitespace character, remove space character from the
+					// beginning of this text node. Such space character is treated as a whitespace.
+					if ( shouldLeftTrim ) {
+						data = data.replace( /^ /, '' );
+					}
+
+					// If the next text node does not exist remove space character from the end of this text node.
+					if ( shouldRightTrim ) {
+						data = data.replace( / $/, '' );
+					}
+				}
+
+				// At the beginning and end of a block element, Firefox inserts normal space + <br> instead of non-breaking space.
+				// This means that the text node starts/end with normal space instead of non-breaking space.
+				// This causes a problem because the normal space would be removed in `.replace` calls above. To prevent that,
+				// the inline filler is removed only after the data is initially processed (by the `.replace` above). See ckeditor5#692.
+				data = getDataWithoutFiller( data );
+
+				// At this point we should have removed all whitespaces from DOM text data.
+				//
+				// Now, We will reverse the process that happens in `_processDataFromViewText`.
+				//
+				// We have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
+				// First, change all ` \u00A0` pairs (space + &nbsp;) to two spaces. DOM converter changes two spaces from model/view to
+				// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them back to `  `.
+				data = data.replace( / \u00A0/g, '  ' );
+
+				const isNextNodeInlineObjectElement = nextNode && nextNode.is( 'element' ) && nextNode.name != 'br';
+				const isNextNodeStartingWithSpace = nextNode && nextNode.is( '$text' ) && nextNode.data.charAt( 0 ) == ' ';
+
+				// Then, let's change the last nbsp to a space.
+				if ( /[ \u00A0]\u00A0$/.test( data ) || !nextNode || isNextNodeInlineObjectElement || isNextNodeStartingWithSpace ) {
+					data = data.replace( /\u00A0$/, ' ' );
+				}
+
+				// Then, change &nbsp; character that is at the beginning of the text node to space character.
+				// We do that replacement only if this is the first node or the previous node ends on whitespace character.
+				if ( shouldLeftTrim || prevNode && prevNode.is( 'element' ) && prevNode.name != 'br' ) {
+					data = data.replace( /^\u00A0/, ' ' );
+				}
+			}
+
+			// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
+			// changed to normal space. All left &nbsp; are &nbsp; inserted intentionally.
+
+			if ( data.length == 0 && node.parent ) {
+				node._remove();
+				inlineNodes.splice( i, 1 );
+				i--;
+			} else {
+				node._data = data;
+				prevNodeEndsWithSpace = nodeEndsWithSpace;
+			}
+		}
+
+		inlineNodes.length = 0;
 	}
 
 	/**
