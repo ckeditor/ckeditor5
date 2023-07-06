@@ -78,24 +78,26 @@ export default class InsertParagraphCommand extends Command {
 				return;
 			}
 
+			const positionParent = position.parent as Element;
+
 			// E.g.
 			// <paragraph>[]</paragraph> ---> <paragraph></paragraph><paragraph>[]</paragraph>
-			const isInEmptyBlock = position.isAtStart && position.isAtEnd;
+			const isInEmptyBlock = positionParent.isEmpty;
 
 			// E.g.
 			// <paragraph>foo[]</paragraph> ---> <paragraph>foo</paragraph><paragraph>[]</paragraph>
-			const isAtEndOfTextBlock = position.isAtEnd && position.nodeBefore?.is( '$text' );
+			const isAtEndOfTextBlock = position.isAtEnd && !positionParent.isEmpty;
 
 			// E.g.
 			// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
-			const isAtStartOfTextBlock = position.isAtStart && position.nodeAfter?.is( '$text' );
+			const isAtStartOfTextBlock = position.isAtStart && !positionParent.isEmpty;
 
-			const canBeChild = model.schema.checkChild( position.parent as Element, paragraph );
+			const canBeChild = model.schema.checkChild( positionParent, paragraph );
 
 			if ( isInEmptyBlock || isAtEndOfTextBlock ) {
-				position = writer.createPositionAfter( position.parent as Item );
+				position = writer.createPositionAfter( positionParent );
 			} else if ( isAtStartOfTextBlock ) {
-				position = writer.createPositionBefore( position.parent as Item );
+				position = writer.createPositionBefore( positionParent );
 			} else if ( !canBeChild ) {
 				position = writer.split( position, allowedParent ).position;
 			}

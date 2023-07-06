@@ -83,6 +83,20 @@ describe( 'InsertParagraphCommand', () => {
 			);
 		} );
 
+		it( 'should insert paragraph when position is at the end of line with an inline widget', () => {
+			schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+			setData( model, '<paragraph><inlineWidget></inlineWidget>[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getFirstPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><inlineWidget></inlineWidget></paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
 		it( 'should insert paragraph when position is at the start of line', () => {
 			setData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -93,6 +107,20 @@ describe( 'InsertParagraphCommand', () => {
 			expect( getData( model ) ).to.equal(
 				'<paragraph>[]</paragraph>' +
 				'<paragraph>foo</paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the start of line with an inline widget', () => {
+			schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+			setData( model, '<paragraph>[]<inlineWidget></inlineWidget></paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>' +
+				'<paragraph><inlineWidget></inlineWidget></paragraph>'
 			);
 		} );
 
