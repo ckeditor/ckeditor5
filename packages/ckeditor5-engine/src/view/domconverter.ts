@@ -659,9 +659,9 @@ export default class DomConverter {
 			withChildren?: boolean;
 			keepOriginalCase?: boolean;
 			skipComments?: boolean;
-		} = {},
-		inlineNodes: Array<ViewNode> = []
+		} = {}
 	): ViewNode | ViewDocumentFragment | null {
+		const inlineNodes: Array<ViewNode> = [];
 		const generator = this._domToView( domNode, options, inlineNodes );
 
 		// Get the first yielded value or a returned value.
@@ -674,6 +674,7 @@ export default class DomConverter {
 		// Trigger children handling.
 		generator.next();
 
+		// Whitespace cleaning.
 		this._processDomInlineNodes( null, inlineNodes, options );
 
 		// Text not got trimmed to an empty string so there is no result node.
@@ -685,7 +686,8 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Internal generator for {@link #domToView}. Also used by {@link #domChildrenToView}.
+	 * Separates DOM nodes conversion from whitespaces processing.
 	 */
 	private* _domToView(
 		domNode: DomNode,
@@ -782,21 +784,25 @@ export default class DomConverter {
 				}
 			}
 
+			// Yield the element first so the flow of nested inline nodes is not reversed inside elements.
 			yield viewElement;
 
-			if ( options.withChildren !== false ) {
-				const nestedInlineNodes: Array<ViewNode> = [];
+			const nestedInlineNodes: Array<ViewNode> = [];
 
+			if ( options.withChildren !== false ) {
 				for ( const child of this.domChildrenToView( domNode as DomElement, options, nestedInlineNodes ) ) {
 					viewElement._appendChild( child );
 				}
+			}
 
-				// Check if this is an inline object after processing child nodes so matcher
-				// for inline objects can verify if the element is empty.
-				if ( this._isInlineObjectElement( viewElement ) ) {
-					inlineNodes.push( viewElement );
-				} else {
-					inlineNodes.push( ...nestedInlineNodes );
+			// Check if this is an inline object after processing child nodes so matcher
+			// for inline objects can verify if the element is empty.
+			if ( this._isInlineObjectElement( viewElement ) ) {
+				inlineNodes.push( viewElement );
+			} else {
+				// It's an inline element that is not an object (like <b>, <i>) or a block element.
+				for ( const inlineNode of nestedInlineNodes ) {
+					inlineNodes.push( inlineNode );
 				}
 			}
 		}
@@ -809,6 +815,7 @@ export default class DomConverter {
 	 *
 	 * @param domElement Parent DOM element.
 	 * @param options See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @param inlineNodes An array that will be populated with inline nodes. It's used internally for whitespace processing.
 	 * @returns View nodes.
 	 */
 	public* domChildrenToView(
@@ -816,6 +823,7 @@ export default class DomConverter {
 		options: Parameters<DomConverter[ 'domToView' ]>[ 1 ] = {},
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
+		// Whitespace cleaning before entering a block element (between block elements).
 		this._processDomInlineNodes( domElement, inlineNodes, options );
 
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
@@ -833,6 +841,7 @@ export default class DomConverter {
 			}
 		}
 
+		// Whitespace cleaning before leaving a block element (content of block element).
 		this._processDomInlineNodes( domElement, inlineNodes, options );
 	}
 
@@ -848,6 +857,8 @@ export default class DomConverter {
 			return;
 		}
 
+		// Process text nodes only after reaching a block or document fragment,
+		// do not alter whitespaces while processing an inline element like <b> or <i>.
 		if ( domParent && !this.isDocumentFragment( domParent ) && !this._isBlockElement( domParent ) ) {
 			return;
 		}
@@ -937,8 +948,6 @@ export default class DomConverter {
 				prevNodeEndsWithSpace = nodeEndsWithSpace;
 			}
 		}
-
-		// console.log( domParent?.tagName, 'inline nodes:', inlineNodes.map( node => node.is( '$text' ) ? node.data : node.name ) );
 
 		inlineNodes.length = 0;
 	}
