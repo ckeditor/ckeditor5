@@ -255,8 +255,6 @@ export default class StickyPanelView extends View {
 		const scrollableAncestors = getScrollableAncestors( this.limiterElement );
 
 		if ( scrollTarget && !scrollableAncestors.includes( scrollTarget ) ) {
-			console.log( 'Something else was scrolled' );
-
 			return;
 		}
 
