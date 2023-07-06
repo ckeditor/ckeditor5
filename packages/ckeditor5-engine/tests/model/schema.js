@@ -1654,13 +1654,11 @@ describe( 'Schema', () => {
 		);
 
 		it( 'should return null for a position in graveyard even if there is a paragraph there', () => {
-			let range;
-
 			model.enqueueChange( { isUndoable: false }, writer => {
 				writer.insertElement( 'paragraph', model.document.graveyard, 0 );
 			} );
 
-			range = schema.getNearestSelectionRange( model.createPositionFromPath( model.document.graveyard, [ 0 ] ) );
+			const range = schema.getNearestSelectionRange( model.createPositionFromPath( model.document.graveyard, [ 0 ] ) );
 
 			expect( range ).to.be.null;
 		} );

@@ -741,7 +741,7 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					// Only buffer "remove" from the loaded root.
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
 			} );
 		} );
@@ -1494,8 +1494,6 @@ describe( 'Differ', () => {
 			model.change( () => {
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
 
-				const diffRange = new Range( Position._createAt( root, 0 ), Position._createAt( root.getChild( 0 ), 0 ) );
-
 				expectChanges( [] );
 			} );
 		} );
@@ -1977,7 +1975,7 @@ describe( 'Differ', () => {
 					name: 'name',
 					data: {
 						oldRange: null,
-						newRange: newRange
+						newRange
 					}
 				}
 			] );

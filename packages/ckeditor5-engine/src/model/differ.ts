@@ -742,7 +742,7 @@ export default class Differ {
 	 *
 	 * @internal
 	 */
-	public _loadRoot( root: RootElement ) {
+	public _loadRoot( root: RootElement ): void {
 		if ( !root.isAttached() ) {
 			return;
 		}

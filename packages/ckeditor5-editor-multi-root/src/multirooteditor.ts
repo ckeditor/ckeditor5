@@ -561,7 +561,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	public loadRoot(
 		rootName: string,
 		{ data = '', attributes = {} as Record<string, unknown> }: LoadRootOptions = {}
-	) {
+	): void {
 		// `root` will be defined as it is guaranteed by a check in a higher priority callback.
 		const root = this.model.document.getRoot( rootName )!;
 
