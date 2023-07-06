@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { Element, Position, Item } from '@ckeditor/ckeditor5-engine';
+import type { Element, Position } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
