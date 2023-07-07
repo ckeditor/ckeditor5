@@ -29,6 +29,10 @@
 
 			/* Make sure the image is never smaller than the parent container (See: https://github.com/ckeditor/ckeditor5/issues/9300). */
 			min-width: 100%;
+
+			/* Keep proportions of the block image if the height is set and the image is wider than the editor width.
+			See https://github.com/ckeditor/ckeditor5/issues/14542. */
+			height: auto;
 		}
 	}
 
