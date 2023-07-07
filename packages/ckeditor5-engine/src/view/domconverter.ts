@@ -700,9 +700,6 @@ export default class DomConverter {
 		options: Parameters<DomConverter[ 'domToView' ]>[ 1 ] = {},
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
-		// Whitespace cleaning before entering a block element (between block elements).
-		this._processDomInlineNodes( domElement, inlineNodes, options );
-
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
 			const domChild = domElement.childNodes[ i ];
 			const generator = this._domToView( domChild, options, inlineNodes );
@@ -711,6 +708,11 @@ export default class DomConverter {
 			const viewChild = generator.next().value as ViewNode | null;
 
 			if ( viewChild !== null ) {
+				// Whitespace cleaning before entering a block element (between block elements).
+				if ( this._isBlockViewElement( viewChild ) ) {
+					this._processDomInlineNodes( domElement, inlineNodes, options );
+				}
+
 				yield viewChild;
 
 				// Trigger children handling.
@@ -1333,7 +1335,7 @@ export default class DomConverter {
 				if ( this._isViewElementWithRawContent( viewElement, options ) ) {
 					viewElement._setCustomProperty( '$rawContent', ( domNode as DomElement ).innerHTML );
 
-					if ( !this.blockElements.includes( viewElement.name ) ) {
+					if ( !this._isBlockViewElement( viewElement ) ) {
 						inlineNodes.push( viewElement );
 					}
 
@@ -1386,7 +1388,7 @@ export default class DomConverter {
 
 		// Process text nodes only after reaching a block or document fragment,
 		// do not alter whitespaces while processing an inline element like <b> or <i>.
-		if ( domParent && !this.isDocumentFragment( domParent ) && !this._isBlockElement( domParent ) ) {
+		if ( domParent && !this.isDocumentFragment( domParent ) && !this._isBlockDomElement( domParent ) ) {
 			return;
 		}
 
@@ -1594,8 +1596,15 @@ export default class DomConverter {
 	/**
 	 * Returns `true` if a DOM node belongs to {@link #blockElements}. `false` otherwise.
 	 */
-	private _isBlockElement( node: DomNode ): boolean {
+	private _isBlockDomElement( node: DomNode ): boolean {
 		return this.isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _isBlockViewElement( node: ViewNode ): boolean {
+		return node.is( 'element' ) && this.blockElements.includes( node.name );
 	}
 
 	/**

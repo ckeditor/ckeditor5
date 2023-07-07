@@ -501,6 +501,43 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 
 			expect( editor.getData() ).to.equal( '<pre>    foo\n    bar\n    </pre>' );
 		} );
+
+		it( 'in nested blocks', () => {
+			editor.model.schema.register( 'ul', { inheritAllFrom: '$block', allowIn: 'li' } );
+			editor.model.schema.register( 'li', { inheritAllFrom: '$block', allowIn: 'ul' } );
+			editor.conversion.elementToElement( { model: 'ul', view: 'ul' } );
+			editor.conversion.elementToElement( { model: 'li', view: 'li' } );
+
+			editor.setData( `
+				<ul>
+					<li>1
+						<ul>
+							<li>2</li>
+						</ul>
+					</li>
+				</ul>
+			` );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>1' +
+						'<ul>' +
+							'<li>2</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<ul>' +
+					'<li>1' +
+						'<ul>' +
+							'<li>2</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/1024
