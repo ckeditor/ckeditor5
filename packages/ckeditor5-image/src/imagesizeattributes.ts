@@ -156,7 +156,10 @@ export default class ImageSizeAttributes extends Plugin {
 					viewWriter.removeAttribute( viewAttributeName, img );
 				}
 
-				if ( imageType === 'imageInline' && !setRatioForInlineImage ) {
+				const isResized = data.item.hasAttribute( 'resizedWidth' );
+
+				// Do not set aspect ratio for inline images which are not resized (data pipeline).
+				if ( imageType === 'imageInline' && !isResized && !setRatioForInlineImage ) {
 					return;
 				}
 
