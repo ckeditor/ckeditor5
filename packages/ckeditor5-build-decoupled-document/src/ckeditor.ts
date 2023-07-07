@@ -59,6 +59,7 @@ import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -78,7 +79,6 @@ import { StyledLink } from './plugins/styledLink/index';
 // @ts-ignore
 import { FullScreen } from './plugins/fullScreen/index';
 import { Source } from './plugins/source/index';
-
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -137,14 +137,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		StyledLink,
 		FullScreen,
 		Source,
-		VideoToolbar,
-		Video,
-		VideoStyle,
-		VideoInsert,
-		Audio,
-		AudioInsert,
-		AudioStyle,
-		AudioToolbar
+		CodeBlock
 	];
 
 	public static override defaultConfig = {
@@ -176,6 +169,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'insertImage',
 				'insertTable',
 				'mediaEmbed',
+				'codeBlock',
 				'|',
 				'undo',
 				'redo',
@@ -191,11 +185,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'modal',
 				'styledLink',
 				'fullScreen',
-				'source',
-				'|',
-				'videoInsert',
-				'audio',
-				'audioInsert'
+				'source'
 			]
 		},
 		image: {
@@ -245,7 +235,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'toggleImageCaption',
 				'imageTextAlternative',
 				'imageResize'
-			],
+			]
 		},
 		table: {
 			contentToolbar: [
@@ -261,34 +251,14 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				reversed: true
 			}
 		},
-		audio: {
-			styles: [
-				'alignLeft',
-				'alignCenter',
-				'alignRight'
-			],
-
-			// You need to configure the audio toolbar, too, so it shows the new style
-			// buttons as well as the resize buttons.
-			toolbar: [
-				'audioStyle:alignLeft',
-				'audioStyle:alignCenter',
-				'audioStyle:alignRight'
-			]
-		},
-		video: {
-			styles: [
-				'alignLeft',
-				'alignCenter',
-				'alignRight'
-			],
-
-			// You need to configure the video toolbar, too, so it shows the new style
-			// buttons as well as the resize buttons.
-			toolbar: [
-				'videoStyle:alignLeft',
-				'videoStyle:alignCenter',
-				'videoStyle:alignRight'
+		codeBlock: {
+			languages: [
+				{ language: 'html', label: 'HTML' },
+				{ language: 'css', label: 'CSS' },
+				{ language: 'javascript', label: 'JavaScript' },
+				{ language: 'python', label: 'Python' },
+				{ language: 'json', label: 'JSON' },
+				{ language: 'markdown', label: 'Markdown' }
 			]
 		},
 
