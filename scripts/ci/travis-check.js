@@ -17,6 +17,7 @@ const checkPackagesCodeCoverage = require( './check-packages-code-coverage' );
 const execFactory = require( './exec-factory' );
 const shouldRunShortFlow = require( './should-run-short-flow' );
 const triggerCkeditor5ContinuousIntegration = require( './trigger-ckeditor5-continuous-integration' );
+const validateMetadataIcons = require( './validate-metadata-icons' );
 
 const { TRAVIS_JOB_TYPE } = process.env;
 
@@ -65,6 +66,7 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	exec( 'yarn', 'run', 'lint' );
 	exec( 'yarn', 'run', 'stylelint' );
 	exec( 'yarn', 'run', 'check-dependencies' );
+	validateMetadataIcons( { cwd: ROOT_DIRECTORY } );
 
 	if ( shortFlow ) {
 		process.exit();
