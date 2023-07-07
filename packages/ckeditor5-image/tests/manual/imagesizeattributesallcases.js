@@ -15,6 +15,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import ImageResize from '../../src/imageresize';
 import ImageSizeAttributes from '../../src/imagesizeattributes';
 import ImageUpload from '../../src/imageupload';
+import PictureEditing from '../../src/pictureediting';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -26,11 +27,10 @@ const commonConfig = {
 		ImageResize,
 		Code,
 		ImageSizeAttributes,
-		ImageUpload,
 		Indent,
 		IndentBlock,
 		CloudServices,
-		EasyImage,
+		PictureEditing,
 		PasteFromOffice
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
@@ -56,6 +56,7 @@ const configPx = {
 		IndentBlock,
 		CloudServices,
 		EasyImage,
+		PictureEditing,
 		PasteFromOffice
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
@@ -316,6 +317,46 @@ const editors = [
 		config: commonConfig,
 		data: '<figure class="image" style="width:20%;height:20%;">' +
 			'<img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/birds/parrot_2.jpg" alt=""></figure>'
+	},
+	{
+		id: 'inline201',
+		title: '[Picture: Inline] plain (no styles)',
+		config: commonConfig,
+		data: '<p><picture>' +
+					'<source srcset="logo-square.png" media="(max-width: 800px)" type="image/png">' +
+					'<source srcset="logo-wide.png" media="(min-width: 800px)" type="image/png">' +
+					'<img src="logo-wide.png" alt="">' +
+				'</picture></p>'
+	},
+	{
+		id: 'inline202',
+		title: '[Picture: Inline] resized (width style %)',
+		config: commonConfig,
+		data: '<p><picture>' +
+					'<source srcset="logo-square.png" media="(max-width: 800px)" type="image/png">' +
+					'<source srcset="logo-wide.png" media="(min-width: 800px)" type="image/png">' +
+					'<img class="image_resized" style="width:50%;" src="logo-wide.png" alt="">' +
+				'</picture></p>'
+	},
+	{
+		id: 'block201',
+		title: '[Picture: Block] plain (no styles)',
+		config: commonConfig,
+		data: '<figure class="image"><picture>' +
+					'<source srcset="logo-square.png" media="(max-width: 800px)" type="image/png">' +
+					'<source srcset="logo-wide.png" media="(min-width: 800px)" type="image/png">' +
+					'<img src="logo-wide.png" alt="">' +
+				'</picture></figure>'
+	},
+	{
+		id: 'block202',
+		title: '[Picture: Block] resized (width style %)',
+		config: commonConfig,
+		data: '<figure class="image image_resized" style="width:50%;"><picture>' +
+					'<source srcset="logo-square.png" media="(max-width: 800px)" type="image/png">' +
+					'<source srcset="logo-wide.png" media="(min-width: 800px)" type="image/png">' +
+					'<img src="logo-wide.png" alt="">' +
+				'</picture></figure>'
 	}
 ];
 
