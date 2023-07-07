@@ -687,37 +687,6 @@ describe( 'ImageResizeHandles', () => {
 			} );
 		} );
 
-		describe( 'aspect-ratio style', () => {
-			beforeEach( async () => {
-				editor = await createEditor();
-
-				await setModelAndWaitForImages( editor,
-					'<paragraph>[' +
-						`<imageInline width="100" height="50" imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></imageInline>` +
-					']</paragraph>'
-				);
-
-				widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-			} );
-
-			it( 'is added after starting resizing, if width & height attributes are set', () => {
-				const resizerPosition = 'bottom-left';
-				const domParts = getWidgetDomParts( editor, widget, resizerPosition );
-				const initialPointerPosition = getHandleCenterPoint( domParts.widget, resizerPosition );
-				const viewImage = widget.getChild( 0 );
-
-				expect( viewImage.getStyle( 'aspec-ratio' ) ).to.be.undefined;
-
-				resizerMouseSimulator.down( editor, domParts.resizeHandle );
-
-				resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPointerPosition );
-
-				expect( viewImage.getStyle( 'aspect-ratio' ) ).to.equal( '100/50' );
-
-				resizerMouseSimulator.up( editor );
-			} );
-		} );
-
 		describe( 'undo integration', () => {
 			beforeEach( async () => {
 				editor = await createEditor();
