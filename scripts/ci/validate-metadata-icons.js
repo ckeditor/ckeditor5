@@ -7,13 +7,15 @@
 
 'use strict';
 
-const chalk = require( 'chalk' );
 const fs = require( 'fs-extra' );
 const glob = require( 'fast-glob' );
 const upath = require( 'upath' );
 const { table } = require( 'table' );
+const { red, magenta } = require( './ansi-colors' );
 
 module.exports = async function validateMetadataIcons( { cwd = process.cwd() } = {} ) {
+	console.log( magenta( 'Validating metadata files.' ) );
+
 	const globPattern = upath.join( cwd, 'packages', '*', 'ckeditor5-metadata.json' );
 	const metadataFilePaths = await glob( globPattern );
 	const plugins = ( await Promise.all( metadataFilePaths.map( getPluginsFromMetadataFile ) ) ).flat();
@@ -46,8 +48,8 @@ module.exports = async function validateMetadataIcons( { cwd = process.cwd() } =
 		return;
 	}
 
-	console.log( chalk.bold.red( 'Detected invalid paths. Check the following paths in following packages:' ) );
-	console.log( chalk.red( table( missingIcons ) ) );
+	console.log( red( 'Detected invalid paths. Check the following paths in following packages:' ) );
+	console.log( red( table( missingIcons ) ) );
 	process.exit( 1 );
 };
 
