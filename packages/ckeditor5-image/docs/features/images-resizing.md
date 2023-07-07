@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Resizing images
+meta-title: Resizing images in CKEditor 5
+meta-description: All about various ways of resizing images to fit the content better.
 order: 50
 modified_at: 2021-06-17
 ---
@@ -29,7 +31,7 @@ Images can also be pre-resized using styling, as shown below (the last three ima
 {@snippet features/image-resize}
 
 <info-box info>
-	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 You can configure resizing images by handles in two different ways in the CKEditor 5 WYSIWYG editor:
@@ -283,6 +285,10 @@ The following demo uses CSS to set up the fixed image aspect ratio, so a 200px w
 Check out the difference in the live demo below:
 
 {@snippet features/image-resize-px}
+
+## Image optimization and responsive images
+
+When using the {@link features/ckbox CKBox file manager} service, it produces sets of resized, optimized images. The users can easily invoke these resized versions if needed. To learn more about these capabilities, refer to the {@link features/images-responsive responsive images} guide and the {@link @ckbox features/images/conversion CKBox conversion} guide.
 
 ## Installation
 
