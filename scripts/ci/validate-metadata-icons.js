@@ -10,7 +10,7 @@
 const fs = require( 'fs-extra' );
 const glob = require( 'fast-glob' );
 const upath = require( 'upath' );
-const { table } = require( 'table' );
+const { table, getBorderCharacters } = require( 'table' );
 const { red, magenta } = require( './ansi-colors' );
 
 module.exports = async function validateMetadataIcons( { cwd = process.cwd() } = {} ) {
@@ -49,7 +49,7 @@ module.exports = async function validateMetadataIcons( { cwd = process.cwd() } =
 	}
 
 	console.log( red( 'Detected invalid paths. Check the following paths in following packages:' ) );
-	console.log( red( table( missingIcons ) ) );
+	console.log( red( table( missingIcons, { border: getBorderCharacters( 'ramac' ) } ) ) );
 	process.exit( 1 );
 };
 
