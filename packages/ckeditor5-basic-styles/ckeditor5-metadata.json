@@ -29,7 +29,7 @@
 				{
 					"type": "Button",
 					"name": "code",
-					"iconPath": "theme/icons/invalid.svg"
+					"iconPath": "theme/icons/code.svg"
 				}
 			],
 			"htmlOutput": [

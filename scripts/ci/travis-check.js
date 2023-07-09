@@ -14,7 +14,7 @@ const path = require( 'path' );
 
 const { cyan, green } = require( './ansi-colors' );
 const checkPackagesCodeCoverage = require( './check-packages-code-coverage' );
-// const execFactory = require( './exec-factory' );
+const execFactory = require( './exec-factory' );
 const shouldRunShortFlow = require( './should-run-short-flow' );
 const triggerCkeditor5ContinuousIntegration = require( './trigger-ckeditor5-continuous-integration' );
 const validateMetadataIcons = require( './validate-metadata-icons' );
@@ -25,7 +25,7 @@ console.log( cyan( `\nRunning the "${ TRAVIS_JOB_TYPE }" build.\n` ) );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const shortFlow = shouldRunShortFlow( ROOT_DIRECTORY );
-// const exec = execFactory( ROOT_DIRECTORY );
+const exec = execFactory( ROOT_DIRECTORY );
 
 // Tests + Code coverage.
 if ( TRAVIS_JOB_TYPE === 'Tests' ) {
@@ -63,9 +63,9 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 		console.log( green( 'Only the documentation files were modified, running the static analyze only.\n' ) );
 	}
 
-	// exec( 'yarn', 'run', 'lint' );
-	// exec( 'yarn', 'run', 'stylelint' );
-	// exec( 'yarn', 'run', 'check-dependencies' );
+	exec( 'yarn', 'run', 'lint' );
+	exec( 'yarn', 'run', 'stylelint' );
+	exec( 'yarn', 'run', 'check-dependencies' );
 	validateMetadataIcons( { cwd: ROOT_DIRECTORY } );
 
 	if ( shortFlow ) {
@@ -73,8 +73,8 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	}
 
 	// Verifying manual tests.
-	// exec( 'yarn', 'run', 'dll:build' );
-	// exec( 'sh', './scripts/check-manual-tests.sh', '-r', 'ckeditor5', '-f', 'ckeditor5' );
+	exec( 'yarn', 'run', 'dll:build' );
+	exec( 'sh', './scripts/check-manual-tests.sh', '-r', 'ckeditor5', '-f', 'ckeditor5' );
 
-	// exec( 'node', './scripts/ci/check-manual-tests-directory-structure.js' );
+	exec( 'node', './scripts/ci/check-manual-tests-directory-structure.js' );
 }
