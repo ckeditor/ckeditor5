@@ -51,7 +51,7 @@ module.exports = async function validateMetadataIcons( { cwd = process.cwd() } =
 	}
 
 	console.log( red( 'Detected invalid icon paths in following packages:' ) );
-	console.log( red( table( missingIcons, { border: getBorderCharacters( 'norc' ) } ) ) );
+	console.log( red( table( missingIcons, { border: getBorderCharacters( 'ramac' ) } ) ) );
 	process.exit( 1 );
 };
 
