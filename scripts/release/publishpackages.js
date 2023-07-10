@@ -9,17 +9,18 @@
 
 'use strict';
 
+const upath = require( 'upath' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
 const { provideToken } = require( '@ckeditor/ckeditor5-dev-release-tools/lib/utils/cli' );
 const { Listr } = require( 'listr2' );
 const validateDependenciesVersions = require( './utils/validatedependenciesversions' );
 const parseArguments = require( './utils/parsearguments' );
-const { RELEASE_DIRECTORY } = require( './utils/constants' );
+const { CKEDITOR5_ROOT_PATH, RELEASE_DIRECTORY } = require( './utils/constants' );
+const getListrOptions = require( './utils/getlistroptions' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
-// TODO: If nightly: generate a version number. See: #14179.
-const latestVersion = releaseTools.getLastFromChangelog();
+const { version: latestVersion } = require( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 const versionChangelog = releaseTools.getChangesForVersion( latestVersion );
 
 let githubToken;
@@ -43,7 +44,9 @@ const tasks = new Listr( [
 				npmTag: cliArguments.npmTag,
 				listrTask: task,
 				confirmationCallback: () => {
-					// TODO: If nightly: pass through. See: #14179.
+					if ( cliArguments.nightly ) {
+						return true;
+					}
 
 					return task.prompt( { type: 'Confirm', message: 'Do you want to continue?' } );
 				},
@@ -78,7 +81,7 @@ const tasks = new Listr( [
 		title: 'Pushing changes.',
 		task: () => {
 			return releaseTools.push( {
-				releaseBranch: 'release',
+				releaseBranch: cliArguments.branch,
 				version: latestVersion
 			} );
 		},
@@ -100,14 +103,18 @@ const tasks = new Listr( [
 		},
 		skip: cliArguments.nightly
 	}
-] );
+], getListrOptions( cliArguments ) );
 
 ( async () => {
 	try {
-		githubToken = await provideToken();
+		if ( !cliArguments.nightly ) {
+			githubToken = await provideToken();
+		}
 
 		await tasks.run();
 	} catch ( err ) {
+		process.exitCode = 1;
+
 		console.error( err );
 	}
 } )();
