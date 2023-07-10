@@ -678,7 +678,7 @@ export default class DataFilter extends Plugin {
 			allowAttributes: attributeKey
 		} );
 
-		schema.setAttributeProperties( attributeKey, { doNotStoreObjectAttributeInSelection: true } );
+		schema.setAttributeProperties( attributeKey, { copyFromObject: false } );
 
 		if ( definition.attributeProperties ) {
 			schema.setAttributeProperties( attributeKey, definition.attributeProperties );

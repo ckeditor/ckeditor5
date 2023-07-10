@@ -1135,8 +1135,10 @@ class LiveSelection extends Selection {
 
 			// ...look for a first character node in that range and take attributes from it.
 			for ( const value of range ) {
-				// If the item is an object, we don't want to get attributes from its children.
+				// If the item is an object, we don't want to get attributes from its children...
 				if ( value.item.is( 'element' ) && schema.isObject( value.item ) ) {
+					// ...but collect attributes from inline object.
+					attrs = getTextAttributes( value.item, schema );
 					break;
 				}
 
@@ -1237,8 +1239,10 @@ function getTextAttributes( node: Item | null, schema: Schema ): Iterable<[strin
 
 	// Collect all attributes that can be applied to the text node.
 	for ( const [ key, value ] of node.getAttributes() ) {
-		// TODO Find better name for `doNotStoreObjectAttributeInSelection`.
-		if ( schema.checkAttribute( '$text', key ) && !schema.getAttributeProperties( key ).doNotStoreObjectAttributeInSelection ) {
+		if (
+			schema.checkAttribute( '$text', key ) &&
+			schema.getAttributeProperties( key ).copyFromObject !== false
+		) {
 			attributes.push( [ key, value ] );
 		}
 	}
