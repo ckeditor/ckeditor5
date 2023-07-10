@@ -1424,7 +1424,8 @@ describe( 'DocumentSelection', () => {
 		describe( 'reads surrounding attributes from inline object elements', () => {
 			beforeEach( () => {
 				model.schema.register( 'imageInline', {
-					inheritAllFrom: '$inlineObject'
+					inheritAllFrom: '$inlineObject',
+					allowAttributes: 'src'
 				} );
 			} );
 
@@ -1448,6 +1449,45 @@ describe( 'DocumentSelection', () => {
 				setData( model, '<p><imageInline bold="true"></imageInline>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'ignores attributes from a node before (copyFromObject === false)', () => {
+				model.schema.setAttributeProperties( 'bold', { copyFromObject: false } );
+				setData( model, '<p><$text bold="true">Foo Bar.</$text><imageInline bold="true"></imageInline>[]</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+
+			it( 'ignores attributes from a node after with override gravity (copyFromObject === false)', () => {
+				model.schema.setAttributeProperties( 'bold', { copyFromObject: false } );
+				setData( model, '<p><$text>Foo Bar.</$text>[]<imageInline bold="true"></imageInline></p>' );
+
+				const overrideGravityUid = selection._overrideGravity();
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+
+				selection._restoreGravity( overrideGravityUid );
+			} );
+
+			it( 'ignores attributes from <imageInline>, even without any text before it (copyFromObject === false)', () => {
+				model.schema.setAttributeProperties( 'bold', { copyFromObject: false } );
+				setData( model, '<p><imageInline bold="true"></imageInline>[]</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+
+			it( 'inherits attributes from a selected node (only those allowed on text)', () => {
+				setData( model, '<p>foo[<imageInline bold="true" src="123"></imageInline>]bar</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
+				expect( selection.hasAttribute( 'src' ) ).to.equal( false );
+			} );
+
+			it( 'ignores attributes from a selected node with copyFromObject flag == false', () => {
+				model.schema.setAttributeProperties( 'bold', { copyFromObject: false } );
+				setData( model, '<p>foo[<imageInline bold="true"></imageInline>]bar</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 		} );
 	} );
