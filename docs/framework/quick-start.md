@@ -45,6 +45,12 @@ npm install --save \
 	webpack-cli@4
 ```
 
+To build CKEditor5 with TypeScript, you need to install an additional loader:
+
+```bash
+npm install --save ts-loader
+```
+
 The minimal webpack configuration needed to enable building CKEditor 5 is:
 
 ```js
@@ -110,6 +116,117 @@ module.exports = {
 };
 ```
 
+The minimal webpack configuration for TypeScript needs to include the installed loader:
+
+```js
+// webpack.config.js
+
+'use strict';
+
+const path = require( 'path' );
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+module.exports = {
+    // https://webpack.js.org/configuration/entry-context/
+    entry: './app.ts',
+
+    // https://webpack.js.org/configuration/output/
+    output: {
+        path: path.resolve( __dirname, 'dist' ),
+        filename: 'bundle.js'
+    },
+	
+	// https://webpack.js.org/configuration/resolve/
+    resolve: {
+        extensions: [ '.js', '.ts' ]
+    },
+
+    module: {
+        rules: [
+            {
+                test: /\.ts/,
+                use: [ 'ts-loader' ]
+            },
+            {
+                test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+
+                use: [ 'raw-loader' ]
+            },
+            {
+                test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+
+                use: [
+                    {
+                        loader: 'style-loader',
+                        options: {
+                            injectType: 'singletonStyleTag',
+                            attributes: {
+                                'data-cke': true
+                            }
+                        }
+                    },
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: styles.getPostCssConfig( {
+                                themeImporter: {
+                                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                                },
+                                minify: true
+                            } )
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+
+    // Useful for debugging.
+    devtool: 'source-map',
+
+    // By default webpack logs warnings if the bundle is bigger than 200kb.
+    performance: { hints: false }
+};
+```
+
+To build the project with TypeScript, you also need a basic `tsconfig.json`:
+
+```json
+// tsconfig.json
+
+{
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "outDir": "lib",
+    "removeComments": true,
+    "module": "es6",
+    "target": "es2019",
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "paths": {},
+    "sourceMap": true,
+    "sourceRoot": "/",
+    "alwaysStrict": true,
+    "allowUnreachableCode": false,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": ["./**/*.ts"],
+  "exclude": [
+    "node_modules/**/*"
+  ]
+}
+```
+
 ## Creating an editor
 
 You can now install some of the CKEditor 5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
@@ -168,7 +285,7 @@ You can also install `webpack-cli` globally (using `npm install -g`) and run it 
 
 Alternatively, you can add it as an [npm script](https://docs.npmjs.com/misc/scripts):
 
-```js
+```json
 "scripts": {
 	"build": "webpack --mode development"
 }
