@@ -490,6 +490,143 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			} );
 		} );
 
+		describe( 'around custom inline objects', () => {
+			beforeEach( () => {
+				editor.model.schema.register( 'inlineObject', { inheritAllFrom: '$inlineObject' } );
+
+				editor.conversion.for( 'upcast' ).elementToElement( {
+					view: {
+						name: 'span',
+						classes: 'foo'
+					},
+					model: 'inlineObject'
+				} );
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'inlineObject',
+					view: ( modelElement, { writer } ) => {
+						const viewElement = writer.createContainerElement( 'span', { class: 'foo' } );
+
+						viewElement.getFillerOffset = () => null;
+
+						return viewElement;
+					}
+				} );
+
+				editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( {
+					name: 'span',
+					classes: 'foo'
+				} );
+			} );
+
+			it( 'white space with text before empty inline object is not ignored', () => {
+				editor.setData( '<p>foo <span class="foo"></span></p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph>foo <inlineObject></inlineObject></paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>foo <span class="foo"></span></p>' );
+			} );
+
+			it( 'white space with text after empty inline object is not ignored', () => {
+				editor.setData( '<p><span class="foo"></span> foo</p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><inlineObject></inlineObject> foo</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><span class="foo"></span> foo</p>' );
+			} );
+
+			it( 'white spaces with text around empty inline object are not ignored', () => {
+				editor.setData( '<p>foo <span class="foo"></span> bar</p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph>foo <inlineObject></inlineObject> bar</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>foo <span class="foo"></span> bar</p>' );
+			} );
+
+			it( 'white space before empty inline object is ignored', () => {
+				editor.setData( '<p> <span class="foo"></span></p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><inlineObject></inlineObject></paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><span class="foo"></span></p>' );
+			} );
+
+			it( 'white space after empty inline object is ignored', () => {
+				editor.setData( '<p><span class="foo"></span> </p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><inlineObject></inlineObject></paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><span class="foo"></span></p>' );
+			} );
+
+			it( 'white spaces around empty inline object are ignored', () => {
+				editor.setData( '<p> <span class="foo"></span> </p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><inlineObject></inlineObject></paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><span class="foo"></span></p>' );
+			} );
+
+			it( 'nbsp before empty inline object is not ignored', () => {
+				editor.setData( '<p>&nbsp;<span class="foo"></span></p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph> <inlineObject></inlineObject></paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>&nbsp;<span class="foo"></span></p>' );
+			} );
+
+			it( 'nbsp after empty inline object is not ignored', () => {
+				editor.setData( '<p><span class="foo"></span>&nbsp;</p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><inlineObject></inlineObject> </paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><span class="foo"></span>&nbsp;</p>' );
+			} );
+
+			it( 'nbsp around empty inline object are not ignored', () => {
+				editor.setData( '<p>&nbsp;<span class="foo"></span>&nbsp;</p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph> <inlineObject></inlineObject> </paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>&nbsp;<span class="foo"></span>&nbsp;</p>' );
+			} );
+
+			it( 'text+nbsp before empty inline object is not ignored', () => {
+				editor.setData( '<p>foo&nbsp;<span class="foo"></span></p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph>foo <inlineObject></inlineObject></paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>foo <span class="foo"></span></p>' );
+			} );
+
+			it( 'nbsp+text after empty inline object is not ignored', () => {
+				editor.setData( '<p><span class="foo"></span>&nbsp;foo</p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><inlineObject></inlineObject> foo</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><span class="foo"></span> foo</p>' );
+			} );
+
+			it( 'text+nbsp or nbsp+text around empty inline object are not ignored', () => {
+				editor.setData( '<p>foo&nbsp;<span class="foo"></span>&nbsp;bar</p>' );
+
+				expect( getData( editor.model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph>foo <inlineObject></inlineObject> bar</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>foo <span class="foo"></span> bar</p>' );
+			} );
+		} );
+
 		it( 'in preformatted blocks', () => {
 			editor.model.schema.register( 'pre', { inheritAllFrom: '$block' } );
 			editor.conversion.elementToElement( { model: 'pre', view: 'pre' } );

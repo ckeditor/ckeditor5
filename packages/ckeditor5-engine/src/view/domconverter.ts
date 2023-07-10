@@ -1262,7 +1262,7 @@ export default class DomConverter {
 			withChildren?: boolean;
 			keepOriginalCase?: boolean;
 			skipComments?: boolean;
-		} = {},
+		},
 		inlineNodes: Array<ViewNode>
 	): IterableIterator<ViewNode | ViewDocumentFragment | null> {
 		if ( this.isBlockFiller( domNode ) ) {
