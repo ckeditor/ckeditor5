@@ -22,6 +22,7 @@ const compileTypeScriptCallback = require( './utils/compiletypescriptcallback' )
 const updatePackageEntryPoint = require( './utils/updatepackageentrypoint' );
 const prepareDllBuildsCallback = require( './utils/preparedllbuildscallback' );
 const buildCKEditor5BuildsCallback = require( './utils/buildckeditor5buildscallback' );
+const getListrOptions = require( './utils/getlistroptions' );
 const { PACKAGES_DIRECTORY, RELEASE_DIRECTORY } = require( './utils/constants' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
@@ -185,7 +186,7 @@ const tasks = new Listr( [
 			} );
 		}
 	}
-] );
+], getListrOptions( cliArguments ) );
 
 ( async () => {
 	try {
