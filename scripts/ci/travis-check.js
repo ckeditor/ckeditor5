@@ -29,6 +29,15 @@ const exec = execFactory( ROOT_DIRECTORY );
 
 // Tests + Code coverage.
 if ( TRAVIS_JOB_TYPE === 'Tests' ) {
+	testsJob();
+}
+
+// Verifying the code style.
+if ( TRAVIS_JOB_TYPE === 'Validation' ) {
+	validationJob();
+}
+
+function testsJob() {
 	if ( shortFlow ) {
 		console.log( green( 'Only the documentation files were modified, skipping checking the code coverage.\n' ) );
 	} else {
@@ -57,8 +66,7 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	}
 }
 
-// Verifying the code style.
-if ( TRAVIS_JOB_TYPE === 'Validation' ) {
+async function validationJob() {
 	if ( shortFlow ) {
 		console.log( green( 'Only the documentation files were modified, running the static analyze only.\n' ) );
 	}
@@ -66,7 +74,7 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	exec( 'yarn', 'run', 'lint' );
 	exec( 'yarn', 'run', 'stylelint' );
 	exec( 'yarn', 'run', 'check-dependencies' );
-	validateMetadataIcons( { cwd: ROOT_DIRECTORY } );
+	await validateMetadataIcons( { cwd: ROOT_DIRECTORY } );
 
 	if ( shortFlow ) {
 		process.exit();
