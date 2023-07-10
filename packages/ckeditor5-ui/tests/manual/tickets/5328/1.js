@@ -25,6 +25,11 @@ ClassicEditor
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
 			]
+		},
+		ui: {
+			poweredBy: {
+				position: 'inside'
+			}
 		}
 	} )
 	.then( editor => {

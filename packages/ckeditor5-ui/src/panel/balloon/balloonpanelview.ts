@@ -23,13 +23,16 @@ import {
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
-import { isElement } from 'lodash-es';
+import { isElement, isFunction } from 'lodash-es';
+
+// @if CK_DEBUG_UI // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
 import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
 const OFF_THE_SCREEN_POSITION = -99999;
+const HIDE_PANEL_EDGE_BUFFER = 15;
 
 /**
  * The balloon panel view class.
@@ -1191,30 +1194,70 @@ function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
 	}
 
 	const limiterElement = getDomElement( options.limiter );
-	const targetElement = typeof options.target === 'function' ? options.target() : options.target;
-	const hasEditorVerticalScroll = hasElementVerticalScroll( limiterElement! );
+	const targetElement = isFunction( options.target ) ? options.target() : options.target;
+	const targetRect = new Rect( targetElement as HTMLElement );
 
-	// Check if editor is scrollable if not get closest scrollable ancestor.
-	const scrollableWrapper = hasEditorVerticalScroll ?
-		findClosestScrollableAncestor( limiterElement!.firstChild as HTMLElement ) :
-		findClosestScrollableAncestor( limiterElement! );
-
-	if ( scrollableWrapper ) {
-		const scrollableWrapperRect = new Rect( scrollableWrapper! );
-		const targetRect = new Rect( targetElement as HTMLElement );
-
-		if ( // scroll up
-			( targetRect.top + targetRect.height ) < scrollableWrapperRect.top ||
-			// scroll down
-			( targetRect.top ) > scrollableWrapperRect.bottom ||
-			// scroll right
-			( targetRect.left + ( targetRect.width / 2 ) ) < scrollableWrapperRect.left ||
-			// scroll left
-			( targetRect.right - ( targetRect.width / 2 ) ) > scrollableWrapperRect.right
-		) {
-			return true;
-		}
+	if ( !targetRect.getVisible() ) {
+		return true;
 	}
 
-	return false;
+	const hasEditorVerticalScroll = hasElementVerticalScroll( limiterElement! );
+	const listOfAllScrollableAncestors = getScrollableAncestors( limiterElement! );
+
+	if ( hasEditorVerticalScroll ) {
+		listOfAllScrollableAncestors.unshift( findClosestScrollableAncestor( limiterElement!.firstChild as HTMLElement )! );
+	}
+
+	// @if CK_DEBUG_UI // RectDrawer.clear();
+	return listOfAllScrollableAncestors.some( scrollableAncestor => {
+		const scrollableAncestorRect = new Rect( scrollableAncestor! as HTMLElement );
+
+		// @if CK_DEBUG_UI // RectDrawer.draw( targetRect, {
+		// @if CK_DEBUG_UI // 	outlineWidth: '1px',
+		// @if CK_DEBUG_UI // 	opacity: '.8'
+		// @if CK_DEBUG_UI // }, 'Target' );
+		// @if CK_DEBUG_UI // RectDrawer.draw( scrollableAncestorRect, {
+		// @if CK_DEBUG_UI // 	outlineWidth: '1px',
+		// @if CK_DEBUG_UI // 	outlineColor: 'red',
+		// @if CK_DEBUG_UI // 	opacity: '.8'
+		// @if CK_DEBUG_UI // }, 'Scrollable wrapper' );
+
+		// When target element is higher than scrollable parent container
+		if ( targetRect.height > scrollableAncestorRect.height ) {
+			if (
+				( scrollableAncestorRect.top > ( targetRect.top - HIDE_PANEL_EDGE_BUFFER ) ) &&
+				( ( targetRect.bottom + HIDE_PANEL_EDGE_BUFFER ) > scrollableAncestorRect.bottom ) ) {
+				return true;
+			}
+		}
+
+		// When target element is wider than scrollable parent container
+		if ( targetRect.width > scrollableAncestorRect.width ) {
+			const targetLeftMiddle = targetRect.left + ( targetRect.width / 2 );
+
+			if ( !( ( targetLeftMiddle > scrollableAncestorRect.left ) && ( targetLeftMiddle < scrollableAncestorRect.right ) ) ) {
+				return true;
+			}
+		}
+	} );
+}
+
+/**
+ * TODO
+ *
+ * @param element
+ * @returns
+ */
+function getScrollableAncestors( element: HTMLElement ) {
+	const scrollableAncestors = [];
+	let scrollableAncestor = findClosestScrollableAncestor( element );
+
+	while ( scrollableAncestor && scrollableAncestor !== global.document.body ) {
+		scrollableAncestors.push( scrollableAncestor );
+		scrollableAncestor = findClosestScrollableAncestor( scrollableAncestor! );
+	}
+
+	scrollableAncestors.push( global.document );
+
+	return scrollableAncestors;
 }
