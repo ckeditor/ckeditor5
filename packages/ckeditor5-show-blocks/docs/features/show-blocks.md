@@ -14,13 +14,13 @@ Toggle the block elements visibility with the show block {@icon @ckeditor/ckedit
 {@snippet features/show-blocks}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
 
 <info-box info>
-	The show blocks feature is currently not enabled in any builds, so you need to install it by hand<!-- enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only-->.
+	The show blocks feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-show-blocks`](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks) package:
@@ -52,7 +52,8 @@ ClassicEditor
 
 ## Known issues
 
-At present, the show blocks feature does not support widgets. It means it will currently not show block outlines for images due to the way these are handled by CKEditor 5.
+* The show blocks feature does not support widgets, yet. It means it will currently not show block outlines e.g. for images or tables.
+* At present, the show blocks feature is not yet fully compatible with the {@link features/pagination pagination} feature. Using these two together may result in errors.
 
 ## Related features
 

@@ -46,7 +46,7 @@ export default class ColorTileView extends ButtonView {
 				class: [
 					'ck',
 					'ck-color-grid__tile',
-					bind.if( 'hasBorder', 'ck-color-table__color-tile_bordered' )
+					bind.if( 'hasBorder', 'ck-color-selector__color-tile_bordered' )
 				]
 			}
 		} );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DocumentColorCollection from '../src/documentcolorcollection';
+import DocumentColorCollection from '../../src/colorselector/documentcolorcollection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 describe( 'DocumentColorCollection', () => {

@@ -16,7 +16,7 @@ Below is a sample toolbar with a basic set of features. Toolbar items can be eas
 {@snippet features/toolbar-basic}
 
 <info-box info>
-	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Basic toolbar configuration
