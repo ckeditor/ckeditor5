@@ -199,7 +199,7 @@ describe( 'StickyPanelView', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'listens to document#scroll event and calls view._checkIfShouldBeSticky', () => {
+		it( 'listens to document#scroll event and calls view._checkIfShouldBeSticky()', () => {
 			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
 			expect( spy.notCalled ).to.be.true;
 
@@ -210,7 +210,7 @@ describe( 'StickyPanelView', () => {
 			expect( spy.calledTwice ).to.be.true;
 		} );
 
-		it( 'listens to view.isActive and calls view._checkIfShouldBeSticky', () => {
+		it( 'listens to view.isActive and calls view._checkIfShouldBeSticky()', () => {
 			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
 			expect( spy.notCalled ).to.be.true;
 
@@ -241,7 +241,7 @@ describe( 'StickyPanelView', () => {
 		} );
 	} );
 
-	describe( '_checkIfShouldBeSticky', () => {
+	describe( '_checkIfShouldBeSticky()', () => {
 		beforeEach( () => {
 			view.limiterElement = limiterElement;
 		} );
@@ -249,346 +249,29 @@ describe( 'StickyPanelView', () => {
 		it( 'should unstick the panel if limiter element is not set', () => {
 			view.limiterElement = null;
 
-			expect( view.isSticky ).to.be.false;
+			assureStickiness( {
+				isSticky: false,
+				_isStickyToTheBottomOfLimiter: false,
+				_stickyTopOffset: null,
+				_stickyBottomOffset: null,
+				_marginLeft: null
+			} );
 		} );
 
 		it( 'should unstick the panel if it is not active', () => {
-			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
-
 			view.isActive = true;
+
+			const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
 			view.isActive = false;
 
-			expect( view.isSticky ).to.be.false;
-			expect( spy.calledTwice ).to.be.true;
-		} );
-
-		describe( 'called after scrolling', () => {
-			it( 'should do nothing if scrolled element does not contain the panel', () => {
-				view.isActive = true;
-
-				const separateElement = document.createElement( 'div' );
-
-				view._checkIfShouldBeSticky( separateElement );
-
-				expect( view.isSticky ).to.be.false;
-			} );
-
-			describe( 'with/without #limiterBottomOffset ', () => {
-
-			} );
-
-			describe( 'with/without #viewportTopOffset ', () => {
-
-			} );
-
-			describe( 'isActive/ is not active ', () => {
-
-			} );
-
-			describe( 'if there is one scrollable non-window parent', () => {
-				let scrollableContainer;
-
-				beforeEach( () => {
-					scrollableContainer = document.createElement( 'div' );
-					scrollableContainer.className = 'scrollable';
-					scrollableContainer.style.overflow = 'scroll';
-					scrollableContainer.appendChild( limiterElement );
-					global.document.body.appendChild( scrollableContainer );
-				} );
-
-				afterEach( () => {
-					scrollableContainer.remove();
-				} );
-
-				describe( 'scrolled the container', () => {
-					it( 'should not make panel sticky if the limiter top is still visible', () => {
-						view.isActive = true;
-
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 20,
-							bottom: 140,
-							height: 120
-						} );
-
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: 20,
-							bottom: 200,
-							height: 180
-						} );
-
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-							height: 20
-						} );
-
-						view._checkIfShouldBeSticky( scrollableContainer );
-
-						expect( view.isSticky ).to.be.false;
-					} );
-
-					it( 'should make panel sticky if the limiter top is not visible', () => {
-						view.isActive = true;
-
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 40,
-							bottom: 140,
-							height: 100
-						} );
-
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: 20,
-							bottom: 200,
-							height: 180
-						} );
-
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-							height: 20
-						} );
-
-						view._checkIfShouldBeSticky( scrollableContainer );
-
-						expect( view.isSticky ).to.be.true;
-					} );
-
-					it( 'should make panel sticky to the bottom if there is enough space left', () => {
-						view.isActive = true;
-
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 40,
-							bottom: 140,
-							height: 100
-						} );
-
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: -80,
-							bottom: 60,
-							height: 140
-						} );
-
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-							height: 20
-						} );
-
-						view._checkIfShouldBeSticky( scrollableContainer );
-
-						expect( view.isSticky ).to.be.true;
-						expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
-					} );
-
-					it( 'should unstick the panel if there is not enough space left in the limiter', () => {
-						view.isActive = true;
-
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 40,
-							bottom: 140,
-							height: 100
-						} );
-
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: -80,
-							bottom: 60,
-							height: 140
-						} );
-
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-							height: 100
-						} );
-
-						view._checkIfShouldBeSticky( scrollableContainer );
-
-						expect( view.isSticky ).to.be.false;
-					} );
-
-					it( 'should unstick the panel if panel limiter is not visible in the viewport', () => {
-						view.isActive = true;
-
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 120,
-							bottom: 140,
-							height: 100
-						} );
-
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: -80,
-							bottom: 60,
-							height: 140
-						} );
-
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-							height: 20
-						} );
-
-						view._checkIfShouldBeSticky( scrollableContainer );
-
-						expect( view.isSticky ).to.be.false;
-					} );
-				} );
-			} );
-
-			describe( 'if there are multiple scrollable non-window parents', () => {
-				let scrollableOuterParent, scrollableInnerParent;
-
-				beforeEach( () => {
-					scrollableOuterParent = document.createElement( 'div' );
-					scrollableOuterParent.className = 'scrollable-outer';
-					scrollableOuterParent.style.overflow = 'scroll';
-
-					scrollableInnerParent = document.createElement( 'div' );
-					scrollableInnerParent.className = 'scrollable-inner';
-					scrollableInnerParent.style.overflow = 'scroll';
-
-					scrollableInnerParent.appendChild( limiterElement );
-					scrollableOuterParent.appendChild( scrollableInnerParent );
-					global.document.body.appendChild( scrollableOuterParent );
-				} );
-
-				afterEach( () => {
-					scrollableInnerParent.remove();
-					scrollableOuterParent.remove();
-				} );
-
-				it( 'should do something if scrolled element contains the panel', () => {
-					view.isActive = true;
-
-					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
-						top: 20,
-						bottom: 140,
-						height: 120
-					} );
-
-					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-						top: 20,
-						bottom: 200,
-						height: 180
-					} );
-
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-						height: 20
-					} );
-
-					view._checkIfShouldBeSticky( scrollableOuterParent );
-
-					expect( view.isSticky ).to.be.false;
-				} );
-
-				it( 'should not stick the panel if the limiter is still visible', () => {
-					view.isActive = true;
-
-					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
-						top: 10,
-						bottom: 160,
-						height: 150
-					} );
-
-					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
-						top: 20,
-						bottom: 140,
-						height: 120
-					} );
-
-					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-						top: 40,
-						bottom: 100,
-						height: 60
-					} );
-
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-						height: 20
-					} );
-
-					view._checkIfShouldBeSticky( scrollableOuterParent );
-
-					expect( view.isSticky ).to.be.false;
-				} );
-
-				it( 'should stick the panel if the outer container was scrolled over the limiter top', () => {
-					view.isActive = true;
-
-					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
-						top: 50,
-						bottom: 160,
-						height: 150
-					} );
-
-					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
-						top: 20,
-						bottom: 140,
-						height: 120
-					} );
-
-					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-						top: 40,
-						bottom: 115,
-						height: 60
-					} );
-
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-						height: 20
-					} );
-
-					view._checkIfShouldBeSticky( scrollableOuterParent );
-
-					expect( view.isSticky ).to.be.true;
-				} );
-
-				it( 'should not stick the panel to the bottom if the outer container was scrolled there is no space below', () => {
-					view.isActive = true;
-
-					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
-						top: 50,
-						bottom: 160,
-						height: 150
-					} );
-
-					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
-						top: 20,
-						bottom: 140,
-						height: 120
-					} );
-
-					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-						top: 40,
-						bottom: 110,
-						height: 60
-					} );
-
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-						height: 20
-					} );
-
-					view._checkIfShouldBeSticky( scrollableOuterParent );
-
-					expect( view.isSticky ).to.be.false;
-				} );
-
-				it( 'should not stick the panel if the outer container was scrolled over the inner container top', () => {
-					view.isActive = true;
-
-					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
-						top: 50,
-						bottom: 160,
-						height: 150
-					} );
-
-					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
-						top: -20,
-						bottom: 50,
-						height: 70
-					} );
-
-					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-						top: 0,
-						bottom: 40,
-						height: 40
-					} );
-
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-						height: 20
-					} );
-
-					view._checkIfShouldBeSticky( scrollableOuterParent );
-
-					expect( view.isSticky ).to.be.false;
-				} );
+			sinon.assert.calledOnce( unstickSpy );
+			assureStickiness( {
+				isSticky: false,
+				_isStickyToTheBottomOfLimiter: false,
+				_stickyTopOffset: null,
+				_stickyBottomOffset: null,
+				_marginLeft: null
 			} );
 		} );
 
@@ -698,78 +381,378 @@ describe( 'StickyPanelView', () => {
 			} );
 		} );
 
-		describe( 'view._stickyTopOffset', () => {
-			it( 'is not null if view._isStickyToTheBottomOfLimiter is false and view.viewportTopOffset has been specified', () => {
-				view.viewportTopOffset = 100;
-
-				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-					top: 90,
-					bottom: 190,
-					height: 100
-				} );
-
-				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-					height: 20
-				} );
-
+		describe( 'after scrolling', () => {
+			it( 'should do nothing if scrolled element does not contain the panel', () => {
 				view.isActive = true;
 
-				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
-				expect( view._stickyTopOffset ).to.equal( 100 );
-				expect( view._stickyBottomOffset ).to.be.null;
-			} );
+				const separateElement = document.createElement( 'div' );
 
-			it( 'is null if view._isStickyToTheBottomOfLimiter is true and view.viewportTopOffset has been specified', () => {
-				view.viewportTopOffset = 100;
-
-				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-					top: 10,
-					bottom: 110,
-					height: 100
-				} );
-
-				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-					height: 20
-				} );
-
-				view.isActive = true;
-
-				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
-				expect( view._stickyTopOffset ).to.equal( null );
-			} );
-
-			it( 'is null if view._isStickyToTheBottomOfLimiter is false and view.viewportTopOffset is 0', () => {
-				view.viewportTopOffset = 0;
-
-				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-					top: 90,
-					bottom: 190,
-					height: 100
-				} );
-
-				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
-					height: 20
-				} );
-
-				view.isActive = true;
+				view._checkIfShouldBeSticky( separateElement );
 
 				expect( view.isSticky ).to.be.false;
-				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
-				expect( view._stickyTopOffset ).to.equal( null );
 			} );
-		} );
 
-		describe( 'view._stickyBottomOffset?', () => {
+			describe( 'if there is one scrollable non-window parent', () => {
+				let scrollableContainer;
 
+				beforeEach( () => {
+					scrollableContainer = document.createElement( 'div' );
+					scrollableContainer.className = 'scrollable';
+					scrollableContainer.style.overflow = 'scroll';
+					scrollableContainer.appendChild( limiterElement );
+					global.document.body.appendChild( scrollableContainer );
+
+					view.isActive = true;
+				} );
+
+				afterEach( () => {
+					scrollableContainer.remove();
+				} );
+
+				describe( 'scrolled the container', () => {
+					it( 'should make panel sticky to the top if the limiter top is not visible', () => {
+						const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+
+						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+							top: 40,
+							bottom: 140,
+							height: 100
+						} );
+
+						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+							top: 20,
+							bottom: 200,
+							height: 180
+						} );
+
+						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+							height: 20
+						} );
+
+						view._checkIfShouldBeSticky( scrollableContainer );
+
+						sinon.assert.calledOnce( stickToTopSpy );
+						assureStickiness( {
+							isSticky: true,
+							_isStickyToTheBottomOfLimiter: false,
+							_stickyTopOffset: 40,
+							_stickyBottomOffset: null,
+							_marginLeft: '0px'
+						} );
+					} );
+
+					it( 'should make panel sticky to the bottom if there is enough space left', () => {
+						const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+
+						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+							top: 40,
+							bottom: 140,
+							height: 100
+						} );
+
+						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+							top: -80,
+							bottom: 60,
+							height: 140
+						} );
+
+						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+							height: 20
+						} );
+
+						view._checkIfShouldBeSticky( scrollableContainer );
+
+						expect( view.isSticky ).to.be.true;
+						expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
+
+						sinon.assert.calledOnce( stickToBottomSpy );
+						assureStickiness( {
+							isSticky: true,
+							_isStickyToTheBottomOfLimiter: true,
+							_stickyTopOffset: null,
+							_stickyBottomOffset: 50,
+							_marginLeft: '0px'
+						} );
+					} );
+
+					it( 'should unstick the panel if the limiter top is still visible', () => {
+						const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+						const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+						const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+							top: 20,
+							bottom: 140,
+							height: 120
+						} );
+
+						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+							top: 20,
+							bottom: 200,
+							height: 180
+						} );
+
+						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+							height: 20
+						} );
+
+						view._checkIfShouldBeSticky( scrollableContainer );
+
+						sinon.assert.notCalled( stickToBottomSpy );
+						sinon.assert.notCalled( stickToTopSpy );
+						sinon.assert.calledOnce( unstickSpy );
+						assureStickiness( {
+							isSticky: false,
+							_isStickyToTheBottomOfLimiter: false,
+							_stickyTopOffset: null,
+							_stickyBottomOffset: null,
+							_marginLeft: null
+						} );
+					} );
+
+					it( 'should unstick the panel if there is not enough space left in the limiter', () => {
+						const spy = sinon.spy( view, '_unstick' );
+
+						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+							top: 40,
+							bottom: 140,
+							height: 100
+						} );
+
+						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+							top: -80,
+							bottom: 60,
+							height: 140
+						} );
+
+						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+							height: 100
+						} );
+
+						view._checkIfShouldBeSticky( scrollableContainer );
+
+						sinon.assert.calledOnce( spy );
+						assureStickiness( {
+							isSticky: false,
+							_isStickyToTheBottomOfLimiter: false,
+							_stickyTopOffset: null,
+							_stickyBottomOffset: null,
+							_marginLeft: null
+						} );
+					} );
+
+					it( 'should unstick the panel if panel limiter is not visible in the viewport', () => {
+						const spy = sinon.spy( view, '_unstick' );
+
+						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+							top: 120,
+							bottom: 140,
+							height: 100
+						} );
+
+						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+							top: -80,
+							bottom: 60,
+							height: 140
+						} );
+
+						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+							height: 20
+						} );
+
+						view._checkIfShouldBeSticky( scrollableContainer );
+
+						sinon.assert.calledOnce( spy );
+						assureStickiness( {
+							isSticky: false,
+							_isStickyToTheBottomOfLimiter: false,
+							_stickyTopOffset: null,
+							_stickyBottomOffset: null,
+							_marginLeft: null
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'if there are multiple scrollable non-window parents', () => {
+				let scrollableOuterParent, scrollableInnerParent;
+
+				beforeEach( () => {
+					scrollableOuterParent = document.createElement( 'div' );
+					scrollableOuterParent.className = 'scrollable-outer';
+					scrollableOuterParent.style.overflow = 'scroll';
+
+					scrollableInnerParent = document.createElement( 'div' );
+					scrollableInnerParent.className = 'scrollable-inner';
+					scrollableInnerParent.style.overflow = 'scroll';
+
+					scrollableInnerParent.appendChild( limiterElement );
+					scrollableOuterParent.appendChild( scrollableInnerParent );
+					global.document.body.appendChild( scrollableOuterParent );
+
+					view.isActive = true;
+				} );
+
+				afterEach( () => {
+					scrollableInnerParent.remove();
+					scrollableOuterParent.remove();
+				} );
+
+				it( 'should unstick the panel if the limiter is still visible', () => {
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
+						top: 10,
+						bottom: 160,
+						height: 150
+					} );
+
+					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 140,
+						height: 120
+					} );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 40,
+						bottom: 100,
+						height: 60
+					} );
+
+					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view._checkIfShouldBeSticky( scrollableOuterParent );
+
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should stick the panel to the top if the outer container was scrolled over the limiter top', () => {
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+
+					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
+						top: 50,
+						bottom: 160,
+						height: 150
+					} );
+
+					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 140,
+						height: 120
+					} );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 40,
+						bottom: 140,
+						height: 100
+					} );
+
+					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view._checkIfShouldBeSticky( scrollableOuterParent );
+
+					sinon.assert.calledOnce( stickToTopSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: 50,
+						_stickyBottomOffset: null,
+						_marginLeft: '0px'
+					} );
+				} );
+
+				it( 'should unstick the panel if the outer container was scrolled but there is no space below', () => {
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
+						top: 50,
+						bottom: 160,
+						height: 150
+					} );
+
+					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 140,
+						height: 120
+					} );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 40,
+						bottom: 110,
+						height: 60
+					} );
+
+					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view._checkIfShouldBeSticky( scrollableOuterParent );
+
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if the outer container was scrolled over the inner container top', () => {
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
+						top: 50,
+						bottom: 160,
+						height: 150
+					} );
+
+					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
+						top: -20,
+						bottom: 50,
+						height: 70
+					} );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 0,
+						bottom: 40,
+						height: 40
+					} );
+
+					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view._checkIfShouldBeSticky( scrollableOuterParent );
+
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+			} );
 		} );
 
 		describe( 'view._marginLeft', () => {
-			it( 'is set if view.isSticky is true view._isStickyToTheBottomOfLimiter is false', () => {
+			it( 'is set if view.isSticky is true view._stickyTopOffset is set', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 					top: -10,
-					bottom: 80,
+					bottom: 70,
 					height: 100
 				} );
 
@@ -787,11 +770,11 @@ describe( 'StickyPanelView', () => {
 				view.isActive = true;
 
 				expect( view.isSticky ).to.be.true;
-				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
+				expect( view._stickyTopOffset ).to.not.equal( null );
 				expect( view._marginLeft ).to.equal( '-10px' );
 			} );
 
-			it( 'is null if view._isStickyToTheBottomOfLimiter is true', () => {
+			it( 'is set if view._isStickyToTheBottomOfLimiter is true', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 					top: -30,
 					bottom: 50,
@@ -837,4 +820,13 @@ describe( 'StickyPanelView', () => {
 			} );
 		} );
 	} );
+
+	function assureStickiness( options ) {
+		expect( view.isSticky, 'isSticky is incorrect' ).to.equal( options.isSticky );
+		expect( view._isStickyToTheBottomOfLimiter, '_isStickyToTheBottomOfLimiter is incorrect' )
+			.to.equal( options._isStickyToTheBottomOfLimiter );
+		expect( view._stickyTopOffset, '_stickyTopOffset is incorrect' ).to.equal( options._stickyTopOffset );
+		expect( view._stickyBottomOffset, '_stickyBottomOffset is incorrect' ).to.equal( options._stickyBottomOffset );
+		expect( view._marginLeft, '_marginLeft is incorrect' ).to.equal( options._marginLeft );
+	}
 } );
