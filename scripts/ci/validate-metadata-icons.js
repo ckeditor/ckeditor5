@@ -8,7 +8,7 @@
 'use strict';
 
 const fs = require( 'fs-extra' );
-const glob = require( 'fast-glob' );
+const { glob } = require( 'glob' );
 const upath = require( 'upath' );
 const { table, getBorderCharacters } = require( 'table' );
 const { red, green, magenta } = require( './ansi-colors' );
@@ -60,8 +60,9 @@ module.exports = async function validateMetadataIcons( { cwd = process.cwd() } =
  * Additionally, adds `packageName` of the plugin to returned data.
  */
 async function getPluginsFromMetadataFile( path ) {
-	const metadataFile = await fs.readJSON( path );
-	const packageName = path.split( '/' ).at( -2 );
+	const normalizedPath = upath.toUnix( path );
+	const metadataFile = await fs.readJSON( normalizedPath );
+	const packageName = normalizedPath.split( '/' ).at( -2 );
 
 	return metadataFile.plugins.map( plugin => ( { packageName, ...plugin } ) );
 }
