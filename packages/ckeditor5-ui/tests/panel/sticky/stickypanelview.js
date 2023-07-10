@@ -192,15 +192,15 @@ describe( 'StickyPanelView', () => {
 		} );
 
 		it( 'checks if the panel should be sticky', () => {
-			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
+			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
 			expect( spy.notCalled ).to.be.true;
 
 			view.render();
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'listens to document#scroll event and calls view._checkIfShouldBeSticky()', () => {
-			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
+		it( 'listens to document#scroll event and calls view.checkIfShouldBeSticky()', () => {
+			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
 			expect( spy.notCalled ).to.be.true;
 
 			view.render();
@@ -210,8 +210,8 @@ describe( 'StickyPanelView', () => {
 			expect( spy.calledTwice ).to.be.true;
 		} );
 
-		it( 'listens to view.isActive and calls view._checkIfShouldBeSticky()', () => {
-			const spy = testUtils.sinon.spy( view, '_checkIfShouldBeSticky' );
+		it( 'listens to view.isActive and calls view.checkIfShouldBeSticky()', () => {
+			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
 			expect( spy.notCalled ).to.be.true;
 
 			view.render();
@@ -241,7 +241,7 @@ describe( 'StickyPanelView', () => {
 		} );
 	} );
 
-	describe( '_checkIfShouldBeSticky()', () => {
+	describe( 'checkIfShouldBeSticky()', () => {
 		beforeEach( () => {
 			view.limiterElement = limiterElement;
 		} );
@@ -387,7 +387,7 @@ describe( 'StickyPanelView', () => {
 
 				const separateElement = document.createElement( 'div' );
 
-				view._checkIfShouldBeSticky( separateElement );
+				view.checkIfShouldBeSticky( separateElement );
 
 				expect( view.isSticky ).to.be.false;
 			} );
@@ -429,7 +429,7 @@ describe( 'StickyPanelView', () => {
 							height: 20
 						} );
 
-						view._checkIfShouldBeSticky( scrollableContainer );
+						view.checkIfShouldBeSticky( scrollableContainer );
 
 						sinon.assert.calledOnce( stickToTopSpy );
 						assureStickiness( {
@@ -460,7 +460,7 @@ describe( 'StickyPanelView', () => {
 							height: 20
 						} );
 
-						view._checkIfShouldBeSticky( scrollableContainer );
+						view.checkIfShouldBeSticky( scrollableContainer );
 
 						expect( view.isSticky ).to.be.true;
 						expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
@@ -496,7 +496,7 @@ describe( 'StickyPanelView', () => {
 							height: 20
 						} );
 
-						view._checkIfShouldBeSticky( scrollableContainer );
+						view.checkIfShouldBeSticky( scrollableContainer );
 
 						sinon.assert.notCalled( stickToBottomSpy );
 						sinon.assert.notCalled( stickToTopSpy );
@@ -529,7 +529,7 @@ describe( 'StickyPanelView', () => {
 							height: 100
 						} );
 
-						view._checkIfShouldBeSticky( scrollableContainer );
+						view.checkIfShouldBeSticky( scrollableContainer );
 
 						sinon.assert.calledOnce( spy );
 						assureStickiness( {
@@ -560,7 +560,7 @@ describe( 'StickyPanelView', () => {
 							height: 20
 						} );
 
-						view._checkIfShouldBeSticky( scrollableContainer );
+						view.checkIfShouldBeSticky( scrollableContainer );
 
 						sinon.assert.calledOnce( spy );
 						assureStickiness( {
@@ -623,7 +623,7 @@ describe( 'StickyPanelView', () => {
 						height: 20
 					} );
 
-					view._checkIfShouldBeSticky( scrollableOuterParent );
+					view.checkIfShouldBeSticky( scrollableOuterParent );
 
 					sinon.assert.calledOnce( unstickSpy );
 					assureStickiness( {
@@ -660,7 +660,7 @@ describe( 'StickyPanelView', () => {
 						height: 20
 					} );
 
-					view._checkIfShouldBeSticky( scrollableOuterParent );
+					view.checkIfShouldBeSticky( scrollableOuterParent );
 
 					sinon.assert.calledOnce( stickToTopSpy );
 					assureStickiness( {
@@ -697,7 +697,7 @@ describe( 'StickyPanelView', () => {
 						height: 20
 					} );
 
-					view._checkIfShouldBeSticky( scrollableOuterParent );
+					view.checkIfShouldBeSticky( scrollableOuterParent );
 
 					sinon.assert.calledOnce( unstickSpy );
 					assureStickiness( {
@@ -734,7 +734,7 @@ describe( 'StickyPanelView', () => {
 						height: 20
 					} );
 
-					view._checkIfShouldBeSticky( scrollableOuterParent );
+					view.checkIfShouldBeSticky( scrollableOuterParent );
 
 					sinon.assert.calledOnce( unstickSpy );
 					assureStickiness( {

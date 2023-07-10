@@ -119,12 +119,20 @@ export default class StickyPanelView extends View {
 	private _panelRect?: Rect;
 
 	/**
-	 * TODO
+	 * Top offset of the panel when it is sticky to the top.
+	 *
+	 * @private
+	 * @readonly
+	 * @observable
 	 */
 	declare public _stickyTopOffset: number | null;
 
 	/**
-	 * TODO
+	 * Bottom offset of the panel when it is sticky to the bottom.
+	 *
+	 * @private
+	 * @readonly
+	 * @observable
 	 */
 	declare public _stickyBottomOffset: number | null;
 
@@ -226,24 +234,26 @@ export default class StickyPanelView extends View {
 		super.render();
 
 		// Check if the panel should go into the sticky state immediately.
-		this._checkIfShouldBeSticky();
+		this.checkIfShouldBeSticky();
 
 		// Update sticky state of the panel as the window and ancestors are being scrolled.
 		this.listenTo( global.document, 'scroll', ( evt, data ) => {
-			this._checkIfShouldBeSticky( data.target as HTMLElement | Document );
+			this.checkIfShouldBeSticky( data.target as HTMLElement | Document );
 		}, { useCapture: true } );
 
 		// Synchronize with `model.isActive` because sticking an inactive panel is pointless.
 		this.listenTo<ObservableChangeEvent>( this, 'change:isActive', () => {
-			this._checkIfShouldBeSticky();
+			this.checkIfShouldBeSticky();
 		} );
 	}
 
 	/**
-	 * Analyzes the environment to decide whether the panel should
-	 * be sticky or not.
+	 * Analyzes the environment to decide whether the panel should be sticky or not.
+	 * Then handles the positioning of the panel.
+	 *
+	 * @param [scrollTarget] The element which is being scrolled.
 	 */
-	private _checkIfShouldBeSticky( scrollTarget?: HTMLElement | Document ): void {
+	public checkIfShouldBeSticky( scrollTarget?: HTMLElement | Document ): void {
 		// @if CK_DEBUG_STICKYPANEL // RectDrawer.clear();
 		this._panelRect = new Rect( this._contentPanel );
 
@@ -253,15 +263,13 @@ export default class StickyPanelView extends View {
 			return;
 		}
 
-		const scrollableAncestors = getScrollableAncestors( this.limiterElement );
+		const scrollableAncestors = _getScrollableAncestors( this.limiterElement );
 
-		// console.log( scrollTarget );
-		// console.log( scrollableAncestors );
 		if ( scrollTarget && !scrollableAncestors.includes( scrollTarget ) ) {
 			return;
 		}
 
-		const visibleAncestorsRect = getVisibleAncestorsRect( scrollableAncestors, this.viewportTopOffset );
+		const visibleAncestorsRect = _getVisibleAncestorsRect( scrollableAncestors, this.viewportTopOffset );
 		const limiterRect = new Rect( this.limiterElement );
 
 		// @if CK_DEBUG_STICKYPANEL // if ( visibleAncestorsRect ) {
@@ -276,21 +284,10 @@ export default class StickyPanelView extends View {
 		// @if CK_DEBUG_STICKYPANEL // 	'Limiter'
 		// @if CK_DEBUG_STICKYPANEL // );
 
-		// console.log( visibleAncestorsRect, limiterRect.top < visibleAncestorsRect.top );
-
-		console.log( 'visibleAncestorsRect', visibleAncestorsRect );
-		console.log( 'visibleAncestorsRect.top', visibleAncestorsRect.top );
-		// // console.log( 'this._panelRect.height', this._panelRect.height );
-		// console.log( 'this.limiterBottomOffset', this.limiterBottomOffset );
-		// // console.log( 'visibleLimiterRect.bottom', visibleLimiterRect.bottom );
-		// console.log( 'limiterRect.bottom', limiterRect.bottom );
-		// console.log( 'limiterRect.top', limiterRect.top );
 		if ( visibleAncestorsRect && limiterRect.top < visibleAncestorsRect.top ) {
 			const visibleLimiterRect = limiterRect.getIntersection( visibleAncestorsRect );
-			console.log( 'a' );
 
 			if ( visibleLimiterRect ) {
-				console.log( 'b' );
 				// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( visibleLimiterRect,
 				// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '3px', opacity: '.8', outlineColor: 'fuchsia', outlineOffset: '-3px',
 				// @if CK_DEBUG_STICKYPANEL // 		backgroundColor: 'rgba(255, 0, 255, .3)' },
@@ -298,18 +295,9 @@ export default class StickyPanelView extends View {
 				// @if CK_DEBUG_STICKYPANEL // );
 
 				const visibleAncestorsTop = visibleAncestorsRect.top;
-				console.log( 'visibleAncestorsTop', visibleAncestorsTop );
-				console.log( 'this._panelRect.height', this._panelRect.height );
-				console.log( 'this.limiterBottomOffset', this.limiterBottomOffset );
-				console.log( 'visibleLimiterRect.bottom', visibleLimiterRect.bottom );
-				console.log( 'limiterRect.bottom', limiterRect.bottom );
-				console.log( 'limiterRect.top', limiterRect.top );
 
 				if ( visibleAncestorsTop + this._panelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
-					console.log( 'c' );
-					console.log( visibleAncestorsRect.bottom );
 					const stickyBottomOffset = Math.max( limiterRect.bottom - visibleAncestorsRect.bottom, 0 ) + this.limiterBottomOffset;
-					console.log( 'stickyBottomOffset', stickyBottomOffset );
 					// @if CK_DEBUG_STICKYPANEL // const stickyBottomOffsetRect = new Rect( {
 					// @if CK_DEBUG_STICKYPANEL // 	top: limiterRect.bottom - stickyBottomOffset, left: 0, right: 0,
 					// @if CK_DEBUG_STICKYPANEL // 	bottom: limiterRect.bottom - stickyBottomOffset, width: 1000, height: 1
@@ -319,30 +307,22 @@ export default class StickyPanelView extends View {
 					// @if CK_DEBUG_STICKYPANEL // 	'Sticky bottom offset'
 					// @if CK_DEBUG_STICKYPANEL // );
 
-					console.log( 'result', limiterRect.bottom - stickyBottomOffset, limiterRect.top + this._panelRect.height );
 					if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._panelRect.height ) {
-						console.log( 'd' );
-						this._stickToBottomOfLimiter( limiterRect, visibleAncestorsRect, stickyBottomOffset );
+						this._stickToBottomOfLimiter( stickyBottomOffset );
 					} else {
-						console.log( 'e' );
 						this._unstick();
 					}
 				} else {
-					console.log( 'f' );
 					if ( this._panelRect.height + this.limiterBottomOffset < limiterRect.height ) {
-						console.log( 'g' );
 						this._stickToTopOfAncestors( visibleAncestorsTop );
 					} else {
-						console.log( 'h' );
 						this._unstick();
 					}
 				}
 			} else {
-				console.log( 'i' );
 				this._unstick();
 			}
 		} else {
-			console.log( 'j' );
 			this._unstick();
 		}
 
@@ -354,20 +334,9 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
+	 * Sticks the panel at the given top offset.
 	 *
-	 * @param limiterRect
-	 * @param visibleAncestorsRect
-	 */
-	private _stickToBottomOfLimiter( limiterRect: Rect, visibleAncestorsRect: Rect, stickyBottomOffset: number ) {
-		this.isSticky = true;
-		this._isStickyToTheBottomOfLimiter = true;
-		this._stickyTopOffset = null;
-		this._stickyBottomOffset = stickyBottomOffset;
-		this._marginLeft = toPx( -global.window.scrollX );
-	}
-
-	/**
-	 *
+	 * @private
 	 * @param topOffset
 	 */
 	private _stickToTopOfAncestors( topOffset: number ) {
@@ -379,7 +348,23 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Sticks the panel at the bottom of the limiter with a given bottom offset.
+	 *
+	 * @private
+	 * @param stickyBottomOffset
+	 */
+	private _stickToBottomOfLimiter( stickyBottomOffset: number ) {
+		this.isSticky = true;
+		this._isStickyToTheBottomOfLimiter = true;
+		this._stickyTopOffset = null;
+		this._stickyBottomOffset = stickyBottomOffset;
+		this._marginLeft = toPx( -global.window.scrollX );
+	}
+
+	/**
+	 * Unsticks the panel putting it back to its original position.
+	 *
+	 * @private
 	 */
 	private _unstick() {
 		this.isSticky = false;
@@ -390,13 +375,12 @@ export default class StickyPanelView extends View {
 	}
 }
 
-/**
- * TODO
- *
- * @param element
- * @returns
- */
-function getScrollableAncestors( element: HTMLElement ) {
+// Loops over the given element's ancestors to find all the scrollable elements.
+//
+// @private
+// @param element
+// @returns Array<HTMLElement> An array of scrollable element's ancestors.
+function _getScrollableAncestors( element: HTMLElement ) {
 	const scrollableAncestors = [];
 	let scrollableAncestor = findClosestScrollableAncestor( element );
 
@@ -407,19 +391,17 @@ function getScrollableAncestors( element: HTMLElement ) {
 
 	scrollableAncestors.push( global.document );
 
-	console.log( scrollableAncestors.length );
-
 	return scrollableAncestors;
 }
 
-/**
- * TODO
- *
- * @param scrollableAncestors
- * @param viewportTopOffset
- * @returns
- */
-function getVisibleAncestorsRect( scrollableAncestors: Array<HTMLElement | Document>, viewportTopOffset: number ) {
+// Calculates the intersection rectangle of the given element and its scrollable ancestors.
+// Also, takes into account the passed viewport top offset.
+//
+// @private
+// @param scrollableAncestors
+// @param viewportTopOffset
+// @returns Rect
+function _getVisibleAncestorsRect( scrollableAncestors: Array<HTMLElement | Document>, viewportTopOffset: number ) {
 	const scrollableAncestorsRects = scrollableAncestors.map( ancestor => {
 		if ( ancestor instanceof Document ) {
 			const windowRect = new Rect( global.window );
