@@ -45,7 +45,7 @@ module.exports = async function validateMetadataIcons( { cwd = process.cwd() } =
 	}
 
 	if ( !missingIcons.length ) {
-		console.log( green( 'Validation successful.' ) );
+		console.log( green( 'Validation successful.\n' ) );
 
 		return;
 	}
