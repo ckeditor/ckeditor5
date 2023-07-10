@@ -255,6 +255,8 @@ export default class StickyPanelView extends View {
 
 		const scrollableAncestors = getScrollableAncestors( this.limiterElement );
 
+		// console.log( scrollTarget );
+		// console.log( scrollableAncestors );
 		if ( scrollTarget && !scrollableAncestors.includes( scrollTarget ) ) {
 			return;
 		}
@@ -274,14 +276,15 @@ export default class StickyPanelView extends View {
 		// @if CK_DEBUG_STICKYPANEL // 	'Limiter'
 		// @if CK_DEBUG_STICKYPANEL // );
 
-		console.log( visibleAncestorsRect, limiterRect.top < visibleAncestorsRect.top );
+		// console.log( visibleAncestorsRect, limiterRect.top < visibleAncestorsRect.top );
 
+		console.log( 'visibleAncestorsRect', visibleAncestorsRect );
 		console.log( 'visibleAncestorsRect.top', visibleAncestorsRect.top );
-		// console.log( 'this._panelRect.height', this._panelRect.height );
-		console.log( 'this.limiterBottomOffset', this.limiterBottomOffset );
-		// console.log( 'visibleLimiterRect.bottom', visibleLimiterRect.bottom );
-		console.log( 'limiterRect.bottom', limiterRect.bottom );
-		console.log( 'limiterRect.top', limiterRect.top );
+		// // console.log( 'this._panelRect.height', this._panelRect.height );
+		// console.log( 'this.limiterBottomOffset', this.limiterBottomOffset );
+		// // console.log( 'visibleLimiterRect.bottom', visibleLimiterRect.bottom );
+		// console.log( 'limiterRect.bottom', limiterRect.bottom );
+		// console.log( 'limiterRect.top', limiterRect.top );
 		if ( visibleAncestorsRect && limiterRect.top < visibleAncestorsRect.top ) {
 			const visibleLimiterRect = limiterRect.getIntersection( visibleAncestorsRect );
 			console.log( 'a' );
@@ -403,6 +406,8 @@ function getScrollableAncestors( element: HTMLElement ) {
 	}
 
 	scrollableAncestors.push( global.document );
+
+	console.log( scrollableAncestors.length );
 
 	return scrollableAncestors;
 }
