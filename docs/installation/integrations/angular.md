@@ -97,6 +97,14 @@ npm install --save @ckeditor/ckeditor5-angular
 	If you don't have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
 </info-box>
 
+Install one of the {@link installation/getting-started/predefined-builds CKEditor 5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
+
+This tutorial assumes that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
+
+```bash
+npm install --save @ckeditor/ckeditor5-build-classic
+```
+
 The `@ckeditor/ckeditor5-angular` package requires the following peer dependencies, with a version of at least 37.0.0:
 
 * `@ckeditor/ckeditor5-core`,
@@ -104,18 +112,12 @@ The `@ckeditor/ckeditor5-angular` package requires the following peer dependenci
 * `@ckeditor/ckeditor5-utils`,
 * `@ckeditor/ckeditor5-watchdog`.
 
+Keep in mind that they {@link installation/plugins/installing-plugins#requirements must have the same version as the editor build}.
+
 Install all the required peer dependencies:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-core @ckeditor/ckeditor5-engine @ckeditor/ckeditor5-utils @ckeditor/ckeditor5-watchdog
-```
-
-Install one of the {@link installation/getting-started/predefined-builds CKEditor 5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
-
-This tutorial assumes that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
-
-```bash
-npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
 Now, add `CKEditorModule` to modules whose components will be using the `<ckeditor>` component in their templates.
