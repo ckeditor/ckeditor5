@@ -5,12 +5,11 @@ Changelog
 
 ### Release highlights
 
-Due to a vulnerability issue in the `protobufjs` package ([CVE-2023-36665](https://github.com/advisories/GHSA-h755-8qp9-cq85)) used by packages to offer [real-time collaboration](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) services, we strongly advise updating to the latest CKEditor 5 version if your integration includes one of the following features:
+In light of a recently identified vulnerability in the `protobufjs` package ([CVE-2023-36665](https://github.com/advisories/GHSA-h755-8qp9-cq85)), we've rolled out an update to CKEditor 5 packages. This vulnerability is pertinent to [real-time collaboration](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) services.
 
-* [Real-time collaborative comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html).
-* [Real-time collaborative editing](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html).
-* [Real-time collaborative revision history](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/revision-history/revision-history.html).
-* [Real-time collaborative track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html).
+Please note, our investigation has shown that our setup does not incorporate the affected `protobufjs` code. However, to ensure a smooth and secure installation and update experience, we've updated our dependencies.
+
+While the specific vulnerability doesn't impact our use-case, we still encourage an update to the latest CKEditor 5 version as a general security practice.
 
 ### Released packages
 
