@@ -507,10 +507,6 @@ describe( 'ImageUploadEditing', () => {
 		expect( getModelData( model ) ).to.equal(
 			'<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]foo bar</paragraph>'
 		);
-
-		function timeout( ms ) {
-			return new Promise( res => setTimeout( res, ms ) );
-		}
 	} );
 
 	it( 'should not modify image width if width was set before server response', async () => {
@@ -539,10 +535,6 @@ describe( 'ImageUploadEditing', () => {
 		expect( getModelData( model ) ).to.equal(
 			'[<imageBlock src="/assets/sample.png" srcset="image-800.png 800w" width="50"></imageBlock>]<paragraph>foo</paragraph>'
 		);
-
-		function timeout( ms ) {
-			return new Promise( res => setTimeout( res, ms ) );
-		}
 	} );
 
 	it( 'should not modify image width if height was set before server response', async () => {
@@ -571,10 +563,6 @@ describe( 'ImageUploadEditing', () => {
 		expect( getModelData( model ) ).to.equal(
 			'[<imageBlock height="50" src="/assets/sample.png" srcset="image-800.png 800w"></imageBlock>]<paragraph>foo</paragraph>'
 		);
-
-		function timeout( ms ) {
-			return new Promise( res => setTimeout( res, ms ) );
-		}
 	} );
 
 	it( 'should support adapter response with the normalized `urls` property', async () => {
@@ -1572,4 +1560,8 @@ function base64ToBlob( base64Data ) {
 	}
 
 	return new Blob( byteArrays, { type } );
+}
+
+function timeout( ms ) {
+	return new Promise( res => setTimeout( res, ms ) );
 }
