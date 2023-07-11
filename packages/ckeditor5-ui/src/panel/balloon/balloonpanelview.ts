@@ -1209,44 +1209,55 @@ function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
 	}
 
 	// @if CK_DEBUG_UI // RectDrawer.clear();
-	return listOfAllScrollableAncestors.some( scrollableAncestor => {
-		const scrollableAncestorRect = new Rect( scrollableAncestor! as HTMLElement );
-
-		// @if CK_DEBUG_UI // RectDrawer.draw( targetRect, {
-		// @if CK_DEBUG_UI // 	outlineWidth: '1px',
-		// @if CK_DEBUG_UI // 	opacity: '.8'
-		// @if CK_DEBUG_UI // }, 'Target' );
-		// @if CK_DEBUG_UI // RectDrawer.draw( scrollableAncestorRect, {
-		// @if CK_DEBUG_UI // 	outlineWidth: '1px',
-		// @if CK_DEBUG_UI // 	outlineColor: 'red',
-		// @if CK_DEBUG_UI // 	opacity: '.8'
-		// @if CK_DEBUG_UI // }, 'Scrollable wrapper' );
-
-		// When target element is higher than scrollable parent container
-		if ( targetRect.height > scrollableAncestorRect.height ) {
-			if (
-				( scrollableAncestorRect.top > ( targetRect.top - HIDE_PANEL_EDGE_BUFFER ) ) &&
-				( ( targetRect.bottom + HIDE_PANEL_EDGE_BUFFER ) > scrollableAncestorRect.bottom ) ) {
-				return true;
-			}
-		}
-
-		// When target element is wider than scrollable parent container
-		if ( targetRect.width > scrollableAncestorRect.width ) {
-			const targetLeftMiddle = targetRect.left + ( targetRect.width / 2 );
-
-			if ( !( ( targetLeftMiddle > scrollableAncestorRect.left ) && ( targetLeftMiddle < scrollableAncestorRect.right ) ) ) {
-				return true;
-			}
-		}
-	} );
+	return listOfAllScrollableAncestors.some( scrollableAncestor => areTargetOppositeEdgesHidden( scrollableAncestor, targetRect ) );
 }
 
 /**
- * TODO
+ * Checks if opposite edges of target element are outside of the scrollable ancestor area.
+ *
+ * @param scrollableAncestor
+ * @param targetRect
+ * @returns true when opposite edges of target element are outside of the scrollable ancestor area.
+ */
+function areTargetOppositeEdgesHidden( scrollableAncestor: HTMLElement | Document, targetRect: Rect ): boolean {
+	const scrollableAncestorRect = new Rect( scrollableAncestor! as HTMLElement );
+
+	// @if CK_DEBUG_UI // RectDrawer.draw( targetRect, {
+	// @if CK_DEBUG_UI // 	outlineWidth: '1px',
+	// @if CK_DEBUG_UI // 	opacity: '.8'
+	// @if CK_DEBUG_UI // }, 'Target' );
+	// @if CK_DEBUG_UI // RectDrawer.draw( scrollableAncestorRect, {
+	// @if CK_DEBUG_UI // 	outlineWidth: '1px',
+	// @if CK_DEBUG_UI // 	outlineColor: 'red',
+	// @if CK_DEBUG_UI // 	opacity: '.8'
+	// @if CK_DEBUG_UI // }, 'Scrollable wrapper' );
+
+	// When target element is higher than scrollable parent container
+	if ( targetRect.height > scrollableAncestorRect.height ) {
+		if (
+			( scrollableAncestorRect.top > ( targetRect.top - HIDE_PANEL_EDGE_BUFFER ) ) &&
+			( ( targetRect.bottom + HIDE_PANEL_EDGE_BUFFER ) > scrollableAncestorRect.bottom ) ) {
+			return true;
+		}
+	}
+
+	// When target element is wider than scrollable parent container
+	if ( targetRect.width > scrollableAncestorRect.width ) {
+		const targetLeftMiddle = targetRect.left + ( targetRect.width / 2 );
+
+		if ( !( ( targetLeftMiddle > scrollableAncestorRect.left ) && ( targetLeftMiddle < scrollableAncestorRect.right ) ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Collects all parents elements that are scrollable.
  *
  * @param element
- * @returns
+ * @returns an array of scrollable ancestors.
  */
 function getScrollableAncestors( element: HTMLElement ) {
 	const scrollableAncestors = [];
