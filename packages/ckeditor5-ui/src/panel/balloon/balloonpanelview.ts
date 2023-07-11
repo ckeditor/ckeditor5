@@ -1176,7 +1176,7 @@ export function generatePositions( options: {
 }
 
 /**
- * Check if passed element has scroll
+ * Check if element has scrollbar
  * @param element HTML element to check
  * @returns True if element has vertical scroll
  */
