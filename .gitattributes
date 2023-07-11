@@ -1,9 +1,5 @@
 *			text=auto
 
-*.htaccess	eol=lf
-*.cgi		eol=lf
-*.sh		eol=lf
-
 *.css		text
 *.htm		text
 *.html		text
