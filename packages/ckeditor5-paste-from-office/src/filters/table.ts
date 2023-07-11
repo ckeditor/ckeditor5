@@ -15,10 +15,6 @@ import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
  */
 export function tableAlignmentFilter( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
 	for ( const item of documentFragment.getChildren() ) {
-		if ( !item.is( 'element' ) ) {
-			continue;
-		}
-
 		// If table is not wrapped in div[align] it should be alligned left.
 		// More details:(https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1623507171).
 		if ( item.is( 'element', 'table' ) ) {
@@ -26,8 +22,8 @@ export function tableAlignmentFilter( documentFragment: ViewDocumentFragment, wr
 			continue;
 		}
 
-		const align = item.getAttribute( 'align' );
-		const child = item.getChild( 0 );
+		const align = item.is( 'element' ) && item.getAttribute( 'align' );
+		const child = item.is( 'element' ) && item.getChild( 0 );
 
 		// Element should have alignment attribute and should have child and should be div.
 		if ( !align || !child || item.name !== 'div' ) {
