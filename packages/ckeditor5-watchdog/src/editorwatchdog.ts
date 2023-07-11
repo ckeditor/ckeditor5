@@ -10,19 +10,26 @@
 /* globals console */
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { CKEditorError } from 'ckeditor5/src/utils';
+import { priorities, type CKEditorError } from 'ckeditor5/src/utils';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type {
-	Editor,
-	EditorConfig,
-	Context
+import {
+	Plugin,
+	type Editor,
+	type EditorConfig,
+	type Context
 } from 'ckeditor5/src/core';
 
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import Watchdog, { type WatchdogConfig } from './watchdog';
 
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
+
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import { Element, Text, type Writer } from 'ckeditor5/src/engine';
+
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import type { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 /**
  * A watchdog for CKEditor 5 editors.
@@ -45,7 +52,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	/**
 	 * The latest saved editor data represented as a root name -> root data object.
 	 */
-	private _data?: Record<string, string>;
+	private _data?: EditorData;
 
 	/**
 	 * The last document version.
@@ -165,15 +172,21 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				console.error( 'An error happened during the editor destroying.', err );
 			} )
 			.then( () => {
-				if ( typeof this._elementOrData === 'string' ) {
-					return this.create( this._data, this._config, this._config!.context );
-				} else {
-					const updatedConfig = Object.assign( {}, this._config, {
-						initialData: this._data
-					} );
+				// if ( typeof this._elementOrData === 'string' ) {
+				// 	return this.create( this._data, this._config, this._config!.context );
+				// } else {
+				// 	const updatedConfig = Object.assign( {}, this._config, {
+				// 		initialData: this._data
+				// 	} );
+				//
+				// 	return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
+				// }
 
-					return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
-				}
+				EditorWatchdogInitPlugin.editorData = this._data!;
+
+				this._config!.plugins!.push( EditorWatchdogInitPlugin );
+
+				return this.create( this._elementOrData, this._config, this._config!.context );
 			} )
 			.then( () => {
 				this._fire( 'restart' );
@@ -284,14 +297,20 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	}
 
 	/**
-	 * Returns the editor data.
+	 * Gets the all data that are required to reinitialize editor instance.
 	 */
-	private _getData(): Record<string, string> {
-		const data: Record<string, string> = {};
+	private _getData(): EditorData {
+		const editor = this.editor!;
+		const roots = editor.model.document.getRootNames();
+		const data: EditorData = {};
 
-		for ( const rootName of this._editor!.model.document.getRootNames() ) {
-			data[ rootName ] = this._editor!.data.get( { rootName } );
-		}
+		roots.forEach( root => {
+			data[ root ] = {
+				content: JSON.stringify( editor.model.document.getRoot( root )!._children ),
+				attributes: editor.model.document.getRoot( root )!._attrs,
+				markers: editor.model.markers
+			};
+		} );
 
 		return data;
 	}
@@ -322,6 +341,79 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		} );
 	}
 }
+
+class EditorWatchdogInitPlugin extends Plugin {
+	public static editorData: EditorData;
+
+	private _data: EditorData;
+
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this._data = EditorWatchdogInitPlugin.editorData;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		this.editor.data.on( 'init', evt => {
+			evt.stop();
+
+			this.editor.model.enqueueChange( writer => {
+				this._restoreEditorData( writer );
+			} );
+		}, { priority: priorities.highest - 1 } );
+	}
+
+	/**
+	 * Checks if the editor instance is a multi-root editor.
+	 */
+	private _isMultiRootEditor( editor: Editor ): editor is MultiRootEditor {
+		return ( editor as MultiRootEditor ).getRootsAttributes !== undefined;
+	}
+
+	/**
+	 * Restores the editor by setting all operations, attributes and markers.
+	 */
+	private _restoreEditorData( writer: Writer ): void {
+		const editor = this.editor!;
+
+		Object.entries( this._data! ).forEach( ( [ root, { content, markers, attributes } ] ) => {
+			const parsedNodes = JSON.parse( content );
+			const children = [];
+
+			if ( this._isMultiRootEditor( editor ) ) {
+				editor.addRoot( root );
+			}
+
+			for ( const [ key, value ] of attributes ) {
+				editor.model.document.getRoot( root )!._setAttribute( key, value );
+			}
+
+			for ( const child of parsedNodes ) {
+				if ( child.name ) {
+					// If child has name property, it is an Element.
+					children.push( Element.fromJSON( child ) );
+				} else {
+					// Otherwise, it is a Text node.
+					children.push( Text.fromJSON( child ) );
+				}
+			}
+
+			const frag = writer.createDocumentFragment();
+			frag._appendChild( children );
+
+			writer.insert( frag, editor.model.document.getRoot( root )! );
+		} );
+	}
+}
+
+type EditorData = Record<string, {
+	content: string;
+	attributes: Map<string, unknown>;
+	markers: any;
+}>;
 
 /**
  * Fired after the watchdog restarts the error in case of a crash.
