@@ -29,7 +29,7 @@ export function tableAlignmentFilter( documentFragment: ViewDocumentFragment, wr
 		const align = item.getAttribute( 'align' );
 		const child = item.getChild( 0 );
 
-		// Element should have alignemt attribute and should have child and should be div.
+		// Element should have alignment attribute and should have child and should be div.
 		if ( !align || !child || item.name !== 'div' ) {
 			continue;
 		}
