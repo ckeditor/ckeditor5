@@ -13,9 +13,9 @@
  */
 module.exports = function prepareDllBuildsCallback( packagePath ) {
 	const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-	const path = require( 'path' );
+	const upath = require( 'upath' );
 
-	const packageJsonPath = path.join( packagePath, 'package.json' );
+	const packageJsonPath = upath.join( packagePath, 'package.json' );
 	const packageJson = require( packageJsonPath );
 
 	if ( !isDllPackage() ) {
