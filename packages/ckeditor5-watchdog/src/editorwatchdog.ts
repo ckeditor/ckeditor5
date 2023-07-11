@@ -26,7 +26,7 @@ import Watchdog, { type WatchdogConfig } from './watchdog';
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import { Element, Text, type Writer } from 'ckeditor5/src/engine';
+import { Element, Text, type Writer, type Range } from 'ckeditor5/src/engine';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
@@ -182,11 +182,20 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				// 	return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
 				// }
 
-				EditorWatchdogInitPlugin.editorData = this._data!;
+				const existingRoots = Object.keys( this._data! ).reduce( ( acc, rootName ) => {
+					acc[ rootName ] = '';
 
-				this._config!.plugins!.push( EditorWatchdogInitPlugin );
+					return acc;
+				}, {} as Record<string, string> );
 
-				return this.create( this._elementOrData, this._config, this._config!.context );
+				const updatedConfig = Object.assign( {}, this._config, {
+					initialData: existingRoots,
+					_watchdogInitialData: this._data
+				} );
+
+				updatedConfig.plugins!.push( EditorWatchdogInitPlugin );
+
+				return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
 			} )
 			.then( () => {
 				this._fire( 'restart' );
@@ -305,10 +314,20 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		const data: EditorData = {};
 
 		roots.forEach( root => {
+			const markersData = {} as any;
+
+			for ( const marker of editor.model.markers ) {
+				markersData[ marker.name ] = {
+					range: marker.getRange(),
+					usingOperation: marker._managedUsingOperations,
+					affectsData: marker._affectsData
+				};
+			}
+
 			data[ root ] = {
-				content: JSON.stringify( editor.model.document.getRoot( root )!._children ),
-				attributes: editor.model.document.getRoot( root )!._attrs,
-				markers: editor.model.markers
+				content: JSON.stringify( Array.from( editor.model.document.getRoot( root )!.getChildren() ) ),
+				attributes: Array.from( editor.model.document.getRoot( root )!.getAttributes() ),
+				markers: markersData
 			};
 		} );
 
@@ -343,14 +362,14 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 }
 
 class EditorWatchdogInitPlugin extends Plugin {
-	public static editorData: EditorData;
-
 	private _data: EditorData;
 
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this._data = EditorWatchdogInitPlugin.editorData;
+		this._data = editor.config.get( '_watchdogInitialData' )!;
+
+		editor.config.set( '_watchdogInitialData', null );
 	}
 
 	/**
@@ -380,19 +399,21 @@ class EditorWatchdogInitPlugin extends Plugin {
 		const editor = this.editor!;
 
 		Object.entries( this._data! ).forEach( ( [ root, { content, markers, attributes } ] ) => {
-			const parsedNodes = JSON.parse( content );
+			const parsedNodes: Array<Node | Element> = JSON.parse( content );
 			const children = [];
 
 			if ( this._isMultiRootEditor( editor ) ) {
 				editor.addRoot( root );
 			}
 
+			const rootElement = editor.model.document.getRoot( root )!;
+
 			for ( const [ key, value ] of attributes ) {
-				editor.model.document.getRoot( root )!._setAttribute( key, value );
+				writer.setAttribute( key, value, rootElement );
 			}
 
 			for ( const child of parsedNodes ) {
-				if ( child.name ) {
+				if ( 'name' in child ) {
 					// If child has name property, it is an Element.
 					children.push( Element.fromJSON( child ) );
 				} else {
@@ -401,18 +422,26 @@ class EditorWatchdogInitPlugin extends Plugin {
 				}
 			}
 
+			Object.entries( markers ).forEach( ( [ markerName, markerOptions ] ) => {
+				writer.addMarker( markerName, markerOptions );
+			} );
+
 			const frag = writer.createDocumentFragment();
 			frag._appendChild( children );
 
-			writer.insert( frag, editor.model.document.getRoot( root )! );
+			writer.insert( frag, rootElement );
 		} );
 	}
 }
 
-type EditorData = Record<string, {
+export type EditorData = Record<string, {
 	content: string;
-	attributes: Map<string, unknown>;
-	markers: any;
+	attributes: Array<[ string, unknown ]>;
+	markers: Record<string, {
+		range: Range;
+		usingOperation: boolean;
+		affectsData: boolean;
+	}>;
 }>;
 
 /**
