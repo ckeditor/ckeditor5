@@ -9,9 +9,9 @@
 
 import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
+import { tableAlignmentFilter } from '../filters/table';
+import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine';
 import type { Normalizer, NormalizerData } from '../normalizer';
-
-import type { ViewDocument } from 'ckeditor5/src/engine';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
@@ -42,11 +42,12 @@ export default class MSWordNormalizer implements Normalizer {
 	 * @inheritDoc
 	 */
 	public execute( data: NormalizerData ): void {
+		const writer = new UpcastWriter( this.document );
 		const { body: documentFragment, stylesString } = data._parsedData;
 
 		transformListItemLikeElementsIntoLists( documentFragment, stylesString );
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
-
+		tableAlignmentFilter( documentFragment, writer );
 		data.content = documentFragment;
 	}
 }
