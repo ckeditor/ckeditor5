@@ -310,26 +310,28 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 */
 	private _getData(): EditorData {
 		const editor = this.editor!;
-		const roots = editor.model.document.getRootNames();
-		const data: EditorData = {};
+		const rootNames = editor.model.document.getRootNames();
+		const data: EditorData = {
+			roots: {},
+			markers: {}
+		};
 
-		roots.forEach( root => {
-			const markersData = {} as any;
+		rootNames.forEach( rootName => {
+			const root = editor.model.document.getRoot( rootName )!;
 
-			for ( const marker of editor.model.markers ) {
-				markersData[ marker.name ] = {
-					range: marker.getRange(),
-					usingOperation: marker._managedUsingOperations,
-					affectsData: marker._affectsData
-				};
-			}
-
-			data[ root ] = {
-				content: JSON.stringify( Array.from( editor.model.document.getRoot( root )!.getChildren() ) ),
-				attributes: Array.from( editor.model.document.getRoot( root )!.getAttributes() ),
-				markers: markersData
+			data.roots[ rootName ] = {
+				content: JSON.stringify( Array.from( root.getChildren() ) ),
+				attributes: Array.from( root.getAttributes() )
 			};
 		} );
+
+		for ( const marker of editor.model.markers ) {
+			data.markers[ marker.name ] = {
+				range: marker.getRange(),
+				usingOperation: marker._managedUsingOperations,
+				affectsData: marker._affectsData
+			};
+		}
 
 		return data;
 	}
@@ -368,8 +370,6 @@ class EditorWatchdogInitPlugin extends Plugin {
 		super( editor );
 
 		this._data = editor.config.get( '_watchdogInitialData' )!;
-
-		editor.config.set( '_watchdogInitialData', null );
 	}
 
 	/**
@@ -379,7 +379,7 @@ class EditorWatchdogInitPlugin extends Plugin {
 		this.editor.data.on( 'init', evt => {
 			evt.stop();
 
-			this.editor.model.enqueueChange( writer => {
+			this.editor.model.enqueueChange( { isUndoable: true }, writer => {
 				this._restoreEditorData( writer );
 			} );
 		}, { priority: priorities.highest - 1 } );
@@ -398,15 +398,11 @@ class EditorWatchdogInitPlugin extends Plugin {
 	private _restoreEditorData( writer: Writer ): void {
 		const editor = this.editor!;
 
-		Object.entries( this._data! ).forEach( ( [ root, { content, markers, attributes } ] ) => {
+		Object.entries( this._data!.roots ).forEach( ( [ rootName, { content, attributes } ] ) => {
 			const parsedNodes: Array<Node | Element> = JSON.parse( content );
 			const children = [];
 
-			if ( this._isMultiRootEditor( editor ) ) {
-				editor.addRoot( root );
-			}
-
-			const rootElement = editor.model.document.getRoot( root )!;
+			const rootElement = editor.model.document.getRoot( rootName )!;
 
 			for ( const [ key, value ] of attributes ) {
 				writer.setAttribute( key, value, rootElement );
@@ -422,27 +418,29 @@ class EditorWatchdogInitPlugin extends Plugin {
 				}
 			}
 
-			Object.entries( markers ).forEach( ( [ markerName, markerOptions ] ) => {
-				writer.addMarker( markerName, markerOptions );
-			} );
-
 			const frag = writer.createDocumentFragment();
 			frag._appendChild( children );
 
 			writer.insert( frag, rootElement );
 		} );
+
+		Object.entries( this._data!.markers ).forEach( ( [ markerName, markerOptions ] ) => {
+			writer.addMarker( markerName, markerOptions );
+		} );
 	}
 }
 
-export type EditorData = Record<string, {
-	content: string;
-	attributes: Array<[ string, unknown ]>;
+export type EditorData = {
+	roots: Record<string, {
+		content: string;
+		attributes: Array<[ string, unknown ]>;
+	}>;
 	markers: Record<string, {
 		range: Range;
 		usingOperation: boolean;
 		affectsData: boolean;
 	}>;
-}>;
+};
 
 /**
  * Fired after the watchdog restarts the error in case of a crash.
