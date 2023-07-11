@@ -142,19 +142,6 @@ export default class ImageResizeHandles extends Plugin {
 				}
 			} );
 
-			resizer.on( 'begin', () => {
-				const img = imageUtils.findViewImgElement( imageView )!;
-				const aspectRatio = img.getStyle( 'aspect-ratio' );
-				const widthAttr = imageModel.getAttribute( 'width' );
-				const heightAttr = imageModel.getAttribute( 'height' );
-
-				if ( widthAttr && heightAttr && !aspectRatio ) {
-					editingView.change( writer => {
-						writer.setStyle( 'aspect-ratio', `${ widthAttr }/${ heightAttr }`, img );
-					} );
-				}
-			} );
-
 			resizer.bind( 'isEnabled' ).to( this );
 		} );
 	}
