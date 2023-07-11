@@ -167,7 +167,7 @@ export function viewToAttributeInlineConverter(
 }
 
 /**
- * TODO
+ * Conversion helper converting an empty inline model element to an HTML element or widget.
  */
 export function emptyInlineModelElementToViewConverter(
 	{ model: attributeKey, view: viewName }: DataSchemaInlineElementDefinition,

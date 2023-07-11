@@ -209,7 +209,11 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Load a configuration of one or many elements, where when empty should be allowed.
+	 *
+	 * **Note**: It modifies DataSchema so must be loaded before registering filtering rules.
+	 *
+	 * @param config Configuration of elements that should be preserved even if empty.
 	 */
 	public loadAllowedEmptyElementsConfig( config: Array<string> ): void {
 		for ( const elementName of config ) {
@@ -251,7 +255,14 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Allow the given empty element in the editor context.
+	 *
+	 * This method will only allow elements described by the {@link module:html-support/dataschema~DataSchema} used
+	 * to create data filter.
+	 *
+	 * **Note**: It modifies DataSchema so must be called before registering filtering rules.
+	 *
+	 * @param viewName String or regular expression matching view name.
 	 */
 	public allowEmptyElement( viewName: string ): void {
 		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, true ) ) {

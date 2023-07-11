@@ -1357,6 +1357,172 @@ describe( 'DataFilter', () => {
 		} );
 	} );
 
+	describe( 'empty inline', () => {
+		it( 'should allow element', () => {
+			dataFilter.allowEmptyElement( 'i' );
+			dataFilter.allowElement( 'i' );
+
+			editor.setData( '<p>foo <i></i> bar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo <htmlEmptyElement htmlI="(1)"></htmlEmptyElement> bar</paragraph>',
+				attributes: {
+					1: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo <i></i> bar</p>' );
+		} );
+
+		it( 'should allow attributes (styles)', () => {
+			dataFilter.allowEmptyElement( 'i' );
+			dataFilter.allowElement( 'i' );
+			dataFilter.allowAttributes( { name: 'i', styles: { color: 'red' } } );
+
+			editor.setData( '<p>foo <i style="color:red;"></i> bar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo <htmlEmptyElement htmlI="(1)"></htmlEmptyElement> bar</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							color: 'red'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo <i style="color:red;"></i> bar</p>' );
+		} );
+
+		it( 'should allow attributes (classes)', () => {
+			dataFilter.allowEmptyElement( 'i' );
+			dataFilter.allowElement( 'i' );
+			dataFilter.allowAttributes( { name: 'i', classes: [ 'foobar' ] } );
+
+			editor.setData( '<p>foo <i class="foobar"></i> bar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo <htmlEmptyElement htmlI="(1)"></htmlEmptyElement> bar</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foobar' ]
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo <i class="foobar"></i> bar</p>' );
+		} );
+
+		it( 'should disallow attributes', () => {
+			dataFilter.allowEmptyElement( 'i' );
+			dataFilter.allowElement( 'i' );
+			dataFilter.allowAttributes( { name: 'i', attributes: { 'data-type': true } } );
+			dataFilter.disallowAttributes( { name: 'i', attributes: { 'data-type': 'hidden' } } );
+
+			editor.setData( '<p>foo <i data-type="text"></i> bar <i data-type="hidden"></i> baz</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'foo <htmlEmptyElement htmlI="(1)"></htmlEmptyElement> bar <htmlEmptyElement htmlI="(2)"></htmlEmptyElement> baz' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-type': 'text'
+						}
+					},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo <i data-type="text"></i> bar <i></i> baz</p>' );
+		} );
+
+		it( 'should disallow attributes (styles)', () => {
+			dataFilter.allowEmptyElement( 'i' );
+			dataFilter.allowElement( 'i' );
+			dataFilter.allowAttributes( { name: 'i', styles: { color: /^(red|blue)$/ } } );
+			dataFilter.disallowAttributes( { name: 'i', styles: { color: 'red' } } );
+
+			editor.setData( '<p><i style="color:blue;"></i><i style="color:red;"></i></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>' +
+						'<htmlEmptyElement htmlI="(2)"></htmlEmptyElement>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							color: 'blue'
+						}
+					},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><i style="color:blue;"></i><i></i></p>' );
+		} );
+
+		it( 'should disallow attributes (classes)', () => {
+			dataFilter.allowEmptyElement( 'i' );
+			dataFilter.allowElement( 'i' );
+			dataFilter.allowAttributes( { name: 'i', classes: [ 'foo', 'bar' ] } );
+			dataFilter.disallowAttributes( { name: 'i', classes: [ 'bar' ] } );
+
+			editor.setData( '<p><i class="foo bar"></i><i class="bar"></i></p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>' +
+						'<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>' +
+						'<htmlEmptyElement htmlI="(2)"></htmlEmptyElement>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'foo' ]
+					},
+					2: {}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><i class="foo"></i><i></i></p>' );
+		} );
+
+		it( 'should apply attributes to correct editing element', () => {
+			dataFilter.allowEmptyElement( 'i' );
+			dataFilter.allowElement( 'i' );
+			dataFilter.allowAttributes( { name: 'i', classes: true } );
+
+			editor.setData( '<p><i class="foo"></i></p>' );
+
+			const empty = editor.editing.view.document.getRoot()
+				.getChild( 0 ) // <p>
+				.getChild( 0 ); // <i>
+
+			expect( Array.from( empty.getClassNames() ) ).to.deep.equal( [ 'foo', 'ck-widget' ] );
+		} );
+
+		it( 'should not insert if not allowed by model schema', () => {
+			model.schema.addChildCheck( ( context, childDefinition ) => {
+				if ( context.endsWith( 'paragraph' ) && childDefinition.isObject ) {
+					return false;
+				}
+			} );
+			dataFilter.allowEmptyElement( 'i' );
+			dataFilter.allowElement( 'i' );
+
+			editor.setData( '<p>foo <i></i> bar</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph>foo  bar</paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo &nbsp;bar</p>' );
+		} );
+	} );
+
 	describe( 'attributes modifications', () => {
 		let root;
 
@@ -3825,6 +3991,58 @@ describe( 'DataFilter', () => {
 					'<span style="color:red;"><span style="text-transform:uppercase;"><strong>bar</strong></span></span>' +
 				'</p>'
 			);
+		} );
+	} );
+
+	describe( 'loadAllowedEmptyElementsConfig', () => {
+		it( 'should allow empty element by name', async () => {
+			const editorElement = document.createElement( 'div' );
+
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport ],
+				htmlSupport: {
+					allow: [ { name: 'i' }, { name: 'b' } ],
+					allowEmpty: [ 'i' ]
+				}
+			} );
+
+			editor.setData( '<p>foo<i></i>bar<b></b>baz</p>' );
+
+			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo<htmlEmptyElement htmlI="{}"></htmlEmptyElement>barbaz</paragraph>'
+			);
+			expect( editor.getData() ).to.equal( '<p>foo<i></i>barbaz</p>' );
+
+			editorElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should allow multiple empty element by name', async () => {
+			const editorElement = document.createElement( 'div' );
+
+			document.body.appendChild( editorElement );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport ],
+				htmlSupport: {
+					allow: [ { name: 'i' }, { name: 'b' } ],
+					allowEmpty: [ 'i', 'b' ]
+				}
+			} );
+
+			editor.setData( '<p>foo<i></i>bar<b></b>baz</p>' );
+
+			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>' +
+					'foo<htmlEmptyElement htmlI="{}"></htmlEmptyElement>bar<htmlEmptyElement htmlB="{}"></htmlEmptyElement>baz' +
+				'</paragraph>'
+			);
+			expect( editor.getData() ).to.equal( '<p>foo<i></i>bar<b></b>baz</p>' );
+
+			editorElement.remove();
+			await editor.destroy();
 		} );
 	} );
 
