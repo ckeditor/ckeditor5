@@ -142,7 +142,7 @@ export default class DomConverter {
 	private readonly _rawContentElementMatcher = new Matcher();
 
 	/**
-	 * TODO
+	 * Matcher for inline object view elements. This is an extension of a simple {@link #inlineObjectElements} array of element names.
 	 */
 	private readonly _inlineObjectElementMatcher = new Matcher();
 
@@ -1200,7 +1200,14 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for inline object view elements.
+	 *
+	 * This is affecting how {@link module:engine/view/domconverter~DomConverter#domToView} and
+	 * {@link module:engine/view/domconverter~DomConverter#domChildrenToView} process DOM nodes.
+	 *
+	 * This is an extension of a simple {@link #inlineObjectElements} array of element names.
+	 *
+	 * @param pattern Pattern matching a view element which should be treated as an inline object.
 	 */
 	public registerInlineObjectMatcher( pattern: MatcherPattern ): void {
 		this._inlineObjectElementMatcher.add( pattern );
@@ -1254,6 +1261,10 @@ export default class DomConverter {
 	/**
 	 * Internal generator for {@link #domToView}. Also used by {@link #domChildrenToView}.
 	 * Separates DOM nodes conversion from whitespaces processing.
+	 *
+	 * @param domNode DOM node or document fragment to transform.
+	 * @param inlineNodes An array of recently encountered inline nodes truncated to the block element boundaries.
+	 * Used later to process whitespaces.
 	 */
 	private* _domToView(
 		domNode: DomNode,
@@ -1375,7 +1386,12 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Internal helper that walks the list of inline view nodes already generated from DOM nodes
+	 * and handles whitespaces and NBSPs.
+	 *
+	 * @param domParent The DOM parent of the given inline nodes. This should be a document fragment or
+	 * a block element to whitespace processing start cleaning.
+	 * @param inlineNodes An array of recently encountered inline nodes truncated to the block element boundaries.
 	 */
 	private _processDomInlineNodes(
 		domParent: DomElement | null,
@@ -1601,7 +1617,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` if a view node belongs to {@link #blockElements}. `false` otherwise.
 	 */
 	private _isBlockViewElement( node: ViewNode ): boolean {
 		return node.is( 'element' ) && this.blockElements.includes( node.name );

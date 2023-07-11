@@ -678,16 +678,8 @@ export default class DataFilter extends Plugin {
 			allowAttributes: attributeKey
 		} );
 
-		schema.setAttributeProperties( attributeKey, { copyFromObject: false } );
-
 		if ( definition.attributeProperties ) {
 			schema.setAttributeProperties( attributeKey, definition.attributeProperties );
-		}
-
-		if ( !schema.isRegistered( 'htmlEmptyElement' ) ) {
-			schema.register( 'htmlEmptyElement', {
-				inheritAllFrom: '$inlineObject'
-			} );
 		}
 
 		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this ) );
@@ -697,27 +689,37 @@ export default class DataFilter extends Plugin {
 			view: attributeToViewInlineConverter( definition )
 		} );
 
-		if ( definition.allowEmpty ) {
-			editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => (
-				element.name == definition.view && element.isEmpty ? { name: true } : null
-			) );
-			// TODO should it affect spaces vs NBSP in editing pipeline?
-			// editor.editing.view.domConverter.registerInlineObjectMatcher( element => (
-			// 	element.name == definition.view && element.isEmpty ? { name: true } : null
-			// ) );
-
-			conversion.for( 'editingDowncast' )
-				.elementToElement( {
-					model: 'htmlEmptyElement',
-					view: emptyInlineModelElementToViewConverter( definition, true )
-				} );
-
-			conversion.for( 'dataDowncast' )
-				.elementToElement( {
-					model: 'htmlEmptyElement',
-					view: emptyInlineModelElementToViewConverter( definition )
-				} );
+		if ( !definition.allowEmpty ) {
+			return;
 		}
+
+		schema.setAttributeProperties( attributeKey, { copyFromObject: false } );
+
+		if ( !schema.isRegistered( 'htmlEmptyElement' ) ) {
+			schema.register( 'htmlEmptyElement', {
+				inheritAllFrom: '$inlineObject'
+			} );
+		}
+
+		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => (
+			element.name == definition.view && element.isEmpty ? { name: true } : null
+		) );
+		// TODO should it affect spaces vs NBSP in editing pipeline?
+		// editor.editing.view.domConverter.registerInlineObjectMatcher( element => (
+		// 	element.name == definition.view && element.isEmpty ? { name: true } : null
+		// ) );
+
+		conversion.for( 'editingDowncast' )
+			.elementToElement( {
+				model: 'htmlEmptyElement',
+				view: emptyInlineModelElementToViewConverter( definition, true )
+			} );
+
+		conversion.for( 'dataDowncast' )
+			.elementToElement( {
+				model: 'htmlEmptyElement',
+				view: emptyInlineModelElementToViewConverter( definition )
+			} );
 	}
 }
 
