@@ -434,6 +434,7 @@ class EditorWatchdogInitPlugin {
 			}
 		} );
 
+		console.log( this._data!.markers );
 		Object.entries( this._data!.markers ).forEach( ( [ markerName, markerOptions ] ) => {
 			const { document } = editor.model;
 			const {
