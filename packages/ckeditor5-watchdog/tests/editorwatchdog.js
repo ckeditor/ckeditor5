@@ -91,6 +91,83 @@ describe( 'EditorWatchdog', () => {
 
 			await watchdog.destroy();
 		} );
+
+		it( 'should support root attributes', async () => {
+			const watchdog = new EditorWatchdog();
+
+			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
+			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
+
+			const root = watchdog.editor.model.document.getRoot();
+
+			watchdog.editor.model.change( writer => {
+				writer.setAttribute( 'test', 1, root );
+			} );
+
+			expect( root.getAttribute( 'test' ) ).to.equal( 1 );
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
+				} );
+			} );
+
+			expect( root.getAttribute( 'test' ) ).to.equal( 1 );
+
+			await watchdog.destroy();
+		} );
+
+		it( 'should support markers', async () => {
+			const watchdog = new EditorWatchdog();
+
+			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
+			await watchdog.create( '<p>foo</p>', { plugins: [ Paragraph ] } );
+
+			const root = watchdog.editor.model.document.getRoot();
+
+			watchdog.editor.model.change( writer => {
+				writer.addMarker( 'test', {
+					usingOperation: false,
+					affectsData: false,
+					range: writer.createRange(
+						writer.createPositionAt( root, [ 0 ] ),
+						writer.createPositionAt( root, [ 1 ] )
+					)
+				} );
+			} );
+
+			const marker = watchdog.editor.model.markers.get( 'test' );
+
+			watchdog._save();
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
+				} );
+			} );
+
+			expect( watchdog.editor.model.markers.get( 'test' ).name ).to.equal( marker.name );
+
+			await watchdog.destroy();
+		} );
 	} );
 
 	describe( 'editor', () => {
@@ -610,8 +687,9 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			const editorGetDataError = new Error( 'Some error' );
-			const getDataStub = sinon.stub( watchdog.editor.data, 'get' )
-				.throwsException( editorGetDataError );
+			const getDataStub = sinon.stub( watchdog, '_getData' )
+				.onCall( 0 ).throwsException( editorGetDataError )
+				.onCall( 1 ).returns( {} );
 			// Keep the reference to cleanly destroy it at in the end, as during the TC it
 			// throws an exception during destruction.
 			const firstEditor = watchdog.editor;
@@ -638,11 +716,6 @@ describe( 'EditorWatchdog', () => {
 						console.error,
 						editorGetDataError,
 						'An error happened during restoring editor data. Editor will be restored from the previously saved data.'
-					);
-
-					sinon.assert.calledWith(
-						console.error,
-						'An error happened during the editor destroying.'
 					);
 
 					await watchdog.destroy();
@@ -680,6 +753,44 @@ describe( 'EditorWatchdog', () => {
 
 						watchdog.destroy().then( res );
 					} );
+				} );
+			} );
+		} );
+
+		it( 'should handle the error when the editor destroying failed', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
+			const originalErrorHandler = window.onerror;
+			window.onerror = undefined;
+
+			sinon.stub( console, 'error' );
+
+			await watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ Paragraph ]
+			} );
+
+			const editorGetDataError = new Error( 'Some error' );
+			const destroyStub = sinon.stub( watchdog, '_destroy' )
+				.throwsException( editorGetDataError );
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', async () => {
+					window.onerror = originalErrorHandler;
+
+					sinon.assert.calledWith(
+						console.error,
+						'An error happened during the editor destroying.'
+					);
+
+					destroyStub.restore();
+
+					await watchdog.destroy();
+
+					res();
 				} );
 			} );
 		} );
