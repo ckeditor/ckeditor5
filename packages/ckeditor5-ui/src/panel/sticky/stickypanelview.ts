@@ -119,7 +119,8 @@ export default class StickyPanelView extends View {
 	private _panelRect?: Rect;
 
 	/**
-	 * Top offset of the panel when it is sticky to the top.
+	 * The `top` CSS position of the panel when it is sticky to the top of the viewport or scrollable
+	 * ancestors of the {@link #limiterElement}.
 	 *
 	 * @private
 	 * @readonly
@@ -128,7 +129,7 @@ export default class StickyPanelView extends View {
 	declare public _stickyTopOffset: number | null;
 
 	/**
-	 * Bottom offset of the panel when it is sticky to the bottom.
+	 * The `bottom` CSS position of the panel when it is sticky to the bottom of the {@link #limiterElement}.
 	 *
 	 * @private
 	 * @readonly
@@ -284,9 +285,14 @@ export default class StickyPanelView extends View {
 		// @if CK_DEBUG_STICKYPANEL // 	'Limiter'
 		// @if CK_DEBUG_STICKYPANEL // );
 
+		// Stick the panel only if
+		// * the limiter's ancestors are intersecting with each other so that some of their rects are visible,
+		// * and the limiter's top edge is above the visible ancestors' top edge.
 		if ( visibleAncestorsRect && limiterRect.top < visibleAncestorsRect.top ) {
 			const visibleLimiterRect = limiterRect.getIntersection( visibleAncestorsRect );
 
+			// Sticky the panel only if the limiter's visible rect is at least partially visible in the
+			// visible ancestors' rects intersection.
 			if ( visibleLimiterRect ) {
 				// @if CK_DEBUG_STICKYPANEL // RectDrawer.draw( visibleLimiterRect,
 				// @if CK_DEBUG_STICKYPANEL // 	{ outlineWidth: '3px', opacity: '.8', outlineColor: 'fuchsia', outlineOffset: '-3px',
@@ -296,6 +302,7 @@ export default class StickyPanelView extends View {
 
 				const visibleAncestorsTop = visibleAncestorsRect.top;
 
+				// Check if there's a change the panel can be sticky to the bottom of the limiter.
 				if ( visibleAncestorsTop + this._panelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
 					const stickyBottomOffset = Math.max( limiterRect.bottom - visibleAncestorsRect.bottom, 0 ) + this.limiterBottomOffset;
 					// @if CK_DEBUG_STICKYPANEL // const stickyBottomOffsetRect = new Rect( {
@@ -307,6 +314,8 @@ export default class StickyPanelView extends View {
 					// @if CK_DEBUG_STICKYPANEL // 	'Sticky bottom offset'
 					// @if CK_DEBUG_STICKYPANEL // );
 
+					// Check if sticking the panel to the bottom of the limiter does not cause it to suddenly
+					// move upwards if there's not enough space for it.
 					if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._panelRect.height ) {
 						this._stickToBottomOfLimiter( stickyBottomOffset );
 					} else {
@@ -334,7 +343,7 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
-	 * Sticks the panel at the given top offset.
+	 * Sticks the panel at the given CSS `top` offset.
 	 *
 	 * @private
 	 * @param topOffset
@@ -348,7 +357,7 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
-	 * Sticks the panel at the bottom of the limiter with a given bottom offset.
+	 * Sticks the panel at the bottom of the limiter with a given CSS `bottom` offset.
 	 *
 	 * @private
 	 * @param stickyBottomOffset
@@ -394,7 +403,7 @@ function _getScrollableAncestors( element: HTMLElement ) {
 	return scrollableAncestors;
 }
 
-// Calculates the intersection rectangle of the given element and its scrollable ancestors.
+// Calculates the intersection rectangle of the given element and its scrollable ancestors (including window).
 // Also, takes into account the passed viewport top offset.
 //
 // @private
@@ -403,6 +412,7 @@ function _getScrollableAncestors( element: HTMLElement ) {
 // @returns Rect
 function _getVisibleAncestorsRect( scrollableAncestors: Array<HTMLElement | Document>, viewportTopOffset: number ) {
 	const scrollableAncestorsRects = scrollableAncestors.map( ancestor => {
+		// The document (window) is yet another scrollable ancestor, but cropped by the top offset.
 		if ( ancestor instanceof Document ) {
 			const windowRect = new Rect( global.window );
 
