@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-markdown-gfm",
-  "version": "38.2.0-alpha.0",
+  "version": "0.0.0-nightly-20230712.1",
   "description": "GitHub Flavored Markdown data processor for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,21 +13,21 @@
   "main": "src/index.ts",
   "type": "module",
   "dependencies": {
-    "ckeditor5": "38.2.0-alpha.0",
+    "ckeditor5": "0.0.0-nightly-20230712.1",
     "marked": "4.0.12",
     "turndown": "^6.0.0",
     "turndown-plugin-gfm": "^1.0.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "38.2.0-alpha.0",
-    "@ckeditor/ckeditor5-code-block": "38.2.0-alpha.0",
-    "@ckeditor/ckeditor5-core": "38.2.0-alpha.0",
+    "@ckeditor/ckeditor5-basic-styles": "0.0.0-nightly-20230712.1",
+    "@ckeditor/ckeditor5-code-block": "0.0.0-nightly-20230712.1",
+    "@ckeditor/ckeditor5-core": "0.0.0-nightly-20230712.1",
     "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "38.2.0-alpha.0",
-    "@ckeditor/ckeditor5-engine": "38.2.0-alpha.0",
-    "@ckeditor/ckeditor5-list": "38.2.0-alpha.0",
-    "@ckeditor/ckeditor5-table": "38.2.0-alpha.0",
-    "@ckeditor/ckeditor5-theme-lark": "38.2.0-alpha.0",
+    "@ckeditor/ckeditor5-editor-classic": "0.0.0-nightly-20230712.1",
+    "@ckeditor/ckeditor5-engine": "0.0.0-nightly-20230712.1",
+    "@ckeditor/ckeditor5-list": "0.0.0-nightly-20230712.1",
+    "@ckeditor/ckeditor5-table": "0.0.0-nightly-20230712.1",
+    "@ckeditor/ckeditor5-theme-lark": "0.0.0-nightly-20230712.1",
     "@types/marked": "^4.0.8",
     "typescript": "^4.8.4",
     "webpack": "^5.58.1",

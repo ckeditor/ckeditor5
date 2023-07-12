@@ -819,7 +819,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 * ```ts
 	 * // Using a custom function which is the same as the default conversion:
 	 * editor.conversion.for( 'dataDowncast' ).markerToData( {
-	 * 	model: 'comment'
+	 * 	model: 'comment',
 	 * 	view: markerName => ( {
 	 * 		group: 'comment',
 	 * 		name: markerName.substr( 8 ) // Removes 'comment:' part.
@@ -828,7 +828,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 *
 	 * // Using the converter priority:
 	 * editor.conversion.for( 'dataDowncast' ).markerToData( {
-	 * 	model: 'comment'
+	 * 	model: 'comment',
 	 * 	view: markerName => ( {
 	 * 		group: 'comment',
 	 * 		name: markerName.substr( 8 ) // Removes 'comment:' part.

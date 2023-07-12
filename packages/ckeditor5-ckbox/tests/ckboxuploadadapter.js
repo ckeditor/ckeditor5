@@ -220,10 +220,10 @@ describe( 'CKBoxUploadAdapter', () => {
 	} );
 
 	describe( 'Adapter', () => {
-		let adapter, loader, sinonXHR;
+		let adapter, file, loader, sinonXHR;
 
 		beforeEach( () => {
-			const file = createNativeFileMock();
+			file = createNativeFileMock();
 			file.name = 'image.jpg';
 
 			loader = fileRepository.createLoader( file );
@@ -495,6 +495,80 @@ describe( 'CKBoxUploadAdapter', () => {
 				} );
 		} );
 
+		it( 'should take the first category if many of them accepts a jpg file (uppercase file extension)', () => {
+			file.name = 'image.JPG';
+
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					items: [
+						{ name: 'category 1', id: 'id-category-1', extensions: [ 'png' ] },
+						{ name: 'category 2', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
+						{ name: 'category 3', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
+					], offset: 0, limit: 50, totalCount: 3
+				} )
+			] );
+
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+				201,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( { id: 'image-1' } )
+			] );
+
+			// To cover the `Adapter#_getImageWidth()`.
+			loader._reader._data = IMAGE_SRC_FIXTURE;
+
+			return adapter.upload()
+				.then( data => {
+					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
+					expect( data ).to.contain.property(
+						'default',
+						'https://ckbox.cloud/environment/assets/image-1/images/100.jpeg'
+					);
+
+					const uploadRequest = sinonXHR.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-2' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+				} );
+		} );
+
+		it( 'should take the first category if many of them accepts a JPG file', () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					items: [
+						{ name: 'category 1', id: 'id-category-1', extensions: [ 'PNG' ] },
+						{ name: 'category 2', id: 'id-category-2', extensions: [ 'WEBP', 'JPG' ] },
+						{ name: 'category 3', id: 'id-category-3', extensions: [ 'GIF', 'JPG' ] }
+					], offset: 0, limit: 50, totalCount: 3
+				} )
+			] );
+
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+				201,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( { id: 'image-1' } )
+			] );
+
+			// To cover the `Adapter#_getImageWidth()`.
+			loader._reader._data = IMAGE_SRC_FIXTURE;
+
+			return adapter.upload()
+				.then( data => {
+					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
+					expect( data ).to.contain.property(
+						'default',
+						'https://ckbox.cloud/environment/assets/image-1/images/100.jpeg'
+					);
+
+					const uploadRequest = sinonXHR.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-2' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+				} );
+		} );
+
 		it( 'should take the first category that allows uploading the file if provided configuration is empty', () => {
 			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
 				200,
@@ -595,6 +669,86 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			editor.config.set( 'ckbox.defaultUploadCategories', {
 				'id-category-3': [ 'gif', 'jpg' ]
+			} );
+
+			sinon.stub( adapter, '_getImageWidth' ).resolves( 300 );
+
+			return adapter.upload()
+				.then( data => {
+					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
+					expect( data ).to.contain.property(
+						'default',
+						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
+					);
+
+					const uploadRequest = sinonXHR.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-3' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+				} );
+		} );
+
+		it( 'should take the first category matching with the configuration (uppercase file extension)', () => {
+			file.name = 'image.JPG';
+
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					items: [
+						{ name: 'Covers', id: 'id-category-1', extensions: [ 'png' ] },
+						{ name: 'Albums', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
+						{ name: 'Albums (to print)', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
+					], offset: 0, limit: 50, totalCount: 3
+				} )
+			] );
+
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+				201,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( { id: 'image-1' } )
+			] );
+
+			editor.config.set( 'ckbox.defaultUploadCategories', {
+				'id-category-3': [ 'gif', 'jpg' ]
+			} );
+
+			sinon.stub( adapter, '_getImageWidth' ).resolves( 300 );
+
+			return adapter.upload()
+				.then( data => {
+					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
+					expect( data ).to.contain.property(
+						'default',
+						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
+					);
+
+					const uploadRequest = sinonXHR.requests[ 1 ];
+					expect( uploadRequest.requestBody.get( 'categoryId' ) ).to.equal( 'id-category-3' );
+					expect( uploadRequest.requestBody.has( 'file' ) ).to.equal( true );
+				} );
+		} );
+
+		it( 'should take the first category matching with the configuration (uppercase configuration)', () => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					items: [
+						{ name: 'Covers', id: 'id-category-1', extensions: [ 'png' ] },
+						{ name: 'Albums', id: 'id-category-2', extensions: [ 'webp', 'jpg' ] },
+						{ name: 'Albums (to print)', id: 'id-category-3', extensions: [ 'gif', 'jpg' ] }
+					], offset: 0, limit: 50, totalCount: 3
+				} )
+			] );
+
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+				201,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( { id: 'image-1' } )
+			] );
+
+			editor.config.set( 'ckbox.defaultUploadCategories', {
+				'id-category-3': [ 'GIF', 'JPG' ]
 			} );
 
 			sinon.stub( adapter, '_getImageWidth' ).resolves( 300 );

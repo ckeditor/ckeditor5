@@ -48,8 +48,10 @@ export default class FocusTracker extends DomEmitterMixin( ObservableMixin() ) {
 
 	/**
 	 * List of registered elements.
+	 *
+	 * @internal
 	 */
-	private _elements: Set<Element> = new Set();
+	public _elements: Set<Element> = new Set();
 
 	/**
 	 * Event loop timeout.

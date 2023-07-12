@@ -111,7 +111,7 @@ contacts.forEach( ( contact, id ) => {
 
 	li.innerHTML =
 		`<div class="contact h-card" data-contact="${ id }" draggable="true">` +
-		`<img src="../../assets/img/${ contact.avatar }.png" alt="avatar" class="u-photo" draggable="false" />` +
+		`<img src="../assets/img/${ contact.avatar }.png" alt="avatar" class="u-photo" draggable="false" />` +
 		contact.name +
 		'</div>';
 

@@ -202,6 +202,7 @@ export default class SourceEditing extends Plugin {
 			// This prevents empty undo steps after switching to the normal editor.
 			if ( oldData !== newData ) {
 				data[ rootName ] = newData;
+				this._dataFromRoots.set( rootName, newData );
 			}
 		}
 

@@ -1053,7 +1053,7 @@ describe( 'WidgetTypeAround', () => {
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
-				it( 'should split ancestors to find a place that allows a widget', () => {
+				it( 'should split ancestors to find a place that allows a widget (no content after widget)', () => {
 					model.schema.register( 'allowP', {
 						inheritAllFrom: '$block'
 					} );
@@ -1083,7 +1083,41 @@ describe( 'WidgetTypeAround', () => {
 						'<allowP>' +
 							'<disallowP><blockWidget></blockWidget></disallowP>' +
 							'<paragraph>[]</paragraph>' +
-							'<disallowP></disallowP>' +
+						'</allowP>'
+					);
+				} );
+
+				it( 'should split ancestors to find a place that allows a widget (with content after widget)', () => {
+					model.schema.register( 'allowP', {
+						inheritAllFrom: '$block'
+					} );
+					model.schema.register( 'disallowP', {
+						inheritAllFrom: '$block',
+						allowIn: [ 'allowP' ]
+					} );
+					model.schema.extend( 'blockWidget', {
+						allowIn: [ 'allowP', 'disallowP' ]
+					} );
+					model.schema.extend( 'paragraph', {
+						allowIn: [ 'allowP' ]
+					} );
+
+					editor.conversion.for( 'downcast' ).elementToElement( { model: 'allowP', view: 'allowP' } );
+					editor.conversion.for( 'downcast' ).elementToElement( { model: 'disallowP', view: 'disallowP' } );
+
+					setModelData( model,
+						'<allowP>' +
+							'<disallowP>[<blockWidget></blockWidget>]<blockWidget></blockWidget></disallowP>' +
+						'</allowP>'
+					);
+
+					fireEnter();
+
+					expect( getModelData( model ) ).to.equal(
+						'<allowP>' +
+							'<disallowP><blockWidget></blockWidget></disallowP>' +
+							'<paragraph>[]</paragraph>' +
+							'<disallowP><blockWidget></blockWidget></disallowP>' +
 						'</allowP>'
 					);
 				} );

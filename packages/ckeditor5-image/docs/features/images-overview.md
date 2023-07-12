@@ -1,6 +1,8 @@
 ---
 category: features-images
 menu-title: Basics
+meta-title: Images in CKEditor 5
+meta-description: Find out all about images in CKEditor 5.
 order: 10
 modified_at: 2021-06-17
 ---
@@ -17,7 +19,7 @@ To see all the image features in action, check out the demo below. To learn more
 {@snippet features/image-full}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 
@@ -36,6 +38,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link features/images-resizing Image resizing} lets the user control the dimensions of images in the content.
 * {@link features/images-linking Linking images} makes it possible to use them as URL anchors.
 * A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor inserting an image via a URL} and even {@link features/images-inserting#inserting-images-via-a-source-url via pasting a URL into the editor} along with custom integrations.
+* Support for {@link features/images-responsive responsive images} in CKEditor 5 is brought by the {@link features/ckbox CKBox} management platform. Responsive images will display properly on any viewport, enhancing the accessibility, reach and user experience.
 
 The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
 
@@ -165,6 +168,15 @@ The availability of these plugins varies in different {@link installation/gettin
 				<td>❌</td>
 				<td>✅</td>
 			</tr>
+			<tr>
+				<th colspan="2">{@link module:ckbox/ckbox~CKBox}</th>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+				<td>✅</td>
+			</tr>
 		</tbody>
 	</table>
 </figure>
@@ -192,10 +204,6 @@ ClassicEditor
 Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the {@link updating/update-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link features/toolbar editor toolbar} guide.
 
 See the common API of image-related features such as {@link module:image/imagestyle~ImageStyle}, {@link module:image/imageresize~ImageResize}, and {@link module:link/linkimage~LinkImage} to learn more about available image toolbar buttons.
-
-## Responsive images
-
-Support for responsive images in CKEditor 5 is brought by the {@link features/ckbox CKBox} management platform. The {@link features/easy-image Easy Image} feature can also be used without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
 
 ## Typing around images
 

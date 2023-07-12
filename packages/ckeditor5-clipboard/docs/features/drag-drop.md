@@ -1,7 +1,8 @@
 ---
 menu-title: Drag and drop
-category: features-pasting
-order: 40
+meta-title: Drag and drop in CKEditor 5
+meta-description: Learn all about using the drag and drop mechanism to manage content and uploads in CKEditor 5
+category: features
 ---
 
 {@snippet features/build-drag-drop-source}
@@ -19,10 +20,14 @@ The demo below lets you drag contacts from the list to the editor. The contacts 
 Photos: [Wikipedia.org](http://en.wikipedia.org).
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 The source code of the above snippet is available here: [`drag-drop.js`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.js), [`drag-drop.html`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.html).
+
+## File upload via drag and drop
+
+When the {@link features/ckbox CKBox file manager} is enabled in your CKEditor 5 integration, you can upload files and images using the drag and drop mechanism. You can test this solution in the {@link features/ckbox#demo CKBox demo}.
 
 ## Installation
 
