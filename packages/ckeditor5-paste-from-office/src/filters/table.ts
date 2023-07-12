@@ -15,6 +15,10 @@ import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
  */
 export function tableAlignmentFilter( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
 	for ( const item of documentFragment.getChildren() ) {
+		if ( !item.is( 'element' ) ) {
+			continue;
+		}
+
 		// If table is not wrapped in div[align] it should be alligned left.
 		// More details:(https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1623507171).
 		if ( item.is( 'element', 'table' ) ) {
@@ -22,25 +26,18 @@ export function tableAlignmentFilter( documentFragment: ViewDocumentFragment, wr
 			continue;
 		}
 
-		const align = item.is( 'element' ) && item.getAttribute( 'align' );
-		const child = item.is( 'element' ) && item.getChild( 0 );
+		const align = item.getAttribute( 'align' );
+		const child = item.getChild( 0 );
 
 		// Element should have alignment attribute and should have child and should be div.
 		if ( !align || !child || item.name !== 'div' ) {
 			continue;
 		}
 
-		// If table is wrapped in div[right|left] table should be alligned right or left.
+		// If table is wrapped in div[align] table should be alligned with defined alignment value.
 		// More details:(https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1629065676)
-		if ( align !== 'center' && child.is( 'element', 'table' ) ) {
-			writer.setAttribute( 'align', align, child );
-			continue;
-		}
-
-		// If table is wrapped in div[center] table should be centered.
-		// More details:(https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1629065676)
-		if ( align === 'center' && child.is( 'element', 'table' ) ) {
-			writer.setAttribute( 'align', 'none', child );
+		if ( child.is( 'element', 'table' ) ) {
+			writer.setAttribute( 'align', align === 'center' ? 'none' : align, child );
 		}
 	}
 }

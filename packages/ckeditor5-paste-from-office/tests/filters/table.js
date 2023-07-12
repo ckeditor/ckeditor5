@@ -39,6 +39,18 @@ describe( 'PasteFromOffice - filters', () => {
 			);
 		} );
 
+		it( 'should return only text', () => {
+			const inputData = 'text';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			tableAlignmentFilter( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'text'
+			);
+		} );
+
 		it( 'should align table to left when table allocated in div', () => {
 			const inputData =
 			'<div align="left">' +
