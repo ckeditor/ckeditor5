@@ -32,10 +32,8 @@ export default class Element extends Node {
 
 	/**
 	 * List of children nodes.
-	 *
-	 * @internal
 	 */
-	public readonly _children: NodeList = new NodeList();
+	private readonly _children: NodeList = new NodeList();
 
 	/**
 	 * Creates a model element.

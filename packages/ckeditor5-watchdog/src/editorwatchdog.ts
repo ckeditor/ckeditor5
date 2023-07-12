@@ -386,13 +386,6 @@ class EditorWatchdogInitPlugin extends Plugin {
 	}
 
 	/**
-	 * Checks if the editor instance is a multi-root editor.
-	 */
-	private _isMultiRootEditor( editor: Editor ): editor is MultiRootEditor {
-		return ( editor as MultiRootEditor ).getRootsAttributes !== undefined;
-	}
-
-	/**
 	 * Restores the editor by setting all operations, attributes and markers.
 	 */
 	private _restoreEditorData( writer: Writer ): void {
