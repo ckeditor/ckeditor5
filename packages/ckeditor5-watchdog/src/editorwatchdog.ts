@@ -414,7 +414,6 @@ class EditorWatchdogInitPlugin extends Plugin {
 			writer.insert( frag, rootElement );
 		} );
 
-		console.log( this._data!.markers );
 		Object.entries( this._data!.markers ).forEach( ( [ markerName, markerOptions ] ) => {
 			writer.addMarker( markerName, markerOptions );
 		} );
