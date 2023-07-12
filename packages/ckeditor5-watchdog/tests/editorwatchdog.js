@@ -547,7 +547,7 @@ describe( 'EditorWatchdog', () => {
 					watchdog.on( 'restart', () => {
 						window.onerror = originalErrorHandler;
 
-						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+						expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>bar' );
 
 						watchdog.destroy().then( res );
 					} );

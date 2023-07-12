@@ -172,30 +172,27 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				console.error( 'An error happened during the editor destroying.', err );
 			} )
 			.then( () => {
-				// if ( typeof this._elementOrData === 'string' ) {
-				// 	return this.create( this._data, this._config, this._config!.context );
-				// } else {
-				// 	const updatedConfig = Object.assign( {}, this._config, {
-				// 		initialData: this._data
-				// 	} );
-				//
-				// 	return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
-				// }
-
-				const existingRoots = Object.keys( this._data! ).reduce( ( acc, rootName ) => {
+				const existingRoots = Object.keys( this._data!.roots ).reduce( ( acc, rootName ) => {
 					acc[ rootName ] = '';
 
 					return acc;
 				}, {} as Record<string, string> );
 
-				const updatedConfig = Object.assign( {}, this._config, {
-					initialData: existingRoots,
+				const updatedConfig = {
+					...this._config,
+					plugins: this._config!.plugins || [],
 					_watchdogInitialData: this._data
-				} );
+				};
 
 				updatedConfig.plugins!.push( EditorWatchdogInitPlugin );
 
-				return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
+				if ( typeof this._elementOrData === 'string' ) {
+					return this.create( existingRoots, updatedConfig, updatedConfig!.context );
+				} else {
+					updatedConfig.initialData = existingRoots;
+
+					return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
+				}
 			} )
 			.then( () => {
 				this._fire( 'restart' );
