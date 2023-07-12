@@ -59,20 +59,46 @@ export default class InsertParagraphCommand extends Command {
 
 		model.change( writer => {
 			const paragraph = writer.createElement( 'paragraph' );
+			const allowedParent = model.schema.findAllowedParent( position, paragraph );
+
+			// It could be there's no ancestor limit that would allow paragraph.
+			// In theory, "paragraph" could be disallowed even in the "$root".
+			if ( !allowedParent ) {
+				return;
+			}
 
 			if ( attributes ) {
 				model.schema.setAllowedAttributes( paragraph, attributes, writer );
 			}
 
-			if ( !model.schema.checkChild( position.parent as Element, paragraph ) ) {
-				const allowedParent = model.schema.findAllowedParent( position, paragraph );
+			if ( position.path.length < 2 ) {
+				model.insertContent( paragraph, position );
+				writer.setSelection( paragraph, 'in' );
 
-				// It could be there's no ancestor limit that would allow paragraph.
-				// In theory, "paragraph" could be disallowed even in the "$root".
-				if ( !allowedParent ) {
-					return;
-				}
+				return;
+			}
 
+			const positionParent = position.parent as Element;
+
+			// E.g.
+			// <paragraph>[]</paragraph> ---> <paragraph></paragraph><paragraph>[]</paragraph>
+			const isInEmptyBlock = positionParent.isEmpty;
+
+			// E.g.
+			// <paragraph>foo[]</paragraph> ---> <paragraph>foo</paragraph><paragraph>[]</paragraph>
+			const isAtEndOfTextBlock = position.isAtEnd && !positionParent.isEmpty;
+
+			// E.g.
+			// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
+			const isAtStartOfTextBlock = position.isAtStart && !positionParent.isEmpty;
+
+			const canBeChild = model.schema.checkChild( positionParent, paragraph );
+
+			if ( isInEmptyBlock || isAtEndOfTextBlock ) {
+				position = writer.createPositionAfter( positionParent );
+			} else if ( isAtStartOfTextBlock ) {
+				position = writer.createPositionBefore( positionParent );
+			} else if ( !canBeChild ) {
 				position = writer.split( position, allowedParent ).position;
 			}
 
