@@ -126,8 +126,8 @@ export function viewToAttributeInlineConverter(
 				data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 			}
 
-			// Convert empty inline element if allowed.
-			if ( allowEmpty && data.modelRange!.isCollapsed ) {
+			// Convert empty inline element if allowed and has any attributes.
+			if ( allowEmpty && data.modelRange!.isCollapsed && Object.keys( viewAttributes ).length ) {
 				const modelElement = conversionApi.writer.createElement( 'htmlEmptyElement' );
 
 				if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {

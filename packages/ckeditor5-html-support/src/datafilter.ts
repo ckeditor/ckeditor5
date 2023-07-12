@@ -712,13 +712,20 @@ export default class DataFilter extends Plugin {
 			} );
 		}
 
-		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => (
-			element.name == definition.view && element.isEmpty ? { name: true } : null
-		) );
-		// TODO should it affect spaces vs NBSP in editing pipeline?
-		// editor.editing.view.domConverter.registerInlineObjectMatcher( element => (
-		// 	element.name == definition.view && element.isEmpty ? { name: true } : null
-		// ) );
+		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => {
+			// Element must be empty and have any attribute.
+			if (
+				element.name == definition.view &&
+				element.isEmpty &&
+				Array.from( element.getAttributeKeys() ).length
+			) {
+				return {
+					name: true
+				};
+			}
+
+			return null;
+		} );
 
 		conversion.for( 'editingDowncast' )
 			.elementToElement( {
