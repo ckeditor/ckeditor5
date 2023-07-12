@@ -63,10 +63,8 @@ export default abstract class Node extends TypeCheckable {
 
 	/**
 	 * Attributes set on this node.
-	 *
-	 * @internal
 	 */
-	public _attrs: Map<string, unknown>;
+	private _attrs: Map<string, unknown>;
 
 	/**
 	 * Creates a model node.
