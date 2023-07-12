@@ -32,7 +32,7 @@ import '../../../theme/components/panel/balloonpanel.css';
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
 const OFF_THE_SCREEN_POSITION = -99999;
-const HIDE_PANEL_EDGE_BUFFER = 15;
+const HIDE_PANEL_EDGE_BUFFER = 20;
 
 /**
  * The balloon panel view class.
@@ -250,7 +250,8 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthMiddleEast,
 				defaultPositions.northArrowSouthWest,
 				defaultPositions.northArrowSouthEast,
-				defaultPositions.viewportStickyNorth
+				defaultPositions.viewportStickyNorth,
+				defaultPositions.viewportHidden
 			],
 			limiter: defaultLimiterElement,
 			fitInViewport: true
@@ -258,7 +259,7 @@ export default class BalloonPanelView extends View {
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
 
-		const hideTheBalloon = shouldBalloonBeHidden( options );
+		const hideTheBalloon = shouldBalloonBeHidden( positionOptions );
 
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
@@ -1152,6 +1153,18 @@ export function generatePositions( options: {
 					...config
 				}
 			};
+		},
+
+		viewportHidden: () => {
+			return {
+				top: OFF_THE_SCREEN_POSITION,
+				left: OFF_THE_SCREEN_POSITION,
+				name: 'noarrow',
+				config: {
+					withArrow: false,
+					...config
+				}
+			};
 		}
 	};
 
@@ -1189,6 +1202,7 @@ function hasElementVerticalScroll( element: HTMLElement ): boolean {
  * Returns true when a BalloonPanel and element that it is pinned to is outside the visible area.
  */
 function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
+	// @if CK_DEBUG_UI // RectDrawer.clear();
 	if ( !( options.limiter instanceof HTMLElement || options.limiter instanceof Function ) ) {
 		return false;
 	}
@@ -1201,6 +1215,12 @@ function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
 		return true;
 	}
 
+	// @if CK_DEBUG_UI // RectDrawer.draw( targetRect, {
+	// @if CK_DEBUG_UI // 	outlineWidth: '2px',
+	// @if CK_DEBUG_UI // 	outlineColor: 'blue',
+	// @if CK_DEBUG_UI // 	opacity: '.8'
+	// @if CK_DEBUG_UI // }, 'Target' );
+
 	const hasEditorVerticalScroll = hasElementVerticalScroll( limiterElement! );
 	const listOfAllScrollableAncestors = getScrollableAncestors( limiterElement! );
 
@@ -1208,7 +1228,6 @@ function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
 		listOfAllScrollableAncestors.unshift( findClosestScrollableAncestor( limiterElement!.firstChild as HTMLElement )! );
 	}
 
-	// @if CK_DEBUG_UI // RectDrawer.clear();
 	return listOfAllScrollableAncestors.some( scrollableAncestor => areTargetOppositeEdgesHidden( scrollableAncestor, targetRect ) );
 }
 
@@ -1221,19 +1240,30 @@ function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
  */
 function areTargetOppositeEdgesHidden( scrollableAncestor: HTMLElement | Document, targetRect: Rect ): boolean {
 	const scrollableAncestorRect = new Rect( scrollableAncestor! as HTMLElement );
+	const visibleInViewportRect = new Rect( window ).getIntersection( targetRect.getVisible()! );
+
+	if ( !visibleInViewportRect ) {
+		return true;
+	}
 
 	// @if CK_DEBUG_UI // RectDrawer.draw( targetRect, {
-	// @if CK_DEBUG_UI // 	outlineWidth: '1px',
+	// @if CK_DEBUG_UI // 	outlineWidth: '2px',
+	// @if CK_DEBUG_UI // 	outlineColor: 'blue',
 	// @if CK_DEBUG_UI // 	opacity: '.8'
 	// @if CK_DEBUG_UI // }, 'Target' );
 	// @if CK_DEBUG_UI // RectDrawer.draw( scrollableAncestorRect, {
-	// @if CK_DEBUG_UI // 	outlineWidth: '1px',
+	// @if CK_DEBUG_UI // 	outlineWidth: '2px',
 	// @if CK_DEBUG_UI // 	outlineColor: 'red',
 	// @if CK_DEBUG_UI // 	opacity: '.8'
 	// @if CK_DEBUG_UI // }, 'Scrollable wrapper' );
+	// @if CK_DEBUG_UI // RectDrawer.draw( visibleInViewportRect, {
+	// @if CK_DEBUG_UI // 	outlineWidth: '2px',
+	// @if CK_DEBUG_UI // 	outlineColor: 'green',
+	// @if CK_DEBUG_UI // 	opacity: '.8'
+	// @if CK_DEBUG_UI // }, 'visibleInViewportRect' );
 
 	// When target element is higher than scrollable parent container
-	if ( targetRect.height > scrollableAncestorRect.height ) {
+	if ( targetRect.height > visibleInViewportRect.height ) {
 		if (
 			( scrollableAncestorRect.top > ( targetRect.top - HIDE_PANEL_EDGE_BUFFER ) ) &&
 			( ( targetRect.bottom + HIDE_PANEL_EDGE_BUFFER ) > scrollableAncestorRect.bottom ) ) {
