@@ -104,7 +104,7 @@ export function viewToAttributeInlineConverter(
 	{ view: viewName, model: attributeKey, allowEmpty }: DataSchemaInlineElementDefinition,
 	dataFilter: DataFilter
 ): ( dispatcher: UpcastDispatcher ) => void {
-	return ( dispatcher: UpcastDispatcher ): void => {
+	return dispatcher => {
 		dispatcher.on<UpcastElementEvent>( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			let viewAttributes = dataFilter.processViewAttributes( data.viewItem, conversionApi );
 
@@ -173,7 +173,7 @@ export function emptyInlineModelElementToViewConverter(
 	{ model: attributeKey, view: viewName }: DataSchemaInlineElementDefinition,
 	asWidget?: boolean
 ): ElementCreatorFunction {
-	return ( item: Element, { writer, consumable }: DowncastConversionApi ): ViewElement | null => {
+	return ( item, { writer, consumable } ) => {
 		if ( !item.hasAttribute( attributeKey ) ) {
 			return null;
 		}

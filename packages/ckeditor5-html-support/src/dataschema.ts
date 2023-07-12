@@ -304,7 +304,7 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	appliesToBlock?: boolean | string;
 
 	/**
-	 * TODO
+	 * Indicates that an element should be preserved even if it has no content.
 	 */
 	allowEmpty?: boolean;
 }

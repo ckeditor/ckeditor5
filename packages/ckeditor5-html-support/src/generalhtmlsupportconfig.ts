@@ -71,7 +71,13 @@ export interface GeneralHtmlSupportConfig {
 	disallow?: Array<MatcherObjectPattern>;
 
 	/**
-	 * TODO
+	 * The configuration of allowed empty inline elements that should not be removed.
+	 *
+	 * Note that you should also add an appropriate entry to {@link #allow} list.
+	 *
+	 * ```ts
+	 * const htmlSupportConfig.allowEmpty = [ 'i', 'span' ];
+	 * ```
 	 */
 	allowEmpty?: Array<string>;
 }
