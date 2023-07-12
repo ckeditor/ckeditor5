@@ -8,12 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element, ViewContainerElement } from 'ckeditor5/src/engine';
+import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine';
 import ImageUtils from './imageutils';
-import ImageLoadObserver, { type ImageLoadedEvent } from './image/imageloadobserver';
-import ImageTypeCommand from './image/imagetypecommand';
-
-const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /(image|image-inline)/;
+import { type ImageLoadedEvent } from './image/imageloadobserver';
 
 /**
  * This plugin enables `width` and `size` attributes in inline and block image elements.
@@ -42,16 +39,11 @@ export default class ImageSizeAttributes extends Plugin {
 
 		this.listenTo<ImageLoadedEvent>( editing.view.document, 'imageLoaded', ( evt, domEvent ) => {
 			const image = domEvent.target as HTMLElement;
-
-			if ( !image ) {
-				return;
-			}
-
+			const imageUtils = editor.plugins.get( 'ImageUtils' );
 			const domConverter = editing.view.domConverter;
 			const imageView = domConverter.domToView( image as HTMLElement ) as ViewElement;
-			const widgetView = imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } ) as ViewContainerElement;
+			const widgetView = imageUtils.getImageWidgetFromImageView( imageView )!;
 			const imageElement = editing.mapper.toModelElement( widgetView )!;
-			const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 			if ( imageElement.hasAttribute( 'width' ) || imageElement.hasAttribute( 'height' ) ) {
 				return;

@@ -19,12 +19,15 @@ import type {
 	ViewDocumentFragment,
 	DowncastWriter,
 	Model,
-	Position
+	Position,
+	ViewContainerElement
 } from 'ckeditor5/src/engine';
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { determineImageTypeForInsertionAtSelection } from './image/utils';
 import { DomEmitterMixin, type DomEmitter, global } from 'ckeditor5/src/utils';
+
+const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /(image|image-inline)/;
 
 /**
  * A set of helpers related to images.
@@ -209,6 +212,13 @@ export default class ImageUtils extends Plugin {
 		const selectedElement = selection.getSelectedElement();
 
 		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition()!.findAncestor( 'imageBlock' );
+	}
+
+	/**
+	 * Returns an image widget editing view based on the passed image view.
+	 */
+	public getImageWidgetFromImageView( imageView: ViewElement ): ViewContainerElement | null {
+		return imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } ) as ViewContainerElement;
 	}
 
 	/**
