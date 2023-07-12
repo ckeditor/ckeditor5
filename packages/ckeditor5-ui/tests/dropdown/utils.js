@@ -151,6 +151,35 @@ describe( 'utils', () => {
 					// Dropdown is still open.
 					expect( dropdownView.isOpen ).to.be.true;
 				} );
+
+				it( 'listens to view#isOpen and reacts to DOM events (focus tracker elements)', () => {
+					// Open the dropdown.
+					dropdownView.isOpen = true;
+
+					// Event from view.element should be discarded.
+					dropdownView.element.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					// Dropdown is still open.
+					expect( dropdownView.isOpen ).to.be.true;
+
+					const documentElement = document.createElement( 'div' );
+					document.body.appendChild( documentElement );
+
+					// Add the new document element to dropdown focus tracker.
+					dropdownView.focusTracker.add( documentElement );
+
+					// Fire event from outside of the dropdown.
+					documentElement.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					// Dropdown is still open.
+					expect( dropdownView.isOpen ).to.be.true;
+
+					documentElement.remove();
+				} );
 			} );
 
 			describe( 'closeDropdownOnExecute()', () => {
