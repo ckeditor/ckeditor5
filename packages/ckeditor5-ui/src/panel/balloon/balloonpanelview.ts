@@ -15,15 +15,14 @@ import {
 	global,
 	isRange,
 	toUnit,
-	Rect,
-	findClosestScrollableAncestor,
+	type Rect,
 	type Locale,
 	type ObservableChangeEvent,
 	type PositionOptions,
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
-import { isElement, isFunction } from 'lodash-es';
+import { isElement } from 'lodash-es';
 
 // @if CK_DEBUG_UI // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
@@ -32,7 +31,6 @@ import '../../../theme/components/panel/balloonpanel.css';
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
 const OFF_THE_SCREEN_POSITION = -99999;
-const HIDE_PANEL_EDGE_BUFFER = 20;
 
 /**
  * The balloon panel view class.
@@ -259,7 +257,7 @@ export default class BalloonPanelView extends View {
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
 
-		const hideTheBalloon = shouldBalloonBeHidden( positionOptions );
+		const hideTheBalloon = false; // shouldBalloonBeHidden( positionOptions );
 
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
@@ -830,6 +828,8 @@ export default class BalloonPanelView extends View {
 	 *		+-----------------------------------+
 	 * ```
 	 *
+	 // TODO!!!!!! HIDDEN
+	 *
 	 * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
 	 *
 	 * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
@@ -1155,6 +1155,8 @@ export function generatePositions( options: {
 			};
 		},
 
+		// ------- Hidden
+
 		viewportHidden: () => {
 			return {
 				top: OFF_THE_SCREEN_POSITION,
@@ -1186,119 +1188,4 @@ export function generatePositions( options: {
 	function getSouthTop( targetRect: Rect ) {
 		return targetRect.bottom + heightOffset;
 	}
-}
-
-/**
- * Check if element has scrollbar
- * @param element HTML element to check
- * @returns True if element has vertical scroll
- */
-function hasElementVerticalScroll( element: HTMLElement ): boolean {
-	// Compare the height to see if the element has scrollable content
-	return element.scrollHeight > element.clientHeight;
-}
-
-/**
- * Returns true when a BalloonPanel and element that it is pinned to is outside the visible area.
- */
-function shouldBalloonBeHidden( options: Partial<PositionOptions> ): boolean {
-	// @if CK_DEBUG_UI // RectDrawer.clear();
-	if ( !( options.limiter instanceof HTMLElement || options.limiter instanceof Function ) ) {
-		return false;
-	}
-
-	const limiterElement = getDomElement( options.limiter );
-	const targetElement = isFunction( options.target ) ? options.target() : options.target;
-	const targetRect = new Rect( targetElement as HTMLElement );
-
-	if ( !targetRect.getVisible() ) {
-		return true;
-	}
-
-	// @if CK_DEBUG_UI // RectDrawer.draw( targetRect, {
-	// @if CK_DEBUG_UI // 	outlineWidth: '2px',
-	// @if CK_DEBUG_UI // 	outlineColor: 'blue',
-	// @if CK_DEBUG_UI // 	opacity: '.8'
-	// @if CK_DEBUG_UI // }, 'Target' );
-
-	const hasEditorVerticalScroll = hasElementVerticalScroll( limiterElement! );
-	const listOfAllScrollableAncestors = getScrollableAncestors( limiterElement! );
-
-	if ( hasEditorVerticalScroll ) {
-		listOfAllScrollableAncestors.unshift( findClosestScrollableAncestor( limiterElement!.firstChild as HTMLElement )! );
-	}
-
-	return listOfAllScrollableAncestors.some( scrollableAncestor => areTargetOppositeEdgesHidden( scrollableAncestor, targetRect ) );
-}
-
-/**
- * Checks if opposite edges of target element are outside of the scrollable ancestor area.
- *
- * @param scrollableAncestor
- * @param targetRect
- * @returns true when opposite edges of target element are outside of the scrollable ancestor area.
- */
-function areTargetOppositeEdgesHidden( scrollableAncestor: HTMLElement | Document, targetRect: Rect ): boolean {
-	const scrollableAncestorRect = new Rect( scrollableAncestor! as HTMLElement );
-	const visibleInViewportRect = new Rect( window ).getIntersection( targetRect.getVisible()! );
-
-	if ( !visibleInViewportRect ) {
-		return true;
-	}
-
-	// @if CK_DEBUG_UI // RectDrawer.draw( targetRect, {
-	// @if CK_DEBUG_UI // 	outlineWidth: '2px',
-	// @if CK_DEBUG_UI // 	outlineColor: 'blue',
-	// @if CK_DEBUG_UI // 	opacity: '.8'
-	// @if CK_DEBUG_UI // }, 'Target' );
-	// @if CK_DEBUG_UI // RectDrawer.draw( scrollableAncestorRect, {
-	// @if CK_DEBUG_UI // 	outlineWidth: '2px',
-	// @if CK_DEBUG_UI // 	outlineColor: 'red',
-	// @if CK_DEBUG_UI // 	opacity: '.8'
-	// @if CK_DEBUG_UI // }, 'Scrollable wrapper' );
-	// @if CK_DEBUG_UI // RectDrawer.draw( visibleInViewportRect, {
-	// @if CK_DEBUG_UI // 	outlineWidth: '2px',
-	// @if CK_DEBUG_UI // 	outlineColor: 'green',
-	// @if CK_DEBUG_UI // 	opacity: '.8'
-	// @if CK_DEBUG_UI // }, 'visibleInViewportRect' );
-
-	// When target element is higher than scrollable parent container
-	if ( targetRect.height > visibleInViewportRect.height ) {
-		if (
-			( scrollableAncestorRect.top > ( targetRect.top - HIDE_PANEL_EDGE_BUFFER ) ) &&
-			( ( targetRect.bottom + HIDE_PANEL_EDGE_BUFFER ) > scrollableAncestorRect.bottom ) ) {
-			return true;
-		}
-	}
-
-	// When target element is wider than scrollable parent container
-	if ( targetRect.width > scrollableAncestorRect.width ) {
-		const targetLeftMiddle = targetRect.left + ( targetRect.width / 2 );
-
-		if ( !( ( targetLeftMiddle > scrollableAncestorRect.left ) && ( targetLeftMiddle < scrollableAncestorRect.right ) ) ) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-/**
- * Collects all parents elements that are scrollable.
- *
- * @param element
- * @returns an array of scrollable ancestors.
- */
-function getScrollableAncestors( element: HTMLElement ) {
-	const scrollableAncestors = [];
-	let scrollableAncestor = findClosestScrollableAncestor( element );
-
-	while ( scrollableAncestor && scrollableAncestor !== global.document.body ) {
-		scrollableAncestors.push( scrollableAncestor );
-		scrollableAncestor = findClosestScrollableAncestor( scrollableAncestor! );
-	}
-
-	scrollableAncestors.push( global.document );
-
-	return scrollableAncestors;
 }

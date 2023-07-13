@@ -54,7 +54,8 @@ export function getBalloonPositionData( editor: Editor ): Partial<PositionOption
 			defaultPositions.southArrowNorth,
 			defaultPositions.southArrowNorthWest,
 			defaultPositions.southArrowNorthEast,
-			defaultPositions.viewportStickyNorth
+			defaultPositions.viewportStickyNorth,
+			defaultPositions.viewportHidden
 		]
 	};
 }

@@ -11,6 +11,7 @@ import global from './global';
 import Rect, { type RectSource } from './rect';
 import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
+import getScrollableAncestors from './getscrollableancestors';
 import { isFunction } from 'lodash-es';
 
 // @if CK_DEBUG_POSITION // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default
@@ -99,17 +100,54 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 
 	let bestPosition: Position;
 
+	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
+	const ancestorsIntersection: Rect | null = allScrollableAncestors
+		.reverse()
+		.map( item => new Rect( item as HTMLElement ) )
+		.reduce( ( accumulator, currentValue ): Rect => {
+			if ( !accumulator || accumulator.top === undefined ) {
+				return currentValue;
+			}
+
+			if ( !currentValue || currentValue.top === undefined ) {
+				return accumulator;
+			}
+
+			return accumulator.getIntersection( currentValue ) as Rect;
+		} );
+
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
 	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
 
 	const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig ) || null;
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
 
+	if ( !ancestorsIntersection ) {
+		// last is `viewportHidden` function.
+		return new PositionObject( positions.at( -1 )!, positionOptions );
+	}
+
+	const ancestorsIntersectionWindowRect = new Rect( window ).getIntersection( ancestorsIntersection! );
+
+	if ( !ancestorsIntersectionWindowRect ) {
+		// last is `viewportHidden` function.
+		return new PositionObject( positions.at( -1 )!, positionOptions );
+	}
+	// // @if CK_DEBUG_POSITION // else {
+	// // @if CK_DEBUG_POSITION // RectDrawer.draw( ancestorsIntersectionWindowRect,
+	// // @if CK_DEBUG_POSITION //   { outlineWidth: '4px', outlineColor: 'red' }, 'Ancestors intersection' );
+	// // @if CK_DEBUG_POSITION // }
+
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
 		bestPosition = new PositionObject( positions[ 0 ], positionOptions );
 	} else {
 		const limiterRect = limiter && new Rect( limiter ).getVisible();
+
+		// selected text to convert it into Link
+		// if ( target instanceof Range ) {
+		// 	return new PositionObject( positions.at( 0 )!, positionOptions );
+		// }
 
 		// @if CK_DEBUG_POSITION // if ( viewportRect ) {
 		// @if CK_DEBUG_POSITION //		RectDrawer.draw( viewportRect, { outlineWidth: '5px' }, 'Viewport' );
@@ -119,11 +157,13 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		// @if CK_DEBUG_POSITION // 	RectDrawer.draw( limiterRect, { outlineWidth: '5px', outlineColor: 'green' }, 'Visible limiter' );
 		// @if CK_DEBUG_POSITION // }
 
-		Object.assign( positionOptions, { limiterRect, viewportRect } );
+		Object.assign( positionOptions, {
+			limiterRect, viewportRect: target instanceof Range ? limiterRect : ancestorsIntersectionWindowRect } );
 
+		// TODO !!!!
 		// If there's no best position found, i.e. when all intersections have no area because
-		// rects have no width or height, then just use the first available position.
-		bestPosition = getBestPosition( positions, positionOptions ) || new PositionObject( positions[ 0 ], positionOptions );
+		// rects have no width or height, then just use the last available position.
+		bestPosition = getBestPosition( positions, positionOptions ) || new PositionObject( positions.at( -1 )!, positionOptions );
 	}
 
 	return bestPosition;
