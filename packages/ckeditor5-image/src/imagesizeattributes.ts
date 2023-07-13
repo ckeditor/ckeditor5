@@ -42,7 +42,12 @@ export default class ImageSizeAttributes extends Plugin {
 			const imageUtils = editor.plugins.get( 'ImageUtils' );
 			const domConverter = editing.view.domConverter;
 			const imageView = domConverter.domToView( image as HTMLElement ) as ViewElement;
-			const widgetView = imageUtils.getImageWidgetFromImageView( imageView )!;
+			const widgetView = imageUtils.getImageWidgetFromImageView( imageView );
+
+			if ( !widgetView ) {
+				return;
+			}
+
 			const imageElement = editing.mapper.toModelElement( widgetView )!;
 
 			if ( imageElement.hasAttribute( 'width' ) || imageElement.hasAttribute( 'height' ) ) {
