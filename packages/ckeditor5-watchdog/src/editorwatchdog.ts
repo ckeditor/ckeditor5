@@ -17,7 +17,8 @@ import {
 	Plugin,
 	type Editor,
 	type EditorConfig,
-	type Context
+	type Context,
+	type EditorReadyEvent
 } from 'ckeditor5/src/core';
 
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
@@ -376,6 +377,8 @@ class EditorWatchdogInitPlugin extends Plugin {
 			this.editor.model.enqueueChange( { isUndoable: true }, writer => {
 				this._restoreEditorData( writer );
 			} );
+
+			this.editor.data.fire<EditorReadyEvent>( 'ready' );
 		}, { priority: priorities.highest - 1 } );
 	}
 
