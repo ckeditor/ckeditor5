@@ -26,10 +26,7 @@ import Watchdog, { type WatchdogConfig } from './watchdog';
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import { Element, Text, type Writer, type Range } from 'ckeditor5/src/engine';
-
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
+import { Element, Text, Position, type Writer } from 'ckeditor5/src/engine';
 
 /**
  * A watchdog for CKEditor 5 editors.
@@ -324,7 +321,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 		for ( const marker of editor.model.markers ) {
 			data.markers[ marker.name ] = {
-				range: marker.getRange(),
+				rangeJSON: marker.getRange().toJSON() as any,
 				usingOperation: marker._managedUsingOperations,
 				affectsData: marker._affectsData
 			};
@@ -387,6 +384,7 @@ class EditorWatchdogInitPlugin extends Plugin {
 	 */
 	private _restoreEditorData( writer: Writer ): void {
 		const editor = this.editor!;
+		const frag = writer.createDocumentFragment();
 
 		Object.entries( this._data!.roots ).forEach( ( [ rootName, { content, attributes } ] ) => {
 			const parsedNodes: Array<Node | Element> = JSON.parse( content );
@@ -408,14 +406,24 @@ class EditorWatchdogInitPlugin extends Plugin {
 				}
 			}
 
-			const frag = writer.createDocumentFragment();
 			frag._appendChild( children );
 
 			writer.insert( frag, rootElement );
 		} );
 
 		Object.entries( this._data!.markers ).forEach( ( [ markerName, markerOptions ] ) => {
-			writer.addMarker( markerName, markerOptions );
+			const { document } = editor.model;
+			const {
+				rangeJSON: { start, end },
+				...options
+			} = markerOptions;
+
+			const range = writer.createRange( Position.fromJSON( start, document ), Position.fromJSON( end, document ) );
+
+			writer.addMarker( markerName, {
+				range,
+				...options
+			} );
 		} );
 	}
 }
@@ -426,7 +434,7 @@ export type EditorData = {
 		attributes: Array<[ string, unknown ]>;
 	}>;
 	markers: Record<string, {
-		range: Range;
+		rangeJSON: { start: any; end: any };
 		usingOperation: boolean;
 		affectsData: boolean;
 	}>;
