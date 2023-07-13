@@ -379,7 +379,7 @@ class EditorWatchdogInitPlugin extends Plugin {
 			} );
 
 			this.editor.data.fire<EditorReadyEvent>( 'ready' );
-		}, { priority: priorities.highest - 1 } );
+		}, { priority: priorities.high - 1 } );
 	}
 
 	/**
