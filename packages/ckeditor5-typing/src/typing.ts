@@ -10,6 +10,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import Input from './input';
 import Delete from './delete';
+import FakeVisualSelection from './fakevisualselection';
 
 /**
  * The typing feature. It handles typing.
@@ -19,7 +20,7 @@ import Delete from './delete';
  */
 export default class Typing extends Plugin {
 	public static get requires() {
-		return [ Input, Delete ] as const;
+		return [ Input, Delete, FakeVisualSelection ] as const;
 	}
 
 	/**

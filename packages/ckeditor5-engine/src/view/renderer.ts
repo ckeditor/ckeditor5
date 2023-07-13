@@ -93,6 +93,14 @@ export default class Renderer extends ObservableMixin() {
 	declare public readonly isFocused: boolean;
 
 	/**
+	 * Set to `true` if the document is in the process of changing the focus.
+	 *
+	 * @readonly
+	 * @observable
+	 */
+	declare public readonly isFocusChanging: boolean;
+
+	/**
 	 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
 	 * When they stop selecting, the property goes back to `false`.
 	 *
@@ -136,6 +144,7 @@ export default class Renderer extends ObservableMixin() {
 		this.selection = selection;
 
 		this.set( 'isFocused', false );
+		this.set( 'isFocusChanging', false );
 		this.set( 'isSelecting', false );
 
 		// Rendering the selection and inline filler manipulation should be postponed in (non-Android) Blink until the user finishes
@@ -854,39 +863,44 @@ export default class Renderer extends ObservableMixin() {
 			return;
 		}
 
-		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! );
+		const domEditableElement = this.domConverter.mapViewToDom( this.selection.editableElement! );
 
-		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
-		if ( !this.isFocused || !domRoot ) {
+		// Do nothing if there is no DOM element corresponding to selection's editable element.
+		if ( !domEditableElement ) {
+			return;
+		}
+
+		// Do nothing if there is no focus, or the focus is changing.
+		if ( this.isFocusChanging || !this.isFocused ) {
 			return;
 		}
 
 		// Render fake selection - create the fake selection container (if needed) and move DOM selection to it.
 		if ( this.selection.isFake ) {
-			this._updateFakeSelection( domRoot );
+			this._updateFakeSelection( domEditableElement );
 		}
 		// There was a fake selection so remove it and update the DOM selection.
 		// This is especially important on Android because otherwise IME will try to compose over the fake selection container.
 		else if ( this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
 			this._removeFakeSelection();
-			this._updateDomSelection( domRoot );
+			this._updateDomSelection( domEditableElement );
 		}
 		// Update the DOM selection in case of a plain selection change (no fake selection is involved).
 		// On non-Android the whole rendering is disabled in composition mode (including DOM selection update),
 		// but updating DOM selection should be also disabled on Android if in the middle of the composition
 		// (to not interrupt it).
 		else if ( !( this.isComposing && env.isAndroid ) ) {
-			this._updateDomSelection( domRoot );
+			this._updateDomSelection( domEditableElement );
 		}
 	}
 
 	/**
 	 * Updates the fake selection.
 	 *
-	 * @param domRoot A valid DOM root where the fake selection container should be added.
+	 * @param domEditableElement A valid DOM editable element where the fake selection container should be added.
 	 */
-	private _updateFakeSelection( domRoot: DomElement ): void {
-		const domDocument = domRoot.ownerDocument;
+	private _updateFakeSelection( domEditableElement: DomElement ): void {
+		const domDocument = domEditableElement.ownerDocument;
 
 		if ( !this._fakeSelectionContainer ) {
 			this._fakeSelectionContainer = createFakeSelectionContainer( domDocument );
@@ -897,12 +911,12 @@ export default class Renderer extends ObservableMixin() {
 		// Bind fake selection container with the current selection *position*.
 		this.domConverter.bindFakeSelection( container, this.selection );
 
-		if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
+		if ( !this._fakeSelectionNeedsUpdate( domEditableElement ) ) {
 			return;
 		}
 
-		if ( !container.parentElement || container.parentElement != domRoot ) {
-			domRoot.appendChild( container );
+		if ( !container.parentElement || container.parentElement != domEditableElement ) {
+			domEditableElement.appendChild( container );
 		}
 
 		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
@@ -918,10 +932,10 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Updates the DOM selection.
 	 *
-	 * @param domRoot A valid DOM root where the DOM selection should be rendered.
+	 * @param domEditableElement A valid DOM editable element where the DOM selection should be rendered.
 	 */
-	private _updateDomSelection( domRoot: DomElement ) {
-		const domSelection = domRoot.ownerDocument.defaultView!.getSelection()!;
+	private _updateDomSelection( domEditableElement: DomElement ) {
+		const domSelection = domEditableElement.ownerDocument.defaultView!.getSelection()!;
 
 		// Let's check whether DOM selection needs updating at all.
 		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
@@ -981,15 +995,15 @@ export default class Renderer extends ObservableMixin() {
 	/**
 	 * Checks whether the fake selection needs to be updated.
 	 *
-	 * @param domRoot A valid DOM root where a new fake selection container should be added.
+	 * @param domEditableElement A valid DOM editable element where a new fake selection container should be added.
 	 */
-	private _fakeSelectionNeedsUpdate( domRoot: DomElement ): boolean {
+	private _fakeSelectionNeedsUpdate( domEditableElement: DomElement ): boolean {
 		const container = this._fakeSelectionContainer;
-		const domSelection = domRoot.ownerDocument.getSelection()!;
+		const domSelection = domEditableElement.ownerDocument.getSelection()!;
 
 		// Fake selection needs to be updated if there's no fake selection container, or the container currently sits
 		// in a different root.
-		if ( !container || container.parentElement !== domRoot ) {
+		if ( !container || container.parentElement !== domEditableElement ) {
 			return true;
 		}
 
@@ -1034,7 +1048,7 @@ export default class Renderer extends ObservableMixin() {
 	 * Checks if focus needs to be updated and possibly updates it.
 	 */
 	private _updateFocus(): void {
-		if ( this.isFocused ) {
+		if ( this.isFocused && !this.isFocusChanging ) {
 			const editable = this.selection.editableElement;
 
 			if ( editable ) {

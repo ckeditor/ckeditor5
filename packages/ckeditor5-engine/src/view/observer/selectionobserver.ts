@@ -270,9 +270,6 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
-		this.focusObserver.flush();
-
 		if ( this.selection.isSimilar( newViewSelection ) ) {
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.

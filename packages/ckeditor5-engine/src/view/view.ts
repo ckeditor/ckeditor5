@@ -30,7 +30,7 @@ import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
 import MutationObserver from './observer/mutationobserver';
 import SelectionObserver from './observer/selectionobserver';
-import FocusObserver from './observer/focusobserver';
+import FocusObserver, { type ViewDocumentBlurEvent } from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
 import InputObserver from './observer/inputobserver';
 import ArrowKeysObserver from './observer/arrowkeysobserver';
@@ -38,6 +38,7 @@ import TabObserver from './observer/tabobserver';
 
 import {
 	CKEditorError,
+	env,
 	ObservableMixin,
 	scrollViewportToShowTarget,
 	type ObservableChangeEvent
@@ -175,8 +176,8 @@ export default class View extends ObservableMixin() {
 		this.set( 'hasDomSelection', false );
 
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' )
-			.to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
+		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing', 'isFocusChanging' )
+			.to( this.document, 'isFocused', 'isSelecting', 'isComposing', 'isFocusChanging' );
 
 		this._writer = new DowncastWriter( this.document );
 
@@ -215,6 +216,19 @@ export default class View extends ObservableMixin() {
 		this.listenTo<ObservableChangeEvent>( this.document, 'change:isFocused', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
+
+		// Remove ranges from DOM selection if editor is blurred.
+		// See https://github.com/ckeditor/ckeditor5/issues/5753.
+		if ( env.isiOS ) {
+			this.listenTo<ViewDocumentBlurEvent>( this.document, 'blur', ( evt, data ) => {
+				const relatedViewElement = this.domConverter.mapDomToView( data.domEvent.relatedTarget as HTMLElement );
+
+				// Do not modify DOM selection if focus is moved to other editable of the same editor.
+				if ( !relatedViewElement ) {
+					this.domConverter._clearDomSelection();
+				}
+			} );
+		}
 	}
 
 	/**
@@ -458,7 +472,7 @@ export default class View extends ObservableMixin() {
 	 * that is currently having selection inside.
 	 */
 	public focus(): void {
-		if ( !this.document.isFocused ) {
+		if ( !this.document.isFocused || this.document.isFocusChanging ) {
 			const editable = this.document.selection.editableElement;
 
 			if ( editable ) {

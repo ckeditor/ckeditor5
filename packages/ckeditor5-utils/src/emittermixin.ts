@@ -834,8 +834,10 @@ function getCallbacksListsForNamespace( source: EmitterInternal, eventName: stri
  * Get the list of callbacks for a given event, but only if there any callbacks have been registered.
  * If there are no callbacks registered for given event, it checks if this is a specific event and looks
  * for callbacks for it's more generic version.
+ *
+ * @internal
  */
-function getCallbacksForEvent( source: EmitterInternal, eventName: string ): EventNode[ 'callbacks' ] | null {
+export function getCallbacksForEvent( source: EmitterInternal, eventName: string ): EventNode[ 'callbacks' ] | null {
 	let event;
 
 	if ( !source._events || !( event = source._events[ eventName ] ) || !event.callbacks.length ) {
