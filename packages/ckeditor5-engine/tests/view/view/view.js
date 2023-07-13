@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console, setTimeout */
+/* globals document, console, setTimeout, FocusEvent */
 
 import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
@@ -941,6 +941,93 @@ describe( 'view', () => {
 
 			view.destroy();
 			domRoot.remove();
+		} );
+
+		describe( 'DOM selection clearing on editable blur', () => {
+			let view, viewDocument, domDiv, domOtherDiv;
+
+			function setupTest() {
+				domDiv = createElement( document, 'div', { id: 'editor' } );
+				domOtherDiv = createElement( document, 'div' );
+
+				document.body.appendChild( domDiv );
+				document.body.appendChild( domOtherDiv );
+
+				view = new View( new StylesProcessor() );
+				viewDocument = view.document;
+
+				createViewRoot( viewDocument, 'div', 'main' );
+				view.attachDomRoot( domDiv );
+
+				const viewText = new ViewText( viewDocument, 'foobar' );
+				const viewP = new ViewContainerElement( viewDocument, 'p', null, viewText );
+
+				viewDocument.getRoot()._appendChild( viewP );
+				viewDocument.selection._setTo( viewText, 3 );
+				viewDocument.isFocused = true;
+
+				view.forceRender();
+			}
+
+			afterEach( () => {
+				view.destroy();
+				domDiv.remove();
+				domOtherDiv.remove();
+			} );
+
+			it( 'should clear DOM selection on editor blur on iOS', () => {
+				sinon.stub( env, 'isiOS' ).value( true );
+
+				setupTest();
+
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+
+				domDiv.dispatchEvent( new FocusEvent( 'blur' ) );
+
+				expect( document.getSelection().rangeCount ).to.equal( 0 );
+			} );
+
+			it( 'should not clear DOM selection on editor blur on non-iOS browser', () => {
+				setupTest();
+
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+
+				domDiv.dispatchEvent( new FocusEvent( 'blur' ) );
+
+				expect( document.getSelection().rangeCount ).to.equal( 1 );
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+			} );
+
+			it( 'should clear DOM selection on editor blur on iOS (focus to some other element outside editor)', () => {
+				sinon.stub( env, 'isiOS' ).value( true );
+
+				setupTest();
+
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+
+				domDiv.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: domOtherDiv } ) );
+
+				expect( document.getSelection().rangeCount ).to.equal( 0 );
+			} );
+
+			it( 'should not clear DOM selection on editor blur on iOS (focus to the editor editable)', () => {
+				sinon.stub( env, 'isiOS' ).value( true );
+
+				setupTest();
+
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+
+				domDiv.dispatchEvent( new FocusEvent( 'blur', { relatedTarget: domDiv } ) );
+
+				expect( document.getSelection().rangeCount ).to.equal( 1 );
+				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( document.getSelection().focusOffset ).to.equal( 3 );
+			} );
 		} );
 	} );
 
