@@ -7,7 +7,7 @@
  * @module html-support/generalhtmlsupportconfig
  */
 
-import type { MatcherPattern } from 'ckeditor5/src/engine';
+import type { MatcherObjectPattern } from 'ckeditor5/src/engine';
 
 /**
  * The configuration of the General HTML Support feature.
@@ -50,7 +50,7 @@ export interface GeneralHtmlSupportConfig {
 	 * ];
 	 * ```
 	 */
-	allow?: Array<MatcherPattern>;
+	allow?: Array<MatcherObjectPattern>;
 
 	/**
 	 * The configuration of disallowed content rules used by General HTML Support.
@@ -68,6 +68,16 @@ export interface GeneralHtmlSupportConfig {
 	 * ];
 	 * ```
 	 */
-	disallow?: Array<MatcherPattern>;
+	disallow?: Array<MatcherObjectPattern>;
 
+	/**
+	 * The configuration of allowed empty inline elements that should not be removed.
+	 *
+	 * Note that you should also add an appropriate entry to {@link #allow} list.
+	 *
+	 * ```ts
+	 * const htmlSupportConfig.allowEmpty = [ 'i', 'span' ];
+	 * ```
+	 */
+	allowEmpty?: Array<string>;
 }
