@@ -98,7 +98,11 @@ export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
  * @param domNode DOM node.
  * @returns True if the text node starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  */
-export function startsWithFiller( domNode: Node ): boolean {
+export function startsWithFiller( domNode: Node | string ): boolean {
+	if ( typeof domNode == 'string' ) {
+		return domNode.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER;
+	}
+
 	return isText( domNode ) && ( domNode.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
 }
 
@@ -129,12 +133,14 @@ export function isInlineFiller( domText: Text ): boolean {
  * @param domText DOM text node, possible with inline filler.
  * @returns Data without filler.
  */
-export function getDataWithoutFiller( domText: Text ): string {
+export function getDataWithoutFiller( domText: Text | string ): string {
+	const data = typeof domText == 'string' ? domText : domText.data;
+
 	if ( startsWithFiller( domText ) ) {
-		return domText.data.slice( INLINE_FILLER_LENGTH );
-	} else {
-		return domText.data;
+		return data.slice( INLINE_FILLER_LENGTH );
 	}
+
+	return data;
 }
 
 /**

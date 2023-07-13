@@ -231,13 +231,13 @@ describe( 'CustomElementSupport', () => {
 				data:
 					'<paragraph>foo ' +
 					'<htmlCustomElement' +
-					' htmlContent="<custom>this is<p>some content</p>and more of it </custom>"' +
+					' htmlContent="<custom>this is <p>some content</p>and more of it </custom>"' +
 					' htmlElementName="custom"></htmlCustomElement>' +
 					'bar</paragraph>',
 				attributes: {}
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo <custom>this is<p>some content</p>and more of it </custom>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo <custom>this is <p>some content</p>and more of it </custom>bar</p>' );
 		} );
 
 		it( 'should not inject nbsp in the element content', () => {
