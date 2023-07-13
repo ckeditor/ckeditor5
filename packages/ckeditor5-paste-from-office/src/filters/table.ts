@@ -6,14 +6,16 @@
 /**
  * @module paste-from-office/filters/parse
  */
-import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
+import { UpcastWriter, type ViewDocumentFragment } from 'ckeditor5/src/engine';
 
 /**
  * Set alignment for table pasted from MS Word.
  *
  * @param documentFragment The view structure to be transformed.
  */
-export function tableAlignmentFilter( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
+export function setTableAlignment( documentFragment: ViewDocumentFragment ): void {
+	const upcastWriter = new UpcastWriter( documentFragment.document );
+
 	for ( const item of documentFragment.getChildren() ) {
 		if ( !item.is( 'element' ) ) {
 			continue;
@@ -22,7 +24,7 @@ export function tableAlignmentFilter( documentFragment: ViewDocumentFragment, wr
 		// If table is not wrapped in div[align] it should be alligned left.
 		// More details:(https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1623507171).
 		if ( item.is( 'element', 'table' ) ) {
-			writer.setAttribute( 'align', 'left', item );
+			upcastWriter.setAttribute( 'align', 'left', item );
 			continue;
 		}
 
@@ -37,7 +39,7 @@ export function tableAlignmentFilter( documentFragment: ViewDocumentFragment, wr
 		// If table is wrapped in div[align] table should be alligned with defined alignment value.
 		// More details:(https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1629065676)
 		if ( child.is( 'element', 'table' ) ) {
-			writer.setAttribute( 'align', align === 'center' ? 'none' : align, child );
+			upcastWriter.setAttribute( 'align', align === 'center' ? 'none' : align, child );
 		}
 	}
 }

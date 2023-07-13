@@ -4,7 +4,7 @@
  */
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import { tableAlignmentFilter } from '../../src/filters/table';
+import { setTableAlignment } from '../../src/filters/table';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import Document from '@ckeditor/ckeditor5-engine/src/view/document';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
@@ -32,7 +32,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			tableAlignmentFilter( documentFragment, writer );
+			setTableAlignment( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<table align="left"><tbody><tr><td>123</td></tr></tbody></table>'
@@ -44,7 +44,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			tableAlignmentFilter( documentFragment, writer );
+			setTableAlignment( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'text'
@@ -65,7 +65,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			tableAlignmentFilter( documentFragment, writer );
+			setTableAlignment( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<div align="left">' +
@@ -94,7 +94,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			tableAlignmentFilter( documentFragment, writer );
+			setTableAlignment( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<div align="center">' +
@@ -112,7 +112,7 @@ describe( 'PasteFromOffice - filters', () => {
 		it( 'should align table to right', () => {
 			const inputData =
 				'<div align="right">' +
-					'<table align="right">' +
+					'<table>' +
 						'<tbody>' +
 							'<tr>' +
 								'<td>123</td>' +
@@ -123,7 +123,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			tableAlignmentFilter( documentFragment, writer );
+			setTableAlignment( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<div align="right">' +
@@ -168,7 +168,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			tableAlignmentFilter( documentFragment, writer );
+			setTableAlignment( documentFragment, writer );
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<table align="left">' +
