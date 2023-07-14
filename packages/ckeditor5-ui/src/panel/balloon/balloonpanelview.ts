@@ -828,7 +828,30 @@ export default class BalloonPanelView extends View {
 	 *		+-----------------------------------+
 	 * ```
 	 *
-	 // TODO!!!!!! HIDDEN
+	 * **Hidden**
+	 *
+	 * * `viewportHidden`
+	 *
+	 * ```
+	 *  +- - - - - - - - -+
+	 *  |     Balloon     |
+	 *  +- - - - - - - - -+
+	 *
+	 *				+---------------------------+
+	 *				|        [ Target ]         |
+	 *				+---------------------------+
+	 *			+-----------------------------------+
+	 *			|                                   |
+	 *			|                                   |
+	 *			|                                   |
+	 *			|                                   |
+	 *			|              Viewport             |
+	 *			|                                   |
+	 *			|                                   |
+	 *			|                                   |
+	 *			|                                   |
+	 *			+-----------------------------------+
+	 * ```
 	 *
 	 * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
 	 *
