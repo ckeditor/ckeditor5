@@ -127,6 +127,10 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		return new PositionObject( positions.at( -1 )!, positionOptions );
 	}
 
+	if ( !targetRect.getVisible() ) {
+		return new PositionObject( positions.at( -1 )!, positionOptions );
+	}
+
 	const ancestorsIntersectionWindowRect = new Rect( window ).getIntersection( ancestorsIntersection! );
 
 	if ( !ancestorsIntersectionWindowRect ) {
@@ -194,6 +198,8 @@ function getBestPosition(
 	options: ConstructorParameters<typeof PositionObject>[ 1 ]
 ): Position | null {
 	const { elementRect } = options;
+
+	// @if CK_DEBUG_POSITION //		RectDrawer.draw( elementRect, { outlineWidth: '5px', outlineColor: 'orange' }, 'elementRect' );
 
 	// This is when element is fully visible.
 	const elementRectArea = elementRect.getArea();
