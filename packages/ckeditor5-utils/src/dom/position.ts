@@ -100,6 +100,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 
 	let bestPosition: Position;
 
+	// Get intersection of all scrollable ancestors of `target`.
 	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
 	const ancestorsIntersection: Rect | null = allScrollableAncestors
 		.reverse()
@@ -164,10 +165,15 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		Object.assign( positionOptions, {
 			limiterRect, viewportRect: target instanceof Range ? limiterRect : ancestorsIntersectionWindowRect } );
 
-		// TODO !!!!
+		// When `limiter` is not set and `getBestPosition` return null lets return the first `position`
+		// from the `positions` list. If the limiter is set - we will take the last `position` (hide).
+		const indexOfPositionToReturn = limiter ? -1 : 0;
+
 		// If there's no best position found, i.e. when all intersections have no area because
-		// rects have no width or height, then just use the last available position.
-		bestPosition = getBestPosition( positions, positionOptions ) || new PositionObject( positions.at( -1 )!, positionOptions );
+		// rects have no width or height, then just use the position from positions list
+		// indexed by `indexOfPositionToReturn`.
+		bestPosition = getBestPosition( positions, positionOptions ) ||
+			new PositionObject( positions.at( indexOfPositionToReturn )!, positionOptions );
 	}
 
 	return bestPosition;

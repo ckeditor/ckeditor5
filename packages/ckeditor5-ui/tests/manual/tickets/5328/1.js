@@ -78,8 +78,30 @@ ClassicEditor
 			limiter: editor.ui.getEditableElement()
 		} );
 
-		window.stickEditor = editor;
+		window.scrollEditor = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// Editor "out of the box"
+ClassicEditor
+	.create( document.querySelector( '#editor-out-of-the-box' ), {
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		plugins: [ ArticlePluginSet, TableToolbar, TableCaption, TableCellProperties, TableColumnResize, TableProperties ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', 'link', '|', 'insertTable' ],
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+			]
+		}
+	} )
+	.then( editor => {
+		window.outOfTheBoxEditor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
