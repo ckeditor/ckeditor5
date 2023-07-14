@@ -576,6 +576,12 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
+					"name": "Tutorial",
+					"id": "tutorial",
+					"slug": "tutorial",
+					"order": 90
+				},
+				{
 					"name": "Architecture",
 					"id": "framework-architecture",
 					"slug": "architecture",
