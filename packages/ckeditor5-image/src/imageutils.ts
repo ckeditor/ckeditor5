@@ -218,7 +218,7 @@ export default class ImageUtils extends Plugin {
 	 * Returns an image widget editing view based on the passed image view.
 	 */
 	public getImageWidgetFromImageView( imageView: ViewElement ): ViewContainerElement | null {
-		return imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } ) as ViewContainerElement;
+		return imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } ) as ( ViewContainerElement | null );
 	}
 
 	/**
