@@ -14,11 +14,11 @@
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "ckeditor5": "38.1.0",
     "@ckeditor/ckeditor5-core": "38.1.0",
     "@ckeditor/ckeditor5-editor-classic": "38.1.0",
     "@ckeditor/ckeditor5-paragraph": "38.1.0",
     "@ckeditor/ckeditor5-utils": "38.1.0",
+    "ckeditor5": "38.1.0",
     "typescript": "^4.8.4"
   },
   "engines": {

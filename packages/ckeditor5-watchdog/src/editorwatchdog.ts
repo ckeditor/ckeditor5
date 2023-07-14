@@ -381,6 +381,7 @@ class EditorWatchdogInitPlugin {
 
 	private _createElement( writer: Writer, node: any ): Text | Element {
 		if ( 'name' in node ) {
+			// If child has name property, it is an Element.
 			const element = writer.createElement( node.name, node.attributes );
 
 			if ( node.children ) {
@@ -389,7 +390,6 @@ class EditorWatchdogInitPlugin {
 				}
 			}
 
-			// If child has name property, it is an Element.
 			return element;
 		} else {
 			// Otherwise, it is a Text node.
