@@ -181,7 +181,7 @@ export default class StickyPanelView extends View {
 				style: {
 					display: bind.to( 'isSticky', isSticky => isSticky ? 'block' : 'none' ),
 					height: bind.to( 'isSticky', isSticky => {
-						return isSticky ? toPx( this._panelRect!.height ) : null;
+						return isSticky && this._panelRect ? toPx( this._panelRect.height ) : null;
 					} )
 				}
 			}
@@ -256,7 +256,6 @@ export default class StickyPanelView extends View {
 	 */
 	public checkIfShouldBeSticky( scrollTarget?: HTMLElement | Document ): void {
 		// @if CK_DEBUG_STICKYPANEL // RectDrawer.clear();
-		this._panelRect = new Rect( this._contentPanel );
 
 		if ( !this.limiterElement || !this.isActive ) {
 			this._unstick();
@@ -270,6 +269,7 @@ export default class StickyPanelView extends View {
 			return;
 		}
 
+		this._panelRect = new Rect( this._contentPanel );
 		const visibleAncestorsRect = _getVisibleAncestorsRect( scrollableAncestors, this.viewportTopOffset );
 		const limiterRect = new Rect( this.limiterElement );
 
