@@ -10,6 +10,8 @@ declare module '@ckeditor/ckeditor5-core' {
 
 		/**
 		 * The temporary property that is used for passing data to the plugin which restores the editor state.
+		 *
+		 * @internal
 		 */
 		_watchdogInitialData?: EditorData | null;
 	}

@@ -172,11 +172,11 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 				const updatedConfig = {
 					...this._config,
-					plugins: this._config!.plugins || [],
+					extraPlugins: this._config!.extraPlugins || [],
 					_watchdogInitialData: this._data
 				};
 
-				updatedConfig.plugins!.push( EditorWatchdogInitPlugin as any );
+				updatedConfig.extraPlugins!.push( EditorWatchdogInitPlugin as any );
 
 				if ( typeof this._elementOrData === 'string' ) {
 					return this.create( existingRoots, updatedConfig, updatedConfig!.context );
@@ -310,7 +310,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 			data.roots[ rootName ] = {
 				content: JSON.stringify( Array.from( root.getChildren() ) ),
-				attributes: Array.from( root.getAttributes() )
+				attributes: JSON.stringify( Array.from( root.getAttributes() ) )
 			};
 		} );
 
@@ -352,6 +352,10 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	}
 }
 
+/**
+ * Internal plugin that is used to stop the default editor initialization and restoring the editor state
+ * based on the `editor.config._watchdogInitialData` data.
+ */
 class EditorWatchdogInitPlugin {
 	public editor: Editor;
 	private _data: EditorData;
@@ -366,6 +370,9 @@ class EditorWatchdogInitPlugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
+		// Stops the default editor initialization and use the saved data to restore the editor state.
+		// Some of data could not be initialize as a config properties. It is important to keep the data
+		// in the same form as it was before the restarting.
 		this.editor.data.on( 'init', evt => {
 			evt.stop();
 
@@ -379,21 +386,21 @@ class EditorWatchdogInitPlugin {
 		}, { priority: 1000 - 1 } );
 	}
 
-	private _createElement( writer: Writer, node: any ): Text | Element {
-		if ( 'name' in node ) {
+	private _createNode( writer: Writer, jsonNode: any ): Text | Element {
+		if ( 'name' in jsonNode ) {
 			// If child has name property, it is an Element.
-			const element = writer.createElement( node.name, node.attributes );
+			const element = writer.createElement( jsonNode.name, jsonNode.attributes );
 
-			if ( node.children ) {
-				for ( const child of node.children ) {
-					element._appendChild( this._createElement( writer, child ) );
+			if ( jsonNode.children ) {
+				for ( const child of jsonNode.children ) {
+					element._appendChild( this._createNode( writer, child ) );
 				}
 			}
 
 			return element;
 		} else {
 			// Otherwise, it is a Text node.
-			return writer.createText( node.data, node.attributes );
+			return writer.createText( jsonNode.data, jsonNode.attributes );
 		}
 	}
 
@@ -402,25 +409,22 @@ class EditorWatchdogInitPlugin {
 	 */
 	private _restoreEditorData( writer: Writer ): void {
 		const editor = this.editor!;
-		const frag = writer.createDocumentFragment();
 
 		Object.entries( this._data!.roots ).forEach( ( [ rootName, { content, attributes } ] ) => {
 			const parsedNodes: Array<Node | Element> = JSON.parse( content );
-			const children = [];
+			const parsedAttributes: Array<[ string, unknown ]> = JSON.parse( attributes );
 
 			const rootElement = editor.model.document.getRoot( rootName )!;
 
-			for ( const [ key, value ] of attributes ) {
+			for ( const [ key, value ] of parsedAttributes ) {
 				writer.setAttribute( key, value, rootElement );
 			}
 
 			for ( const child of parsedNodes ) {
-				children.push( this._createElement( writer, child ) );
+				const node = this._createNode( writer, child );
+
+				writer.insert( node, rootElement, 'end' );
 			}
-
-			frag._appendChild( children );
-
-			writer.insert( frag, rootElement );
 		} );
 
 		Object.entries( this._data!.markers ).forEach( ( [ markerName, markerOptions ] ) => {
@@ -447,7 +451,7 @@ class EditorWatchdogInitPlugin {
 export type EditorData = {
 	roots: Record<string, {
 		content: string;
-		attributes: Array<[ string, unknown ]>;
+		attributes: string;
 	}>;
 	markers: Record<string, {
 		rangeJSON: { start: any; end: any };
