@@ -181,7 +181,7 @@ export default class StickyPanelView extends View {
 				style: {
 					display: bind.to( 'isSticky', isSticky => isSticky ? 'block' : 'none' ),
 					height: bind.to( 'isSticky', isSticky => {
-						return isSticky && this._panelRect ? toPx( this._panelRect.height ) : null;
+						return isSticky ? toPx( this._panelRect!.height ) : null;
 					} )
 				}
 			}

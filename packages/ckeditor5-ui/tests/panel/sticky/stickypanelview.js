@@ -5,7 +5,7 @@
 
 /* globals document, Event */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import StickyPanelView from '../../../src/panel/sticky/stickypanelview';
 import View from '../../../src/view';
 import LabelView from '../../../src/label/labelview';
@@ -82,6 +82,7 @@ describe( 'StickyPanelView', () => {
 	describe( 'element view bindings', () => {
 		beforeEach( () => {
 			view.limiterElement = limiterElement;
+			view._panelRect = new Rect( { top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0 } );
 		} );
 
 		it( 'update the class on view#isSticky change', () => {
@@ -140,6 +141,7 @@ describe( 'StickyPanelView', () => {
 	describe( '_contentPanelPlaceholder view bindings', () => {
 		beforeEach( () => {
 			view.limiterElement = limiterElement;
+			view._panelRect = new Rect( { top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0 } );
 		} );
 
 		it( 'update the style.display on view#isSticky change', () => {
