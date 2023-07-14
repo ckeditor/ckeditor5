@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine';
 import ImageUtils from './imageutils';
+import { type ImageLoadedEvent } from './image/imageloadobserver';
 
 /**
  * This plugin enables `width` and `size` attributes in inline and block image elements.
@@ -27,6 +28,48 @@ export default class ImageSizeAttributes extends Plugin {
 	 */
 	public static get pluginName(): 'ImageSizeAttributes' {
 		return 'ImageSizeAttributes';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		const editor = this.editor;
+		const editing = editor.editing;
+
+		this.listenTo<ImageLoadedEvent>( editing.view.document, 'imageLoaded', ( evt, domEvent ) => {
+			const image = domEvent.target as HTMLElement;
+			const imageUtils = editor.plugins.get( 'ImageUtils' );
+			const domConverter = editing.view.domConverter;
+			const imageView = domConverter.domToView( image as HTMLElement ) as ViewElement;
+			const widgetView = imageUtils.getImageWidgetFromImageView( imageView );
+
+			if ( !widgetView ) {
+				return;
+			}
+
+			const imageElement = editing.mapper.toModelElement( widgetView )!;
+
+			if ( imageElement.hasAttribute( 'width' ) || imageElement.hasAttribute( 'height' ) ) {
+				return;
+			}
+
+			const setImageSizesOnImageChange = () => {
+				const changes = Array.from( editor.model.document.differ.getChanges() );
+
+				for ( const entry of changes ) {
+					if ( entry.type === 'attribute' ) {
+						const imageElement = editing.mapper.toModelElement( widgetView )!;
+
+						imageUtils.loadImageAndSetSizeAttributes( imageElement );
+						widgetView.off( 'change:attributes', setImageSizesOnImageChange );
+						break;
+					}
+				}
+			};
+
+			widgetView.on( 'change:attributes', setImageSizesOnImageChange );
+		} );
 	}
 
 	/**
