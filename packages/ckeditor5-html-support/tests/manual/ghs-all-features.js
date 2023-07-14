@@ -84,7 +84,8 @@ ClassicEditor
 					attributes: true,
 					classes: true
 				}
-			]
+			],
+			allowEmpty: [ 'i' ]
 		}
 	} )
 	.then( editor => {

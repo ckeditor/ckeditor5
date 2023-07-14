@@ -20,7 +20,11 @@ export default function DataApiMixin<Base extends Constructor<Editor>>( base: Ba
 			this.data.set( data );
 		}
 
-		public getData( options?: Record<string, unknown> ): string {
+		public getData( options?: {
+			rootName?: string;
+			trim?: 'empty' | 'none';
+			[ key: string ]: unknown;
+		} ): string {
 			return this.data.get( options );
 		}
 	}
