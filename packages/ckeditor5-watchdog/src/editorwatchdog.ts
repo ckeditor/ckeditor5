@@ -10,16 +10,10 @@
 /* globals console */
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import { priorities, type CKEditorError } from 'ckeditor5/src/utils';
+import type { CKEditorError } from 'ckeditor5/src/utils';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import {
-	Plugin,
-	type Editor,
-	type EditorConfig,
-	type Context,
-	type EditorReadyEvent
-} from 'ckeditor5/src/core';
+import type { Editor, EditorConfig, Context, EditorReadyEvent } from 'ckeditor5/src/core';
 
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import Watchdog, { type WatchdogConfig } from './watchdog';
@@ -27,7 +21,7 @@ import Watchdog, { type WatchdogConfig } from './watchdog';
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import { Element, Text, Position, type Writer } from 'ckeditor5/src/engine';
+import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
 
 /**
  * A watchdog for CKEditor 5 editors.
@@ -182,7 +176,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 					_watchdogInitialData: this._data
 				};
 
-				updatedConfig.plugins!.push( EditorWatchdogInitPlugin );
+				updatedConfig.plugins!.push( EditorWatchdogInitPlugin as any );
 
 				if ( typeof this._elementOrData === 'string' ) {
 					return this.create( existingRoots, updatedConfig, updatedConfig!.context );
@@ -358,11 +352,12 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	}
 }
 
-class EditorWatchdogInitPlugin extends Plugin {
+class EditorWatchdogInitPlugin {
+	public editor: Editor;
 	private _data: EditorData;
 
 	constructor( editor: Editor ) {
-		super( editor );
+		this.editor = editor;
 
 		this._data = editor.config.get( '_watchdogInitialData' )!;
 	}
@@ -379,7 +374,27 @@ class EditorWatchdogInitPlugin extends Plugin {
 			} );
 
 			this.editor.data.fire<EditorReadyEvent>( 'ready' );
-		}, { priority: priorities.high - 1 } );
+
+			// Keep priority `'high' - 1` to be sure that RTC initialization will be first.
+		}, { priority: 1000 - 1 } );
+	}
+
+	private _createElement( writer: Writer, node: any ): Text | Element {
+		if ( 'name' in node ) {
+			const element = writer.createElement( node.name, node.attributes );
+
+			if ( node.children ) {
+				for ( const child of node.children ) {
+					element._appendChild( this._createElement( writer, child ) );
+				}
+			}
+
+			// If child has name property, it is an Element.
+			return element;
+		} else {
+			// Otherwise, it is a Text node.
+			return writer.createText( node.data, node.attributes );
+		}
 	}
 
 	/**
@@ -400,13 +415,7 @@ class EditorWatchdogInitPlugin extends Plugin {
 			}
 
 			for ( const child of parsedNodes ) {
-				if ( 'name' in child ) {
-					// If child has name property, it is an Element.
-					children.push( Element.fromJSON( child ) );
-				} else {
-					// Otherwise, it is a Text node.
-					children.push( Text.fromJSON( child ) );
-				}
+				children.push( this._createElement( writer, child ) );
 			}
 
 			frag._appendChild( children );
@@ -421,7 +430,11 @@ class EditorWatchdogInitPlugin extends Plugin {
 				...options
 			} = markerOptions;
 
-			const range = writer.createRange( Position.fromJSON( start, document ), Position.fromJSON( end, document ) );
+			const root = document.getRoot( start.root )!;
+			const startPosition = writer.createPositionFromPath( root, start.path, start.stickiness );
+			const endPosition = writer.createPositionFromPath( root, end.path, end.stickiness );
+
+			const range = writer.createRange( startPosition, endPosition );
 
 			writer.addMarker( markerName, {
 				range,

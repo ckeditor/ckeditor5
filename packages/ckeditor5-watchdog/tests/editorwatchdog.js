@@ -775,6 +775,10 @@ describe( 'EditorWatchdog', () => {
 			const destroyStub = sinon.stub( watchdog, '_destroy' )
 				.throwsException( editorGetDataError );
 
+			// Keep the reference to cleanly destroy it at in the end, as during the TC it
+			// throws an exception during destruction.
+			const firstEditor = watchdog.editor;
+
 			await new Promise( res => {
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
@@ -789,6 +793,7 @@ describe( 'EditorWatchdog', () => {
 					destroyStub.restore();
 
 					await watchdog.destroy();
+					await firstEditor.destroy();
 
 					res();
 				} );
