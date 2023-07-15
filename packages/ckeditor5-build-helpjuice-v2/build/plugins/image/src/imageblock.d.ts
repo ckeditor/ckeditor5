@@ -15,12 +15,12 @@ export default class ImageBlock {
     /**
      * @inheritDoc
      */
-    static get requires(): (typeof Widget | typeof ImageTextAlternative | typeof ImageBlockEditing)[];
+    static get requires(): (typeof ImageTextAlternative | typeof ImageBlockEditing | typeof Widget)[];
     /**
      * @inheritDoc
      */
     static get pluginName(): string;
 }
-import { Widget } from "@ckeditor/ckeditor5-widget";
 import ImageTextAlternative from "./imagetextalternative";
 import ImageBlockEditing from "./image/imageblockediting";
+import { Widget } from "@ckeditor/ckeditor5-widget";

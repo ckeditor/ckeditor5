@@ -1,0 +1,70 @@
+{
+  "name": "@ckeditor/ckeditor5-link",
+  "version": "38.0.0",
+  "description": "Link feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
+  ],
+  "main": "src/index.ts",
+  "dependencies": {
+    "@ckeditor/ckeditor5-ui": "^38.0.0",
+    "ckeditor5": "^38.0.0",
+    "lodash-es": "^4.17.15"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^38.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^38.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^38.0.0",
+    "@ckeditor/ckeditor5-cloud-services": "^38.0.0",
+    "@ckeditor/ckeditor5-code-block": "^38.0.0",
+    "@ckeditor/ckeditor5-core": "^38.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^37.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^38.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^38.0.0",
+    "@ckeditor/ckeditor5-engine": "^38.0.0",
+    "@ckeditor/ckeditor5-enter": "^38.0.0",
+    "@ckeditor/ckeditor5-image": "^38.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^38.0.0",
+    "@ckeditor/ckeditor5-table": "^38.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^38.0.0",
+    "@ckeditor/ckeditor5-typing": "^38.0.0",
+    "@ckeditor/ckeditor5-undo": "^38.0.0",
+    "@ckeditor/ckeditor5-utils": "^38.0.0",
+    "@ckeditor/ckeditor5-widget": "^38.0.0",
+    "typescript": "^4.8.4",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=5.7.1"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-link"
+  },
+  "files": [
+    "lang",
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "theme",
+    "build",
+    "ckeditor5-metadata.json",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "dll:build": "webpack",
+    "build": "tsc -p ./tsconfig.json",
+    "postversion": "npm run build"
+  }
+}

@@ -15,7 +15,6 @@ import AutoSave from '@ckeditor/ckeditor5-autosave/src/autosave';
 import { Bold, Underline, Italic, Strikethrough, Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { List, ListProperties, TodoList } from '@ckeditor/ckeditor5-list';
@@ -23,7 +22,7 @@ import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { Table, TableCaption, TableToolbar, TableProperties, TableCellProperties, TableColumnResize }  from '@ckeditor/ckeditor5-table';
+import { Table, TableCaption, TableToolbar, TableProperties, TableCellProperties, TableColumnResize } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Highlight } from '@ckeditor/ckeditor5-highlight';
@@ -55,6 +54,8 @@ import Comments from './plugins/comments/comments';
 import Glossary from './plugins/glossary/glossary';
 import CmdDelete from './plugins/cmddelete/cmddelete';
 import { FontFamily, FontSize, FontColor, FontBackgroundColor } from './plugins/font';
+import { Link, LinkImage } from './plugins/link';
+
 import EmbeddedIFrame from './plugins/embeddediframe/embeddediframe';
 
 const { objectInline, objectLeft, objectRight, objectCenter } = icons;
@@ -126,7 +127,6 @@ HelpjuiceEditor.builtinPlugins = [
 	FilesManager,
 	// @ts-ignore
 	Mention,
-	MentionCustomization,
 	Style,
 	Comments,
 	Glossary,
@@ -137,62 +137,6 @@ HelpjuiceEditor.builtinPlugins = [
 	CmdDelete,
 	EmbeddedIFrame
 ];
-
-function MentionCustomization( editor: any ) {
-    // The upcast converter will convert <a class="mention" href="" data-user-id="">
-    // elements to the model 'mention' attribute.
-    editor.conversion.for('upcast').elementToAttribute( {
-        view: {
-            name: 'a',
-            key: 'data-mention',
-            classes: 'mention',
-            attributes: {
-                href: true,
-                'data-helpjuice-id': true
-            }
-        },
-        model: {
-            key: 'mention',
-            value: function( viewItem: any ) {
-                // The mention feature expects that the mention attribute value
-                // in the model is a plain object with a set of additional attributes.
-                // In order to create a proper object, use the toMentionAttribute helper method:
-                const mentionAttribute = editor.plugins.get('Mention').toMentionAttribute(viewItem, {
-                    // Add any other properties that you need.
-                    codename: viewItem.getAttribute('href'),
-                    userId: viewItem.getAttribute('data-helpjuice-id')
-                } );
-
-                return mentionAttribute;
-            }
-        },
-        converterPriority: 'high'
-    });
-
-    // Downcast the model 'mention' text attribute to a view <a> element.
-    editor.conversion.for('downcast').attributeToElement( {
-        model: 'mention',
-        view: (modelAttributeValue: any, { writer }: any) => {
-            // Do not convert empty attributes (lack of value means no mention).
-            if (!modelAttributeValue) {
-                return;
-            }
-
-            return writer.createAttributeElement('a', {
-                class: 'mention',
-                'data-mention': modelAttributeValue.id,
-                'data-helpjuice-id': modelAttributeValue.id,
-                'href': modelAttributeValue.codename
-            }, {
-                // Make mention attribute to be wrapped by other attribute elements.
-                priority: 20,
-                // Prevent merging mentions together.
-                id: modelAttributeValue.uid
-            });
-        },
-        converterPriority: 'high'
-    } );
-}
 
 const colorPalette = [
 	{ color: 'hsl(6, 78%, 74%)', label: ' ' }, { color: 'hsl(6, 78%, 66%)', label: ' ' }, { color: 'hsl(6, 78%, 57%)', label: ' ' }, { color: 'hsl(6, 59%, 50%)', label: ' ' }, { color: 'hsl(6, 59%, 43%)', label: ' ' }, { color: 'hsl(6, 59%, 37%)', label: ' ' }, { color: 'hsl(6, 59%, 30%)', label: ' ' }, { color: 'hsl(282, 39%, 68%)', label: ' ' }, { color: 'hsl(282, 39%, 58%)', label: ' ' }, { color: 'hsl(282, 44%, 47%)', label: ' ' }, { color: 'hsl(282, 44%, 42%)', label: ' ' }, { color: 'hsl(282, 44%, 36%)', label: ' ' }, { color: 'hsl(282, 44%, 30%)', label: ' ' }, { color: 'hsl(282, 44%, 25%)', label: ' ' }, { color: 'hsl(204, 70%, 72%)', label: ' ' }, { color: 'hsl(204, 70%, 63%)', label: ' ' }, { color: 'hsl(204, 70%, 53%)', label: ' ' }, { color: 'hsl(204, 62%, 47%)', label: ' ' }, { color: 'hsl(204, 62%, 40%)', label: ' ' }, { color: 'hsl(204, 62%, 34%)', label: ' ' }, { color: 'hsl(204, 62%, 28%)', label: ' ' }, { color: 'hsl(145, 61%, 69%)', label: ' ' }, { color: 'hsl(145, 61%, 59%)', label: ' ' }, { color: 'hsl(145, 63%, 49%)', label: ' ' }, { color: 'hsl(145, 63%, 43%)', label: ' ' }, { color: 'hsl(145, 63%, 37%)', label: ' ' }, { color: 'hsl(145, 63%, 31%)', label: ' ' }, { color: 'hsl(145, 63%, 25%)', label: ' ' }, { color: 'hsl(48, 89%, 70%)', label: ' ' }, { color: 'hsl(48, 89%, 60%)', label: ' ' }, { color: 'hsl(48, 89%, 50%)', label: ' ' }, { color: 'hsl(48, 88%, 44%)', label: ' ' }, { color: 'hsl(48, 88%, 38%)', label: ' ' }, { color: 'hsl(48, 88%, 32%)', label: ' ' }, { color: 'hsl(48, 88%, 26%)', label: ' ' }, { color: 'hsl(24, 71%, 65%)', label: ' ' }, { color: 'hsl(24, 71%, 53%)', label: ' ' }, { color: 'hsl(24, 100%, 41%)', label: ' ' }, { color: 'hsl(24, 100%, 36%)', label: ' ' }, { color: 'hsl(24, 100%, 31%)', label: ' ' }, { color: 'hsl(24, 100%, 26%)', label: ' ' }, { color: 'hsl(24, 100%, 22%)', label: ' ' }, { color: 'hsl(210, 12%, 86%)', label: ' ' }, { color: 'hsl(210, 12%, 71%)', label: ' ' }, { color: 'hsl(210, 12%, 57%)', label: ' ' }, { color: 'hsl(210, 15%, 43%)', label: ' ' }, { color: 'hsl(210, 29%, 18%)', label: ' ' }, { color: 'hsl(210, 29%, 16%)', label: ' ' }, { color: 'hsl(210, 29%, 13%)', label: ' ' }

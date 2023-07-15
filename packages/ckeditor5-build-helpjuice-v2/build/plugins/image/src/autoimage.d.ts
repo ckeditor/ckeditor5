@@ -8,7 +8,7 @@ export default class AutoImage {
     /**
      * @inheritDoc
      */
-    static get requires(): (typeof Delete | typeof Clipboard | typeof Undo | typeof ImageUtils)[];
+    static get requires(): (typeof ImageUtils | typeof Delete | typeof Clipboard | typeof Undo)[];
     /**
      * @inheritDoc
      */
@@ -47,7 +47,7 @@ export default class AutoImage {
      */
     protected _embedImageBetweenPositions(leftPosition: any, rightPosition: any): void;
 }
+import ImageUtils from "./imageutils";
 import { Delete } from "@ckeditor/ckeditor5-typing";
 import { Clipboard } from "@ckeditor/ckeditor5-clipboard";
 import { Undo } from "@ckeditor/ckeditor5-undo";
-import ImageUtils from "./imageutils";

@@ -15,12 +15,12 @@ export default class ImageInline {
     /**
      * @inheritDoc
      */
-    static get requires(): (typeof Widget | typeof ImageTextAlternative | typeof ImageInlineEditing)[];
+    static get requires(): (typeof ImageTextAlternative | typeof Widget | typeof ImageInlineEditing)[];
     /**
      * @inheritDoc
      */
     static get pluginName(): string;
 }
-import { Widget } from "@ckeditor/ckeditor5-widget";
 import ImageTextAlternative from "./imagetextalternative";
+import { Widget } from "@ckeditor/ckeditor5-widget";
 import ImageInlineEditing from "./image/imageinlineediting";

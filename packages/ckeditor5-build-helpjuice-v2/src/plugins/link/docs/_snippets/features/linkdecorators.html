@@ -1,0 +1,22 @@
+<!-- Used a textarea because of https://github.com/ckeditor/ckeditor5-link/pull/240#issuecomment-509269480 -->
+<textarea id="snippet-link-decorators">
+	&lt;p>
+		An &lt;a href="https://ckeditor.com">external page&lt;/a> and a
+		&lt;a download="download" href="resource.png">downloadable resource&lt;/a>.
+	&lt;/p>
+</textarea>
+
+<!-- The highlight will be called manually. -->
+<pre class="highlight language-html"><code class="no-highlight" id="output-link-decorators"></code></pre>
+
+<style>
+	/*
+	 * The output is easier to read when it wraps to the next line.
+	 * See https://github.com/ckeditor/ckeditor5-link/issues/236.
+	 */
+	#output-link-decorators {
+		overflow: hidden;
+		white-space: normal;
+		word-break: break-all;
+	}
+</style>

@@ -14,7 +14,7 @@ export default class ImageBlockEditing {
     /**
      * @inheritDoc
      */
-    static get requires(): (typeof ClipboardPipeline | typeof ImageUtils | typeof ImageEditing)[];
+    static get requires(): (typeof ImageUtils | typeof ImageEditing | typeof ClipboardPipeline)[];
     /**
      * @inheritDoc
      */
@@ -48,6 +48,6 @@ export default class ImageBlockEditing {
      */
     private _setupClipboardIntegration;
 }
-import { ClipboardPipeline } from "@ckeditor/ckeditor5-clipboard";
 import ImageUtils from "../imageutils";
 import ImageEditing from "./imageediting";
+import { ClipboardPipeline } from "@ckeditor/ckeditor5-clipboard";

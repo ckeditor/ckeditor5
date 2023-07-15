@@ -12,7 +12,7 @@ export default class ImageUploadEditing {
     /**
      * @inheritDoc
      */
-    static get requires(): (typeof Notification | typeof ClipboardPipeline | typeof FileRepository | typeof ImageUtils)[];
+    static get requires(): (typeof ImageUtils | typeof ClipboardPipeline | typeof FileRepository | typeof Notification)[];
     static get pluginName(): string;
     /**
      * @inheritDoc
@@ -62,7 +62,7 @@ export default class ImageUploadEditing {
      */
     protected _parseAndSetSrcsetAttributeOnImage(data: Object, image: any, writer: any): void;
 }
-import { Notification } from "@ckeditor/ckeditor5-ui";
+import ImageUtils from "../imageutils";
 import { ClipboardPipeline } from "@ckeditor/ckeditor5-clipboard";
 import { FileRepository } from "@ckeditor/ckeditor5-upload";
-import ImageUtils from "../imageutils";
+import { Notification } from "@ckeditor/ckeditor5-ui";

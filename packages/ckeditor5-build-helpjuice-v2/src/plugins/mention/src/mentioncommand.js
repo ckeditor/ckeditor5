@@ -113,8 +113,10 @@ export default class MentionCommand extends Command {
 
 			attributesWithMention.set( 'mention', mention );
 
+			const hrefAttributes = Object.fromEntries(attributesWithMention).mention;
+
 			// Replace a range with the text with a mention.
-			model.insertContent( writer.createText( mentionText, attributesWithMention ), range );
+			model.insertContent( writer.createText( mentionText, { linkHref: hrefAttributes.codename } ), range );
 			model.insertContent( writer.createText( ' ', currentAttributes ), range.start.getShiftedBy( mentionText.length ) );
 		} );
 	}

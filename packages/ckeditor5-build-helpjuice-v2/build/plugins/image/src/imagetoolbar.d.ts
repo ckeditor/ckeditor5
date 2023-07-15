@@ -15,7 +15,7 @@ export default class ImageToolbar {
     /**
      * @inheritDoc
      */
-    static get requires(): (typeof WidgetToolbarRepository | typeof ImageUtils)[];
+    static get requires(): (typeof ImageUtils | typeof WidgetToolbarRepository)[];
     /**
      * @inheritDoc
      */
@@ -25,5 +25,5 @@ export default class ImageToolbar {
      */
     afterInit(): void;
 }
-import { WidgetToolbarRepository } from "@ckeditor/ckeditor5-widget";
 import ImageUtils from "./imageutils";
+import { WidgetToolbarRepository } from "@ckeditor/ckeditor5-widget";

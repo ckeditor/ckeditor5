@@ -18,12 +18,13 @@ import {
 	View,
 	ViewCollection,
 	ColorPickerView,
-	ColorPaletteIcon,
 	type ColorDefinition,
 	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type { Model } from 'ckeditor5/src/engine';
+
+import { default as ColorPaletteIcon } from './svg/color-palette.svg';
 
 import DocumentColorCollection from '../documentcolorcollection';
 
