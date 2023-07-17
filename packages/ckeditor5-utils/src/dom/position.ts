@@ -162,8 +162,10 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		// @if CK_DEBUG_POSITION // 	RectDrawer.draw( limiterRect, { outlineWidth: '5px', outlineColor: 'green' }, 'Visible limiter' );
 		// @if CK_DEBUG_POSITION // }
 
+		const properRectLimiter = isNaN( ancestorsIntersectionWindowRect.top ) ? limiterRect : ancestorsIntersectionWindowRect;
+
 		Object.assign( positionOptions, {
-			limiterRect, viewportRect: target instanceof Range ? limiterRect : ancestorsIntersectionWindowRect } );
+			limiterRect, viewportRect: target instanceof Range ? limiterRect : properRectLimiter } );
 
 		// When `limiter` is not set and `getBestPosition` return null lets return the first `position`
 		// from the `positions` list. If the limiter is set - we will take the last `position` (hide).
