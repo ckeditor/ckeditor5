@@ -257,12 +257,10 @@ export default class BalloonPanelView extends View {
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
 
-		const hideTheBalloon = false; // shouldBalloonBeHidden( positionOptions );
-
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
-		const left = hideTheBalloon ? OFF_THE_SCREEN_POSITION : parseInt( optimalPosition.left as any );
-		const top = hideTheBalloon ? OFF_THE_SCREEN_POSITION : parseInt( optimalPosition.top as any );
+		const left = parseInt( optimalPosition.left as any );
+		const top = parseInt( optimalPosition.top as any );
 
 		const position = optimalPosition.name as this[ 'position' ];
 		const config: { withArrow?: boolean } = optimalPosition.config || {};

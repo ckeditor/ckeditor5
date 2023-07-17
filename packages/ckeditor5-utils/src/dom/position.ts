@@ -163,9 +163,11 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		// @if CK_DEBUG_POSITION // }
 
 		const properRectLimiter = isNaN( ancestorsIntersectionWindowRect.top ) ? limiterRect : ancestorsIntersectionWindowRect;
+		const limiterViewportIntersection = ( properRectLimiter && !isNaN( properRectLimiter.top ) ) ?
+			properRectLimiter.getIntersection( viewportRect! ) : properRectLimiter;
 
 		Object.assign( positionOptions, {
-			limiterRect, viewportRect: target instanceof Range ? limiterRect : properRectLimiter } );
+			limiterRect, viewportRect: target instanceof Range ? limiterRect : limiterViewportIntersection } );
 
 		// When `limiter` is not set and `getBestPosition` return null lets return the first `position`
 		// from the `positions` list. If the limiter is set - we will take the last `position` (hide).

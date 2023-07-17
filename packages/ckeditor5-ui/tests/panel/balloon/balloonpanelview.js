@@ -191,7 +191,8 @@ describe( 'BalloonPanelView', () => {
 					BalloonPanelView.defaultPositions.northArrowSouthMiddleEast,
 					BalloonPanelView.defaultPositions.northArrowSouthWest,
 					BalloonPanelView.defaultPositions.northArrowSouthEast,
-					BalloonPanelView.defaultPositions.viewportStickyNorth
+					BalloonPanelView.defaultPositions.viewportStickyNorth,
+					BalloonPanelView.defaultPositions.viewportHidden
 				],
 				limiter: document.body,
 				fitInViewport: true
@@ -452,7 +453,7 @@ describe( 'BalloonPanelView', () => {
 			it( 'should put balloon on the `south east` position when `north east` is limited', () => {
 				mockBoundingBox( limiter, {
 					left: 0,
-					top: -400,
+					top: -350,
 					width: 500,
 					height: 500
 				} );
@@ -479,8 +480,6 @@ describe( 'BalloonPanelView', () => {
 				parentWithOverflow.style.overflow = 'scroll';
 				parentWithOverflow.style.width = '100px';
 				parentWithOverflow.style.height = '100px';
-
-				// document.body.appendChild( parentWithOverflow );
 
 				limiter = document.createElement( 'div' );
 				target = document.createElement( 'div' );
@@ -573,15 +572,15 @@ describe( 'BalloonPanelView', () => {
 
 			it( 'should show the balloon when limiter is not defined', () => {
 				mockBoundingBox( target, {
-					top: 0,
-					left: 0,
+					top: 50,
+					left: 50,
 					width: 50,
 					height: 50
 				} );
 
 				view.attachTo( { target } );
 
-				expect( view.left ).to.equal( 0 );
+				expect( view.left ).to.equal( 25 );
 			} );
 		} );
 
@@ -674,15 +673,15 @@ describe( 'BalloonPanelView', () => {
 
 			it( 'should show the balloon when limiter is not defined', () => {
 				mockBoundingBox( target, {
-					top: 0,
-					left: 0,
+					top: 50,
+					left: 50,
 					width: 50,
 					height: 50
 				} );
 
 				view.attachTo( { target } );
 
-				expect( view.left ).to.equal( 0 );
+				expect( view.left ).to.equal( 25 );
 			} );
 		} );
 
@@ -693,19 +692,11 @@ describe( 'BalloonPanelView', () => {
 			beforeEach( () => {
 				limiter = document.createElement( 'div' );
 				limiter.style.overflow = 'scroll';
-				limiter.style.width = '100px';
-				limiter.style.height = '100px';
-				limiter.style.marginTop = '50px';
-				limiter.style.marginLeft = '50px';
 
 				parentWithOverflow = document.createElement( 'div' );
 				parentWithOverflow.style.overflow = 'scroll';
-				parentWithOverflow.style.width = '200px';
-				parentWithOverflow.style.height = '200px';
 
 				limiterParent = document.createElement( 'div' );
-				limiterParent.style.width = '400px';
-				limiterParent.style.height = '400px';
 
 				target = document.createElement( 'div' );
 
@@ -733,10 +724,6 @@ describe( 'BalloonPanelView', () => {
 					height: 100
 				} );
 
-				target.style.width = '200px';
-				target.style.height = '200px';
-				target.style.margin = '20px';
-
 				limiter.appendChild( target );
 				limiterParent.appendChild( limiter );
 				parentWithOverflow.appendChild( limiterParent );
@@ -751,21 +738,7 @@ describe( 'BalloonPanelView', () => {
 
 			it( 'should not show the balloon if the target is not visible ( target higher than scrollable ancestor )', () => {
 				mockBoundingBox( target, {
-					top: -20,
-					left: 0,
-					width: 200,
-					height: 121
-				} );
-
-				view.attachTo( { target, limiter } );
-
-				expect( view.top ).to.equal( OFF_THE_SCREEN_POSITION );
-				expect( view.left ).to.equal( OFF_THE_SCREEN_POSITION );
-			} );
-
-			it( 'should not show the balloon if the target is not visible ( target wider than scrollable ancestor )', () => {
-				mockBoundingBox( target, {
-					top: 20,
+					top: -250,
 					left: 0,
 					width: 200,
 					height: 200
@@ -1066,7 +1039,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should have a proper length', () => {
-			expect( Object.keys( positions ) ).to.have.length( 33 );
+			expect( Object.keys( positions ) ).to.have.length( 34 );
 		} );
 
 		// ------- North
