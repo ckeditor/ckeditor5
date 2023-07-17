@@ -7,7 +7,8 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { stubGeometry, assertScrollPosition } from '../_utils/scroll';
-import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll';
+import { scrollViewportToShowTarget, scrollAncestorsToShowTarget, scrollAncestorsToShowRect } from '../../src/dom/scroll';
+import { Rect } from '../../src';
 
 describe( 'scrollAncestorsToShowTarget()', () => {
 	let target, element, firstAncestor, secondAncestor;
@@ -213,6 +214,70 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 	}
 
 	/* eslint-enable mocha/no-identical-title */
+} );
+
+describe( 'scrollAncestorsToShowRect', () => {
+	let target, element, firstAncestor, secondAncestor;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		element = document.createElement( 'p' );
+		firstAncestor = document.createElement( 'blockquote' );
+		secondAncestor = document.createElement( 'div' );
+		target = element;
+
+		document.body.appendChild( secondAncestor );
+		secondAncestor.appendChild( firstAncestor );
+		firstAncestor.appendChild( element );
+
+		// Make the element immune to the border-width-* styles in the test environment.
+		testUtils.sinon.stub( window, 'getComputedStyle' ).returns( {
+			borderTopWidth: '0px',
+			borderRightWidth: '0px',
+			borderBottomWidth: '0px',
+			borderLeftWidth: '0px',
+			direction: 'ltr'
+		} );
+
+		stubGeometry( testUtils, firstAncestor, {
+			top: 0, right: 100, bottom: 100, left: 0, width: 100, height: 100
+		}, {
+			scrollLeft: 100, scrollTop: 100
+		} );
+
+		stubGeometry( testUtils, secondAncestor, {
+			top: -100, right: 0, bottom: 0, left: -100, width: 100, height: 100
+		}, {
+			scrollLeft: 100, scrollTop: 100
+		} );
+
+		stubGeometry( testUtils, document.body, {
+			top: 1000, right: 2000, bottom: 1000, left: 1000, width: 1000, height: 1000
+		}, {
+			scrollLeft: 1000, scrollTop: 1000
+		} );
+	} );
+
+	afterEach( () => {
+		secondAncestor.remove();
+	} );
+
+	it( 'should not change the scroll of the ancestors of the given limiter', () => {
+		stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
+
+		scrollAncestorsToShowRect( {
+			parent: firstAncestor,
+			getRect: () => new Rect( target ),
+			limiterElement: firstAncestor
+		} );
+		assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+		// Note: Because everything is a mock, scrolling the firstAncestor doesn't really change
+		// the getBoundingClientRect geometry of the target. That's why scrolling secondAncestor
+		// works like the target remained in the original position and hence scrollLeft is 300 instead
+		// of 200.
+		assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
+	} );
 } );
 
 describe( 'scrollViewportToShowTarget()', () => {
