@@ -25,7 +25,8 @@ module.exports = async function updateVersionReferences( { version, releaseDate 
 			file: 'README.md',
 			pattern: /(?<=cdn\.ckeditor\.com\/ckeditor5\/)\d+\.\d+\.\d+(?=\/)/,
 			value: version,
-			skip: version.startsWith( '0.0.0-nightly' )
+			// Update CDN URL only when releasing a stable release.
+			skip: !version.match( /^\d+.\d+.\d+$/ )
 		},
 		{
 			file: upath.join( 'packages', 'ckeditor5-utils', 'src', 'version.ts' ),
