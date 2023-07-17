@@ -217,15 +217,13 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 } );
 
 describe( 'scrollAncestorsToShowRect', () => {
-	let target, element, firstAncestor, secondAncestor;
+	it( 'should not change the scroll of the ancestors of the given limiter', () => {
+		testUtils.createSinonSandbox();
 
-	testUtils.createSinonSandbox();
-
-	beforeEach( () => {
-		element = document.createElement( 'p' );
-		firstAncestor = document.createElement( 'blockquote' );
-		secondAncestor = document.createElement( 'div' );
-		target = element;
+		const element = document.createElement( 'p' );
+		const firstAncestor = document.createElement( 'blockquote' );
+		const secondAncestor = document.createElement( 'div' );
+		const target = element;
 
 		document.body.appendChild( secondAncestor );
 		secondAncestor.appendChild( firstAncestor );
@@ -257,13 +255,7 @@ describe( 'scrollAncestorsToShowRect', () => {
 		}, {
 			scrollLeft: 1000, scrollTop: 1000
 		} );
-	} );
 
-	afterEach( () => {
-		secondAncestor.remove();
-	} );
-
-	it( 'should not change the scroll of the ancestors of the given limiter', () => {
 		stubGeometry( testUtils, target, { top: 0, right: 200, bottom: 100, left: 100, width: 100, height: 100 } );
 
 		scrollAncestorsToShowRect( {
@@ -271,12 +263,11 @@ describe( 'scrollAncestorsToShowRect', () => {
 			getRect: () => new Rect( target ),
 			limiterElement: firstAncestor
 		} );
+
 		assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
-		// Note: Because everything is a mock, scrolling the firstAncestor doesn't really change
-		// the getBoundingClientRect geometry of the target. That's why scrolling secondAncestor
-		// works like the target remained in the original position and hence scrollLeft is 300 instead
-		// of 200.
 		assertScrollPosition( secondAncestor, { scrollTop: 100, scrollLeft: 100 } );
+
+		secondAncestor.remove();
 	} );
 } );
 
