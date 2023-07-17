@@ -489,6 +489,28 @@ describe( 'PoweredBy', () => {
 			parentWithOverflow.style.overflow = 'scroll';
 			// Is not enough height to be visible vertically.
 			parentWithOverflow.style.height = '99px';
+			// Enough width to be visible horizontally.
+			parentWithOverflow.style.width = '393px';
+
+			document.body.appendChild( parentWithOverflow );
+			parentWithOverflow.appendChild( domRoot );
+
+			focusEditor( editor );
+
+			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should not show the balloon if the root is not visible horizontally', async () => {
+			const domRoot = editor.editing.view.getDomRoot();
+			const parentWithOverflow = document.createElement( 'div' );
+			parentWithOverflow.style.overflow = 'scroll';
+			// Enough height to be visible vertically.
+			parentWithOverflow.style.height = '100px';
+			// Is not enough width to be visible horizontally.
+			parentWithOverflow.style.width = '392px';
 
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );
@@ -956,8 +978,8 @@ describe( 'PoweredBy', () => {
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
 				left: 0,
-				right: 1000,
-				width: 1000,
+				right: 999,
+				width: 999,
 				bottom: 49,
 				height: 49
 			} );
@@ -977,8 +999,8 @@ describe( 'PoweredBy', () => {
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
 				left: 0,
-				right: 1000,
-				width: 1000,
+				right: 999,
+				width: 999,
 				bottom: 50,
 				height: 50
 			} );
