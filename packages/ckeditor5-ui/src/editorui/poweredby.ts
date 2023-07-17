@@ -352,14 +352,21 @@ function getLowerCornerPosition(
 
 			if ( firstScrollableEditableElementAncestor ) {
 				const firstScrollableEditableElementAncestorRect = new Rect( firstScrollableEditableElementAncestor );
+				const notVisibleVertically = visibleEditableElementRect.bottom + balloonRect.height / 2 >
+				firstScrollableEditableElementAncestorRect.bottom;
+				const notVisibleHorizontally = visibleEditableElementRect.right >= firstScrollableEditableElementAncestorRect.right;
 
-				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
-				if ( visibleEditableElementRect.bottom + balloonRect.height / 2 > firstScrollableEditableElementAncestorRect.bottom ) {
+				// The watermark cannot be positioned in this corner because the corner is "not visible enough" vertically.
+				if ( notVisibleVertically ) {
+					return OFF_THE_SCREEN_POSITION;
+				}
+
+				// The watermark cannot be positioned in this corner because the corner is "not visible enough" horizontally.
+				if ( notVisibleHorizontally ) {
 					return OFF_THE_SCREEN_POSITION;
 				}
 			}
 		}
-
 		return {
 			top: balloonTop,
 			left: balloonLeft,
