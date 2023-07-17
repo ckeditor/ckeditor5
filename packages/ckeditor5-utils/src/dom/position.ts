@@ -163,7 +163,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		// @if CK_DEBUG_POSITION // }
 
 		const properRectLimiter = isNaN( ancestorsIntersectionWindowRect.top ) ? limiterRect : ancestorsIntersectionWindowRect;
-		const limiterViewportIntersection = ( properRectLimiter && !isNaN( properRectLimiter.top ) ) ?
+		const limiterViewportIntersection = ( properRectLimiter && !isNaN( properRectLimiter.top ) && viewportRect ) ?
 			properRectLimiter.getIntersection( viewportRect! ) : properRectLimiter;
 
 		Object.assign( positionOptions, {
