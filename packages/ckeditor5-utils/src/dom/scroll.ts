@@ -292,26 +292,30 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
  * @param options.forceScroll When set `true`, the `rect` will be aligned to the top of scrollable ancestors
  * whether it is already visible or not. This option will only work when `alignToTop` is `true`
  */
-function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
+export function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 	{
 		parent,
 		getRect,
 		alignToTop,
 		forceScroll,
-		ancestorOffset = 0
+		ancestorOffset = 0,
+		limiterElement
 	}: {
 		readonly parent: HTMLElement;
 		readonly getRect: () => Rect;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 		readonly ancestorOffset?: number;
+		readonly limiterElement?: HTMLElement;
 	}
 ): void {
 	const parentWindow = getWindow( parent );
 	const forceScrollToTop = alignToTop && forceScroll;
 	let parentRect: Rect, targetRect: Rect, targetFitsInTarget: boolean;
 
-	while ( parent != parentWindow.document.body ) {
+	const limiter = limiterElement || parentWindow.document.body;
+
+	while ( parent != limiter ) {
 		targetRect = getRect();
 		parentRect = new Rect( parent ).excludeScrollbarsAndBorders();
 		targetFitsInTarget = parentRect.contains( targetRect );
