@@ -144,11 +144,6 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	} else {
 		const limiterRect = limiter && new Rect( limiter ).getVisible();
 
-		// selected text to convert it into Link
-		// if ( target instanceof Range ) {
-		// 	return new PositionObject( positions.at( 0 )!, positionOptions );
-		// }
-
 		// @if CK_DEBUG_POSITION // if ( viewportRect ) {
 		// @if CK_DEBUG_POSITION //		RectDrawer.draw( viewportRect, { outlineWidth: '5px' }, 'Viewport' );
 		// @if CK_DEBUG_POSITION // }
