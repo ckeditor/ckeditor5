@@ -21,8 +21,10 @@ export function setTableAlignment( documentFragment: ViewDocumentFragment ): voi
 			continue;
 		}
 
-		// If table is not wrapped in div[align] it should be alligned left.
-		// More details:(https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1623507171).
+		// If table is not wrapped into div[align], it should be aligned left.
+		// More details: https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1623507171.
+		// RTL tables have the `align` attribute set explicitly -
+		// see https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1628876074.
 		if ( item.is( 'element', 'table' ) ) {
 			upcastWriter.setAttribute( 'align', 'left', item );
 			continue;
@@ -31,13 +33,13 @@ export function setTableAlignment( documentFragment: ViewDocumentFragment ): voi
 		const align = item.getAttribute( 'align' );
 		const child = item.getChild( 0 );
 
-		// Element should have alignment attribute and should have child and should be div.
-		if ( !align || !child || item.name !== 'div' ) {
+		// We're looking for the `<div>` elements with `align` attribute and a child.
+		if ( item.name !== 'div' || !align || !child ) {
 			continue;
 		}
 
-		// If table is wrapped in div[align] table should be alligned with defined alignment value.
-		// More details:(https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1629065676)
+		// If table is wrapped in div[align], the defined alignment value should be preserved.
+		// More details: https://github.com/ckeditor/ckeditor5/issues/8752#issuecomment-1629065676.
 		if ( child.is( 'element', 'table' ) ) {
 			upcastWriter.setAttribute( 'align', align === 'center' ? 'none' : align, child );
 		}
