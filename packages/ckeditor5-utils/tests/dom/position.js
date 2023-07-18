@@ -134,7 +134,9 @@ describe( 'getOptimalPosition()', () => {
 	} );
 
 	afterEach( () => {
-		element.remove();
+		if ( element ) {
+			element.remove();
+		}
 
 		if ( target ) {
 			target.remove();
@@ -182,6 +184,24 @@ describe( 'getOptimalPosition()', () => {
 		}, {
 			top: 100,
 			left: 80,
+			name: 'left-bottom'
+		} );
+	} );
+
+	it( 'should work when the target is a Range', () => {
+		setElementTargetPlayground();
+
+		const range = document.createRange();
+
+		range.selectNode( document.body );
+
+		assertPosition( {
+			element,
+			target: range,
+			positions: [ attachLeftBottom ]
+		}, {
+			top: 8,
+			left: -12,
 			name: 'left-bottom'
 		} );
 	} );
@@ -707,6 +727,287 @@ describe( 'getOptimalPosition()', () => {
 			limiter.remove();
 			target.remove();
 			element.remove();
+		} );
+	} );
+
+	describe( 'with scrollable ancestors', () => {
+		let parentWithOverflow, limiter, target, element;
+
+		beforeEach( () => {
+			limiter = getElement( {
+				top: -100,
+				right: 100,
+				bottom: 100,
+				left: -100,
+				width: 200,
+				height: 200
+			} );
+
+			target = getElement( {
+				top: 0,
+				right: 50,
+				bottom: 50,
+				left: 0,
+				width: 50,
+				height: 50
+			} );
+
+			element = getElement( {
+				top: 0,
+				right: 200,
+				bottom: 200,
+				left: 0,
+				width: 200,
+				height: 200
+			} );
+
+			parentWithOverflow = getElement( {
+				top: 0,
+				left: 0,
+				right: 100,
+				bottom: 100,
+				width: 100,
+				height: 100
+			} );
+			parentWithOverflow.style.overflow = 'scroll';
+		} );
+
+		it( 'should return proper calculated position when first ancestor\'s Rect has undefined values', () => {
+			limiter.appendChild( target );
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			document.body.appendChild( parentWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, 'right-bottom' );
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should return last position when second ancestor\'s Rect has undefined values', () => {
+			parentWithOverflow = document.createElement( 'div' );
+			parentWithOverflow.style.overflow = 'scroll';
+			parentWithOverflow.style.width = '100px';
+			parentWithOverflow.style.height = '100px';
+
+			testUtils.sinon.stub( parentWithOverflow, 'getBoundingClientRect' ).returns( {
+				top: undefined,
+				left: undefined,
+				right: undefined,
+				bottom: undefined,
+				width: undefined,
+				height: undefined
+			} );
+
+			const parentAncestorWithOverflow = document.createElement( 'div' );
+			parentAncestorWithOverflow.style.overflow = 'scroll';
+			parentAncestorWithOverflow.style.width = '50px';
+			parentAncestorWithOverflow.style.height = '50px';
+
+			testUtils.sinon.stub( parentAncestorWithOverflow, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 50,
+				bottom: 50,
+				width: 50,
+				height: 50
+			} );
+
+			limiter.appendChild( target );
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			parentAncestorWithOverflow.appendChild( parentWithOverflow );
+			document.body.appendChild( parentAncestorWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, undefined ); // last position from positions
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should return proper calculated position when ancestor\'s Rects has values', () => {
+			parentWithOverflow = document.createElement( 'div' );
+			parentWithOverflow.style.overflow = 'scroll';
+			parentWithOverflow.style.width = '100px';
+			parentWithOverflow.style.height = '100px';
+
+			testUtils.sinon.stub( parentWithOverflow, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 100,
+				bottom: 100,
+				width: 100,
+				height: 100
+			} );
+
+			const parentAncestorWithOverflow = document.createElement( 'div' );
+			parentAncestorWithOverflow.style.overflow = 'scroll';
+			parentAncestorWithOverflow.style.width = '50px';
+			parentAncestorWithOverflow.style.height = '50px';
+
+			testUtils.sinon.stub( parentAncestorWithOverflow, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 50,
+				bottom: 50,
+				width: 50,
+				height: 50
+			} );
+
+			limiter.appendChild( target );
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			parentAncestorWithOverflow.appendChild( parentWithOverflow );
+			document.body.appendChild( parentAncestorWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, undefined ); // last position from positions
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should return last position from positions when target is not visible', () => {
+			target = getElement( {
+				top: -200,
+				right: -100,
+				bottom: -100,
+				left: -200,
+				width: 100,
+				height: 100
+			} );
+
+			limiter.appendChild( target );
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			document.body.appendChild( parentWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, undefined );
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should return last position from positions when all ancestors intersection is null', () => {
+			target = getElement( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			parentWithOverflow = document.createElement( 'div' );
+			parentWithOverflow.style.overflow = 'scroll';
+			parentWithOverflow.style.width = '100px';
+			parentWithOverflow.style.height = '100px';
+
+			testUtils.sinon.stub( parentWithOverflow, 'getBoundingClientRect' ).returns( {
+				top: undefined,
+				left: undefined,
+				right: undefined,
+				bottom: undefined,
+				width: undefined,
+				height: undefined
+			} );
+
+			limiter.appendChild( target );
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			document.body.appendChild( parentWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, undefined );
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should return last position from positions when area of ancestors intersection with window is equal 0', () => {
+			target = getElement( {
+				top: -10,
+				right: 100,
+				bottom: 100,
+				left: -10,
+				width: 110,
+				height: 110
+			} );
+
+			parentWithOverflow = document.createElement( 'div' );
+			parentWithOverflow.style.overflow = 'scroll';
+			parentWithOverflow.style.width = '100px';
+			parentWithOverflow.style.height = '100px';
+
+			testUtils.sinon.stub( parentWithOverflow, 'getBoundingClientRect' ).returns( {
+				top: -100,
+				left: -100,
+				right: 0,
+				bottom: 0,
+				width: 100,
+				height: 100
+			} );
+
+			limiter.appendChild( target );
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			document.body.appendChild( parentWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, undefined );
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should return proper calculated position when `target` is a Range', () => {
+			limiter = getElement( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			target = document.createRange();
+			target.selectNode( document.body );
+
+			element = getElement( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			document.body.appendChild( parentWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, 'left-bottom' );
+
+			parentWithOverflow.remove();
 		} );
 	} );
 } );

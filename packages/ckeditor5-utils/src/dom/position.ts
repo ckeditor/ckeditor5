@@ -124,14 +124,13 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
 
 	if ( ( !ancestorsIntersection ) || ( !targetRect.getVisible() ) ) {
-		// last is `viewportHidden` function.
+		// Default last position is `viewportHidden`.
 		return new PositionObject( positions.at( -1 )!, positionOptions );
 	}
-
 	const ancestorsIntersectionWindowRect = new Rect( window ).getIntersection( ancestorsIntersection! );
 
-	if ( !ancestorsIntersectionWindowRect ) {
-		// last is `viewportHidden` function.
+	if ( !ancestorsIntersectionWindowRect || ancestorsIntersectionWindowRect.getArea() === 0 ) {
+		// Default last position is `viewportHidden`.
 		return new PositionObject( positions.at( -1 )!, positionOptions );
 	}
 	// // @if CK_DEBUG_POSITION // else {

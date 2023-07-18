@@ -831,7 +831,7 @@ export default class BalloonPanelView extends View {
 	 * * `viewportHidden`
 	 *
 	 * ```
-	 *  +- - - - - - - - -+
+	 *  +- - - - - - - - -+ ( Balloon is placed out of the screen )
 	 *  |     Balloon     |
 	 *  +- - - - - - - - -+
 	 *
