@@ -16,6 +16,7 @@
 const semver = require( 'semver' );
 const { globSync } = require( 'glob' );
 const fs = require( 'fs-extra' );
+const upath = require( 'upath' );
 
 const shouldFix = process.argv[ 2 ] === '--fix';
 const [ packageJsons, pathMappings ] = getPackageJsons( [
@@ -122,7 +123,7 @@ function getNewestVersion( versionA, versionB ) {
  * @return {[Array.<Object>, Object.<String, String>]}
  */
 function getPackageJsons( directories ) {
-	const packageJsonPaths = globSync( directories, { absolute: true } );
+	const packageJsonPaths = globSync( directories, { absolute: true, cwd: upath.join( __dirname, '..', '..' ) } );
 	const packageJsons = packageJsonPaths.map( packageJsonPath => require( packageJsonPath ) );
 	const nameToPathMappings = packageJsonPaths
 		.reduce( ( accum, packageJsonPath ) => ( { ...accum, [ require( packageJsonPath ).name ]: packageJsonPath } ), {} );
