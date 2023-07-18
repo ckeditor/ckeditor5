@@ -151,14 +151,17 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
  * @param target A target, which supposed to become visible to the user.
  * @param ancestorOffset An offset between the target and the boundary of scrollable ancestors
  * to be maintained while scrolling.
+ * @param limiterElement The outermost ancestor that should be scrolled. If specified, it can prevent
+ * scrolling the whole page.
  */
-export function scrollAncestorsToShowTarget( target: HTMLElement | Range, ancestorOffset?: number ): void {
+export function scrollAncestorsToShowTarget( target: HTMLElement | Range, ancestorOffset?: number, limiterElement?: HTMLElement ): void {
 	const targetParent = getParentElement( target );
 
 	scrollAncestorsToShowRect( {
 		parent: targetParent,
 		getRect: () => new Rect( target ),
-		ancestorOffset
+		ancestorOffset,
+		limiterElement
 	} );
 }
 
@@ -291,8 +294,9 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
  * anyway.
  * @param options.forceScroll When set `true`, the `rect` will be aligned to the top of scrollable ancestors
  * whether it is already visible or not. This option will only work when `alignToTop` is `true`
+ * @param options.limiterElement The outermost ancestor that should be scrolled. Defaults to the `<body>` element.
  */
-export function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
+function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 	{
 		parent,
 		getRect,
