@@ -105,16 +105,16 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	const ancestorsIntersection: Rect | null = allScrollableAncestors
 		.reverse()
 		.map( item => new Rect( item as HTMLElement ) )
-		.reduce( ( accumulator, currentValue ): Rect => {
-			if ( !accumulator || accumulator.top === undefined ) {
-				return currentValue;
+		.reduce( ( ancestorIntersectionAccumulator, ancestorRect ): Rect => {
+			if ( !ancestorIntersectionAccumulator || ancestorIntersectionAccumulator.top === undefined ) {
+				return ancestorRect;
 			}
 
-			if ( !currentValue || currentValue.top === undefined ) {
-				return accumulator;
+			if ( !ancestorRect || ancestorRect.top === undefined ) {
+				return ancestorIntersectionAccumulator;
 			}
 
-			return accumulator.getIntersection( currentValue ) as Rect;
+			return ancestorIntersectionAccumulator.getIntersection( ancestorRect ) as Rect;
 		} );
 
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
@@ -123,12 +123,8 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig ) || null;
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
 
-	if ( !ancestorsIntersection ) {
+	if ( ( !ancestorsIntersection ) || ( !targetRect.getVisible() ) ) {
 		// last is `viewportHidden` function.
-		return new PositionObject( positions.at( -1 )!, positionOptions );
-	}
-
-	if ( !targetRect.getVisible() ) {
 		return new PositionObject( positions.at( -1 )!, positionOptions );
 	}
 

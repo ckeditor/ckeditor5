@@ -135,7 +135,10 @@ describe( 'getOptimalPosition()', () => {
 
 	afterEach( () => {
 		element.remove();
-		target.remove();
+
+		if ( target ) {
+			target.remove();
+		}
 
 		if ( limiter ) {
 			limiter.remove();
@@ -401,8 +404,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				left: -20,
+				name: 'left-bottom'
 			} );
 
 			parentNode.remove();
@@ -451,8 +454,8 @@ describe( 'getOptimalPosition()', () => {
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				left: -20,
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -474,9 +477,9 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachLeftBottom, attachBottomRight, attachRightBottom ],
 				fitInViewport: true
 			}, {
-				top: 110,
-				left: 0,
-				name: 'bottom-right'
+				top: 100,
+				left: -20,
+				name: 'left-bottom'
 			} );
 		} );
 	} );
@@ -503,8 +506,8 @@ describe( 'getOptimalPosition()', () => {
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				left: -20,
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -550,7 +553,7 @@ describe( 'getOptimalPosition()', () => {
 			} );
 		} );
 
-		it( 'should return the very first coordinates if limiter does not fit into the viewport', () => {
+		it( 'should return the last coordinates if limiter does not fit into the viewport', () => {
 			const limiter = getElement( {
 				top: -100,
 				right: -80,
@@ -565,9 +568,9 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachRightBottom, attachTopLeft ],
 				fitInViewport: true
 			}, {
-				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				top: 80,
+				left: -10,
+				name: 'top-left'
 			} );
 
 			limiter.remove();
@@ -588,8 +591,8 @@ describe( 'getOptimalPosition()', () => {
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: 35,
-				name: 'right-bottom'
+				left: -5,
+				name: 'left-bottom'
 			} );
 
 			target.remove();
@@ -699,7 +702,7 @@ describe( 'getOptimalPosition()', () => {
 					attachRightBottom
 				],
 				fitInViewport: true
-			}, 'right-bottom' );
+			}, 'left-bottom' );
 
 			limiter.remove();
 			target.remove();
