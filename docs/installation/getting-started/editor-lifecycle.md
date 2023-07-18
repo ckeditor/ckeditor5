@@ -18,7 +18,7 @@ Each CKEditor 5 **type** provides a different **editor class** that handles the 
 
 ## Creating an editor with `create()`
 
-Regardless of the chosen type, creating an editor is done using the static `create()` method. Usually you start with an HTML element that will be a place where an editor will render itself on a page.
+Regardless of the chosen type, creating an editor is done using the static `create()` method. Usually, you start with an HTML element that will be a place where an editor will render itself on a page.
 
 ```html
 <div id="editor">
@@ -48,7 +48,7 @@ Every editor class may accept different parameters in the `create()` method and 
 
 After the editor's creation you might want to interact with the editor's API. There are two ways of doing this, you can either interact with the top-level API through the editor's instance or write a plugin that will
 
-### Accessing editor's instance
+### Accessing the editor's instance
 
 To use the top-level API, you need the access to the editor's instance. This is often done via the usage of a window or some state management object. In our docs you will see often lines like this:
 
@@ -59,7 +59,7 @@ To use the top-level API, you need the access to the editor's instance. This is 
 })
 ```
 
-The second option is a creation of a simple functional plugin that will be added to the plugins list. The first argument of such function will be editor's instance.
+The second option is a creation of a simple functional plugin that will be added to the plugins list. The first argument of such function will be editor's instance:
 
 ```js
 function myPlugin(editor) {
@@ -75,19 +75,14 @@ ClassicEditor.create(document.querySelector("#editor"), {
 });
 ```
 
-This method allows writing simple plugins. The ones that will be executed during the initialization of the editor, and don't interact with other plugins.
+This method allows writing simple plugins. The ones that will be executed during the initialization of the editor, and don't need to interact with other plugins.
 
 The last option is a creation of a plugin that inherits from the Plugin class which will make it more convenient and powerful.
 
 ```js
 class MyPlugin extends Plugin {
 	init() {
-		// `listenTo()` and `editor` are available thanks to `Plugin`.
-		// By using `listenTo()` you will ensure that the listener is removed when
-		// the plugin is destroyed.
-		this.listenTo(this.editor.data, "ready", () => {
-			// Do something when the data is ready.
-		});
+		const editor = this.editor;
 	}
 }
 ```
@@ -99,23 +94,23 @@ TODO add a closing sentance and links to to followups
 The API allows you to do multiple things with the editor and its content.
 
 ```js
-// Move selection to the end of the document.
 editor.model.change((writer) => {
+	// Move selection to the end of the document.
 	writer.setSelection(
 		writer.createPositionAt(editor.model.document.getRoot(), "end")
 	);
-});
 
-// Execute the enter command.
-editor.execute("enter");
+	// Execute the enter command.
+	editor.execute("enter");
 
-// Insert text.
-editor.model.change((writer) => {
-	editor.model.insertContent(writer.createText("The End!"));
+	// Insert text.
+	editor.model.change((writer) => {
+		editor.model.insertContent(writer.createText("The End!"));
+	});
 });
 ```
 
-In the example above you interact with the editor's model to set selection. You execute a command, and at the end you
+In the example above you interact with the editor's model to set selection. You execute a command, and at the end you insert text. This is a very trivial example of the capabilities, to learn more read the ... or check out how to's.
 
 TODO add more to examples to Examples and link to it.
 TODO link to model, etc. explanations, etc. New tutorial or framework?
