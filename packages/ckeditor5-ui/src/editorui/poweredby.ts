@@ -9,11 +9,12 @@
 
 import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 import {
-	Rect,
 	DomEmitterMixin,
-	findClosestScrollableAncestor,
+	getElementsIntersectionRect,
+	getScrollableAncestors,
 	verifyLicense,
 	type PositionOptions,
+	type Rect,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
 import BalloonPanelView from '../panel/balloon/balloonpanelview';
@@ -348,22 +349,19 @@ function getLowerCornerPosition(
 			}
 		}
 		else {
-			const firstScrollableEditableElementAncestor = findClosestScrollableAncestor( focusedEditableElement );
+			const scrollableAncestors = getScrollableAncestors( focusedEditableElement );
+			const ancestorsIntersectionRect = getElementsIntersectionRect( scrollableAncestors )!;
+			const notVisibleVertically = visibleEditableElementRect.bottom + balloonRect.height / 2 > ancestorsIntersectionRect.bottom;
+			const notVisibleHorizontally = config.side === 'left' ?
+				editableElementRect.left < ancestorsIntersectionRect.left :
+				editableElementRect.right > ancestorsIntersectionRect.right;
 
-			if ( firstScrollableEditableElementAncestor ) {
-				const firstScrollableEditableElementAncestorRect = new Rect( firstScrollableEditableElementAncestor );
-				const notVisibleVertically = visibleEditableElementRect.bottom + balloonRect.height / 2 >
-				firstScrollableEditableElementAncestorRect.bottom;
-				const notVisibleHorizontally = config.side === 'left' ?
-					editableElementRect.left < firstScrollableEditableElementAncestorRect.left :
-					editableElementRect.right > firstScrollableEditableElementAncestorRect.right;
-
-				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
-				if ( notVisibleVertically || notVisibleHorizontally ) {
-					return OFF_THE_SCREEN_POSITION;
-				}
+			// The watermark cannot be positioned in this corner because the corner is "not visible enough".
+			if ( notVisibleVertically || notVisibleHorizontally ) {
+				return OFF_THE_SCREEN_POSITION;
 			}
 		}
+
 		return {
 			top: balloonTop,
 			left: balloonLeft,
