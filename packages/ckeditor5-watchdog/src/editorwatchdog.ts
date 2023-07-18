@@ -23,6 +23,15 @@ import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-e
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
 
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import type { CommentsRepository } from '@ckeditor/ckeditor5-comments';
+
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import type { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
+
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports,ckeditor5-rules/allow-imports-only-from-main-package-entry-point
+import type { CommentThreadDataJSON } from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository';
+
 /**
  * A watchdog for CKEditor 5 editors.
  *
@@ -45,6 +54,11 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * The latest saved editor data represented as a root name -> root data object.
 	 */
 	private _data?: EditorData;
+
+	/**
+	 * The latest saved editor collaboration data (comment threads and suggestions).
+	 */
+	private _collaborationData?: CollaborationData;
 
 	/**
 	 * The last document version.
@@ -173,7 +187,10 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				const updatedConfig = {
 					...this._config,
 					extraPlugins: this._config!.extraPlugins || [],
-					_watchdogInitialData: this._data
+					_watchdogInitialData: {
+						...this._data!,
+						...this._collaborationData!
+					}
 				};
 
 				updatedConfig.extraPlugins!.push( EditorWatchdogInitPlugin as any );
@@ -222,8 +239,9 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 				editor.model.document.on( 'change:data', this._throttledSave );
 
-				this._lastDocumentVersion = editor.model.document.version;
 				this._data = this._getData();
+				this._collaborationData = this._getCollaborationData();
+				this._lastDocumentVersion = editor.model.document.version;
 
 				this.state = 'ready';
 				this._fire( 'stateChange' );
@@ -277,6 +295,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 		try {
 			this._data = this._getData();
+			this._collaborationData = this._getCollaborationData();
 			this._lastDocumentVersion = version;
 		} catch ( err ) {
 			console.error(
@@ -315,6 +334,10 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		} );
 
 		for ( const marker of editor.model.markers ) {
+			if ( !marker._affectsData ) {
+				continue;
+			}
+
 			data.markers[ marker.name ] = {
 				rangeJSON: marker.getRange().toJSON() as any,
 				usingOperation: marker._managedUsingOperations,
@@ -323,6 +346,19 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		}
 
 		return data;
+	}
+
+	/**
+	 * Gets the collaboration data - comment threads and suggestions.
+	 */
+	private _getCollaborationData(): CollaborationData {
+		const commentsRepository = this._editor!.plugins.get( 'CommentsRepository' ) as CommentsRepository;
+		const trackChanges = this._editor!.plugins.get( 'TrackChanges' ) as TrackChanges;
+
+		return {
+			commentThreads: commentsRepository ? commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) : [],
+			suggestions: trackChanges ? trackChanges.getSuggestions( { toJSON: true, skipNotAttached: true } ) : []
+		};
 	}
 
 	/**
@@ -358,7 +394,8 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
  */
 class EditorWatchdogInitPlugin {
 	public editor: Editor;
-	private _data: EditorData;
+
+	private _data: EditorData & CollaborationData;
 
 	constructor( editor: Editor ) {
 		this.editor = editor;
@@ -377,6 +414,7 @@ class EditorWatchdogInitPlugin {
 			evt.stop();
 
 			this.editor.model.enqueueChange( { isUndoable: true }, writer => {
+				this._restoreCollaborationData();
 				this._restoreEditorData( writer );
 			} );
 
@@ -446,6 +484,24 @@ class EditorWatchdogInitPlugin {
 			} );
 		} );
 	}
+
+	/**
+	 * Restores the editor collaboration data - comment threads and suggestions.
+	 */
+	private _restoreCollaborationData() {
+		this._data.commentThreads.forEach( commentThread => {
+			const channelId = this.editor.config.get( 'collaboration.channelId' )!;
+			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as CommentsRepository;
+
+			commentsRepository.addCommentThread( { channelId, ...commentThread } );
+		} );
+
+		this._data.suggestions.forEach( suggestion => {
+			const trackChanges = this.editor!.plugins.get( 'TrackChanges' ) as TrackChanges;
+
+			trackChanges.addSuggestion( suggestion );
+		} );
+	}
 }
 
 export type EditorData = {
@@ -458,6 +514,11 @@ export type EditorData = {
 		usingOperation: boolean;
 		affectsData: boolean;
 	}>;
+};
+
+export type CollaborationData = {
+	commentThreads: Array<CommentThreadDataJSON>;
+	suggestions: Array<any>;
 };
 
 /**

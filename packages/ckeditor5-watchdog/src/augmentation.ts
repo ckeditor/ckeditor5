@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { EditorData } from './editorwatchdog';
+import type { CollaborationData, EditorData } from './editorwatchdog';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -13,6 +13,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		 *
 		 * @internal
 		 */
-		_watchdogInitialData?: EditorData | null;
+		_watchdogInitialData?: EditorData & CollaborationData;
 	}
 }
