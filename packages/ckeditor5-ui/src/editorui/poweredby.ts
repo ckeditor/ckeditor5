@@ -354,7 +354,7 @@ function getLowerCornerPosition(
 				const firstScrollableEditableElementAncestorRect = new Rect( firstScrollableEditableElementAncestor );
 				const notVisibleVertically = visibleEditableElementRect.bottom + balloonRect.height / 2 >
 				firstScrollableEditableElementAncestorRect.bottom;
-				const notVisibleHorizontally = visibleEditableElementRect.right >= firstScrollableEditableElementAncestorRect.right;
+				const notVisibleHorizontally = editableElementRect.right > firstScrollableEditableElementAncestorRect.right;
 
 				// The watermark cannot be positioned in this corner because the corner is "not visible enough" vertically.
 				if ( notVisibleVertically ) {
