@@ -47,9 +47,6 @@ const element = document.querySelector( '#app' );
 
 // Instantiate the editor using the `create` method
 const editor = await ClassicEditor.create( element );
-
-// Add the global `editor` variable (only needed for debugging)
-window.editor = editor;
 ```
 
 As you can see, the {@link module:core/editor/editor~Editor.create `create()`} method creates a new editor instance. It replaces the DOM element passed as a first argument with the editor UI and sets the initial state of the editor to the content of that DOM element.
@@ -58,13 +55,109 @@ However you might have noticed that the "Hello world!" text didn't apprear in th
 
 ## Configuration
 
-The editor by itself doesn't do much — it's just an empty shell. What provides almost all functionality to the editor are the plugins.
+The editor by itself doesn't do much — at this stage it's just an empty shell. What provides almost all functionality to the editor are the plugins. We'll give more into the in the next chapter, so for now let's just install two plugins that provide the bare minimum needed to type in the editor.
+
+```js
+// Add these two imports
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+// Update the call to the `create()` method
+const editor = await ClassicEditor.create( element, {
+  plugins: [
+    Essentials,
+    Paragraph
+  ]
+} );
+```
+
+As shown in the example above, the {@link module:core/editor/editor~Editor.create `create()`} method accepts configuration object as a second parameter. In this object, we can pass the `plugins` array with plugins we want to use.
+
+When the page refreshes, you should see the "Hello world!" text in the editor and be able to type in it.
+
+The `Essentials` plugin adds the `Undo` and `Redo` operations. Let's add them to the editor's toolbar.
+
+```js
+const editor = await ClassicEditor.create( element, {
+  plugins: [
+    Essentials,
+    Paragraph
+  ],
+
+  // Add the toolbar configuration
+  toolbar: {
+    items: [
+      'undo',
+      'redo'
+    ]
+  }
+} );
+```
+
+Refreshing the page again should add two buttons at the top of the editor. If you type anything into the editor and click the "back arrow" button, your changes should be removed. Clicking the "forward arrow" button should restore those changes.
 
 ## Editor methods
 
-Editors expose the following methods:
+Now that you can type inside the editor, let's test other editor methods besides `create()`. Add the following to the bottom of the `src/main.js` file. It'll allow us to access the editor instance globally for testing purposes.
 
-* `create()`,
-* `destroy()`,
-* `execute()`,
-* `setData()` and `getData()`.
+```js
+// Add the global `editor` variable (only needed for debugging)
+window.editor = editor;
+```
+
+Four common methods we'll be testing are:
+
+* {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`}
+* {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`}
+* {@link module:core/editor/editor~Editor#execute `execute()`}
+* {@link module:core/editor/editor~Editor#destroy `destroy()`}
+
+### `getData()` and `setData()`
+
+Open the page in the browser and open the console. Inside the console run the following code:
+
+```js
+editor.getData();
+```
+
+It should print the `<p>Hello world!</p>` text which is the current content of the editor. Notice the opening and closing `<p>` tags. The {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} returns the resulting HTML content of the editor, not the content you see in the editing UI.
+
+You can also use the {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`} method to change the content of the editor programmatically.
+
+```js
+editor.setData('<p>Modified from the console!</p>');
+```
+
+Running the above command should update the state of the editor. Notice the opening and closing `<p>` tags — this method expects a HTML string as an argument.
+
+### `execute()`
+
+In the previous step of tutorial we used the "Undo" and "Redo" buttons to revert and restore our changes. Let's do the same from the console.
+
+Before we can do that, type something in the editor. Then run the following code in the console:
+
+```js
+editor.execute('undo');
+```
+
+The editor should execute the `undo` command update to the state before your changes. Now run the `redo`` command to restore those changes:
+
+```js
+editor.execute('redo');
+```
+
+### `destroy()`
+
+Last but not least is the `destroy()` method. It removed the editor and cleans up after it, including removing it from the DOM, removing all event listeners, etc.
+
+Run the following command in the console:
+
+```js
+editor.destroy();
+```
+
+Editor and it's content should disappear. Note that **this method returns a promise, so you must await it** if want to execute some more logic after the editor is destroyed.
+
+## What's next
+
+In the next chapter you'll {@link tutorial/plugins learn more about plugins} and we'll start creating a new one from scratch.
