@@ -49,7 +49,7 @@ module.exports = function triggerCkeditor5ContinuousIntegration( repository, las
 		},
 		body: JSON.stringify( {
 			branch: 'master',
-			properties: {
+			parameters: {
 				triggerRepositorySlug: repository,
 				triggerCommitHash: lastCommit
 			}
