@@ -19,3 +19,7 @@ We plan to provide more official integrations with time. [Your feedback on what 
 We have prepared a build containing almost all available plugins, and it is called the superbuild. Read how to integrate it in the {@link installation/getting-started/quick-start#running-a-full-featured-editor-from-cdn quick start guide}.
 
 In the {@link installation/getting-started/predefined-builds predefined builds} guide, there are details available about the {@link installation/getting-started/predefined-builds#superbuild superbuild}, together with the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds list of features included in the superbuild}, compared to other types of builds.
+
+### How to turn the source mode on?
+
+The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.

@@ -1,12 +1,42 @@
 ---
 category: examples-framework
-order: 140
+order: 100
 modified_at: 2023-07-17
 ---
 
-# API usage
+# How to's
 
-The editor presented below offers a custom plugin that lets you add predefined placeholders, such as a date or a surname, to the document. The placeholders are inserted as inline widgets.
+## Editor's instances
+
+### How to get the editor instance in the plugin?
+
+TODO
+
+### How to get the editor instance object from the DOM element?
+
+If you have a reference to the editor editable's DOM element (the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
+
+```html
+<!-- The editable element in the editor's DOM structure. -->
+<div class="... ck-editor__editable ..." contenteditable="true">
+	<!-- Editable content. -->
+</div>
+```
+
+```js
+// A reference to the editor editable element in the DOM.
+const domEditableElement = document.querySelector(".ck-editor__editable");
+
+// Get the editor instance from the editable element.
+const editorInstance = domEditableElement.ckeditorInstance;
+
+// Use the editor instance API.
+editorInstance.setData("<p>Hello world!<p>");
+```
+
+### How to list all instances of the editor?
+
+By default, CKEditor 5 has no global registry of editor instances. But if necessary, such a feature can be easily implemented, as explained in this [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
 
 ## Editor element
 
@@ -68,7 +98,15 @@ editorInstance.editing.view.change((writer) => {
 });
 ```
 
-## Editor's content
+### How to check the CKEditor version?
+
+To check your editor version, open the JavaScript console available in the browser's developer tools. This is usually done through the browser's menu or by right-clicking anywhere on the page and choosing the `Inpect` option from the dropdown.
+
+Enter the `CKEDITOR_VERSION` command to check the currently used CKEditor 5 version.
+
+{@img assets/img/version.png 468 CKEditor 5 version displayed in the developer console.}
+
+## Editor's features
 
 ### Why does the editor filter out my content (styles, classes, elements)?
 
@@ -78,9 +116,7 @@ Each kind of content must be handled by some feature. For example, the [`ckedito
 
 If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them. Once you do that, CKEditor 5 will not filter anything out.
 
-## Editor's features
-
-### The build I downloaded is missing some features. How do I add them?
+### How to add more features to the build I downloaded?
 
 See the {@link installation/plugins/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
 
@@ -90,41 +126,13 @@ You can learn which editor features are available in which build in the {@link i
 
 The {@link features/images-overview image} and {@link features/image-upload image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5, you need to configure one of the available upload adapters. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best image upload strategy for your project.
 
-## Editor instances
-
-### How to get the editor instance object from the DOM element?
-
-If you have a reference to the editor editable's DOM element (the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
-
-```html
-<!-- The editable element in the editor's DOM structure. -->
-<div class="... ck-editor__editable ..." contenteditable="true">
-	<!-- Editable content. -->
-</div>
-```
-
-```js
-// A reference to the editor editable element in the DOM.
-const domEditableElement = document.querySelector(".ck-editor__editable");
-
-// Get the editor instance from the editable element.
-const editorInstance = domEditableElement.ckeditorInstance;
-
-// Use the editor instance API.
-editorInstance.setData("<p>Hello world!<p>");
-```
-
-### How to list all instances of the editor?
-
-By default, CKEditor 5 has no global registry of editor instances. But if necessary, such a feature can be easily implemented, as explained in this [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
-
-## Insertion
+## Editor's API
 
 ### How to insert some content into the editor?
 
 Because CKEditor 5 uses a custom {@link framework/architecture/editing-engine data model}, whenever you want to insert anything, you should modify the model first, which is then converted back to the view where the users input their content (called "editable"). In CKEditor 5, HTML is just one of many possible output formats. You can learn more about the ways of changing the model in the {@link framework/architecture/editing-engine#changing-the-model dedicated guide}.
 
-To insert a new link at the current position, use the following snippet:
+For example, to insert a new link at the current position, use the following snippet:
 
 ```js
 editor.model.change((writer) => {
@@ -155,23 +163,23 @@ To insert some longer HTML code, you can parse it to the {@link module:engine/mo
 
 ```js
 const content =
-	'<p>A paragraph with <a href="https://ckeditor.com">some link</a>.';
+	'<p>A paragraph with <a href="https://ckeditor.com">some link</a>.</p>';
 const viewFragment = editor.data.processor.toView(content);
 const modelFragment = editor.data.toModel(viewFragment);
 
 editor.model.insertContent(modelFragment);
 ```
 
-## Misc
+TODO commands
 
-### How to check the CKEditor version?
+### How to focus the editor?
 
-To check your editor version, open the JavaScript console available in the browser's developer tools. This is usually done through the browser's menu or by right-clicking anywhere on the page and choosing the `Inpect` option from the dropdown.
+```js
+// Focus the editor.
+editor.focus();
 
-Enter the `CKEDITOR_VERSION` command to check the currently used CKEditor 5 version.
+// Focus the editing area of the editor.
+editor.editing.view.focus();
+```
 
-{@img assets/img/version.png 468 CKEditor 5 version displayed in the developer console.}
-
-### How to turn the source mode on?
-
-The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.
+###
