@@ -731,7 +731,7 @@ describe( 'getOptimalPosition()', () => {
 	} );
 
 	describe( 'with scrollable ancestors', () => {
-		let parentWithOverflow, limiter, target, element;
+		let parentWithOverflow, limiter, target, element, parentAncestorWithOverflow;
 
 		beforeEach( () => {
 			limiter = getElement( {
@@ -772,6 +772,28 @@ describe( 'getOptimalPosition()', () => {
 			parentWithOverflow.style.overflow = 'scroll';
 		} );
 
+		afterEach( () => {
+			if ( element ) {
+				element.remove();
+			}
+
+			if ( target ) {
+				target.remove();
+			}
+
+			if ( limiter ) {
+				limiter.remove();
+			}
+
+			if ( parentWithOverflow ) {
+				parentWithOverflow.remove();
+			}
+
+			if ( parentAncestorWithOverflow ) {
+				parentAncestorWithOverflow.remove();
+			}
+		} );
+
 		it( 'should return proper calculated position when first ancestor\'s Rect has undefined values', () => {
 			limiter.appendChild( target );
 			parentWithOverflow.appendChild( limiter );
@@ -788,7 +810,7 @@ describe( 'getOptimalPosition()', () => {
 		} );
 
 		it( 'should return last position when second ancestor\'s Rect has undefined values', () => {
-			parentWithOverflow = document.createElement( 'div' );
+			const parentWithOverflow = document.createElement( 'div' );
 			parentWithOverflow.style.overflow = 'scroll';
 			parentWithOverflow.style.width = '100px';
 			parentWithOverflow.style.height = '100px';
@@ -802,7 +824,7 @@ describe( 'getOptimalPosition()', () => {
 				height: undefined
 			} );
 
-			const parentAncestorWithOverflow = document.createElement( 'div' );
+			parentAncestorWithOverflow = document.createElement( 'div' );
 			parentAncestorWithOverflow.style.overflow = 'scroll';
 			parentAncestorWithOverflow.style.width = '50px';
 			parentAncestorWithOverflow.style.height = '50px';
@@ -832,7 +854,7 @@ describe( 'getOptimalPosition()', () => {
 		} );
 
 		it( 'should return proper calculated position when ancestor\'s Rects has values', () => {
-			parentWithOverflow = document.createElement( 'div' );
+			const parentWithOverflow = document.createElement( 'div' );
 			parentWithOverflow.style.overflow = 'scroll';
 			parentWithOverflow.style.width = '100px';
 			parentWithOverflow.style.height = '100px';
@@ -873,10 +895,11 @@ describe( 'getOptimalPosition()', () => {
 			}, undefined ); // last position from positions
 
 			parentWithOverflow.remove();
+			parentAncestorWithOverflow.remove();
 		} );
 
 		it( 'should return last position from positions when target is not visible', () => {
-			target = getElement( {
+			const target = getElement( {
 				top: -200,
 				right: -100,
 				bottom: -100,
@@ -896,11 +919,11 @@ describe( 'getOptimalPosition()', () => {
 				fitInViewport: true
 			}, undefined );
 
-			parentWithOverflow.remove();
+			target.remove();
 		} );
 
 		it( 'should return last position from positions when all ancestors intersection is null', () => {
-			target = getElement( {
+			const target = getElement( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -909,7 +932,7 @@ describe( 'getOptimalPosition()', () => {
 				height: 100
 			} );
 
-			parentWithOverflow = document.createElement( 'div' );
+			const parentWithOverflow = document.createElement( 'div' );
 			parentWithOverflow.style.overflow = 'scroll';
 			parentWithOverflow.style.width = '100px';
 			parentWithOverflow.style.height = '100px';
@@ -935,10 +958,11 @@ describe( 'getOptimalPosition()', () => {
 			}, undefined );
 
 			parentWithOverflow.remove();
+			target.remove();
 		} );
 
 		it( 'should return last position from positions when area of ancestors intersection with window is equal 0', () => {
-			target = getElement( {
+			const target = getElement( {
 				top: -10,
 				right: 100,
 				bottom: 100,
@@ -947,7 +971,7 @@ describe( 'getOptimalPosition()', () => {
 				height: 110
 			} );
 
-			parentWithOverflow = document.createElement( 'div' );
+			const parentWithOverflow = document.createElement( 'div' );
 			parentWithOverflow.style.overflow = 'scroll';
 			parentWithOverflow.style.width = '100px';
 			parentWithOverflow.style.height = '100px';
@@ -972,11 +996,12 @@ describe( 'getOptimalPosition()', () => {
 				fitInViewport: true
 			}, undefined );
 
+			target.remove();
 			parentWithOverflow.remove();
 		} );
 
 		it( 'should return proper calculated position when `target` is a Range', () => {
-			limiter = getElement( {
+			const limiter = getElement( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -985,10 +1010,10 @@ describe( 'getOptimalPosition()', () => {
 				height: 100
 			} );
 
-			target = document.createRange();
+			const target = document.createRange();
 			target.selectNode( document.body );
 
-			element = getElement( {
+			const element = getElement( {
 				top: 0,
 				right: 100,
 				bottom: 100,
@@ -1005,8 +1030,10 @@ describe( 'getOptimalPosition()', () => {
 				element, target, limiter,
 				positions: allPositions,
 				fitInViewport: true
-			}, 'left-bottom' );
+			}, 'bottom-right' );
 
+			limiter.remove();
+			element.remove();
 			parentWithOverflow.remove();
 		} );
 	} );
