@@ -490,7 +490,7 @@ describe( 'PoweredBy', () => {
 			// Is not enough height to be visible vertically.
 			parentWithOverflow.style.height = '99px';
 			// Enough width to be visible horizontally.
-			parentWithOverflow.style.width = '393px';
+			parentWithOverflow.style.width = '392px';
 
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );
@@ -510,7 +510,7 @@ describe( 'PoweredBy', () => {
 			// Enough height to be visible vertically.
 			parentWithOverflow.style.height = '100px';
 			// Is not enough width to be visible horizontally.
-			parentWithOverflow.style.width = '392px';
+			parentWithOverflow.style.width = '391px';
 
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );
@@ -978,8 +978,8 @@ describe( 'PoweredBy', () => {
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
 				left: 0,
-				right: 999,
-				width: 999,
+				right: 1000,
+				width: 1000,
 				bottom: 49,
 				height: 49
 			} );
@@ -999,8 +999,8 @@ describe( 'PoweredBy', () => {
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
 				left: 0,
-				right: 999,
-				width: 999,
+				right: 1000,
+				width: 1000,
 				bottom: 50,
 				height: 50
 			} );
