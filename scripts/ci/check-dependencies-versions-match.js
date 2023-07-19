@@ -124,7 +124,7 @@ function getExpectedDepsVersions( packageJsons ) {
  * @return {String}
  */
 function getNewestVersion( newVersion = '0.0.0', currentMaxVersion = '0.0.0', packageName ) {
-	if ( newVersion.includes( '^' ) ) {
+	if ( !semver.valid( newVersion ) ) {
 		const versions = getVersionsList( packageName );
 		const newMaxVersion = semver.maxSatisfying( versions, newVersion );
 
