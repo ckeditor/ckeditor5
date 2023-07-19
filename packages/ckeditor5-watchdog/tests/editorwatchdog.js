@@ -10,6 +10,35 @@ import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Comments } from '@ckeditor/ckeditor5-comments';
+import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
+import Suggestion from '@ckeditor/ckeditor5-track-changes/src/suggestion';
+
+class UsersInit {
+	static get requires() {
+		return [ 'Users' ];
+	}
+
+	constructor( editor ) {
+		this.editor = editor;
+	}
+
+	init() {
+		const users = this.editor.plugins.get( 'Users' );
+
+		users.addUser( {
+			id: 'u1',
+			name: 'John Smith'
+		} );
+
+		users.addUser( {
+			id: 'u2',
+			name: 'Kate Jones'
+		} );
+
+		users.defineMe( 'u1' );
+	}
+}
 
 // The error handling testing with mocha & chai is quite broken and hard to test.
 // sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
@@ -126,7 +155,7 @@ describe( 'EditorWatchdog', () => {
 			await watchdog.destroy();
 		} );
 
-		it( 'should support markers', async () => {
+		it( 'should support markers that affects content', async () => {
 			const watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
@@ -216,6 +245,120 @@ describe( 'EditorWatchdog', () => {
 				.then( () => {
 					expect( watchdog.editor ).to.be.null;
 				} );
+		} );
+	} );
+
+	describe( 'collaboration data', () => {
+		let watchdog;
+
+		beforeEach( async () => {
+			watchdog = new EditorWatchdog();
+
+			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
+
+			await watchdog.create( '<p>Foo bar</p>', {
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges ],
+				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				comments: {
+					editorConfig: {}
+				}
+			} );
+		} );
+
+		afterEach( async () => {
+			await watchdog.destroy();
+		} );
+
+		it( 'should support comment threads', async () => {
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
+			const commentsRepository = watchdog.editor.plugins.get( 'CommentsRepository' );
+
+			commentsRepository.addCommentThread( { threadId: 't1', target: () => null } );
+
+			watchdog.editor.setData(
+				'<p>' +
+				'Fo' +
+				'<comment id="t1" type="start"></comment>' +
+				'o b' +
+				'<comment id="t1" type="end"></comment>' +
+				'ar' +
+				'</p>'
+			);
+
+			expect( watchdog.editor.getData() ).to.equal(
+				'<p>Fo<comment-start name="t1"></comment-start>o b<comment-end name="t1"></comment-end>ar</p>'
+			);
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
+				} );
+			} );
+
+			expect( watchdog.editor.getData() ).to.equal(
+				'<p>Fo<comment-start name="t1"></comment-start>o b<comment-end name="t1"></comment-end>ar</p>'
+			);
+			expect( watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' ) ).to.be.not.null;
+		} );
+
+		it( 'should support suggestions', async () => {
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
+			sinon.stub( Suggestion, 'getMultiRangeId' ).callsFake( () => 'test' );
+
+			const trackChangesEditing = watchdog.editor.plugins.get( 'TrackChangesEditing' );
+
+			watchdog.editor.model.change( writer => {
+				const suggestion = trackChangesEditing.addSuggestionData( {
+					id: '1',
+					type: 'insertion:subType',
+					authorId: 'u1',
+					data: null,
+					createdAt: new Date(),
+					attributes: {}
+				} );
+
+				const root = watchdog.editor.model.document.getRoot();
+
+				const startPos = writer.createPositionFromPath( root, [ 0, 0 ] );
+				const endPos = writer.createPositionFromPath( root, [ 0, 3 ] );
+				const range = writer.createRange( startPos, endPos );
+
+				suggestion.addRange( range );
+			} );
+
+			expect( watchdog.editor.getData() ).to.equal(
+				'<p>' +
+				'<suggestion-start name="insertion:subType:1:u1:test"></suggestion-start' +
+				'>Foo<' +
+				'suggestion-end name="insertion:subType:1:u1:test"></suggestion-end> ' +
+				'bar</p>'
+			);
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
+				} );
+			} );
+
+			expect( watchdog.editor.getData() ).to.equal(
+				'<p>' +
+				'<suggestion-start name="insertion:subType:1:u1:test"></suggestion-start' +
+				'>Foo<' +
+				'suggestion-end name="insertion:subType:1:u1:test"></suggestion-end> ' +
+				'bar</p>'
+			);
 		} );
 	} );
 
