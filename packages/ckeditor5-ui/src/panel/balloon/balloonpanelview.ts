@@ -15,11 +15,11 @@ import {
 	global,
 	isRange,
 	toUnit,
-	type Rect,
 	type Locale,
 	type ObservableChangeEvent,
 	type PositionOptions,
-	type PositioningFunction
+	type PositioningFunction,
+	type Rect
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'lodash-es';
