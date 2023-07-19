@@ -23,3 +23,21 @@ In the {@link installation/getting-started/predefined-builds predefined builds} 
 ### How to turn the source mode on?
 
 The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.
+
+### Why does the editor filter out my content (styles, classes, elements)?
+
+CKEditor 5 implements a custom {@link framework/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
+
+Each kind of content must be handled by some feature. For example, the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
+
+If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them. Once you do that, CKEditor 5 will not filter anything out.
+
+### How to add more features to the build I downloaded?
+
+See the {@link installation/plugins/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
+
+You can learn which editor features are available in which build in the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds Predefined builds} guide.
+
+### How to enable image drag&drop and upload? Where should I start?
+
+The {@link features/images-overview image} and {@link features/image-upload image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5, you need to configure one of the available upload adapters. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best image upload strategy for your project.
