@@ -482,11 +482,10 @@ describe( 'PoweredBy', () => {
 		it( 'should not show the balloon if the root is not visible vertically', async () => {
 			const domRoot = editor.editing.view.getDomRoot();
 			const parentWithOverflow = document.createElement( 'div' );
+
 			parentWithOverflow.style.overflow = 'scroll';
 			// Is not enough height to be visible vertically.
 			parentWithOverflow.style.height = '99px';
-			// Enough width to be visible horizontally.
-			parentWithOverflow.style.width = '392px';
 
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );
@@ -502,11 +501,10 @@ describe( 'PoweredBy', () => {
 		it( 'should not show the balloon if the root is not visible horizontally', async () => {
 			const domRoot = editor.editing.view.getDomRoot();
 			const parentWithOverflow = document.createElement( 'div' );
+
 			parentWithOverflow.style.overflow = 'scroll';
-			// Enough height to be visible vertically.
-			parentWithOverflow.style.height = '100px';
 			// Is not enough width to be visible horizontally.
-			parentWithOverflow.style.width = '391px';
+			parentWithOverflow.style.width = '390px';
 
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );
