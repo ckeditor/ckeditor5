@@ -24,7 +24,7 @@ import type {
 } from 'ckeditor5/src/utils';
 
 import Watchdog, { type WatchdogConfig, type WatchdogState } from './watchdog';
-import EditorWatchdog, { type EditorCreatorFunction } from './editorwatchdog';
+import EditorWatchdog, { type WatchdogData, type EditorCreatorFunction } from './editorwatchdog';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import getSubNodes from './utils/getsubnodes';
 
@@ -36,11 +36,14 @@ const mainQueueId = Symbol( 'MainQueueId' );
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
  */
-export default class ContextWatchdog<TContext extends Context = Context> extends Watchdog {
+export default class ContextWatchdog<
+	TContext extends Context = Context,
+	TData extends HTMLElement | string = HTMLElement | string
+> extends Watchdog {
 	/**
 	 * A map of internal watchdogs for added items.
 	 */
-	protected _watchdogs = new Map<string, EditorWatchdog>();
+	protected _watchdogs = new Map<string, EditorWatchdog<Editor, TData>>();
 
 	/**
 	 * The watchdog configuration.
@@ -194,10 +197,15 @@ export default class ContextWatchdog<TContext extends Context = Context> extends
 	 * @param itemId The item ID.
 	 * @returns The item instance or `undefined` if an item with a given ID has not been found.
 	 */
-	public getItem( itemId: string ): unknown {
-		const watchdog = this._getWatchdog( itemId );
+	public getItem( itemId: string ): unknown | undefined {
+		try {
+			const watchdog = this._getWatchdog( itemId );
 
-		return watchdog._item;
+			return watchdog._item;
+		}
+		catch {
+			return undefined;
+		}
 	}
 
 	/**
@@ -260,7 +268,7 @@ export default class ContextWatchdog<TContext extends Context = Context> extends
 	 *
 	 * @param itemConfigurationOrItemConfigurations An item configuration object or an array of item configurations.
 	 */
-	public add( itemConfigurationOrItemConfigurations: ArrayOrItem<WatchdogItemConfiguration> ): Promise<unknown> {
+	public add( itemConfigurationOrItemConfigurations: ArrayOrItem<WatchdogItemConfiguration<WatchdogData<TData>>> ): Promise<unknown> {
 		const itemConfigurations = toArray( itemConfigurationOrItemConfigurations );
 
 		return Promise.all( itemConfigurations.map( item => {
@@ -273,14 +281,14 @@ export default class ContextWatchdog<TContext extends Context = Context> extends
 					throw new Error( 'Context was not created yet. You should call the `ContextWatchdog#create()` method first.' );
 				}
 
-				let watchdog: EditorWatchdog;
+				let watchdog: EditorWatchdog<Editor, TData>;
 
 				if ( this._watchdogs.has( item.id ) ) {
 					throw new Error( `Item with the given id is already added: '${ item.id }'.` );
 				}
 
 				if ( item.type === 'editor' ) {
-					watchdog = new EditorWatchdog( null, this._watchdogConfig );
+					watchdog = new EditorWatchdog<Editor, TData>( null, this._watchdogConfig );
 					watchdog.setCreator( item.creator );
 					watchdog._setExcludedProperties( this._contextProps );
 
@@ -599,7 +607,9 @@ function toArray<T>( elementOrArray: ArrayOrItem<T> ): Array<T> {
 /**
  * The watchdog item configuration interface.
  */
-export interface WatchdogItemConfiguration {
+export interface WatchdogItemConfiguration<
+	TData extends HTMLElement | string | Record<string, string> = HTMLElement | string | Record<string, string>
+> {
 
 	/**
 	 * id A unique item identificator.
@@ -615,7 +625,7 @@ export interface WatchdogItemConfiguration {
 	 * A function that initializes the item (the editor). The function takes editor initialization arguments
 	 * and should return a promise. For example: `( el, config ) => ClassicEditor.create( el, config )`.
 	 */
-	creator: EditorCreatorFunction;
+	creator: EditorCreatorFunction<Editor, TData>;
 
 	/**
 	 * A function that destroys the item instance (the editor). The function
@@ -627,7 +637,7 @@ export interface WatchdogItemConfiguration {
 	 * The source element or data that will be passed
 	 * as the first argument to the `Editor.create()` method.
 	 */
-	sourceElementOrData: string | HTMLElement;
+	sourceElementOrData: TData;
 
 	/**
 	 * An editor configuration.
