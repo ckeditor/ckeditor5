@@ -4,8 +4,9 @@
  */
 
 /**
- * @module paste-from-office/filters/parse
+ * @module paste-from-office/filters/table
  */
+
 import { UpcastWriter, type ViewDocumentFragment } from 'ckeditor5/src/engine';
 
 /**
