@@ -352,8 +352,10 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * Gets the collaboration data - comment threads and suggestions.
 	 */
 	private _getCollaborationData(): CollaborationData {
-		const commentsRepository = this._editor!.plugins.get( 'CommentsRepository' ) as CommentsRepository;
-		const trackChanges = this._editor!.plugins.get( 'TrackChanges' ) as TrackChanges;
+		const { plugins } = this._editor!;
+
+		const commentsRepository = plugins.has( 'CommentsRepository' ) && plugins.get( 'CommentsRepository' ) as CommentsRepository;
+		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as TrackChanges;
 
 		return {
 			commentThreads: commentsRepository ? commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) : [],
