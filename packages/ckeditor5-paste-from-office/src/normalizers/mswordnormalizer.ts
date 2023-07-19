@@ -9,9 +9,9 @@
 
 import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
-import type { Normalizer, NormalizerData } from '../normalizer';
-
+import { setTableAlignment } from '../filters/table';
 import type { ViewDocument } from 'ckeditor5/src/engine';
+import type { Normalizer, NormalizerData } from '../normalizer';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
 const msWordMatch2 = /xmlns:o="urn:schemas-microsoft-com/i;
@@ -46,7 +46,7 @@ export default class MSWordNormalizer implements Normalizer {
 
 		transformListItemLikeElementsIntoLists( documentFragment, stylesString );
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
-
+		setTableAlignment( documentFragment );
 		data.content = documentFragment;
 	}
 }

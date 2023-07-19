@@ -40,12 +40,18 @@ describe( 'TwoStepCaretMovement()', () => {
 				allowAttributes: [ 'a', 'b', 'c' ],
 				allowIn: '$root'
 			} );
+			editor.model.schema.register( 'inlineObject', {
+				inheritAllFrom: '$inlineObject',
+				allowAttributes: [ 'src' ]
+			} );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'a', model: 'a' } );
 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'b', model: 'b' } );
 			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
 			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+			editor.conversion.elementToElement( { model: 'inlineObject', view: 'inlineObject' } );
+			editor.conversion.attributeToAttribute( { model: 'src', view: 'src' } );
 
 			plugin.registerAttribute( 'a' );
 		} );
@@ -214,6 +220,31 @@ describe( 'TwoStepCaretMovement()', () => {
 				'→',
 				// <paragraph><$text a="1">bar</$text></paragraph><paragraph>fo[]o</paragraph>
 				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1 }
+			] );
+		} );
+
+		it( 'should copy attributes from an inline object if are allowed on text', () => {
+			setData( model, '<paragraph>fo[]o<inlineObject a="1" b="2" src="3"></inlineObject></paragraph>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 2 ] },
+				'→',
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 3 ] },
+				'→',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1, caretPosition: [ 0, 3 ] }
+			] );
+		} );
+
+		it( 'should copy attributes from an inline object if are allowed on text and not disabled by copyFromObject', () => {
+			model.schema.setAttributeProperties( 'c', { copyFromObject: false } );
+			setData( model, '<paragraph>fo[]o<inlineObject a="1" b="2" c="3"></inlineObject></paragraph>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 2 ] },
+				'→',
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 3 ] },
+				'→',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1, caretPosition: [ 0, 3 ] }
 			] );
 		} );
 	} );
@@ -410,6 +441,31 @@ describe( 'TwoStepCaretMovement()', () => {
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: [ 1, 0 ] },
 				'←',
 				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: [ 0, 3 ] }
+			] );
+		} );
+
+		it( 'should copy attributes from an inline object if are allowed on text', () => {
+			setData( model, '<paragraph><inlineObject a="1" b="2" src="3"></inlineObject>f[]oo</paragraph>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 2 ] },
+				'←',
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 1 ] },
+				'←',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: [ 0, 1 ] }
+			] );
+		} );
+
+		it( 'should copy attributes from an inline object if are allowed on text and not disabled by copyFromObject', () => {
+			model.schema.setAttributeProperties( 'c', { copyFromObject: false } );
+			setData( model, '<paragraph><inlineObject a="1" b="2" c="3"></inlineObject>f[]oo</paragraph>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 2 ] },
+				'←',
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 1 ] },
+				'←',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: [ 0, 1 ] }
 			] );
 		} );
 	} );
@@ -983,4 +1039,3 @@ describe( 'TwoStepCaretMovement()', () => {
 		}
 	}
 } );
-

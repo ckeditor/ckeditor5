@@ -12,7 +12,7 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { DropdownView, DropdownButtonView, DropdownPanelView, ToolbarView, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
+import { DropdownView, ToolbarView, createDropdown } from '@ckeditor/ckeditor5-ui';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -46,9 +46,7 @@ class FormattingOptions extends Plugin {
 
 		editor.ui.componentFactory.add( 'formattingOptions', locale => {
 			const t = locale.t;
-			const buttonView = new DropdownButtonView( locale );
-			const panelView = new DropdownPanelView( locale );
-			const dropdownView = new DropdownView( locale, buttonView, panelView );
+			const dropdownView = createDropdown( locale );
 			const toolbarView = this.toolbarView = dropdownView.toolbarView = new ToolbarView( locale );
 
 			// Accessibility: Give the toolbar a human-readable ARIA label.
@@ -88,26 +86,15 @@ class FormattingOptions extends Plugin {
 			// * the dropdown or it contents,
 			// * any editing root,
 			// * any floating UI in the "body" collection
-			// It should close, for instance, when another (main) toolbar button was pressed, though.
-			dropdownView.on( 'render', () => {
-				clickOutsideHandler( {
-					emitter: dropdownView,
-					activator: () => dropdownView.isOpen,
-					callback: () => { dropdownView.isOpen = false; },
-					contextElements: [
-						dropdownView.element,
-						...[ ...editor.ui.getEditableElementsNames() ].map( name => editor.ui.getEditableElement( name ) ),
-						document.querySelector( '.ck-body-wrapper' )
-					]
-				} );
-			} );
+			const focusableElements = [
+				...[ ...editor.ui.getEditableElementsNames() ].map( name => editor.ui.getEditableElement( name ) ),
+				document.querySelector( '.ck-body-wrapper' )
+			];
 
-			// The main button of the dropdown should be bound to the state of the dropdown.
-			buttonView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
-			buttonView.bind( 'isEnabled' ).to( dropdownView );
+			focusableElements.forEach( el => dropdownView.focusTracker.add( el ) );
 
 			// Using the font color icon to visually represent the formatting.
-			buttonView.set( {
+			dropdownView.buttonView.set( {
 				tooltip: t( 'Formatting options' ),
 				icon: fontColorIcon
 			} );

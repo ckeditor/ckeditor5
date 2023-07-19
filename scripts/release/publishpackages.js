@@ -16,6 +16,7 @@ const { Listr } = require( 'listr2' );
 const validateDependenciesVersions = require( './utils/validatedependenciesversions' );
 const parseArguments = require( './utils/parsearguments' );
 const { CKEDITOR5_ROOT_PATH, RELEASE_DIRECTORY } = require( './utils/constants' );
+const getListrOptions = require( './utils/getlistroptions' );
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 
@@ -102,7 +103,7 @@ const tasks = new Listr( [
 		},
 		skip: cliArguments.nightly
 	}
-] );
+], getListrOptions( cliArguments ) );
 
 ( async () => {
 	try {

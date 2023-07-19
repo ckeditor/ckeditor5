@@ -1764,6 +1764,18 @@ export interface AttributeProperties {
 	 */
 	copyOnEnter?: boolean;
 
+	/**
+	 * Indicates that given attribute should be preserved while replacing the element.
+	 */
+	copyOnReplace?: boolean;
+
+	/**
+	 * Indicates that given text attribute should be copied from an inline object to the next inserted inline content.
+	 *
+	 * @default true
+	 */
+	copyFromObject?: boolean;
+
 	[ name: string ]: unknown;
 }
 

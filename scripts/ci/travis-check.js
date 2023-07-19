@@ -17,6 +17,7 @@ const checkPackagesCodeCoverage = require( './check-packages-code-coverage' );
 const execFactory = require( './exec-factory' );
 const shouldRunShortFlow = require( './should-run-short-flow' );
 const triggerCkeditor5ContinuousIntegration = require( './trigger-ckeditor5-continuous-integration' );
+const validateMetadataIcons = require( './validate-metadata-icons' );
 
 const { TRAVIS_JOB_TYPE } = process.env;
 
@@ -28,6 +29,15 @@ const exec = execFactory( ROOT_DIRECTORY );
 
 // Tests + Code coverage.
 if ( TRAVIS_JOB_TYPE === 'Tests' ) {
+	testsJob();
+}
+
+// Verifying the code style.
+if ( TRAVIS_JOB_TYPE === 'Validation' ) {
+	validationJob();
+}
+
+function testsJob() {
 	if ( shortFlow ) {
 		console.log( green( 'Only the documentation files were modified, skipping checking the code coverage.\n' ) );
 	} else {
@@ -41,7 +51,7 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	}
 
 	const repository = 'ckeditor/ckeditor5';
-	const lastCommit = childProcess.execSync( 'git rev-parse HEAD' ).toString();
+	const lastCommit = childProcess.execSync( 'git rev-parse HEAD' ).toString().trim();
 
 	const promise = triggerCkeditor5ContinuousIntegration( repository, lastCommit );
 
@@ -56,8 +66,7 @@ if ( TRAVIS_JOB_TYPE === 'Tests' ) {
 	}
 }
 
-// Verifying the code style.
-if ( TRAVIS_JOB_TYPE === 'Validation' ) {
+async function validationJob() {
 	if ( shortFlow ) {
 		console.log( green( 'Only the documentation files were modified, running the static analyze only.\n' ) );
 	}
@@ -65,6 +74,7 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	exec( 'yarn', 'run', 'lint' );
 	exec( 'yarn', 'run', 'stylelint' );
 	exec( 'yarn', 'run', 'check-dependencies' );
+	await validateMetadataIcons( { cwd: ROOT_DIRECTORY } );
 
 	if ( shortFlow ) {
 		process.exit();
