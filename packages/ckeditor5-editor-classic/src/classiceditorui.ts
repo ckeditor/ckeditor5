@@ -165,10 +165,11 @@ export default class ClassicEditorUI extends EditorUI {
 			enablePlaceholder( {
 				view: editingView,
 				element: editingRoot,
-				text: placeholderText,
 				isDirectHost: false,
 				keepOnFocus: true
 			} );
+
+			editingRoot.set( 'placeholder', placeholderText );
 		}
 	}
 

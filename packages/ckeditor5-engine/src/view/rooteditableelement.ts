@@ -20,6 +20,13 @@ const rootNameSymbol = Symbol( 'rootName' );
  */
 export default class RootEditableElement extends EditableElement {
 	/**
+	 * Placeholder of current editiing root.
+	 *
+	 * @observable
+	 */
+	declare public placeholder?: string;
+
+	/**
 	 * Creates root editable element.
 	 *
 	 * @param document The document instance to which this element belongs.
@@ -31,6 +38,7 @@ export default class RootEditableElement extends EditableElement {
 	) {
 		super( document, name );
 
+		this.set( 'placeholder', undefined );
 		this.rootName = 'main';
 	}
 

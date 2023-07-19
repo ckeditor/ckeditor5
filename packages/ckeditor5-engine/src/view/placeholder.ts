@@ -37,10 +37,9 @@ const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfi
  * editable root elements.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
-export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
+export function enablePlaceholder( { view, element, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
 	element: Element;
-	text: string;
 	isDirectHost?: boolean;
 	keepOnFocus?: boolean;
 } ): void {
@@ -60,12 +59,14 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 		}, { priority: 'high' } );
 	}
 
-	// Store information about the element placeholder under its document.
-	documentPlaceholders.get( doc )!.set( element, {
-		text,
-		isDirectHost,
-		keepOnFocus,
-		hostElement: isDirectHost ? element : null
+	element.on( 'change:placeholder', ( evtInfo, evt, text ) => {
+		// Store information about the element placeholder under its document.
+		documentPlaceholders.get( doc )!.set( element, {
+			text,
+			isDirectHost,
+			keepOnFocus,
+			hostElement: isDirectHost ? element : null
+		} );
 	} );
 
 	// Update the placeholders right away.
