@@ -186,7 +186,8 @@
     "release:clean": "node ./scripts/release/clean.js",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
-    "check-dependencies": "ckeditor5-dev-dependency-checker"
+    "check-dependencies": "ckeditor5-dev-dependency-checker",
+    "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
