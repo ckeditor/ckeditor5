@@ -141,7 +141,7 @@ describe( 'EditorWatchdog', () => {
 			const root = watchdog.editor.model.document.getRoot();
 
 			watchdog.editor.model.change( writer => {
-				writer.addMarker( 'test', {
+				writer.addMarker( 'first', {
 					usingOperation: false,
 					affectsData: false,
 					range: writer.createRange(
@@ -149,9 +149,18 @@ describe( 'EditorWatchdog', () => {
 						writer.createPositionAt( root, [ 1 ] )
 					)
 				} );
+
+				writer.addMarker( 'second', {
+					usingOperation: true,
+					affectsData: true,
+					range: writer.createRange(
+						writer.createPositionAt( root, [ 0 ] ),
+						writer.createPositionAt( root, [ 1 ] )
+					)
+				} );
 			} );
 
-			const marker = watchdog.editor.model.markers.get( 'test' );
+			const marker = watchdog.editor.model.markers.get( 'second' );
 
 			watchdog._save();
 
@@ -164,7 +173,8 @@ describe( 'EditorWatchdog', () => {
 				} );
 			} );
 
-			expect( watchdog.editor.model.markers.get( 'test' ).name ).to.equal( marker.name );
+			expect( watchdog.editor.model.markers.get( 'first' ) ).to.be.null;
+			expect( watchdog.editor.model.markers.get( 'second' ).name ).to.equal( marker.name );
 
 			await watchdog.destroy();
 		} );
