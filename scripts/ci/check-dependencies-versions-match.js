@@ -110,7 +110,7 @@ function getExpectedDepsVersions( packageJsons ) {
 		.filter( Boolean )
 		.reduce( ( expectedDependencies, dependencies ) => {
 			Object.entries( dependencies ).forEach( ( [ dependency, version ] ) => {
-				expectedDependencies[ dependency ] = getNewestVersion( version, expectedDependencies[ dependency ], dependency );
+				expectedDependencies[ dependency ] = getNewestVersion( dependency, version, expectedDependencies[ dependency ] );
 			} );
 
 			return expectedDependencies;
