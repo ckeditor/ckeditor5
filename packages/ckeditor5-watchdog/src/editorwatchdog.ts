@@ -27,7 +27,7 @@ import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
 import type { CommentsRepository } from '@ckeditor/ckeditor5-comments';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
+import type { TrackChanges, SuggestionJSON } from '@ckeditor/ckeditor5-track-changes';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports,ckeditor5-rules/allow-imports-only-from-main-package-entry-point
 import type { CommentThreadDataJSON } from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository';
@@ -358,8 +358,16 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as TrackChanges;
 
 		return {
-			commentThreads: commentsRepository ? commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) : [],
-			suggestions: trackChanges ? trackChanges.getSuggestions( { toJSON: true, skipNotAttached: true } ) : []
+			commentThreads: JSON.stringify(
+				commentsRepository ?
+					commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) :
+					[]
+			),
+			suggestions: JSON.stringify(
+				trackChanges ?
+					trackChanges.getSuggestions( { toJSON: true, skipNotAttached: true } ) :
+					[]
+			)
 		};
 	}
 
@@ -494,14 +502,17 @@ class EditorWatchdogInitPlugin {
 	 * Restores the editor collaboration data - comment threads and suggestions.
 	 */
 	private _restoreCollaborationData() {
-		this._data.commentThreads.forEach( commentThread => {
+		const parsedCommentThreads: Array<CommentThreadDataJSON> = JSON.parse( this._data.commentThreads );
+		const parsedSuggestions: Array<SuggestionJSON> = JSON.parse( this._data.suggestions );
+
+		parsedCommentThreads.forEach( commentThread => {
 			const channelId = this.editor.config.get( 'collaboration.channelId' )!;
 			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as CommentsRepository;
 
 			commentsRepository.addCommentThread( { channelId, ...commentThread } );
 		} );
 
-		this._data.suggestions.forEach( suggestion => {
+		parsedSuggestions.forEach( suggestion => {
 			const trackChanges = this.editor!.plugins.get( 'TrackChanges' ) as TrackChanges;
 
 			trackChanges.addSuggestion( suggestion );
@@ -522,8 +533,8 @@ export type EditorData = {
 };
 
 export type CollaborationData = {
-	commentThreads: Array<CommentThreadDataJSON>;
-	suggestions: Array<any>;
+	commentThreads: string;
+	suggestions: string;
 };
 
 /**
