@@ -71,6 +71,7 @@ createEditor( '#narrow' );
 createEditor( '#narrow-dark-bg' );
 createEditor( '#padding-less' );
 createEditor( '#overflow-parent' );
+createEditor( '#overflow-ancestors' );
 createEditor( '#position-inside', {
 	position: 'inside'
 } );
