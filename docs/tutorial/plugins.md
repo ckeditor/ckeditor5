@@ -41,7 +41,7 @@ Because the `Essentials` plugin doesn't define any block-level containers, we al
 
 The editor we created so far is still missing a lot of features, such as support for headings, tables, block quotes and much more. You can add them using plugins of course.
 
-For a list of plugins, usage examples, installation and configuration options, see the {@link features/index Features} section.
+For a list of plugins, usage examples, installation and configuration options, see the {@link features/index Features} page.
 
 ## Predefined builds
 
@@ -51,7 +51,9 @@ The fact that individual plugins add support for such minor functionalities as s
 
 If editor and any of its plugins doesn't provide the functionality you need, you might want to create a custom plugin. This requires knowledge of editor internals, which we will discover in the next steps of the tutorial.
 
-We'll be creating a simplified version of the already existing {@link features/highlight Highlight} plugin. If you ever get stuck, want to see example of writing a TypeScript plugin or just want to see our APIs in action, see [`Highlight` plugin source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight).
+We'll be creating a simplified version of the already existing {@link features/highlight Highlight} plugin. We want to be able to highlight certain parts of the text to make them stand out from the rest.
+
+If you ever get stuck, want to see example of writing a TypeScript plugin or just want to see our APIs in action, see [`Highlight` plugin source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight).
 
 ### Registering custom plugin
 

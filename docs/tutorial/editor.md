@@ -21,20 +21,9 @@ If everything went well, you should see a "Hello world!" text displayed on the p
 
 We encourage you to follow the steps in the tutorial and type the code yourself to build the muscle and mental memory.
 
-## The editor
-
-The editors come in few flavors. While each of them visually looks very different, under the hook they're very similar.
-
-Each editor consists of two parts:
-
-* Editing engine,
-* Editing UI.
-
-In the next sections of this tutorial we'll learn more about both concepts, but at this moment all you need to know is that the **editing UI** is the interface that the user sees with buttons, dropdown, editing panel, etc. and the **editing engine** is responsible for reading, maintaning and outputting the editor's state and everything else that powers the editor under the hood.
-
 ## Creating an editor
 
-The testing environment you setup earlier displays the "Hello world!" on the page. Let's learn the first editor method that will replace this element with the editor.
+The testing environment you setup displays the "Hello world!" on the page. Let's learn the first editor method that will replace this element with the editor.
 
 Open the `src/main.js` file and add the following code:
 
@@ -55,7 +44,7 @@ However you might have noticed that the "Hello world!" text didn't apprear in th
 
 ## Configuration
 
-The editor by itself doesn't do much — at this stage it's just an empty shell. What provides almost all functionality to the editor are the plugins. We'll give more into the in the next chapter, so for now let's just install two plugins that provide the bare minimum needed to type in the editor.
+The editor by itself doesn't do much — at this stage it's just an empty shell. What provides almost all functionality to the editor are the plugins. We'll get more into the plugins in the next chapter, but for now let's just install two plugins that provide the bare minimum needed to type in the editor.
 
 ```js
 // Add these two imports
@@ -96,6 +85,8 @@ const editor = await ClassicEditor.create( element, {
 
 Refreshing the page again should add two buttons at the top of the editor. If you type anything into the editor and click the "back arrow" button, your changes should be removed. Clicking the "forward arrow" button should restore those changes.
 
+The configuration object we just updated is what controls the features, look and behaviour of the editor. Once you'll want to change any aspect of the editor, it'll most likely happen through this object.
+
 ## Editor methods
 
 Now that you can type inside the editor, let's test other editor methods besides `create()`. Add the following to the bottom of the `src/main.js` file. It'll allow us to access the editor instance globally for testing purposes.
@@ -120,15 +111,15 @@ Open the page in the browser and open the console. Inside the console run the fo
 editor.getData();
 ```
 
-It should print the `<p>Hello world!</p>` text which is the current content of the editor. Notice the opening and closing `<p>` tags. The {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} returns the resulting HTML content of the editor, not the content you see in the editing UI.
+It should print the `<p>Hello world!</p>` text which is the current content of the editor. Notice the opening and closing `<p>` tags. The `getData()` returns the resulting HTML content of the editor, not the content you see in the UI. This is explained in more detail in the following chapters of the tutorial.
 
-You can also use the {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`} method to change the content of the editor programmatically.
+You can also use the `setData()` method to change the content of the editor programmatically.
 
 ```js
 editor.setData('<p>Modified from the console!</p>');
 ```
 
-Running the above command should update the state of the editor. Notice the opening and closing `<p>` tags — this method expects a HTML string as an argument.
+Running the above command should update the state of the editor. Notice the opening and closing `<p>` tags. This method expects a HTML as an argument, but editor displays this content in more user-friendly way.
 
 ### `execute()`
 
@@ -140,7 +131,7 @@ Before we can do that, type something in the editor. Then run the following code
 editor.execute('undo');
 ```
 
-The editor should execute the `undo` command update to the state before your changes. Now run the `redo`` command to restore those changes:
+The editor should execute the `undo` command update to the state before your changes. Now run the `redo` command to restore those changes:
 
 ```js
 editor.execute('redo');
