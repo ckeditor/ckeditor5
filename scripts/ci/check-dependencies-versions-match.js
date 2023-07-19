@@ -10,15 +10,21 @@
 'use strict';
 
 // This script ensures that all "dependencies" in package JSONs listed below, use the same versions of
-// dependencies. It also checks that all versions and are pinned, and they don't use the caret operator "^".
-// If you provide "--fix" argument, the script will automatically fix the errors for you.
+// dependencies. It also checks that all versions are pinned, and they don't use the caret operator "^".
+// If you provide the "--fix" argument, the script will automatically fix the errors for you.
 
+const chalk = require( 'chalk' );
 const semver = require( 'semver' );
 const { globSync } = require( 'glob' );
 const fs = require( 'fs-extra' );
 const upath = require( 'upath' );
+const { execSync } = require( 'child_process' );
 
+const versionsCache = {};
 const shouldFix = process.argv[ 2 ] === '--fix';
+
+console.log( chalk.blue( '🔍 Starting checking dependencies versions...' ) );
+
 const [ packageJsons, pathMappings ] = getPackageJsons( [
 	'package.json',
 	'packages/*/package.json',
@@ -54,6 +60,8 @@ function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappin
 
 			fs.writeJsonSync( pathMappings[ packageJson.name ], packageJson, { spaces: 2 } );
 		} );
+
+	console.log( chalk.green( '✅  All dependencies fixed!' ) );
 }
 
 /**
@@ -73,9 +81,12 @@ function checkDependenciesMatch( expectedDependencies, packageJsons ) {
 		);
 
 	if ( errors.length ) {
-		console.error( errors );
+		console.error( chalk.red( '❌  Errors found. Run this script with an argument: `--fix` to resolve the issues automatically:' ) );
+		console.error( chalk.red( errors.join( '\n' ) ) );
 		process.exit( 1 );
 	}
+
+	console.log( chalk.green( '✅  All dependencies are correct!' ) );
 }
 
 /**
@@ -99,7 +110,7 @@ function getExpectedDepsVersions( packageJsons ) {
 		.filter( Boolean )
 		.reduce( ( expectedDependencies, dependencies ) => {
 			Object.entries( dependencies ).forEach( ( [ dependency, version ] ) => {
-				expectedDependencies[ dependency ] = getNewestVersion( version, expectedDependencies[ dependency ] );
+				expectedDependencies[ dependency ] = getNewestVersion( version, expectedDependencies[ dependency ], dependency );
 			} );
 
 			return expectedDependencies;
@@ -107,15 +118,34 @@ function getExpectedDepsVersions( packageJsons ) {
 }
 
 /**
- * @param {String|undefined} versionA
- * @param {String|undefined} versionB
+ * @param {String|undefined} newVersion
+ * @param {String|undefined} currentMaxVersion
+ * @param {String} packageName
  * @return {String}
  */
-function getNewestVersion( versionA, versionB ) {
-	const versionAStripped = semver.valid( semver.coerce( versionA ) ) || '0.0.0';
-	const versionBStripped = semver.valid( semver.coerce( versionB ) ) || '0.0.0';
+function getNewestVersion( newVersion = '0.0.0', currentMaxVersion = '0.0.0', packageName ) {
+	if ( newVersion.includes( '^' ) ) {
+		const versions = getVersionsList( packageName );
+		const newMaxVersion = semver.maxSatisfying( versions, newVersion );
 
-	return semver.gt( versionAStripped, versionBStripped ) ? versionAStripped : versionBStripped;
+		return semver.gt( newMaxVersion, currentMaxVersion ) ? newMaxVersion : currentMaxVersion;
+	}
+
+	return semver.gt( newVersion, currentMaxVersion ) ? newVersion : currentMaxVersion;
+}
+
+/**
+ * @param {String} packageName
+ * @return {Object.<String, String>}
+ */
+function getVersionsList( packageName ) {
+	if ( !versionsCache[ packageName ] ) {
+		console.log( chalk.blue( `⬇️ Downloading "${ packageName }" versions from npm...` ) );
+		const versionsJson = execSync( `npm view ${ packageName } versions --json`, { encoding: 'utf8' } );
+		versionsCache[ packageName ] = JSON.parse( versionsJson );
+	}
+
+	return versionsCache[ packageName ];
 }
 
 /**
