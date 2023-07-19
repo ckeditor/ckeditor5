@@ -358,13 +358,8 @@ function getLowerCornerPosition(
 					editableElementRect.left < firstScrollableEditableElementAncestorRect.left :
 					editableElementRect.right > firstScrollableEditableElementAncestorRect.right;
 
-				// The watermark cannot be positioned in this corner because the corner is "not visible enough" vertically.
-				if ( notVisibleVertically ) {
-					return OFF_THE_SCREEN_POSITION;
-				}
-
-				// The watermark cannot be positioned in this corner because the corner is "not visible enough" horizontally.
-				if ( notVisibleHorizontally ) {
+				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
+				if ( notVisibleVertically || notVisibleHorizontally ) {
 					return OFF_THE_SCREEN_POSITION;
 				}
 			}
