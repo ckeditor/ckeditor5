@@ -314,7 +314,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	}
 
 	/**
-	 * Gets the all data that are required to reinitialize editor instance.
+	 * Gets all data that is required to reinitialize editor instance.
 	 */
 	private _getData(): EditorData {
 		const editor = this.editor!;
