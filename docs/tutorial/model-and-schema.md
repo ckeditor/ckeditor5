@@ -93,7 +93,7 @@ Let's test our changes. In the browser, open the console and run the following c
 editor.setData('<p>Hello <mark>world</mark>!');
 ```
 
-If everything went well, the `world` word should be highlighted in the editor. It works!
+If everything went well, the `world` word should be highlighted in the editor.
 
 ## CKEditor inspector
 

@@ -15,10 +15,10 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 const editor = await ClassicEditor.create( element, {
-  plugins: [
-    Essentials,
-    Paragraph
-  ]
+	plugins: [
+		Essentials,
+		Paragraph
+	]
 } );
 ```
 
@@ -75,10 +75,10 @@ Then, in the `src/main.js` file, import and register this function as editor plu
 import { Highlight } from './plugin';
 
 const editor = await ClassicEditor.create( element, {
-  plugins: [
-    // Other plugins are omitted for readability - don't remove them
-    Highlight
-  ]
+	plugins: [
+		// Other plugins are omitted for readability - don't remove them
+		Highlight
+	]
 } );
 ```
 

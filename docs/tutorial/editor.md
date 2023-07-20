@@ -53,10 +53,10 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 // Update the call to the `create()` method
 const editor = await ClassicEditor.create( element, {
-  plugins: [
-    Essentials,
-    Paragraph
-  ]
+	plugins: [
+		Essentials,
+		Paragraph
+	]
 } );
 ```
 
@@ -68,18 +68,18 @@ The `Essentials` plugin adds the `Undo` and `Redo` operations. Let's add them to
 
 ```js
 const editor = await ClassicEditor.create( element, {
-  plugins: [
-    Essentials,
-    Paragraph
-  ],
+	plugins: [
+		Essentials,
+		Paragraph
+	],
 
-  // Add the toolbar configuration
-  toolbar: {
-    items: [
-      'undo',
-      'redo'
-    ]
-  }
+	// Add the toolbar configuration
+	toolbar: {
+		items: [
+			'undo',
+			'redo'
+		]
+	}
 } );
 ```
 
