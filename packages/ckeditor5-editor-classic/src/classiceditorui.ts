@@ -161,16 +161,13 @@ export default class ClassicEditorUI extends EditorUI {
 			placeholderText = sourceElement.getAttribute( 'placeholder' );
 		}
 
-		if ( placeholderText ) {
-			enablePlaceholder( {
-				view: editingView,
-				element: editingRoot,
-				isDirectHost: false,
-				keepOnFocus: true
-			} );
-
-			editingRoot.set( 'placeholder', placeholderText );
-		}
+		enablePlaceholder( {
+			view: editingView,
+			element: editingRoot,
+			text: placeholderText !== null ? placeholderText : undefined,
+			isDirectHost: false,
+			keepOnFocus: true
+		} );
 	}
 
 	/**

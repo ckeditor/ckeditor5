@@ -8,8 +8,7 @@
  */
 
 import {
-	type Editor,
-	type ElementApi
+	type Editor
 } from 'ckeditor5/src/core';
 
 import {
@@ -110,22 +109,20 @@ export default class BalloonEditorUI extends EditorUI {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const editingRoot = editingView.document.getRoot()!;
-		const sourceElement = ( editor as Editor & ElementApi ).sourceElement;
 
 		const placeholder = editor.config.get( 'placeholder' );
+		let placeholderText;
 
 		if ( placeholder ) {
-			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
-
-			if ( placeholderText ) {
-				enablePlaceholder( {
-					view: editingView,
-					element: editingRoot,
-					text: placeholderText,
-					isDirectHost: false,
-					keepOnFocus: true
-				} );
-			}
+			placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
 		}
+
+		enablePlaceholder( {
+			view: editingView,
+			element: editingRoot,
+			text: placeholderText,
+			isDirectHost: false,
+			keepOnFocus: true
+		} );
 	}
 }

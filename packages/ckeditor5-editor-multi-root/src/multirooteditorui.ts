@@ -204,10 +204,6 @@ export default class MultiRootEditorUI extends EditorUI {
 			}
 		}
 
-		if ( !placeholder ) {
-			return;
-		}
-
 		const editingView = this.editor.editing.view;
 		const editingRoot = editingView.document.getRoot( editable.name! )!;
 
