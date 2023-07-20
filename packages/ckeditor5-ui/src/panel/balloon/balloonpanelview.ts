@@ -23,9 +23,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'lodash-es';
-
-// @if CK_DEBUG_UI // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
-
 import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = toUnit( 'px' );
@@ -1182,7 +1179,7 @@ export function generatePositions( options: {
 			return {
 				top: OFF_THE_SCREEN_POSITION,
 				left: OFF_THE_SCREEN_POSITION,
-				name: 'noarrow',
+				name: 'arrowless',
 				config: {
 					withArrow: false,
 					...config
