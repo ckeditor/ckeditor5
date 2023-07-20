@@ -8,7 +8,7 @@ menu-title: Plugins
 
 ## Dependencies
 
-In the previous chapter of the tutorial, we learned that the editor is just an empty shell and what provides almost all functionality to the editor are the plugins. We also installed two plugins to be able to type in the editor.
+In the previous chapter of this tutorial, we learned that the editor is just an empty shell, and what gives the editor almost all of its functionality are the plugins. We also installed two plugins to be able to type in the editor.
 
 ```js
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -22,9 +22,9 @@ const editor = await ClassicEditor.create( element, {
 } );
 ```
 
-However, in reality we installed more plugins — how so?
+However, we have actually installed more plugins - how so?
 
-The `Essentials` plugin is a wrapper for more plugins where each provide base functionality you would expect a text editor to have:
+The `Essentials` plugin is a wrapper for other plugins, each providing the basic functionality you would expect from a text editor:
 
 * {@link module:clipboard/clipboard~Clipboard},
 * {@link module:enter/enter~Enter},
@@ -33,31 +33,31 @@ The `Essentials` plugin is a wrapper for more plugins where each provide base fu
 * {@link module:typing/typing~Typing},
 * {@link module:undo/undo~Undo}.
 
-Another common pattern is that plugins depend on other plugins and require them for proper functioning. This is usually stated in the documentation of the given plugin and error throw by the editor contains an appropriate message explaining what's missing.
+Another common pattern is that plugins depend on other plugins and need them to work properly. This is usually noted in the documentation of a given plugin, and the error messages thrown by the editor will include an explanation of what's missing.
+
+Since the `Essentials` plugin doesn't define block-level containers, we also installed the `Paragraph` plugin to add support for the `<p>` HTML tag.
 
 ## List of plugins
 
-Because the `Essentials` plugin doesn't define any block-level containers, we also installed the `Paragraph` plugin to add support for the `<p>` HTML tag.
-
-The editor we created so far is still missing a lot of features, such as support for headings, tables, block quotes and much more. You can add them using plugins of course.
+The editor we created so far still lacks many features, such as support for headings, tables, block quotes, and much more. You can add them using plugins, of course.
 
 For a list of plugins, usage examples, installation and configuration options, see the {@link features/index Features} page.
 
 ## Predefined builds
 
-The fact that individual plugins add support for such minor functionalities as support for typing, <kbd>Enter</kbd> or `<p>`, doesn't mean that you have to browse the long list of plugins and meticulously install those that you need to get good typing experience. You can do it if you want to have full control over the editor. But if that's not your thing, you can use any of the {@link installation/getting-started/predefined-builds predefined builds} with the most important and popular plugins already installed and configured.
+The fact that individual plugins add support for such minor features as typing, <kbd>Enter</kbd>, or `<p>` doesn't mean that you have to browse through the long list of plugins and painstakingly install the ones you need to get a good typing experience. You can do that if you want to have full control over the editor. But if that's not your thing, you can use one of the {@link installation/getting-started/predefined-builds predefined builds} with the most important and popular plugins already installed and configured.
 
 ## Creating custom plugins
 
-If editor and any of its plugins doesn't provide the functionality you need, you might want to create a custom plugin. This requires knowledge of editor internals, which we will discover in the next steps of the tutorial.
+If the editor and any of its plugins doesn't provide the functionality you need, you may want to create a custom plugin. This requires knowledge of the editor internals, which we will discover in the next chapters of the tutorial.
 
-We'll be creating a simplified version of the already existing {@link features/highlight Highlight} plugin. We want to be able to highlight certain parts of the text to make them stand out from the rest.
+We'll create a simplified version of the existing {@link features/highlight highlight} plugin. We want to be able to highlight certain parts of the text to make them stand out from the rest.
 
-If you ever get stuck, want to see example of writing a TypeScript plugin or just want to see our APIs in action, see [`Highlight` plugin source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight).
+If you ever get stuck, want to see an example of writing a TypeScript plugin, or just want to see our APIs in action, check out the [`Highlight` plugin source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight).
 
 ### Registering custom plugin
 
-In the project we created in the previous chapter, create a new file called `plugin.js` inside the `src` folder. Inside of it create and export a `Highlight` function.
+In the project we created in the previous chapter, create a new file called `plugin.js` in the `src` folder. Inside it, create and export a `Highlight` function.
 
 ```js
 // src/plugin.js
@@ -67,7 +67,7 @@ export function Highlight(editor) {
 }
 ```
 
-Then, in the `src/main.js` file, import and register this function as editor plugin.
+Then, in the `src/main.js` file, import and register this function as an editor plugin.
 
 ```js
 // src/main.js
@@ -82,8 +82,8 @@ const editor = await ClassicEditor.create( element, {
 } );
 ```
 
-Now when the page refreshes, you should see a `Highlight plugin has been registered` text printed in the console. This confirms that the plugin worked correctly.
+Now when the page refreshes, you should see a `Highlight plugin has been registered` text printed in the console. This confirms that the plugin contructor is called correctly.
 
 ## What's next
 
-In the next chapter you'll {@link tutorial/model-and-schema learn more about model and schema} which control state of the editor and continue creating a custom plugin.
+In the next chapter you'll continue creating a custom plugin and {@link tutorial/model-and-schema learn more about model and schema}, which control the state of the editor.

@@ -8,11 +8,11 @@ menu-title: Updating model using commands
 
 ## Commands purpose
 
-Now that we have data conversion sorted out, let's register a `highlight` command. Commands encapsulate logic that can be execute by other plugins or from the UI, for example by clicking a button in the editor's toolbar.
+Now that we have the data conversion sorted out, let's register a `highlight` command. Commands encapsulate logic that can be executed by other plugins or from the user interface, for example by clicking a button in the editor's toolbar.
 
 ## Registering a command
 
-Let's create a new `HighlightCommand` class below the `Highlight` function and add necessary import in `src/plugin.js`:
+Let's create a new `HighlightCommand` class below the `Highlight` function and add the necessary import in `src/plugin.js`:
 
 ```js
 import { Command } from 'ckeditor5/src/core';
@@ -28,7 +28,7 @@ class HighlightCommand extends Command {
 }
 ```
 
-Then at the bottom of the `Highlight` function add the following code to register the command:
+Then at the bottom of the `Highlight` function, add the following code to register the command:
 
 ```js
 editor.commands.add('highlight', new HighlightCommand( editor ));
@@ -36,21 +36,21 @@ editor.commands.add('highlight', new HighlightCommand( editor ));
 
 Our command class has two methods:
 
-* `refresh()` which handles command state,
-* `execute()` which handles command logic.
+* `refresh()`, which handles the state.
+* `execute()`, which handles the logic.
 
 ### Command state
 
-Our plugin only allows highlighting text, so when an image or table is selected in the editor, we should disable the command. We also want to remove highlighting when the command is called and selected text is already highlighted.
+Our plugin only allows text highlighting, so when only an image or table is selected in the editor, we should disable the command. We also want to remove highlighting if the command is called and selected text is already highlighted.
 
-For this reason we need state that will indicate if selections in the editor can be highlighted and if they're already highlighted.
+For this reason, we need a state that indicates whether selections in the editor can be highlighted and whether they're already highlighted.
 
-The command state is managed by the `refresh()` method. The command automatically refreshes its state by automatically calling this method whenever model is updated.
+The command state is managed by the `refresh()` method. The command updates its state automatically by calling this method whenever the model is updated.
 
-Let's update the `refresh()` method to update two command properties:
+Let's implement the `refresh()` method to update two command properties:
 
-* `isEnabled` indicating if highlighting is allowed on the current selection,
-* `value` indicating if the selection is already highlighted.
+* `isEnabled`, which indicates whether highlighting is allowed on the current selection,
+* `value`, which indicates whether the selection is already highlighted.
 
 ```js
 refresh() {
@@ -66,9 +66,9 @@ refresh() {
 
 ### Command logic
 
-Now that we have the necessary state we can add logic for updating the model.
+Now that we have the necessary state, we can add logic for updating the model.
 
-Let's update the `execute()` method like so:
+Let's update the `execute()` method like this:
 
 ```js
 execute() {
@@ -98,17 +98,17 @@ execute() {
 }
 ```
 
-All changes to the model are done using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method and so that's what we use.
+All changes to the model are made using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so that's what we'll use.
 
-In the callback, we first check if selection is collapsed. Unlike standard selection which can span multiple letters, elements or even blocks, collapsed selection has a range of zero, meaning that is starts and ends at the same position. In other words, collapsed selection is just a caret.
+In the callback, we first check if the selection is collapsed. Unlike a standard selection, which can span multiple letters, elements, or even blocks, a collapsed selection has a range of zero, meaning that it starts and ends at the same position. In other words, collapsed selection is just a caret.
 
-And so, if we are dealing with standard selection (not collapsed), we retrieve all ranges where the `highlight` attribute can be used, loop over them and either add or remove this attribute, depending on the current state.
+So, if we are dealing with a standard (not collapsed) selection, we check for all the ranges where the `highlight` attribute can be used, loop over them, and either add or remove this attribute depending on the current state.
 
-If selection is collapsed, we either add or remove the attribute.
+If the selection is collapsed, we either add or remove the attribute based on the current state.
 
 ### Testing changes
 
-Let's test our changes. In the browser, select part of the text in the editor. Then open the console and run the following code:
+Let's test our changes. In the browser, select some of the text in the editor. Then open a console and run the following code:
 
 ```js
 editor.execute('highlight');
@@ -120,4 +120,4 @@ If everything went well, the text you selected should be highlighted in the edit
 
 If you want to read more about the commands, see the {@link framework/architecture/core-editor-architecture#commands Commands} document.
 
-Otherwise go to the next chapter, where you'll {@link tutorial/view learn more about updating model UI}.
+Otherwise go to the next chapter, where you'll {@link tutorial/view learn more about updating the model UI}.
