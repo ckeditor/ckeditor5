@@ -390,6 +390,9 @@ class EditorWatchdogInitPlugin {
 		}, { priority: 1000 - 1 } );
 	}
 
+	/**
+	 * Creates a model node (element or text) based on provided JSON.
+	 */
 	private _createNode( writer: Writer, jsonNode: any ): Text | Element {
 		if ( 'name' in jsonNode ) {
 			// If child has name property, it is an Element.
@@ -409,7 +412,7 @@ class EditorWatchdogInitPlugin {
 	}
 
 	/**
-	 * Restores the editor by setting all operations, attributes and markers.
+	 * Restores the editor by setting the document data, roots attributes and markers.
 	 */
 	private _restoreEditorData( writer: Writer ): void {
 		const editor = this.editor!;
