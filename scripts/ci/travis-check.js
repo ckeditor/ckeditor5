@@ -13,7 +13,7 @@ const childProcess = require( 'child_process' );
 const path = require( 'path' );
 
 const { cyan, green } = require( './ansi-colors' );
-const executePackageTests = require( './check-packages-code-coverage' );
+const checkPackagesCodeCoverage = require( './check-packages-code-coverage' );
 const execFactory = require( './exec-factory' );
 const shouldRunShortFlow = require( './should-run-short-flow' );
 const triggerCkeditor5ContinuousIntegration = require( './trigger-ckeditor5-continuous-integration' );
@@ -41,7 +41,7 @@ function testsJob() {
 	if ( shortFlow ) {
 		console.log( green( 'Only the documentation files were modified, skipping checking the code coverage.\n' ) );
 	} else {
-		const coverageExitCode = executePackageTests( {
+		const coverageExitCode = checkPackagesCodeCoverage( {
 			skipPackages: [ 'ckeditor5-minimap' ]
 		} );
 

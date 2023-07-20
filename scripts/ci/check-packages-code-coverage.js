@@ -39,7 +39,7 @@ const travisFolder = new TravisFolder();
  * @param {Boolean} [options.skipCompilingFramework=false] Whether to compile framework packages.
  * @returns {Number} A bash exit code. When returns `0`, everything is fine (no errors).
  */
-module.exports = function executePackageTests( {
+module.exports = function checkPackagesCodeCoverage( {
 	repositoryDirectory = CKEDITOR5_ROOT_DIRECTORY,
 	packagesDirectory = 'packages',
 	shouldRunFrameworkTests = true,
@@ -102,7 +102,7 @@ module.exports = function executePackageTests( {
 
 		travisFolder.end( 'typescript-compilation' );
 	} else {
-		console.log( yellow( '\nSkipping compiling CKEditor5 Framework Typescript packages\n' ) );
+		console.log( yellow( '\nSkipping compiling CKEditor 5 Framework TypeScript packages\n' ) );
 	}
 
 	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
