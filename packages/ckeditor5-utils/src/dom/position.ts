@@ -83,7 +83,8 @@ import getElementsIntersectionRect from './getelementsintersectionrect';
  * @param options The input data and configuration of the helper.
  */
 export function getOptimalPosition( {
-	element, target, positions, limiter, fitInViewport, viewportOffsetConfig }: Options ): Position | null {
+	element, target, positions, limiter, fitInViewport, viewportOffsetConfig
+}: Options ): Position | null {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-utils/issues/157
 	if ( isFunction( target ) ) {
@@ -114,7 +115,7 @@ export function getOptimalPosition( {
 	const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig ) || null;
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
 
-	if ( ( !ancestorsIntersectionRect ) || ( !targetRect.getVisible() ) ) {
+	if ( !ancestorsIntersectionRect || !targetRect.getVisible() ) {
 		return null;
 	}
 
@@ -300,7 +301,7 @@ class PositionObject implements Position {
 	public name?: string;
 	public config?: object;
 
-	private _positioningFunctionCorrdinates!: { left: number; top: number };
+	private _positioningFunctionCoordinates!: { left: number; top: number };
 	private _options!: ConstructorParameters<typeof PositionObject>[ 1 ];
 	private _cachedRect?: Rect;
 	private _cachedAbsoluteRect?: Rect;
@@ -339,7 +340,7 @@ class PositionObject implements Position {
 		this.name = name;
 		this.config = config;
 
-		this._positioningFunctionCorrdinates = { left, top };
+		this._positioningFunctionCoordinates = { left, top };
 		this._options = options;
 	}
 
@@ -408,8 +409,8 @@ class PositionObject implements Position {
 		}
 
 		this._cachedRect = this._options.elementRect.clone().moveTo(
-			this._positioningFunctionCorrdinates.left,
-			this._positioningFunctionCorrdinates.top
+			this._positioningFunctionCoordinates.left,
+			this._positioningFunctionCoordinates.top
 		);
 
 		return this._cachedRect;
