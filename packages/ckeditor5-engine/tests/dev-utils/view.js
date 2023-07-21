@@ -169,6 +169,15 @@ describe( 'view test utils', () => {
 			expect( stringify( p ) ).to.equal( '<p bar="taz" baz="qux" class="short wide"><b foo="bar">foobar</b></p>' );
 		} );
 
+		it( 'should write elements with attributes which values include double quotes', () => {
+			const text = new Text( viewDocument, 'foobar' );
+			const p = new Element( viewDocument, 'p', {
+				style: 'font-family: Calibri, "Times New Roman", sans-serif'
+			}, text );
+
+			expect( stringify( p ) ).to.equal( '<p style="font-family:Calibri, &quot;Times New Roman&quot;, sans-serif">foobar</p>' );
+		} );
+
 		it( 'should write selection ranges inside elements', () => {
 			const text1 = new Text( viewDocument, 'foobar' );
 			const text2 = new Text( viewDocument, 'bazqux' );
