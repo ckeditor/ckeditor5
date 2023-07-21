@@ -17,7 +17,9 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
-	findClosestScrollableAncestor,
+	getElementsIntersectionRect,
+	getScrollableAncestors,
+
 	Rect
 } from '@ckeditor/ckeditor5-utils';
 
@@ -258,13 +260,13 @@ export default class StickyPanelView extends View {
 			return;
 		}
 
-		const scrollableAncestors = _getScrollableAncestors( this.limiterElement );
+		const scrollableAncestors = getScrollableAncestors( this.limiterElement );
 
 		if ( scrollTarget && !scrollableAncestors.includes( scrollTarget ) ) {
 			return;
 		}
 
-		const visibleAncestorsRect = _getVisibleAncestorsRect( scrollableAncestors, this.viewportTopOffset );
+		const visibleAncestorsRect = getElementsIntersectionRect( scrollableAncestors, this.viewportTopOffset );
 		const limiterRect = new Rect( this.limiterElement );
 
 		// @if CK_DEBUG_STICKYPANEL // if ( visibleAncestorsRect ) {
@@ -385,62 +387,4 @@ export default class StickyPanelView extends View {
 	private get _contentPanelRect(): Rect {
 		return new Rect( this._contentPanel );
 	}
-}
-
-// Loops over the given element's ancestors to find all the scrollable elements.
-//
-// @private
-// @param element
-// @returns Array<HTMLElement> An array of scrollable element's ancestors.
-function _getScrollableAncestors( element: HTMLElement ) {
-	const scrollableAncestors = [];
-	let scrollableAncestor = findClosestScrollableAncestor( element );
-
-	while ( scrollableAncestor && scrollableAncestor !== global.document.body ) {
-		scrollableAncestors.push( scrollableAncestor );
-		scrollableAncestor = findClosestScrollableAncestor( scrollableAncestor! );
-	}
-
-	scrollableAncestors.push( global.document );
-
-	return scrollableAncestors;
-}
-
-// Calculates the intersection rectangle of the given element and its scrollable ancestors (including window).
-// Also, takes into account the passed viewport top offset.
-//
-// @private
-// @param scrollableAncestors
-// @param viewportTopOffset
-// @returns Rect
-function _getVisibleAncestorsRect( scrollableAncestors: Array<HTMLElement | Document>, viewportTopOffset: number ) {
-	const scrollableAncestorsRects = scrollableAncestors.map( ancestor => {
-		// The document (window) is yet another scrollable ancestor, but cropped by the top offset.
-		if ( ancestor instanceof Document ) {
-			const windowRect = new Rect( global.window );
-
-			windowRect.top += viewportTopOffset;
-			windowRect.height -= viewportTopOffset;
-
-			return windowRect;
-		} else {
-			return new Rect( ancestor );
-		}
-	} );
-
-	let scrollableAncestorsIntersectionRect: Rect | null = scrollableAncestorsRects[ 0 ];
-
-	// @if CK_DEBUG_STICKYPANEL // for ( const scrollableAncestorRect of scrollableAncestorsRects ) {
-	// @if CK_DEBUG_STICKYPANEL // 	RectDrawer.draw( scrollableAncestorRect, {
-	// @if CK_DEBUG_STICKYPANEL // 		outlineWidth: '1px', opacity: '.7', outlineStyle: 'dashed'
-	// @if CK_DEBUG_STICKYPANEL // 	}, 'Scrollable ancestor' );
-	// @if CK_DEBUG_STICKYPANEL // }
-
-	for ( const scrollableAncestorRect of scrollableAncestorsRects.slice( 1 ) ) {
-		if ( scrollableAncestorsIntersectionRect ) {
-			scrollableAncestorsIntersectionRect = scrollableAncestorsIntersectionRect.getIntersection( scrollableAncestorRect );
-		}
-	}
-
-	return scrollableAncestorsIntersectionRect;
 }
