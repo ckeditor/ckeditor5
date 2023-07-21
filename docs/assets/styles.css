@@ -90,7 +90,7 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 	display: inline-block;
 	flex-grow: 1;
 	text-align: center;
-	border-top: 2px solid transparent;
+	border-top: 3px solid transparent;
 }
 
 .tabs ul.tabs__list li a.tabs__list__tab-text {
@@ -104,7 +104,7 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 
 .tabs ul.tabs__list li.tabs__list__tab_selected {
 	background: var(--tabs-active-background);
-	border-top: 2px solid var(--tabs-active-border);
+	border-top: 3px solid var(--tabs-active-border);
 }
 
 .tabs ul.tabs__list li.tabs__list__tab_selected a.tabs__list__tab-text {
