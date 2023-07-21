@@ -321,8 +321,7 @@ function getBalloonPositionData( editor: Editor, relatedElement: ViewElement ) {
 			defaultPositions.southArrowNorth,
 			defaultPositions.southArrowNorthWest,
 			defaultPositions.southArrowNorthEast,
-			defaultPositions.viewportStickyNorth,
-			defaultPositions.viewportHidden
+			defaultPositions.viewportStickyNorth
 		]
 	};
 }

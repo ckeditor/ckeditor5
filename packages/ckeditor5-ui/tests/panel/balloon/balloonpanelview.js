@@ -191,8 +191,7 @@ describe( 'BalloonPanelView', () => {
 					BalloonPanelView.defaultPositions.northArrowSouthMiddleEast,
 					BalloonPanelView.defaultPositions.northArrowSouthWest,
 					BalloonPanelView.defaultPositions.northArrowSouthEast,
-					BalloonPanelView.defaultPositions.viewportStickyNorth,
-					BalloonPanelView.defaultPositions.viewportHidden
+					BalloonPanelView.defaultPositions.viewportStickyNorth
 				],
 				limiter: document.body,
 				fitInViewport: true
@@ -1039,7 +1038,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should have a proper length', () => {
-			expect( Object.keys( positions ) ).to.have.length( 34 );
+			expect( Object.keys( positions ) ).to.have.length( 33 );
 		} );
 
 		// ------- North

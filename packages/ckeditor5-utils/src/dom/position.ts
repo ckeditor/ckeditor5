@@ -11,7 +11,7 @@ import global from './global';
 import Rect, { type RectSource } from './rect';
 import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
-import getScrollableAncestors from './getscrollableancestors';
+import findClosestScrollableAncestor from './findclosestscrollableancestor';
 import { isFunction } from 'lodash-es';
 
 // @if CK_DEBUG_POSITION // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default
@@ -81,7 +81,8 @@ import { isFunction } from 'lodash-es';
  *
  * @param options The input data and configuration of the helper.
  */
-export function getOptimalPosition( { element, target, positions, limiter, fitInViewport, viewportOffsetConfig }: Options ): Position {
+export function getOptimalPosition( {
+	element, target, positions, limiter, fitInViewport, viewportOffsetConfig }: Options ): Position | null {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-utils/issues/157
 	if ( isFunction( target ) ) {
@@ -98,24 +99,13 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
 
-	let bestPosition: Position;
+	let bestPosition: Position | null;
 
 	// Get intersection of all scrollable ancestors of `target`.
-	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
-	const ancestorsIntersection: Rect | null = allScrollableAncestors
-		.reverse()
-		.map( item => new Rect( item as HTMLElement ) )
-		.reduce( ( ancestorIntersectionAccumulator, ancestorRect ): Rect => {
-			if ( !ancestorIntersectionAccumulator || ancestorIntersectionAccumulator.top === undefined ) {
-				return ancestorRect;
-			}
+	const allScrollableAncestors = _getScrollableAncestors( target as HTMLElement );
 
-			if ( !ancestorRect || ancestorRect.top === undefined ) {
-				return ancestorIntersectionAccumulator;
-			}
-
-			return ancestorIntersectionAccumulator.getIntersection( ancestorRect ) as Rect;
-		} );
+	// TODO `viewportOffsetConfig` !!!
+	const ancestorsIntersection = _getVisibleAncestorsRect( allScrollableAncestors, viewportOffsetConfig?.top || 0 );
 
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
 	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
@@ -124,19 +114,8 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
 
 	if ( ( !ancestorsIntersection ) || ( !targetRect.getVisible() ) ) {
-		// Default last position is `viewportHidden`.
-		return new PositionObject( positions.at( -1 )!, positionOptions );
+		return null;
 	}
-	const ancestorsIntersectionWindowRect = new Rect( window ).getIntersection( ancestorsIntersection! );
-
-	if ( !ancestorsIntersectionWindowRect || ancestorsIntersectionWindowRect.getArea() === 0 ) {
-		// Default last position is `viewportHidden`.
-		return new PositionObject( positions.at( -1 )!, positionOptions );
-	}
-	// // @if CK_DEBUG_POSITION // else {
-	// // @if CK_DEBUG_POSITION // RectDrawer.draw( ancestorsIntersectionWindowRect,
-	// // @if CK_DEBUG_POSITION //   { outlineWidth: '4px', outlineColor: 'red' }, 'Ancestors intersection' );
-	// // @if CK_DEBUG_POSITION // }
 
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
@@ -152,22 +131,11 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		// @if CK_DEBUG_POSITION // 	RectDrawer.draw( limiterRect, { outlineWidth: '5px', outlineColor: 'green' }, 'Visible limiter' );
 		// @if CK_DEBUG_POSITION // }
 
-		const properRectLimiter = isNaN( ancestorsIntersectionWindowRect.top ) ? limiterRect : ancestorsIntersectionWindowRect;
-		const limiterViewportIntersection = ( properRectLimiter && !isNaN( properRectLimiter.top ) && viewportRect ) ?
-			properRectLimiter.getIntersection( viewportRect! ) : properRectLimiter;
-
-		Object.assign( positionOptions, {
-			limiterRect, viewportRect: target instanceof Range ? limiterRect : limiterViewportIntersection } );
-
-		// When `limiter` is not set and `getBestPosition` return null lets return the first `position`
-		// from the `positions` list. If the limiter is set - we will take the last `position` (hide).
-		const indexOfPositionToReturn = limiter ? -1 : 0;
+		Object.assign( positionOptions, { limiterRect, viewportRect: ancestorsIntersection } );
 
 		// If there's no best position found, i.e. when all intersections have no area because
-		// rects have no width or height, then just use the position from positions list
-		// indexed by `indexOfPositionToReturn`.
-		bestPosition = getBestPosition( positions, positionOptions ) ||
-			new PositionObject( positions.at( indexOfPositionToReturn )!, positionOptions );
+		// rects have no width or height, then just return `null`
+		bestPosition = getBestPosition( positions, positionOptions );
 	}
 
 	return bestPosition;
@@ -283,6 +251,64 @@ function getRectForAbsolutePositioning( rect: Rect ): Rect {
 	const { scrollX, scrollY } = global.window;
 
 	return rect.clone().moveBy( scrollX, scrollY );
+}
+
+// Loops over the given element's ancestors to find all the scrollable elements.
+//
+// @private
+// @param element
+// @returns Array<HTMLElement> An array of scrollable element's ancestors.
+function _getScrollableAncestors( element: HTMLElement ) {
+	const scrollableAncestors = [];
+	let scrollableAncestor = findClosestScrollableAncestor( element );
+
+	while ( scrollableAncestor && scrollableAncestor !== global.document.body ) {
+		scrollableAncestors.push( scrollableAncestor );
+		scrollableAncestor = findClosestScrollableAncestor( scrollableAncestor! );
+	}
+
+	scrollableAncestors.push( global.document );
+
+	return scrollableAncestors;
+}
+
+// Calculates the intersection rectangle of the given element and its scrollable ancestors (including window).
+// Also, takes into account the passed viewport top offset.
+//
+// @private
+// @param scrollableAncestors
+// @param viewportTopOffset
+// @returns Rect
+function _getVisibleAncestorsRect( scrollableAncestors: Array<HTMLElement | Document>, viewportTopOffset: number ) {
+	const scrollableAncestorsRects = scrollableAncestors.map( ancestor => {
+		// The document (window) is yet another scrollable ancestor, but cropped by the top offset.
+		if ( ancestor instanceof Document ) {
+			const windowRect = new Rect( global.window );
+
+			windowRect.top += viewportTopOffset;
+			windowRect.height -= viewportTopOffset;
+
+			return windowRect;
+		} else {
+			return new Rect( ancestor );
+		}
+	} );
+
+	let scrollableAncestorsIntersectionRect: Rect | null = scrollableAncestorsRects[ 0 ];
+
+	// @if CK_DEBUG_POSITION // for ( const scrollableAncestorRect of scrollableAncestorsRects ) {
+	// @if CK_DEBUG_POSITION // 	RectDrawer.draw( scrollableAncestorRect, {
+	// @if CK_DEBUG_POSITION // 		outlineWidth: '1px', opacity: '.7', outlineStyle: 'dashed'
+	// @if CK_DEBUG_POSITION // 	}, 'Scrollable ancestor' );
+	// @if CK_DEBUG_POSITION // }
+
+	for ( const scrollableAncestorRect of scrollableAncestorsRects.slice( 1 ) ) {
+		if ( scrollableAncestorsIntersectionRect ) {
+			scrollableAncestorsIntersectionRect = scrollableAncestorsIntersectionRect.getIntersection( scrollableAncestorRect );
+		}
+	}
+
+	return scrollableAncestorsIntersectionRect;
 }
 
 /**

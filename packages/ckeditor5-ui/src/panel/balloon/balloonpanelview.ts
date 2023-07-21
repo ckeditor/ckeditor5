@@ -17,6 +17,7 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
+	type Position,
 	type PositionOptions,
 	type PositioningFunction,
 	type Rect
@@ -28,6 +29,39 @@ import '../../../theme/components/panel/balloonpanel.css';
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
 const OFF_THE_SCREEN_POSITION = -99999;
+
+/**
+ * `positionOffScreen`
+ *
+ * ```
+ *  +- - - - - - - - -+ ( Balloon is placed out of the screen )
+ *  |     Balloon     |
+ *  +- - - - - - - - -+
+ *
+ *				+---------------------------+
+ *				|        [ Target ]         |
+ *				+---------------------------+
+ *			+-----------------------------------+
+ *			|                                   |
+ *			|                                   |
+ *			|                                   |
+ *			|                                   |
+ *			|              Viewport             |
+ *			|                                   |
+ *			|                                   |
+ *			|                                   |
+ *			|                                   |
+ *			+-----------------------------------+
+ * ```
+ */
+const positionOffScreen: Position = {
+	top: OFF_THE_SCREEN_POSITION,
+	left: OFF_THE_SCREEN_POSITION,
+	name: 'arrowless',
+	config: {
+		withArrow: false
+	}
+};
 
 /**
  * The balloon panel view class.
@@ -245,14 +279,17 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthMiddleEast,
 				defaultPositions.northArrowSouthWest,
 				defaultPositions.northArrowSouthEast,
-				defaultPositions.viewportStickyNorth,
-				defaultPositions.viewportHidden
+				defaultPositions.viewportStickyNorth
 			],
 			limiter: defaultLimiterElement,
 			fitInViewport: true
 		}, options ) as PositionOptions;
 
-		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
+		let optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
+
+		if ( !optimalPosition ) {
+			optimalPosition = positionOffScreen;
+		}
 
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
@@ -823,31 +860,6 @@ export default class BalloonPanelView extends View {
 	 *		+-----------------------------------+
 	 * ```
 	 *
-	 * **Hidden**
-	 *
-	 * * `viewportHidden`
-	 *
-	 * ```
-	 *  +- - - - - - - - -+ ( Balloon is placed out of the screen )
-	 *  |     Balloon     |
-	 *  +- - - - - - - - -+
-	 *
-	 *				+---------------------------+
-	 *				|        [ Target ]         |
-	 *				+---------------------------+
-	 *			+-----------------------------------+
-	 *			|                                   |
-	 *			|                                   |
-	 *			|                                   |
-	 *			|                                   |
-	 *			|              Viewport             |
-	 *			|                                   |
-	 *			|                                   |
-	 *			|                                   |
-	 *			|                                   |
-	 *			+-----------------------------------+
-	 * ```
-	 *
 	 * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
 	 *
 	 * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
@@ -1165,20 +1177,6 @@ export function generatePositions( options: {
 			return {
 				top: viewportRect!.top + stickyVerticalOffset,
 				left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-				name: 'arrowless',
-				config: {
-					withArrow: false,
-					...config
-				}
-			};
-		},
-
-		// ------- Hidden
-
-		viewportHidden: () => {
-			return {
-				top: OFF_THE_SCREEN_POSITION,
-				left: OFF_THE_SCREEN_POSITION,
 				name: 'arrowless',
 				config: {
 					withArrow: false,

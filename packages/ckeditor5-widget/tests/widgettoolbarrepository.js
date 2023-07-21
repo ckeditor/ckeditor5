@@ -625,8 +625,7 @@ describe( 'WidgetToolbarRepository', () => {
 						defaultPositions.southArrowNorth,
 						defaultPositions.southArrowNorthWest,
 						defaultPositions.southArrowNorthEast,
-						defaultPositions.viewportStickyNorth,
-						defaultPositions.viewportHidden
+						defaultPositions.viewportStickyNorth
 					]
 				},
 				balloonClassName: 'ck-toolbar-container'

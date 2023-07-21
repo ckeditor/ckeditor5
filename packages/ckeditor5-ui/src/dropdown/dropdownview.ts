@@ -269,12 +269,18 @@ export default class DropdownView extends View<HTMLDivElement> {
 			// If "auto", find the best position of the panel to fit into the viewport.
 			// Otherwise, simply assign the static position.
 			if ( this.panelPosition === 'auto' ) {
-				this.panelView.position = DropdownView._getOptimalPosition( {
+				const optimalPanelPosition = DropdownView._getOptimalPosition( {
 					element: this.panelView.element!,
 					target: this.buttonView.element!,
 					fitInViewport: true,
 					positions: this._panelPositions
-				} ).name as PanelPosition;
+				} );
+
+				if ( !optimalPanelPosition ) {
+					this.panelView.position = this._panelPositions[ 0 ].name as PanelPosition;
+				} else {
+					this.panelView.position = optimalPanelPosition.name as PanelPosition;
+				}
 			} else {
 				this.panelView.position = this.panelPosition;
 			}
