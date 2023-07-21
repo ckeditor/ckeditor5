@@ -21,7 +21,7 @@ import Watchdog, { type WatchdogConfig } from './watchdog';
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
+import type { Writer, Operation } from 'ckeditor5/src/engine';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { CommentsRepository } from '@ckeditor/ckeditor5-comments';
@@ -51,14 +51,9 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	private _throttledSave: DebouncedFunc<() => void>;
 
 	/**
-	 * The latest saved editor data represented as a root name -> root data object.
+	 * The latest saved editor data represented as operations and collaboration data (comment threads and suggestions).
 	 */
 	private _data?: EditorData;
-
-	/**
-	 * The latest saved editor collaboration data (comment threads and suggestions).
-	 */
-	private _collaborationData?: CollaborationData;
 
 	/**
 	 * The last document version.
@@ -178,30 +173,15 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				console.error( 'An error happened during the editor destroying.', err );
 			} )
 			.then( () => {
-				const existingRoots = Object.keys( this._data!.roots ).reduce( ( acc, rootName ) => {
-					acc[ rootName ] = '';
-
-					return acc;
-				}, {} as Record<string, string> );
-
 				const updatedConfig = {
 					...this._config,
 					extraPlugins: this._config!.extraPlugins || [],
-					_watchdogInitialData: {
-						...this._data!,
-						...this._collaborationData!
-					}
+					_watchdogInitialData: this._data
 				};
 
 				updatedConfig.extraPlugins!.push( EditorWatchdogInitPlugin as any );
 
-				if ( typeof this._elementOrData === 'string' ) {
-					return this.create( existingRoots, updatedConfig, updatedConfig!.context );
-				} else {
-					updatedConfig.initialData = existingRoots;
-
-					return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
-				}
+				return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
 			} )
 			.then( () => {
 				this._fire( 'restart' );
@@ -239,9 +219,8 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 				editor.model.document.on( 'change:data', this._throttledSave );
 
-				this._data = this._getData();
-				this._collaborationData = this._getCollaborationData();
 				this._lastDocumentVersion = editor.model.document.version;
+				this._data = this._getData();
 
 				this.state = 'ready';
 				this._fire( 'stateChange' );
@@ -270,8 +249,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 			.then( () => {
 				this._stopErrorHandling();
 
-				// Save data if there is a remaining editor data change.
-				this._throttledSave.flush();
+				this._throttledSave.cancel();
 
 				const editor = this._editor;
 
@@ -294,9 +272,8 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		const version = this._editor!.model.document.version;
 
 		try {
-			this._data = this._getData();
-			this._collaborationData = this._getCollaborationData();
 			this._lastDocumentVersion = version;
+			this._data = this._getData();
 		} catch ( err ) {
 			console.error(
 				err,
@@ -318,46 +295,13 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 */
 	private _getData(): EditorData {
 		const editor = this.editor!;
-		const rootNames = editor.model.document.getRootNames();
-		const data: EditorData = {
-			roots: {},
-			markers: {}
-		};
-
-		rootNames.forEach( rootName => {
-			const root = editor.model.document.getRoot( rootName )!;
-
-			data.roots[ rootName ] = {
-				content: JSON.stringify( Array.from( root.getChildren() ) ),
-				attributes: JSON.stringify( Array.from( root.getAttributes() ) )
-			};
-		} );
-
-		for ( const marker of editor.model.markers ) {
-			if ( !marker._affectsData ) {
-				continue;
-			}
-
-			data.markers[ marker.name ] = {
-				rangeJSON: marker.getRange().toJSON() as any,
-				usingOperation: marker._managedUsingOperations,
-				affectsData: marker._affectsData
-			};
-		}
-
-		return data;
-	}
-
-	/**
-	 * Gets the collaboration data - comment threads and suggestions.
-	 */
-	private _getCollaborationData(): CollaborationData {
-		const { plugins } = this._editor!;
+		const { plugins } = editor;
 
 		const commentsRepository = plugins.has( 'CommentsRepository' ) && plugins.get( 'CommentsRepository' ) as CommentsRepository;
 		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as TrackChanges;
 
 		return {
+			operations: editor.model.document.history.getOperations( undefined, this._lastDocumentVersion ),
 			commentThreads: JSON.stringify(
 				commentsRepository ?
 					commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) :
@@ -405,7 +349,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 class EditorWatchdogInitPlugin {
 	public editor: Editor;
 
-	private _data: EditorData & CollaborationData;
+	private _data: EditorData;
 
 	constructor( editor: Editor ) {
 		this.editor = editor;
@@ -435,66 +379,17 @@ class EditorWatchdogInitPlugin {
 	}
 
 	/**
-	 * Creates a model node (element or text) based on provided JSON.
-	 */
-	private _createNode( writer: Writer, jsonNode: any ): Text | Element {
-		if ( 'name' in jsonNode ) {
-			// If child has name property, it is an Element.
-			const element = writer.createElement( jsonNode.name, jsonNode.attributes );
-
-			if ( jsonNode.children ) {
-				for ( const child of jsonNode.children ) {
-					element._appendChild( this._createNode( writer, child ) );
-				}
-			}
-
-			return element;
-		} else {
-			// Otherwise, it is a Text node.
-			return writer.createText( jsonNode.data, jsonNode.attributes );
-		}
-	}
-
-	/**
 	 * Restores the editor by setting the document data, roots attributes and markers.
 	 */
 	private _restoreEditorData( writer: Writer ): void {
 		const editor = this.editor!;
 
-		Object.entries( this._data!.roots ).forEach( ( [ rootName, { content, attributes } ] ) => {
-			const parsedNodes: Array<Node | Element> = JSON.parse( content );
-			const parsedAttributes: Array<[ string, unknown ]> = JSON.parse( attributes );
+		this._data.operations.forEach( operation => {
+			const jsonOperation = operation.toJSON();
+			const clonedOperation = editor.model.createOperationFromJSON( jsonOperation );
 
-			const rootElement = editor.model.document.getRoot( rootName )!;
-
-			for ( const [ key, value ] of parsedAttributes ) {
-				writer.setAttribute( key, value, rootElement );
-			}
-
-			for ( const child of parsedNodes ) {
-				const node = this._createNode( writer, child );
-
-				writer.insert( node, rootElement, 'end' );
-			}
-		} );
-
-		Object.entries( this._data!.markers ).forEach( ( [ markerName, markerOptions ] ) => {
-			const { document } = editor.model;
-			const {
-				rangeJSON: { start, end },
-				...options
-			} = markerOptions;
-
-			const root = document.getRoot( start.root )!;
-			const startPosition = writer.createPositionFromPath( root, start.path, start.stickiness );
-			const endPosition = writer.createPositionFromPath( root, end.path, end.stickiness );
-
-			const range = writer.createRange( startPosition, endPosition );
-
-			writer.addMarker( markerName, {
-				range,
-				...options
-			} );
+			writer.batch.addOperation( clonedOperation );
+			editor.model.applyOperation( clonedOperation );
 		} );
 	}
 
@@ -521,18 +416,7 @@ class EditorWatchdogInitPlugin {
 }
 
 export type EditorData = {
-	roots: Record<string, {
-		content: string;
-		attributes: string;
-	}>;
-	markers: Record<string, {
-		rangeJSON: { start: any; end: any };
-		usingOperation: boolean;
-		affectsData: boolean;
-	}>;
-};
-
-export type CollaborationData = {
+	operations: Array<Operation>;
 	commentThreads: string;
 	suggestions: string;
 };
