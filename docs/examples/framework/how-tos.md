@@ -266,3 +266,117 @@ editor.listenTo(
 	{ context: "a" }
 );
 ```
+
+### How to create a widget with a single view element and multiple/nested model elements?
+
+```js
+import { Plugin } from "ckeditor5/src/core";
+import { toWidget, toWidgetEditable } from "ckeditor5/src/widget";
+
+class Forms extends Plugin {
+	init() {
+		const editor = this.editor;
+		const schema = editor.model.schema;
+
+		schema.register("forms", {
+			inheritAllFrom: "$inlineObject",
+			allowAttributes: "type",
+		});
+
+		schema.register("formName", {
+			allowIn: "forms",
+			allowChildren: "$text",
+			isLimit: true,
+		});
+
+		// Disallow all attributes on $text inside `formName` (there won't be any bold/italic etc. inside).
+		schema.addAttributeCheck((context) => {
+			if (context.endsWith("formName $text")) {
+				return false;
+			}
+		});
+
+		// Allow only text nodes inside `formName` (without any elements that could be down-casted to HTML elements).
+		schema.addChildCheck((context, childDefinition) => {
+			if (
+				context.endsWith("formName") &&
+				childDefinition.name !== "$text"
+			) {
+				return false;
+			}
+		});
+
+		// Data upcast. Convert a single element loaded by the editor to a structure of model elements.
+		editor.conversion.for("upcast").elementToElement({
+			view: {
+				name: "input",
+				attributes: ["type", "name"],
+			},
+			model: (viewElement, { writer }) => {
+				const modelElement = writer.createElement("forms", {
+					type: viewElement.getAttribute("type"),
+				});
+				const nameModelElement = writer.createElement("formName");
+
+				// Build model structure out of a single view element.
+				writer.insert(nameModelElement, modelElement, 0);
+				writer.insertText(
+					viewElement.getAttribute("name"),
+					nameModelElement,
+					0
+				);
+
+				return modelElement;
+			},
+		});
+
+		// Editing downcast. Convert model elements separately to widget and to widget-editable nested inside.
+		editor.conversion
+			.for("editingDowncast")
+			.elementToElement({
+				model: "forms",
+				view: (modelElement, { writer }) => {
+					const viewElement = writer.createContainerElement("span", {
+						"data-type": modelElement.getAttribute("type"),
+						style: "display: inline-block",
+					});
+
+					return toWidget(viewElement, writer);
+				},
+			})
+			.elementToElement({
+				model: "formName",
+				view: (modelElement, { writer }) => {
+					const viewElement = writer.createEditableElement("span");
+
+					return toWidgetEditable(viewElement, writer);
+				},
+			});
+
+		// Data downcast. Convert the outermost model element and all its content into a single view element.
+		editor.conversion.for("dataDowncast").elementToElement({
+			model: "forms",
+			view: (modelElement, { writer, consumable }) => {
+				let nameModelElement;
+
+				// Find the `formName` model element and consume everything inside the model element range,
+				// so it won't get converted by any other downcast converters.
+				for (const { item } of editor.model.createRangeIn(
+					modelElement
+				)) {
+					if (item.is("element", "formName")) {
+						nameModelElement = modelElement.getChild(0);
+					}
+
+					consumable.consume(item, "insert");
+				}
+
+				return writer.createContainerElement("input", {
+					type: modelElement.getAttribute("type"),
+					name: nameModelElement.getChild(0).data,
+				});
+			},
+		});
+	}
+}
+```
