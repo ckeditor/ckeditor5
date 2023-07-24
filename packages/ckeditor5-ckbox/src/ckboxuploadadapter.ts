@@ -22,7 +22,7 @@ import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/cke
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
-import { getImageUrls } from './utils';
+import { getImageUrls, getWorkspaceIds } from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -133,6 +133,33 @@ class Adapter implements UploadAdapter {
 	}
 
 	/**
+	 * The ID of workspace to use.
+	 */
+	public getWorkspaceId(): Promise<string> {
+		const t = this.editor.t;
+		const cannotAccessDefaultWorkspaceError = t( 'Cannot access default workspace.' );
+		const workspaceIds = getWorkspaceIds( this.token );
+		const defaultWorkspaceId = this.editor.config.get( 'ckbox.defaultUploadWorkspaceId' );
+
+		if ( defaultWorkspaceId ) {
+			if ( workspaceIds.includes( defaultWorkspaceId ) ) {
+				return Promise.resolve( defaultWorkspaceId );
+			}
+
+			/**
+			 * The user is not authorized to access workspace defined in `ckbox.defaultUploadWorkspaceId` configuration.
+			 *
+			 * @error ckbox-access-default-workspace-error
+			 */
+			logError( 'ckbox-access-default-workspace-error' );
+
+			return Promise.reject( cannotAccessDefaultWorkspaceError );
+		}
+
+		return Promise.resolve( workspaceIds[ 0 ] );
+	}
+
+	/**
 	 * Resolves a promise with an array containing available categories with which the uploaded file can be associated.
 	 *
 	 * If the API returns limited results, the method will collect all items.
@@ -143,6 +170,7 @@ class Adapter implements UploadAdapter {
 
 		categoryUrl.searchParams.set( 'limit', ITEMS_PER_REQUEST.toString() );
 		categoryUrl.searchParams.set( 'offset', offset.toString() );
+		categoryUrl.searchParams.set( 'workspaceId', await this.getWorkspaceId() );
 
 		return this._sendHttpRequest( { url: categoryUrl } )
 			.then( async data => {
@@ -231,6 +259,8 @@ class Adapter implements UploadAdapter {
 
 		const uploadUrl = new URL( 'assets', this.serviceOrigin );
 		const formData = new FormData();
+
+		uploadUrl.searchParams.set( 'workspaceId', await this.getWorkspaceId() );
 
 		formData.append( 'categoryId', category );
 		formData.append( 'file', file );

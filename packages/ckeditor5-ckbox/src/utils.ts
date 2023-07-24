@@ -36,12 +36,12 @@ export function getImageUrls(
 		type: string;
 	}>;
 } {
-	const environmentId = getEnvironmentId( token );
+	const workspaceId = getWorkspaceIds( token )[ 0 ];
 	const imageBreakpoints = getImageBreakpoints( width );
 	const imageFallbackExtension = getImageFallbackExtension( extension );
-	const imageFallbackUrl = getResponsiveImageUrl( { environmentId, id, origin, width, extension: imageFallbackExtension } );
+	const imageFallbackUrl = getResponsiveImageUrl( { workspaceId, id, origin, width, extension: imageFallbackExtension } );
 	const imageResponsiveUrls = imageBreakpoints.map( imageBreakpoint => {
-		const responsiveImageUrl = getResponsiveImageUrl( { environmentId, id, origin, width: imageBreakpoint, extension: 'webp' } );
+		const responsiveImageUrl = getResponsiveImageUrl( { workspaceId, id, origin, width: imageBreakpoint, extension: 'webp' } );
 
 		return `${ responsiveImageUrl } ${ imageBreakpoint }w`;
 	} );
@@ -66,13 +66,14 @@ export function getImageUrls(
 }
 
 /**
- * Returns an environment id from a token used for communication with the CKBox service.
+ * Returns workspace ids from a token used for communication with the CKBox service.
  */
-export function getEnvironmentId( token: InitializedToken ): string {
+export function getWorkspaceIds( token: InitializedToken ): Array<string> {
 	const [ , binaryTokenPayload ] = token.value.split( '.' );
 	const payload = JSON.parse( atob( binaryTokenPayload ) );
+	const workspaces = payload.auth && payload.auth.ckbox && payload.auth.ckbox.workspaces;
 
-	return payload.aud;
+	return workspaces && workspaces.length ? workspaces : [ payload.aud ];
 }
 
 /**
@@ -123,15 +124,15 @@ function getImageFallbackExtension( extension: string ) {
  * Creates the URL for the given image.
  */
 function getResponsiveImageUrl(
-	{ environmentId, id, origin, width, extension }: {
-		environmentId: string;
+	{ workspaceId, id, origin, width, extension }: {
+		workspaceId: string;
 		id: string;
 		origin: string;
 		width: number;
 		extension: string;
 	}
 ) {
-	const endpoint = `${ environmentId }/assets/${ id }/images/${ width }.${ extension }`;
+	const endpoint = `${ workspaceId }/assets/${ id }/images/${ width }.${ extension }`;
 
 	return new URL( endpoint, origin ).toString();
 }

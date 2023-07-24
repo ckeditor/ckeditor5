@@ -88,6 +88,13 @@ export interface CKBoxConfig {
 	defaultUploadCategories?: Record<string, Array<string>> | null;
 
 	/**
+	 * Defines the workspace id to use during upload when the user has access to more than one workspace.
+	 *
+	 * If defined, it is an error, when the user has no access to the specified workspace.
+	 */
+	defaultUploadWorkspaceId?: string;
+
+	/**
 	 * Inserts the unique asset ID as the `data-ckbox-resource-id` attribute. To disable this behavior, set it to `true`.
 	 *
 	 * @default false

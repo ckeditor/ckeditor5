@@ -38,7 +38,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		// Header.
 		'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
 		// Payload.
-		btoa( JSON.stringify( { aud: 'environment' } ) ),
+		btoa( JSON.stringify( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } ) ),
 		// Signature.
 		'signature'
 	].join( '.' );
@@ -246,7 +246,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		it( 'should abort the upload if cannot determine a category due to network error', () => {
 			sinon.stub( console, 'error' );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', xhr => {
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', xhr => {
 				expect( xhr.requestHeaders ).to.be.an( 'object' );
 				expect( xhr.requestHeaders ).to.contain.property( 'Authorization', jwtToken );
 				expect( xhr.requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
@@ -268,7 +268,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		it( 'should abort the upload if fetching available categories ended with the authorization error', () => {
 			sinon.stub( console, 'error' );
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				401,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { message: 'Invalid token.', statusCode: 401 } )
@@ -289,7 +289,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should abort the upload if a list of available categories is empty', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { items: [], offset: 0, limit: 50, totalCount: 0 } )
@@ -307,7 +307,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should abort the upload if any category does not accept a jpg file', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -328,7 +328,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should abort the upload if the provided configuration uses a non-existing category', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -356,20 +356,20 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should fetch all categories if API limits their results', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
 					items: [], offset: 0, limit: 50, totalCount: 101
 				} )
 			] );
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=50', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=50&workspaceId=workspace1', [
 				200, { 'Content-Type': 'application/json' },
 				JSON.stringify( {
 					items: [], offset: 50, limit: 50, totalCount: 101
 				} )
 			] );
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=100', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=100&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -393,7 +393,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should abort if the provided configuration is not in sync with server', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -405,7 +405,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets&workspaceId=workspace1', [
 				400,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -432,7 +432,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should abort the upload if server results with an error while sending an image', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -442,7 +442,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				401,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -460,7 +460,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should take the first category if many of them accepts a jpg file', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -472,7 +472,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -486,7 +486,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/100.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -498,7 +498,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		it( 'should take the first category if many of them accepts a jpg file (uppercase file extension)', () => {
 			file.name = 'image.JPG';
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -510,7 +510,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -524,7 +524,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/100.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -534,7 +534,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should take the first category if many of them accepts a JPG file', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -546,7 +546,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -560,7 +560,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/100.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -570,7 +570,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should take the first category that allows uploading the file if provided configuration is empty', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -582,7 +582,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -600,7 +600,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -610,7 +610,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should take the first category matching with the configuration (category specified as a name)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -622,7 +622,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -639,7 +639,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -649,7 +649,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should take the first category matching with the configuration (category specified as ID)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -661,7 +661,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -678,7 +678,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -690,7 +690,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		it( 'should take the first category matching with the configuration (uppercase file extension)', () => {
 			file.name = 'image.JPG';
 
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -702,7 +702,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -719,7 +719,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -729,7 +729,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should take the first category matching with the configuration (uppercase configuration)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -741,7 +741,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -758,7 +758,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -768,7 +768,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should take the first allowed category for a file not covered by the plugin configuration', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -780,7 +780,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -797,7 +797,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data ).to.contain.property( 'ckboxImageId', 'image-1' );
 					expect( data ).to.contain.property(
 						'default',
-						'https://ckbox.cloud/environment/assets/image-1/images/300.jpeg'
+						'https://ckbox.cloud/workspace1/assets/image-1/images/300.jpeg'
 					);
 
 					const uploadRequest = sinonXHR.requests[ 1 ];
@@ -807,7 +807,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should resolve an object contains responsive URLs (breakpoint = 10% of the image width)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -819,7 +819,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -833,14 +833,14 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data.sources ).to.be.an( 'array' );
 					expect( data.sources ).to.deep.equal( [
 						{
-							srcset: 'https://ckbox.cloud/environment/assets/image-1/images/500.webp 500w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/1000.webp 1000w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/1500.webp 1500w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/2000.webp 2000w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/2500.webp 2500w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/3000.webp 3000w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/3500.webp 3500w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/4000.webp 4000w',
+							srcset: 'https://ckbox.cloud/workspace1/assets/image-1/images/500.webp 500w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/1000.webp 1000w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/1500.webp 1500w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/2000.webp 2000w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/2500.webp 2500w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/3000.webp 3000w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/3500.webp 3500w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/4000.webp 4000w',
 							sizes: '(max-width: 5000px) 100vw, 5000px',
 							type: 'image/webp'
 						}
@@ -849,7 +849,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should resolve an object contains responsive URLs (breakpoint = 80px)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -861,7 +861,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -875,14 +875,14 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data.sources ).to.be.an( 'array' );
 					expect( data.sources ).to.deep.equal( [
 						{
-							srcset: 'https://ckbox.cloud/environment/assets/image-1/images/140.webp 140w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/220.webp 220w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/300.webp 300w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/380.webp 380w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/460.webp 460w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/540.webp 540w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/620.webp 620w,' +
-								'https://ckbox.cloud/environment/assets/image-1/images/700.webp 700w',
+							srcset: 'https://ckbox.cloud/workspace1/assets/image-1/images/140.webp 140w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/220.webp 220w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/300.webp 300w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/380.webp 380w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/460.webp 460w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/540.webp 540w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/620.webp 620w,' +
+								'https://ckbox.cloud/workspace1/assets/image-1/images/700.webp 700w',
 							sizes: '(max-width: 700px) 100vw, 700px',
 							type: 'image/webp'
 						}
@@ -891,7 +891,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should throw an error on abort (while fetching categories)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -921,7 +921,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		it( 'should throw an error on abort (while uploading)', () => {
 			sinon.stub( adapter, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', xhr => {
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				adapter.abort();
 
 				xhr.error();
@@ -940,7 +940,7 @@ describe( 'CKBoxUploadAdapter', () => {
 			sinon.stub( console, 'error' );
 			sinon.stub( adapter, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', xhr => {
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				xhr.error();
 			} );
 
@@ -963,7 +963,7 @@ describe( 'CKBoxUploadAdapter', () => {
 			sinon.stub( adapter, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
 			sinon.stub( adapter, '_getImageWidth' ).resolves( 700 );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', xhr => {
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				xhr.uploadProgress( { loaded: 4, total: 10 } );
 
 				expect( loader.uploadTotal ).to.equal( 10 );
@@ -980,7 +980,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should allow overriding the assets origin (`ckbox.assetsOrigin`)', () => {
-			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0', [
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
 				200,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( {
@@ -992,7 +992,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				} )
 			] );
 
-			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets', [
+			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', [
 				201,
 				{ 'Content-Type': 'application/json' },
 				JSON.stringify( { id: 'image-1' } )
@@ -1009,14 +1009,14 @@ describe( 'CKBoxUploadAdapter', () => {
 					expect( data.sources ).to.be.an( 'array' );
 					expect( data.sources ).to.deep.equal( [
 						{
-							srcset: 'https://cloud.example.com/environment/assets/image-1/images/500.webp 500w,' +
-								'https://cloud.example.com/environment/assets/image-1/images/1000.webp 1000w,' +
-								'https://cloud.example.com/environment/assets/image-1/images/1500.webp 1500w,' +
-								'https://cloud.example.com/environment/assets/image-1/images/2000.webp 2000w,' +
-								'https://cloud.example.com/environment/assets/image-1/images/2500.webp 2500w,' +
-								'https://cloud.example.com/environment/assets/image-1/images/3000.webp 3000w,' +
-								'https://cloud.example.com/environment/assets/image-1/images/3500.webp 3500w,' +
-								'https://cloud.example.com/environment/assets/image-1/images/4000.webp 4000w',
+							srcset: 'https://cloud.example.com/workspace1/assets/image-1/images/500.webp 500w,' +
+								'https://cloud.example.com/workspace1/assets/image-1/images/1000.webp 1000w,' +
+								'https://cloud.example.com/workspace1/assets/image-1/images/1500.webp 1500w,' +
+								'https://cloud.example.com/workspace1/assets/image-1/images/2000.webp 2000w,' +
+								'https://cloud.example.com/workspace1/assets/image-1/images/2500.webp 2500w,' +
+								'https://cloud.example.com/workspace1/assets/image-1/images/3000.webp 3000w,' +
+								'https://cloud.example.com/workspace1/assets/image-1/images/3500.webp 3500w,' +
+								'https://cloud.example.com/workspace1/assets/image-1/images/4000.webp 4000w',
 							sizes: '(max-width: 5000px) 100vw, 5000px',
 							type: 'image/webp'
 						}

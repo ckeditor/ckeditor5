@@ -23,7 +23,7 @@ import type {
 	CKBoxRawAssetDefinition
 } from './ckboxconfig';
 
-import { getEnvironmentId, getImageUrls } from './utils';
+import { getWorkspaceIds, getImageUrls } from './utils';
 import type CKBoxEditing from './ckboxediting';
 
 declare global {
@@ -408,7 +408,7 @@ function getAssetUrl(
 	token: InitializedToken,
 	origin: string
 ) {
-	const environmentId = getEnvironmentId( token );
+	const environmentId = getWorkspaceIds( token )[ 0 ];
 	const url = new URL( `${ environmentId }/assets/${ asset.data.id }/file`, origin );
 
 	url.searchParams.set( 'download', 'true' );
