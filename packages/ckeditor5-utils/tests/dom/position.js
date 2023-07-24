@@ -794,6 +794,70 @@ describe( 'getOptimalPosition()', () => {
 			}
 		} );
 
+		it( 'should return null when target is not visible', () => {
+			const target = getElement( {
+				top: -200,
+				right: -100,
+				bottom: -100,
+				left: -200,
+				width: 100,
+				height: 100
+			} );
+			limiter.appendChild( target );
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			document.body.appendChild( parentWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, null );
+
+			parentWithOverflow.remove();
+		} );
+
+		it( 'should return position when element is fully contained by the limiter', () => {
+			const limiter = getElement( {
+				top: 0,
+				right: 1000,
+				bottom: 1000,
+				left: 0,
+				width: 1000,
+				height: 1000
+			} );
+			const target = getElement( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			const parentWithOverflow = getElement( {
+				top: 0,
+				left: 0,
+				right: 1000,
+				bottom: 1000,
+				width: 1000,
+				height: 1000
+			} );
+
+			limiter.appendChild( target );
+			parentWithOverflow.appendChild( limiter );
+			parentWithOverflow.appendChild( element );
+			document.body.appendChild( parentWithOverflow );
+
+			assertPositionName( {
+				element, target, limiter,
+				positions: allPositions,
+				fitInViewport: true
+			}, 'right-bottom' );
+
+			parentWithOverflow.remove();
+		} );
+
 		it( 'should return proper calculated position when first ancestor\'s Rect has undefined values', () => {
 			limiter.appendChild( target );
 			parentWithOverflow.appendChild( limiter );
@@ -861,7 +925,11 @@ function assertPosition( options, expected ) {
 function assertPositionName( options, expected ) {
 	const position = getOptimalPosition( options );
 
-	expect( position.name ).to.equal( expected );
+	if ( position ) {
+		expect( position.name ).to.equal( expected );
+	} else {
+		expect( position ).to.equal( expected );
+	}
 }
 
 // Returns a synthetic element.

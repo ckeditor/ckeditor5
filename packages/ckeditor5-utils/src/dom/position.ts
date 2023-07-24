@@ -106,8 +106,8 @@ export function getOptimalPosition( {
 	// Get intersection of all scrollable ancestors of `target`.
 	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
 
-	// TODO `viewportOffsetConfig` !!!
-	const ancestorsIntersectionRect = getElementsIntersectionRect( allScrollableAncestors, viewportOffsetConfig?.top || 0 );
+	const ancestorsIntersectionRect = getElementsIntersectionRect(
+		allScrollableAncestors, Object.assign( { top: 0 }, viewportOffsetConfig ).top );
 
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
 	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
