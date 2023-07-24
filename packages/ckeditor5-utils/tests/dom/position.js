@@ -453,14 +453,10 @@ describe( 'getOptimalPosition()', () => {
 		} );
 
 		it( 'should allow position function to return null to be ignored', () => {
-			assertPosition( {
+			assertNullPosition( {
 				element, target, limiter,
 				positions: [ attachLeftBottom, attachNone ]
-			}, {
-				top: 100,
-				left: -20,
-				name: 'left-bottom'
-			} );
+			}, null );
 		} );
 	} );
 
@@ -556,7 +552,7 @@ describe( 'getOptimalPosition()', () => {
 		} );
 
 		it( 'should return the very first coordinates if no fitting position with a positive intersection has been found', () => {
-			assertPosition( {
+			assertNullPosition( {
 				element, target, limiter,
 				positions: [
 					() => ( {
@@ -566,11 +562,7 @@ describe( 'getOptimalPosition()', () => {
 					} )
 				],
 				fitInViewport: true
-			}, {
-				left: -10000,
-				top: -10000,
-				name: 'no-intersect-position'
-			} );
+			}, null );
 		} );
 
 		it( 'should return the last coordinates if limiter does not fit into the viewport', () => {
@@ -808,7 +800,7 @@ describe( 'getOptimalPosition()', () => {
 			parentWithOverflow.appendChild( element );
 			document.body.appendChild( parentWithOverflow );
 
-			assertPositionName( {
+			assertNullPosition( {
 				element, target, limiter,
 				positions: allPositions,
 				fitInViewport: true
@@ -914,22 +906,21 @@ describe( 'getOptimalPosition()', () => {
 
 function assertPosition( options, expected ) {
 	const position = getOptimalPosition( options );
+	const { top, left, name } = position;
 
-	if ( position ) {
-		const { top, left, name } = position;
-
-		expect( { top, left, name } ).to.deep.equal( expected );
-	}
+	expect( { top, left, name } ).to.deep.equal( expected );
 }
 
 function assertPositionName( options, expected ) {
 	const position = getOptimalPosition( options );
 
-	if ( position ) {
-		expect( position.name ).to.equal( expected );
-	} else {
-		expect( position ).to.equal( expected );
-	}
+	expect( position.name ).to.equal( expected );
+}
+
+function assertNullPosition( options, expected ) {
+	const position = getOptimalPosition( options );
+
+	expect( position ).to.equal( expected );
 }
 
 // Returns a synthetic element.
