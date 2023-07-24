@@ -234,6 +234,7 @@
 		"framework/guides/ui/external-ui.html": "framework/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/deep-dive/ui/theme-customization.html",
 		"framework/guides/quick-start.html": "framework/quick-start.html",
+		"framework/plugins/creating-simple-plugin-timestamp.html": "framework/tutorial/editor.html",
 		"installation/advanced/advanced-setup.html": "installation/getting-started/quick-start-other.html",
 		"installation/advanced/alternative-setups/integrating-from-source.html": "installation/advanced/alternative-setups/integrating-from-source-webpack.html",
 		"installation/advanced/alternative-setups/predefined-builds.html": "installation/getting-started/predefined-builds.html",
@@ -599,8 +600,7 @@
 							"name": "Creating an abbreviation plugin",
 							"id": "abbreviation-plugin",
 							"slug": "abbreviation-plugin",
-							"order": 20,
-							"folded": true
+							"order": 20
 						},
 						{
 							"name": "Package Generator",

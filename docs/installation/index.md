@@ -33,6 +33,7 @@ CKEditor&nbsp;5 provides every type of WYSIWYG editing solution imaginable. From
 </info-box>
 -->
 
+
 ## Start using CKEditor&nbsp;5 instantly with CDN
 
 Start using CKEditor&nbsp;5 instantly thanks to the power of our CDN. Check out the {@link installation/getting-started/quick-start Quick start guide}.
@@ -45,9 +46,13 @@ Predefined CKEditor&nbsp;5 builds are ready-to-use distributions aimed at specif
 
 Learn how to install a custom CKEditor&nbsp;5 build easily with the use of {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source build the editor from scratch}, and learn to {@link installation/getting-started/configuration configure it}.
 
-## Integration with frameworks
+### Integration with frameworks
 
 Get to know the supported {@link installation/integrations/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor&nbsp;5 with your software.
+
+## Tutorial
+
+To learn how to use, configure and extend CKEditor, see our {@link tutorial/editor step-by-step tutorial}.
 
 ## Advanced installation concepts
 
@@ -59,6 +64,9 @@ Find out more about the {@link installation/plugins/plugins plugin development},
  * {@link features/index Features} &ndash; Learn more about the CKEditor&nbsp;5 features.
  * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
  * {@link framework/index CKEditor&nbsp;5 Framework} &ndash; Learn how to work with CKEditor&nbsp;5 Framework, customize it, create your own plugins or custom editors, change the UI, or even bring your own UI to the editor.
+
+
+
 
 <!--
 <script type="text/javascript">
