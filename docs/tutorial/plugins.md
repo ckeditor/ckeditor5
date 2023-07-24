@@ -57,21 +57,17 @@ If you ever get stuck, want to see an example of writing a TypeScript plugin, or
 
 ### Registering custom plugin
 
-In the project we created in the previous chapter, create a new file called `plugin.js` in the `src` folder. Inside it, create and export a `Highlight` function.
+In the project we created in the previous chapter, open the `src/plugin.js`file. Inside it, create and export a `Highlight` function.
 
 ```js
-// src/plugin.js
-
-export function Highlight(editor) {
-	console.log('Highlight plugin has been registered');
+export function Highlight( editor ) {
+	console.log( 'Highlight plugin has been registered' );
 }
 ```
 
 Then, in the `src/main.js` file, import and register this function as an editor plugin.
 
 ```js
-// src/main.js
-
 import { Highlight } from './plugin';
 
 const editor = await ClassicEditor.create( element, {

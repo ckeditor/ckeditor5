@@ -27,25 +27,9 @@ One major difference between model and HTML is that in model, both text and elem
 
 Let's see how model compares to HTML.
 
-```html
-<!-- Source HTML -->
-<p>
-	Hello 
-	<i>
-		<strong>
-			<u>world</u>
-		</strong>
-	</i>
-	!
-</p>
+{@snippet framework/mini-inspector}
 
-<!-- Model -->
-<paragraph>
-	Hello 
-	<$text italic="true" bold="true" underline="true">world</$text>
-	!
-</paragraph>
-```
+{@snippet tutorial/mini-inspector-basic-styles}
 
 ### Schema
 
@@ -67,9 +51,9 @@ As we learned earlier, text nodes in a model can have attributes. We also saw th
 Let's extend the `$text` node to allow a new attribute called `highlight`. Add the following code to the end of the `Highlight` function in `src/plugin.js`:
 
 ```js
-editor.model.schema.extend('$text', {
+editor.model.schema.extend( '$text', {
 	allowAttributes: 'highlight'
-});
+} );
 ```
 
 ### Converting the HTML elements
@@ -125,4 +109,6 @@ We will be using this tool in the next stages of plugin development.
 
 ## What's next
 
-In the next chapter you'll {@link tutorial/data-conversion learn more about data conversion} and what really happens when we call the `attributeToElement()` method.
+If you want to read more about the editing engine, see the {@link framework/architecture/editing-engine Editing engine} document.
+
+Otherwise, go to the next chapter, where you'll {@link tutorial/data-conversion learn more about data conversion} and what really happens when we call the `attributeToElement()` method.
