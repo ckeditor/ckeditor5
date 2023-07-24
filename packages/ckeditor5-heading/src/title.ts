@@ -354,10 +354,13 @@ export default class Title extends Plugin {
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert:title-content', ( evt, data, conversionApi ) => {
+			const element: ViewElement & { placeholder?: string } = conversionApi.mapper.toViewElement( data.item )!;
+
+			element.placeholder = titlePlaceholder;
+
 			enablePlaceholder( {
 				view,
-				element: conversionApi.mapper.toViewElement( data.item )!,
-				text: titlePlaceholder,
+				element,
 				keepOnFocus: true
 			} );
 		} );

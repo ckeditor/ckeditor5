@@ -125,10 +125,11 @@ export default class DecoupledEditorUI extends EditorUI {
 			placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
 		}
 
+		editingRoot.placeholder = placeholderText;
+
 		enablePlaceholder( {
 			view: editingView,
 			element: editingRoot,
-			text: placeholderText,
 			isDirectHost: false,
 			keepOnFocus: true
 		} );

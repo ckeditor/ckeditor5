@@ -160,11 +160,12 @@ export default class InlineEditorUI extends EditorUI {
 			placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
 		}
 
+		editingRoot.placeholder = placeholderText;
+
 		if ( placeholderText ) {
 			enablePlaceholder( {
 				view: editingView,
 				element: editingRoot,
-				text: placeholderText,
 				isDirectHost: false,
 				keepOnFocus: true
 			} );

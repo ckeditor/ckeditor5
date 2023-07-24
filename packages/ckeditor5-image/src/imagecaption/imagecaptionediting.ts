@@ -122,10 +122,10 @@ export default class ImageCaptionEditing extends Plugin {
 				const figcaptionElement = writer.createEditableElement( 'figcaption' );
 				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
 
+				figcaptionElement.placeholder = t( 'Enter image caption' );
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter image caption' ),
 					keepOnFocus: true
 				} );
 

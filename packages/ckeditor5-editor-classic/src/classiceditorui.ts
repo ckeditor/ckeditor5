@@ -161,10 +161,13 @@ export default class ClassicEditorUI extends EditorUI {
 			placeholderText = sourceElement.getAttribute( 'placeholder' );
 		}
 
+		if ( placeholderText ) {
+			editingRoot.placeholder = placeholderText;
+		}
+
 		enablePlaceholder( {
 			view: editingView,
 			element: editingRoot,
-			text: placeholderText !== null ? placeholderText : undefined,
 			isDirectHost: false,
 			keepOnFocus: true
 		} );

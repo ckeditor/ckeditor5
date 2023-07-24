@@ -43,6 +43,13 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 	declare public isFocused: boolean;
 
 	/**
+	 * Placeholder of current editable element.
+	 *
+	 * @observable
+	 */
+	declare public placeholder?: string;
+
+	/**
 	 * Creates an editable element.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createEditableElement
@@ -62,6 +69,7 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 
 		this.set( 'isReadOnly', false );
 		this.set( 'isFocused', false );
+		this.set( 'placeholder', undefined );
 
 		this.bind( 'isReadOnly' ).to( document );
 
