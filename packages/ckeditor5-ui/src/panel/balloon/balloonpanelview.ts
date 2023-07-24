@@ -268,11 +268,7 @@ export default class BalloonPanelView extends View {
 			fitInViewport: true
 		}, options ) as PositionOptions;
 
-		let optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
-
-		if ( !optimalPosition ) {
-			optimalPosition = POSITION_OFF_SCREEN;
-		}
+		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions ) || POSITION_OFF_SCREEN;
 
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.

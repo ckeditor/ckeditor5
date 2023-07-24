@@ -22,6 +22,9 @@ import getElementsIntersectionRect from './getelementsintersectionrect';
  * target in the visually most efficient way, taking various restrictions like viewport or limiter geometry
  * into consideration.
  *
+ * **Note**: If there are no position coordinates found that meet the requirements (arguments of this helper),
+ * `null` is returned.
+ *
  * ```ts
  * // The element which is to be positioned.
  * const element = document.body.querySelector( '#toolbar' );
@@ -103,17 +106,14 @@ export function getOptimalPosition( {
 
 	let bestPosition: Position | null;
 
-	// Get intersection of all scrollable ancestors of `target`.
-	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
-
-	const ancestorsIntersectionRect = getElementsIntersectionRect(
-		allScrollableAncestors, Object.assign( { top: 0 }, viewportOffsetConfig ).top );
-
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
 	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
 
 	const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig ) || null;
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
+	// Get intersection of all scrollable ancestors of `target`.
+	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
+	const ancestorsIntersectionRect = getElementsIntersectionRect( allScrollableAncestors, ( viewportOffsetConfig || {} )?.top );
 
 	if ( !ancestorsIntersectionRect || !targetRect.getVisible() ) {
 		return null;

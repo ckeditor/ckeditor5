@@ -6,7 +6,7 @@
 import Rect from './rect';
 
 /**
- * Calculates the intersection `Rect` of a given set of elements (including the global `document`).
+ * Calculates the intersection `Rect` of a given set of elements (and/or a `document`).
  * Also, takes into account the viewport top offset configuration.
  *
  * @param elements
@@ -14,7 +14,7 @@ import Rect from './rect';
  */
 export default function getElementsIntersectionRect(
 	elements: Array<HTMLElement | Document>,
-	viewportTopOffset: number
+	viewportTopOffset: number = 0
 ): Rect | null {
 	const elementRects = elements.map( element => {
 		// The document (window) is yet another "element", but cropped by the top offset.
