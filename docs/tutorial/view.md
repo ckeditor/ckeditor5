@@ -19,9 +19,11 @@ The editor interface consists of two parts:
 
 In this section, we'll focus on updating the toolbar.
 
+{@img assets/img/tutorial/ui.jpg Screenshot of the editor highlighting toolbar at the top and editing view at the bottom}
+
 ## Creating a new button
 
-Let's import the `ButtonView` contructor:
+Let's import the `ButtonView` contructor in the `src/plugin.js` file:
 
 ```js
 import { ButtonView } from 'ckeditor5/src/ui';
@@ -71,18 +73,18 @@ Open `src/main.js` and update the configuration of the editor:
 
 ```js
 const editor = await ClassicEditor.create( element, {
-  plugins: [
-    Essentials,
-    Paragraph,
-    Highlight
-  ],
-  toolbar: {
-    items: [
-      'undo',
-      'redo',
-      'highlight' // Add this line
-    ]
-  }
+	plugins: [
+		Essentials,
+		Paragraph,
+		Highlight
+	],
+	toolbar: {
+		items: [
+			'undo',
+			'redo',
+			'highlight' // Add this line
+		]
+	}
 } );
 ```
 

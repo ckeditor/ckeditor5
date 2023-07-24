@@ -23,20 +23,22 @@ editor.conversion.attributeToElement( {
 } );
 ```
 
-You may have noticed that we used the term **helpers**. That's because these methods are often used for simple and symmetrical conversions, abstracting away the internals and what really happens in the engine. However, there are cases where the conversion is a bit more complicated.
+You may have noticed that we used the term **helpers**. That's because these methods are often used for simple and symmetric conversions, abstracting away the internals and what really happens in the engine. However, there are cases where the conversion is a bit more complicated.
 
 In this chapter we will learn more about data conversion so that you can better understand the editor and work with more complex cases.
 
 ## Upcast and downcast
 
-The process of transforming input HTML data into model is called upcast. The reverse process of transforming model data into HTML is called downcasting.
+The process of transforming input HTML data into model is called upcasting. The reverse process of transforming model data into HTML is called downcasting.
 
 While there is only one type of upcast called **data upcast**, there are two types of downcast:
 
 * **data downcast** for converting model data into output HTML data,
 * **editing downcast** for converting model into editing view we see in editor UI.
 
-The reason for two types of downcasts is that sometimes the resulting HTML should be different from what we see in the editor. One such example can be a table that in the output HTML data is just a plain HTML table, but in the editing view has additional UI handlers for resizing or buttons for adding new columns and rows. This is a non-symmetric conversion for which these helpers are of no use.
+{@img assets/img/tutorial/data-conversion.jpg Diagram showing data upcast going into the model and the downcasts going from the model}
+
+The reason for two types of downcasts is that sometimes the resulting HTML should be different from what we see in the editor. One such example can be a table that in the output HTML data is just a plain HTML table, but in the editing view has additional UI handlers for resizing or buttons for adding new columns and rows. This is a asymmetric conversion for which these helpers are of no use.
 
 ## Under the hood
 

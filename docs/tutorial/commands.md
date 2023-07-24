@@ -31,7 +31,7 @@ class HighlightCommand extends Command {
 Then at the bottom of the `Highlight` function, add the following code to register the command:
 
 ```js
-editor.commands.add('highlight', new HighlightCommand( editor ));
+editor.commands.add( 'highlight', new HighlightCommand( editor ) );
 ```
 
 Our command class has two methods:
