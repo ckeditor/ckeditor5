@@ -27,7 +27,7 @@ import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
 import type { CommentsRepository } from '@ckeditor/ckeditor5-comments';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { TrackChanges, SuggestionJSON } from '@ckeditor/ckeditor5-track-changes';
+import type { TrackChanges, TrackChangesEditing, SuggestionJSON } from '@ckeditor/ckeditor5-track-changes';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports,ckeditor5-rules/allow-imports-only-from-main-package-entry-point
 import type { CommentThreadDataJSON } from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository';
@@ -54,11 +54,6 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * The latest saved editor data represented as a root name -> root data object.
 	 */
 	private _data?: EditorData;
-
-	/**
-	 * The latest saved editor collaboration data (comment threads and suggestions).
-	 */
-	private _collaborationData?: CollaborationData;
 
 	/**
 	 * The last document version.
@@ -187,10 +182,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				const updatedConfig = {
 					...this._config,
 					extraPlugins: this._config!.extraPlugins || [],
-					_watchdogInitialData: {
-						...this._data!,
-						...this._collaborationData!
-					}
+					_watchdogInitialData: this._data
 				};
 
 				updatedConfig.extraPlugins!.push( EditorWatchdogInitPlugin as any );
@@ -240,7 +232,6 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				editor.model.document.on( 'change:data', this._throttledSave );
 
 				this._data = this._getData();
-				this._collaborationData = this._getCollaborationData();
 				this._lastDocumentVersion = editor.model.document.version;
 
 				this.state = 'ready';
@@ -295,7 +286,6 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 		try {
 			this._data = this._getData();
-			this._collaborationData = this._getCollaborationData();
 			this._lastDocumentVersion = version;
 		} catch ( err ) {
 			console.error(
@@ -317,11 +307,18 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * Gets all data that is required to reinitialize editor instance.
 	 */
 	private _getData(): EditorData {
-		const editor = this.editor!;
+		const editor = this._editor!;
 		const rootNames = editor.model.document.getRootNames();
+
+		const { plugins } = editor;
+		const commentsRepository = plugins.has( 'CommentsRepository' ) && plugins.get( 'CommentsRepository' ) as CommentsRepository;
+		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as TrackChanges;
+
 		const data: EditorData = {
 			roots: {},
-			markers: {}
+			markers: {},
+			commentThreads: JSON.stringify( [] ),
+			suggestions: JSON.stringify( [] )
 		};
 
 		rootNames.forEach( rootName => {
@@ -345,30 +342,15 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 			};
 		}
 
+		if ( commentsRepository ) {
+			data.commentThreads = JSON.stringify( commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) );
+		}
+
+		if ( trackChanges ) {
+			data.suggestions = JSON.stringify( trackChanges.getSuggestions( { toJSON: true, skipNotAttached: true } ) );
+		}
+
 		return data;
-	}
-
-	/**
-	 * Gets the collaboration data - comment threads and suggestions.
-	 */
-	private _getCollaborationData(): CollaborationData {
-		const { plugins } = this._editor!;
-
-		const commentsRepository = plugins.has( 'CommentsRepository' ) && plugins.get( 'CommentsRepository' ) as CommentsRepository;
-		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as TrackChanges;
-
-		return {
-			commentThreads: JSON.stringify(
-				commentsRepository ?
-					commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) :
-					[]
-			),
-			suggestions: JSON.stringify(
-				trackChanges ?
-					trackChanges.getSuggestions( { toJSON: true, skipNotAttached: true } ) :
-					[]
-			)
-		};
 	}
 
 	/**
@@ -405,7 +387,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 class EditorWatchdogInitPlugin {
 	public editor: Editor;
 
-	private _data: EditorData & CollaborationData;
+	private _data: EditorData;
 
 	constructor( editor: Editor ) {
 		this.editor = editor;
@@ -509,13 +491,17 @@ class EditorWatchdogInitPlugin {
 			const channelId = this.editor.config.get( 'collaboration.channelId' )!;
 			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as CommentsRepository;
 
-			commentsRepository.addCommentThread( { channelId, ...commentThread } );
+			if ( !commentsRepository.hasCommentThread( commentThread.threadId ) ) {
+				commentsRepository.addCommentThread( { channelId, ...commentThread } );
+			}
 		} );
 
 		parsedSuggestions.forEach( suggestion => {
-			const trackChanges = this.editor!.plugins.get( 'TrackChanges' ) as TrackChanges;
+			const trackChangesEditing = this.editor!.plugins.get( 'TrackChangesEditing' ) as TrackChangesEditing;
 
-			trackChanges.addSuggestion( suggestion );
+			if ( !trackChangesEditing.hasSuggestion( suggestion.id ) ) {
+				trackChangesEditing.addSuggestionData( suggestion );
+			}
 		} );
 	}
 }
@@ -530,9 +516,6 @@ export type EditorData = {
 		usingOperation: boolean;
 		affectsData: boolean;
 	}>;
-};
-
-export type CollaborationData = {
 	commentThreads: string;
 	suggestions: string;
 };
