@@ -276,11 +276,9 @@ export default class DropdownView extends View<HTMLDivElement> {
 					positions: this._panelPositions
 				} );
 
-				if ( !optimalPanelPosition ) {
-					this.panelView.position = this._panelPositions[ 0 ].name as PanelPosition;
-				} else {
-					this.panelView.position = optimalPanelPosition.name as PanelPosition;
-				}
+				this.panelView.position = (
+					optimalPanelPosition ? optimalPanelPosition.name : this._panelPositions[ 0 ].name
+				) as PanelPosition;
 			} else {
 				this.panelView.position = this.panelPosition;
 			}
