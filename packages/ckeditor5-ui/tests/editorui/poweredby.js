@@ -493,7 +493,7 @@ describe( 'PoweredBy', () => {
 			focusEditor( editor );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			parentWithOverflow.remove();
 		} );
@@ -512,7 +512,7 @@ describe( 'PoweredBy', () => {
 			focusEditor( editor );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			parentWithOverflow.remove();
 		} );
@@ -870,7 +870,7 @@ describe( 'PoweredBy', () => {
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
@@ -933,7 +933,7 @@ describe( 'PoweredBy', () => {
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			domRoot.getBoundingClientRect.returns( {
 				top: 0,
