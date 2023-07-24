@@ -11,7 +11,7 @@ import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import EditorWatchdog from '../../src/editorwatchdog';
 
 class TypingError {
-	constructor ( editor ) {
+	constructor( editor ) {
 		this.editor = editor;
 	}
 
@@ -30,7 +30,7 @@ class TypingError {
 }
 
 class MultiRootEditorIntegration {
-	constructor ( editor ) {
+	constructor( editor ) {
 		this.editor = editor;
 	}
 

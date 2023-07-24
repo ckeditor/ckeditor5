@@ -56,7 +56,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { cloneDeep } from 'lodash-es';
-import RootElement from "../model/rootelement";
+import type RootElement from '../model/rootelement';
 
 /**
  * Downcast conversion helper functions.

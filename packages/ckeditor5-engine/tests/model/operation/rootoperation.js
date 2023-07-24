@@ -5,7 +5,6 @@
 
 import Model from '../../../src/model/model';
 import RootOperation from '../../../src/model/operation/rootoperation';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'RootOperation', () => {
 	let model, doc;

@@ -189,7 +189,7 @@ export default class ModelConsumable {
 	 *
 	 * @param item Model item, range or selection from which all consumables will be consumed.
 	 */
-	public consumeAll( item: Item | Selection | DocumentSelection | Range ) {
+	public consumeAll( item: Item | Selection | DocumentSelection | Range ): void {
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}

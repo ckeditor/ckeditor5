@@ -2427,7 +2427,7 @@ describe( 'Differ', () => {
 			model.change( writer => {
 				writer.setAttribute( 'foo', 'foo', root );
 				writer.setAttribute( 'bar', 'bar', root );
-				writer.setAttribute( 'baz', 'baz', root )
+				writer.setAttribute( 'baz', 'baz', root );
 
 				writer.removeAttribute( 'baz', root );
 
