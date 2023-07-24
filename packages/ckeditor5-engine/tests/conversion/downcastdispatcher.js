@@ -960,20 +960,6 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should not convert if selection is in a model root that does not have a corresponding view root', () => {
-			const newRoot = doc.createRoot( '$root', 'foo' );
-
-			model.change( writer => {
-				writer.setSelection( writer.createPositionAt( newRoot, 0 ) );
-			} );
-
-			sinon.spy( dispatcher, 'fire' );
-
-			dispatcher.convertSelection( doc.selection, model.markers, [] );
-
-			expect( dispatcher.fire.notCalled ).to.be.true;
-		} );
-
 		it( 'should prepare correct list of consumable values', () => {
 			model.change( writer => {
 				writer.setAttribute( 'bold', true, writer.createRangeIn( root ) );

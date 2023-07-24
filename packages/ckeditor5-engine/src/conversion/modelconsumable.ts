@@ -180,6 +180,30 @@ export default class ModelConsumable {
 	}
 
 	/**
+	 * Removes all consumable values from a given model item.
+	 *
+	 * It is equal to calling {@link module:engine/conversion/modelconsumable~ModelConsumable#consume `consume()`} for all consumable types
+	 * for a given model item.
+	 *
+	 * This is useful to prevent any further conversion for a given model item.
+	 *
+	 * @param item Model item, range or selection from which all consumables will be consumed.
+	 */
+	public consumeAll( item: Item | Selection | DocumentSelection | Range ) {
+		if ( item instanceof TextProxy ) {
+			item = this._getSymbolForTextProxy( item ) as any;
+		}
+
+		const consumable = this._consumable.get( item );
+
+		if ( consumable ) {
+			for ( const type of consumable.keys() ) {
+				consumable.set( type, false );
+			}
+		}
+	}
+
+	/**
 	 * Tests whether there is a consumable value of a given type connected with a given model item.
 	 *
 	 * ```ts

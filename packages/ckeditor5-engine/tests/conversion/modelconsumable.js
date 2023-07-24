@@ -155,6 +155,44 @@ describe( 'ModelConsumable', () => {
 		} );
 	} );
 
+	describe( 'consumeAll()', () => {
+		it( 'should remove all consumable values for given element', () => {
+			modelConsumable.add( modelElement, 'typeA' );
+			modelConsumable.add( modelElement, 'typeB' );
+			modelConsumable.add( modelElement, 'typeC' );
+
+			modelConsumable.consumeAll( modelElement );
+
+			expect( modelConsumable.test( modelElement, 'typeA' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'typeB' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'typeC' ) ).to.be.false;
+
+			// Consumable type that didn't exist should still return `null`:
+			expect( modelConsumable.test( modelElement, 'typeD' ) ).to.be.null;
+		} );
+
+		it( 'should correctly consume text proxy instances', () => {
+			const proxy1To4 = new ModelTextProxy( modelElement.getChild( 0 ), 1, 3 );
+			const proxy1To5 = new ModelTextProxy( modelElement.getChild( 0 ), 1, 4 );
+			const proxyOther1To4 = new ModelTextProxy( new ModelText( 'abcdef' ), 1, 3 );
+
+			modelConsumable.add( proxy1To4, 'typeA' );
+			modelConsumable.add( proxy1To4, 'typeB' );
+			modelConsumable.add( proxy1To4, 'typeC' );
+
+			modelConsumable.add( proxy1To5, 'type' );
+			modelConsumable.add( proxyOther1To4, 'type' );
+
+			modelConsumable.consumeAll( proxy1To4 );
+
+			expect( modelConsumable.test( proxy1To4, 'typeA' ) ).to.be.false;
+			expect( modelConsumable.test( proxy1To4, 'typeB' ) ).to.be.false;
+			expect( modelConsumable.test( proxy1To4, 'typeC' ) ).to.be.false;
+			expect( modelConsumable.test( proxy1To5, 'type' ) ).to.be.true;
+			expect( modelConsumable.test( proxyOther1To4, 'type' ) ).to.be.true;
+		} );
+	} );
+
 	describe( 'revert()', () => {
 		it( 'should re-add consumable value if it was already consumed and return true', () => {
 			modelConsumable.add( modelElement, 'type' );

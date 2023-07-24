@@ -254,13 +254,6 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		writer: DowncastWriter
 	): void {
 		const conversionApi = this._createConversionApi( writer );
-		const modelRoot = selection.getFirstPosition()!.root as RootElement;
-
-		// Don't convert selection if it is in a model root that does not have a view root (for now this is only the graveyard root).
-		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
-			return;
-		}
-
 		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition()! ) );
 
 		this._addConsumablesForSelection( conversionApi.consumable, selection, markersAtSelection );
@@ -272,35 +265,36 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		}
 
 		for ( const marker of markersAtSelection ) {
-			const markerRange = marker.getRange();
-
-			if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition()!, marker, conversionApi.mapper ) ) {
-				continue;
-			}
-
-			const data = {
-				item: selection,
-				markerName: marker.name,
-				markerRange
-			};
-
+			// Do not fire event if the marker has been consumed.
 			if ( conversionApi.consumable.test( selection, 'addMarker:' + marker.name ) ) {
+				const markerRange = marker.getRange();
+
+				if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition()!, marker, conversionApi.mapper ) ) {
+					continue;
+				}
+
+				const data = {
+					item: selection,
+					markerName: marker.name,
+					markerRange
+				};
+
 				this.fire<DowncastAddMarkerEvent>( `addMarker:${ marker.name }`, data, conversionApi );
 			}
 		}
 
 		for ( const key of selection.getAttributeKeys() ) {
-			const data = {
-				item: selection,
-				range: selection.getFirstRange()!,
-				attributeKey: key,
-				attributeOldValue: null,
-				attributeNewValue: selection.getAttribute( key )
-			};
-
 			// Do not fire event if the attribute has been consumed.
-			if ( conversionApi.consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
-				this.fire<DowncastAttributeEvent>( `attribute:${ data.attributeKey }:$text`, data, conversionApi );
+			if ( conversionApi.consumable.test( selection, 'attribute:' + key ) ) {
+				const data = {
+					item: selection,
+					range: selection.getFirstRange()!,
+					attributeKey: key,
+					attributeOldValue: null,
+					attributeNewValue: selection.getAttribute( key )
+				};
+
+				this.fire<DowncastAttributeEvent>( `attribute:${ key }:$text`, data, conversionApi );
 			}
 		}
 	}
