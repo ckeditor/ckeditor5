@@ -24,13 +24,10 @@ import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-e
 import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { CommentsRepository } from '@ckeditor/ckeditor5-comments';
+import type { CommentsRepository, CommentThreadDataJSON } from '@ckeditor/ckeditor5-comments';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { TrackChanges, TrackChangesEditing, SuggestionJSON } from '@ckeditor/ckeditor5-track-changes';
-
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports,ckeditor5-rules/allow-imports-only-from-main-package-entry-point
-import type { CommentThreadDataJSON } from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository';
 
 /**
  * A watchdog for CKEditor 5 editors.
