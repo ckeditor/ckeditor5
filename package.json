@@ -104,6 +104,7 @@
     "@ckeditor/ckeditor5-inspector": "^4.0.0",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.2",
     "@ckeditor/ckeditor5-pagination": "38.1.1",
+    "@ckeditor/ckeditor5-paste-from-office-enhanced": "0.0.1",
     "@ckeditor/ckeditor5-react": "^3.0.0",
     "@ckeditor/ckeditor5-real-time-collaboration": "38.1.1",
     "@ckeditor/ckeditor5-revision-history": "38.1.1",
