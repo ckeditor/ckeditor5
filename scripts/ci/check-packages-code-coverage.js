@@ -36,6 +36,7 @@ const travisFolder = new TravisFolder();
  * @param {Array.<String>} [options.skipPackages=[]] Parameter including names of packages that should be skipped from testing.
  * @param {Array.<String>} [options.allowNonFullCoveragePackages=[]] Parameter including names of packages that should not enforce full
  * coverage.
+ * @param {Boolean} [options.skipCompilingFramework=false] Whether to compile framework packages.
  * @returns {Number} A bash exit code. When returns `0`, everything is fine (no errors).
  */
 module.exports = function checkPackagesCodeCoverage( {
@@ -44,7 +45,8 @@ module.exports = function checkPackagesCodeCoverage( {
 	shouldRunFrameworkTests = true,
 	isPublicRepository = true,
 	skipPackages = [],
-	allowNonFullCoveragePackages = []
+	allowNonFullCoveragePackages = [],
+	skipCompilingFramework = false
 } ) {
 	childProcess.execSync( 'rm -r -f .nyc_output', { stdio: 'inherit' } );
 	childProcess.execSync( 'mkdir .nyc_output', { stdio: 'inherit' } );
@@ -66,38 +68,42 @@ module.exports = function checkPackagesCodeCoverage( {
 		[ 'ckeditor5', ...frameworkPackages ].forEach( packageName => checkPackage( packageName, allowNonFullCoveragePackages ) );
 	}
 
-	travisFolder.start( 'typescript-compilation', magenta( 'Compiling CKEditor 5 Framework TypeScript packages' ) );
+	if ( !skipCompilingFramework ) {
+		travisFolder.start( 'typescript-compilation', magenta( 'Compiling CKEditor 5 Framework TypeScript packages' ) );
 
-	for ( const fullPackageName of frameworkPackages ) {
-		console.log( yellow( `\nCompiling ${ fullPackageName }` ) );
+		for ( const fullPackageName of frameworkPackages ) {
+			console.log( yellow( `\nCompiling ${ fullPackageName }` ) );
 
-		const cwd = path.join( CKEDITOR5_ROOT_DIRECTORY, 'packages', fullPackageName );
-		const pkgJsonPath = path.join( cwd, 'package.json' );
+			const cwd = path.join( CKEDITOR5_ROOT_DIRECTORY, 'packages', fullPackageName );
+			const pkgJsonPath = path.join( cwd, 'package.json' );
 
-		const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf-8' ) );
-		const hasBuildScript = pkgJson.scripts && pkgJson.scripts.build;
+			const pkgJson = JSON.parse( fs.readFileSync( pkgJsonPath, 'utf-8' ) );
+			const hasBuildScript = pkgJson.scripts && pkgJson.scripts.build;
 
-		if ( !hasBuildScript ) {
-			console.log( 'No build script found, skipping.' );
+			if ( !hasBuildScript ) {
+				console.log( 'No build script found, skipping.' );
 
-			continue;
+				continue;
+			}
+
+			const command = 'yarn run build --sourceMap';
+
+			console.log( '* ' + command );
+			childProcess.execSync( command, { cwd, stdio: 'inherit' } );
+
+			console.log( '* Updating the "main" field in `package.json`.' );
+
+			const pkgJsonMain = pkgJson.main;
+			pkgJson.main = pkgJsonMain.replace( /\.ts$/, '.js' );
+			pkgJson.types = pkgJsonMain.replace( /\.ts$/, '.d.ts' );
+
+			fs.writeFileSync( pkgJsonPath, JSON.stringify( pkgJson, null, 2 ) + '\n', 'utf-8' );
 		}
 
-		const command = 'yarn run build --sourceMap';
-
-		console.log( '* ' + command );
-		childProcess.execSync( command, { cwd, stdio: 'inherit' } );
-
-		console.log( '* Updating the "main" field in `package.json`.' );
-
-		const pkgJsonMain = pkgJson.main;
-		pkgJson.main = pkgJsonMain.replace( /\.ts$/, '.js' );
-		pkgJson.types = pkgJsonMain.replace( /\.ts$/, '.d.ts' );
-
-		fs.writeFileSync( pkgJsonPath, JSON.stringify( pkgJson, null, 2 ) + '\n', 'utf-8' );
+		travisFolder.end( 'typescript-compilation' );
+	} else {
+		console.log( yellow( '\nSkipping compiling CKEditor 5 Framework TypeScript packages\n' ) );
 	}
-
-	travisFolder.end( 'typescript-compilation' );
 
 	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
 

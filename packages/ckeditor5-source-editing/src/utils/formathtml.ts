@@ -25,12 +25,12 @@ export function formatHtml( input: string ): string {
 	// a full list of HTML block-level elements.
 	// A void element is an element that cannot have any child - https://html.spec.whatwg.org/multipage/syntax.html#void-elements.
 	// Note that <pre> element is not listed on this list to avoid breaking whitespace formatting.
+	// Note that <br> element is not listed and handled separately so no additional white spaces are injected.
 	const elementsToFormat: Array<ElementToFormat> = [
 		{ name: 'address', isVoid: false },
 		{ name: 'article', isVoid: false },
 		{ name: 'aside', isVoid: false },
 		{ name: 'blockquote', isVoid: false },
-		{ name: 'br', isVoid: true },
 		{ name: 'details', isVoid: false },
 		{ name: 'dialog', isVoid: false },
 		{ name: 'dd', isVoid: false },
@@ -75,6 +75,8 @@ export function formatHtml( input: string ): string {
 		// Add new line before and after `<tag>` and `</tag>`.
 		// It may separate individual elements with two new lines, but this will be fixed below.
 		.replace( new RegExp( `</?(${ elementNamesToFormat })( .*?)?>`, 'g' ), '\n$&\n' )
+		// Keep `<br>`s at the end of line to avoid adding additional whitespaces before `<br>`.
+		.replace( /<br[^>]*>/g, '$&\n' )
 		// Divide input string into lines, which start with either an opening tag, a closing tag, or just a text.
 		.split( '\n' );
 

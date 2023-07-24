@@ -8,13 +8,13 @@ import StickyPanelView from '../../../../src/panel/sticky/stickypanelview';
 
 const ui = testUtils.createTestUIView( {
 	stickyToTheTop: '.ck-sticky_to-the-top .ck-editor__top',
-	stickyToTheBox: '.ck-sticky_to-the-box .ck-editor__top'
+	stickyToTheBox: '.ck-sticky_to-the-box .ck-editor__top',
+	stickyWithScrollableAncestors: '.ck-sticky_with-scrollable-ancestors .ck-editor__top'
 } );
 
 createStickyPanel( ui.stickyToTheTop );
-const stickyToTheBoxTPanel = createStickyPanel( ui.stickyToTheBox );
-
-stickyToTheBoxTPanel.viewportTopOffset = 100;
+createStickyPanel( ui.stickyToTheBox ).viewportTopOffset = 100;
+createStickyPanel( ui.stickyWithScrollableAncestors ).viewportTopOffset = 100;
 
 function createStickyPanel( collection ) {
 	const panel = new StickyPanelView();

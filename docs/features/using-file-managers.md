@@ -7,7 +7,7 @@ badges: [ premium ]
 
 # Using file managers
 
-The most con venient way to upload, manage, and insert images into content in CKEditor is by using file managers. [CKBox](https://ckeditor.com/ckbox/) and [CKFinder](https://ckeditor.com/ckfinder/) are our official file managers and file uploaders that let you upload, manage, and insert images and other files.
+The most convenient way to upload, manage, and insert images into content in CKEditor is by using file managers. [CKBox](https://ckeditor.com/ckbox/) and [CKFinder](https://ckeditor.com/ckfinder/) are our official file managers and file uploaders that let you upload, manage, and insert images and other files.
 
 <info-box>
 	CKBox and CKFinder are both premium features. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.

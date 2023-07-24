@@ -18,8 +18,8 @@
 	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": [
 		"packages/*",
-		"external/@(ckeditor5-internal|collaboration-features)/",
-		"external/@(ckeditor5-internal|collaboration-features)/packages/*"
+		"external/@(ckeditor5-internal|ckeditor5-commercial)/",
+		"external/@(ckeditor5-internal|ckeditor5-commercial)/packages/*"
 	],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~Observable",
@@ -168,6 +168,7 @@
 		"features/lists.html": "features/lists/lists.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/overview.html": "features/index.html",
+		"features/pasting/drag-drop.html": "features/drag-drop.html",
 		"features/pagination.html": "features/pagination/pagination.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
 		"features/paste-from-office.html": "features/pasting/paste-from-word.html",

@@ -15,7 +15,7 @@ Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/to
 {@snippet features/todo-list}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
