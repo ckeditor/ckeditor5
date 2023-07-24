@@ -6,7 +6,7 @@
 /* globals setTimeout, window, console, document */
 
 import EditorWatchdog from '../src/editorwatchdog';
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -88,6 +88,9 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			// Watchdog should set data in a non-undoable batch to prevent the undo feature from reverting to empty editor.
+			expect( watchdog.editor.model.document.history.getOperation( 0 ).batch.isUndoable ).to.be.false;
 
 			await watchdog.destroy();
 		} );
@@ -1098,63 +1101,224 @@ describe( 'EditorWatchdog', () => {
 		} );
 	} );
 
-	describe( 'multi-root editors', () => {
-		it( 'should support multi-root editors', async () => {
-			class MultiRootEditor extends Editor {
-				constructor( sourceElements, config ) {
-					super( config );
+	describe( 'multi-root editor', () => {
+		let element2, watchdog, originalErrorHandler, restartSpy;
 
-					// Create a root for each source element.
-					for ( const rootName of Object.keys( sourceElements ) ) {
-						this.model.document.createRoot( '$root', rootName );
-					}
-				}
+		beforeEach( () => {
+			element2 = document.createElement( 'div' );
+			document.body.appendChild( element2 );
 
-				static async create( sourceElements, config ) {
-					const editor = new this( sourceElements, config );
+			watchdog = new EditorWatchdog( MultiRootEditor );
 
-					await editor.initPlugins();
+			restartSpy = sinon.spy();
 
-					await editor.data.init( config.initialData );
-
-					editor.fire( 'ready' );
-
-					return editor;
-				}
-			}
-
-			const watchdog = new EditorWatchdog( MultiRootEditor );
-
-			// sinon.stub( window, 'onerror' ).value( undefined ); and similar do not work.
-			const originalErrorHandler = window.onerror;
+			originalErrorHandler = window.onerror;
 			window.onerror = undefined;
+		} );
 
-			await watchdog.create( {
-				header: element
-			}, {
-				initialData: {
-					header: '<p>Foo</p>'
-				},
-				plugins: [ Paragraph ]
-			} );
-
-			expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
-
-			const restartSpy = sinon.spy();
-
-			watchdog.on( 'restart', restartSpy );
-
-			setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
-
-			await waitCycle();
+		afterEach( async () => {
+			element2.remove();
 
 			window.onerror = originalErrorHandler;
 
-			sinon.assert.calledOnce( restartSpy );
-
-			expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
-
 			await watchdog.destroy();
+		} );
+
+		describe( 'init using data', () => {
+			beforeEach( async () => {
+				await watchdog.create( {
+					header: '<p>Foo</p>',
+					content: '<p>Bar</p>'
+				}, {
+					plugins: [ Paragraph ],
+					rootsAttributes: {
+						header: {
+							order: 1
+						},
+						content: {
+							order: 2
+						}
+					},
+					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+				} );
+
+				watchdog.on( 'restart', restartSpy );
+			} );
+
+			it( 'should properly restart', async () => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( restartSpy );
+
+				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+					header: '<p>Foo</p>',
+					content: '<p>Bar</p>'
+				} );
+
+				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+					header: { order: 1 },
+					content: { order: 2 }
+				} );
+			} );
+
+			it( 'should properly handle added and removed roots', async () => {
+				watchdog.editor.detachRoot( 'content' );
+				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
+
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( restartSpy );
+
+				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+					header: '<p>Foo</p>',
+					new: '<p>New</p>'
+				} );
+
+				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+					header: { order: 1 },
+					new: { order: 3 }
+				} );
+			} );
+
+			it( 'should properly handle lazy roots', async () => {
+				watchdog.editor.detachRoot( 'lazyOne' );
+				watchdog.editor.loadRoot( 'lazyTwo', { data: '<p>Two</p>', attributes: { order: 5 } } );
+
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( restartSpy );
+
+				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+					header: '<p>Foo</p>',
+					content: '<p>Bar</p>',
+					lazyTwo: '<p>Two</p>'
+				} );
+
+				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+					header: { order: 1 },
+					content: { order: 2 },
+					lazyTwo: { order: 5 }
+				} );
+			} );
+		} );
+
+		describe( 'init using elements', () => {
+			beforeEach( async () => {
+				class MultiRootEditorIntegration {
+					constructor( editor ) {
+						this.editor = editor;
+					}
+
+					init() {
+						this.editor.on( 'addRoot', ( evt, root ) => {
+							const domElement = this.editor.createEditable( root );
+
+							document.body.appendChild( domElement );
+						} );
+
+						this.editor.on( 'detachRoot', ( evt, root ) => {
+							const domElement = this.editor.detachEditable( root );
+
+							domElement.remove();
+						} );
+					}
+				}
+
+				watchdog.setDestructor( editor => {
+					for ( const name of editor.ui.getEditableElementsNames() ) {
+						const editable = editor.ui.getEditableElement( name );
+
+						editable.remove();
+					}
+
+					return editor.destroy();
+				} );
+
+				await watchdog.create( {
+					header: element,
+					content: element2
+				}, {
+					initialData: {
+						header: '<p>Foo</p>',
+						content: '<p>Bar</p>'
+					},
+					plugins: [ Paragraph, MultiRootEditorIntegration ],
+					rootsAttributes: {
+						header: {
+							order: 1
+						},
+						content: {
+							order: 2
+						}
+					},
+					lazyRoots: [ 'lazyOne', 'lazyTwo' ]
+				} );
+
+				watchdog.on( 'restart', restartSpy );
+			} );
+
+			it( 'should properly restart', async () => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				await waitCycle();
+
+				window.onerror = originalErrorHandler;
+
+				sinon.assert.calledOnce( restartSpy );
+
+				expect( watchdog.editor.data.get( { rootName: 'header' } ) ).to.equal( '<p>Foo</p>' );
+				expect( watchdog.editor.data.get( { rootName: 'content' } ) ).to.equal( '<p>Bar</p>' );
+			} );
+
+			it( 'should properly handle added and removed roots', async () => {
+				watchdog.editor.detachRoot( 'content' );
+				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
+
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( restartSpy );
+
+				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+					header: '<p>Foo</p>',
+					new: '<p>New</p>'
+				} );
+
+				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+					header: { order: 1 },
+					new: { order: 3 }
+				} );
+			} );
+
+			it( 'should properly handle lazy roots', async () => {
+				watchdog.editor.detachRoot( 'lazyOne' );
+				watchdog.editor.loadRoot( 'lazyTwo', { data: '<p>Two</p>', attributes: { order: 5 } } );
+
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				await waitCycle();
+
+				sinon.assert.calledOnce( restartSpy );
+
+				expect( watchdog.editor.getFullData() ).to.deep.equal( {
+					header: '<p>Foo</p>',
+					content: '<p>Bar</p>',
+					lazyTwo: '<p>Two</p>'
+				} );
+
+				expect( watchdog.editor.getRootsAttributes() ).to.deep.equal( {
+					header: { order: 1 },
+					content: { order: 2 },
+					lazyTwo: { order: 5 }
+				} );
+			} );
 		} );
 	} );
 } );
