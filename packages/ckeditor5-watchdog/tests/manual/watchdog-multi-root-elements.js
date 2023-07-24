@@ -11,7 +11,7 @@ import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import EditorWatchdog from '../../src/editorwatchdog';
 
 class TypingError {
-	constructor( editor ) {
+	constructor ( editor ) {
 		this.editor = editor;
 	}
 
@@ -29,10 +29,36 @@ class TypingError {
 	}
 }
 
+class MultiRootEditorIntegration {
+	constructor ( editor ) {
+		this.editor = editor;
+	}
+
+	init() {
+		this.editor.on( 'addRoot', ( evt, root ) => {
+			const domElement = this.editor.createEditable( root );
+
+			const container = document.createElement( 'div' );
+			container.className = 'editor';
+			container.appendChild( domElement );
+
+			document.getElementById( 'editors' ).appendChild( container );
+		} );
+
+		this.editor.on( 'detachRoot', ( evt, root ) => {
+			const domElement = this.editor.detachEditable( root );
+
+			domElement.parentElement.remove();
+		} );
+	}
+}
+
+const lazyRoots = [ 'lazyFoo', 'lazyBar' ];
+
 const editorConfig = {
 	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [
-		ArticlePluginSet, TypingError
+		ArticlePluginSet, TypingError, MultiRootEditorIntegration
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote',
 		'insertTable', 'mediaEmbed', 'undo', 'redo' ],
@@ -42,7 +68,8 @@ const editorConfig = {
 			'tableRow',
 			'mergeTableCells'
 		]
-	}
+	},
+	lazyRoots
 };
 
 const watchdog = createWatchdog( document.getElementById( 'editor-state' ) );
@@ -53,21 +80,50 @@ document.getElementById( 'random-error' ).addEventListener( 'click', () => {
 	throw new Error( 'foo' );
 } );
 
+let i = 0;
+
+document.getElementById( 'add-root' ).addEventListener( 'click', () => {
+	window.editor.addRoot( 'root' + ( ++i ), { data: '<p>' + i + '</p>' } );
+} );
+
+document.getElementById( 'remove-root' ).addEventListener( 'click', () => {
+	const rootNames = window.editor.model.document.getRootNames();
+
+	window.editor.detachRoot( rootNames[ rootNames.length - 1 ] );
+} );
+
+document.getElementById( 'load-root' ).addEventListener( 'click', () => {
+	const rootName = lazyRoots.shift();
+
+	window.editor.loadRoot( rootName, { data: '<p>' + rootName + '</p>' } );
+
+	if ( lazyRoots.length == 0 ) {
+		document.getElementById( 'load-root' ).remove();
+	}
+} );
+
 function createWatchdog( stateElement ) {
 	const watchdog = new EditorWatchdog( MultiRootEditor );
 
-	watchdog
-		.create(
-			{
-				header: document.querySelector( '#header' ),
-				content: document.querySelector( '#content' )
-			},
-			editorConfig
-		)
-		.then( () => {
+	watchdog.setCreator( ( elementsOrData, config ) => {
+		return MultiRootEditor.create( elementsOrData, config ).then( editor => {
+			window.editor = editor;
+
 			const toolbarContainer = document.querySelector( '#toolbar' );
-			toolbarContainer.appendChild( watchdog.editor.ui.view.toolbar.element );
+			toolbarContainer.innerHTML = '';
+			toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
+			return editor;
 		} );
+	} );
+
+	watchdog.create(
+		{
+			header: document.querySelector( '#header' ),
+			content: document.querySelector( '#content' )
+		},
+		editorConfig
+	);
 
 	watchdog.on( 'error', () => {
 		console.log( 'Editor crashed!' );
