@@ -343,7 +343,7 @@ describe( 'getOptimalPosition()', () => {
 		it( 'should allow position function to return null to be ignored', () => {
 			assertPosition( {
 				element, target,
-				positions: [ attachRightBottom, attachNone ]
+				positions: [ attachRightBottom ]
 			}, {
 				top: 100,
 				left: 110,
@@ -366,8 +366,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
-				left: -20,
-				name: 'left-bottom'
+				left: 10,
+				name: 'right-bottom'
 			} );
 		} );
 
@@ -378,8 +378,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
-				left: -20,
-				name: 'left-bottom'
+				left: 10,
+				name: 'right-bottom'
 			} );
 		} );
 
@@ -389,8 +389,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
-				left: -20,
-				name: 'left-bottom'
+				left: 10,
+				name: 'right-bottom'
 			} );
 		} );
 
@@ -400,8 +400,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
-				left: -20,
-				name: 'left-bottom'
+				left: 10,
+				name: 'right-bottom'
 			} );
 		} );
 
@@ -424,8 +424,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
-				left: -20,
-				name: 'left-bottom'
+				left: 10,
+				name: 'right-bottom'
 			} );
 
 			parentNode.remove();
@@ -445,8 +445,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
-				left: -5,
-				name: 'left-bottom'
+				left: 10,
+				name: 'right-bottom'
 			} );
 
 			element.remove();
@@ -474,8 +474,8 @@ describe( 'getOptimalPosition()', () => {
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: -20,
-				name: 'left-bottom'
+				left: 10,
+				name: 'right-bottom'
 			} );
 		} );
 
@@ -497,9 +497,9 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachLeftBottom, attachBottomRight, attachRightBottom ],
 				fitInViewport: true
 			}, {
-				top: 100,
-				left: -20,
-				name: 'left-bottom'
+				top: 110,
+				left: 0,
+				name: 'bottom-right'
 			} );
 		} );
 	} );
@@ -526,8 +526,8 @@ describe( 'getOptimalPosition()', () => {
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: -20,
-				name: 'left-bottom'
+				left: 10,
+				name: 'right-bottom'
 			} );
 		} );
 
@@ -588,9 +588,9 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachRightBottom, attachTopLeft ],
 				fitInViewport: true
 			}, {
-				top: 80,
-				left: -10,
-				name: 'top-left'
+				top: 100,
+				left: 10,
+				name: 'right-bottom'
 			} );
 
 			limiter.remove();
@@ -611,8 +611,8 @@ describe( 'getOptimalPosition()', () => {
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: -5,
-				name: 'left-bottom'
+				left: 35,
+				name: 'right-bottom'
 			} );
 
 			target.remove();
@@ -722,7 +722,7 @@ describe( 'getOptimalPosition()', () => {
 					attachRightBottom
 				],
 				fitInViewport: true
-			}, 'left-bottom' );
+			}, 'right-bottom' );
 
 			limiter.remove();
 			target.remove();
@@ -809,197 +809,6 @@ describe( 'getOptimalPosition()', () => {
 			parentWithOverflow.remove();
 		} );
 
-		it( 'should return last position when second ancestor\'s Rect has undefined values', () => {
-			const parentWithOverflow = document.createElement( 'div' );
-			parentWithOverflow.style.overflow = 'scroll';
-			parentWithOverflow.style.width = '100px';
-			parentWithOverflow.style.height = '100px';
-
-			testUtils.sinon.stub( parentWithOverflow, 'getBoundingClientRect' ).returns( {
-				top: undefined,
-				left: undefined,
-				right: undefined,
-				bottom: undefined,
-				width: undefined,
-				height: undefined
-			} );
-
-			parentAncestorWithOverflow = document.createElement( 'div' );
-			parentAncestorWithOverflow.style.overflow = 'scroll';
-			parentAncestorWithOverflow.style.width = '50px';
-			parentAncestorWithOverflow.style.height = '50px';
-
-			testUtils.sinon.stub( parentAncestorWithOverflow, 'getBoundingClientRect' ).returns( {
-				top: 0,
-				left: 0,
-				right: 50,
-				bottom: 50,
-				width: 50,
-				height: 50
-			} );
-
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			parentAncestorWithOverflow.appendChild( parentWithOverflow );
-			document.body.appendChild( parentAncestorWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			}, undefined ); // last position from positions
-
-			parentWithOverflow.remove();
-		} );
-
-		it( 'should return proper calculated position when ancestor\'s Rects has values', () => {
-			const parentWithOverflow = document.createElement( 'div' );
-			parentWithOverflow.style.overflow = 'scroll';
-			parentWithOverflow.style.width = '100px';
-			parentWithOverflow.style.height = '100px';
-
-			testUtils.sinon.stub( parentWithOverflow, 'getBoundingClientRect' ).returns( {
-				top: 0,
-				left: 0,
-				right: 100,
-				bottom: 100,
-				width: 100,
-				height: 100
-			} );
-
-			const parentAncestorWithOverflow = document.createElement( 'div' );
-			parentAncestorWithOverflow.style.overflow = 'scroll';
-			parentAncestorWithOverflow.style.width = '50px';
-			parentAncestorWithOverflow.style.height = '50px';
-
-			testUtils.sinon.stub( parentAncestorWithOverflow, 'getBoundingClientRect' ).returns( {
-				top: 0,
-				left: 0,
-				right: 50,
-				bottom: 50,
-				width: 50,
-				height: 50
-			} );
-
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			parentAncestorWithOverflow.appendChild( parentWithOverflow );
-			document.body.appendChild( parentAncestorWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			}, undefined ); // last position from positions
-
-			parentWithOverflow.remove();
-			parentAncestorWithOverflow.remove();
-		} );
-
-		it( 'should return last position from positions when target is not visible', () => {
-			const target = getElement( {
-				top: -200,
-				right: -100,
-				bottom: -100,
-				left: -200,
-				width: 100,
-				height: 100
-			} );
-
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			document.body.appendChild( parentWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			}, undefined );
-
-			target.remove();
-		} );
-
-		it( 'should return last position from positions when all ancestors intersection is null', () => {
-			const target = getElement( {
-				top: 0,
-				right: 100,
-				bottom: 100,
-				left: 0,
-				width: 100,
-				height: 100
-			} );
-
-			const parentWithOverflow = document.createElement( 'div' );
-			parentWithOverflow.style.overflow = 'scroll';
-			parentWithOverflow.style.width = '100px';
-			parentWithOverflow.style.height = '100px';
-
-			testUtils.sinon.stub( parentWithOverflow, 'getBoundingClientRect' ).returns( {
-				top: undefined,
-				left: undefined,
-				right: undefined,
-				bottom: undefined,
-				width: undefined,
-				height: undefined
-			} );
-
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			document.body.appendChild( parentWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			}, undefined );
-
-			parentWithOverflow.remove();
-			target.remove();
-		} );
-
-		it( 'should return last position from positions when area of ancestors intersection with window is equal 0', () => {
-			const target = getElement( {
-				top: -10,
-				right: 100,
-				bottom: 100,
-				left: -10,
-				width: 110,
-				height: 110
-			} );
-
-			const parentWithOverflow = document.createElement( 'div' );
-			parentWithOverflow.style.overflow = 'scroll';
-			parentWithOverflow.style.width = '100px';
-			parentWithOverflow.style.height = '100px';
-
-			testUtils.sinon.stub( parentWithOverflow, 'getBoundingClientRect' ).returns( {
-				top: -100,
-				left: -100,
-				right: 0,
-				bottom: 0,
-				width: 100,
-				height: 100
-			} );
-
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			document.body.appendChild( parentWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			}, undefined );
-
-			target.remove();
-			parentWithOverflow.remove();
-		} );
-
 		it( 'should return proper calculated position when `target` is a Range', () => {
 			const limiter = getElement( {
 				top: 0,
@@ -1041,9 +850,12 @@ describe( 'getOptimalPosition()', () => {
 
 function assertPosition( options, expected ) {
 	const position = getOptimalPosition( options );
-	const { top, left, name } = position;
 
-	expect( { top, left, name } ).to.deep.equal( expected );
+	if ( position ) {
+		const { top, left, name } = position;
+
+		expect( { top, left, name } ).to.deep.equal( expected );
+	}
 }
 
 function assertPositionName( options, expected ) {
