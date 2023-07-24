@@ -258,6 +258,11 @@ export default class Differ {
 					return;
 				}
 
+				// Don't buffer if the root state does not change.
+				if ( root.isAttached() == operation.isAdd ) {
+					return;
+				}
+
 				this._bufferRootStateChange( operation.rootName, operation.isAdd );
 
 				break;
@@ -648,7 +653,7 @@ export default class Differ {
 		const diffItem = this._changedRoots.get( rootName )!;
 
 		if ( diffItem.state !== undefined ) {
-			// Root `state` can only toggle between of the values ('attached' or 'detached') and no value. It cannot be any other way,
+			// Root `state` can only toggle between one of the values and no value. It cannot be any other way,
 			// because if the root was originally attached it can only become detached. Then, if it is re-attached in the same batch of
 			// changes, it gets back to "no change" (which means no value). Same if the root was originally detached.
 			delete diffItem.state;

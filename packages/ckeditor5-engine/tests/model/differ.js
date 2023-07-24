@@ -15,6 +15,7 @@ import RenameOperation from '../../src/model/operation/renameoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
+import RootOperation from '../../src/model/operation/rootoperation';
 
 describe( 'Differ', () => {
 	let doc, differ, root, model;
@@ -1996,6 +1997,22 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'add root operation when root is attached should be ignored by differ', () => {
+			// This may happen during RTC when joining an editing session when a root was added during that editing session.
+			model.change( writer => {
+				const operation = new RootOperation( 'main', '$root', true, model.document, model.document.version );
+
+				writer.batch.addOperation( operation );
+				model.applyOperation( operation );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 0 );
+				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.isEmpty ).to.be.true;
+			} );
+		} );
+
 		it( 'detach root', () => {
 			model.change( writer => {
 				writer.detachRoot( 'main' );
@@ -2006,6 +2023,22 @@ describe( 'Differ', () => {
 				expect( rootChanges[ 0 ] ).to.deep.equal( { name: 'main', state: 'detached' } );
 				expect( differ.hasDataChanges() ).to.be.true;
 				expect( differ.isEmpty ).to.be.false;
+			} );
+		} );
+
+		it( 'detach root operation when root is not attached should be ignored by differ', () => {
+			// This may happen during RTC when joining an editing session when a root was detached during that editing session.
+			model.change( writer => {
+				const operation = new RootOperation( 'new', '$root', false, model.document, model.document.version );
+
+				writer.batch.addOperation( operation );
+				model.applyOperation( operation );
+
+				const rootChanges = differ.getChangedRoots();
+
+				expect( rootChanges.length ).to.equal( 0 );
+				expect( differ.hasDataChanges() ).to.be.false;
+				expect( differ.isEmpty ).to.be.true;
 			} );
 		} );
 

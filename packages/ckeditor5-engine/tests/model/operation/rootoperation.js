@@ -96,29 +96,6 @@ describe( 'RootOperation', () => {
 		expect( clone.isAdd ).to.equal( true );
 	} );
 
-	describe( '_validate()', () => {
-		it( 'should throw an error when trying to add an existing and attached root', () => {
-			doc.createRoot( '$root', 'new' );
-
-			expectToThrowCKEditorError( () => {
-				const op = new RootOperation( 'new', '$root', true, doc, doc.version );
-
-				op._validate();
-			}, /root-operation-root-attached/ );
-		} );
-
-		it( 'should throw an error when trying to detach a detached root', () => {
-			const root = doc.createRoot( '$root', 'new' );
-			root._isAttached = false;
-
-			expectToThrowCKEditorError( () => {
-				const op = new RootOperation( 'new', '$root', false, doc, doc.version );
-
-				op._validate();
-			}, /root-operation-root-detached/ );
-		} );
-	} );
-
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new RootOperation( 'new', '$root', true, doc, doc.version );
