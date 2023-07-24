@@ -60,7 +60,7 @@ In the callback we do four things:
 
 * Create a {@link module:ui/button/button~Button button} and set a few properties on it, one of which is the translated text created with the {@link module:utils/locale~Locale#t `editor.t()`} method.
 * Register a callback that will execute the `highlight` command and put the focus back to the editing view when the button is pressed.
-* Bind the `isOn` and `isEnabled` button attributes to the `value` and `isEnabled` command attributes. This ensures that the button is only clickable when the command can be executed, and that it's active when the selection is already highlighted.
+* Bind the `isOn` and `isEnabled` button properties to the `value` and `isEnabled` command properties. This ensures that the button is only clickable when the command can be executed, and that it's active when the selection is already highlighted.
 * Return the configured button.
 
 ## Registering a new button
