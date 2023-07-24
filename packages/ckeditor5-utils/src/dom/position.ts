@@ -378,8 +378,6 @@ class PositionObject implements Position {
 					// limiter and actual position.
 					return limiterViewportIntersectRect.getIntersectionArea( this._rect );
 				}
-			} else {
-				return limiterRect.getIntersectionArea( this._rect );
 			}
 		}
 
@@ -390,13 +388,9 @@ class PositionObject implements Position {
 	 * An intersection area between positioned element and viewport.
 	 */
 	public get viewportIntersectionArea(): number {
-		const viewportRect = this._options.viewportRect;
+		const viewportRect = this._options.viewportRect!;
 
-		if ( viewportRect ) {
-			return viewportRect.getIntersectionArea( this._rect );
-		}
-
-		return 0;
+		return viewportRect.getIntersectionArea( this._rect );
 	}
 
 	/**
