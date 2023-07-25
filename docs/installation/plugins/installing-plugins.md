@@ -14,7 +14,7 @@ CKEditor 5 plugins, responsible for various features, are distributed through [n
 
 ## Requirements
 
-In order to start developing CKEditor 5 you will require:
+To enrich the CKEditor 5 by installing plugins, you will require:
 
 * [Node.js](https://nodejs.org/en/) 16.0.0+
 * [npm](https://www.npmjs.com/) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
@@ -31,7 +31,7 @@ If you're here looking for a way to install plugins, there is a chance you have 
 
 ## Adding a plugin to a build
 
-Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
+You can start adding plugins if you are in a directory with the CKEditor 5 installed. Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
 
 ```bash
 npm install <plugin-name>
@@ -62,7 +62,7 @@ To add a plugin to your editor, you need to follow three steps:
 3. Configure the toolbar if the installed plugin requires UI.
 
 ```ts
-// ckeditor.ts
+// <path-to-your-build>/src/ckeditor.ts
 
 // The editor creator to use.
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
