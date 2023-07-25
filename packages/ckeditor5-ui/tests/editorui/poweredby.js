@@ -531,7 +531,7 @@ describe( 'PoweredBy', () => {
 			focusEditor( editor );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
+			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			parentWithOverflow.remove();
 			await editor.destroy();
