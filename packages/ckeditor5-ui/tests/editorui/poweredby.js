@@ -13,7 +13,7 @@ import View from '../../src/view';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { Rect } from '@ckeditor/ckeditor5-utils';
+import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -45,6 +45,9 @@ describe( 'PoweredBy', () => {
 			width: 1000,
 			height: 1000
 		} );
+
+		sinon.stub( global.window, 'innerWidth' ).value( 1000 );
+		sinon.stub( global.window, 'innerHeight' ).value( 1000 );
 	} );
 
 	afterEach( async () => {
