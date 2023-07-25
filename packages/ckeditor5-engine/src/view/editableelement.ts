@@ -43,7 +43,9 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 	declare public isFocused: boolean;
 
 	/**
-	 * Placeholder of current editable element.
+	 * Placeholder of editable element. Could be updated.
+	 *
+	 * editor.editing.view.document.getRoot( 'main' ).placeholder = 'New placeholder';
 	 *
 	 * @observable
 	 */

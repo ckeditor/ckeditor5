@@ -31,7 +31,6 @@ const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfi
  * @param options Configuration options of the placeholder.
  * @param options.view Editing view instance.
  * @param options.element Element that will gain a placeholder. See `options.isDirectHost` to learn more.
- * @param options.text Placeholder text.
  * @param options.isDirectHost If set `false`, the placeholder will not be enabled directly
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
@@ -62,22 +61,18 @@ export function enablePlaceholder( { view, element, isDirectHost = true, keepOnF
 
 	if ( element.is( 'editableElement' ) ) {
 		element.on( 'change:placeholder', ( evtInfo, evt, text ) => {
-			// Store information about the element placeholder under its document.
-			documentPlaceholders.get( doc )!.set( element, {
-				text,
-				isDirectHost,
-				keepOnFocus,
-				hostElement: isDirectHost ? element : null
-			} );
-
-			// Update the placeholders right away.
-			view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+			setPlaceholder( text );
 		} );
 	}
 
 	if ( element.placeholder ) {
+		setPlaceholder( element.placeholder );
+	}
+
+	function setPlaceholder( text: string ) {
+		// Store information about the element placeholder under its document.
 		documentPlaceholders.get( doc )!.set( element, {
-			text: element.placeholder,
+			text,
 			isDirectHost,
 			keepOnFocus,
 			hostElement: isDirectHost ? element : null

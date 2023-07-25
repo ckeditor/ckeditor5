@@ -117,7 +117,9 @@ export default class BalloonEditorUI extends EditorUI {
 			placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
 		}
 
-		editingRoot.placeholder = placeholderText;
+		if ( placeholderText ) {
+			editingRoot.placeholder = placeholderText;
+		}
 
 		enablePlaceholder( {
 			view: editingView,
