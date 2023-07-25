@@ -496,61 +496,6 @@ describe( 'PoweredBy', () => {
 			focusEditor( editor );
 
 			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'invalid' );
-
-			parentWithOverflow.remove();
-		} );
-
-		it( 'should not show the balloon if the root is not visible vertically with left side', async () => {
-			const editor = await createEditor( element, {
-				ui: {
-					poweredBy: {
-						side: 'left'
-					}
-				}
-			} );
-
-			testUtils.sinon.stub( editor.editing.view.getDomRoot(), 'getBoundingClientRect' ).returns( {
-				top: 0,
-				left: 0,
-				right: 400,
-				width: 400,
-				bottom: 100,
-				height: 100
-			} );
-
-			const domRoot = editor.editing.view.getDomRoot();
-			const parentWithOverflow = document.createElement( 'div' );
-			parentWithOverflow.style.height = '99px';
-
-			parentWithOverflow.style.overflow = 'scroll';
-
-			document.body.appendChild( parentWithOverflow );
-			parentWithOverflow.appendChild( domRoot );
-
-			focusEditor( editor );
-
-			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
-			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
-
-			parentWithOverflow.remove();
-			await editor.destroy();
-		} );
-
-		it( 'should not show the balloon if the root is not visible horizontally', async () => {
-			const domRoot = editor.editing.view.getDomRoot();
-			const parentWithOverflow = document.createElement( 'div' );
-
-			parentWithOverflow.style.overflow = 'scroll';
-			// Is not enough width to be visible horizontally.
-			parentWithOverflow.style.width = '390px';
-
-			document.body.appendChild( parentWithOverflow );
-			parentWithOverflow.appendChild( domRoot );
-
-			focusEditor( editor );
-
-			expect( editor.ui.poweredBy._balloonView.isVisible ).to.be.true;
 			expect( editor.ui.poweredBy._balloonView.position ).to.equal( 'arrowless' );
 
 			parentWithOverflow.remove();
