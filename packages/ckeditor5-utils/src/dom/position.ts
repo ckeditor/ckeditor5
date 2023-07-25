@@ -113,7 +113,7 @@ export function getOptimalPosition( {
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
 	// Get intersection of all scrollable ancestors of `target`.
 	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
-	const ancestorsIntersectionRect = getElementsIntersectionRect( allScrollableAncestors, ( viewportOffsetConfig || {} )?.top );
+	const ancestorsIntersectionRect = getElementsIntersectionRect( allScrollableAncestors, ( viewportOffsetConfig || { top: 0 } ).top );
 
 	if ( !ancestorsIntersectionRect || !targetRect.getVisible() ) {
 		return null;
