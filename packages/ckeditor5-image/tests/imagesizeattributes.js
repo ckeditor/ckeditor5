@@ -13,6 +13,7 @@ import ImageBlockEditing from '../src/image/imageblockediting';
 import ImageInlineEditing from '../src/image/imageinlineediting';
 import ImageSizeAttributes from '../src/imagesizeattributes';
 import ImageResizeEditing from '../src/imageresize/imageresizeediting';
+import PictureEditing from '../src/pictureediting';
 import ImageUtils from '../src/imageutils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -425,7 +426,7 @@ describe( 'ImageSizeAttributes', () => {
 
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
-							plugins: [ Paragraph, ImageInlineEditing, ImageSizeAttributes, ImageResizeEditing ]
+							plugins: [ Paragraph, ImageInlineEditing, PictureEditing, ImageResizeEditing ]
 						} );
 
 						view = editor.editing.view;
@@ -465,6 +466,70 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( editor.getData() ).to.equal(
 							'<p><img src="/assets/sample.png" width="100" height="200"></p>'
+						);
+					} );
+
+					it( 'should not add aspect-ratio if it is a picture', () => {
+						editor.setData(
+							'<p>' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<img src="/assets/sample.png">' +
+								'</picture>' +
+							'</p>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<p>' +
+								'<span class="ck-widget image-inline" contenteditable="false">' +
+									'<picture>' +
+										'<source media="(min-width: 800px)" sizes="2000px" srcset="/assets/sample.png" type="image/png">' +
+										'</source>' +
+										'<img src="/assets/sample.png"></img>' +
+									'</picture>' +
+								'</span>' +
+							'</p>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<p>' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<img src="/assets/sample.png">' +
+								'</picture>' +
+							'</p>'
+						);
+					} );
+
+					it( 'should not add aspect-ratio if it is a picture and image has width and height set', () => {
+						editor.setData(
+							'<p>' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)" sizes="2000px">' +
+									'<img width="100" height="200" src="/assets/sample.png">' +
+								'</picture>' +
+							'</p>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<p>' +
+								'<span class="ck-widget image-inline" contenteditable="false">' +
+									'<picture>' +
+										'<source media="(min-width: 800px)" sizes="2000px" srcset="/assets/sample.png" type="image/png">' +
+										'</source>' +
+										'<img height="200" src="/assets/sample.png" width="100"></img>' +
+									'</picture>' +
+								'</span>' +
+							'</p>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<p>' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" media="(min-width: 800px)" type="image/png" sizes="2000px">' +
+									'<img src="/assets/sample.png" width="100" height="200">' +
+								'</picture>' +
+							'</p>'
 						);
 					} );
 				} );
@@ -560,7 +625,7 @@ describe( 'ImageSizeAttributes', () => {
 
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
-							plugins: [ Paragraph, ImageBlockEditing, ImageSizeAttributes, ImageResizeEditing ]
+							plugins: [ Paragraph, ImageBlockEditing, PictureEditing, ImageResizeEditing ]
 						} );
 
 						view = editor.editing.view;
@@ -602,6 +667,64 @@ describe( 'ImageSizeAttributes', () => {
 						expect( editor.getData() ).to.equal(
 							'<figure class="image">' +
 								'<img style="aspect-ratio:100/200;" src="/assets/sample.png" width="100" height="200">' +
+							'</figure>'
+						);
+					} );
+
+					it( 'should not add aspect-ratio if it is a picture', () => {
+						editor.setData(
+							'<figure class="image">' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" media="(max-width: 800px)" type="image/png">' +
+									'<img src="/assets/sample.png" alt="">' +
+								'</picture>' +
+							'</figure>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<figure class="ck-widget image" contenteditable="false">' +
+								'<picture>' +
+									'<source media="(max-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
+									'<img alt="" src="/assets/sample.png"></img>' +
+								'</picture>' +
+							'</figure>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" media="(max-width: 800px)" type="image/png">' +
+									'<img src="/assets/sample.png" alt="">' +
+								'</picture>' +
+							'</figure>'
+						);
+					} );
+
+					it( 'should not add aspect-ratio if it is a picture and image has width and height set', () => {
+						editor.setData(
+							'<figure class="image">' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" media="(max-width: 800px)" type="image/png">' +
+									'<img width="100" height="200" src="/assets/sample.png" alt="">' +
+								'</picture>' +
+							'</figure>'
+						);
+
+						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+							'<figure class="ck-widget image" contenteditable="false">' +
+								'<picture>' +
+									'<source media="(max-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
+									'<img alt="" height="200" src="/assets/sample.png" width="100"></img>' +
+								'</picture>' +
+							'</figure>'
+						);
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="image">' +
+								'<picture>' +
+									'<source srcset="/assets/sample.png" media="(max-width: 800px)" type="image/png">' +
+									'<img src="/assets/sample.png" alt="" width="100" height="200">' +
+								'</picture>' +
 							'</figure>'
 						);
 					} );
