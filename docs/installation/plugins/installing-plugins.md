@@ -18,7 +18,6 @@ In order to start developing CKEditor 5 you will require:
 
 * [Node.js](https://nodejs.org/en/) 16.0.0+
 * [npm](https://www.npmjs.com/) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
-* [Git](https://git-scm.com/)
 
 <info-box warning>
 	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `18.0.0`, you should consider updating your editor and other packages to the latest version or install the alignment package at version `18.0.0`. Otherwise, this will result in [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
@@ -28,11 +27,9 @@ In order to start developing CKEditor 5 you will require:
 	**NOTE:** The above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
 </info-box>
 
-## Adding a plugin to a build
-
 If you're here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you don't, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
 
-## Installing a plugin
+## Adding a plugin to a build
 
 Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
 
@@ -168,7 +165,7 @@ class Editor extends ClassicEditor {
 export default Editor;
 ```
 
-## Building a project
+### Building a project
 
 You can now run webpack to build the application. To do that, call the `webpack` executable:
 
