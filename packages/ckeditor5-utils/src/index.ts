@@ -51,6 +51,8 @@ export { default as DomEmitterMixin, type DomEmitter } from './dom/emittermixin'
 export { default as findClosestScrollableAncestor } from './dom/findclosestscrollableancestor';
 export { default as global } from './dom/global';
 export { default as getAncestors } from './dom/getancestors';
+export { default as getElementsIntersectionRect } from './dom/getelementsintersectionrect';
+export { default as getScrollableAncestors } from './dom/getscrollableancestors';
 export { default as getDataFromElement } from './dom/getdatafromelement';
 export { default as isText } from './dom/istext';
 export { default as Rect, type RectSource } from './dom/rect';
@@ -64,7 +66,7 @@ export { default as isNode } from './dom/isnode';
 export { default as isRange } from './dom/isrange';
 export { default as isValidAttributeName } from './dom/isvalidattributename';
 export { default as isVisible } from './dom/isvisible';
-export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction } from './dom/position';
+export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction, type Position } from './dom/position';
 export { default as remove } from './dom/remove';
 export * from './dom/scroll';
 

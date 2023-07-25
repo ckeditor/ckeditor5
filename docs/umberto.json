@@ -18,8 +18,8 @@
 	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": [
 		"packages/*",
-		"external/@(ckeditor5-internal|collaboration-features)/",
-		"external/@(ckeditor5-internal|collaboration-features)/packages/*"
+		"external/@(ckeditor5-internal|ckeditor5-commercial)/",
+		"external/@(ckeditor5-internal|ckeditor5-commercial)/packages/*"
 	],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~Observable",
