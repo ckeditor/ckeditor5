@@ -15,6 +15,7 @@ import findClosestScrollableAncestor from './findclosestscrollableancestor';
  *
  * **Note**: The `document` is always included in the returned array.
  *
+ * @internal
  * @param element
  * @returns An array of scrollable element's ancestors (including the `document`).
  */

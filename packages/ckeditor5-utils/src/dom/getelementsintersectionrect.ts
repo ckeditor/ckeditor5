@@ -13,6 +13,7 @@ import Rect from './rect';
  * Calculates the intersection `Rect` of a given set of elements (and/or a `document`).
  * Also, takes into account the viewport top offset configuration.
  *
+ * @internal
  * @param elements
  * @param viewportTopOffset
  */
