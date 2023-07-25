@@ -10,15 +10,13 @@
  */
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
+import type { CKBoxImageUrls } from './ckboxconfig';
 
 const IMAGE_BREAKPOINT_MAX_WIDTH = 4000;
 const IMAGE_BREAKPOINT_PIXELS_THRESHOLD = 80;
 const IMAGE_BREAKPOINT_PERCENTAGE_THRESHOLD = 10;
 
-export function getImageUrls2( imageUrls: {
-	[ width: number ]: string;
-	default: string;
-} ): {
+export function getImageUrls2( imageUrls: CKBoxImageUrls ): {
 	imageFallbackUrl: string;
 	imageSources: Array<{
 		srcset: string;

@@ -254,6 +254,20 @@ export interface CKBoxAssetLinkAttributesDefinition {
 }
 
 /**
+ * The source set of the responsive image.
+ *
+ * Each numeric key corresponds to display width of the image.
+ */
+export interface CKBoxImageUrls {
+	[ width: number ]: string;
+
+	/**
+	 * A fallback URL for browsers that do not support the "webp" format.
+	 */
+	default: string;
+}
+
+/**
  * Raw asset definition that is received from the CKBox feature.
  */
 export interface CKBoxRawAssetDefinition {
@@ -262,11 +276,6 @@ export interface CKBoxRawAssetDefinition {
 	 * A raw asset data definition.
 	 */
 	data: CKBoxRawAssetDataDefinition;
-
-	/**
-	 * An asset origin URL.
-	 */
-	origin: string;
 }
 
 /**
@@ -293,6 +302,16 @@ export interface CKBoxRawAssetDataDefinition {
 	 *  A raw asset metadata definition.
 	 */
 	metadata?: CKBoxRawAssetMetadataDefinition;
+
+	/**
+	 * The source set of the responsive image.
+	 */
+	imageUrls?: CKBoxImageUrls;
+
+	/**
+	 * The asset location.
+	 */
+	url: string;
 }
 
 /**
