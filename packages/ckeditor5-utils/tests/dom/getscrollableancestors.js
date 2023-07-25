@@ -20,10 +20,16 @@ describe( 'getScrollableAncestors', () => {
 		document.body.appendChild( parentWithOverflow2 );
 
 		expect( getScrollableAncestors( element ) ).to.deep.equal( [ parentWithOverflow, parentWithOverflow2, document ] );
+
+		element.remove();
+		parentWithOverflow.remove();
+		parentWithOverflow2.remove();
 	} );
 	it( 'should return only document when there are no parent elements with overflow', () => {
 		const element = document.createElement( 'div' );
 
 		expect( getScrollableAncestors( element ) ).to.deep.equal( [ document ] );
+
+		element.remove();
 	} );
 } );
