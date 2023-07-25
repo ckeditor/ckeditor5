@@ -28,17 +28,19 @@ In order to start developing CKEditor 5 you will require:
 	**NOTE:** The above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
 </info-box>
 
-## Creating an editor base
+## Adding a plugin to a build
 
 If you're here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you don't, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
 
-## Installing a plugin package
+## Installing a plugin
 
 Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
 
 ```bash
-npm install <package-name>
+npm install <plugin-name>
 ```
+
+### Installing a package
 
 Let's say we want to install the alignment package. It adds text alignment functionality to your editor. We can install it using the following command:
 
@@ -54,15 +56,17 @@ The command will install the package and add it to `package.json`. You can also 
 	You can also give [Yarn](https://yarnpkg.com/lang/en/) a try.
 </info-box>
 
-## Adding a plugin to a configuration
+### Updating the editor's configuration
 
 To add a plugin to your editor, you need to follow three steps:
 
 1. Import the installed package in the file with the CKEditor configuration.
 2. Add the imported plugin to the list of plugins. There are two ways to achieve that: using the {@link module:core/editor/editor~Editor.builtinPlugins `builtinPlugins`} property or passing a plugin to the {@link module:core/editor/editor~Editor.create `create()`} method. Adding a plugin through the property lets you automatically enable it in all editor instances using this editor class. Passing the plugin to the method will affect only one instance.
-3. Display proper UI for the installed plugin to let users use it.
+3. Configure the toolbar if the installed plugin requires UI.
 
 ```ts
+// ckeditor.ts
+
 // The editor creator to use.
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
@@ -164,9 +168,35 @@ class Editor extends ClassicEditor {
 export default Editor;
 ```
 
+## Building a project
+
+You can now run webpack to build the application. To do that, call the `webpack` executable:
+
+```bash
+./node_modules/.bin/webpack --mode development
+```
+
+You can also install `webpack-cli` globally (using `npm install -g`) and run it via a globally available `webpack`.
+
+Alternatively, you can add it as an [npm script](https://docs.npmjs.com/misc/scripts):
+
+```json
+// package.json
+
+"scripts": {
+	"build": "webpack --mode development"
+}
+```
+
+And use it with:
+
+```bash
+npm run build
+```
+
 ## Adding a JavaScript plugin
 
-The CKEditor is a TypeScript project, and all plugins also use TypeScript. However, there are ways to use JavaScript packages with the editor.
+The CKEditor 5 is a TypeScript project, and all plugins provided by CKEditor 5 also use TypeScript. However, there are ways to use JavaScript packages with the editor.
 
 ### Community types
 
@@ -219,29 +249,3 @@ import { foo } from 'javascript-package';
 ```
 
 This comment suppresses all errors that originate on the following line.
-
-## Building a project
-
-You can now run webpack to build the application. To do that, call the `webpack` executable:
-
-```bash
-./node_modules/.bin/webpack --mode development
-```
-
-You can also install `webpack-cli` globally (using `npm install -g`) and run it via a globally available `webpack`.
-
-Alternatively, you can add it as an [npm script](https://docs.npmjs.com/misc/scripts):
-
-```json
-// package.json
-
-"scripts": {
-	"build": "webpack --mode development"
-}
-```
-
-And use it with:
-
-```bash
-npm run build
-```
