@@ -25,7 +25,8 @@ import {
 	type UpcastElementEvent,
 	type View,
 	type ViewElement,
-	type Writer
+	type Writer,
+	type PlaceholderableElement
 } from 'ckeditor5/src/engine';
 
 // A list of element names that should be treated by the Title plugin as title-like.
@@ -354,7 +355,7 @@ export default class Title extends Plugin {
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert:title-content', ( evt, data, conversionApi ) => {
-			const element: ViewElement & { placeholder?: string } = conversionApi.mapper.toViewElement( data.item )!;
+			const element: PlaceholderableElement = conversionApi.mapper.toViewElement( data.item )!;
 
 			element.placeholder = titlePlaceholder;
 

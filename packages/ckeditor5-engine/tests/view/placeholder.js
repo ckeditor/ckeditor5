@@ -616,12 +616,12 @@ describe( 'placeholder', () => {
 		it( 'should update placeholder when property in editing root is changed', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 
-			viewRoot.placeholder = 'new placeholder';
 			enablePlaceholder( {
 				view,
 				element: viewRoot,
 				text: 'foo bar baz'
 			} );
+			viewRoot.placeholder = 'new placeholder';
 
 			expect( viewRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'new placeholder' );
 		} );
@@ -629,13 +629,13 @@ describe( 'placeholder', () => {
 		it( 'should update placeholder when property in editing root is changed (isDirectHost=false)', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 
-			viewRoot.placeholder = 'new placeholder';
 			enablePlaceholder( {
 				view,
 				element: viewRoot,
 				text: 'foo bar baz',
 				isDirectHost: false
 			} );
+			viewRoot.placeholder = 'new placeholder';
 
 			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'new placeholder' );
 		} );

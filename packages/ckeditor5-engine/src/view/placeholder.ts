@@ -11,6 +11,7 @@ import '../../theme/placeholder.css';
 
 import type Document from './document';
 import type DowncastWriter from './downcastwriter';
+import type EditableElement from './editableelement';
 import type Element from './element';
 import type View from './view';
 
@@ -39,9 +40,7 @@ const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfi
  */
 export function enablePlaceholder( { view, element, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
-	element: Element & {
-		placeholder?: string;
-	};
+	element: PlaceholderableElement | EditableElement;
 	isDirectHost?: boolean;
 	keepOnFocus?: boolean;
 } ): void {
@@ -314,3 +313,10 @@ interface PlaceholderConfig {
 	keepOnFocus: boolean;
 	hostElement: Element | null;
 }
+
+/**
+ * Element which could have placeholder.
+ */
+export type PlaceholderableElement = Element & {
+	placeholder?: string;
+};
