@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module utils/dom/getscrollableancestors
+ */
+
 import global from './global';
 import findClosestScrollableAncestor from './findclosestscrollableancestor';
 
