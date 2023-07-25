@@ -200,7 +200,7 @@ export default class ImageSizeAttributes extends Plugin {
 				}
 
 				// Do not set aspect-ratio for pictures. See https://github.com/ckeditor/ckeditor5/issues/14579.
-				if ( img.parent!.is( 'element', 'picture' ) ) {
+				if ( data.item.hasAttribute( 'sources' ) ) {
 					return;
 				}
 
