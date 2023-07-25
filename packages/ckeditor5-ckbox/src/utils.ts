@@ -15,6 +15,44 @@ const IMAGE_BREAKPOINT_MAX_WIDTH = 4000;
 const IMAGE_BREAKPOINT_PIXELS_THRESHOLD = 80;
 const IMAGE_BREAKPOINT_PERCENTAGE_THRESHOLD = 10;
 
+export function getImageUrls2( imageUrls: {
+	[ width: number ]: string;
+	default: string;
+} ): {
+	imageFallbackUrl: string;
+	imageSources: Array<{
+		srcset: string;
+		sizes: string;
+		type: string;
+	}>;
+} {
+	const responsiveUrls: Array<string> = [];
+	let maxWidth = 0;
+
+	for ( const key in imageUrls ) {
+		const width = parseInt( key, 10 );
+
+		if ( !isNaN( width ) ) {
+			if ( width > maxWidth ) {
+				maxWidth = width;
+			}
+
+			responsiveUrls.push( `${ imageUrls[ key ] } ${ key }w` );
+		}
+	}
+
+	const imageSources = [ {
+		srcset: responsiveUrls.join( ',' ),
+		sizes: `(max-width: ${ maxWidth }px) 100vw, ${ maxWidth }px`,
+		type: 'image/webp'
+	} ];
+
+	return {
+		imageFallbackUrl: imageUrls.default,
+		imageSources
+	};
+}
+
 /**
  * Creates URLs for the image:
  * - responsive URLs for the "webp" image format,

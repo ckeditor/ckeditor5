@@ -6,7 +6,7 @@
 /* global btoa */
 
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import { getWorkspaceIds, getImageUrls } from '../src/utils';
+import { getWorkspaceIds, getImageUrls, getImageUrls2 } from '../src/utils';
 
 describe( 'utils', () => {
 	let token;
@@ -83,6 +83,43 @@ describe( 'utils', () => {
 
 		return TokenMock.create( () => Promise.resolve( initialToken ) );
 	}
+
+	describe( 'getImageUrls() - TODO', () => {
+		const testData = [
+			{ maxWidth: 80, widths: [ 80 ], extension: 'jpg' },
+			{ maxWidth: 80, widths: [ 80 ], extension: 'png' },
+			{ maxWidth: 400, widths: [ 80, 160, 240, 320, 400 ], extension: 'jpg' },
+			{ maxWidth: 200, widths: [ 80, 120, 200 ], extension: 'png' }
+		];
+
+		for ( const { maxWidth, widths, extension } of testData ) {
+			it( `should create responsize image source definition from the response data - ${ maxWidth }.${ extension }`, () => {
+				const data = {
+					default: getExampleUrl( maxWidth, extension )
+				};
+
+				for ( const width of widths ) {
+					data[ width ] = getExampleUrl( width );
+				}
+
+				const expectedSizes = `(max-width: ${ maxWidth }px) 100vw, ${ maxWidth }px`;
+				const expectedSrcset = widths.map( width => `${ getExampleUrl( width ) } ${ width }w` ).join( ',' );
+
+				expect( getImageUrls2( data ) ).to.deep.equal( {
+					imageFallbackUrl: getExampleUrl( maxWidth, extension ),
+					imageSources: [ {
+						sizes: expectedSizes,
+						srcset: expectedSrcset,
+						type: 'image/webp'
+					} ]
+				} );
+			} );
+		}
+
+		function getExampleUrl( width, extension = 'webp' ) {
+			return `https://example.com/workspace1/assets/foo-id/images/${ width }.${ extension }`;
+		}
+	} );
 
 	describe( 'getImageUrls()', () => {
 		it( 'should create responsive image source definition and image fallback URL - width: 100, extension: png', () => {

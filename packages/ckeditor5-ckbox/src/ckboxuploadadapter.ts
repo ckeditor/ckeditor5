@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals AbortController, FormData, URL, Image, XMLHttpRequest, window */
+/* globals AbortController, FormData, URL, XMLHttpRequest, window */
 
 /**
  * @module ckbox/ckboxuploadadapter
@@ -22,7 +22,7 @@ import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/cke
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
-import { getImageUrls, getWorkspaceIds } from './utils';
+import { getImageUrls2, getWorkspaceIds } from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -280,15 +280,7 @@ class Adapter implements UploadAdapter {
 
 		return this._sendHttpRequest( requestConfig )
 			.then( async data => {
-				const width = await this._getImageWidth();
-				const extension = getFileExtension( file.name );
-				const imageUrls = getImageUrls( {
-					token: this.token,
-					id: data.id,
-					origin: this.assetsOrigin,
-					width,
-					extension
-				} );
+				const imageUrls = getImageUrls2( data.imageUrls );
 
 				return {
 					ckboxImageId: data.id,
@@ -377,24 +369,6 @@ class Adapter implements UploadAdapter {
 
 			// Send the request.
 			xhr.send( data );
-		} );
-	}
-
-	/**
-	 * Resolves a promise with a number representing the width of a given image file.
-	 */
-	private _getImageWidth(): Promise<number> {
-		return new Promise( resolve => {
-			const image = new Image();
-
-			image.onload = () => {
-				// Let the browser know that it should not keep the reference any longer to avoid memory leeks.
-				URL.revokeObjectURL( image.src );
-
-				resolve( image.width );
-			};
-
-			image.src = this.loader.data!;
 		} );
 	}
 }
