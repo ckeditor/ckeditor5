@@ -942,8 +942,7 @@ export default class Renderer extends ObservableMixin() {
 		// @if CK_DEBUG_TYPING // 	);
 		// @if CK_DEBUG_TYPING // }
 
-		domSelection.collapse( anchor.parent, anchor.offset );
-		domSelection.extend( focus.parent, focus.offset );
+		domSelection.setBaseAndExtent( anchor.parent, anchor.offset, focus.parent, focus.offset );
 
 		// Firefox–specific hack (https://github.com/ckeditor/ckeditor5-engine/issues/1439).
 		if ( env.isGecko ) {
