@@ -22,7 +22,7 @@ import type {
 	CKBoxRawAssetDefinition
 } from './ckboxconfig';
 
-import { getImageUrls2 } from './utils';
+import { getImageUrls } from './utils';
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -342,7 +342,7 @@ function prepareAssets(
  * @param origin The base URL for assets inserted into the editor.
  */
 function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
-	const { imageFallbackUrl, imageSources } = getImageUrls2( asset.data.imageUrls! );
+	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
 
 	return {
 		imageFallbackUrl,

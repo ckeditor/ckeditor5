@@ -254,7 +254,7 @@ export interface CKBoxAssetLinkAttributesDefinition {
 }
 
 /**
- * The source set of the responsive image.
+ * The source set of the responsive image provided by the CKBox backend.
  *
  * Each numeric key corresponds to display width of the image.
  */
@@ -287,11 +287,6 @@ export interface CKBoxRawAssetDataDefinition {
 	 *  An unique asset id.
 	 */
 	id: string;
-
-	/**
-	 *  An asset extension.
-	 */
-	extension: string;
 
 	/**
 	 * An asset name.

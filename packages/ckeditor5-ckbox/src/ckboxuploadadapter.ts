@@ -22,7 +22,7 @@ import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/cke
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
-import { getImageUrls2, getWorkspaceIds } from './utils';
+import { getImageUrls, getWorkspaceIds } from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -280,7 +280,7 @@ class Adapter implements UploadAdapter {
 
 		return this._sendHttpRequest( requestConfig )
 			.then( async data => {
-				const imageUrls = getImageUrls2( data.imageUrls );
+				const imageUrls = getImageUrls( data.imageUrls );
 
 				return {
 					ckboxImageId: data.id,
