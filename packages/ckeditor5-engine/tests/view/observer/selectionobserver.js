@@ -104,6 +104,7 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/14569.
 	it( 'should call focusObserver#flush when selection is in the editable but not changed', () => {
 		// Set DOM selection.
 		changeDomSelection();
