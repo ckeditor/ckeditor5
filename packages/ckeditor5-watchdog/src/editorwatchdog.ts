@@ -15,6 +15,9 @@ import type { CKEditorError } from 'ckeditor5/src/utils';
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { Editor, EditorConfig, Context, EditorReadyEvent } from 'ckeditor5/src/core';
 
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
+
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import Watchdog, { type WatchdogConfig } from './watchdog';
 
@@ -186,9 +189,9 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				// Keeps lazy roots. They may be different when compared to initial config if some of the roots were loaded.
 				const lazyRoots: Array<string> = [];
 				// Roots attributes from the old config. Will be referred when setting new attributes.
-				const oldRootsAttributes: Record<string, unknown> = this._config!.rootsAttributes || {};
+				const oldRootsAttributes: Record<string, RootAttributes> = this._config!.rootsAttributes || {};
 				// New attributes to be set. Is filled only for roots that still exist in the document.
-				const rootsAttributes: Record<string, unknown> = {};
+				const rootsAttributes: Record<string, RootAttributes> = {};
 
 				// Traverse through the roots saved when the editor crashed and set up the discussed values.
 				for ( const [ rootName, rootData ] of Object.entries( this._data!.roots ) ) {
