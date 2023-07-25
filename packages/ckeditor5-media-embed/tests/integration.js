@@ -32,11 +32,12 @@ describe( 'MediaEmbed integration', () => {
 			const editor = await ClassicTestEditor.create( element, {
 				plugins: [ MediaEmbed, Paragraph ]
 			} );
+			const editingRoot = editor.editing.view.document.getRoot();
 
+			editingRoot.placeholder = 'foo';
 			enablePlaceholder( {
 				view: editor.editing.view,
-				element: editor.editing.view.document.getRoot(),
-				text: 'foo',
+				element: editingRoot,
 				isDirectHost: false
 			} );
 
