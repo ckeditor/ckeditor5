@@ -18,7 +18,6 @@ import {
 import {
 	Rect,
 	ResizeObserver,
-	getOptimalPosition,
 	toUnit,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
@@ -430,29 +429,21 @@ export default class BlockToolbar extends Plugin {
 		// MDN says that 'normal' == ~1.2 on desktop browsers.
 		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
 
-		const position = getOptimalPosition( {
-			element: this.buttonView.element!,
-			target: targetElement,
-			positions: [
-				( contentRect, buttonRect ) => {
-					let left;
+		const buttonRect = new Rect( this.buttonView.element! );
+		const contentRect = new Rect( targetElement );
 
-					if ( this.editor.locale.uiLanguageDirection === 'ltr' ) {
-						left = editableRect.left - buttonRect.width;
-					} else {
-						left = editableRect.right;
-					}
+		let positionLeft;
 
-					return {
-						top: contentRect.top + contentPaddingTop + ( contentLineHeight - buttonRect.height ) / 2,
-						left
-					};
-				}
-			]
-		} );
+		if ( this.editor.locale.uiLanguageDirection === 'ltr' ) {
+			positionLeft = editableRect.left - buttonRect.width;
+		} else {
+			positionLeft = editableRect.right;
+		}
 
-		this.buttonView.top = position.top;
-		this.buttonView.left = position.left;
+		const positionTop = contentRect.top + contentPaddingTop + ( contentLineHeight - buttonRect.height ) / 2;
+
+		this.buttonView.top = positionTop;
+		this.buttonView.left = positionLeft;
 	}
 
 	/**
