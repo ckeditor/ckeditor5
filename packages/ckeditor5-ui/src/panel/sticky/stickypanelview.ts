@@ -13,13 +13,12 @@ import Template from '../../template';
 import type ViewCollection from '../../viewcollection';
 
 import {
-	global,
-	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
 	getElementsIntersectionRect,
 	getScrollableAncestors,
-
+	global,
+	toUnit,
 	Rect
 } from '@ckeditor/ckeditor5-utils';
 
