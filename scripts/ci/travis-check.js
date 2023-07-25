@@ -51,7 +51,7 @@ function testsJob() {
 	}
 
 	const repository = 'ckeditor/ckeditor5';
-	const lastCommit = childProcess.execSync( 'git rev-parse HEAD' ).toString();
+	const lastCommit = childProcess.execSync( 'git rev-parse HEAD' ).toString().trim();
 
 	const promise = triggerCkeditor5ContinuousIntegration( repository, lastCommit );
 

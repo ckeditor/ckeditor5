@@ -114,11 +114,6 @@ export default class StickyPanelView extends View {
 	declare public _isStickyToTheBottomOfLimiter: boolean;
 
 	/**
-	 * The DOM bounding client rect of the {@link module:ui/view~View#element} of the panel.
-	 */
-	private _panelRect?: Rect;
-
-	/**
 	 * The `top` CSS position of the panel when it is sticky to the top of the viewport or scrollable
 	 * ancestors of the {@link #limiterElement}.
 	 *
@@ -181,7 +176,7 @@ export default class StickyPanelView extends View {
 				style: {
 					display: bind.to( 'isSticky', isSticky => isSticky ? 'block' : 'none' ),
 					height: bind.to( 'isSticky', isSticky => {
-						return isSticky ? toPx( this._panelRect!.height ) : null;
+						return isSticky ? toPx( this._contentPanelRect.height ) : null;
 					} )
 				}
 			}
@@ -256,7 +251,6 @@ export default class StickyPanelView extends View {
 	 */
 	public checkIfShouldBeSticky( scrollTarget?: HTMLElement | Document ): void {
 		// @if CK_DEBUG_STICKYPANEL // RectDrawer.clear();
-		this._panelRect = new Rect( this._contentPanel );
 
 		if ( !this.limiterElement || !this.isActive ) {
 			this._unstick();
@@ -303,7 +297,7 @@ export default class StickyPanelView extends View {
 				const visibleAncestorsTop = visibleAncestorsRect.top;
 
 				// Check if there's a change the panel can be sticky to the bottom of the limiter.
-				if ( visibleAncestorsTop + this._panelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
+				if ( visibleAncestorsTop + this._contentPanelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
 					const stickyBottomOffset = Math.max( limiterRect.bottom - visibleAncestorsRect.bottom, 0 ) + this.limiterBottomOffset;
 					// @if CK_DEBUG_STICKYPANEL // const stickyBottomOffsetRect = new Rect( {
 					// @if CK_DEBUG_STICKYPANEL // 	top: limiterRect.bottom - stickyBottomOffset, left: 0, right: 2000,
@@ -316,13 +310,13 @@ export default class StickyPanelView extends View {
 
 					// Check if sticking the panel to the bottom of the limiter does not cause it to suddenly
 					// move upwards if there's not enough space for it.
-					if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._panelRect.height ) {
+					if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._contentPanelRect.height ) {
 						this._stickToBottomOfLimiter( stickyBottomOffset );
 					} else {
 						this._unstick();
 					}
 				} else {
-					if ( this._panelRect.height + this.limiterBottomOffset < limiterRect.height ) {
+					if ( this._contentPanelRect.height + this.limiterBottomOffset < limiterRect.height ) {
 						this._stickToTopOfAncestors( visibleAncestorsTop );
 					} else {
 						this._unstick();
@@ -381,6 +375,15 @@ export default class StickyPanelView extends View {
 		this._stickyTopOffset = null;
 		this._stickyBottomOffset = null;
 		this._marginLeft = null;
+	}
+
+	/**
+	 * Returns the bounding rect of the {@link #_contentPanel}.
+	 *
+	 * @private
+	 */
+	private get _contentPanelRect(): Rect {
+		return new Rect( this._contentPanel );
 	}
 }
 
