@@ -2226,7 +2226,7 @@ describe( 'Renderer', () => {
 		describe( 'similar selection', () => {
 			// Use spies to check selection updates. Some selection positions are not achievable in some
 			// browsers (e.g. <p>Foo<b>{}Bar</b></p> in Chrome) so asserting dom selection after rendering would fail.
-			let selectionSpy;
+			let selectionSpy, selectionCollapseSpy, selectionExtendSpy;
 
 			afterEach( () => {
 				if ( selectionSpy ) {
