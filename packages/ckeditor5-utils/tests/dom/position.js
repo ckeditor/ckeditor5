@@ -456,7 +456,7 @@ describe( 'getOptimalPosition()', () => {
 			assertNullPosition( {
 				element, target, limiter,
 				positions: [ attachLeftBottom, attachNone ]
-			}, null );
+			} );
 		} );
 	} );
 
@@ -562,7 +562,7 @@ describe( 'getOptimalPosition()', () => {
 					} )
 				],
 				fitInViewport: true
-			}, null );
+			} );
 		} );
 
 		it( 'should return the last coordinates if limiter does not fit into the viewport', () => {
@@ -804,7 +804,7 @@ describe( 'getOptimalPosition()', () => {
 				element, target, limiter,
 				positions: allPositions,
 				fitInViewport: true
-			}, null );
+			} );
 
 			parentWithOverflow.remove();
 		} );
@@ -964,10 +964,10 @@ function assertPositionName( options, expected ) {
 	expect( position.name ).to.equal( expected );
 }
 
-function assertNullPosition( options, expected ) {
+function assertNullPosition( options ) {
 	const position = getOptimalPosition( options );
 
-	expect( position ).to.equal( expected );
+	expect( position ).to.be.null;
 }
 
 // Returns a synthetic element.

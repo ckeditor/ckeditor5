@@ -8,7 +8,7 @@
 import { getElementsIntersectionRect } from '../../src';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'getElementsIntersectionRect', () => {
+describe( 'getElementsIntersectionRect()', () => {
 	let element1, element2, element3;
 	testUtils.createSinonSandbox();
 
