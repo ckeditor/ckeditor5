@@ -2410,6 +2410,7 @@ describe( 'Renderer', () => {
 
 				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo{<attribute:b>ba}r</attribute:b></container:p>
 				selection._setTo( [
@@ -2421,6 +2422,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.be.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element end)', () => {
@@ -2448,6 +2450,7 @@ describe( 'Renderer', () => {
 
 				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo<attribute:b>b{ar</attribute:b>}baz</container:p>
 				selection._setTo( [
@@ -2459,6 +2462,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.be.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element start - nested)', () => {
@@ -2486,6 +2490,7 @@ describe( 'Renderer', () => {
 
 				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>foo{<attribute:b><attribute:i>ba}r</attribute:i></attribute:b></container:p>
 				selection._setTo( [
@@ -2497,6 +2502,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element end - nested)', () => {
@@ -2523,6 +2529,7 @@ describe( 'Renderer', () => {
 
 				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				// <container:p>f{oo<attribute:b><attribute:i>bar</attribute:i></attribute:b>}baz</container:p>
 				selection._setTo( [
@@ -2534,6 +2541,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.true;
 			} );
 		} );
 
@@ -5680,6 +5688,7 @@ describe( 'Renderer', () => {
 
 				const selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				const selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				const selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
@@ -5691,6 +5700,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.true;
 			} );
 
 			it( 'should not modify selection on Android', () => {
@@ -5717,6 +5727,7 @@ describe( 'Renderer', () => {
 
 				const selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
 				const selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+				const selectionSpy = sinon.spy( window.Selection.prototype, 'setBaseAndExtent' );
 
 				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
@@ -5728,6 +5739,7 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( selectionSpy.notCalled ).to.true;
 			} );
 		} );
 	} );
