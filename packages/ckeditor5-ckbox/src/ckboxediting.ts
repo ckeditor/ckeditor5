@@ -115,7 +115,6 @@ export default class CKBoxEditing extends Plugin {
 
 		editor.config.define( 'ckbox', {
 			serviceOrigin: 'https://api.ckbox.io',
-			assetsOrigin: 'https://ckbox.cloud',
 			defaultUploadCategories: null,
 			ignoreDataId: false,
 			language: editor.locale.uiLanguage,

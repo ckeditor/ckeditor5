@@ -109,13 +109,6 @@ export interface CKBoxConfig {
 	serviceOrigin?: string;
 
 	/**
-	 * Configures the base URL for assets inserted into the editor. Required only in on-premises installations.
-	 *
-	 * @default 'https://ckbox.cloud'
-	 */
-	assetsOrigin?: string;
-
-	/**
 	 * Configures the language for the CKBox dialog.
 	 *
 	 * Defaults to {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`}
