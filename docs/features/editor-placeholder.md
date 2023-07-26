@@ -108,12 +108,12 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 
 **Note**: The `.ck-placeholder` class is also used to display placeholders in other places, for instance, {@link features/images-captions image captions}. Make sure your custom styles apply to the right subset of placeholders.
 
-## Updating the placeholder
+## Changing the placeholder
 
-The editor placeholder could be updated in runtime changing `placeholder` property in editing root. You can use it also in {@link installation/getting-started/predefined-builds#multi-root-editor `Multi-root editor`} and {@link installation/getting-started/predefined-builds#inline-editor `Inline editor`}.
+The editor placeholder could be updated at runtime by changing the `placeholder` property in editing root.
 
 ```js
-editor.editing.view.document.getRoot( 'main' ).placeholder = 'new placeholder'
+editor.editing.view.document.getRoot( 'main' ).placeholder = 'new placeholder';
 ```
 
 {@snippet features/update-placeholder}
