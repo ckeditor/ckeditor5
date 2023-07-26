@@ -258,8 +258,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 			.then( () => {
 				this._stopErrorHandling();
 
-				// Save data if there is a remaining editor data change.
-				this._throttledSave.flush();
+				this._throttledSave.cancel();
 
 				const editor = this._editor;
 
