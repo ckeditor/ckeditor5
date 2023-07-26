@@ -747,7 +747,7 @@ export default class Differ {
 	 *
 	 * @internal
 	 */
-	public _loadRoot( root: RootElement ): void {
+	public _bufferRootLoad( root: RootElement ): void {
 		if ( !root.isAttached() ) {
 			return;
 		}

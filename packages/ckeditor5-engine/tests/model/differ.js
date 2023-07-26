@@ -2560,7 +2560,7 @@ describe( 'Differ', () => {
 		} );
 	} );
 
-	describe( '_loadRoot()', () => {
+	describe( '_bufferRootLoad()', () => {
 		let newRoot, rangeA, rangeB;
 
 		beforeEach( () => {
@@ -2587,7 +2587,7 @@ describe( 'Differ', () => {
 		it( 'should buffer root state attached', () => {
 			model.change( () => {
 				newRoot._isLoaded = true;
-				differ._loadRoot( newRoot );
+				differ._bufferRootLoad( newRoot );
 
 				const changes = differ.getChangedRoots();
 
@@ -2599,7 +2599,7 @@ describe( 'Differ', () => {
 		it( 'should buffer all root content as inserted', () => {
 			model.change( () => {
 				newRoot._isLoaded = true;
-				differ._loadRoot( newRoot );
+				differ._bufferRootLoad( newRoot );
 
 				expectChanges( [
 					{ type: 'insert', name: 'heading2', length: 1, position: new Position( newRoot, [ 0 ] ) },
@@ -2611,7 +2611,7 @@ describe( 'Differ', () => {
 		it( 'should buffer all markers inside the root as inserted', () => {
 			model.change( () => {
 				newRoot._isLoaded = true;
-				differ._loadRoot( newRoot );
+				differ._bufferRootLoad( newRoot );
 
 				expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 
@@ -2646,7 +2646,7 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				newRoot._isLoaded = true;
-				differ._loadRoot( newRoot );
+				differ._bufferRootLoad( newRoot );
 
 				expectChanges( [] );
 				expect( differ.getChangedMarkers() ).to.deep.equal( [] );
@@ -2658,7 +2658,7 @@ describe( 'Differ', () => {
 		it( 'should not buffer any root-related changes if the root is detached after it is loaded', () => {
 			model.change( writer => {
 				newRoot._isLoaded = true;
-				differ._loadRoot( newRoot );
+				differ._bufferRootLoad( newRoot );
 				writer.detachRoot( newRoot );
 
 				expectChanges( [] );
@@ -2673,7 +2673,7 @@ describe( 'Differ', () => {
 		it( 'should work well with changes that happens after the root was loaded', () => {
 			model.change( writer => {
 				newRoot._isLoaded = true;
-				differ._loadRoot( newRoot );
+				differ._bufferRootLoad( newRoot );
 
 				// Remove `paragraph` and add an `imageBlock` before `heading2`.
 				writer.remove( newRoot.getChild( 1 ) );
