@@ -39,7 +39,6 @@ import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services';
  * 			},
  * 			ignoreDataId: true,
  * 			serviceOrigin: 'https://example.com/',
- * 			assetsOrigin: 'https://example.cloud/',
  * 			tokenUrl: 'https://example.com/cs-token-endpoint'
  * 		}
  * 	} )

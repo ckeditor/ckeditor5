@@ -129,7 +129,7 @@ class Adapter implements UploadAdapter {
 	/**
 	 * The ID of workspace to use.
 	 */
-	public getWorkspaceId(): Promise<string> {
+	public getWorkspaceId(): string {
 		const t = this.editor.t;
 		const cannotAccessDefaultWorkspaceError = t( 'Cannot access default workspace.' );
 		const defaultWorkspaceId = this.editor.config.get( 'ckbox.defaultUploadWorkspaceId' );
@@ -143,10 +143,10 @@ class Adapter implements UploadAdapter {
 			 */
 			logError( 'ckbox-access-default-workspace-error' );
 
-			return Promise.reject( cannotAccessDefaultWorkspaceError );
+			throw cannotAccessDefaultWorkspaceError;
 		}
 
-		return Promise.resolve( workspaceId );
+		return workspaceId;
 	}
 
 	/**
@@ -160,7 +160,7 @@ class Adapter implements UploadAdapter {
 
 		categoryUrl.searchParams.set( 'limit', ITEMS_PER_REQUEST.toString() );
 		categoryUrl.searchParams.set( 'offset', offset.toString() );
-		categoryUrl.searchParams.set( 'workspaceId', await this.getWorkspaceId() );
+		categoryUrl.searchParams.set( 'workspaceId', this.getWorkspaceId() );
 
 		return this._sendHttpRequest( { url: categoryUrl } )
 			.then( async data => {
@@ -250,7 +250,7 @@ class Adapter implements UploadAdapter {
 		const uploadUrl = new URL( 'assets', this.serviceOrigin );
 		const formData = new FormData();
 
-		uploadUrl.searchParams.set( 'workspaceId', await this.getWorkspaceId() );
+		uploadUrl.searchParams.set( 'workspaceId', this.getWorkspaceId() );
 
 		formData.append( 'categoryId', category );
 		formData.append( 'file', file );
