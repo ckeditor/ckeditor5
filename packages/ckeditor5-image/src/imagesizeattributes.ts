@@ -199,6 +199,11 @@ export default class ImageSizeAttributes extends Plugin {
 					viewWriter.removeAttribute( viewAttributeName, img );
 				}
 
+				// Do not set aspect-ratio for pictures. See https://github.com/ckeditor/ckeditor5/issues/14579.
+				if ( data.item.hasAttribute( 'sources' ) ) {
+					return;
+				}
+
 				const isResized = data.item.hasAttribute( 'resizedWidth' );
 
 				// Do not set aspect ratio for inline images which are not resized (data pipeline).
