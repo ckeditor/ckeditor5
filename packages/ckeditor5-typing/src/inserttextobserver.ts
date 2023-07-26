@@ -51,7 +51,7 @@ export default class InsertTextObserver extends Observer {
 	constructor( view: View ) {
 		super( view );
 
-		this.focusObserver = view.getObserver( FocusObserver )!;
+		this.focusObserver = view.getObserver( FocusObserver );
 
 		// On Android composition events should immediately be applied to the model. Rendering is not disabled.
 		// On non-Android the model is updated only on composition end.

@@ -90,8 +90,8 @@ export default class SelectionObserver extends Observer {
 	constructor( view: View ) {
 		super( view );
 
-		this.mutationObserver = view.getObserver( MutationObserver )!;
-		this.focusObserver = view.getObserver( FocusObserver )!;
+		this.mutationObserver = view.getObserver( MutationObserver );
+		this.focusObserver = view.getObserver( FocusObserver );
 		this.selection = this.document.selection;
 		this.domConverter = view.domConverter;
 
