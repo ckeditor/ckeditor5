@@ -45,19 +45,19 @@ The reason for two types of downcasts is that sometimes the resulting HTML shoul
 To better visualize the conversion, let's see what the above code would look like in a full implementation, without using a helper.
 
 ```js
-// Convert the input `<mark>` HTML element to model attribute
+// Convert the input `<mark>` HTML element to model attribute.
 editor.conversion.for( 'upcast' ).elementToAttribute( {
 	model: 'highlight',
 	view: 'mark'
 } );
 
-// Convert model attribute to output `<mark>` HTML element
+// Convert model attribute to output `<mark>` HTML element.
 editor.conversion.for( 'dataDowncast' ).attributeToElement( {
 	model: 'highlight',
 	view: 'mark'
 } );
 
-// Convert model attribute to `<mark>` in editing view
+// Convert model attribute to `<mark>` in editing view.
 editor.conversion.for( 'editingDowncast' ).attributeToElement( {
 	model: 'highlight',
 	view: 'mark'
