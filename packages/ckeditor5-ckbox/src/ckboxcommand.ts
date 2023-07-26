@@ -133,7 +133,6 @@ export default class CKBoxCommand extends Command {
 	 * - language The language for CKBox dialog.
 	 * - tokenUrl The token endpoint URL.
 	 * - serviceOrigin The base URL of the API service.
-	 * - assetsOrigin The base URL for assets inserted into the editor.
 	 * - dialog.onClose The callback function invoked after closing the CKBox dialog.
 	 * - assets.onChoose The callback function invoked after choosing the assets.
 	 */
