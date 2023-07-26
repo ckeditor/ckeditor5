@@ -1409,6 +1409,8 @@ describe( 'EditorWatchdog', () => {
 		} );
 
 		describe( 'init using data', () => {
+			let clock;
+
 			beforeEach( async () => {
 				await watchdog.create( {
 					header: '<p>Foo</p>',
@@ -1448,8 +1450,13 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			it( 'should properly handle added and removed roots', async () => {
+				clock = sinon.useFakeTimers();
+
 				watchdog.editor.detachRoot( 'content' );
 				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
+
+				clock.tick( 6000 );
+				clock.restore();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
@@ -1469,8 +1476,13 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			it( 'should properly handle lazy roots', async () => {
+				clock = sinon.useFakeTimers();
+
 				watchdog.editor.detachRoot( 'lazyOne' );
 				watchdog.editor.loadRoot( 'lazyTwo', { data: '<p>Two</p>', attributes: { order: 5 } } );
+
+				clock.tick( 6000 );
+				clock.restore();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
@@ -1493,6 +1505,8 @@ describe( 'EditorWatchdog', () => {
 		} );
 
 		describe( 'init using elements', () => {
+			let clock;
+
 			beforeEach( async () => {
 				class MultiRootEditorIntegration {
 					constructor( editor ) {
@@ -1561,8 +1575,13 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			it( 'should properly handle added and removed roots', async () => {
+				clock = sinon.useFakeTimers();
+
 				watchdog.editor.detachRoot( 'content' );
 				watchdog.editor.addRoot( 'new', { data: '<p>New</p>', attributes: { order: 3 } } );
+
+				clock.tick( 6000 );
+				clock.restore();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
@@ -1582,8 +1601,13 @@ describe( 'EditorWatchdog', () => {
 			} );
 
 			it( 'should properly handle lazy roots', async () => {
+				clock = sinon.useFakeTimers();
+
 				watchdog.editor.detachRoot( 'lazyOne' );
 				watchdog.editor.loadRoot( 'lazyTwo', { data: '<p>Two</p>', attributes: { order: 5 } } );
+
+				clock.tick( 6000 );
+				clock.restore();
 
 				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
 
