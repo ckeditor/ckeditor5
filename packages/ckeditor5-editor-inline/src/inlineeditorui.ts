@@ -146,31 +146,27 @@ export default class InlineEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Enable the placeholder text on the editing root, if any was configured.
+	 * Enable the placeholder text on the editing root.
 	 */
 	private _initPlaceholder(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const editingRoot = editingView.document.getRoot()!;
-
 		const placeholder = editor.config.get( 'placeholder' );
-		let placeholderText;
 
 		if ( placeholder ) {
-			placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
+			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
+
+			if ( placeholderText ) {
+				editingRoot.placeholder = placeholderText;
+			}
 		}
 
-		if ( placeholderText ) {
-			editingRoot.placeholder = placeholderText;
-		}
-
-		if ( placeholderText ) {
-			enablePlaceholder( {
-				view: editingView,
-				element: editingRoot,
-				isDirectHost: false,
-				keepOnFocus: true
-			} );
-		}
+		enablePlaceholder( {
+			view: editingView,
+			element: editingRoot,
+			isDirectHost: false,
+			keepOnFocus: true
+		} );
 	}
 }
