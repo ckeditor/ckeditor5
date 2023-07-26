@@ -27,11 +27,11 @@ To enrich the CKEditor 5 by installing plugins, you will require:
 	**NOTE:** The above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
 </info-box>
 
-If you're here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you don't, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
+If you're here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you do not, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
 
-## Adding a plugin to a build
+## Adding a plugin to an editor
 
-You can start adding plugins if you are in a directory with the CKEditor 5 installed. Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
+You can start adding plugins if you are in a directory with the CKEditor 5 build or the root folder of your application if you are integrating the editor from the source. Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
 
 ```bash
 npm install <plugin-name>
@@ -62,7 +62,7 @@ To add a plugin to your editor, you need to follow three steps:
 3. Configure the toolbar if the installed plugin requires UI.
 
 ```ts
-// <path-to-your-build>/src/ckeditor.ts
+// <path-to-your-build>/src/ckeditor.ts or file containing editor configuration if you are integrating an editor from source.
 
 // The editor creator to use.
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -117,7 +117,7 @@ class Editor extends ClassicEditor {
 		TableToolbar,
 		TextTransformation
 	];
-	
+
 	// Editor configuration.
 	public static override defaultConfig = {
 		toolbar: {
@@ -165,9 +165,9 @@ class Editor extends ClassicEditor {
 export default Editor;
 ```
 
-### Building a project
+### Building an editor
 
-You can now run webpack to build the application. To do that, call the `webpack` executable:
+If you are using builds you need to rebuild your editor. To do that, call the `webpack` executable in a folder containing your build:
 
 ```bash
 ./node_modules/.bin/webpack --mode development
@@ -190,6 +190,8 @@ And use it with:
 ```bash
 npm run build
 ```
+
+If you are integrating an editor from the source into your application, then this step should be handled by build scripts used in your project.
 
 ## Adding a JavaScript plugin
 
