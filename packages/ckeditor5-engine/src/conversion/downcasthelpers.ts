@@ -974,6 +974,9 @@ export function createViewElementFromHighlightDescriptor( writer: DowncastWriter
  * modelDispatcher.on( 'selection', convertRangeSelection() );
  * ```
  *
+ * Note: the converter will return `false` if the selection is in a model root that does not have a corresponding view root and thus
+ * the conversion cannot be performed.
+ *
  * @returns Selection converter.
  */
 export function convertRangeSelection() {
@@ -998,7 +1001,8 @@ export function convertRangeSelection() {
 		// Note that the view selection should be cleared at this moment.
 		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
 			// Prevent further selection conversion (markers and attributes).
-			conversionApi.consumable.consumeAll( selection );
+			evt.return = false;
+			evt.stop();
 
 			return;
 		}
@@ -1037,6 +1041,9 @@ export function convertRangeSelection() {
  * See also {@link module:engine/conversion/downcasthelpers~clearAttributes} which does a clean-up
  * by merging attributes.
  *
+ * Note: the converter will return `false` if the selection is in a model root that does not have a corresponding view root and thus
+ * the conversion cannot be performed.
+ *
  * @returns Selection converter.
  */
 export function convertCollapsedSelection() {
@@ -1061,7 +1068,8 @@ export function convertCollapsedSelection() {
 		// Note that the view selection should be cleared at this moment.
 		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
 			// Prevent further selection conversion (markers and attributes).
-			conversionApi.consumable.consumeAll( selection );
+			evt.return = false;
+			evt.stop();
 
 			return;
 		}

@@ -258,7 +258,12 @@ export default class DowncastDispatcher extends EmitterMixin() {
 
 		this._addConsumablesForSelection( conversionApi.consumable, selection, markersAtSelection );
 
-		this.fire<DowncastSelectionEvent>( 'selection', { selection }, conversionApi );
+		const isConversionCorrect = this.fire<DowncastSelectionEvent>( 'selection', { selection }, conversionApi );
+
+		// Check `false` exactly, as `undefined` may be returned as well.
+		if ( isConversionCorrect === false ) {
+			return;
+		}
 
 		if ( !selection.isCollapsed ) {
 			return;
@@ -783,12 +788,15 @@ export type DowncastAttributeEvent<TItem = Item | Selection | DocumentSelection>
 /**
  * Fired for {@link module:engine/model/selection~Selection selection} changes.
  *
+ * The event callback (converter) should return `false` if the selection conversion could not be performed and further selection-related
+ * conversion (selection markers and attributes) should be cancelled.
+ *
  * @eventName ~DowncastDispatcher#selection
  * @param {module:engine/model/selection~Selection} selection Selection that is converted.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
-export type DowncastSelectionEvent = DowncastEvent<'selection'>;
+export type DowncastSelectionEvent = DowncastEvent<'selection'> & { return: boolean };
 
 /**
  * Fired when a new marker is added to the model. Also fired when a collapsed model selection that is inside a marker is converted.
