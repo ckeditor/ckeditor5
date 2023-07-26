@@ -22,9 +22,7 @@ import type Writer from '../writer';
 export function autoParagraphEmptyRoots( writer: Writer ): boolean {
 	const { schema, document } = writer.model;
 
-	for ( const rootName of document.getRootNames() ) {
-		const root = document.getRoot( rootName )!;
-
+	for ( const root of document.getRoots() ) {
 		if ( root.isEmpty && !schema.checkChild( root, '$text' ) ) {
 			// If paragraph element is allowed in the root, create paragraph element.
 			if ( schema.checkChild( root, 'paragraph' ) ) {

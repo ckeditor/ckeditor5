@@ -64,7 +64,7 @@ export function setupExceptionHighlighting( editor: Editor ): void {
 		dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
 		dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
 		dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
-		dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
+		dispatcher.on( 'cleanSelection', removeHighlight );
 
 		function removeHighlight() {
 			view.change( writer => {

@@ -414,5 +414,52 @@ describe( 'UndoCommand', () => {
 			expect( data[ 1 ] ).to.be.an( 'object' );
 			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: true } );
 		} );
+
+		it( 'should fire `revert` event when executed, after all changes are applied (including post-fixer)', done => {
+			undo.on( 'revert', ( evt, undoneBatch, undoingBatch ) => {
+				// We undone "insert text `foo`".
+				expect( undoneBatch.operations.length ).to.equal( 1 );
+
+				// The undoing batch contains "remove text `foo`" and "add text `x`".
+				expect( undoingBatch.operations.length ).to.equal( 2 );
+
+				// Remove text `foo`:
+				expect( undoingBatch.operations[ 0 ].type ).to.equal( 'remove' );
+				expect( undoingBatch.operations[ 0 ].sourcePosition.root ).to.equal( root );
+				expect( undoingBatch.operations[ 0 ].sourcePosition.path ).to.deep.equal( [ 0 ] );
+				expect( undoingBatch.operations[ 0 ].howMany ).to.equal( 3 );
+
+				// Add text `x`:
+				expect( undoingBatch.operations[ 1 ].type ).to.equal( 'insert' );
+				expect( undoingBatch.operations[ 1 ].position.root ).to.equal( root );
+				expect( undoingBatch.operations[ 1 ].position.path ).to.deep.equal( [ 0 ] );
+				expect( undoingBatch.operations[ 1 ].nodes.length ).to.equal( 1 );
+				expect( undoingBatch.operations[ 1 ].nodes.getNode( 0 ).data ).to.equal( 'x' );
+
+				done();
+			} );
+
+			// Example post-fixer, makes sure that there is always some character in the root:
+			doc.registerPostFixer( writer => {
+				if ( root.isEmpty ) {
+					writer.insertText( 'x', p( 0 ) );
+				}
+			} );
+
+			// Root is empty at this moment, post-fixer is not fired after it is registered, it is waiting for the first change.
+			// Let's add some text to the empty root:
+			const batch = model.createBatch();
+			undo.addBatch( batch );
+
+			model.enqueueChange( batch, writer => {
+				writer.insertText( 'foo', p( 0 ) );
+				writer.setSelection( p( 3 ) );
+			} );
+
+			// Let's undo.
+			// On undo, text `foo` is removed and then post-fixer should kick in and check that root is empty and add `x`.
+			// The operation to add `x` should be included in the undoing batch.
+			undo.execute();
+		} );
 	} );
 } );

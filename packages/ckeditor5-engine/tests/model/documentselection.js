@@ -1254,6 +1254,19 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
+		it( 'are not inherited from nodes in graveyard', () => {
+			model.change( writer => {
+				writer.insertText( 'foo', { bold: true }, model.document.graveyard, 0 );
+
+				// The only way to place selection in the graveyard is to remove all roots.
+				// This way the default range will be placed in the graveyard.
+				writer.detachRoot( 'main' );
+			} );
+
+			expect( selection.anchor.root ).to.equal( model.document.graveyard );
+			expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+		} );
+
 		describe( 'parent element\'s attributes', () => {
 			it( 'are set using a normal batch', () => {
 				let batch;
