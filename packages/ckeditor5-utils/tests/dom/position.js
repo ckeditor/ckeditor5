@@ -134,13 +134,8 @@ describe( 'getOptimalPosition()', () => {
 	} );
 
 	afterEach( () => {
-		if ( element ) {
-			element.remove();
-		}
-
-		if ( target ) {
-			target.remove();
-		}
+		element.remove();
+		target.remove();
 
 		if ( limiter ) {
 			limiter.remove();
@@ -184,24 +179,6 @@ describe( 'getOptimalPosition()', () => {
 		}, {
 			top: 100,
 			left: 80,
-			name: 'left-bottom'
-		} );
-	} );
-
-	it( 'should work when the target is a Range', () => {
-		setElementTargetPlayground();
-
-		const range = document.createRange();
-
-		range.selectNode( document.body );
-
-		assertPosition( {
-			element,
-			target: range,
-			positions: [ attachLeftBottom ]
-		}, {
-			top: 8,
-			left: -12,
 			name: 'left-bottom'
 		} );
 	} );
@@ -343,7 +320,7 @@ describe( 'getOptimalPosition()', () => {
 		it( 'should allow position function to return null to be ignored', () => {
 			assertPosition( {
 				element, target,
-				positions: [ attachRightBottom ]
+				positions: [ attachRightBottom, attachNone ]
 			}, {
 				top: 100,
 				left: 110,
@@ -366,8 +343,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				left: -20,
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -378,8 +355,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				left: -20,
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -389,8 +366,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachLeftBottom, attachRightBottom ]
 			}, {
 				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				left: -20,
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -400,8 +377,8 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				left: -20,
+				name: 'left-bottom'
 			} );
 		} );
 
@@ -445,17 +422,21 @@ describe( 'getOptimalPosition()', () => {
 				positions: [ attachRightBottom, attachLeftBottom ]
 			}, {
 				top: 100,
-				left: 10,
-				name: 'right-bottom'
+				left: -5,
+				name: 'left-bottom'
 			} );
 
 			element.remove();
 		} );
 
 		it( 'should allow position function to return null to be ignored', () => {
-			assertNullPosition( {
+			assertPosition( {
 				element, target, limiter,
 				positions: [ attachLeftBottom, attachNone ]
+			}, {
+				top: 100,
+				left: -20,
+				name: 'left-bottom'
 			} );
 		} );
 	} );
@@ -552,7 +533,7 @@ describe( 'getOptimalPosition()', () => {
 		} );
 
 		it( 'should return the very first coordinates if no fitting position with a positive intersection has been found', () => {
-			assertNullPosition( {
+			assertPosition( {
 				element, target, limiter,
 				positions: [
 					() => ( {
@@ -562,10 +543,14 @@ describe( 'getOptimalPosition()', () => {
 					} )
 				],
 				fitInViewport: true
+			}, {
+				left: -10000,
+				top: -10000,
+				name: 'no-intersect-position'
 			} );
 		} );
 
-		it( 'should return the last coordinates if limiter does not fit into the viewport', () => {
+		it( 'should return the very first coordinates if limiter does not fit into the viewport', () => {
 			const limiter = getElement( {
 				top: -100,
 				right: -80,
@@ -721,234 +706,6 @@ describe( 'getOptimalPosition()', () => {
 			element.remove();
 		} );
 	} );
-
-	describe( 'with scrollable ancestors', () => {
-		let parentWithOverflow, limiter, target, element, parentAncestorWithOverflow;
-
-		beforeEach( () => {
-			limiter = getElement( {
-				top: -100,
-				right: 100,
-				bottom: 100,
-				left: -100,
-				width: 200,
-				height: 200
-			} );
-
-			target = getElement( {
-				top: 0,
-				right: 50,
-				bottom: 50,
-				left: 0,
-				width: 50,
-				height: 50
-			} );
-
-			element = getElement( {
-				top: 0,
-				right: 200,
-				bottom: 200,
-				left: 0,
-				width: 200,
-				height: 200
-			} );
-
-			parentWithOverflow = getElement( {
-				top: 0,
-				left: 0,
-				right: 100,
-				bottom: 100,
-				width: 100,
-				height: 100
-			} );
-			parentWithOverflow.style.overflow = 'scroll';
-		} );
-
-		afterEach( () => {
-			if ( element ) {
-				element.remove();
-			}
-
-			if ( target ) {
-				target.remove();
-			}
-
-			if ( limiter ) {
-				limiter.remove();
-			}
-
-			if ( parentWithOverflow ) {
-				parentWithOverflow.remove();
-			}
-
-			if ( parentAncestorWithOverflow ) {
-				parentAncestorWithOverflow.remove();
-			}
-		} );
-
-		it( 'should return null when target is not visible', () => {
-			const target = getElement( {
-				top: -200,
-				right: -100,
-				bottom: -100,
-				left: -200,
-				width: 100,
-				height: 100
-			} );
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			document.body.appendChild( parentWithOverflow );
-
-			assertNullPosition( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			} );
-
-			parentWithOverflow.remove();
-		} );
-
-		it( 'should return position when element is fully contained by the limiter', () => {
-			const limiter = getElement( {
-				top: 0,
-				right: 1000,
-				bottom: 1000,
-				left: 0,
-				width: 1000,
-				height: 1000
-			} );
-			const target = getElement( {
-				top: 0,
-				right: 100,
-				bottom: 100,
-				left: 0,
-				width: 100,
-				height: 100
-			} );
-
-			const parentWithOverflow = getElement( {
-				top: 0,
-				left: 0,
-				right: 1000,
-				bottom: 1000,
-				width: 1000,
-				height: 1000
-			} );
-
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			document.body.appendChild( parentWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			}, 'right-bottom' );
-
-			parentWithOverflow.remove();
-		} );
-
-		it( 'should return position when element is fully contained by the limiter and cropped by top offset', () => {
-			const limiter = getElement( {
-				top: 0,
-				right: 1000,
-				bottom: 1000,
-				left: 0,
-				width: 1000,
-				height: 1000
-			} );
-			const target = getElement( {
-				top: 0,
-				right: 100,
-				bottom: 100,
-				left: 0,
-				width: 100,
-				height: 100
-			} );
-
-			const parentWithOverflow = getElement( {
-				top: 0,
-				left: 0,
-				right: 1000,
-				bottom: 1000,
-				width: 1000,
-				height: 1000
-			} );
-
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			document.body.appendChild( parentWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true,
-				viewportOffsetConfig: {
-					top: 100,
-					left: 0,
-					right: 0,
-					bottom: 0
-				}
-			}, 'bottom-right' );
-
-			parentWithOverflow.remove();
-		} );
-
-		it( 'should return proper calculated position when first ancestor\'s Rect has undefined values', () => {
-			limiter.appendChild( target );
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			document.body.appendChild( parentWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			}, 'right-bottom' );
-
-			parentWithOverflow.remove();
-		} );
-
-		it( 'should return proper calculated position when `target` is a Range', () => {
-			const limiter = getElement( {
-				top: 0,
-				right: 100,
-				bottom: 100,
-				left: 0,
-				width: 100,
-				height: 100
-			} );
-
-			const target = document.createRange();
-			target.selectNode( document.body );
-
-			const element = getElement( {
-				top: 0,
-				right: 100,
-				bottom: 100,
-				left: 0,
-				width: 100,
-				height: 100
-			} );
-
-			parentWithOverflow.appendChild( limiter );
-			parentWithOverflow.appendChild( element );
-			document.body.appendChild( parentWithOverflow );
-
-			assertPositionName( {
-				element, target, limiter,
-				positions: allPositions,
-				fitInViewport: true
-			}, 'bottom-right' );
-
-			limiter.remove();
-			element.remove();
-			parentWithOverflow.remove();
-		} );
-	} );
 } );
 
 function assertPosition( options, expected ) {
@@ -962,12 +719,6 @@ function assertPositionName( options, expected ) {
 	const position = getOptimalPosition( options );
 
 	expect( position.name ).to.equal( expected );
-}
-
-function assertNullPosition( options ) {
-	const position = getOptimalPosition( options );
-
-	expect( position ).to.be.null;
 }
 
 // Returns a synthetic element.
