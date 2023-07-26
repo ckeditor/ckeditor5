@@ -26,12 +26,6 @@ import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-e
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
 
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { CommentsRepository, CommentThreadDataJSON } from '@ckeditor/ckeditor5-comments';
-
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { TrackChanges, TrackChangesEditing, SuggestionJSON } from '@ckeditor/ckeditor5-track-changes';
-
 /**
  * A watchdog for CKEditor 5 editors.
  *
@@ -367,8 +361,9 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		const roots = editor.model.document.roots.filter( root => root.isAttached() && root.rootName != '$graveyard' );
 
 		const { plugins } = editor;
-		const commentsRepository = plugins.has( 'CommentsRepository' ) && plugins.get( 'CommentsRepository' ) as CommentsRepository;
-		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as TrackChanges;
+		// `as any` to avoid linking from external private repo.
+		const commentsRepository = plugins.has( 'CommentsRepository' ) && plugins.get( 'CommentsRepository' ) as any;
+		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as any;
 
 		const data: EditorData = {
 			roots: {},
@@ -556,12 +551,13 @@ class EditorWatchdogInitPlugin {
 	 * Restores the editor collaboration data - comment threads and suggestions.
 	 */
 	private _restoreCollaborationData() {
-		const parsedCommentThreads: Array<CommentThreadDataJSON> = JSON.parse( this._data.commentThreads );
-		const parsedSuggestions: Array<SuggestionJSON> = JSON.parse( this._data.suggestions );
+		// `as any` to avoid linking from external private repo.
+		const parsedCommentThreads: Array<any> = JSON.parse( this._data.commentThreads );
+		const parsedSuggestions: Array<any> = JSON.parse( this._data.suggestions );
 
 		parsedCommentThreads.forEach( commentThreadData => {
 			const channelId = this.editor.config.get( 'collaboration.channelId' )!;
-			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as CommentsRepository;
+			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as any;
 
 			if ( commentsRepository.hasCommentThread( commentThreadData.threadId ) ) {
 				const commentThread = commentsRepository.getCommentThread( commentThreadData.threadId )!;
@@ -573,7 +569,7 @@ class EditorWatchdogInitPlugin {
 		} );
 
 		parsedSuggestions.forEach( suggestionData => {
-			const trackChangesEditing = this.editor!.plugins.get( 'TrackChangesEditing' ) as TrackChangesEditing;
+			const trackChangesEditing = this.editor!.plugins.get( 'TrackChangesEditing' ) as any;
 
 			if ( trackChangesEditing.hasSuggestion( suggestionData.id ) ) {
 				const suggestion = trackChangesEditing.getSuggestion( suggestionData.id );
