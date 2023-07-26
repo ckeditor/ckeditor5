@@ -806,7 +806,8 @@ export type DowncastAttributeEvent<TItem = Item | Selection | DocumentSelection>
 export type DowncastSelectionEvent = DowncastEvent<'selection'>;
 
 /**
- * Fired at the beginning of selection conversion, before {@link ~DowncastDispatcher#selection selection} events.
+ * Fired at the beginning of selection conversion, before
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:selection selection} events.
  *
  * Should be used to clean up the view state at the current selection position, before the selection is moved to another place.
  *
