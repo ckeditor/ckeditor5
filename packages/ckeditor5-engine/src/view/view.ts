@@ -182,6 +182,7 @@ export default class View extends ObservableMixin() {
 		this._writer = new DowncastWriter( this.document );
 
 		// Add default observers.
+		// Make sure that this list matches AlwaysRegisteredObservers type.
 		this.addObserver( MutationObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( SelectionObserver );
@@ -377,6 +378,9 @@ export default class View extends ObservableMixin() {
 
 		return observer;
 	}
+
+	public getObserver<T extends ObserverConstructor>( ObserverConstructor: T ):
+		T extends AlwaysRegisteredObservers ? InstanceType<T> : InstanceType<T> | undefined;
 
 	/**
 	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
@@ -582,7 +586,7 @@ export default class View extends ObservableMixin() {
 	 */
 	public forceRender(): void {
 		this._hasChangedSinceTheLastRendering = true;
-		this.getObserver( FocusObserver )!.flush();
+		this.getObserver( FocusObserver ).flush();
 		this.change( () => {} );
 	}
 
@@ -847,3 +851,17 @@ export type ViewScrollToTheSelectionEventData = {
 	alignToTop?: boolean;
 	forceScroll?: boolean;
 };
+
+/**
+ * Observers that are always registered.
+ */
+export type AlwaysRegisteredObservers =
+	| typeof MutationObserver
+	| typeof FocusObserver
+	| typeof SelectionObserver
+	| typeof KeyObserver
+	| typeof FakeSelectionObserver
+	| typeof CompositionObserver
+	| typeof ArrowKeysObserver
+	| typeof InputObserver
+	| typeof TabObserver;
