@@ -26,6 +26,12 @@ import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-e
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
 
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import type { CommentsRepository, CommentThreadDataJSON } from '@ckeditor/ckeditor5-comments';
+
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import type { TrackChanges, TrackChangesEditing, SuggestionJSON } from '@ckeditor/ckeditor5-track-changes';
+
 /**
  * A watchdog for CKEditor 5 editors.
  *
@@ -307,8 +313,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 			.then( () => {
 				this._stopErrorHandling();
 
-				// Save data if there is a remaining editor data change.
-				this._throttledSave.flush();
+				this._throttledSave.cancel();
 
 				const editor = this._editor;
 
@@ -358,11 +363,18 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * Gets all data that is required to reinitialize editor instance.
 	 */
 	private _getData(): EditorData {
-		const editor = this.editor!;
+		const editor = this._editor!;
 		const roots = editor.model.document.roots.filter( root => root.isAttached() && root.rootName != '$graveyard' );
+
+		const { plugins } = editor;
+		const commentsRepository = plugins.has( 'CommentsRepository' ) && plugins.get( 'CommentsRepository' ) as CommentsRepository;
+		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as TrackChanges;
+
 		const data: EditorData = {
 			roots: {},
-			markers: {}
+			markers: {},
+			commentThreads: JSON.stringify( [] ),
+			suggestions: JSON.stringify( [] )
 		};
 
 		roots.forEach( root => {
@@ -383,6 +395,14 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				usingOperation: marker._managedUsingOperations,
 				affectsData: marker._affectsData
 			};
+		}
+
+		if ( commentsRepository ) {
+			data.commentThreads = JSON.stringify( commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) );
+		}
+
+		if ( trackChanges ) {
+			data.suggestions = JSON.stringify( trackChanges.getSuggestions( { toJSON: true, skipNotAttached: true } ) );
 		}
 
 		return data;
@@ -438,6 +458,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
  */
 class EditorWatchdogInitPlugin {
 	public editor: Editor;
+
 	private _data: EditorData;
 
 	constructor( editor: Editor ) {
@@ -457,6 +478,7 @@ class EditorWatchdogInitPlugin {
 			evt.stop();
 
 			this.editor.model.enqueueChange( { isUndoable: false }, writer => {
+				this._restoreCollaborationData();
 				this._restoreEditorData( writer );
 			} );
 
@@ -529,6 +551,39 @@ class EditorWatchdogInitPlugin {
 			} );
 		} );
 	}
+
+	/**
+	 * Restores the editor collaboration data - comment threads and suggestions.
+	 */
+	private _restoreCollaborationData() {
+		const parsedCommentThreads: Array<CommentThreadDataJSON> = JSON.parse( this._data.commentThreads );
+		const parsedSuggestions: Array<SuggestionJSON> = JSON.parse( this._data.suggestions );
+
+		parsedCommentThreads.forEach( commentThreadData => {
+			const channelId = this.editor.config.get( 'collaboration.channelId' )!;
+			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as CommentsRepository;
+
+			if ( commentsRepository.hasCommentThread( commentThreadData.threadId ) ) {
+				const commentThread = commentsRepository.getCommentThread( commentThreadData.threadId )!;
+
+				commentThread.remove();
+			}
+
+			commentsRepository.addCommentThread( { channelId, ...commentThreadData } );
+		} );
+
+		parsedSuggestions.forEach( suggestionData => {
+			const trackChangesEditing = this.editor!.plugins.get( 'TrackChangesEditing' ) as TrackChangesEditing;
+
+			if ( trackChangesEditing.hasSuggestion( suggestionData.id ) ) {
+				const suggestion = trackChangesEditing.getSuggestion( suggestionData.id );
+
+				suggestion.attributes = suggestionData.attributes;
+			} else {
+				trackChangesEditing.addSuggestionData( suggestionData );
+			}
+		} );
+	}
 }
 
 export type EditorData = {
@@ -542,6 +597,8 @@ export type EditorData = {
 		usingOperation: boolean;
 		affectsData: boolean;
 	}>;
+	commentThreads: string;
+	suggestions: string;
 };
 
 /**

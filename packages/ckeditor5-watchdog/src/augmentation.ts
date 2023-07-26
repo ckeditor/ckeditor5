@@ -26,6 +26,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		 *
 		 * @internal
 		 */
-		_watchdogInitialData?: EditorData | null;
+		_watchdogInitialData?: EditorData;
 	}
 }
