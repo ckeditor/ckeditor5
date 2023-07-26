@@ -652,7 +652,7 @@ describe( 'MultiRootEditor', () => {
 			} );
 
 			it( 'should buffer the root in the differ', () => {
-				const spy = sinon.spy( editor.model.document.differ, '_loadRoot' );
+				const spy = sinon.spy( editor.model.document.differ, '_bufferRootLoad' );
 
 				editor.loadRoot( 'foo', { data: '<p>Foo</p>', attributes: { order: 100 } } );
 
