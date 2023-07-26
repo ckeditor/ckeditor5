@@ -21,7 +21,7 @@ import {
 	getDataFromElement,
 	setDataInElement,
 	logWarning,
-	type CollectionAddEvent
+	type CollectionAddEvent, DecoratedMethodEvent
 } from 'ckeditor5/src/utils';
 
 import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
@@ -267,7 +267,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 		}, { priority: 'high' } );
 
 		this.decorate( 'loadRoot' );
-		this.on( 'loadRoot', ( evt, [ rootName ] ) => {
+		this.on<LoadRootEvent>( 'loadRoot', ( evt, [ rootName ] ) => {
 			const root = this.model.document.getRoot( rootName )!;
 
 			if ( !root ) {
@@ -995,6 +995,17 @@ export type DetachRootEvent = {
 	name: 'detachRoot';
 	args: [ root: RootElement ];
 };
+
+/**
+ * Event fired when {@link ~MultiRootEditor#loadRoot} method is called.
+ *
+ * The {@link ~MultiRootEditor#loadRoot default action of that method} is implemented as a
+ * listener to this event, so it can be fully customized by the features.
+ *
+ * @eventName ~MultiRootEditor#loadRoot
+ * @param args The arguments passed to the original method.
+ */
+export type LoadRootEvent = DecoratedMethodEvent<MultiRootEditor, 'loadRoot'>;
 
 /**
  * Additional options available when adding a root.
