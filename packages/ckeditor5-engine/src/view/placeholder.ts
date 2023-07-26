@@ -24,7 +24,7 @@ const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfi
  * A helper that enables a placeholder on the provided view element (also updates its visibility).
  * The placeholder is a CSS pseudo–element (with a text content) attached to the element.
  *
- * To change the placeholder text, simply call this method again with new options.
+ * To change the placeholder text, change value of the `placeholder` property in the provided `element`.
  *
  * To disable the placeholder, use {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} helper.
  *
@@ -310,8 +310,12 @@ interface PlaceholderConfig {
 }
 
 /**
- * Element which could have placeholder.
+ * Element which could have a placeholder.
  */
 export type PlaceholderableElement = Element & {
+
+	/**
+	 * Placeholder of the editable element.
+	 */
 	placeholder?: string;
 };

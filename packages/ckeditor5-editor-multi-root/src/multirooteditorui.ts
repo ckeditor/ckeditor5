@@ -189,7 +189,7 @@ export default class MultiRootEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Enables the placeholder text on a given editable, if the placeholder was configured.
+	 * Enables the placeholder text on a given editable.
 	 *
 	 * @param editable Editable on which the placeholder should be set.
 	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the

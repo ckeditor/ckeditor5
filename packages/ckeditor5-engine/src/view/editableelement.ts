@@ -45,7 +45,9 @@ export default class EditableElement extends ObservableMixin( ContainerElement )
 	/**
 	 * Placeholder of editable element. Could be updated.
 	 *
+	 * ```ts
 	 * editor.editing.view.document.getRoot( 'main' ).placeholder = 'New placeholder';
+	 * ```
 	 *
 	 * @observable
 	 */
