@@ -1,12 +1,12 @@
 ---
 category: tutorial
 order: 60
-menu-title: Updating editor UI
+menu-title: Editor UI
 ---
 
-# Updating editor UI
+# Editor UI
 
-## Editor UI
+## Interface parts
 
 In the previous chapter of this tutorial, we created a command to highlight selected text. However, having to open a console and run a command is cumbersome and definitely not what editor users want.
 

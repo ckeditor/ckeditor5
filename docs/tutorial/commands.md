@@ -1,10 +1,10 @@
 ---
 category: tutorial
 order: 50
-menu-title: Updating model using commands
+menu-title: Commands
 ---
 
-# Updating model using commands
+# Commands
 
 ## Commands purpose
 
