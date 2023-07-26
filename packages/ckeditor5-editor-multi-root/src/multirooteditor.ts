@@ -21,7 +21,8 @@ import {
 	getDataFromElement,
 	setDataInElement,
 	logWarning,
-	type CollectionAddEvent, DecoratedMethodEvent
+	type CollectionAddEvent,
+	type DecoratedMethodEvent
 } from 'ckeditor5/src/utils';
 
 import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
