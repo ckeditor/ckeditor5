@@ -12,8 +12,6 @@ import Rect, { type RectSource } from './rect';
 import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
 import { isFunction } from 'lodash-es';
-import getScrollableAncestors from './getscrollableancestors';
-import getElementsIntersectionRect from './getelementsintersectionrect';
 
 // @if CK_DEBUG_POSITION // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default
 
@@ -21,9 +19,6 @@ import getElementsIntersectionRect from './getelementsintersectionrect';
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the
  * target in the visually most efficient way, taking various restrictions like viewport or limiter geometry
  * into consideration.
- *
- * **Note**: If there are no position coordinates found that meet the requirements (arguments of this helper),
- * `null` is returned.
  *
  * ```ts
  * // The element which is to be positioned.
@@ -85,9 +80,7 @@ import getElementsIntersectionRect from './getelementsintersectionrect';
  *
  * @param options The input data and configuration of the helper.
  */
-export function getOptimalPosition( {
-	element, target, positions, limiter, fitInViewport, viewportOffsetConfig
-}: Options ): Position | null {
+export function getOptimalPosition( { element, target, positions, limiter, fitInViewport, viewportOffsetConfig }: Options ): Position {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-utils/issues/157
 	if ( isFunction( target ) ) {
@@ -104,20 +97,13 @@ export function getOptimalPosition( {
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
 
-	let bestPosition: Position | null;
+	let bestPosition: Position;
 
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
 	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
 
 	const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig ) || null;
 	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
-	// Get intersection of all scrollable ancestors of `target`.
-	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
-	const ancestorsIntersectionRect = getElementsIntersectionRect( allScrollableAncestors, ( viewportOffsetConfig || { top: 0 } ).top );
-
-	if ( !ancestorsIntersectionRect || !targetRect.getVisible() ) {
-		return null;
-	}
 
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
@@ -133,11 +119,11 @@ export function getOptimalPosition( {
 		// @if CK_DEBUG_POSITION // 	RectDrawer.draw( limiterRect, { outlineWidth: '5px', outlineColor: 'green' }, 'Visible limiter' );
 		// @if CK_DEBUG_POSITION // }
 
-		Object.assign( positionOptions, { limiterRect, viewportRect: ancestorsIntersectionRect } );
+		Object.assign( positionOptions, { limiterRect, viewportRect } );
 
 		// If there's no best position found, i.e. when all intersections have no area because
-		// rects have no width or height, then just return `null`
-		bestPosition = getBestPosition( positions, positionOptions );
+		// rects have no width or height, then just use the first available position.
+		bestPosition = getBestPosition( positions, positionOptions ) || new PositionObject( positions[ 0 ], positionOptions );
 	}
 
 	return bestPosition;
@@ -168,8 +154,6 @@ function getBestPosition(
 	options: ConstructorParameters<typeof PositionObject>[ 1 ]
 ): Position | null {
 	const { elementRect } = options;
-
-	// @if CK_DEBUG_POSITION //		RectDrawer.draw( elementRect, { outlineWidth: '5px', outlineColor: 'orange' }, 'elementRect' );
 
 	// This is when element is fully visible.
 	const elementRectArea = elementRect.getArea();
@@ -301,7 +285,7 @@ class PositionObject implements Position {
 	public name?: string;
 	public config?: object;
 
-	private _positioningFunctionCoordinates!: { left: number; top: number };
+	private _positioningFunctionCorrdinates!: { left: number; top: number };
 	private _options!: ConstructorParameters<typeof PositionObject>[ 1 ];
 	private _cachedRect?: Rect;
 	private _cachedAbsoluteRect?: Rect;
@@ -340,7 +324,7 @@ class PositionObject implements Position {
 		this.name = name;
 		this.config = config;
 
-		this._positioningFunctionCoordinates = { left, top };
+		this._positioningFunctionCorrdinates = { left, top };
 		this._options = options;
 	}
 
@@ -378,6 +362,8 @@ class PositionObject implements Position {
 					// limiter and actual position.
 					return limiterViewportIntersectRect.getIntersectionArea( this._rect );
 				}
+			} else {
+				return limiterRect.getIntersectionArea( this._rect );
 			}
 		}
 
@@ -388,9 +374,13 @@ class PositionObject implements Position {
 	 * An intersection area between positioned element and viewport.
 	 */
 	public get viewportIntersectionArea(): number {
-		const viewportRect = this._options.viewportRect!;
+		const viewportRect = this._options.viewportRect;
 
-		return viewportRect.getIntersectionArea( this._rect );
+		if ( viewportRect ) {
+			return viewportRect.getIntersectionArea( this._rect );
+		}
+
+		return 0;
 	}
 
 	/**
@@ -403,8 +393,8 @@ class PositionObject implements Position {
 		}
 
 		this._cachedRect = this._options.elementRect.clone().moveTo(
-			this._positioningFunctionCoordinates.left,
-			this._positioningFunctionCoordinates.top
+			this._positioningFunctionCorrdinates.left,
+			this._positioningFunctionCorrdinates.top
 		);
 
 		return this._cachedRect;
