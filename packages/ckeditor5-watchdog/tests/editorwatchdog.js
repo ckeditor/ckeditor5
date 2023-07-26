@@ -429,7 +429,7 @@ describe( 'EditorWatchdog', () => {
 		it( 'should support suggestion data created by another plugins', async () => {
 			sinon.stub( Suggestion, 'getMultiRangeId' ).callsFake( () => 'test' );
 
-			// Plugin that creates comment thread on init.
+			// Plugin that creates suggestion on init.
 			class InitPlugin {
 				constructor( editor ) {
 					this.editor = editor;
