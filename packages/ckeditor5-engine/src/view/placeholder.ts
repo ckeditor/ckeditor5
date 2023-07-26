@@ -310,12 +310,12 @@ interface PlaceholderConfig {
 }
 
 /**
- * Element which could have a placeholder.
+ * Element that could have a placeholder.
  */
-export type PlaceholderableElement = Element & {
+export interface PlaceholderableElement extends Element {
 
 	/**
-	 * Placeholder of the editable element.
+	 * The text of element's placeholder.
 	 */
 	placeholder?: string;
-};
+}
