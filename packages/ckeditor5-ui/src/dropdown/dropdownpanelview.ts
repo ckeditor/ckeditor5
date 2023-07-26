@@ -69,7 +69,8 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 					'ck-dropdown__panel',
 					bind.to( 'position', value => `ck-dropdown__panel_${ value }` ),
 					bind.if( 'isVisible', 'ck-dropdown__panel-visible' )
-				]
+				],
+				tabindex: '-1'
 			},
 
 			children: this.children,
