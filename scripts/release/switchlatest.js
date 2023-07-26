@@ -19,7 +19,7 @@ const GLOB_PATTERNS = [
 	'package.json',
 	'packages/*/package.json',
 	'external/ckeditor5-internal/packages/*/package.json',
-	'external/collaboration-features/packages/*/package.json'
+	'external/ckeditor5-commercial/packages/*/package.json'
 ];
 
 const cloudServicesCollaborationPkg = require( '../../external/ckeditor-cloud-services-collaboration/package.json' );

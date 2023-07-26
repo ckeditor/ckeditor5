@@ -1,4 +1,5 @@
 {
   "Open file manager": "Toolbar button tooltip for opening a file browser that allows inserting an image or a file to the editor.",
-  "Cannot determine a category for the uploaded file.": "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset."
+  "Cannot determine a category for the uploaded file.": "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset.",
+  "Cannot access default workspace.": "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 }

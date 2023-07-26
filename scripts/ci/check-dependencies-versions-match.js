@@ -30,8 +30,8 @@ const [ packageJsons, pathMappings ] = getPackageJsons( [
 	'packages/*/package.json',
 	'external/ckeditor5-internal/packages/*/package.json',
 	'external/ckeditor5-internal/package.json',
-	'external/collaboration-features/packages/*/package.json',
-	'external/collaboration-features/package.json'
+	'external/ckeditor5-commercial/packages/*/package.json',
+	'external/ckeditor5-commercial/package.json'
 ] );
 
 const expectedDependencies = getExpectedDepsVersions( packageJsons );

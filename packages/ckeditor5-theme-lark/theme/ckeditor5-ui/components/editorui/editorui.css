@@ -58,12 +58,12 @@
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
 	&::after {
-		border-bottom-color: var(--ck-color-base-foreground);
+		border-bottom-color: var(--ck-color-panel-background);
 	}
 }
 
 .ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_s"] {
 	&::after {
-		border-top-color: var(--ck-color-base-foreground);
+		border-top-color: var(--ck-color-panel-background);
 	}
 }

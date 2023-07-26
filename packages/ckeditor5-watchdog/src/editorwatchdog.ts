@@ -13,16 +13,15 @@
 import type { CKEditorError } from 'ckeditor5/src/utils';
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type {
-	Editor,
-	EditorConfig,
-	Context
-} from 'ckeditor5/src/core';
+import type { Editor, EditorConfig, Context, EditorReadyEvent } from 'ckeditor5/src/core';
 
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import Watchdog, { type WatchdogConfig } from './watchdog';
 
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'lodash-es';
+
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import type { Node, Text, Element, Writer } from 'ckeditor5/src/engine';
 
 /**
  * A watchdog for CKEditor 5 editors.
@@ -45,7 +44,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	/**
 	 * The latest saved editor data represented as a root name -> root data object.
 	 */
-	private _data?: Record<string, string>;
+	private _data?: EditorData;
 
 	/**
 	 * The last document version.
@@ -165,12 +164,24 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				console.error( 'An error happened during the editor destroying.', err );
 			} )
 			.then( () => {
+				const existingRoots = Object.keys( this._data!.roots ).reduce( ( acc, rootName ) => {
+					acc[ rootName ] = '';
+
+					return acc;
+				}, {} as Record<string, string> );
+
+				const updatedConfig = {
+					...this._config,
+					extraPlugins: this._config!.extraPlugins || [],
+					_watchdogInitialData: this._data
+				};
+
+				updatedConfig.extraPlugins!.push( EditorWatchdogInitPlugin as any );
+
 				if ( typeof this._elementOrData === 'string' ) {
-					return this.create( this._data, this._config, this._config!.context );
+					return this.create( existingRoots, updatedConfig, updatedConfig!.context );
 				} else {
-					const updatedConfig = Object.assign( {}, this._config, {
-						initialData: this._data
-					} );
+					updatedConfig.initialData = existingRoots;
 
 					return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
 				}
@@ -284,13 +295,35 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	}
 
 	/**
-	 * Returns the editor data.
+	 * Gets all data that is required to reinitialize editor instance.
 	 */
-	private _getData(): Record<string, string> {
-		const data: Record<string, string> = {};
+	private _getData(): EditorData {
+		const editor = this.editor!;
+		const rootNames = editor.model.document.getRootNames();
+		const data: EditorData = {
+			roots: {},
+			markers: {}
+		};
 
-		for ( const rootName of this._editor!.model.document.getRootNames() ) {
-			data[ rootName ] = this._editor!.data.get( { rootName } );
+		rootNames.forEach( rootName => {
+			const root = editor.model.document.getRoot( rootName )!;
+
+			data.roots[ rootName ] = {
+				content: JSON.stringify( Array.from( root.getChildren() ) ),
+				attributes: JSON.stringify( Array.from( root.getAttributes() ) )
+			};
+		} );
+
+		for ( const marker of editor.model.markers ) {
+			if ( !marker._affectsData ) {
+				continue;
+			}
+
+			data.markers[ marker.name ] = {
+				rangeJSON: marker.getRange().toJSON() as any,
+				usingOperation: marker._managedUsingOperations,
+				affectsData: marker._affectsData
+			};
 		}
 
 		return data;
@@ -322,6 +355,117 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 		} );
 	}
 }
+
+/**
+ * Internal plugin that is used to stop the default editor initialization and restoring the editor state
+ * based on the `editor.config._watchdogInitialData` data.
+ */
+class EditorWatchdogInitPlugin {
+	public editor: Editor;
+	private _data: EditorData;
+
+	constructor( editor: Editor ) {
+		this.editor = editor;
+
+		this._data = editor.config.get( '_watchdogInitialData' )!;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		// Stops the default editor initialization and use the saved data to restore the editor state.
+		// Some of data could not be initialize as a config properties. It is important to keep the data
+		// in the same form as it was before the restarting.
+		this.editor.data.on( 'init', evt => {
+			evt.stop();
+
+			this.editor.model.enqueueChange( { isUndoable: true }, writer => {
+				this._restoreEditorData( writer );
+			} );
+
+			this.editor.data.fire<EditorReadyEvent>( 'ready' );
+
+			// Keep priority `'high' - 1` to be sure that RTC initialization will be first.
+		}, { priority: 1000 - 1 } );
+	}
+
+	/**
+	 * Creates a model node (element or text) based on provided JSON.
+	 */
+	private _createNode( writer: Writer, jsonNode: any ): Text | Element {
+		if ( 'name' in jsonNode ) {
+			// If child has name property, it is an Element.
+			const element = writer.createElement( jsonNode.name, jsonNode.attributes );
+
+			if ( jsonNode.children ) {
+				for ( const child of jsonNode.children ) {
+					element._appendChild( this._createNode( writer, child ) );
+				}
+			}
+
+			return element;
+		} else {
+			// Otherwise, it is a Text node.
+			return writer.createText( jsonNode.data, jsonNode.attributes );
+		}
+	}
+
+	/**
+	 * Restores the editor by setting the document data, roots attributes and markers.
+	 */
+	private _restoreEditorData( writer: Writer ): void {
+		const editor = this.editor!;
+
+		Object.entries( this._data!.roots ).forEach( ( [ rootName, { content, attributes } ] ) => {
+			const parsedNodes: Array<Node | Element> = JSON.parse( content );
+			const parsedAttributes: Array<[ string, unknown ]> = JSON.parse( attributes );
+
+			const rootElement = editor.model.document.getRoot( rootName )!;
+
+			for ( const [ key, value ] of parsedAttributes ) {
+				writer.setAttribute( key, value, rootElement );
+			}
+
+			for ( const child of parsedNodes ) {
+				const node = this._createNode( writer, child );
+
+				writer.insert( node, rootElement, 'end' );
+			}
+		} );
+
+		Object.entries( this._data!.markers ).forEach( ( [ markerName, markerOptions ] ) => {
+			const { document } = editor.model;
+			const {
+				rangeJSON: { start, end },
+				...options
+			} = markerOptions;
+
+			const root = document.getRoot( start.root )!;
+			const startPosition = writer.createPositionFromPath( root, start.path, start.stickiness );
+			const endPosition = writer.createPositionFromPath( root, end.path, end.stickiness );
+
+			const range = writer.createRange( startPosition, endPosition );
+
+			writer.addMarker( markerName, {
+				range,
+				...options
+			} );
+		} );
+	}
+}
+
+export type EditorData = {
+	roots: Record<string, {
+		content: string;
+		attributes: string;
+	}>;
+	markers: Record<string, {
+		rangeJSON: { start: any; end: any };
+		usingOperation: boolean;
+		affectsData: boolean;
+	}>;
+};
 
 /**
  * Fired after the watchdog restarts the error in case of a crash.
