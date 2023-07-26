@@ -578,7 +578,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 
 			root._isLoaded = true;
 
-			this.model.document.differ._loadRoot( root );
+			this.model.document.differ._bufferRootLoad( root );
 		} );
 	}
 
