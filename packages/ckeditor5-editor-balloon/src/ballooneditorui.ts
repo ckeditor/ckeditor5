@@ -109,16 +109,14 @@ export default class BalloonEditorUI extends EditorUI {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const editingRoot = editingView.document.getRoot()!;
-
 		const placeholder = editor.config.get( 'placeholder' );
-		let placeholderText;
 
 		if ( placeholder ) {
-			placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
-		}
+			const placeholderText = typeof placeholder === 'string' ? placeholder : placeholder[ editingRoot.rootName ];
 
-		if ( placeholderText ) {
-			editingRoot.placeholder = placeholderText;
+			if ( placeholderText ) {
+				editingRoot.placeholder = placeholderText;
+			}
 		}
 
 		enablePlaceholder( {
