@@ -255,14 +255,6 @@ describe( 'EditorWatchdog', () => {
 			watchdog = new EditorWatchdog();
 
 			watchdog.setCreator( ( data, config ) => ClassicTestEditor.create( data, config ) );
-
-			await watchdog.create( '<p>Foo bar</p>', {
-				plugins: [ Paragraph, UsersInit, Comments, TrackChanges ],
-				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
-				comments: {
-					editorConfig: {}
-				}
-			} );
 		} );
 
 		afterEach( async () => {
@@ -270,6 +262,14 @@ describe( 'EditorWatchdog', () => {
 		} );
 
 		it( 'should support comment threads', async () => {
+			await watchdog.create( '<p>Foo bar</p>', {
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges ],
+				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				comments: {
+					editorConfig: {}
+				}
+			} );
+
 			const originalErrorHandler = window.onerror;
 			const windowErrorSpy = sinon.spy();
 			window.onerror = windowErrorSpy;
@@ -308,6 +308,14 @@ describe( 'EditorWatchdog', () => {
 		} );
 
 		it( 'should support suggestions', async () => {
+			await watchdog.create( '<p>Foo bar</p>', {
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges ],
+				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				comments: {
+					editorConfig: {}
+				}
+			} );
+
 			const originalErrorHandler = window.onerror;
 			const windowErrorSpy = sinon.spy();
 			window.onerror = windowErrorSpy;
@@ -359,6 +367,139 @@ describe( 'EditorWatchdog', () => {
 				'suggestion-end name="insertion:subType:1:u1:test"></suggestion-end> ' +
 				'bar</p>'
 			);
+		} );
+
+		it( 'should support comment data created by another plugins', async () => {
+			// Plugin that creates comment thread on init.
+			class InitPlugin {
+				constructor( editor ) {
+					this.editor = editor;
+				}
+
+				init() {
+					const commentsRepository = this.editor.plugins.get( 'CommentsRepository' );
+
+					commentsRepository.addCommentThread( { threadId: 't1', target: () => null } );
+				}
+			}
+
+			await watchdog.create( '<p>Foo bar</p>', {
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, InitPlugin ],
+				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				comments: {
+					editorConfig: {}
+				}
+			} );
+
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
+			watchdog.editor.setData(
+				'<p>' +
+				'Fo' +
+				'<comment id="t1" type="start"></comment>' +
+				'o b' +
+				'<comment id="t1" type="end"></comment>' +
+				'ar' +
+				'</p>'
+			);
+
+			// Set comment thread attributes to test if it will be restored after restart.
+			const commentThread = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' );
+			commentThread.setAttribute( 'test', 'value' );
+
+			watchdog._save();
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
+				} );
+			} );
+
+			// Should keep the comment thread up to date even if the InitPlugin creates the new instance.
+			expect( watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' ).attributes ).to.deep.equal( {
+				test: 'value'
+			} );
+		} );
+
+		it( 'should support suggestion data created by another plugins', async () => {
+			sinon.stub( Suggestion, 'getMultiRangeId' ).callsFake( () => 'test' );
+
+			// Plugin that creates comment thread on init.
+			class InitPlugin {
+				constructor( editor ) {
+					this.editor = editor;
+				}
+
+				init() {
+					const trackChangesEditing = this.editor.plugins.get( 'TrackChangesEditing' );
+
+					trackChangesEditing.addSuggestionData( {
+						id: '1',
+						type: 'insertion:subType',
+						authorId: 'u1',
+						data: null,
+						createdAt: new Date(),
+						attributes: {}
+					} );
+				}
+			}
+
+			await watchdog.create( '<p>Foo bar</p>', {
+				plugins: [ Paragraph, UsersInit, Comments, TrackChanges, InitPlugin ],
+				licenseKey: 'uI0zfya2yTle649FSKlQCRsBSez+W4Vh5reIiKp0uDVYRCuPjaPYlf8=',
+				comments: {
+					editorConfig: {}
+				}
+			} );
+
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
+			// Set comment thread attributes to test if it will be restored after restart.
+			const suggestion = watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' );
+
+			watchdog.editor.model.change( writer => {
+				const root = watchdog.editor.model.document.getRoot();
+
+				const startPos = writer.createPositionFromPath( root, [ 0, 0 ] );
+				const endPos = writer.createPositionFromPath( root, [ 0, 3 ] );
+				const range = writer.createRange( startPos, endPos );
+
+				suggestion.addRange( range );
+			} );
+
+			// Set suggestion attributes to test if it will be restored after restart.
+			suggestion.setAttribute( 'test', 'value' );
+
+			watchdog._save();
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
+				} );
+			} );
+
+			expect( watchdog.editor.getData() ).to.equal(
+				'<p>' +
+				'<suggestion-start name="insertion:subType:1:u1:test"></suggestion-start' +
+				'>Foo<' +
+				'suggestion-end name="insertion:subType:1:u1:test"></suggestion-end> ' +
+				'bar</p>'
+			);
+
+			// Should keep the suggestion attributes up to date even if the InitPlugin creates the new instance.
+			expect( watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' ).attributes ).to.deep.equal( {
+				test: 'value'
+			} );
 		} );
 	} );
 

@@ -483,20 +483,28 @@ class EditorWatchdogInitPlugin {
 		const parsedCommentThreads: Array<CommentThreadDataJSON> = JSON.parse( this._data.commentThreads );
 		const parsedSuggestions: Array<SuggestionJSON> = JSON.parse( this._data.suggestions );
 
-		parsedCommentThreads.forEach( commentThread => {
+		parsedCommentThreads.forEach( commentThreadData => {
 			const channelId = this.editor.config.get( 'collaboration.channelId' )!;
 			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as CommentsRepository;
 
-			if ( !commentsRepository.hasCommentThread( commentThread.threadId ) ) {
-				commentsRepository.addCommentThread( { channelId, ...commentThread } );
+			if ( commentsRepository.hasCommentThread( commentThreadData.threadId ) ) {
+				const commentThread = commentsRepository.getCommentThread( commentThreadData.threadId )!;
+
+				commentThread.remove();
 			}
+
+			commentsRepository.addCommentThread( { channelId, ...commentThreadData } );
 		} );
 
-		parsedSuggestions.forEach( suggestion => {
+		parsedSuggestions.forEach( suggestionData => {
 			const trackChangesEditing = this.editor!.plugins.get( 'TrackChangesEditing' ) as TrackChangesEditing;
 
-			if ( !trackChangesEditing.hasSuggestion( suggestion.id ) ) {
-				trackChangesEditing.addSuggestionData( suggestion );
+			if ( trackChangesEditing.hasSuggestion( suggestionData.id ) ) {
+				const suggestion = trackChangesEditing.getSuggestion( suggestionData.id );
+
+				suggestion.attributes = suggestionData.attributes;
+			} else {
+				trackChangesEditing.addSuggestionData( suggestionData );
 			}
 		} );
 	}
