@@ -11,6 +11,7 @@ import Mapper from '../../src/conversion/mapper';
 import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
+import ModelRootElement from '../../src/model/rootelement';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelRange from '../../src/model/range';
 import ModelConsumable from '../../src/conversion/modelconsumable';
@@ -946,6 +947,24 @@ describe( 'DowncastDispatcher', () => {
 			} );
 		} );
 
+		it( 'should fire cleanSelection event before selection events', () => {
+			sinon.spy( dispatcher, 'fire' );
+			const spy = sinon.spy();
+
+			dispatcher.on( 'cleanSelection', spy );
+			dispatcher.on( 'selection', () => {
+				// Check if the `cleanSelection` event was already called.
+				expect( spy.called ).to.be.true;
+			} );
+
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
+
+			expect( dispatcher.fire.calledWith(
+				'cleanSelection',
+				{ selection: sinon.match.instanceOf( doc.selection.constructor ) }
+			) ).to.be.true;
+		} );
+
 		it( 'should fire selection event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
@@ -958,6 +977,25 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should not fire selection event if model document selection is in a root that does not have a mapped view root', () => {
+			const spyClean = sinon.spy();
+			const spySelection = sinon.spy();
+
+			dispatcher.on( 'cleanSelection', spyClean );
+			dispatcher.on( 'selection', spySelection );
+
+			model.change( writer => {
+				const newRoot = new ModelRootElement( model.document, '$root', 'foo' );
+
+				writer.setSelection( writer.createRangeIn( newRoot ) );
+			} );
+
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
+
+			expect( spyClean.calledOnce ).to.be.true;
+			expect( spySelection.called ).to.be.false;
 		} );
 
 		it( 'should prepare correct list of consumable values', () => {

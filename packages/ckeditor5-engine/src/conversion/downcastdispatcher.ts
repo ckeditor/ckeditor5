@@ -254,16 +254,23 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		writer: DowncastWriter
 	): void {
 		const conversionApi = this._createConversionApi( writer );
+
+		// First perform a clean-up at the current position of the selection.
+		this.fire<DowncastCleanSelectionEvent>( 'cleanSelection', { selection }, conversionApi );
+
+		// Don't convert selection if it is in a model root that does not have a view root (for now this is only the graveyard root).
+		const modelRoot = selection.getFirstPosition()!.root as RootElement;
+
+		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
+			return;
+		}
+
+		// Now, perform actual selection conversion.
 		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition()! ) );
 
 		this._addConsumablesForSelection( conversionApi.consumable, selection, markersAtSelection );
 
-		const isConversionCorrect = this.fire<DowncastSelectionEvent>( 'selection', { selection }, conversionApi );
-
-		// Check `false` exactly, as `undefined` may be returned as well.
-		if ( isConversionCorrect === false ) {
-			return;
-		}
+		this.fire<DowncastSelectionEvent>( 'selection', { selection }, conversionApi );
 
 		if ( !selection.isCollapsed ) {
 			return;
@@ -702,6 +709,9 @@ type EventMap<TItem = Item> = {
 		attributeOldValue: unknown;
 		attributeNewValue: unknown;
 	};
+	cleanSelection: {
+		selection: Selection | DocumentSelection;
+	};
 	selection: {
 		selection: Selection | DocumentSelection;
 	};
@@ -788,15 +798,24 @@ export type DowncastAttributeEvent<TItem = Item | Selection | DocumentSelection>
 /**
  * Fired for {@link module:engine/model/selection~Selection selection} changes.
  *
- * The event callback (converter) should return `false` if the selection conversion could not be performed and further selection-related
- * conversion (selection markers and attributes) should be cancelled.
- *
  * @eventName ~DowncastDispatcher#selection
  * @param {module:engine/model/selection~Selection} selection Selection that is converted.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
-export type DowncastSelectionEvent = DowncastEvent<'selection'> & { return: boolean };
+export type DowncastSelectionEvent = DowncastEvent<'selection'>;
+
+/**
+ * Fired at the beginning of selection conversion, before {@link ~DowncastDispatcher#selection selection} events.
+ *
+ * Should be used to clean up the view state at the current selection position, before the selection is moved to another place.
+ *
+ * @eventName ~DowncastDispatcher#cleanSelection
+ * @param {module:engine/model/selection~Selection} selection Selection that is converted.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
+ * to be used by callback, passed in `DowncastDispatcher` constructor.
+ */
+export type DowncastCleanSelectionEvent = DowncastEvent<'cleanSelection'>;
 
 /**
  * Fired when a new marker is added to the model. Also fired when a collapsed model selection that is inside a marker is converted.

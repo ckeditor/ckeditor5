@@ -22,7 +22,7 @@ import ViewDocument from '../../src/view/document';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import DowncastHelpers, {
-	clearAttributes,
+	cleanSelection,
 	convertCollapsedSelection,
 	convertRangeSelection,
 	createViewElementFromHighlightDescriptor,
@@ -5004,7 +5004,7 @@ describe( 'downcast selection converters', () => {
 		downcastHelpers.markerToHighlight( { model: 'marker', view: { classes: 'marker' }, converterPriority: 1 } );
 
 		// Default selection converters.
-		dispatcher.on( 'selection', clearAttributes(), { priority: 'high' } );
+		dispatcher.on( 'cleanSelection', cleanSelection() );
 		dispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		dispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 	} );
@@ -5110,22 +5110,6 @@ describe( 'downcast selection converters', () => {
 				);
 
 				expect( viewSelection.focus.offset ).to.equal( 1 );
-			} );
-
-			it( 'should not convert if selection is in a model root that does not have a corresponding view root', () => {
-				model.change( writer => {
-					const newRoot = writer.addRoot( 'new' );
-
-					writer.insertText( 'foo', newRoot, 0 );
-					writer.setSelection( writer.createRangeIn( newRoot ) );
-				} );
-
-				// Convert model to view.
-				view.change( writer => {
-					dispatcher.convertSelection( docSelection, model.markers, writer );
-				} );
-
-				expect( viewSelection.rangeCount ).to.equal( 0 );
 			} );
 		} );
 
@@ -5356,26 +5340,6 @@ describe( 'downcast selection converters', () => {
 					'foobar' // No selection in view and no attribute.
 				);
 			} );
-
-			it( 'should not convert if selection is in a model root that does not have a corresponding view root', () => {
-				model.change( writer => {
-					const newRoot = writer.addRoot( 'new' );
-
-					writer.insertText( 'foo', { bold: true }, newRoot, 0 );
-					writer.addMarker( 'marker', { range: writer.createRangeIn( newRoot ), usingOperation: false } );
-					writer.setSelection( newRoot, 1 );
-				} );
-
-				sinon.spy( dispatcher, 'fire' );
-
-				// Convert model to view.
-				view.change( writer => {
-					dispatcher.convertSelection( docSelection, model.markers, writer );
-				} );
-
-				expect( viewSelection.rangeCount ).to.equal( 0 );
-				expect( dispatcher.fire.calledWith( 'attribute:bold:$text' ) ).to.be.false;
-			} );
 		} );
 	} );
 
@@ -5416,7 +5380,7 @@ describe( 'downcast selection converters', () => {
 			} );
 		} );
 
-		describe( 'clearAttributes', () => {
+		describe( 'cleanSelection', () => {
 			it( 'should remove all ranges before adding new range', () => {
 				testSelection(
 					[ 3, 3 ],

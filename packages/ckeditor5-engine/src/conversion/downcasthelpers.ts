@@ -56,7 +56,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { cloneDeep } from 'lodash-es';
-import type RootElement from '../model/rootelement';
 
 /**
  * Downcast conversion helper functions.
@@ -974,9 +973,6 @@ export function createViewElementFromHighlightDescriptor( writer: DowncastWriter
  * modelDispatcher.on( 'selection', convertRangeSelection() );
  * ```
  *
- * Note: the converter will return `false` if the selection is in a model root that does not have a corresponding view root and thus
- * the conversion cannot be performed.
- *
  * @returns Selection converter.
  */
 export function convertRangeSelection() {
@@ -992,18 +988,6 @@ export function convertRangeSelection() {
 		}
 
 		if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
-			return;
-		}
-
-		const modelRoot = selection.getFirstPosition()!.root as RootElement;
-
-		// Don't convert selection if it is in a model root that does not have a view root (for now this is only the graveyard root).
-		// Note that the view selection should be cleared at this moment.
-		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
-			// Prevent further selection conversion (markers and attributes).
-			evt.return = false;
-			evt.stop();
-
 			return;
 		}
 
@@ -1038,11 +1022,8 @@ export function convertRangeSelection() {
  * converted, broken attributes might be merged again, or the position where the selection is may be wrapped
  * with different, appropriate attribute elements.
  *
- * See also {@link module:engine/conversion/downcasthelpers~clearAttributes} which does a clean-up
+ * See also {@link module:engine/conversion/downcasthelpers~cleanSelection} which does a clean-up
  * by merging attributes.
- *
- * Note: the converter will return `false` if the selection is in a model root that does not have a corresponding view root and thus
- * the conversion cannot be performed.
  *
  * @returns Selection converter.
  */
@@ -1062,18 +1043,6 @@ export function convertCollapsedSelection() {
 			return;
 		}
 
-		const modelRoot = selection.getFirstPosition()!.root as RootElement;
-
-		// Don't convert selection if it is in a model root that does not have a view root (for now this is only the graveyard root).
-		// Note that the view selection should be cleared at this moment.
-		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
-			// Prevent further selection conversion (markers and attributes).
-			evt.return = false;
-			evt.stop();
-
-			return;
-		}
-
 		const viewWriter = conversionApi.writer;
 		const modelPosition = selection.getFirstPosition()!;
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
@@ -1084,7 +1053,7 @@ export function convertCollapsedSelection() {
 }
 
 /**
- * Function factory that creates a converter which clears artifacts after the previous
+ * Function factory that creates a converter which cleans artifacts after the previous
  * {@link module:engine/model/selection~Selection model selection} conversion. It removes all empty
  * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merges sibling attributes at all start and end
  * positions of all ranges.
@@ -1103,7 +1072,7 @@ export function convertCollapsedSelection() {
  * This listener should be assigned before any converter for the new selection:
  *
  * ```ts
- * modelDispatcher.on( 'selection', clearAttributes() );
+ * modelDispatcher.on( 'cleanSelection', cleanSelection() );
  * ```
  *
  * See {@link module:engine/conversion/downcasthelpers~convertCollapsedSelection}
@@ -1111,7 +1080,7 @@ export function convertCollapsedSelection() {
  *
  * @returns Selection converter.
  */
-export function clearAttributes() {
+export function cleanSelection() {
 	return (
 		evt: EventInfo,
 		data: unknown,
