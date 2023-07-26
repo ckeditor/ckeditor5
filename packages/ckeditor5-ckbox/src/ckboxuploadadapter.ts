@@ -22,7 +22,7 @@ import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/cke
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
-import { getImageUrls, getWorkspaceIds } from './utils';
+import { getImageUrls, getWorkspaceId } from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -115,11 +115,6 @@ class Adapter implements UploadAdapter {
 	public serviceOrigin: string;
 
 	/**
-	 * The base URL from where all assets are served.
-	 */
-	public assetsOrigin: string;
-
-	/**
 	 * Creates a new adapter instance.
 	 */
 	constructor( loader: FileLoader, token: InitializedToken, editor: Editor ) {
@@ -129,7 +124,6 @@ class Adapter implements UploadAdapter {
 		this.controller = new AbortController();
 
 		this.serviceOrigin = editor.config.get( 'ckbox.serviceOrigin' )!;
-		this.assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' )!;
 	}
 
 	/**
@@ -138,14 +132,10 @@ class Adapter implements UploadAdapter {
 	public getWorkspaceId(): Promise<string> {
 		const t = this.editor.t;
 		const cannotAccessDefaultWorkspaceError = t( 'Cannot access default workspace.' );
-		const workspaceIds = getWorkspaceIds( this.token );
 		const defaultWorkspaceId = this.editor.config.get( 'ckbox.defaultUploadWorkspaceId' );
+		const workspaceId = getWorkspaceId( this.token, defaultWorkspaceId );
 
-		if ( defaultWorkspaceId ) {
-			if ( workspaceIds.includes( defaultWorkspaceId ) ) {
-				return Promise.resolve( defaultWorkspaceId );
-			}
-
+		if ( workspaceId == null ) {
 			/**
 			 * The user is not authorized to access workspace defined in `ckbox.defaultUploadWorkspaceId` configuration.
 			 *
@@ -156,7 +146,7 @@ class Adapter implements UploadAdapter {
 			return Promise.reject( cannotAccessDefaultWorkspaceError );
 		}
 
-		return Promise.resolve( workspaceIds[ 0 ] );
+		return Promise.resolve( workspaceId );
 	}
 
 	/**

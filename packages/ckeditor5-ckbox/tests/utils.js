@@ -6,62 +6,113 @@
 /* global btoa */
 
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import { getWorkspaceIds, getImageUrls } from '../src/utils';
+import { getWorkspaceId, getImageUrls } from '../src/utils';
 
 describe( 'utils', () => {
-	describe( 'getWorkspaceIds()', () => {
-		it( 'should return workspace ids from a token', async () => {
-			const token = await createToken( {
-				aud: 'environment',
-				auth: {
-					ckbox: {
-						workspaces: [ 'workspace1', 'workspace2' ]
+	describe( 'getWorkspaceId', () => {
+		describe( 'without default workspace', () => {
+			it( 'should return the first workspace id from the token', async () => {
+				const token = await createToken( {
+					aud: 'environment',
+					auth: {
+						ckbox: {
+							workspaces: [ 'workspace1', 'workspace2', 'workspace3' ]
+						}
 					}
-				}
+				} );
+
+				expect( getWorkspaceId( token ) ).to.equal( 'workspace1' );
 			} );
 
-			expect( getWorkspaceIds( token ) ).to.deep.equal( [ 'workspace1', 'workspace2' ] );
-		} );
-
-		it( 'should return environment name as a workspace id from a token when `auth.ckbox.workspaces` is missing', async () => {
-			const token = await createToken( {
-				aud: 'environment',
-				auth: {
-					ckbox: {}
-				}
-			} );
-
-			expect( getWorkspaceIds( token ) ).to.deep.equal( [ 'environment' ] );
-		} );
-
-		it( 'should return environment name as a workspace id from a token when `auth.ckbox` is missing', async () => {
-			const token = await createToken( {
-				aud: 'environment',
-				auth: {}
-			} );
-
-			expect( getWorkspaceIds( token ) ).to.deep.equal( [ 'environment' ] );
-		} );
-
-		it( 'should return environment name as a workspace id from a token when `auth` is missing', async () => {
-			const token = await createToken( {
-				aud: 'environment'
-			} );
-
-			expect( getWorkspaceIds( token ) ).to.deep.equal( [ 'environment' ] );
-		} );
-
-		it( 'should return environment name as a workspace id from a token when `auth.ckbox.workspaces` is empty', async () => {
-			const token = await createToken( {
-				aud: 'environment',
-				auth: {
-					ckbox: {
-						workspaces: []
+			it( 'should return the only workspace id from the token', async () => {
+				const token = await createToken( {
+					aud: 'environment',
+					auth: {
+						ckbox: {
+							workspaces: [ 'workspace1' ]
+						}
 					}
-				}
+				} );
+
+				expect( getWorkspaceId( token ) ).to.equal( 'workspace1' );
 			} );
 
-			expect( getWorkspaceIds( token ) ).to.deep.equal( [ 'environment' ] );
+			it( 'should return environment name as a workspace id from a token when `auth.ckbox.workspaces` is missing', async () => {
+				const token = await createToken( {
+					aud: 'environment',
+					auth: {
+						ckbox: {}
+					}
+				} );
+
+				expect( getWorkspaceId( token ) ).to.equal( 'environment' );
+			} );
+
+			it( 'should return environment name as a workspace id from a token when `auth.ckbox` is missing', async () => {
+				const token = await createToken( {
+					aud: 'environment',
+					auth: {}
+				} );
+
+				expect( getWorkspaceId( token ) ).to.equal( 'environment' );
+			} );
+
+			it( 'should return environment name as a workspace id from a token when `auth` is missing', async () => {
+				const token = await createToken( {
+					aud: 'environment'
+				} );
+
+				expect( getWorkspaceId( token ) ).to.equal( 'environment' );
+			} );
+		} );
+
+		describe( 'with default workspace', () => {
+			it( 'should return the default workspace id from the token', async () => {
+				const token = await createToken( {
+					aud: 'environment',
+					auth: {
+						ckbox: {
+							workspaces: [ 'workspace1', 'workspace2', 'workspace3' ]
+						}
+					}
+				} );
+
+				expect( getWorkspaceId( token, 'workspace2' ) ).to.equal( 'workspace2' );
+			} );
+
+			it( 'should return the default workspace id that equals to environment', async () => {
+				const token = await createToken( {
+					aud: 'environment'
+				} );
+
+				expect( getWorkspaceId( token, 'environment' ) ).to.equal( 'environment' );
+			} );
+
+			it( 'should return null when the user has no access to the default workspace', async () => {
+				const token = await createToken( {
+					aud: 'environment',
+					auth: {
+						ckbox: {
+							workspaces: [ 'workspace1', 'workspace2', 'workspace3' ]
+						}
+					}
+				} );
+
+				expect( getWorkspaceId( token, 'another-workspace' ) ).to.be.null;
+			} );
+
+			it( 'should return default workspace when the user is superadmin', async () => {
+				const token = await createToken( {
+					aud: 'environment',
+					auth: {
+						ckbox: {
+							role: 'superadmin'
+						}
+					}
+				} );
+
+				expect( getWorkspaceId( token, 'some-workspace' ) ).to.equal( 'some-workspace' );
+			} );
 		} );
 	} );
 

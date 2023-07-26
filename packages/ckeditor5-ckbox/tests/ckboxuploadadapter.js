@@ -1073,6 +1073,46 @@ describe( 'CKBoxUploadAdapter', () => {
 						} );
 				} );
 
+				it( 'should use the default workspace when the user is superadmin', () => {
+					TokenMock.initialToken = createToken( { auth: { ckbox: { role: 'superadmin' } } } );
+					adapter.token.refreshToken();
+
+					sinonXHR.respondWith( 'GET', /\/categories/, [
+						200,
+						{ 'Content-Type': 'application/json' },
+						JSON.stringify( {
+							items: [
+								{ name: 'Albums', id: 'id-category-1', extensions: [ 'jpg' ] }
+							], offset: 0, limit: 50, totalCount: 1
+						} )
+					] );
+
+					sinonXHR.respondWith( 'POST', /\/assets/, [
+						201,
+						{ 'Content-Type': 'application/json' },
+						JSON.stringify( {
+							id: 'image-1',
+							imageUrls: {
+								100: 'https://ckbox.cloud/workspace1/assets/image-1/images/100.webp',
+								default: 'https://ckbox.cloud/workspace1/assets/image-1/images/100.jpeg'
+							}
+						} )
+					] );
+
+					editor.config.set( 'ckbox.defaultUploadWorkspaceId', 'workspace1' );
+
+					return adapter.upload()
+						.then( () => {
+							const categoriesRequest = sinonXHR.requests[ 0 ];
+							const uploadRequest = sinonXHR.requests[ 1 ];
+
+							expect( categoriesRequest.url ).to.equal(
+								CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1' );
+							expect( uploadRequest.url ).to.equal(
+								CKBOX_API_URL + '/assets?workspaceId=workspace1' );
+						} );
+				} );
+
 				it( 'should throw an error when default workspace is not listed in the token', () => {
 					sinon.stub( console, 'error' );
 

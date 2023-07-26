@@ -53,12 +53,24 @@ export function getImageUrls( imageUrls: CKBoxImageUrls ): {
 }
 
 /**
- * Returns workspace ids from a token used for communication with the CKBox service.
+ * Returns workspace id to use for communication with the CKBox service.
+ *
+ * @param defaultWorkspaceId The default workspace to use taken from editor config.
  */
-export function getWorkspaceIds( token: InitializedToken ): Array<string> {
+export function getWorkspaceId( token: InitializedToken, defaultWorkspaceId?: string ): string | null {
 	const [ , binaryTokenPayload ] = token.value.split( '.' );
 	const payload = JSON.parse( atob( binaryTokenPayload ) );
-	const workspaces = payload.auth && payload.auth.ckbox && payload.auth.ckbox.workspaces;
+	const workspaces = ( payload.auth && payload.auth.ckbox && payload.auth.ckbox.workspaces ) || [ payload.aud ];
 
-	return workspaces && workspaces.length ? workspaces : [ payload.aud ];
+	if ( !defaultWorkspaceId ) {
+		return workspaces[ 0 ];
+	}
+
+	const role = payload.auth && payload.auth.ckbox && payload.auth.ckbox.role;
+
+	if ( role == 'superadmin' || workspaces.includes( defaultWorkspaceId ) ) {
+		return defaultWorkspaceId;
+	}
+
+	return null;
 }
