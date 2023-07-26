@@ -26,7 +26,8 @@ function Image( editor ) {
 }
 
 DecoupledEditor.create( document.querySelector( '#mini-inspector-upcast-attribute' ), {
-	plugins: [ Essentials, Image ]
+	plugins: [ Essentials, Image ],
+	toolbar: []
 } )
 	.then( editor => {
 		MiniCKEditorInspector.attach(
