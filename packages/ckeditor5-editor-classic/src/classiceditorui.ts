@@ -142,7 +142,7 @@ export default class ClassicEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Enable the placeholder text on the editing root, if any was configured.
+	 * Enable the placeholder text on the editing root.
 	 */
 	private _initPlaceholder(): void {
 		const editor = this.editor;
