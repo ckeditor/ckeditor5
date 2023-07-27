@@ -26,7 +26,7 @@ ClassicEditor.defaultConfig = {
 	toolbar: {
 		items: [
 			'undo', 'redo',
-			'|', 'heading', '|', 'fontFamily', 'fontSize',
+			'|', 'heading', '|', 'fontFamily', 'fontSize', 'fontColor',
 			'|', 'bold', 'italic',
 			'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
 			'|', 'alignment',
