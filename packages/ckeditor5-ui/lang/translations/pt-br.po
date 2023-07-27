@@ -114,4 +114,4 @@ msgstr "Barra de ferramentas contextuais do Editor"
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "Hexadecimal"
