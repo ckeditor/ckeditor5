@@ -55,7 +55,3 @@ msgstr "पृष्ठभूमिको फन्ट रंग"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "कागजात रंग"
-
-msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
-msgid "Accept"
-msgstr ""
