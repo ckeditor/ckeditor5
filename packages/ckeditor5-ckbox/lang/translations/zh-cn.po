@@ -26,4 +26,4 @@ msgstr "无法确定上传文件的类别。"
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "无法访问默认工作区"

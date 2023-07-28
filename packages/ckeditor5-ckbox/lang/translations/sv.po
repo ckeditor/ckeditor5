@@ -26,4 +26,4 @@ msgstr "Kan inte avgöra kategorin på den uppladdade filen."
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "Kan inte komma åt standardarbetsytan."
