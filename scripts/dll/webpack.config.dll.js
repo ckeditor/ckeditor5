@@ -8,7 +8,7 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const FooterPlugin = require( './webpackFooterPlugin' );
+const FooterPlugin = require( './webpack-footer-plugin' );
 const { bundler, loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { addTypeScriptLoader } = require( '../docs/utils' );
