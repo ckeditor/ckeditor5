@@ -155,7 +155,7 @@ describe( 'ReplaceAllCommand', () => {
 			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
 		} );
 
-		it( 'should one undo step restore all replaced text occurrences in the document at once', () => {
+		it( 'should one undo step restore every text occurrences replaced by `replace all` in the document at once.', () => {
 			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
 
 			editor.execute( 'replaceAll', 'new', 'bar' );
@@ -167,7 +167,7 @@ describe( 'ReplaceAllCommand', () => {
 			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo bar baz</p><p>Foo bar baz</p>' );
 		} );
 
-		it( 'should one undo step restore all replaced text occurrences in multiple roots at once', async () => {
+		it( 'should one undo step restore every text occurrences replaced by `replace all` in multiple roots at once.', async () => {
 			class MultiRootEditor extends ModelTestEditor {
 				constructor( config ) {
 					super( config );
