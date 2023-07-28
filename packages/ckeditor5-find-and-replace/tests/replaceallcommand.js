@@ -66,7 +66,7 @@ describe( 'ReplaceAllCommand', () => {
 			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo bar baz</p>' );
 		} );
 
-		it( 'should replace all passed results in the document document', () => {
+		it( 'should replace all passed results in the document', () => {
 			setData( model, '<paragraph>Foo bar [b]az</paragraph><paragraph>[Foo] bar baz</paragraph>' );
 
 			const ranges = editor.model.document.selection.getRanges();
@@ -153,6 +153,48 @@ describe( 'ReplaceAllCommand', () => {
 			editor.execute( 'undo' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
+		} );
+
+		it( 'should one undo step restore all replaced text occurrences in the document at once', () => {
+			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
+
+			editor.execute( 'replaceAll', 'new', 'bar' );
+
+			expect( editor.getData() ).to.equal( '<p>Foo new baz</p><p>Foo new baz</p><p>Foo new baz</p>' );
+
+			editor.execute( 'undo' );
+
+			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo bar baz</p><p>Foo bar baz</p>' );
+		} );
+
+		it( 'should one undo step restore all replaced text occurrences in multiple roots at once', async () => {
+			class MultiRootEditor extends ModelTestEditor {
+				constructor( config ) {
+					super( config );
+
+					this.model.document.createRoot( '$root', 'second' );
+				}
+			}
+
+			const multiRootEditor = await MultiRootEditor
+				.create( { plugins: [ FindAndReplaceEditing, Paragraph, UndoEditing ] } );
+
+			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
+			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+
+			const { results } = multiRootEditor.execute( 'find', 'z' );
+
+			multiRootEditor.execute( 'replaceAll', 'r', results );
+
+			expect( multiRootEditor.getData() ).to.equal( '<p>Foo bar bar</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Foo bar bar</p>' );
+
+			multiRootEditor.execute( 'undo' );
+
+			expect( multiRootEditor.getData() ).to.equal( '<p>Foo bar baz</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Foo bar baz</p>' );
+
+			await multiRootEditor.destroy();
 		} );
 	} );
 } );
