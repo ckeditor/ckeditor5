@@ -63,4 +63,4 @@ To start using the framework refer to:
 
 * The {@link framework/quick-start Quick start} guide.
 * The {@link framework/architecture/intro Introduction to the framework architecture} guide.
-* The {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide.
+* The {@link tutorial/editor step-by-step tutorial}.
