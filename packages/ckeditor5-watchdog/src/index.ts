@@ -10,3 +10,5 @@
 export { default as ContextWatchdog } from './contextwatchdog';
 export { default as EditorWatchdog } from './editorwatchdog';
 export { default as Watchdog } from './watchdog';
+
+import './augmentation';

@@ -121,9 +121,15 @@ export default class Command extends ObservableMixin() {
 				return;
 			}
 
+			const selection = editor.model.document.selection;
+			const selectionInGraveyard = selection.getFirstPosition()!.root.rootName == '$graveyard';
+			const canEditAtSelection = !selectionInGraveyard && editor.model.canEditAt( selection );
+
+			// Disable if editor is read only, or when selection is in a place which cannot be edited.
+			//
 			// Checking `editor.isReadOnly` is needed for all commands that have `_isEnabledBasedOnSelection == false`.
 			// E.g. undo does not base on selection, but affects data and should be disabled when the editor is in read-only mode.
-			if ( editor.isReadOnly || this._isEnabledBasedOnSelection && !editor.model.canEditAt( editor.model.document.selection ) ) {
+			if ( editor.isReadOnly || this._isEnabledBasedOnSelection && !canEditAtSelection ) {
 				evt.return = false;
 				evt.stop();
 			}

@@ -276,12 +276,22 @@ export default class Document extends EmitterMixin() {
 	 * on the document data know which roots are still a part of the document and should be processed.
 	 *
 	 * @param includeDetached Specified whether detached roots should be returned as well.
-	 * @returns Roots names.
 	 */
 	public getRootNames( includeDetached = false ): Array<string> {
+		return this.getRoots( includeDetached ).map( root => root.rootName );
+	}
+
+	/**
+	 * Returns an array with all roots added to the document (except the {@link #graveyard graveyard root}).
+	 *
+	 * Detached roots **are not** returned by this method by default. This is to make sure that all features or algorithms that operate
+	 * on the document data know which roots are still a part of the document and should be processed.
+	 *
+	 * @param includeDetached Specified whether detached roots should be returned as well.
+	 */
+	public getRoots( includeDetached = false ): Array<RootElement> {
 		return Array.from( this.roots )
-			.filter( root => root.rootName != graveyardName && ( includeDetached || root.isAttached() ) )
-			.map( root => root.rootName );
+			.filter( root => root != this.graveyard && ( includeDetached || root.isAttached() ) && root._isLoaded );
 	}
 
 	/**
@@ -391,13 +401,9 @@ export default class Document extends EmitterMixin() {
 	 * @returns The default root for this document.
 	 */
 	protected _getDefaultRoot(): RootElement {
-		for ( const root of this.roots ) {
-			if ( root !== this.graveyard ) {
-				return root;
-			}
-		}
+		const roots = this.getRoots();
 
-		return this.graveyard;
+		return roots.length ? roots[ 0 ] : this.graveyard;
 	}
 
 	/**

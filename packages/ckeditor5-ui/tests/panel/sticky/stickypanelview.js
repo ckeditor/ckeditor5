@@ -5,7 +5,7 @@
 
 /* globals document, Event */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import StickyPanelView from '../../../src/panel/sticky/stickypanelview';
 import View from '../../../src/view';
 import LabelView from '../../../src/label/labelview';
@@ -151,7 +151,9 @@ describe( 'StickyPanelView', () => {
 		} );
 
 		it( 'update the style.height on view#isSticky change', () => {
-			view._panelRect = { height: 50 };
+			sinon.stub( view, '_contentPanelRect' ).get( () => new Rect( {
+				top: 0, right: 50, left: 0, bottom: 50, height: 50, width: 50
+			} ) );
 
 			view.isSticky = false;
 			expect( placeholderElement.style.height ).to.equal( '' );

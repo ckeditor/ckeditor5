@@ -558,6 +558,115 @@ describe( 'MultiRootEditor', () => {
 		} );
 	} );
 
+	describe( 'loading roots', () => {
+		describe( 'config.lazyRoots', () => {
+			it( 'should create specified, non-loaded roots', async () => {
+				editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, {
+					plugins: [ Paragraph, Undo ],
+					lazyRoots: [ 'foo', 'bar' ]
+				} );
+
+				const rootFoo = editor.model.document.getRoot( 'foo' );
+				const rootBar = editor.model.document.getRoot( 'bar' );
+
+				expect( rootFoo ).not.to.be.null;
+				expect( rootFoo.rootName ).to.equal( 'foo' );
+				expect( rootFoo.isAttached() ).to.be.true;
+				expect( rootFoo._isLoaded ).to.be.false;
+
+				expect( rootBar ).not.to.be.null;
+				expect( rootBar.rootName ).to.equal( 'bar' );
+				expect( rootBar.isAttached() ).to.be.true;
+				expect( rootBar._isLoaded ).to.be.false;
+
+				expect( editor.model.document.getRootNames() ).to.deep.equal( [ 'main' ] );
+
+				return editor.destroy();
+			} );
+
+			it( 'should work correctly when there are no initial loaded roots', async () => {
+				editor = await MultiRootEditor.create( {}, {
+					plugins: [ Paragraph, Undo ],
+					lazyRoots: [ 'foo', 'bar' ]
+				} );
+
+				expect( editor.model.document.getRootNames() ).to.deep.equal( [] );
+
+				return editor.destroy();
+			} );
+		} );
+
+		describe( 'loadRoot()', () => {
+			let root;
+
+			beforeEach( async () => {
+				editor = await MultiRootEditor.create( {}, {
+					plugins: [ Paragraph, Undo ],
+					lazyRoots: [ 'foo', 'bar' ]
+				} );
+
+				root = editor.model.document.getRoot( 'foo' );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should throw if given root does not exist', async () => {
+				expect( () => {
+					editor.loadRoot( 'xyz' );
+				} ).to.throw( CKEditorError, 'multi-root-editor-load-root-no-root' );
+			} );
+
+			it( 'should set not-loaded root as loaded and set initial data and attributes', () => {
+				editor.loadRoot( 'foo', { data: '<p>Foo</p>', attributes: { order: 100 } } );
+
+				expect( root._isLoaded ).to.be.true;
+				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 100 } );
+			} );
+
+			it( 'should load an empty root', () => {
+				editor.loadRoot( 'foo' );
+
+				expect( root._isLoaded ).to.be.true;
+				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '' );
+				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {} );
+			} );
+
+			it( 'should log a warning and not do anything when a root is loaded for the second time', () => {
+				editor.loadRoot( 'foo', { data: '<p>Foo</p>', attributes: { order: 100 } } );
+
+				const spy = sinon.spy();
+
+				editor.on( 'loadRoot', spy );
+				editor.loadRoot( 'foo', { data: '<p>Bar</p>', attributes: { order: 200 } } );
+
+				expect( console.warn.calledWith( sinon.match( /^multi-root-editor-load-root-already-loaded/ ) ) ).to.be.true;
+
+				expect( root._isLoaded ).to.be.true;
+				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
+				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 100 } );
+
+				expect( spy.notCalled ).to.be.true;
+			} );
+
+			it( 'should buffer the root in the differ', () => {
+				const spy = sinon.spy( editor.model.document.differ, '_bufferRootLoad' );
+
+				editor.loadRoot( 'foo', { data: '<p>Foo</p>', attributes: { order: 100 } } );
+
+				expect( spy.calledWithExactly( root ) ).to.be.true;
+			} );
+
+			it( 'should not be undoable', () => {
+				editor.loadRoot( 'foo', { data: '<p>Foo</p>', attributes: { order: 100 } } );
+
+				expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+			} );
+		} );
+	} );
+
 	describe( 'model.canEditAt()', () => {
 		beforeEach( async () => {
 			editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, { plugins: [ Paragraph, Undo ] } );
@@ -720,7 +829,10 @@ describe( 'MultiRootEditor', () => {
 
 	describe( 'getFullData()', () => {
 		beforeEach( async () => {
-			editor = await MultiRootEditor.create( { main: '<p>Main.</p>' }, { plugins: [ Paragraph, Undo ] } );
+			editor = await MultiRootEditor.create( { main: '<p>Main.</p>', old: '<p>Old.</p>' }, {
+				plugins: [ Paragraph, Undo ],
+				lazyRoots: [ 'abc', 'xyz' ]
+			} );
 		} );
 
 		afterEach( () => {
@@ -731,12 +843,15 @@ describe( 'MultiRootEditor', () => {
 			editor.addRoot( 'new', { data: '<p>New.</p>' } );
 			editor.detachRoot( 'main' );
 			editor.addRoot( 'foo', { data: '<p>Foo.</p>' } );
+			editor.loadRoot( 'abc', { data: '<p>Abc.</p>' } );
 
 			const fullData = editor.getFullData();
 
 			expect( fullData ).to.deep.equal( {
+				old: '<p>Old.</p>',
 				foo: '<p>Foo.</p>',
-				new: '<p>New.</p>'
+				new: '<p>New.</p>',
+				abc: '<p>Abc.</p>'
 			} );
 		} );
 
@@ -958,8 +1073,8 @@ describe( 'MultiRootEditor', () => {
 		} );
 	} );
 
-	describe( '#getRootsAttributes()', () => {
-		it( 'should return current values of roots attributes', async () => {
+	describe( '#getRootAttributes()', () => {
+		it( 'should return current values of attributes of the given root', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				rootsAttributes: {
 					foo: { order: 10, isLocked: true },
@@ -972,15 +1087,14 @@ describe( 'MultiRootEditor', () => {
 				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'bar' ) );
 			} );
 
-			expect( editor.getRootsAttributes() ).to.deep.equal( {
-				bar: {
-					isLocked: true,
-					order: 20
-				},
-				foo: {
-					isLocked: true,
-					order: 30
-				}
+			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
+				isLocked: true,
+				order: 30
+			} );
+
+			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
+				isLocked: true,
+				order: 20
 			} );
 
 			await editor.destroy();
@@ -999,15 +1113,14 @@ describe( 'MultiRootEditor', () => {
 				writer.setAttribute( 'keyB', 'bar', editor.model.document.getRoot( 'bar' ) );
 			} );
 
-			expect( editor.getRootsAttributes() ).to.deep.equal( {
-				bar: {
-					isLocked: false,
-					order: 20
-				},
-				foo: {
-					isLocked: true,
-					order: 10
-				}
+			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
+				isLocked: true,
+				order: 10
+			} );
+
+			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
+				isLocked: false,
+				order: 20
 			} );
 
 			await editor.destroy();
@@ -1025,40 +1138,14 @@ describe( 'MultiRootEditor', () => {
 				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'foo' ) );
 			} );
 
-			expect( editor.getRootsAttributes() ).to.deep.equal( {
-				bar: {
-					isLocked: false,
-					order: null
-				},
-				foo: {
-					isLocked: true,
-					order: 10
-				}
+			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
+				isLocked: true,
+				order: 10
 			} );
 
-			await editor.destroy();
-		} );
-
-		it( 'should return attributes for all and only currently attached roots', async () => {
-			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
-				rootsAttributes: {
-					foo: { order: 10, isLocked: true },
-					bar: { order: 20, isLocked: false }
-				}
-			} );
-
-			editor.detachRoot( 'bar' );
-			editor.addRoot( 'abc', { attributes: { order: 30 } } );
-
-			expect( editor.getRootsAttributes() ).to.deep.equal( {
-				abc: {
-					isLocked: null,
-					order: 30
-				},
-				foo: {
-					isLocked: true,
-					order: 10
-				}
+			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
+				isLocked: false,
+				order: null
 			} );
 
 			await editor.destroy();
@@ -1075,14 +1162,78 @@ describe( 'MultiRootEditor', () => {
 				writer.setAttribute( 'order', 30, editor.model.document.getRoot( 'foo' ) );
 			} );
 
+			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
+				isLocked: null,
+				order: 30
+			} );
+
+			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
+				isLocked: true,
+				order: null
+			} );
+
+			await editor.destroy();
+		} );
+	} );
+
+	describe( '#getRootsAttributes()', () => {
+		it( 'should return current values of roots attributes', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10, isLocked: true },
+					bar: { order: 20, isLocked: false }
+				}
+			} );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'order', 30, editor.model.document.getRoot( 'foo' ) );
+				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'bar' ) );
+			} );
+
+			sinon.spy( editor, 'getRootAttributes' );
+
 			expect( editor.getRootsAttributes() ).to.deep.equal( {
 				bar: {
 					isLocked: true,
-					order: null
+					order: 20
 				},
 				foo: {
+					isLocked: true,
+					order: 30
+				}
+			} );
+
+			expect( editor.getRootAttributes.calledWith( 'foo' ) ).to.be.true;
+			expect( editor.getRootAttributes.calledWith( 'bar' ) ).to.be.true;
+
+			await editor.destroy();
+		} );
+
+		it( 'should return attributes for all and only currently attached roots', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10, isLocked: true },
+					bar: { order: 20, isLocked: false }
+				},
+				lazyRoots: [ 'xxx', 'yyy' ]
+			} );
+
+			editor.detachRoot( 'bar' );
+			editor.addRoot( 'abc', { attributes: { order: 30 } } );
+			editor.loadRoot( 'xxx', { data: '', attributes: { order: 40, isLocked: false } } );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				abc: {
 					isLocked: null,
 					order: 30
+				},
+				foo: {
+					isLocked: true,
+					order: 10
+				},
+				xxx: {
+					isLocked: false,
+					order: 40
 				}
 			} );
 

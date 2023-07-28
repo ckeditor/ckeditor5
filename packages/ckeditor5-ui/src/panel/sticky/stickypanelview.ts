@@ -13,11 +13,12 @@ import Template from '../../template';
 import type ViewCollection from '../../viewcollection';
 
 import {
-	global,
-	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
-	findClosestScrollableAncestor,
+	getElementsIntersectionRect,
+	getScrollableAncestors,
+	global,
+	toUnit,
 	Rect
 } from '@ckeditor/ckeditor5-utils';
 
@@ -114,11 +115,6 @@ export default class StickyPanelView extends View {
 	declare public _isStickyToTheBottomOfLimiter: boolean;
 
 	/**
-	 * The DOM bounding client rect of the {@link module:ui/view~View#element} of the panel.
-	 */
-	private _panelRect?: Rect;
-
-	/**
 	 * The `top` CSS position of the panel when it is sticky to the top of the viewport or scrollable
 	 * ancestors of the {@link #limiterElement}.
 	 *
@@ -181,7 +177,7 @@ export default class StickyPanelView extends View {
 				style: {
 					display: bind.to( 'isSticky', isSticky => isSticky ? 'block' : 'none' ),
 					height: bind.to( 'isSticky', isSticky => {
-						return isSticky ? toPx( this._panelRect!.height ) : null;
+						return isSticky ? toPx( this._contentPanelRect.height ) : null;
 					} )
 				}
 			}
@@ -256,7 +252,6 @@ export default class StickyPanelView extends View {
 	 */
 	public checkIfShouldBeSticky( scrollTarget?: HTMLElement | Document ): void {
 		// @if CK_DEBUG_STICKYPANEL // RectDrawer.clear();
-		this._panelRect = new Rect( this._contentPanel );
 
 		if ( !this.limiterElement || !this.isActive ) {
 			this._unstick();
@@ -264,13 +259,13 @@ export default class StickyPanelView extends View {
 			return;
 		}
 
-		const scrollableAncestors = _getScrollableAncestors( this.limiterElement );
+		const scrollableAncestors = getScrollableAncestors( this.limiterElement );
 
 		if ( scrollTarget && !scrollableAncestors.includes( scrollTarget ) ) {
 			return;
 		}
 
-		const visibleAncestorsRect = _getVisibleAncestorsRect( scrollableAncestors, this.viewportTopOffset );
+		const visibleAncestorsRect = getElementsIntersectionRect( scrollableAncestors, this.viewportTopOffset );
 		const limiterRect = new Rect( this.limiterElement );
 
 		// @if CK_DEBUG_STICKYPANEL // if ( visibleAncestorsRect ) {
@@ -303,7 +298,7 @@ export default class StickyPanelView extends View {
 				const visibleAncestorsTop = visibleAncestorsRect.top;
 
 				// Check if there's a change the panel can be sticky to the bottom of the limiter.
-				if ( visibleAncestorsTop + this._panelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
+				if ( visibleAncestorsTop + this._contentPanelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
 					const stickyBottomOffset = Math.max( limiterRect.bottom - visibleAncestorsRect.bottom, 0 ) + this.limiterBottomOffset;
 					// @if CK_DEBUG_STICKYPANEL // const stickyBottomOffsetRect = new Rect( {
 					// @if CK_DEBUG_STICKYPANEL // 	top: limiterRect.bottom - stickyBottomOffset, left: 0, right: 2000,
@@ -316,13 +311,13 @@ export default class StickyPanelView extends View {
 
 					// Check if sticking the panel to the bottom of the limiter does not cause it to suddenly
 					// move upwards if there's not enough space for it.
-					if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._panelRect.height ) {
+					if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._contentPanelRect.height ) {
 						this._stickToBottomOfLimiter( stickyBottomOffset );
 					} else {
 						this._unstick();
 					}
 				} else {
-					if ( this._panelRect.height + this.limiterBottomOffset < limiterRect.height ) {
+					if ( this._contentPanelRect.height + this.limiterBottomOffset < limiterRect.height ) {
 						this._stickToTopOfAncestors( visibleAncestorsTop );
 					} else {
 						this._unstick();
@@ -382,62 +377,13 @@ export default class StickyPanelView extends View {
 		this._stickyBottomOffset = null;
 		this._marginLeft = null;
 	}
-}
 
-// Loops over the given element's ancestors to find all the scrollable elements.
-//
-// @private
-// @param element
-// @returns Array<HTMLElement> An array of scrollable element's ancestors.
-function _getScrollableAncestors( element: HTMLElement ) {
-	const scrollableAncestors = [];
-	let scrollableAncestor = findClosestScrollableAncestor( element );
-
-	while ( scrollableAncestor && scrollableAncestor !== global.document.body ) {
-		scrollableAncestors.push( scrollableAncestor );
-		scrollableAncestor = findClosestScrollableAncestor( scrollableAncestor! );
+	/**
+	 * Returns the bounding rect of the {@link #_contentPanel}.
+	 *
+	 * @private
+	 */
+	private get _contentPanelRect(): Rect {
+		return new Rect( this._contentPanel );
 	}
-
-	scrollableAncestors.push( global.document );
-
-	return scrollableAncestors;
-}
-
-// Calculates the intersection rectangle of the given element and its scrollable ancestors (including window).
-// Also, takes into account the passed viewport top offset.
-//
-// @private
-// @param scrollableAncestors
-// @param viewportTopOffset
-// @returns Rect
-function _getVisibleAncestorsRect( scrollableAncestors: Array<HTMLElement | Document>, viewportTopOffset: number ) {
-	const scrollableAncestorsRects = scrollableAncestors.map( ancestor => {
-		// The document (window) is yet another scrollable ancestor, but cropped by the top offset.
-		if ( ancestor instanceof Document ) {
-			const windowRect = new Rect( global.window );
-
-			windowRect.top += viewportTopOffset;
-			windowRect.height -= viewportTopOffset;
-
-			return windowRect;
-		} else {
-			return new Rect( ancestor );
-		}
-	} );
-
-	let scrollableAncestorsIntersectionRect: Rect | null = scrollableAncestorsRects[ 0 ];
-
-	// @if CK_DEBUG_STICKYPANEL // for ( const scrollableAncestorRect of scrollableAncestorsRects ) {
-	// @if CK_DEBUG_STICKYPANEL // 	RectDrawer.draw( scrollableAncestorRect, {
-	// @if CK_DEBUG_STICKYPANEL // 		outlineWidth: '1px', opacity: '.7', outlineStyle: 'dashed'
-	// @if CK_DEBUG_STICKYPANEL // 	}, 'Scrollable ancestor' );
-	// @if CK_DEBUG_STICKYPANEL // }
-
-	for ( const scrollableAncestorRect of scrollableAncestorsRects.slice( 1 ) ) {
-		if ( scrollableAncestorsIntersectionRect ) {
-			scrollableAncestorsIntersectionRect = scrollableAncestorsIntersectionRect.getIntersection( scrollableAncestorRect );
-		}
-	}
-
-	return scrollableAncestorsIntersectionRect;
 }

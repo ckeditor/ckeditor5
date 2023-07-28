@@ -115,3 +115,7 @@ msgstr "Barra degli strumenti contestuale dell'editor"
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
 msgstr "HEX"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "Accetta"

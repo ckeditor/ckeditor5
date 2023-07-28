@@ -8,7 +8,7 @@ branches:
   - stable
   - release
   - /^v\d+\.\d+\.\d+$/
-  - /^(ck|cf|ci)\/epic\/\d+/
+  - /^(ck|cf|ci|cc)\/epic\/\d+/
 services:
 - xvfb
 node_js:
