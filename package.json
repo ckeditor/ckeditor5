@@ -82,7 +82,9 @@
     "@ckeditor/ckeditor5-utils": "38.1.1",
     "@ckeditor/ckeditor5-watchdog": "38.1.1",
     "@ckeditor/ckeditor5-widget": "38.1.1",
-    "@ckeditor/ckeditor5-word-count": "38.1.1"
+    "@ckeditor/ckeditor5-word-count": "38.1.1",
+    "svelte": "^4.1.1",
+    "svelte-loader": "^3.1.9"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": "38.1.1",

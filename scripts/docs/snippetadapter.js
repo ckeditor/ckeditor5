@@ -464,7 +464,10 @@ function getWebpackConfig( snippets, config ) {
 				...getPackageDependenciesPaths(),
 				...getModuleResolvePaths()
 			],
-			alias: RESOLVE_ALIAS_MAP,
+			alias: {
+				...RESOLVE_ALIAS_MAP,
+				svelte: path.resolve( 'node_modules', 'svelte/src/runtime' )
+			},
 			extensions: [ '.ts', '.js', '.json' ]
 		},
 
@@ -479,7 +482,11 @@ function getWebpackConfig( snippets, config ) {
 					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
 					minify: config.production,
 					extractToSeparateFile: true
-				} )
+				} ),
+				{
+					test: /\.svelte$/,
+					use: 'svelte-loader'
+				}
 			]
 		}
 	};

@@ -6,6 +6,12 @@ modified_at: 2021-09-07
 
 # Git commit message convention
 
+---
+
+{@snippet framework/git-commit-message-generator}
+
+---
+
 Every commit made *directly* to the `master` branch must follow the convention below. Based on commits in the `master` branch CKEditor 5 release tools will generate changelog entries for the current release.
 
 <info-box>
