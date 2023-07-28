@@ -119,3 +119,26 @@ A collaboration session will be removed 24 hours after the last user disconnects
 <info-box>
 	If you are using Collaboration Server On-premises, it is recommended to keep it updated at all times, just like CKEditor 5. Our collaboration features are strongly linked with Cloud Services, so it is important to keep compatibility between On-premises and CKEditor 5.
 </info-box>
+
+### Breaking changes
+
+#### Placeholder
+
+Function `enablePlaceholder()` no longer gets `text` in `options` as argument. To define a value of placeholder you need to specify it in your `element` which is actually passed into `options`.
+
+```js
+element.placeholder = 'Type something...'
+
+enablePlaceholder( {
+    view: editingView,
+    element: element,
+    isDirectHost: false,
+    keepOnFocus: true
+} );
+```
+
+Now if you need to update your placeholder you could just update `placeholder` property in your element.
+
+```js
+editor.editing.view.document.getRoot( 'main' ).placeholder = 'new placeholder';
+```
