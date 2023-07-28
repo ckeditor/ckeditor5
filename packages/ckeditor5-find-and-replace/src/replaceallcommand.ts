@@ -50,9 +50,12 @@ export default class ReplaceAllCommand extends ReplaceCommandBase {
 				) ), null as Collection<ResultType> | null )!;
 
 		if ( results.length ) {
-			[ ...results ].forEach( searchResult => {
-				// Just reuse logic from the replace command to replace a single match.
-				this._replace( newText, searchResult );
+			// Wrapped in single change will batch it into one transaction.
+			model.change( () => {
+				[ ...results ].forEach( searchResult => {
+					// Just reuse logic from the replace command to replace a single match.
+					this._replace( newText, searchResult );
+				} );
 			} );
 		}
 	}
