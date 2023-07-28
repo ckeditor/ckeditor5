@@ -64,6 +64,8 @@ In the callback we do four things:
 * Bind the `isOn` and `isEnabled` button properties to the `value` and `isEnabled` command properties. This ensures that the button is only clickable when the command can be executed, and that it's active when the selection is already highlighted.
 * Return the configured button.
 
+This process is explained in more detail in the next chapter.
+
 ## Registering a new button
 
 When we go back to the browser, we see that nothing has changed. The button we just created isn't there.
@@ -99,6 +101,6 @@ If all went well, the text you selected should be highlighted in the editor and 
 
 ## What's next?
 
-Congratulations, you have just finished this tutorial!
+If you want to read more about the editor's UI, see the {@link framework/architecture/ui-library UI library} document.
 
-If you want to continue learning, go to the {@link framework/index Framework section} of our documentation.
+Otherwise, go to the next chapter, where you'll {@link tutorial/events-and-observables learn more about events and observables} and better understand the `bind(...).to(...)` mechanism we used to make the button reactive.

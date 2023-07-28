@@ -213,6 +213,9 @@
 		"framework/guides/development-tools.html": "framework/development-tools.html",
 		"framework/guides/overview.html": "framework/index.html",
 		"framework/guides/plugins/creating-simple-plugin.html": "framework/plugins/creating-simple-plugin-timestamp.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-1.html": "framework/plugins/creating-simple-plugin-timestamp.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-2.html": "framework/plugins/creating-simple-plugin-timestamp.html",
+		"framework/plugins/abbreviation-plugin/abbreviation-plugin-level-3.html": "framework/plugins/creating-simple-plugin-timestamp.html",
 		"framework/guides/plugins/package-generator.html": "framework/plugins/package-generator/using-package-generator.html",
 		"framework/guides/plugins/package-generator/javascript-package.html": "framework/plugins/package-generator/javascript-package.html",
 		"framework/guides/plugins/package-generator/typescript-package.html": "framework/plugins/package-generator/typescript-package.html",
@@ -594,12 +597,6 @@
 					"slug": "plugins",
 					"order": 200,
 					"categories": [
-						{
-							"name": "Creating an abbreviation plugin",
-							"id": "abbreviation-plugin",
-							"slug": "abbreviation-plugin",
-							"order": 20
-						},
 						{
 							"name": "Package Generator",
 							"id": "package-generator",
