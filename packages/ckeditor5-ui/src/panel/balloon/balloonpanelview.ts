@@ -17,17 +17,34 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
+	type Position,
 	type PositionOptions,
 	type PositioningFunction,
 	type Rect
 } from '@ckeditor/ckeditor5-utils';
 
 import { isElement } from 'lodash-es';
-
 import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = toUnit( 'px' );
 const defaultLimiterElement = global.document.body;
+
+// A static balloon panel positioning function that moves the balloon far off the viewport.
+// It is used as a fallback when there is no way to position the balloon using provided
+// positioning functions (see: `getOptimalPosition()`), for instance, when the target the
+// balloon should be attached to gets obscured by scrollable containers or the viewport.
+//
+// It prevents the balloon from being attached to the void and possible degradation of the UX.
+// At the same time, it keeps the balloon physically visible in the DOM so the focus remains
+// uninterrupted.
+const POSITION_OFF_SCREEN: Position = {
+	top: -99999,
+	left: -99999,
+	name: 'arrowless',
+	config: {
+		withArrow: false
+	}
+};
 
 /**
  * The balloon panel view class.
@@ -251,7 +268,7 @@ export default class BalloonPanelView extends View {
 			fitInViewport: true
 		}, options ) as PositionOptions;
 
-		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
+		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions ) || POSITION_OFF_SCREEN;
 
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
