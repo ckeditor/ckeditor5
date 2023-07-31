@@ -21,7 +21,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### Introduction of color pickers to table and table cell properties features
 
-Starting with CKEditor 5 v39.0.0, {@glink tables/tables-styling table styling tools} will display a color picker in their user interfaces for color-related text fields.
+Starting with CKEditor 5 v39.0.0, {@link features/tables-styling table styling tools} will display a color picker in their user interfaces for color-related text fields.
 
 Just like with {@link updating/update-to-38#introduction-of-color-pickers-to-font-color-and-font-background-color-features the introduction of color pickers to font color and font background color features}, we allow you to decide whether this new functionality works for your integration and to opt–out of it.
 
