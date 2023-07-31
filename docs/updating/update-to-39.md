@@ -82,7 +82,7 @@ ClassicEditor
 	} )
 ```
 
-#### View element placeholder
+### View element placeholder
 
 Function {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} no longer gets placeholder content as a `text` property of `options` argument. To define a value of placeholder you need to specify it as a {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `placeholder` property} of the `element` which is passed into `options` object.
 
