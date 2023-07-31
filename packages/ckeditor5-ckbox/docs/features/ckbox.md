@@ -159,7 +159,25 @@ Please keep in mind that if you define your own upload category mappings for a p
 
 ### Defining workspaces
 
-...
+The CKBox workspaces allow for the separation of assets at a level independent from categories and folders and based on access permissions. To assign a default workspace to upload to, the `defaultUploadWorkspaceId` option needs to be set.
+
+```js
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKBox, /* ... */ ],
+		toolbar: [ 'ckbox', /* ... */ ],
+		ckbox: {
+			// Sample workspace referenced by its ID.
+			defaultUploadWorkspaceId: [ 'pHUSQFj_QIvc' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+The list of available workspaces can be found in the `auth.ckbox.workspaces` JWT token payload.
 
 ### Adding the ID for inserted assets
 
@@ -225,7 +243,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-### Configuring the API service and assets origin
+### Configuring the API service
 
 If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
 
