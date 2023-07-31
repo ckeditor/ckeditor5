@@ -51,7 +51,6 @@ export function formatHtml( input: string ): string {
 		{ name: 'header', isVoid: false },
 		{ name: 'hgroup', isVoid: false },
 		{ name: 'hr', isVoid: true },
-		{ name: 'input', isVoid: true },
 		{ name: 'li', isVoid: false },
 		{ name: 'main', isVoid: false },
 		{ name: 'nav', isVoid: false },

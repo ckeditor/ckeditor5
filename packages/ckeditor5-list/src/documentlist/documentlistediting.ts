@@ -79,7 +79,7 @@ const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
  * Map of model attributes applicable to list blocks.
  */
 export interface ListItemAttributesMap {
-	listType?: 'numbered' | 'bulleted';
+	listType?: 'numbered' | 'bulleted' | string;
 	listIndent?: number;
 	listItemId?: string;
 }

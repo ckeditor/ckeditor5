@@ -83,7 +83,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		listStyle: ListStyleCommand | DocumentListStyleCommand;
 		listStart: ListStartCommand | DocumentListStartCommand;
 		listReversed: ListReversedCommand | DocumentListReversedCommand;
-		todoList: ListCommand;
+		todoList: ListCommand | DocumentListCommand;
 		checkTodoList: CheckTodoListCommand;
 	}
 }

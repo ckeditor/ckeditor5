@@ -45,7 +45,7 @@ export class ListItemUid {
 export interface ListElement extends Element {
 	getAttribute( key: 'listItemId' ): string;
 	getAttribute( key: 'listIndent' ): number;
-	getAttribute( key: 'listType' ): 'numbered' | 'bulleted';
+	getAttribute( key: 'listType' ): 'numbered' | 'bulleted' | string;
 	getAttribute( key: string ): unknown;
 }
 

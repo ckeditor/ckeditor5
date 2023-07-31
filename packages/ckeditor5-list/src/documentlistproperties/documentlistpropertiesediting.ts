@@ -302,11 +302,15 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 				editor.commands.add( 'listStyle', new DocumentListStyleCommand( editor, DEFAULT_LIST_TYPE, supportedTypes ) );
 			},
 
-			appliesToListItem() {
-				return true;
+			appliesToListItem( item ) {
+				return item.getAttribute( 'listType' ) == 'numbered' || item.getAttribute( 'listType' ) == 'bulleted';
 			},
 
 			hasValidAttribute( item ) {
+				if ( !this.appliesToListItem( item ) ) {
+					return !item.hasAttribute( 'listStyle' );
+				}
+
 				if ( !item.hasAttribute( 'listStyle' ) ) {
 					return false;
 				}

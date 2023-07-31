@@ -174,7 +174,7 @@ export default class DocumentListElementSupport extends Plugin {
 			for ( const { node } of listNodes ) {
 				const listType = node.getAttribute( 'listType' );
 
-				if ( listType === 'bulleted' && node.getAttribute( 'htmlOlAttributes' ) ) {
+				if ( listType !== 'numbered' && node.getAttribute( 'htmlOlAttributes' ) ) {
 					writer.removeAttribute( 'htmlOlAttributes', node );
 					evt.return = true;
 				}
@@ -256,8 +256,8 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 /**
  * Returns HTML attribute name based on provided list type.
  */
-function getAttributeFromListType( listType: 'bulleted' | 'numbered' ) {
-	return listType === 'bulleted' ?
-		'htmlUlAttributes' :
-		'htmlOlAttributes';
+function getAttributeFromListType( listType: string ) {
+	return listType === 'numbered' ?
+		'htmlOlAttributes' :
+		'htmlUlAttributes';
 }
