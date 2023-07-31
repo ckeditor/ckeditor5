@@ -882,20 +882,37 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data: '<imageBlock htmlLinkAttributes="(1)" src="/assets/sample.png"></imageBlock>',
-				attributes: {
-					1: {
-						attributes: {
-							href: 'www.example.com'
-						}
-					}
-				}
+				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
+				attributes: {}
 			} );
 
 			const marker = model.markers.get( 'commented:foo:id' );
 
 			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'should upcast `href` attribute if LinkImage plugin is available', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /.*/,
+				attributes: true
+			} ] );
+
+			const expectedHtml =
+				'<figure class="image">' +
+					'<a href="www.example.com">' +
+						'<img src="/assets/sample.png">' +
+					'</a>' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock linkHref="www.example.com" src="/assets/sample.png"></imageBlock>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
 		} );
 
 		// it( 'should allow modifying styles, classes and attributes', () => {

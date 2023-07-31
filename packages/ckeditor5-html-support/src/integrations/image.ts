@@ -84,7 +84,7 @@ export default class ImageElementSupport extends Plugin {
 				} );
 			}
 
-			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
+			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter, editor.plugins.has( 'LinkImage' ) ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );
 
 			evt.stop();
@@ -98,7 +98,7 @@ export default class ImageElementSupport extends Plugin {
  *
  * @returns Returns a conversion callback.
  */
-function viewToModelImageAttributeConverter( dataFilter: DataFilter ) {
+function viewToModelImageAttributeConverter( dataFilter: DataFilter, linkImageAvailable: boolean ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
 			if ( !data.modelRange ) {
@@ -124,6 +124,15 @@ function viewToModelImageAttributeConverter( dataFilter: DataFilter ) {
 
 			function preserveLinkAttributes( viewContainerElement: ViewElement ) {
 				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
+					// If the LinkImage plugin is available, href should be converted to linkHref instead of htmlLinkAttributes.
+					// Otherwise after loading data the link will be lost. See https://github.com/ckeditor/ckeditor5/issues/12831.
+					if ( linkImageAvailable ) {
+						const linkHref = viewContainerElement.getAttribute( 'href' );
+
+						conversionApi.writer.setAttribute( 'linkHref', linkHref, data.modelRange.getContainedElement() );
+						conversionApi.consumable.consume( viewContainerElement, { attributes: [ 'href' ] } );
+					}
+
 					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
 				}
 			}
