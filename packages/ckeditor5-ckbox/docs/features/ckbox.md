@@ -32,6 +32,8 @@ As a full-fledged file manager, CKBox also replaces the basic CKEditor 5 image u
 * Enables drag & drop uploads of images and other files.
 * Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
 * Adds a separate dedicated toolbar button to open the CKBox UI to manage and reuse uploaded files.
+* Provides basic editing capabilities, like crop, resize, rotate, and flip.
+* Supports workspaces that allow separating assets for different users.
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
 
@@ -154,6 +156,10 @@ Please keep in mind that if you define your own upload category mappings for a p
    * The category exists on the server, but the server configuration does not allow the uploaded image type.
 * If you have not defined your own category mapping in `defaultUploadCategories` for the uploaded image type:
    * There is no category mapping for the uploaded image type on the server.
+
+### Defining workspaces
+
+...
 
 ### Adding the ID for inserted assets
 
