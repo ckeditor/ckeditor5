@@ -51,6 +51,37 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+### Adjusting to Changes in `ckeditor5-cbox`
+
+#### CKBox Library Dependency
+
+The `ckeditor5-cbox` plugin now solely operates with the CKBox library version `2.0.0` or higher. Ensure you have the following script tag in your HTML to load the correct version:
+
+```html
+<script src="https://cdn.ckbox.io/CKBox/2.0.0/ckbox.js"></script>
+```
+
+#### On-Premise CKBox Backend Adjustments
+
+The CKBox backend has been released in version 2.0.0. For users operating the on-premise version of the CKBox backend, it's essential to update to this version to ensure compatibility.
+
+Moreover, the editor configuration parameter `ckbox.assetsOrigin`, commonly used with the on-premise version, is no longer necessary. This change comes about as the plugin no longer constructs asset URLs on its own but instead uses those provided directly by the backend. Therefore, you should remove the `ckbox.assetsOrigin` parameter from your editor configuration.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		/* ... */
+
+		// CKBox configuration parameters.
+		ckbox: {
+			serviceOrigin: 'https://your-service-origin.com',
+
+			// This parameter is no longer needed and should be removed.
+			assetsOrigin: 'https://your-assets-origin.com'
+		}
+	} )
+```
+
 ## Update to CKEditor 5 v38.1.0
 
 For the entire list of changes introduced in version 38.0.0, see the [release notes for CKEditor 5 v38.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v38.1.0).
