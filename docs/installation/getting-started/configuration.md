@@ -37,62 +37,17 @@ ClassicEditor
 
 As you can see, the configuration is set by a simple JavaScript object passed to the `create()` method.
 
-## Removing features
+See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
 
-The {@link installation/getting-started/predefined-builds predefined CKEditor 5 builds} come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor 5.
+Some of the options may require loading plugins which are not available in the build you use. Return to the {@link installation/getting-started/quick-start-other Quick start} guide for instructions on creating a custom build.
 
-In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
+## Toolbar setup
 
-In the example below, the `Heading` plugin is removed:
+In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. Check the detailed {@link features/toolbar toolbar feature guide} for the available options.
 
-```js
-// Remove a plugin from the default setup.
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		removePlugins: [ 'Heading' ],
-		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' , 'link' ]
-	} )
-	.catch( error => {
-		console.log( error );
-	} );
-```
+When you create a {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
 
-You might want to delete the `Link` plugin also, as shown below:
-
-```js
-// Remove a few plugins from the default setup.
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		removePlugins: [ 'Heading', 'Link' ],
-		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
-	} )
-	.catch( error => {
-		console.log( error );
-	} );
-```
-
-However, using this snippet with the official classic build of CKEditor 5 will result in an error thrown in the console of the browser:
-```
-CKEditorError: plugincollection-required {"plugin":"Link","requiredBy":"CKFinder"}`
-Read more: [https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required)
-```
-This is a good time to remind you that some plugins in CKEditor 5 depend on each other. In this case, the `CKFinder` plugin requires the `Link` plugin to work. To make the above snippet work, the `CKFinder` plugin must also be deleted:
-
-```js
-// Remove a few plugins from the default setup.
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		removePlugins: [ 'Heading', 'Link', 'CKFinder' ],
-		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
-	} )
-	.catch( error => {
-		console.log( error );
-	} );
-```
-
-<info-box>
-	Be careful when removing plugins from CKEditor builds using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the {@link features/toolbar updated toolbar configuration} as in the example above or by providing only toolbar items that need to be removed using `config.toolbar.removeItems`.
-</info-box>
+## Adding features
 
 ### List of plugins
 
@@ -101,8 +56,6 @@ Each build has a number of plugins available. You can easily list all plugins av
 ```js
 ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
 ```
-
-## Adding features
 
 ### Adding complex features
 
@@ -161,17 +114,62 @@ ClassicEditor
 	} );
 ```
 
-## Toolbar setup
+## Removing features
 
-In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. Check the detailed {@link features/toolbar toolbar feature guide} for the available options.
+The {@link installation/getting-started/predefined-builds predefined CKEditor 5 builds} come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor 5.
 
-When you create a {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
+In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
-## Other configuration options
+In the example below, the `Heading` plugin is removed:
 
-See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
+```js
+// Remove a plugin from the default setup.
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		removePlugins: [ 'Heading' ],
+		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' , 'link' ]
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
+```
 
-Some of the options may require loading plugins which are not available in the build you use. Return to the {@link installation/getting-started/quick-start-other Quick start} guide for instructions on creating a custom build.
+You might want to delete the `Link` plugin also, as shown below:
+
+```js
+// Remove a few plugins from the default setup.
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		removePlugins: [ 'Heading', 'Link' ],
+		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
+```
+
+However, using this snippet with the official classic build of CKEditor 5 will result in an error thrown in the console of the browser:
+```
+CKEditorError: plugincollection-required {"plugin":"Link","requiredBy":"CKFinder"}`
+Read more: [https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required)
+```
+This is a good time to remind you that some plugins in CKEditor 5 depend on each other. In this case, the `CKFinder` plugin requires the `Link` plugin to work. To make the above snippet work, the `CKFinder` plugin must also be deleted:
+
+```js
+// Remove a few plugins from the default setup.
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		removePlugins: [ 'Heading', 'Link', 'CKFinder' ],
+		toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
+```
+
+<info-box>
+	Be careful when removing plugins from CKEditor builds using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the {@link features/toolbar updated toolbar configuration} as in the example above or by providing only toolbar items that need to be removed using `config.toolbar.removeItems`.
+</info-box>
 
 <info-box hint>
 **What's next?**

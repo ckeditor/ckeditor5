@@ -1,44 +1,12 @@
 ---
-category: examples-framework
-order: 100
+category: examples
+order: 11
 modified_at: 2023-07-17
 ---
 
 # How to's
 
-## Editor's instances
-
-### How to get the editor instance in the plugin?
-
-TODO
-
-### How to get the editor instance object from the DOM element?
-
-If you have a reference to the editor editable's DOM element (the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
-
-```html
-<!-- The editable element in the editor's DOM structure. -->
-<div class="... ck-editor__editable ..." contenteditable="true">
-	<!-- Editable content. -->
-</div>
-```
-
-```js
-// A reference to the editor editable element in the DOM.
-const domEditableElement = document.querySelector(".ck-editor__editable");
-
-// Get the editor instance from the editable element.
-const editorInstance = domEditableElement.ckeditorInstance;
-
-// Use the editor instance API.
-editorInstance.setData("<p>Hello world!<p>");
-```
-
-### How to list all instances of the editor?
-
-By default, CKEditor 5 has no global registry of editor instances. But if necessary, such a feature can be easily implemented, as explained in this [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
-
-## Editor element
+## Basics
 
 ### How to set the height of CKEditor 5?
 
@@ -105,6 +73,54 @@ To check your editor version, open the JavaScript console available in the brows
 Enter the `CKEDITOR_VERSION` command to check the currently used CKEditor 5 version.
 
 {@img assets/img/version.png 468 CKEditor 5 version displayed in the developer console.}
+
+## Editor's instances
+
+### How to get the editor instance in the plugin?
+
+In a simple plugin, you can get editor's instance using a plugin functions' attribute
+
+```js
+function myPlugin(editor) {
+	// Interact with the API.
+	// ...
+}
+
+ClassicEditor.create(document.querySelector("#editor"), {
+	// If you're using builds, this is going to be extraPlugins property.
+	plugins: [
+		myPlugin,
+		// Other plugins.
+		// ...
+	],
+});
+```
+
+### How to get the editor instance object from the DOM element?
+
+If you have a reference to the editor editable's DOM element (the one with the `.ck-editor__editable` class and the `contenteditable` attribute), you can access the editor instance this editable element belongs to using the `ckeditorInstance` property:
+
+```html
+<!-- The editable element in the editor's DOM structure. -->
+<div class="... ck-editor__editable ..." contenteditable="true">
+	<!-- Editable content. -->
+</div>
+```
+
+```js
+// A reference to the editor editable element in the DOM.
+const domEditableElement = document.querySelector(".ck-editor__editable");
+
+// Get the editor instance from the editable element.
+const editorInstance = domEditableElement.ckeditorInstance;
+
+// Use the editor instance API.
+editorInstance.setData("<p>Hello world!<p>");
+```
+
+### How to list all instances of the editor?
+
+By default, CKEditor 5 has no global registry of editor instances. But if necessary, such a feature can be easily implemented, as explained in this [Stack Overflow answer](https://stackoverflow.com/a/48682501/1485219).
 
 ## Editor's API
 
