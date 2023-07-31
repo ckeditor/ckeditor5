@@ -55,7 +55,7 @@ ClassicEditor
 
 #### CKBox Library Dependency
 
-The `ckeditor5-cbox` plugin now solely operates with the CKBox library version `2.0.0` or higher. Ensure you have the following script tag in your HTML to load the correct version:
+The [`@ckeditor/ckeditor5-cbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package now solely operates with the [CKBox](https://ckeditor.com/docs/ckbox/latest/index.html) library version `2.0.0` or higher. Ensure you have the following script tag in your HTML to load the correct version:
 
 ```html
 <script src="https://cdn.ckbox.io/CKBox/2.0.0/ckbox.js"></script>
