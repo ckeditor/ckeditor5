@@ -7,53 +7,53 @@ We are happy to announce the release of CKEditor 5 v39.0.0.
 
 ### Release highlights
 
-* **Paste from Office Enhanced**
+#### Paste from Office Enhanced
 	
-	This release introduces a new plugin that significantly boosts the retention of styles when pasting content from Microsoft Word and Excel. This improved functionality is available as part of our premium features suite.
+This release introduces a new plugin that significantly boosts the retention of styles when pasting content from Microsoft Word and Excel. This improved functionality is available as part of our [Productivity pack](https://ckeditor.com/docs/ckeditor5/latest/features/productivity-pack.html) feature set.
 
-* **Color picker in table (cell) properties**
+#### Color picker in table (cell) properties
 
-	It is now possible to select the desired color for table properties, such as cell background or border color, using a color picker. You can test it in the [Table and cell styling tools guide](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html#demo).
+It is now possible to select the desired color for table properties, such as cell background or border color, using a color picker. You can test it in the [Table and cell styling tools guide](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html#demo).
 
-* **CKBox**
+#### CKBox
 
-	As the new version of CKBox supports [workspaces](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html), the integration with CKEditor was updated to support them. Read more in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html).
+As the new version of CKBox supports [workspaces](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html), the integration with CKEditor was updated to support them. Read more in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html).
 
-* **Watchdog performance improvements**
+#### Watchdog performance improvements
 
-	We have greatly improved the editor performance when [`Watchdog`](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) is used and huge amount of data is loaded in the editor. The editor should no longer lag every few seconds while typing, as `Watchdog` data backup mechanism is much faster now.
+We have greatly improved the editor performance when [`Watchdog`](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) is used and huge amount of data is loaded in the editor. The editor should no longer lag every few seconds while typing, as `Watchdog` data backup mechanism is much faster now.
 
-	Since `Watchdog` is used by default in our frameworks integrations, if you use one of our integrations, you will benefit from this improvement as well!
+Since `Watchdog` is used by default in our frameworks integrations, if you use one of our integrations, you will benefit from this improvement as well!
 
-* **Multi-root editor - delayed root loading [experimental]**
+#### Multi-root editor - delayed root loading [experimental]
 
-	It is now possible to initialize the multi-root editor with just one or a few of the document roots and load the other roots later on.
+It is now possible to initialize the multi-root editor with just one or a few of the document roots and load the other roots later on.
 
-	This solution is useful for huge documents that are split into chapters or sections, where each chapter or section is a separate document root.
+This solution is useful for huge documents that are split into chapters or sections, where each chapter or section is a separate document root.
 
-	Real-time collaboration and revision history features are supported. Users can join the same document but have different parts of the document loaded initially.
+Real-time collaboration and revision history features are supported. Users can join the same document but have different parts of the document loaded initially.
 
-	Please note, that there are some technical obstacles that we will be addressing in further releases:
+Please note, that there are some technical obstacles that we will be addressing in further releases:
 
-	* As of now, the solution should be used with new documents only.
-	* As of now, the revision data will still include and use the whole document data. However, the performance impact is significantly smaller than loading this data upfront when the editor is initialized.
-	* Since only a part of the document is loaded, some of the features (e.g. word count, table of contents) may behave unexpectedly.
+* As of now, the solution should be used with new documents only.
+* As of now, the revision data will still include and use the whole document data. However, the performance impact is significantly smaller than loading this data upfront when the editor is initialized.
+* Since only a part of the document is loaded, some of the features (e.g. word count, table of contents) may behave unexpectedly.
 
-	Note: this is an experimental feature. Its API and details of its behavior may change in the upcoming releases.
+Note: this is an experimental feature. Its API and details of its behavior may change in the upcoming releases.
 
-* **Major bugfixes**
+#### Major bugfixes
 
-	* Improved sticky toolbar behavior when nesting in an overflown element. Closes [#5465](https://github.com/ckeditor/ckeditor5/issues/5465).
+* Improved sticky toolbar behavior when nesting in an overflown element. Closes [#5465](https://github.com/ckeditor/ckeditor5/issues/5465).
 
-		We have resolved an issue where the sticky toolbar was incorrectly positioned if the editor was nested within multiple clipped and scrollable elements.
+  We have resolved an issue where the sticky toolbar was incorrectly positioned if the editor was nested within multiple clipped and scrollable elements.
 
-	* The editor does not scroll down while typing in the editable with a fixed height. Closes [#13411](https://github.com/ckeditor/ckeditor5/issues/13411).
+* The editor does not scroll down while typing in the editable with a fixed height. Closes [#13411](https://github.com/ckeditor/ckeditor5/issues/13411).
 
-		When typing in an editor with a fixed height, the scroll automatically follows as the text flows onto the next line.
+  When typing in an editor with a fixed height, the scroll automatically follows as the text flows onto the next line.
 
-	* Reverse typing effect on slower machines. Closes [#14569](https://github.com/ckeditor/ckeditor5/issues/14569).
+* Reverse typing effect on slower machines. Closes [#14569](https://github.com/ckeditor/ckeditor5/issues/14569).
 
-		We have addressed an issue where the cursor seemed to be "stuck" and did not update in a timely manner, causing the text to be inserted behind it, especially under a very heavy JS thread load. The issue has been successfully resolved, ensuring smoother and more accurate cursor behavior.
+  We have addressed an issue where the cursor seemed to be "stuck" and did not update in a timely manner, causing the text to be inserted behind it, especially under a very heavy JS thread load. The issue has been successfully resolved, ensuring smoother and more accurate cursor behavior.
 
 Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html) to learn more about these changes.
 
