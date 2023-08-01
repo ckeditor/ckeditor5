@@ -162,7 +162,7 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should not pass non-valid object in firefox', done => {
+	it( 'should not pass non-valid object on Firefox', done => {
 		testUtils.sinon.stub( env, 'isGecko' ).value( true );
 		testUtils.sinon.stub( Object.prototype, 'toString' ).value( () => null );
 
@@ -175,7 +175,7 @@ describe( 'SelectionObserver', () => {
 		}, 100 );
 	} );
 
-	it( 'should detect restricted object in firefox', done => {
+	it( 'should detect restricted object on Firefox', done => {
 		testUtils.sinon.stub( env, 'isGecko' ).value( true );
 		testUtils.sinon.stub( Object.prototype, 'toString' ).throws(
 			new Error( 'Permission denied to access property Symbol.toStringTag' )
@@ -190,7 +190,7 @@ describe( 'SelectionObserver', () => {
 		}, 100 );
 	} );
 
-	it( 'should pass valid object in firefox', done => {
+	it( 'should pass valid object on Firefox', done => {
 		testUtils.sinon.stub( env, 'isGecko' ).value( true );
 
 		const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
