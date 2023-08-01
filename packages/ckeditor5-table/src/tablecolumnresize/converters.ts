@@ -20,8 +20,7 @@ import {
 	normalizeColumnWidths,
 	updateColumnElements,
 	getColumnGroupElement,
-	getTableColumnElements,
-	getTableColumnsWidths
+	getTableColumnElements
 } from './utils';
 
 /**
@@ -51,6 +50,8 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
 			for ( let i = 0; i < colgroupspan; i++ ) {
 				acc.push( columnWidth );
 			}
+
+			conversionApi.writer.removeAttribute( 'colgroupspan', element );
 
 			return acc;
 		}, [] );

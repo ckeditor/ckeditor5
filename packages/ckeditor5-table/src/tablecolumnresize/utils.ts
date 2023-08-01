@@ -395,5 +395,6 @@ export function getTableColumnElements( element: Element ): Array<Element> {
  * @returns An array of table column widths.
  */
 export function getTableColumnsWidths( element: Element ): Array<string> {
+	// @TODO_DAR - analyze if should be changed
 	return getTableColumnElements( element ).map( column => column.getAttribute( 'columnWidth' ) as string );
 }

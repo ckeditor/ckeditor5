@@ -418,13 +418,9 @@ export default class TableColumnResizeEditing extends Plugin {
 				value: ( viewElement: ViewElement ) => {
 					const viewColWidth = viewElement.getStyle( 'width' );
 
-					console.log( viewColWidth );
-
 					if ( !viewColWidth || ( !viewColWidth.endsWith( '%' ) && !viewColWidth.endsWith( 'pt' ) ) ) {
 						return 'auto';
 					}
-
-					// console.log('returning viewColWidth');
 
 					return viewColWidth;
 				}
@@ -436,38 +432,9 @@ export default class TableColumnResizeEditing extends Plugin {
 				name: 'col',
 				key: 'span'
 			},
-			model: {
-				key: 'colgroupspan',
-				value: ( viewElement: ViewElement ) => {
-					const viewColSpan = viewElement.getAttribute( 'span' );
-
-					return viewColSpan;
-				}
-			}
+			model: 'colgroupspan'
 		} );
 
-		// conversion.for( 'upcast' ).attributeToAttribute( {
-		// 	view: {
-		// 		name: 'col',
-		// 		key: 'span'
-		// 	},
-		// 	model: {
-		// 		key: 'colgroupspan',
-		// 		value: ( viewElement: ViewElement ) => {
-		// 			const viewColSpan = viewElement.getAttribute( 'span' );
-
-		// 			// console.log( viewColWidth );
-
-		// 			// if ( !viewColWidth || ( !viewColWidth.endsWith( '%' ) && !viewColWidth.endsWith( 'pt' ) ) ) {
-		// 			// 	return 'auto';
-		// 			// }
-
-		// 			// console.log('returning viewColWidth');
-
-		// 			return viewColSpan;
-		// 		}
-		// 	}
-		// } );
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: {
 				name: 'tableColumn',
