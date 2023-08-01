@@ -36,7 +36,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 * `img-src * data:`
 	* The `*` directive value allows images in the editor content to come from any hosts.
 	* The `data:` value allows:
-		* Pasting {@link features/image-upload images from the clipboard} and {@link features/paste-from-office from Microsoft Word} into the editor content. Pasted images are usually represented as Base64–encoded strings (`<img src="data:..." />`) and without `data:` they cannot be displayed and uploaded.
+		* Pasting {@link features/image-upload images from the clipboard} and {@link features/paste-from-office from MS Office} into the editor content. Pasted images are usually represented as Base64–encoded strings (`<img src="data:..." />`) and without `data:` they cannot be displayed and uploaded.
 		* Displaying the {@link features/media-embed media embed} feature placeholders for the inserted media.
 
 	**Note**: Use the more strict `img-src 'self'` if all images in the editor content are hosted from the same domain and you do **not** want to enable the {@link features/media-embed media embed} and {@link features/paste-from-office paste from Word} features.

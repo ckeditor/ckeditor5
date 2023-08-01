@@ -538,7 +538,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteTools_keepZeroMargins">pasteTools_keepZeroMargins</a></td>
-			<td>Refer to the {@link features/paste-from-office Paste from Word} and {@link features/paste-from-office Paste from Google Docs} feature guides to learn more about support for pasting from external applications in CKEditor 5.</td>
+			<td>Refer to the {@link features/paste-from-office Paste from Office} and {@link features/paste-from-google-docs Paste from Google Docs} feature guides to learn more about support for pasting from external applications in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins">plugins</a></td>

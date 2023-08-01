@@ -94,7 +94,7 @@ Work as you like it - choose user interface approach from {@link installation/ge
 
 ### Cross-platform interoperability
 
-Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-office from MS Word}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
+Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-office from MS Office}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
 
 {@img assets/img/features-paste.png 800 CKEditor 5 paste features.}
 

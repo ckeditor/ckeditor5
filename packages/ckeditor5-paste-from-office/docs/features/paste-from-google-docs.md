@@ -30,11 +30,11 @@ Thanks to the paste from Google Docs feature, you can copy and paste a Google Do
 
 When the plugin is enabled, it automatically detects Google Docs content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
 
-The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Microsoft Word. See the {@link features/paste-from-office pasting content from Microsoft Word guide} to learn more.
+The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Microsoft Word. See the {@link features/paste-from-office pasting content from Microsoft Office} guide to learn more.
 
 ## Automatic content filtering
 
-With CKEditor 5 you do not need to worry about pasting messy content from Google Docs (or any other possible sources). Thanks to the CKEditor 5 {@link framework/index custom data model}, only content which is specifically handled by the loaded rich-text editor features will be preserved.
+With CKEditor 5 you do not need to worry about pasting messy content from Google Docs (or any other possible sources). Thanks to the CKEditor 5 {@link framework/index custom data model}, only content that is specifically handled by the loaded rich-text editor features will be preserved.
 
 This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Google Docs and other sources (e.g. other websites).
 
@@ -87,7 +87,7 @@ Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/
 
 CKEditor 5 supports a wider range of paste features, including:
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
-* {@link features/paste-from-office Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
+* {@link features/paste-from-office Paste from Office} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
 
 ## Contribute
