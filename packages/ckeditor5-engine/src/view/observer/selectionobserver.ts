@@ -232,6 +232,10 @@ export default class SelectionObserver extends Observer {
 
 		const domSelection = domDocument.defaultView!.getSelection()!;
 
+		if ( env.isGecko && this._isObjectRestricted( domSelection.getRangeAt( 0 ).startContainer ) ) {
+			return;
+		}
+
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode! ) ) {
 			return;
 		}
@@ -300,6 +304,24 @@ export default class SelectionObserver extends Observer {
 			// So `selectionChangeDone` will be fired when selection will stop changing.
 			this._fireSelectionChangeDoneDebounced( data );
 		}
+	}
+
+	// In firefox exists restricted objects. Trying get any property from restricted object, it will through an error.
+	// https://github.com/ckeditor/ckeditor5/issues/9635
+	private _isObjectRestricted( obj: unknown ): boolean {
+		let isRestricted;
+
+		try {
+			if ( Object.prototype.toString.call( obj ) ) {
+				isRestricted = false;
+			} else {
+				isRestricted = true;
+			}
+		} catch ( error ) {
+			isRestricted = true;
+		}
+
+		return isRestricted;
 	}
 
 	/**
