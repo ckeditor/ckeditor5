@@ -176,6 +176,8 @@ export default class BalloonPanelView extends View {
 
 			children: this.content
 		} );
+
+		( this.constructor as typeof BalloonPanelView ).defaultPositions = generatePositions();
 	}
 
 	/**
@@ -832,7 +834,7 @@ export default class BalloonPanelView extends View {
 	 * The name that the position function returns will be reflected in the balloon panel's class that
 	 * controls the placement of the "arrow". See {@link #position} to learn more.
 	 */
-	public static defaultPositions = generatePositions();
+	declare public static defaultPositions: Record<string, PositioningFunction>;
 }
 
 /**
