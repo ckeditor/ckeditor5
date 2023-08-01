@@ -11,7 +11,7 @@ Paste from Office allows copying content from Microsoft Word without losing any 
 
 ## Demo
 
-Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html#demo) features.
+Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html#demo) features.
 
 ## Documentation
 

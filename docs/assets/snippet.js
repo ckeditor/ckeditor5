@@ -50,7 +50,7 @@ function createClipboardInputNotification() {
 	<p>We detected that you tried to paste content from <strong>Microsoft Word</strong> or <strong>Google Docs</strong>.</p>
 	<p>Please bear in mind that the editor demo to which you try to paste does not have all the features enabled.
 		Due to that, unsupported formatting is being stripped.</p>
-	<p>Check out the <a href="/docs/ckeditor5/latest/features/pasting/paste-from-word.html">Paste from Word</a> or
+	<p>Check out the <a href="/docs/ckeditor5/latest/features/pasting/paste-from-office.html">Paste from Office</a> or
 	<a href="/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html">Paste from Google Docs</a>
 	demos for the best experience.</p>`;
 
