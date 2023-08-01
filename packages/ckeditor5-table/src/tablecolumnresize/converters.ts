@@ -38,8 +38,22 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
 		}
 
 		const columnElements = getTableColumnElements( tableColumnGroup );
-		let columnWidths = getTableColumnsWidths( tableColumnGroup );
 		const columnsCount = tableUtilsPlugin.getColumns( modelTable );
+		let columnWidths = columnElements.reduce( ( acc: Array<string>, element ) => {
+			const columnWidth = element.getAttribute( 'columnWidth' ) as string;
+			const colgroupspan = element.getAttribute( 'colgroupspan' ) as number | undefined;
+
+			if ( !colgroupspan ) {
+				acc.push( columnWidth );
+				return acc;
+			}
+
+			for ( let i = 0; i < colgroupspan; i++ ) {
+				acc.push( columnWidth );
+			}
+
+			return acc;
+		}, [] );
 
 		columnWidths = Array.from( { length: columnsCount }, ( _, index ) => columnWidths[ index ] || 'auto' );
 

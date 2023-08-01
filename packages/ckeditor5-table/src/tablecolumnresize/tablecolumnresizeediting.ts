@@ -246,7 +246,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this.editor.model.schema.register( 'tableColumn', {
 			allowIn: 'tableColumnGroup',
-			allowAttributes: [ 'columnWidth' ],
+			allowAttributes: [ 'columnWidth', 'colgroupspan' ],
 			isLimit: true
 		} );
 	}
@@ -418,14 +418,56 @@ export default class TableColumnResizeEditing extends Plugin {
 				value: ( viewElement: ViewElement ) => {
 					const viewColWidth = viewElement.getStyle( 'width' );
 
-					if ( !viewColWidth || !viewColWidth.endsWith( '%' ) ) {
+					console.log( viewColWidth );
+
+					if ( !viewColWidth || ( !viewColWidth.endsWith( '%' ) && !viewColWidth.endsWith( 'pt' ) ) ) {
 						return 'auto';
 					}
+
+					// console.log('returning viewColWidth');
 
 					return viewColWidth;
 				}
 			}
 		} );
+
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				name: 'col',
+				key: 'span'
+			},
+			model: {
+				key: 'colgroupspan',
+				value: ( viewElement: ViewElement ) => {
+					const viewColSpan = viewElement.getAttribute( 'span' );
+
+					return viewColSpan;
+				}
+			}
+		} );
+
+		// conversion.for( 'upcast' ).attributeToAttribute( {
+		// 	view: {
+		// 		name: 'col',
+		// 		key: 'span'
+		// 	},
+		// 	model: {
+		// 		key: 'colgroupspan',
+		// 		value: ( viewElement: ViewElement ) => {
+		// 			const viewColSpan = viewElement.getAttribute( 'span' );
+
+		// 			// console.log( viewColWidth );
+
+		// 			// if ( !viewColWidth || ( !viewColWidth.endsWith( '%' ) && !viewColWidth.endsWith( 'pt' ) ) ) {
+		// 			// 	return 'auto';
+		// 			// }
+
+		// 			// console.log('returning viewColWidth');
+
+		// 			return viewColSpan;
+		// 		}
+		// 	}
+		// } );
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: {
 				name: 'tableColumn',
