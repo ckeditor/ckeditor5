@@ -176,8 +176,6 @@ export default class BalloonPanelView extends View {
 
 			children: this.content
 		} );
-
-		( this.constructor as typeof BalloonPanelView ).defaultPositions = generatePositions();
 	}
 
 	/**
@@ -836,6 +834,8 @@ export default class BalloonPanelView extends View {
 	 */
 	declare public static defaultPositions: Record<string, PositioningFunction>;
 }
+
+BalloonPanelView.defaultPositions = generatePositions();
 
 /**
  * Returns the DOM element for given object or null, if there is none,
