@@ -1,12 +1,12 @@
 ---
 category: tutorial
 order: 60
-menu-title: Updating editor UI
+menu-title: Editor UI
 ---
 
-# Updating editor UI
+# Editor UI
 
-## Editor UI
+## Interface parts
 
 In the previous chapter of this tutorial, we created a command to highlight selected text. However, having to open a console and run a command is cumbersome and definitely not what editor users want.
 
@@ -35,9 +35,10 @@ Then add the following code at the bottom of the `Highlight` method:
 editor.ui.componentFactory.add( 'highlight', ( locale ) => {
 	const button = new ButtonView( locale );
 	const command = editor.commands.get( 'highlight' );
+	const t = editor.t;
 
 	button.set( {
-		label: editor.t('Highlight'),
+		label: t( 'Highlight' ),
 		withText: true,
 		tooltip: true,
 		isToggleable: true
@@ -82,7 +83,7 @@ const editor = await ClassicEditor.create( element, {
 		items: [
 			'undo',
 			'redo',
-			'highlight' // Add this line
+			'highlight' // Add this line.
 		]
 	}
 } );

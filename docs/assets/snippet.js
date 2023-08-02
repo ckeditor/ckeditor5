@@ -122,3 +122,33 @@ window.getViewportTopOffsetConfig = function() {
 
 	return parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
 };
+
+/**
+ * Activates tabs in the given container.
+ *
+ * **Note**: The tabs container requires a proper markup to work correctly.
+ *
+ * @param {HTMLElement} tabsContainer
+ */
+window.createTabs = function( tabsContainer ) {
+	const tabTextElements = Array.from( tabsContainer.querySelectorAll( '.tabs__list__tab-text' ) );
+	const tabPanels = Array.from( tabsContainer.querySelectorAll( '.tabs__panel' ) );
+
+	tabTextElements.forEach( tabTextElement => {
+		tabTextElement.addEventListener( 'click', evt => {
+			const clickedIndex = tabTextElements.indexOf( tabTextElement );
+
+			tabTextElements.forEach( element => {
+				element.parentElement.classList.toggle( 'tabs__list__tab_selected', tabTextElement === element );
+				element.setAttribute( 'aria-selected', tabTextElement === element );
+			} );
+
+			tabPanels.forEach( panel => {
+				panel.classList.toggle( 'tabs__panel_selected', tabPanels.indexOf( panel ) === clickedIndex );
+			} );
+
+			evt.preventDefault();
+		} );
+	} );
+};
+

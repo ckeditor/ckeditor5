@@ -192,6 +192,19 @@ describe( 'Input', () => {
 
 				sinon.assert.notCalled( spy );
 			} );
+
+			it( 'should scroll to the selection after inserting text', async () => {
+				const scrollToSelectionSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				viewDocument.fire( 'insertText', {
+					text: 'bar',
+					selection: viewDocument.selection,
+					preventDefault: () => {}
+				} );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				sinon.assert.calledOnce( scrollToSelectionSpy );
+			} );
 		} );
 	} );
 

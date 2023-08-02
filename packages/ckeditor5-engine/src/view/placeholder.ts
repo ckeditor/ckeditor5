@@ -11,6 +11,7 @@ import '../../theme/placeholder.css';
 
 import type Document from './document';
 import type DowncastWriter from './downcastwriter';
+import type EditableElement from './editableelement';
 import type Element from './element';
 import type View from './view';
 
@@ -23,24 +24,22 @@ const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfi
  * A helper that enables a placeholder on the provided view element (also updates its visibility).
  * The placeholder is a CSS pseudo–element (with a text content) attached to the element.
  *
- * To change the placeholder text, simply call this method again with new options.
+ * To change the placeholder text, change value of the `placeholder` property in the provided `element`.
  *
  * To disable the placeholder, use {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} helper.
  *
  * @param options Configuration options of the placeholder.
  * @param options.view Editing view instance.
  * @param options.element Element that will gain a placeholder. See `options.isDirectHost` to learn more.
- * @param options.text Placeholder text.
  * @param options.isDirectHost If set `false`, the placeholder will not be enabled directly
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
-export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
+export function enablePlaceholder( { view, element, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
-	element: Element;
-	text: string;
+	element: PlaceholderableElement | EditableElement;
 	isDirectHost?: boolean;
 	keepOnFocus?: boolean;
 } ): void {
@@ -60,16 +59,28 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 		}, { priority: 'high' } );
 	}
 
-	// Store information about the element placeholder under its document.
-	documentPlaceholders.get( doc )!.set( element, {
-		text,
-		isDirectHost,
-		keepOnFocus,
-		hostElement: isDirectHost ? element : null
-	} );
+	if ( element.is( 'editableElement' ) ) {
+		element.on( 'change:placeholder', ( evtInfo, evt, text ) => {
+			setPlaceholder( text );
+		} );
+	}
 
-	// Update the placeholders right away.
-	view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+	if ( element.placeholder ) {
+		setPlaceholder( element.placeholder );
+	}
+
+	function setPlaceholder( text: string ) {
+		// Store information about the element placeholder under its document.
+		documentPlaceholders.get( doc )!.set( element, {
+			text,
+			isDirectHost,
+			keepOnFocus,
+			hostElement: isDirectHost ? element : null
+		} );
+
+		// Update the placeholders right away.
+		view.change( writer => updateDocumentPlaceholders( doc, writer ) );
+	}
 }
 
 /**
@@ -296,4 +307,15 @@ interface PlaceholderConfig {
 	isDirectHost: boolean;
 	keepOnFocus: boolean;
 	hostElement: Element | null;
+}
+
+/**
+ * Element that could have a placeholder.
+ */
+export interface PlaceholderableElement extends Element {
+
+	/**
+	 * The text of element's placeholder.
+	 */
+	placeholder?: string;
 }

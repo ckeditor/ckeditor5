@@ -1,10 +1,10 @@
 ---
 category: tutorial
 order: 50
-menu-title: Updating model using commands
+menu-title: Commands
 ---
 
-# Updating model using commands
+# Commands
 
 ## Commands purpose
 
@@ -19,11 +19,11 @@ import { Command } from 'ckeditor5/src/core';
 
 class HighlightCommand extends Command {
 	refresh() {
-		// Handle state
+		// Handle state.
 	}
 
 	execute() {
-		// Command logic
+		// Command logic.
 	}
 }
 ```
@@ -45,7 +45,7 @@ Our plugin only allows text highlighting, so when only an image or table is sele
 
 For this reason, we need a state that indicates whether selections in the editor can be highlighted and whether they're already highlighted.
 
-The command state is managed by the `refresh()` method. The command updates its state automatically by calling this method whenever the model is updated.
+The command state is managed by the `refresh()` method. This method is called whenever the model is updated, ensuring that the state is refreshed and always up-to-date.
 
 Let's implement the `refresh()` method to update two command properties:
 
@@ -56,10 +56,10 @@ Let's implement the `refresh()` method to update two command properties:
 refresh() {
 	const { document, schema } = this.editor.model;
 
-	// Check if selection is already highlighted
+	// Check if selection is already highlighted.
 	this.value = document.selection.getAttribute( 'highlight' );
 
-	// Check if command is allowed on current selection
+	// Check if command is allowed on current selection.
 	this.isEnabled = schema.checkAttributeInSelection( document.selection, 'highlight' );
 }
 ```
@@ -111,7 +111,7 @@ If the selection is collapsed, we either add or remove the attribute based on th
 Let's test our changes. In the browser, select some of the text in the editor. Then open a console and run the following code:
 
 ```js
-editor.execute('highlight');
+editor.execute( 'highlight' );
 ```
 
 If everything went well, the text you selected should be highlighted in the editor.

@@ -135,6 +135,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "rimraf": "^3.0.2",
+    "schema-utils": "^4.2.0",
     "sharp": "^0.31.3",
     "stylelint": "^13.5.0",
     "stylelint-config-ckeditor5": "^4.0.0",
@@ -144,8 +145,7 @@
     "umberto": "^3.2.1",
     "upath": "^2.0.0",
     "wait-on": "^6.0.1",
-    "webpack": "^5.58.1",
-    "wrapper-webpack-plugin": "^2.2.2"
+    "webpack": "^5.58.1"
   },
   "engines": {
     "node": ">=16.0.0",

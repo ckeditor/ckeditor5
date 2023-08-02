@@ -15,6 +15,9 @@ import type { CKEditorError } from 'ckeditor5/src/utils';
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { Editor, EditorConfig, Context, EditorReadyEvent } from 'ckeditor5/src/core';
 
+// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
+import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
+
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties';
 import Watchdog, { type WatchdogConfig } from './watchdog';
 
@@ -54,7 +57,17 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	/**
 	 * The editor source element or data.
 	 */
-	private _elementOrData?: HTMLElement | string | Record<string, string>;
+	private _elementOrData?: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>;
+
+	/**
+	 * Specifies whether the editor was initialized using document data (`true`) or HTML elements (`false`).
+	 */
+	private _initUsingData = true;
+
+	/**
+	 * The latest record of the editor editable elements. Used to restart the editor.
+	 */
+	private _editables: Record<string, HTMLElement> = {};
 
 	/**
 	 * The editor configuration.
@@ -164,26 +177,59 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				console.error( 'An error happened during the editor destroying.', err );
 			} )
 			.then( () => {
-				const existingRoots = Object.keys( this._data!.roots ).reduce( ( acc, rootName ) => {
-					acc[ rootName ] = '';
+				// Pre-process some data from the original editor config.
+				// Our goal here is to make sure that the restarted editor will be reinitialized with correct set of roots.
+				// We are not interested in any data set in config or in `.create()` first parameter. It will be replaced anyway.
+				// But we need to set them correctly to make sure that proper roots are created.
+				//
+				// Since a different set of roots will be created, `lazyRoots` and `rootsAttributes` properties must be managed too.
 
-					return acc;
-				}, {} as Record<string, string> );
+				// Keys are root names, values are ''. Used when the editor was initialized by setting the first parameter to document data.
+				const existingRoots: Record<string, string> = {};
+				// Keeps lazy roots. They may be different when compared to initial config if some of the roots were loaded.
+				const lazyRoots: Array<string> = [];
+				// Roots attributes from the old config. Will be referred when setting new attributes.
+				const oldRootsAttributes: Record<string, RootAttributes> = this._config!.rootsAttributes || {};
+				// New attributes to be set. Is filled only for roots that still exist in the document.
+				const rootsAttributes: Record<string, RootAttributes> = {};
 
-				const updatedConfig = {
+				// Traverse through the roots saved when the editor crashed and set up the discussed values.
+				for ( const [ rootName, rootData ] of Object.entries( this._data!.roots ) ) {
+					if ( rootData.isLoaded ) {
+						existingRoots[ rootName ] = '';
+						rootsAttributes[ rootName ] = oldRootsAttributes[ rootName ] || {};
+					} else {
+						lazyRoots.push( rootName );
+					}
+				}
+
+				const updatedConfig: EditorConfig = {
 					...this._config,
 					extraPlugins: this._config!.extraPlugins || [],
+					lazyRoots,
+					rootsAttributes,
 					_watchdogInitialData: this._data
 				};
 
+				// Delete `initialData` as it is not needed. Data will be set by the watchdog based on `_watchdogInitialData`.
+				// First parameter of the editor `.create()` will be used to set up initial roots.
+				delete updatedConfig.initialData;
+
 				updatedConfig.extraPlugins!.push( EditorWatchdogInitPlugin as any );
 
-				if ( typeof this._elementOrData === 'string' ) {
-					return this.create( existingRoots, updatedConfig, updatedConfig!.context );
+				if ( this._initUsingData ) {
+					return this.create( existingRoots, updatedConfig, updatedConfig.context );
 				} else {
-					updatedConfig.initialData = existingRoots;
-
-					return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
+					// Set correct editables to make sure that proper roots are created and linked with DOM elements.
+					// No need to set initial data, as it would be discarded anyway.
+					//
+					// If one element was initially set in `elementOrData`, then use that original element to restart the editor.
+					// This is for compatibility purposes with single-root editor types.
+					if ( isElement( this._elementOrData ) ) {
+						return this.create( this._elementOrData, updatedConfig, updatedConfig.context );
+					} else {
+						return this.create( this._editables, updatedConfig, updatedConfig.context );
+					}
 				}
 			} )
 			.then( () => {
@@ -199,7 +245,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * @param context A context for the editor.
 	 */
 	public create(
-		elementOrData: HTMLElement | string | Record<string, string> = this._elementOrData!,
+		elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement> = this._elementOrData!,
 		config: EditorConfig = this._config!,
 		context?: Context
 	): Promise<unknown> {
@@ -208,6 +254,11 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 				super._startErrorHandling();
 
 				this._elementOrData = elementOrData;
+
+				// Use document data in the first parameter of the editor `.create()` call only if it was used like this originally.
+				// Use document data if a string or object with strings was passed.
+				this._initUsingData = typeof elementOrData == 'string' ||
+					( Object.keys( elementOrData ).length > 0 && typeof Object.values( elementOrData )[ 0 ] == 'string' );
 
 				// Clone configuration because it might be shared within multiple watchdog instances. Otherwise,
 				// when an error occurs in one of these editors, the watchdog will restart all of them.
@@ -224,6 +275,10 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 				this._lastDocumentVersion = editor.model.document.version;
 				this._data = this._getData();
+
+				if ( !this._initUsingData ) {
+					this._editables = this._getEditables();
+				}
 
 				this.state = 'ready';
 				this._fire( 'stateChange' );
@@ -252,8 +307,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 			.then( () => {
 				this._stopErrorHandling();
 
-				// Save data if there is a remaining editor data change.
-				this._throttledSave.flush();
+				this._throttledSave.cancel();
 
 				const editor = this._editor;
 
@@ -277,6 +331,11 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 
 		try {
 			this._data = this._getData();
+
+			if ( !this._initUsingData ) {
+				this._editables = this._getEditables();
+			}
+
 			this._lastDocumentVersion = version;
 		} catch ( err ) {
 			console.error(
@@ -298,19 +357,26 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * Gets all data that is required to reinitialize editor instance.
 	 */
 	private _getData(): EditorData {
-		const editor = this.editor!;
-		const rootNames = editor.model.document.getRootNames();
+		const editor = this._editor!;
+		const roots = editor.model.document.roots.filter( root => root.isAttached() && root.rootName != '$graveyard' );
+
+		const { plugins } = editor;
+		// `as any` to avoid linking from external private repo.
+		const commentsRepository = plugins.has( 'CommentsRepository' ) && plugins.get( 'CommentsRepository' ) as any;
+		const trackChanges = plugins.has( 'TrackChanges' ) && plugins.get( 'TrackChanges' ) as any;
+
 		const data: EditorData = {
 			roots: {},
-			markers: {}
+			markers: {},
+			commentThreads: JSON.stringify( [] ),
+			suggestions: JSON.stringify( [] )
 		};
 
-		rootNames.forEach( rootName => {
-			const root = editor.model.document.getRoot( rootName )!;
-
-			data.roots[ rootName ] = {
+		roots.forEach( root => {
+			data.roots[ root.rootName ] = {
 				content: JSON.stringify( Array.from( root.getChildren() ) ),
-				attributes: JSON.stringify( Array.from( root.getAttributes() ) )
+				attributes: JSON.stringify( Array.from( root.getAttributes() ) ),
+				isLoaded: root._isLoaded
 			};
 		} );
 
@@ -326,7 +392,32 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 			};
 		}
 
+		if ( commentsRepository ) {
+			data.commentThreads = JSON.stringify( commentsRepository.getCommentThreads( { toJSON: true, skipNotAttached: true } ) );
+		}
+
+		if ( trackChanges ) {
+			data.suggestions = JSON.stringify( trackChanges.getSuggestions( { toJSON: true, skipNotAttached: true } ) );
+		}
+
 		return data;
+	}
+
+	/**
+	 * For each attached model root, returns its HTML editable element (if available).
+	 */
+	private _getEditables(): Record<string, HTMLElement> {
+		const editables: Record<string, HTMLElement> = {};
+
+		for ( const rootName of this.editor!.model.document.getRootNames() ) {
+			const editable = this.editor!.ui.getEditableElement( rootName );
+
+			if ( editable ) {
+				editables[ rootName ] = editable;
+			}
+		}
+
+		return editables;
 	}
 
 	/**
@@ -362,6 +453,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
  */
 class EditorWatchdogInitPlugin {
 	public editor: Editor;
+
 	private _data: EditorData;
 
 	constructor( editor: Editor ) {
@@ -380,7 +472,8 @@ class EditorWatchdogInitPlugin {
 		this.editor.data.on( 'init', evt => {
 			evt.stop();
 
-			this.editor.model.enqueueChange( { isUndoable: true }, writer => {
+			this.editor.model.enqueueChange( { isUndoable: false }, writer => {
+				this._restoreCollaborationData();
 				this._restoreEditorData( writer );
 			} );
 
@@ -453,18 +546,55 @@ class EditorWatchdogInitPlugin {
 			} );
 		} );
 	}
+
+	/**
+	 * Restores the editor collaboration data - comment threads and suggestions.
+	 */
+	private _restoreCollaborationData() {
+		// `as any` to avoid linking from external private repo.
+		const parsedCommentThreads: Array<any> = JSON.parse( this._data.commentThreads );
+		const parsedSuggestions: Array<any> = JSON.parse( this._data.suggestions );
+
+		parsedCommentThreads.forEach( commentThreadData => {
+			const channelId = this.editor.config.get( 'collaboration.channelId' )!;
+			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as any;
+
+			if ( commentsRepository.hasCommentThread( commentThreadData.threadId ) ) {
+				const commentThread = commentsRepository.getCommentThread( commentThreadData.threadId )!;
+
+				commentThread.remove();
+			}
+
+			commentsRepository.addCommentThread( { channelId, ...commentThreadData } );
+		} );
+
+		parsedSuggestions.forEach( suggestionData => {
+			const trackChangesEditing = this.editor!.plugins.get( 'TrackChangesEditing' ) as any;
+
+			if ( trackChangesEditing.hasSuggestion( suggestionData.id ) ) {
+				const suggestion = trackChangesEditing.getSuggestion( suggestionData.id );
+
+				suggestion.attributes = suggestionData.attributes;
+			} else {
+				trackChangesEditing.addSuggestionData( suggestionData );
+			}
+		} );
+	}
 }
 
 export type EditorData = {
 	roots: Record<string, {
 		content: string;
 		attributes: string;
+		isLoaded: boolean;
 	}>;
 	markers: Record<string, {
 		rangeJSON: { start: any; end: any };
 		usingOperation: boolean;
 		affectsData: boolean;
 	}>;
+	commentThreads: string;
+	suggestions: string;
 };
 
 /**
@@ -479,6 +609,6 @@ export type EditorWatchdogRestartEvent = {
 };
 
 export type EditorCreatorFunction<TEditor = Editor> = (
-	elementOrData: HTMLElement | string | Record<string, string>,
+	elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>,
 	config: EditorConfig
 ) => Promise<TEditor>;

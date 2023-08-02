@@ -55,7 +55,3 @@ msgstr "Color de fons del tipus de lletra"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "Colors del document"
-
-msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
-msgid "Accept"
-msgstr ""

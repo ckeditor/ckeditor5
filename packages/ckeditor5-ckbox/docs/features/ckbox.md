@@ -120,10 +120,6 @@ The feature can be configured via the {@link module:ckbox/ckboxconfig~CKBoxConfi
 	If you already have a valid license, please log into your [user dashboard](https://dashboard.ckeditor.com/) to access the feature settings.
 </info-box>
 
-<info-box>
-	There is a [free personal plan](https://ckeditor.com/pricing/#plan-ckbox). However, it still requires a sign-up.
-</info-box>
-
 After you purchase a license, log into the CKEditor Ecosystem customer dashboard to create access credentials, as explained in the {@link @ckbox guides/configuration/authentication CKBox configuration guide}.
 
 ### Defining upload categories
@@ -225,7 +221,7 @@ ClassicEditor
 
 ### Configuring the API service and assets origin
 
-If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} and {@link module:ckbox/ckboxconfig~CKBoxConfig#assetsOrigin `config.ckbox.assetsOrigin`} options:
+If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
 
 ```js
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -235,8 +231,7 @@ ClassicEditor
 		plugins: [ CKBox, /* ... */ ],
 		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
-			serviceOrigin: 'https://example.com/',
-			assetsOrigin: 'https://cloud.example.com/',
+			serviceOrigin: 'https://example.com/'
 		}
 	} )
 	.then( /* ... */ )

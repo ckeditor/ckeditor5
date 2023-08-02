@@ -20,7 +20,7 @@ If the documentation is insufficient, do not be afraid to look into the source c
 
 ## When to use the framework?
 
-The CKEditor 5 predefined builds {@link installation/getting-started/quick-start-other#customizing-a-predefined-build can be customized}, but certain types of customizations require using the framework.
+The CKEditor 5 predefined builds {@link installation/getting-started/quick-start-other#customizing-builds can be customized}, but certain types of customizations require using the framework.
 
 * **Writing your own features.** New features are implemented using the framework.
 * **Customizing existing features.** Changing the behavior or look of existing features can be done thanks to the framework's capabilities.
@@ -63,4 +63,4 @@ To start using the framework refer to:
 
 * The {@link framework/quick-start Quick start} guide.
 * The {@link framework/architecture/intro Introduction to the framework architecture} guide.
-* The {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide.
+* The {@link tutorial/editor step-by-step tutorial}.

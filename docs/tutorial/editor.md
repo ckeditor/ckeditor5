@@ -31,10 +31,10 @@ Open the `src/main.js` file and add the following code:
 // Import the editor
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-// Get the HTML element with the ID of 'app'
+// Get the HTML element with the ID of 'app'.
 const element = document.querySelector( '#app' );
 
-// Instantiate the editor using the `create` method
+// Instantiate the editor using the `create` method.
 const editor = await ClassicEditor.create( element );
 ```
 
@@ -47,11 +47,11 @@ However, you may have noticed that the "Hello world!" text doesn't appear in the
 The editor itself doesn't do much - it's just an empty shell at this stage. What gives the editor almost all of its functionality are the plugins. We'll talk more about plugins in the next chapter, but for now let's just install two plugins that provide the bare minimum needed to type in the editor.
 
 ```js
-// Add these two imports
+// Add these two imports.
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-// Update the call to the `create()` method
+// Update the call to the `create()` method.
 const editor = await ClassicEditor.create( element, {
 	plugins: [
 		Essentials,
@@ -73,7 +73,7 @@ const editor = await ClassicEditor.create( element, {
 		Paragraph
 	],
 
-	// Add the toolbar configuration
+	// Add the toolbar configuration.
 	toolbar: {
 		items: [
 			'undo',
@@ -92,7 +92,7 @@ The configuration object we just updated controls the features, appearance, and 
 Now that you can type in the editor, let's test other editor methods besides `create()`. Add the following to the bottom of the `src/main.js` file. It'll allow us to access the editor instance globally for testing purposes.
 
 ```js
-// Add the global `editor` variable (only needed for debugging)
+// Add the global `editor` variable (only needed for debugging).
 window.editor = editor;
 ```
 
@@ -116,7 +116,7 @@ It should print the text `<p>Hello world!</p>`, which is the current content of 
 You can also use the `setData()` method to change the content of the editor programmatically.
 
 ```js
-editor.setData('<p>Modified from the console!</p>');
+editor.setData( '<p>Modified from the console!</p>' );
 ```
 
 Running the above command should update the state of the editor. Note the opening and closing `<p>` tags. This method expects HTML as an argument, but the editor displays this content in a more user-friendly way.
@@ -128,13 +128,13 @@ In the previous step of this tutorial, we used the Undo and Redo buttons to reve
 Before we do that, type something in the editor. Then run the following code from the console:
 
 ```js
-editor.execute('undo');
+editor.execute( 'undo' );
 ```
 
 The editor should execute the `undo` command and restore the state to before your changes. Now run the `redo` command to restore those changes:
 
 ```js
-editor.execute('redo');
+editor.execute( 'redo' );
 ```
 
 ### `destroy()`

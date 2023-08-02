@@ -42,7 +42,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			</td>
 			<td>
 				<p>Extending the list of HTML tags or attributes that CKEditor 5 should support can be achieved via the {@link features/general-html-support General HTML Support feature}. The GHS allows adding HTML markup not yet covered by official CKEditor 5 features into the editor's content. Such elements can be loaded, pasted, or output. It does not, however, provide a dedicated UI for the extended HTML markup.</p>
-				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/creating-simple-plugin-timestamp Creating a basic plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
+				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link tutorial/editor step-by-step tutorial}. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
 				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor 5. Check the {@link framework/deep-dive/conversion/intro conversion documentation} to learn how to extend the conversion rules.</p>
 			</td>
 		</tr>
