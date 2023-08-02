@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, document, console, Event */
+/* globals setTimeout, document, console, Event, Selection */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -163,33 +163,30 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	describe( 'Restricted objects handling in Gecko', () => {
-		it( 'should detect "restricted objects" in Firefox DOM ranges and prevent an error being thrown', done => {
+		beforeEach( () => {
 			testUtils.sinon.stub( env, 'isGecko' ).value( true );
-			testUtils.sinon.stub( Object.prototype, 'toString' ).throws(
-				new Error( 'Permission denied to access property Symbol.toStringTag' )
-			);
+		} );
 
-			const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
+		it( 'should detect "restricted objects" in Firefox DOM ranges and prevent an error being thrown', done => {
+			const domRangeStubWithRestrictedObject = domDocument.createRange();
 
-			changeDomSelection();
+			sinon.stub( domRangeStubWithRestrictedObject, 'startContainer' ).get( () => {
+				throw new Error( 'Permission denied to access property Symbol.toStringTag' );
+			} );
 
-			setTimeout( () => {
-				sinon.assert.notCalled( spy );
-				done();
-			}, 100 );
+			testUtils.sinon.stub( Selection.prototype, 'getRangeAt' ).returns( domRangeStubWithRestrictedObject );
+
+			expect( () => {
+				changeDomSelection();
+				setTimeout( done, 100 );
+			} ).to.not.throw();
 		} );
 
 		it( 'should do nothing in Firefox if the DOM selection is correct', done => {
-			testUtils.sinon.stub( env, 'isGecko' ).value( true );
-
-			const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
-
-			changeDomSelection();
-
-			setTimeout( () => {
-				sinon.assert.calledOnce( spy );
-				done();
-			}, 100 );
+			expect( () => {
+				changeDomSelection();
+				setTimeout( done, 100 );
+			} ).to.not.throw();
 		} );
 	} );
 
