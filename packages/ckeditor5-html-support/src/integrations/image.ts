@@ -7,14 +7,15 @@
  * @module html-support/integrations/image
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	Element,
-	UpcastDispatcher,
-	ViewElement
+	Node,
+	UpcastDispatcher
 } from 'ckeditor5/src/engine';
+import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
 import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils';
@@ -84,8 +85,12 @@ export default class ImageElementSupport extends Plugin {
 				} );
 			}
 
-			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter, editor.plugins.has( 'LinkImage' ) ) );
+			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );
+
+			if ( editor.plugins.has( 'LinkImage' ) ) {
+				conversion.for( 'upcast' ).add( viewToModelLinkImageAttributeConverter( dataFilter, editor ) );
+			}
 
 			evt.stop();
 		} );
@@ -98,7 +103,7 @@ export default class ImageElementSupport extends Plugin {
  *
  * @returns Returns a conversion callback.
  */
-function viewToModelImageAttributeConverter( dataFilter: DataFilter, linkImageAvailable: boolean ) {
+function viewToModelImageAttributeConverter( dataFilter: DataFilter ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
 			if ( !data.modelRange ) {
@@ -106,35 +111,44 @@ function viewToModelImageAttributeConverter( dataFilter: DataFilter, linkImageAv
 			}
 
 			const viewImageElement = data.viewItem;
-			const viewContainerElement = viewImageElement.parent;
 
-			preserveElementAttributes( viewImageElement, 'htmlImgAttributes' );
+			const viewAttributes = dataFilter.processViewAttributes( viewImageElement, conversionApi );
 
-			if ( viewContainerElement.is( 'element', 'a' ) ) {
-				preserveLinkAttributes( viewContainerElement );
+			if ( viewAttributes ) {
+				conversionApi.writer.setAttribute( 'htmlImgAttributes', viewAttributes, data.modelRange );
+			}
+		}, { priority: 'low' } );
+	};
+}
+
+/**
+ * View-to-model conversion helper preserving allowed attributes on {@link module:image/image~Image Image}
+ * feature model element from link view element.
+ *
+ * @returns Returns a conversion callback.
+ */
+function viewToModelLinkImageAttributeConverter( dataFilter: DataFilter, editor: Editor ) {
+	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+
+	return ( dispatcher: UpcastDispatcher ) => {
+		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+			const viewLink = data.viewItem;
+			const viewImage = imageUtils.findViewImgElement( viewLink );
+
+			if ( !viewImage ) {
+				return;
 			}
 
-			function preserveElementAttributes( viewElement: ViewElement, attributeName: string ) {
-				const viewAttributes = dataFilter.processViewAttributes( viewElement, conversionApi );
+			const modelImage: Node | null = data.modelCursor.parent as Node;
 
-				if ( viewAttributes ) {
-					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
-				}
+			if ( !modelImage.is( 'element', 'imageBlock' ) ) {
+				return;
 			}
 
-			function preserveLinkAttributes( viewContainerElement: ViewElement ) {
-				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
-					// If the LinkImage plugin is available, href should be converted to linkHref instead of htmlLinkAttributes.
-					// Otherwise after loading data the link will be lost. See https://github.com/ckeditor/ckeditor5/issues/12831.
-					if ( linkImageAvailable ) {
-						const linkHref = viewContainerElement.getAttribute( 'href' );
+			const viewAttributes = dataFilter.processViewAttributes( viewLink, conversionApi );
 
-						conversionApi.writer.setAttribute( 'linkHref', linkHref, data.modelRange.getContainedElement() );
-						conversionApi.consumable.consume( viewContainerElement, { attributes: [ 'href' ] } );
-					}
-
-					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
-				}
+			if ( viewAttributes ) {
+				conversionApi.writer.setAttribute( 'htmlLinkAttributes', viewAttributes, modelImage );
 			}
 		}, { priority: 'low' } );
 	};
