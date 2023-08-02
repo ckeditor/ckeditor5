@@ -16,6 +16,7 @@ This article explains how to activate a commercial license of CKEditor 5 and the
 * The Productivity Pack that includes:
 	* {@link features/document-outline Document outline}
 	* {@link features/format-painter Format painter}
+	* {@link features/paste-from-office#paste-from-office-enhanced Paste from Office enhanced}
 	* {@link features/slash-commands Slash commands}
 	* {@link features/table-of-contents Table of contents}
 	* {@link features/template Templates}

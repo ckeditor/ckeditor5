@@ -18,8 +18,8 @@
 	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": [
 		"packages/*",
-		"external/@(ckeditor5-internal|ckeditor5-commercial)/",
-		"external/@(ckeditor5-internal|ckeditor5-commercial)/packages/*"
+		"external/ckeditor5-commercial/",
+		"external/ckeditor5-commercial/packages/*"
 	],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~Observable",
@@ -170,8 +170,9 @@
 		"features/overview.html": "features/index.html",
 		"features/pasting/drag-drop.html": "features/drag-drop.html",
 		"features/pagination.html": "features/pagination/pagination.html",
-		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
-		"features/paste-from-office.html": "features/pasting/paste-from-word.html",
+		"features/paste-from-word.html": "features/pasting/paste-from-office.html",
+		"features/pasting/paste-from-word.html": "features/pasting/paste-from-office.html",
+		"features/paste-from-office.html": "features/pasting/paste-from-office.html",
 		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
 		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",

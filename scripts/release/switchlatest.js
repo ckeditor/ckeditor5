@@ -18,7 +18,6 @@ const ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 const GLOB_PATTERNS = [
 	'package.json',
 	'packages/*/package.json',
-	'external/ckeditor5-internal/packages/*/package.json',
 	'external/ckeditor5-commercial/packages/*/package.json'
 ];
 

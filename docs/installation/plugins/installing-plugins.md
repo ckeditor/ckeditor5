@@ -20,14 +20,14 @@ To enrich the CKEditor 5 by installing plugins, you will require:
 * [npm](https://www.npmjs.com/) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 <info-box warning>
-	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `18.0.0`, you should consider updating your editor and other packages to the latest version or install the alignment package at version `18.0.0`. Otherwise, this will result in [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
+	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `38.0.0`, you should consider updating your editor and all other packages to the latest `{@var ckeditor5-version}` version. You might also install the alignment package at version `38.0.0` (which is not advised, actually). Otherwise, if package versions are different, this will result in an [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
 
-	The simplest way to avoid such situations is to always use the latest versions of the official packages. If you already stumbled upon this error, you can use [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
+	The simplest way to avoid such situations is to always use the latest `{@var ckeditor5-version}` versions of the official packages. If you already stumbled upon this error, you can use [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
 
-	**NOTE:** The above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
+	**NOTE:** The above rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
 </info-box>
 
-If you're here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you do not, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
+If you are here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you do not, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
 
 ## Adding a plugin to an editor
 
