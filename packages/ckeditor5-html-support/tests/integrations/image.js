@@ -347,6 +347,58 @@ describe( 'ImageElementSupport', () => {
 			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 		} );
 
+		describe( 'BlockImage without LinkImage', () => {
+			let editor, model, editorElement, dataFilter;
+
+			beforeEach( () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ Image, ImageCaption, Paragraph, GeneralHtmlSupport ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+
+						dataFilter = editor.plugins.get( 'DataFilter' );
+					} );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
+
+				return editor.destroy();
+			} );
+
+			it( 'should not upcast `href` attribute if LinkImage plugin is not available', () => {
+				dataFilter.loadAllowedConfig( [ {
+					name: /.*/,
+					attributes: true
+				} ] );
+
+				editor.setData(
+					'<figure class="image">' +
+						'<a href="www.example.com">' +
+							'<img src="/assets/sample.png">' +
+						'</a>' +
+					'</figure>'
+				);
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<imageBlock src="/assets/sample.png"></imageBlock>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="image">' +
+						'<img src="/assets/sample.png">' +
+					'</figure>'
+				);
+			} );
+		} );
+
 		// it( 'should allow modifying styles, classes and attributes', () => {
 		// 	// This should also work when we set `attributes: true` but currently there are some
 		// 	// problems related to GHS picking up non-GHS attributes (like src) due to some attributes not
