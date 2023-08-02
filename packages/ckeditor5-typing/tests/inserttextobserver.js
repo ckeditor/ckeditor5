@@ -199,6 +199,31 @@ describe( 'InsertTextObserver', () => {
 		sinon.assert.notCalled( insertTextEventSpy );
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/14569.
+	it( 'should flush focus observer to enable selection rendering', () => {
+		viewSetData( view, '<p>fo{}o</p>' );
+
+		const flushSpy = testUtils.sinon.spy( view.getObserver( InsertTextObserver ).focusObserver, 'flush' );
+
+		const viewRange = view.document.selection.getFirstRange();
+		const domRange = view.domConverter.viewRangeToDom( viewRange );
+		const viewSelection = view.createSelection( viewRange );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertText',
+			ranges: [ domRange ],
+			data: 'bar'
+		} );
+
+		sinon.assert.calledOnce( insertTextEventSpy );
+		sinon.assert.calledOnce( flushSpy );
+
+		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+
+		expect( firstCallArgs.text ).to.equal( 'bar' );
+		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
+	} );
+
 	describe( 'in Android environment', () => {
 		let view, viewDocument, insertTextEventSpy;
 		let domRoot;

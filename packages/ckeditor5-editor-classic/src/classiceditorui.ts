@@ -142,7 +142,7 @@ export default class ClassicEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Enable the placeholder text on the editing root, if any was configured.
+	 * Enable the placeholder text on the editing root.
 	 */
 	private _initPlaceholder(): void {
 		const editor = this.editor;
@@ -162,14 +162,15 @@ export default class ClassicEditorUI extends EditorUI {
 		}
 
 		if ( placeholderText ) {
-			enablePlaceholder( {
-				view: editingView,
-				element: editingRoot,
-				text: placeholderText,
-				isDirectHost: false,
-				keepOnFocus: true
-			} );
+			editingRoot.placeholder = placeholderText;
 		}
+
+		enablePlaceholder( {
+			view: editingView,
+			element: editingRoot,
+			isDirectHost: false,
+			keepOnFocus: true
+		} );
 	}
 
 	/**

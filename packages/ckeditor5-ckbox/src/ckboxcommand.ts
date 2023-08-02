@@ -9,7 +9,6 @@
  * @module ckbox/ckboxcommand
  */
 
-import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import type { Writer } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { createElement, toMap } from 'ckeditor5/src/utils';
@@ -23,8 +22,7 @@ import type {
 	CKBoxRawAssetDefinition
 } from './ckboxconfig';
 
-import { getEnvironmentId, getImageUrls } from './utils';
-import type CKBoxEditing from './ckboxediting';
+import { getImageUrls } from './utils';
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -135,7 +133,6 @@ export default class CKBoxCommand extends Command {
 	 * - language The language for CKBox dialog.
 	 * - tokenUrl The token endpoint URL.
 	 * - serviceOrigin The base URL of the API service.
-	 * - assetsOrigin The base URL for assets inserted into the editor.
 	 * - dialog.onClose The callback function invoked after closing the CKBox dialog.
 	 * - assets.onChoose The callback function invoked after choosing the assets.
 	 */
@@ -148,7 +145,6 @@ export default class CKBoxCommand extends Command {
 			language: ckboxConfig.language,
 			tokenUrl: ckboxConfig.tokenUrl,
 			serviceOrigin: ckboxConfig.serviceOrigin,
-			assetsOrigin: ckboxConfig.assetsOrigin,
 			dialog: {
 				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' )
 			},
@@ -201,13 +197,9 @@ export default class CKBoxCommand extends Command {
 
 			const imageCommand = editor.commands.get( 'insertImage' )!;
 			const linkCommand = editor.commands.get( 'link' )!;
-			const ckboxEditing: CKBoxEditing = editor.plugins.get( 'CKBoxEditing' );
-			const assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' )!;
 
 			const assetsToProcess = prepareAssets( {
 				assets,
-				origin: assetsOrigin,
-				token: ckboxEditing.getToken(),
 				isImageAllowed: imageCommand.isEnabled,
 				isLinkAllowed: linkCommand.isEnabled
 			} );
@@ -320,10 +312,8 @@ export default class CKBoxCommand extends Command {
  * Parses the chosen assets into the internal data format. Filters out chosen assets that are not allowed.
  */
 function prepareAssets(
-	{ assets, origin, token, isImageAllowed, isLinkAllowed }: {
+	{ assets, isImageAllowed, isLinkAllowed }: {
 		assets: Array<CKBoxRawAssetDefinition>;
-		origin: string;
-		token: InitializedToken;
 		isImageAllowed: boolean;
 		isLinkAllowed: boolean;
 	}
@@ -333,12 +323,12 @@ function prepareAssets(
 			{
 				id: asset.data.id,
 				type: 'image',
-				attributes: prepareImageAssetAttributes( asset, token, origin )
+				attributes: prepareImageAssetAttributes( asset )
 			} as const :
 			{
 				id: asset.data.id,
 				type: 'link',
-				attributes: prepareLinkAssetAttributes( asset, token, origin )
+				attributes: prepareLinkAssetAttributes( asset )
 			} as const
 		)
 		.filter( asset => asset.type === 'image' ? isImageAllowed : isLinkAllowed );
@@ -349,18 +339,8 @@ function prepareAssets(
  *
  * @param origin The base URL for assets inserted into the editor.
  */
-function prepareImageAssetAttributes(
-	asset: CKBoxRawAssetDefinition,
-	token: InitializedToken,
-	origin: string
-): CKBoxAssetImageAttributesDefinition {
-	const { imageFallbackUrl, imageSources } = getImageUrls( {
-		token,
-		origin,
-		id: asset.data.id,
-		width: asset.data.metadata!.width!,
-		extension: asset.data.extension
-	} );
+function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
+	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
 
 	return {
 		imageFallbackUrl,
@@ -374,14 +354,10 @@ function prepareImageAssetAttributes(
  *
  * @param origin The base URL for assets inserted into the editor.
  */
-function prepareLinkAssetAttributes(
-	asset: CKBoxRawAssetDefinition,
-	token: InitializedToken,
-	origin: string
-): CKBoxAssetLinkAttributesDefinition {
+function prepareLinkAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetLinkAttributesDefinition {
 	return {
 		linkName: asset.data.name,
-		linkHref: getAssetUrl( asset, token, origin )
+		linkHref: getAssetUrl( asset )
 	};
 }
 
@@ -403,13 +379,8 @@ function isImage( asset: CKBoxRawAssetDefinition ) {
  *
  * @param origin The base URL for assets inserted into the editor.
  */
-function getAssetUrl(
-	asset: CKBoxRawAssetDefinition,
-	token: InitializedToken,
-	origin: string
-) {
-	const environmentId = getEnvironmentId( token );
-	const url = new URL( `${ environmentId }/assets/${ asset.data.id }/file`, origin );
+function getAssetUrl( asset: CKBoxRawAssetDefinition ) {
+	const url = new URL( asset.data.url );
 
 	url.searchParams.set( 'download', 'true' );
 

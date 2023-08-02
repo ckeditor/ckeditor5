@@ -760,6 +760,12 @@ export default class Schema extends ObservableMixin() {
 	 * @returns Nearest selection range or `null` if one cannot be found.
 	 */
 	public getNearestSelectionRange( position: Position, direction: 'both' | 'forward' | 'backward' = 'both' ): Range | null {
+		if ( position.root.rootName == '$graveyard' ) {
+			// No valid selection range in the graveyard.
+			// This is important when getting the document selection default range.
+			return null;
+		}
+
 		// Return collapsed range if provided position is valid.
 		if ( this.checkChild( position, '$text' ) ) {
 			return new Range( position );
@@ -1763,6 +1769,18 @@ export interface AttributeProperties {
 	 * Indicates that given text attribute should be copied to the next block when enter is pressed.
 	 */
 	copyOnEnter?: boolean;
+
+	/**
+	 * Indicates that given attribute should be preserved while replacing the element.
+	 */
+	copyOnReplace?: boolean;
+
+	/**
+	 * Indicates that given text attribute should be copied from an inline object to the next inserted inline content.
+	 *
+	 * @default true
+	 */
+	copyFromObject?: boolean;
 
 	[ name: string ]: unknown;
 }

@@ -713,6 +713,7 @@ describe( 'Editor', () => {
 			class SomeCommand extends Command {
 				constructor( editor ) {
 					super( editor );
+					this._isEnabledBasedOnSelection = false;
 					this.isEnabled = true;
 				}
 				execute() {

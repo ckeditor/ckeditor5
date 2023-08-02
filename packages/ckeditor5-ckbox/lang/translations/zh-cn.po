@@ -23,3 +23,7 @@ msgstr "打开文件管理器"
 msgctxt "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset."
 msgid "Cannot determine a category for the uploaded file."
 msgstr "无法确定上传文件的类别。"
+
+msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
+msgid "Cannot access default workspace."
+msgstr "无法访问默认工作区"

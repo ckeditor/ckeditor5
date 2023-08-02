@@ -302,4 +302,9 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	 * in the `htmlTbodyAttributes` model attribute of the `table` model element.
 	 */
 	appliesToBlock?: boolean | string;
+
+	/**
+	 * Indicates that an element should be preserved even if it has no content.
+	 */
+	allowEmpty?: boolean;
 }

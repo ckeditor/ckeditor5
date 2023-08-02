@@ -23,3 +23,7 @@ msgstr "Deschidere manager fișiere"
 msgctxt "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset."
 msgid "Cannot determine a category for the uploaded file."
 msgstr "Categoria fișierului încărcat nu poate fi stabilită."
+
+msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
+msgid "Cannot access default workspace."
+msgstr "Nu poți accesa spațiul de lucru implicit."

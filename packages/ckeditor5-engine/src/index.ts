@@ -156,6 +156,7 @@ export { default as ClickObserver } from './view/observer/clickobserver';
 export { default as DomEventObserver } from './view/observer/domeventobserver';
 export { default as MouseObserver } from './view/observer/mouseobserver';
 export { default as TabObserver } from './view/observer/tabobserver';
+export { default as FocusObserver } from './view/observer/focusobserver';
 
 export { default as DowncastWriter } from './view/downcastwriter';
 export { default as UpcastWriter } from './view/upcastwriter';

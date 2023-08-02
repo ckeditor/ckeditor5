@@ -90,8 +90,8 @@ export default class SelectionObserver extends Observer {
 	constructor( view: View ) {
 		super( view );
 
-		this.mutationObserver = view.getObserver( MutationObserver )!;
-		this.focusObserver = view.getObserver( FocusObserver )!;
+		this.mutationObserver = view.getObserver( MutationObserver );
+		this.focusObserver = view.getObserver( FocusObserver );
 		this.selection = this.document.selection;
 		this.domConverter = view.domConverter;
 
@@ -253,6 +253,9 @@ export default class SelectionObserver extends Observer {
 
 		this.view.hasDomSelection = true;
 
+		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
+		this.focusObserver.flush();
+
 		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;
 		}
@@ -269,9 +272,6 @@ export default class SelectionObserver extends Observer {
 
 			return;
 		}
-
-		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
-		this.focusObserver.flush();
 
 		if ( this.selection.isSimilar( newViewSelection ) ) {
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.

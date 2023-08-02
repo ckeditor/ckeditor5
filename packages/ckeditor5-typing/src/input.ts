@@ -101,6 +101,8 @@ export default class Input extends Plugin {
 			}
 
 			editor.execute( 'insertText', insertTextCommandData );
+
+			view.scrollToTheSelection();
 		} );
 
 		if ( env.isAndroid ) {

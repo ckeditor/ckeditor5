@@ -36,6 +36,10 @@ These are only available to holders of a [CKEditor 5 commercial license](https:/
 
 	The {@link features/template templates feature} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (e.g. a formatted table) and base structures for entire documents (e.g. a formal letter template).
 
+* Paste from Office Enhanced
+
+	The {@link features/paste-from-office Paste from Office Enhanced feature} lets you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. It will retain the basic text styling, heading levels, links, lists, tables, and images.
+
 ## Free trial
 
 Before committing, you may try out the productivity pack, just like all CKEditor 5 premium features. To do it, simply start your non-commitment [30-day free trial](https://orders.ckeditor.com/trial/premium-features).

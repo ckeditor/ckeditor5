@@ -498,6 +498,66 @@ describe( 'SourceEditing', () => {
 			expect( editor.data.get() ).to.equal( '<p>bar</p>' );
 		} );
 
+		it( 'should not overwrite the editor data after calling editor.getData() if value has not been changed', () => {
+			const setData = sinon.stub( editor.data, 'set' ).callThrough();
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const wrapper = domRoot.nextSibling;
+			const textarea = wrapper.children[ 0 ];
+
+			// The same value as the initial one.
+			textarea.value = wrapper.dataset.value;
+
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Trigger getData() while in the source editing mode.
+			expect( editor.getData() ).to.equal( '<p>Foo</p>' );
+
+			expect( setData.callCount ).to.equal( 0 );
+			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
+		} );
+
+		it( 'should not overwrite the editor data after subsequent calls of editor.getData()', () => {
+			const setDataSpy = sinon.spy();
+
+			editor.data.on( 'set', setDataSpy );
+
+			// Trigger getData() during the execution of `editor.data.set()`.
+			editor.model.document.once( 'change:data', () => {
+				editor.getData();
+			} );
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			textarea.value = 'foo';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Trigger getData() while in the source editing mode.
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+
+			textarea.value = 'bar';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Exit source editing mode.
+			button.fire( 'execute' );
+
+			expect( setDataSpy.callCount ).to.equal( 2 );
+			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
+				{ main: 'foo' },
+				{ batchType: { isUndoable: true } }
+			] );
+			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
+				{ main: 'bar' },
+				{ batchType: { isUndoable: true } }
+			] );
+			expect( editor.data.get() ).to.equal( '<p>bar</p>' );
+		} );
+
 		it( 'should insert the formatted HTML source (editor output) into the textarea', () => {
 			button.fire( 'execute' );
 

@@ -6,13 +6,13 @@
 import {
 	FONT_COLOR,
 	FONT_BACKGROUND_COLOR,
-	addColorTableToDropdown,
+	addColorSelectorToDropdown,
 	renderDowncastElement
 } from './../src/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import ColorTableView from './../src/ui/colortableview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Locale } from '@ckeditor/ckeditor5-utils';
+import { ColorSelectorView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();
@@ -22,13 +22,13 @@ describe( 'utils', () => {
 		expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
 	} );
 
-	describe( 'addColorTableToDropdown()', () => {
-		it( 'should create dropdown with color table', () => {
+	describe( 'addColorSelectorToDropdown()', () => {
+		it( 'should create dropdown with a color selector', () => {
 			const locale = new Locale();
 			const dropdown = createDropdown( locale );
 			dropdown.render();
 
-			addColorTableToDropdown( {
+			addColorSelectorToDropdown( {
 				dropdownView: dropdown,
 				colors: [
 					{
@@ -50,9 +50,9 @@ describe( 'utils', () => {
 				removeButtonLabel: 'Remove Color'
 			} );
 
-			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
+			expect( dropdown.colorSelectorView ).to.be.instanceOf( ColorSelectorView );
 			expect( dropdown.panelView.children.length ).to.equal( 1 );
-			expect( dropdown.colorTableView.element ).to.equal( dropdown.panelView.children.first.element );
+			expect( dropdown.colorSelectorView.element ).to.equal( dropdown.panelView.children.first.element );
 		} );
 	} );
 

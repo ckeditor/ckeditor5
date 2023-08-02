@@ -1977,8 +1977,8 @@ setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, conte
 
 // -----------------------
 
-setTransformation( RootOperation, RootOperation, ( a, b, context ) => {
-	if ( a.rootName === b.rootName && a.isAdd === b.isAdd && !context.bWasUndone ) {
+setTransformation( RootOperation, RootOperation, ( a, b ) => {
+	if ( a.rootName === b.rootName && a.isAdd === b.isAdd ) {
 		return [ new NoOperation( 0 ) ];
 	}
 

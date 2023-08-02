@@ -23,3 +23,7 @@ msgstr "Apri il gestore dei file"
 msgctxt "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset."
 msgid "Cannot determine a category for the uploaded file."
 msgstr "Impossibile determinare la categoria del file caricato."
+
+msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
+msgid "Cannot access default workspace."
+msgstr "Impossibile accedere all'area di lavoro predefinita."

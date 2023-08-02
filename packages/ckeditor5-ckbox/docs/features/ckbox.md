@@ -221,7 +221,7 @@ ClassicEditor
 
 ### Configuring the API service and assets origin
 
-If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} and {@link module:ckbox/ckboxconfig~CKBoxConfig#assetsOrigin `config.ckbox.assetsOrigin`} options:
+If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
 
 ```js
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -231,8 +231,7 @@ ClassicEditor
 		plugins: [ CKBox, /* ... */ ],
 		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
-			serviceOrigin: 'https://example.com/',
-			assetsOrigin: 'https://cloud.example.com/',
+			serviceOrigin: 'https://example.com/'
 		}
 	} )
 	.then( /* ... */ )

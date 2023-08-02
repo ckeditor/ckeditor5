@@ -12,6 +12,7 @@ import { env, EventInfo } from '@ckeditor/ckeditor5-utils';
 import {
 	DomEventData,
 	Observer,
+	FocusObserver,
 	type View,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentInputEvent,
@@ -39,10 +40,18 @@ const TYPING_INPUT_TYPES = [
  */
 export default class InsertTextObserver extends Observer {
 	/**
+	 * Instance of the focus observer. Insert text observer calls
+	 * {@link module:engine/view/observer/focusobserver~FocusObserver#flush} to mark the latest focus change as complete.
+	 */
+	public readonly focusObserver: FocusObserver;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( view: View ) {
 		super( view );
+
+		this.focusObserver = view.getObserver( FocusObserver );
 
 		// On Android composition events should immediately be applied to the model. Rendering is not disabled.
 		// On non-Android the model is updated only on composition end.
@@ -63,6 +72,10 @@ export default class InsertTextObserver extends Observer {
 			if ( !TYPING_INPUT_TYPES.includes( inputType ) ) {
 				return;
 			}
+
+			// Mark the latest focus change as complete (we are typing in editable after the focus
+			// so the selection is in the focused element).
+			this.focusObserver.flush();
 
 			const eventInfo = new EventInfo( viewDocument, 'insertText' );
 

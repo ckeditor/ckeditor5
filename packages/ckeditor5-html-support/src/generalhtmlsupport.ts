@@ -67,6 +67,10 @@ export default class GeneralHtmlSupport extends Plugin {
 		const editor = this.editor;
 		const dataFilter = editor.plugins.get( DataFilter );
 
+		// Load the allowed empty inline elements' configuration.
+		// Note that this modifies DataSchema so must be loaded before registering filtering rules.
+		dataFilter.loadAllowedEmptyElementsConfig( editor.config.get( 'htmlSupport.allowEmpty' ) || [] );
+
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
 		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );

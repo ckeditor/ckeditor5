@@ -2,7 +2,6 @@
 category: update-guides
 menu-title: Update to v38.x
 order: 86
-modified_at: 2023-06-26
 ---
 
 # Update to CKEditor 5 v38.x
