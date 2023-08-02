@@ -26,4 +26,4 @@ msgstr "Ei suuda üles laaditud faili kategooriat tuvastada."
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "Puudub juurdepääs vaiketööruumile."

@@ -26,4 +26,4 @@ msgstr "Não é possível determinar a categoria do ficheiro carregado."
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "Não é possível aceder ao espaço de trabalho padrão."

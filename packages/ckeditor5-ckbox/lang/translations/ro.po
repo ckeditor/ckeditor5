@@ -26,4 +26,4 @@ msgstr "Categoria fișierului încărcat nu poate fi stabilită."
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "Nu poți accesa spațiul de lucru implicit."
