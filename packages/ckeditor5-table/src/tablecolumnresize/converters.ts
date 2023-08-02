@@ -13,15 +13,15 @@ import type {
 	Element,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement,
-	Writer
+	ViewElement
 } from 'ckeditor5/src/engine';
 import type TableUtils from '../tableutils';
 import {
 	normalizeColumnWidths,
 	updateColumnElements,
 	getColumnGroupElement,
-	getTableColumnElements
+	getTableColumnElements,
+	getTableColumnsWidths
 } from './utils';
 
 /**
@@ -39,7 +39,7 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
 
 		const columnElements = getTableColumnElements( tableColumnGroup );
 		const columnsCount = tableUtilsPlugin.getColumns( modelTable );
-		let columnWidths = _consumeColSpan( columnElements, conversionApi.writer );
+		let columnWidths = getTableColumnsWidths( tableColumnGroup, conversionApi.writer );
 
 		// Fill the array with 'auto' values if the number of columns is higher than number of declared values.
 		columnWidths = Array.from( { length: columnsCount }, ( _, index ) => columnWidths[ index ] || 'auto' );
@@ -71,29 +71,4 @@ export function downcastTableResizedClass(): ( dispatcher: DowncastDispatcher ) 
 			viewWriter.removeClass( 'ck-table-resized', viewTable as ViewElement );
 		}
 	}, { priority: 'low' } );
-}
-
-// Translates the `colSpan` model attribute on to the proper number of column widths and removes it from the element.
-//
-// @param columns The array of <tableColumn> elements.
-// @param writer The writer instance.
-// @returns The array of column widths.
-function _consumeColSpan( columns: Array<Element>, writer: Writer ) {
-	return columns.reduce( ( acc: Array<string>, element ) => {
-		const columnWidth = element.getAttribute( 'columnWidth' ) as string;
-		const colSpan = element.getAttribute( 'colSpan' ) as number | undefined;
-
-		if ( !colSpan ) {
-			acc.push( columnWidth );
-			return acc;
-		}
-
-		for ( let i = 0; i < colSpan; i++ ) {
-			acc.push( columnWidth );
-		}
-
-		writer.removeAttribute( 'colSpan', element );
-
-		return acc;
-	}, [] );
 }
