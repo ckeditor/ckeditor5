@@ -246,7 +246,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this.editor.model.schema.register( 'tableColumn', {
 			allowIn: 'tableColumnGroup',
-			allowAttributes: [ 'columnWidth', 'colgroupspan' ],
+			allowAttributes: [ 'columnWidth', 'colSpan' ],
 			isLimit: true
 		} );
 	}
@@ -432,7 +432,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				name: 'col',
 				key: 'span'
 			},
-			model: 'colgroupspan'
+			model: 'colSpan'
 		} );
 
 		conversion.for( 'downcast' ).attributeToAttribute( {

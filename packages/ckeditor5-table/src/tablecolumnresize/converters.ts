@@ -40,18 +40,18 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
 		const columnsCount = tableUtilsPlugin.getColumns( modelTable );
 		let columnWidths = columnElements.reduce( ( acc: Array<string>, element ) => {
 			const columnWidth = element.getAttribute( 'columnWidth' ) as string;
-			const colgroupspan = element.getAttribute( 'colgroupspan' ) as number | undefined;
+			const colSpan = element.getAttribute( 'colSpan' ) as number | undefined;
 
-			if ( !colgroupspan ) {
+			if ( !colSpan ) {
 				acc.push( columnWidth );
 				return acc;
 			}
 
-			for ( let i = 0; i < colgroupspan; i++ ) {
+			for ( let i = 0; i < colSpan; i++ ) {
 				acc.push( columnWidth );
 			}
 
-			conversionApi.writer.removeAttribute( 'colgroupspan', element );
+			conversionApi.writer.removeAttribute( 'colSpan', element );
 
 			return acc;
 		}, [] );
