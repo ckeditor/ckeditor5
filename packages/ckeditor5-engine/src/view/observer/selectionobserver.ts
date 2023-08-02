@@ -232,7 +232,7 @@ export default class SelectionObserver extends Observer {
 
 		const domSelection = domDocument.defaultView!.getSelection()!;
 
-		if ( isRestricted( domSelection ) ) {
+		if ( isGeckoRestrictedDomSelection( domSelection ) ) {
 			return;
 		}
 
@@ -335,25 +335,6 @@ export type ViewDocumentSelectionEventData = {
 	domSelection: DomSelection | null;
 };
 
-// In firefox exists restricted objects. Trying get any property from restricted object, it will through an error.
-// https://github.com/ckeditor/ckeditor5/issues/9635
-function isRestricted( domSelection: DomSelection ): boolean {
-	if ( !env.isGecko ) {
-		return false;
-	}
-
-	let isRestricted = false;
-
-	try {
-		const container = domSelection.getRangeAt( 0 ).startContainer;
-		Object.prototype.toString.call( container );
-	} catch ( error ) {
-		isRestricted = true;
-	}
-
-	return isRestricted;
-}
-
 /**
  * Fired when a selection has changed. This event is fired only when the selection change was the only change that happened
  * in the document, and the old selection is different then the new selection.
@@ -386,3 +367,21 @@ export type ViewDocumentSelectionChangeDoneEvent = {
 	name: 'selectionChangeDone';
 	args: [ ViewDocumentSelectionEventData ];
 };
+
+// I certain cases, Firefox mysteriously assigns so called "restricted objects" to native DOM Range properties.
+// Any attempt at accessing restricted object's properties causes errors.
+// https://github.com/ckeditor/ckeditor5/issues/9635
+function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
+	if ( !env.isGecko ) {
+		return false;
+	}
+
+	try {
+		const container = domSelection.getRangeAt( 0 ).startContainer;
+		Object.prototype.toString.call( container );
+	} catch ( error ) {
+		return true;
+	}
+
+	return false;
+}
