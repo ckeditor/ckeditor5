@@ -418,6 +418,7 @@ export default class TableColumnResizeEditing extends Plugin {
 				value: ( viewElement: ViewElement ) => {
 					const viewColWidth = viewElement.getStyle( 'width' );
 
+					// 'pt' is the default unit for table column width pasted from MS Office.
 					if ( !viewColWidth || ( !viewColWidth.endsWith( '%' ) && !viewColWidth.endsWith( 'pt' ) ) ) {
 						return 'auto';
 					}
@@ -429,6 +430,7 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		// The `col[span]` attribute is present in tables pasted from MS Excel. We use it to set the temporary `colSpan` model attribute,
 		// which is consumed during the `colgroup` element upcast.
+		// See https://github.com/ckeditor/ckeditor5/issues/14521#issuecomment-1662102889 for more details.
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				name: 'col',

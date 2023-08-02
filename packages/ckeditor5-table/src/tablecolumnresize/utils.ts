@@ -409,6 +409,7 @@ export function getTableColumnsWidths( element: Element, writer?: Writer ): Arra
 
 		// Translate the `colSpan` model attribute on to the proper number of column widths
 		// and remove it from the element.
+		// See https://github.com/ckeditor/ckeditor5/issues/14521#issuecomment-1662102889 for more details.
 		for ( let i = 0; i < colSpan; i++ ) {
 			acc.push( columnWidth );
 		}
