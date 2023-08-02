@@ -4,7 +4,7 @@
  */
 
 // The editor creator to use.
-import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
+import { InlineEditor as InlineEditorBase } from '@ckeditor/ckeditor5-editor-inline';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';

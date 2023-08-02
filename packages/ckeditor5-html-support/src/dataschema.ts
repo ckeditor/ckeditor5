@@ -54,8 +54,8 @@ export default class DataSchema extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DataSchema' {
-		return 'DataSchema';
+	public static get pluginName() {
+		return 'DataSchema' as const;
 	}
 
 	/**
@@ -302,4 +302,9 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	 * in the `htmlTbodyAttributes` model attribute of the `table` model element.
 	 */
 	appliesToBlock?: boolean | string;
+
+	/**
+	 * Indicates that an element should be preserved even if it has no content.
+	 */
+	allowEmpty?: boolean;
 }

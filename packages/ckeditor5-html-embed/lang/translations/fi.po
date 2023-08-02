@@ -22,7 +22,7 @@ msgstr "Liitä HTML"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr "HMTL-pätkä"
+msgstr "HTML-pätkä"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."

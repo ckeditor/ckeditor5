@@ -22,8 +22,8 @@ export default class Input extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Input' {
-		return 'Input';
+	public static get pluginName() {
+		return 'Input' as const;
 	}
 
 	/**
@@ -101,6 +101,8 @@ export default class Input extends Plugin {
 			}
 
 			editor.execute( 'insertText', insertTextCommandData );
+
+			view.scrollToTheSelection();
 		} );
 
 		if ( env.isAndroid ) {

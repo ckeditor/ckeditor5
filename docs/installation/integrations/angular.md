@@ -19,7 +19,7 @@ CKEditor 5 consists of the {@link installation/getting-started/predefined-builds
 Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source-webpack CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
-	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#customizing-a-build create a custom build of CKEditor 5} and include it in your Angular application.
+	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#customizing-builds create a custom build of CKEditor 5} and include it in your Angular application.
 </info-box>
 
 <info-box hint>
@@ -103,6 +103,21 @@ This tutorial assumes that you picked [`@ckeditor/ckeditor5-build-classic`](http
 
 ```bash
 npm install --save @ckeditor/ckeditor5-build-classic
+```
+
+The [`@ckeditor/ckeditor5-angular`](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular) package requires the following peer dependencies, with a version of at least 37.0.0:
+
+* [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core),
+* [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine),
+* [`@ckeditor/ckeditor5-utils`](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils),
+* [`@ckeditor/ckeditor5-watchdog`](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog).
+
+Keep in mind that they {@link installation/plugins/installing-plugins#requirements must have the same version as the editor build}.
+
+Install all the required peer dependencies:
+
+```bash
+npm install --save @ckeditor/ckeditor5-core @ckeditor/ckeditor5-engine @ckeditor/ckeditor5-utils @ckeditor/ckeditor5-watchdog
 ```
 
 Now, add `CKEditorModule` to modules whose components will be using the `<ckeditor>` component in their templates.

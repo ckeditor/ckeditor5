@@ -166,8 +166,8 @@ export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TwoStepCaretMovement' {
-		return 'TwoStepCaretMovement';
+	public static get pluginName() {
+		return 'TwoStepCaretMovement' as const;
 	}
 
 	/**
@@ -460,7 +460,19 @@ function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<
 	const nodeBefore = position.nodeBefore;
 	model.change( writer => {
 		if ( nodeBefore ) {
-			writer.setSelectionAttribute( nodeBefore.getAttributes() );
+			const attributes: Array<[string, unknown]> = [];
+			const isInlineObject = model.schema.isObject( nodeBefore ) && model.schema.isInline( nodeBefore );
+
+			for ( const [ key, value ] of nodeBefore.getAttributes() ) {
+				if (
+					model.schema.checkAttribute( '$text', key ) &&
+					( !isInlineObject || model.schema.getAttributeProperties( key ).copyFromObject !== false )
+				) {
+					attributes.push( [ key, value ] );
+				}
+			}
+
+			writer.setSelectionAttribute( attributes );
 		} else {
 			writer.removeSelectionAttribute( attributes );
 		}

@@ -41,8 +41,8 @@ export default class ImageUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageUtils' {
-		return 'ImageUtils';
+	public static get pluginName() {
+		return 'ImageUtils' as const;
 	}
 
 	/**

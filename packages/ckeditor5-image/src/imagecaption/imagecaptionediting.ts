@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin, type CommandExecuteEvent } from 'ckeditor5/src/core';
-import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute } from 'ckeditor5/src/engine';
+import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttribute, PlaceholderableElement } from 'ckeditor5/src/engine';
 import { toWidgetEditable } from 'ckeditor5/src/widget';
 import type { GetCallback } from 'ckeditor5/src/utils';
 
@@ -34,8 +34,8 @@ export default class ImageCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageCaptionEditing' {
-		return 'ImageCaptionEditing';
+	public static get pluginName() {
+		return 'ImageCaptionEditing' as const;
 	}
 
 	/**
@@ -122,10 +122,10 @@ export default class ImageCaptionEditing extends Plugin {
 				const figcaptionElement = writer.createEditableElement( 'figcaption' );
 				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
 
+				figcaptionElement.placeholder = t( 'Enter image caption' );
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter image caption' ),
 					keepOnFocus: true
 				} );
 

@@ -96,8 +96,8 @@ export default class FileRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FileRepository' {
-		return 'FileRepository';
+	public static get pluginName() {
+		return 'FileRepository' as const;
 	}
 
 	/**

@@ -141,8 +141,8 @@ export default class WordCount extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'WordCount' {
-		return 'WordCount';
+	public static get pluginName() {
+		return 'WordCount' as const;
 	}
 
 	/**
@@ -254,13 +254,13 @@ export default class WordCount extends Plugin {
 	private _getText(): string {
 		let txt = '';
 
-		for ( const rootName of this.editor.model.document.getRootNames() ) {
+		for ( const root of this.editor.model.document.getRoots() ) {
 			if ( txt !== '' ) {
 				// Add a delimiter, so words from each root are treated independently.
 				txt += '\n';
 			}
 
-			txt += modelElementToPlainText( this.editor.model.document.getRoot( rootName )! );
+			txt += modelElementToPlainText( root );
 		}
 
 		return txt;

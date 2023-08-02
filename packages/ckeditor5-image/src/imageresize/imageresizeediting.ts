@@ -29,8 +29,8 @@ export default class ImageResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageResizeEditing' {
-		return 'ImageResizeEditing';
+	public static get pluginName() {
+		return 'ImageResizeEditing' as const;
 	}
 
 	/**

@@ -32,7 +32,7 @@ export default class CodeBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CodeBlock' {
-		return 'CodeBlock';
+	public static get pluginName() {
+		return 'CodeBlock' as const;
 	}
 }

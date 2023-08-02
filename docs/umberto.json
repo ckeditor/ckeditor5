@@ -18,8 +18,8 @@
 	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": [
 		"packages/*",
-		"external/@(ckeditor5-internal|collaboration-features)/",
-		"external/@(ckeditor5-internal|collaboration-features)/packages/*"
+		"external/ckeditor5-commercial/",
+		"external/ckeditor5-commercial/packages/*"
 	],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~Observable",
@@ -168,9 +168,11 @@
 		"features/lists.html": "features/lists/lists.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/overview.html": "features/index.html",
+		"features/pasting/drag-drop.html": "features/drag-drop.html",
 		"features/pagination.html": "features/pagination/pagination.html",
-		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
-		"features/paste-from-office.html": "features/pasting/paste-from-word.html",
+		"features/paste-from-word.html": "features/pasting/paste-from-office.html",
+		"features/pasting/paste-from-word.html": "features/pasting/paste-from-office.html",
+		"features/paste-from-office.html": "features/pasting/paste-from-office.html",
 		"features/revision-history/revision-history.html": "features/collaboration/revision-history/revision-history.html",
 		"features/revision-history/revision-history-integration.htm": "features/collaboration/revision-history/revision-history-integration.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
@@ -525,6 +527,12 @@
 					"id": "examples-framework",
 					"slug": "framework",
 					"order": 300
+				},
+				{
+					"name": "Experiments",
+					"id": "experiments",
+					"slug": "experiments",
+					"order": 400
 				}
 			]
 		},
@@ -544,8 +552,7 @@
 					"name": "Update guides",
 					"id": "update-guides",
 					"slug": "guides",
-					"order": 30,
-					"folded": true
+					"order": 30
 				}
 			]
 		},

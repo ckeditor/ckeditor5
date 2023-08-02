@@ -15,7 +15,7 @@ See the demo of the placeholder feature:
 {@snippet features/placeholder}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Installation
@@ -107,6 +107,16 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 {@snippet features/placeholder-custom}
 
 **Note**: The `.ck-placeholder` class is also used to display placeholders in other places, for instance, {@link features/images-captions image captions}. Make sure your custom styles apply to the right subset of placeholders.
+
+## Changing the placeholder
+
+The editor placeholder could be updated at runtime by changing the `placeholder` property in editing root.
+
+```js
+editor.editing.view.document.getRoot( 'main' ).placeholder = 'new placeholder';
+```
+
+{@snippet features/update-placeholder}
 
 ## Contribute
 

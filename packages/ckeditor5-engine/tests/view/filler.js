@@ -34,6 +34,18 @@ describe( 'filler', () => {
 			expect( startsWithFiller( node ) ).to.be.true;
 		} );
 
+		it( 'should be true for text which contains only filler', () => {
+			const str = `${ INLINE_FILLER }`;
+
+			expect( startsWithFiller( str ) ).to.be.true;
+		} );
+
+		it( 'should be true for text which starts with filler', () => {
+			const str = `${ INLINE_FILLER }foo`;
+
+			expect( startsWithFiller( str ) ).to.be.true;
+		} );
+
 		it( 'should be false for element', () => {
 			const node = document.createElement( 'p' );
 
@@ -75,8 +87,26 @@ describe( 'filler', () => {
 			expect( dataWithoutFiller ).to.equals( 'foo' );
 		} );
 
+		it( 'should return text without filler', () => {
+			const str = `${ INLINE_FILLER }foo`;
+
+			const dataWithoutFiller = getDataWithoutFiller( str );
+
+			expect( dataWithoutFiller.length ).to.equals( 3 );
+			expect( dataWithoutFiller ).to.equals( 'foo' );
+		} );
+
 		it( 'should return the same data for data without filler', () => {
 			const node = document.createTextNode( 'foo' );
+
+			const dataWithoutFiller = getDataWithoutFiller( node );
+
+			expect( dataWithoutFiller.length ).to.equals( 3 );
+			expect( dataWithoutFiller ).to.equals( 'foo' );
+		} );
+
+		it( 'should return the same data for text without filler', () => {
+			const node = 'foo';
 
 			const dataWithoutFiller = getDataWithoutFiller( node );
 

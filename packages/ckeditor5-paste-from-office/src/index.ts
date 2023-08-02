@@ -8,5 +8,8 @@
  */
 
 export { default as PasteFromOffice } from './pastefromoffice';
+export { Normalizer, type NormalizerData } from './normalizer';
+export { default as MSWordNormalizer } from './normalizers/mswordnormalizer';
+export { parseHtml } from './filters/parse';
 
 import './augmentation';

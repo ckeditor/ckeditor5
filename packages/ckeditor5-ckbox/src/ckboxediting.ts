@@ -43,8 +43,8 @@ export default class CKBoxEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'CKBoxEditing' {
-		return 'CKBoxEditing';
+	public static get pluginName() {
+		return 'CKBoxEditing' as const;
 	}
 
 	/**
@@ -115,7 +115,6 @@ export default class CKBoxEditing extends Plugin {
 
 		editor.config.define( 'ckbox', {
 			serviceOrigin: 'https://api.ckbox.io',
-			assetsOrigin: 'https://ckbox.cloud',
 			defaultUploadCategories: null,
 			ignoreDataId: false,
 			language: editor.locale.uiLanguage,

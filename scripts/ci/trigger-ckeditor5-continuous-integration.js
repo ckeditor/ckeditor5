@@ -8,11 +8,11 @@
 const fetch = require( 'node-fetch' );
 
 const {
-	INTEGRATION_CI_TRAVIS_TOKEN,
 	INTEGRATION_CI_ORGANIZATION,
 	INTEGRATION_CI_REPOSITORY,
 	TRAVIS_EVENT_TYPE,
-	TRAVIS_BRANCH
+	TRAVIS_BRANCH,
+	INTEGRATION_CI_CIRCLE_CI_TOKEN
 } = process.env;
 
 /**
@@ -38,19 +38,20 @@ module.exports = function triggerCkeditor5ContinuousIntegration( repository, las
 		return;
 	}
 
-	const requestUrl = `https://api.travis-ci.com/repo/${ INTEGRATION_CI_ORGANIZATION }%2F${ INTEGRATION_CI_REPOSITORY }/requests`;
+	const requestUrl =
+		`https://circleci.com/api/v2/project/github/${ INTEGRATION_CI_ORGANIZATION }/${ INTEGRATION_CI_REPOSITORY }/pipeline`;
 	const requestOptions = {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/json',
 			'Accept': 'application/json',
-			'Travis-API-Version': 3,
-			'Authorization': `token ${ INTEGRATION_CI_TRAVIS_TOKEN }`
+			'Circle-Token': INTEGRATION_CI_CIRCLE_CI_TOKEN
 		},
 		body: JSON.stringify( {
-			request: {
-				branch: 'master',
-				message: `Repository: ${ repository }\n\nCommit: https://github.com/${ repository }/commit/${ lastCommit }.`
+			branch: 'master',
+			parameters: {
+				triggerRepositorySlug: repository,
+				triggerCommitHash: lastCommit
 			}
 		} )
 	};

@@ -113,6 +113,14 @@ describe( 'StyleCommand', () => {
 		}
 	];
 
+	const blockDivStyles = [
+		{
+			name: 'Div style',
+			element: 'div',
+			classes: [ 'callout' ]
+		}
+	];
+
 	beforeEach( async () => {
 		await createEditor( [
 			...inlineStyles,
@@ -120,7 +128,8 @@ describe( 'StyleCommand', () => {
 			...blockHeadingStyles,
 			...blockCodeBlockStyles,
 			...blockQuoteBlockStyles,
-			...blockWidgetStyles
+			...blockWidgetStyles,
+			...blockDivStyles
 		] );
 	} );
 
@@ -171,6 +180,39 @@ describe( 'StyleCommand', () => {
 					...inlineStyles.map( ( { name } ) => name ),
 					...blockParagraphStyles.map( ( { name } ) => name ),
 					...blockQuoteBlockStyles.map( ( { name } ) => name )
+				] );
+			} );
+
+			it( 'should enable styles for div (as container)', () => {
+				setData( model,
+					'<paragraph>foo</paragraph>' +
+					'<htmlDiv>' +
+						'<paragraph>bar[]</paragraph>' +
+					'</htmlDiv>' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				command.refresh();
+
+				expect( command.enabledStyles ).to.have.members( [
+					...inlineStyles.map( ( { name } ) => name ),
+					...blockParagraphStyles.map( ( { name } ) => name ),
+					...blockDivStyles.map( ( { name } ) => name )
+				] );
+			} );
+
+			it( 'should enable styles for div (as block)', () => {
+				setData( model,
+					'<paragraph>foo</paragraph>' +
+					'<htmlDivParagraph>bar[]</htmlDivParagraph>' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				command.refresh();
+
+				expect( command.enabledStyles ).to.have.members( [
+					...inlineStyles.map( ( { name } ) => name ),
+					...blockDivStyles.map( ( { name } ) => name )
 				] );
 			} );
 
@@ -418,6 +460,32 @@ describe( 'StyleCommand', () => {
 				} );
 
 				expect( command.value ).to.have.members( [ 'Vibrant code block' ] );
+			} );
+
+			it( 'should detect styles for the div (as container)', () => {
+				setData( model,
+					'<htmlDiv>' +
+						'<paragraph>foo[bar]baz</paragraph>' +
+					'</htmlDiv>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'htmlDivAttributes', { classes: [ 'callout' ] }, root.getChild( 0 ) );
+				} );
+
+				expect( command.value ).to.have.members( [ 'Div style' ] );
+			} );
+
+			it( 'should detect styles for the div (as block)', () => {
+				setData( model,
+					'<htmlDivParagraph>foo[bar]baz</htmlDivParagraph>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'htmlDivAttributes', { classes: [ 'callout' ] }, root.getChild( 0 ) );
+				} );
+
+				expect( command.value ).to.have.members( [ 'Div style' ] );
 			} );
 
 			it( 'should not detect styles for elements outside a widget element', () => {
@@ -806,6 +874,48 @@ describe( 'StyleCommand', () => {
 					'<heading1 htmlH2Attributes="{"classes":["red"]}">fo[o</heading1>' +
 					'<paragraph>bar</paragraph>' +
 					'<heading1 htmlH2Attributes="{"classes":["red"]}">ba]z</heading1>'
+				);
+			} );
+
+			it( 'should add (and remove) htmlDivAttribute for div as a container', () => {
+				setData( model,
+					'<htmlDiv>' +
+						'<paragraph>foo[]</paragraph>' +
+					'</htmlDiv>'
+				);
+
+				command.execute( { styleName: 'Div style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlDiv htmlDivAttributes="{"classes":["callout"]}">' +
+						'<paragraph>foo[]</paragraph>' +
+					'</htmlDiv>'
+				);
+
+				command.execute( { styleName: 'Div style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlDiv>' +
+						'<paragraph>foo[]</paragraph>' +
+					'</htmlDiv>'
+				);
+			} );
+
+			it( 'should add (and remove) htmlDivAttribute for div as a block', () => {
+				setData( model,
+					'<htmlDivParagraph>foo[]</htmlDivParagraph>'
+				);
+
+				command.execute( { styleName: 'Div style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlDivParagraph htmlDivAttributes="{"classes":["callout"]}">foo[]</htmlDivParagraph>'
+				);
+
+				command.execute( { styleName: 'Div style' } );
+
+				expect( getData( model ) ).to.equal(
+					'<htmlDivParagraph>foo[]</htmlDivParagraph>'
 				);
 			} );
 

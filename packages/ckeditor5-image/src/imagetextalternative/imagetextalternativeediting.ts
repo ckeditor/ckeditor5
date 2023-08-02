@@ -27,8 +27,8 @@ export default class ImageTextAlternativeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageTextAlternativeEditing' {
-		return 'ImageTextAlternativeEditing';
+	public static get pluginName() {
+		return 'ImageTextAlternativeEditing' as const;
 	}
 
 	/**

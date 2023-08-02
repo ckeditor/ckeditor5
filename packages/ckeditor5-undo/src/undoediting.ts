@@ -43,8 +43,8 @@ export default class UndoEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'UndoEditing' {
-		return 'UndoEditing';
+	public static get pluginName() {
+		return 'UndoEditing' as const;
 	}
 
 	/**

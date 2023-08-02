@@ -4,6 +4,8 @@
 
 category: ckeditor4-migration
 menu-title: Configuration options compatibility
+meta-title: CKEditor 4 migration - Configuration options compatibility
+meta-description: Learn about the CKEditor 4 configuration options and their equivalent in CKEditor 5.
 order: 50
 modified_at: 2023-03-21
 ---
@@ -532,11 +534,11 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordCleanupFile">pasteFromWordCleanupFile</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordNumberedHeadingToList">pasteFromWordNumberedHeadingToList</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordPromptCleanup">pasteFromWordPromptCleanup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordRemoveStyles">pasteFromWordRemoveStyles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWord_heuristicsEdgeList">pasteFromWord_heuristicsEdgeList</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWord_inlineImages">pasteFromWord_inlineImages</a></td>
-			<td>Refer to the {@link features/paste-from-word Paste from Word} feature guide to learn more about support for pasting from Microsoft Word in CKEditor 5.</td>
+			<td>Refer to the {@link features/paste-from-office Paste from Office} feature guide to learn more about support for pasting from Microsoft Word in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteTools_keepZeroMargins">pasteTools_keepZeroMargins</a></td>
-			<td>Refer to the {@link features/paste-from-word Paste from Word} and {@link features/paste-from-word Paste from Google Docs} feature guides to learn more about support for pasting from external applications in CKEditor 5.</td>
+			<td>Refer to the {@link features/paste-from-office Paste from Office} and {@link features/paste-from-google-docs Paste from Google Docs} feature guides to learn more about support for pasting from external applications in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins">plugins</a></td>

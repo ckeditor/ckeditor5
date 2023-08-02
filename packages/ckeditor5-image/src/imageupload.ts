@@ -27,8 +27,8 @@ export default class ImageUpload extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageUpload' {
-		return 'ImageUpload';
+	public static get pluginName() {
+		return 'ImageUpload' as const;
 	}
 
 	/**

@@ -17,9 +17,9 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Let's start!
 
-The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor.
+The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor.
 
-The editor has already been created in the `app.js` file with some basic plugins. All you need to do, is clone the repository, run the `npm install` command, and you can start coding right away.
+The editor has already been created in the `app.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files), run the `npm install` command, and you can start coding right away.
 
 The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly).
 
@@ -347,7 +347,7 @@ We need to register it in the editor's UI `componentFactory`, so it can be displ
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
@@ -405,7 +405,7 @@ We will use the `insertContent()` method to insert our abbreviation and its titl
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
-class AbbreviationUI extends Plugin {
+export default class AbbreviationUI extends Plugin {
 	init() {
 		const editor = this.editor;
 

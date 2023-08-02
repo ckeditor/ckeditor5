@@ -957,6 +957,7 @@ export default {
 			view: '$customElement',
 			modelSchema: {
 				allowWhere: [ '$text', '$block' ],
+				allowAttributesOf: '$inlineObject',
 				isInline: true
 			}
 		}

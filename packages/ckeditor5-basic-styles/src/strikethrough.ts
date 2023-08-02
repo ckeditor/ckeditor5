@@ -31,7 +31,7 @@ export default class Strikethrough extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Strikethrough' {
-		return 'Strikethrough';
+	public static get pluginName() {
+		return 'Strikethrough' as const;
 	}
 }

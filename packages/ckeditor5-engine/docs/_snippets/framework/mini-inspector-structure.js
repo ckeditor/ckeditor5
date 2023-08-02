@@ -90,7 +90,8 @@ function Structure( editor ) {
 }
 
 DecoupledEditor.create( document.querySelector( '#mini-inspector-structure' ), {
-	plugins: [ Essentials, Paragraph, Structure ]
+	plugins: [ Essentials, Paragraph, Structure ],
+	toolbar: []
 } )
 	.then( editor => {
 		window.editor = editor;

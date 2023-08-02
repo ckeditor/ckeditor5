@@ -17,7 +17,7 @@ Copy some text from one of the styled paragraphs below and press <kbd>Ctrl</kbd>
 {@snippet features/paste-plain-text}
 
 <info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor full-featured editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Additional feature information
@@ -70,7 +70,7 @@ Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/
 ## Related features
 
 CKEditor 5 supports a wider range of paste features, including:
-* {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
+* {@link features/paste-from-office Paste from Office} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
 

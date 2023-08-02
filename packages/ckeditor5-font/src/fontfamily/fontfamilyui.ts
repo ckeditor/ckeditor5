@@ -26,8 +26,8 @@ export default class FontFamilyUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'FontFamilyUI' {
-		return 'FontFamilyUI';
+	public static get pluginName() {
+		return 'FontFamilyUI' as const;
 	}
 
 	/**

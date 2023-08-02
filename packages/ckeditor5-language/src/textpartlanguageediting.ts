@@ -22,8 +22,8 @@ export default class TextPartLanguageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TextPartLanguageEditing' {
-		return 'TextPartLanguageEditing';
+	public static get pluginName() {
+		return 'TextPartLanguageEditing' as const;
 	}
 
 	/**
@@ -101,11 +101,5 @@ export default class TextPartLanguageEditing extends Plugin {
 				} );
 			}
 		} );
-	}
-}
-
-declare module '@ckeditor/ckeditor5-core' {
-	interface PluginsMap {
-		[ TextPartLanguageEditing.pluginName ]: TextPartLanguageEditing;
 	}
 }

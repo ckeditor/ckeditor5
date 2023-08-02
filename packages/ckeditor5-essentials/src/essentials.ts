@@ -42,7 +42,7 @@ export default class Essentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'Essentials' {
-		return 'Essentials';
+	public static get pluginName() {
+		return 'Essentials' as const;
 	}
 }

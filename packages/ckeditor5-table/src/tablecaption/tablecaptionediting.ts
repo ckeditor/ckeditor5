@@ -30,8 +30,8 @@ export default class TableCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'TableCaptionEditing' {
-		return 'TableCaptionEditing';
+	public static get pluginName() {
+		return 'TableCaptionEditing' as const;
 	}
 
 	/**
@@ -95,10 +95,11 @@ export default class TableCaptionEditing extends Plugin {
 				const figcaptionElement = writer.createEditableElement( 'figcaption' );
 				writer.setCustomProperty( 'tableCaption', true, figcaptionElement );
 
+				figcaptionElement.placeholder = t( 'Enter table caption' );
+
 				enablePlaceholder( {
 					view,
 					element: figcaptionElement,
-					text: t( 'Enter table caption' ),
 					keepOnFocus: true
 				} );
 

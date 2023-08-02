@@ -26,27 +26,27 @@ msgstr ""
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
-msgstr ""
+msgstr "Redakto bllokun"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
-msgstr ""
+msgstr "E radhës"
 
 msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
 msgid "Previous"
-msgstr ""
+msgstr "Paraprake"
 
 msgctxt "Label used by assistive technologies describing a generic editor toolbar."
 msgid "Editor toolbar"
-msgstr ""
+msgstr "Kokështrirja e redaktuesit"
 
 msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
 msgid "Dropdown toolbar"
-msgstr ""
+msgstr "Zgjero kokështrirjen"
 
 msgctxt "Label of a button that applies a black color in color pickers."
 msgid "Black"
-msgstr ""
+msgstr "E zezë"
 
 msgctxt "Label of a button that applies a dim grey color in color pickers."
 msgid "Dim grey"
@@ -54,7 +54,7 @@ msgstr ""
 
 msgctxt "Label of a button that applies a grey color in color pickers."
 msgid "Grey"
-msgstr ""
+msgstr "Ngjyrë hiri"
 
 msgctxt "Label of a button that applies a light grey color in color pickers."
 msgid "Light grey"
@@ -62,19 +62,19 @@ msgstr ""
 
 msgctxt "Label of a button that applies a white color in color pickers."
 msgid "White"
-msgstr ""
+msgstr "E bardhë"
 
 msgctxt "Label of a button that applies a red color in color pickers."
 msgid "Red"
-msgstr ""
+msgstr "E kuqe"
 
 msgctxt "Label of a button that applies a orange color in color pickers."
 msgid "Orange"
-msgstr ""
+msgstr "Ngjyrë portokalli"
 
 msgctxt "Label of a button that applies a yellow color in color pickers."
 msgid "Yellow"
-msgstr ""
+msgstr "E verdhë"
 
 msgctxt "Label of a button that applies a light green color in color pickers."
 msgid "Light green"
@@ -82,7 +82,7 @@ msgstr ""
 
 msgctxt "Label of a button that applies a green color in color pickers."
 msgid "Green"
-msgstr ""
+msgstr "E gjelbër"
 
 msgctxt "Label of a button that applies a aquamarine color in color pickers."
 msgid "Aquamarine"
@@ -98,7 +98,7 @@ msgstr ""
 
 msgctxt "Label of a button that applies a blue color in color pickers."
 msgid "Blue"
-msgstr ""
+msgstr "E kaltër"
 
 msgctxt "Label of a button that applies a purple color in color pickers."
 msgid "Purple"
@@ -114,4 +114,8 @@ msgstr ""
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
+msgstr ""
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
 msgstr ""

@@ -35,8 +35,8 @@ export default class ImageUploadProgress extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageUploadProgress' {
-		return 'ImageUploadProgress';
+	public static get pluginName() {
+		return 'ImageUploadProgress' as const;
 	}
 
 	/**

@@ -23,8 +23,8 @@ export default class ListUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ListUtils' {
-		return 'ListUtils';
+	public static get pluginName() {
+		return 'ListUtils' as const;
 	}
 
 	/**

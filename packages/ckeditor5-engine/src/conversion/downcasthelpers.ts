@@ -271,7 +271,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 * } );
 	 * ```
 	 *
-	 * The `slorFor()` function can also take a callback that allows filtering which children of the model element
+	 * The `createSlot()` function can also take a callback that allows filtering which children of the model element
 	 * should be converted into this slot.
 	 *
 	 * Imagine a table feature where for this model structure:
@@ -819,7 +819,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 * ```ts
 	 * // Using a custom function which is the same as the default conversion:
 	 * editor.conversion.for( 'dataDowncast' ).markerToData( {
-	 * 	model: 'comment'
+	 * 	model: 'comment',
 	 * 	view: markerName => ( {
 	 * 		group: 'comment',
 	 * 		name: markerName.substr( 8 ) // Removes 'comment:' part.
@@ -828,7 +828,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 *
 	 * // Using the converter priority:
 	 * editor.conversion.for( 'dataDowncast' ).markerToData( {
-	 * 	model: 'comment'
+	 * 	model: 'comment',
 	 * 	view: markerName => ( {
 	 * 		group: 'comment',
 	 * 		name: markerName.substr( 8 ) // Removes 'comment:' part.
@@ -1022,7 +1022,7 @@ export function convertRangeSelection() {
  * converted, broken attributes might be merged again, or the position where the selection is may be wrapped
  * with different, appropriate attribute elements.
  *
- * See also {@link module:engine/conversion/downcasthelpers~clearAttributes} which does a clean-up
+ * See also {@link module:engine/conversion/downcasthelpers~cleanSelection} which does a clean-up
  * by merging attributes.
  *
  * @returns Selection converter.
@@ -1053,7 +1053,7 @@ export function convertCollapsedSelection() {
 }
 
 /**
- * Function factory that creates a converter which clears artifacts after the previous
+ * Function factory that creates a converter which cleans artifacts after the previous
  * {@link module:engine/model/selection~Selection model selection} conversion. It removes all empty
  * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merges sibling attributes at all start and end
  * positions of all ranges.
@@ -1072,7 +1072,7 @@ export function convertCollapsedSelection() {
  * This listener should be assigned before any converter for the new selection:
  *
  * ```ts
- * modelDispatcher.on( 'selection', clearAttributes() );
+ * modelDispatcher.on( 'cleanSelection', cleanSelection() );
  * ```
  *
  * See {@link module:engine/conversion/downcasthelpers~convertCollapsedSelection}
@@ -1080,7 +1080,7 @@ export function convertCollapsedSelection() {
  *
  * @returns Selection converter.
  */
-export function clearAttributes() {
+export function cleanSelection() {
 	return (
 		evt: EventInfo,
 		data: unknown,
@@ -1098,6 +1098,7 @@ export function clearAttributes() {
 				}
 			}
 		}
+
 		viewWriter.setSelection( null );
 	};
 }

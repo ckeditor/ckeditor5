@@ -101,6 +101,20 @@
 			border: 1px solid hsl(120, 89%, 27%);
 		}
 
+		.ck.ck-content div.callout {
+			background: yellow;
+			border: 1px solid orange;
+			padding: 1em;
+			margin-top: 1em;
+			margin-bottom: 1em;
+		}
+		.ck.ck-content div.callout p:first-child {
+			margin-top: 0;
+		}
+		.ck.ck-content div.callout p:last-child {
+			margin-bottom: 0;
+		}
+
 		/* ---------------- Inline --------------- */
 
 		.ck.ck-content .marker {
@@ -291,6 +305,15 @@
 			<p>Florence is also regarded as one of the top 15 fashion capitals of the world.</p>
 		</li>
 	</ol>
+
+	<div class="callout">
+		Div block styled (div as a paragraph).
+	</div>
+	<div class="callout">
+		<p>
+			Div container styled.
+		</p>
+	</div>
 
 </div>
 

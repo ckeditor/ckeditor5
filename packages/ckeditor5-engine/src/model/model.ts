@@ -1097,7 +1097,6 @@ export default class Model extends ObservableMixin() {
 	/**
 	 * Common part of {@link module:engine/model/model~Model#change} and {@link module:engine/model/model~Model#enqueueChange}
 	 * which calls callbacks and returns array of values returned by these callbacks.
-	 *
 	 */
 	private _runPendingChanges() {
 		const ret = [];

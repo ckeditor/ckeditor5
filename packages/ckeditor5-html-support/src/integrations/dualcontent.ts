@@ -47,8 +47,8 @@ export default class DualContentModelElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'DualContentModelElementSupport' {
-		return 'DualContentModelElementSupport';
+	public static get pluginName() {
+		return 'DualContentModelElementSupport' as const;
 	}
 
 	/**

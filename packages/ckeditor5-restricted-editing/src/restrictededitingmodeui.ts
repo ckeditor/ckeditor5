@@ -32,8 +32,8 @@ export default class RestrictedEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'RestrictedEditingModeUI' {
-		return 'RestrictedEditingModeUI';
+	public static get pluginName() {
+		return 'RestrictedEditingModeUI' as const;
 	}
 
 	/**

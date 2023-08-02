@@ -8,11 +8,11 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Element, MatcherPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine';
+import type { Element, MatcherObjectPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
 import type { TemplateDefinition } from 'ckeditor5/src/ui';
 
-import type { DataFilter, DataSchema, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import type { DataFilter, DataSchema, GeneralHtmlSupport, DataSchemaBlockElementDefinition } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig';
 import { isObject } from 'lodash-es';
@@ -29,8 +29,8 @@ export default class StyleUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'StyleUtils' {
-		return 'StyleUtils';
+	public static get pluginName() {
+		return 'StyleUtils' as const;
 	}
 
 	/**
@@ -99,7 +99,13 @@ export default class StyleUtils extends Plugin {
 					if ( typeof appliesToBlock == 'string' ) {
 						modelElements.push( appliesToBlock );
 					} else if ( ghsDefinition.isBlock ) {
+						const ghsBlockDefinition: DataSchemaBlockElementDefinition = ghsDefinition;
+
 						modelElements.push( ghsDefinition.model );
+
+						if ( ghsBlockDefinition.paragraphLikeModel ) {
+							modelElements.push( ghsBlockDefinition.paragraphLikeModel );
+						}
 					}
 				} else {
 					ghsAttributes.push( ghsDefinition.model );
@@ -244,7 +250,7 @@ export default class StyleUtils extends Plugin {
 	/**
 	 * This is where the styles feature configures the GHS feature. This method translates normalized
 	 * {@link module:style/styleconfig~StyleDefinition style definitions} to
-	 * {@link module:engine/view/matcher~MatcherPattern matcher patterns} and feeds them to the GHS
+	 * {@link module:engine/view/matcher~MatcherObjectPattern matcher patterns} and feeds them to the GHS
 	 * {@link module:html-support/datafilter~DataFilter} plugin.
 	 *
 	 * @internal
@@ -307,7 +313,7 @@ function isPreviewable( elementName: string ): boolean {
 /**
  * Translates a normalized style definition to a view matcher pattern.
  */
-function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherPattern {
+function normalizedStyleDefinitionToMatcherPattern( { element, classes }: StyleDefinition ): MatcherObjectPattern {
 	return {
 		name: element,
 		classes

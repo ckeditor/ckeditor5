@@ -7,7 +7,7 @@
  * @module ui/editorui/poweredby
  */
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 import {
 	Rect,
 	DomEmitterMixin,
@@ -22,10 +22,11 @@ import View from '../view';
 import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';
-import type { UiConfig } from '@ckeditor/ckeditor5-core/src/editor/editorconfig';
 
 const ICON_WIDTH = 53;
 const ICON_HEIGHT = 10;
+// ⚠ Note, whenever changing the threshold, make sure to update the docs/support/managing-ckeditor-logo.md docs
+// as this information is also mentioned there ⚠.
 const NARROW_ROOT_HEIGHT_THRESHOLD = 50;
 const NARROW_ROOT_WIDTH_THRESHOLD = 350;
 const DEFAULT_LABEL = 'Powered by';
@@ -351,14 +352,18 @@ function getLowerCornerPosition(
 
 			if ( firstScrollableEditableElementAncestor ) {
 				const firstScrollableEditableElementAncestorRect = new Rect( firstScrollableEditableElementAncestor );
+				const notVisibleVertically = visibleEditableElementRect.bottom + balloonRect.height / 2 >
+				firstScrollableEditableElementAncestorRect.bottom;
+				const notVisibleHorizontally = config.side === 'left' ?
+					editableElementRect.left < firstScrollableEditableElementAncestorRect.left :
+					editableElementRect.right > firstScrollableEditableElementAncestorRect.right;
 
 				// The watermark cannot be positioned in this corner because the corner is "not visible enough".
-				if ( visibleEditableElementRect.bottom + balloonRect.height / 2 > firstScrollableEditableElementAncestorRect.bottom ) {
+				if ( notVisibleVertically || notVisibleHorizontally ) {
 					return OFF_THE_SCREEN_POSITION;
 				}
 			}
 		}
-
 		return {
 			top: balloonTop,
 			left: balloonLeft,

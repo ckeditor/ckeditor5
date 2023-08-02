@@ -104,6 +104,25 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/14569.
+	it( 'should call focusObserver#flush when selection is in the editable but not changed', () => {
+		// Set DOM selection.
+		changeDomSelection();
+
+		// Update view selection to match DOM selection.
+		const domSelection = domDocument.getSelection();
+		const viewPosition = view.domConverter.domPositionToView( domSelection.focusNode, domSelection.focusOffset );
+
+		view.change( writer => writer.setSelection( viewPosition ) );
+
+		const flushSpy = testUtils.sinon.spy( selectionObserver.focusObserver, 'flush' );
+
+		// Fire selection change without actually moving selection.
+		domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+		sinon.assert.calledOnce( flushSpy );
+	} );
+
 	it( 'should not fire selectionChange while user is composing', done => {
 		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange fired while composing';
