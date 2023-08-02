@@ -230,15 +230,11 @@ export function sumArray( array: Array<number | string> ): number {
  * changed proportionally so that they all sum back to 100%. If there are columns without specified width, the amount remaining
  * after assigning the known widths will be distributed equally between them.
  *
- * Currently, only widths provided as percentage values are supported.
- *
  * @param columnWidths An array of column widths.
  * @returns An array of column widths guaranteed to sum up to 100%.
  */
 export function normalizeColumnWidths( columnWidths: Array<string> ): Array<string> {
 	const widths: Array<number | 'auto'> = columnWidths.map( width => {
-		// @TODO_DAR
-		// Possible values are 'auto' or string ending with '%'
 		if ( width === 'auto' ) {
 			return width;
 		}

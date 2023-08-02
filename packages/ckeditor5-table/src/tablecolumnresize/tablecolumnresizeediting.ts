@@ -427,6 +427,8 @@ export default class TableColumnResizeEditing extends Plugin {
 			}
 		} );
 
+		// The `col[span]` attribute is present in tables pasted from MS Excel. We use it to set the temporary `colSpan` model attribute,
+		// which is consumed during the `colgroup` element upcast.
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				name: 'col',
