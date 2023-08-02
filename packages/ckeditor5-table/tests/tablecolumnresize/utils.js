@@ -672,7 +672,7 @@ describe( 'TableColumnResize utils', () => {
 		} );
 	} );
 
-	describe( 'getColumnWidths()', () => {
+	describe( 'getTableColumnsWidths()', () => {
 		it( 'should return tableColumnGroup count when there are columns', () => {
 			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
