@@ -159,6 +159,26 @@ describe( 'CKBoxCommand', () => {
 				expect( document.body.appendChild.args[ 0 ][ 0 ] ).to.equal( wrapper );
 			} );
 
+			it( 'should focus dialog after initialization', () => {
+				const wrapper = document.createElement( 'div' );
+				const resetContainer = document.createElement( 'div' );
+				const ckboxDialogContainer = document.createElement( 'div' );
+
+				wrapper.appendChild( resetContainer );
+				resetContainer.appendChild( ckboxDialogContainer );
+
+				Object.defineProperty( command, '_wrapper', {
+					get: sinon.stub().returns( wrapper ),
+					set: sinon.stub().callsFake( value => value )
+				} );
+
+				const spy = sinon.spy( ckboxDialogContainer, 'focus' );
+				command.execute();
+
+				spy.calledOnce;
+				sinon.restore();
+			} );
+
 			it( 'should create and mount a wrapper only once', () => {
 				command.execute();
 

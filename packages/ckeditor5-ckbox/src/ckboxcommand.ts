@@ -177,6 +177,8 @@ export default class CKBoxCommand extends Command {
 			document.body.appendChild( this._wrapper );
 
 			window.CKBox.mount( this._wrapper, this._prepareOptions() );
+
+			focusDialog( this._wrapper );
 		} );
 
 		// Handle closing of the CKBox dialog.
@@ -385,6 +387,25 @@ function getAssetUrl( asset: CKBoxRawAssetDefinition ) {
 	url.searchParams.set( 'download', 'true' );
 
 	return url.toString();
+}
+
+/**
+ * Focuses the CKBox dialog.
+ *
+ * @param wrapper The element in DOM which wrap CKBox component.
+ */
+function focusDialog( wrapper: Element | null ) {
+	// If the DOM is not fully loaded and rendered by the time the focus() method is invoked,
+	// the element might not get focused. So we call the focus() when the thread becomes idle.
+	setTimeout( () => {
+		// Wrapper cannot be focused by default because it's covered by it's children entirely.
+		// Then we getting to the nearest focusable child( dialog container ) inside wrapper.
+		const dialogContainer = wrapper && wrapper.children[ 0 ] && wrapper.children[ 0 ].children[ 0 ];
+
+		if ( dialogContainer instanceof HTMLElement ) {
+			dialogContainer.focus();
+		}
+	} );
 }
 
 /**
