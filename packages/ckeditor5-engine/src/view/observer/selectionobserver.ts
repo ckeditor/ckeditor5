@@ -232,7 +232,7 @@ export default class SelectionObserver extends Observer {
 
 		const domSelection = domDocument.defaultView!.getSelection()!;
 
-		if ( env.isGecko && this._isObjectRestricted( domSelection.getRangeAt( 0 ).startContainer ) ) {
+		if ( isRestricted( domSelection ) ) {
 			return;
 		}
 
@@ -306,24 +306,6 @@ export default class SelectionObserver extends Observer {
 		}
 	}
 
-	// In firefox exists restricted objects. Trying get any property from restricted object, it will through an error.
-	// https://github.com/ckeditor/ckeditor5/issues/9635
-	private _isObjectRestricted( obj: unknown ): boolean {
-		let isRestricted;
-
-		try {
-			if ( Object.prototype.toString.call( obj ) ) {
-				isRestricted = false;
-			} else {
-				isRestricted = true;
-			}
-		} catch ( error ) {
-			isRestricted = true;
-		}
-
-		return isRestricted;
-	}
-
 	/**
 	 * Clears `SelectionObserver` internal properties connected with preventing infinite loop.
 	 */
@@ -352,6 +334,25 @@ export type ViewDocumentSelectionEventData = {
 	 */
 	domSelection: DomSelection | null;
 };
+
+// In firefox exists restricted objects. Trying get any property from restricted object, it will through an error.
+// https://github.com/ckeditor/ckeditor5/issues/9635
+function isRestricted( domSelection: DomSelection ): boolean {
+	if ( !env.isGecko ) {
+		return false;
+	}
+
+	let isRestricted = false;
+
+	try {
+		const container = domSelection.getRangeAt( 0 ).startContainer;
+		Object.prototype.toString.call( container );
+	} catch ( error ) {
+		isRestricted = true;
+	}
+
+	return isRestricted;
+}
 
 /**
  * Fired when a selection has changed. This event is fired only when the selection change was the only change that happened

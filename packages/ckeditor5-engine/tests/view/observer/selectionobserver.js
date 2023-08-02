@@ -162,44 +162,33 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should not pass non-valid object on Firefox', done => {
-		testUtils.sinon.stub( env, 'isGecko' ).value( true );
-		testUtils.sinon.stub( Object.prototype, 'toString' ).value( () => null );
+	describe( 'Restricted objects handling in Gecko', () => {
+		it( 'should detect restricted object on Firefox', done => {
+			testUtils.sinon.stub( env, 'isGecko' ).value( true );
+			testUtils.sinon.stub( Object.prototype, 'toString' ).throws(
+				new Error( 'Permission denied to access property Symbol.toStringTag' )
+			);
 
-		const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
+			const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
 
-		changeDomSelection();
-		setTimeout( () => {
-			sinon.assert.notCalled( spy );
-			done();
-		}, 100 );
-	} );
+			changeDomSelection();
+			setTimeout( () => {
+				sinon.assert.notCalled( spy );
+				done();
+			}, 100 );
+		} );
 
-	it( 'should detect restricted object on Firefox', done => {
-		testUtils.sinon.stub( env, 'isGecko' ).value( true );
-		testUtils.sinon.stub( Object.prototype, 'toString' ).throws(
-			new Error( 'Permission denied to access property Symbol.toStringTag' )
-		);
+		it( 'should pass valid object on Firefox', done => {
+			testUtils.sinon.stub( env, 'isGecko' ).value( true );
 
-		const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
+			const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
 
-		changeDomSelection();
-		setTimeout( () => {
-			sinon.assert.notCalled( spy );
-			done();
-		}, 100 );
-	} );
-
-	it( 'should pass valid object on Firefox', done => {
-		testUtils.sinon.stub( env, 'isGecko' ).value( true );
-
-		const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
-
-		changeDomSelection();
-		setTimeout( () => {
-			sinon.assert.calledOnce( spy );
-			done();
-		}, 100 );
+			changeDomSelection();
+			setTimeout( () => {
+				sinon.assert.calledOnce( spy );
+				done();
+			}, 100 );
+		} );
 	} );
 
 	it( 'should add only one #selectionChange listener to one document', done => {
