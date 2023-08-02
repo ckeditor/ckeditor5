@@ -77,7 +77,7 @@ export function getLocalizedLengthErrorText( t: LocaleTranslate ): string {
  * See {@link module:engine/view/styles/utils~isColor}.
  */
 export function colorFieldValidator( value: string ): boolean {
-	value = value.trim();
+	value = value.trim().toLowerCase();
 
 	return isEmpty( value ) || isColor( value );
 }
