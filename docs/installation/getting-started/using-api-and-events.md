@@ -5,7 +5,7 @@ order: 80
 
 # API and Events
 
-After creating the editor, you might want to use the editor's API.
+CKEditor 5 and its plugins expose structured API and Events that are allowing to interact with an editor and to react to changes.
 
 ## Using the API
 
@@ -28,9 +28,9 @@ editor.model.change((writer) => {
 });
 ```
 
-In the example above, you use a selection, a command, and you change the editor's model. All of this could be reverted with one undo step. This is a simple example of what the API can do. To learn more, read the... or look at other API how-tos.
+In the example above, you use a selection, a command, and you change the content using the editor's model. All of this could be reverted with one undo step. This is a simple example of what the API can do.
 
-TODO add more to examples to Examples and link to it. and framwork.
+Check more {@link examples/how-tos#editors-api examples}, {@link framework/architecture/core-editor-architecture CKEditor 5 core architecture} , and {@link api/index API reference}.
 
 ## Using events
 
@@ -42,5 +42,4 @@ editor.model.document.on("change:data", () => {
 });
 ```
 
-Every plugin in the editor publishes events that you can subscribe to and interact with. You can find more information in the examples and in our framework guidelines.
-TODO add more to examples to Examples and link to it. and framwork.
+Every plugin in the editor publishes events that you can subscribe to and interact with. You can find more information in {@link framework/architecture/core-editor-architecture#event-system-and-observables the framework documentation}
