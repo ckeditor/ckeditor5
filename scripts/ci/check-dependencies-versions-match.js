@@ -28,8 +28,6 @@ console.log( chalk.blue( '🔍 Starting checking dependencies versions...' ) );
 const [ packageJsons, pathMappings ] = getPackageJsons( [
 	'package.json',
 	'packages/*/package.json',
-	'external/ckeditor5-internal/packages/*/package.json',
-	'external/ckeditor5-internal/package.json',
 	'external/ckeditor5-commercial/packages/*/package.json',
 	'external/ckeditor5-commercial/package.json'
 ] );

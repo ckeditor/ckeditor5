@@ -26,4 +26,4 @@ msgstr "Die Kategorie für die hochgeladene Datei konnte nicht bestimmt werden."
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "Zugriff auf Standardarbeitsbereich nicht möglich."
