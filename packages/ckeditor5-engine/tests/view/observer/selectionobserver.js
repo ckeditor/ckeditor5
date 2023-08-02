@@ -163,7 +163,7 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	describe( 'Restricted objects handling in Gecko', () => {
-		it( 'should detect restricted object on Firefox', done => {
+		it( 'should detect "restricted objects" in Firefox DOM ranges and prevent an error being thrown', done => {
 			testUtils.sinon.stub( env, 'isGecko' ).value( true );
 			testUtils.sinon.stub( Object.prototype, 'toString' ).throws(
 				new Error( 'Permission denied to access property Symbol.toStringTag' )
@@ -172,18 +172,20 @@ describe( 'SelectionObserver', () => {
 			const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
 
 			changeDomSelection();
+
 			setTimeout( () => {
 				sinon.assert.notCalled( spy );
 				done();
 			}, 100 );
 		} );
 
-		it( 'should pass valid object on Firefox', done => {
+		it( 'should do nothing in Firefox if the DOM selection is correct', done => {
 			testUtils.sinon.stub( env, 'isGecko' ).value( true );
 
 			const spy = sinon.spy( selectionObserver.mutationObserver, 'flush' );
 
 			changeDomSelection();
+
 			setTimeout( () => {
 				sinon.assert.calledOnce( spy );
 				done();
