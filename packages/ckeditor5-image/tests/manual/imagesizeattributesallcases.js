@@ -87,17 +87,15 @@ const editors = [
 	},
 	{
 		id: 'inline3',
+		title: '[Inline] natural size | width + height attributes: Resized (width % style)',
 		config: commonConfig,
-		data: '<p><img style="width:22.69%;" src="game_boy.jpg" ' +
-			'alt="" width="384" height="500"></p>',
-		title: '[Inline] natural size | width + height attributes: Resized (width % style)'
+		data: '<p><img style="width:22.69%;" src="game_boy.jpg" alt="" width="384" height="500"></p>'
 	},
 	{
 		id: 'inline4',
+		title: '[Inline] natural size | width + height attributes: Resized (width % style)',
 		config: commonConfig,
-		data: '<p><img class="image_resized" style="width:22.69%;" ' +
-			'src="game_boy.jpg" alt="" width="384" height="500"></p>',
-		title: '[Inline] natural size | width + height attributes: Resized (width % style)'
+		data: '<p><img class="image_resized" style="width:22.69%;" src="game_boy.jpg" alt="" width="384" height="500"></p>'
 	},
 	{
 		id: 'inline5',
@@ -109,36 +107,31 @@ const editors = [
 		id: 'inline6',
 		title: '[Inline] natural size | width + height attributes: Resized (width px style only)',
 		config: configPx,
-		data: '<p><img class="image_resized" style="width:307px;" ' +
-			'src="game_boy.jpg" alt="" width="384" height="500"></p>'
+		data: '<p><img class="image_resized" style="width:307px;" src="game_boy.jpg" alt="" width="384" height="500"></p>'
 	},
 	{
 		id: 'inline7',
 		title: '[Inline] natural size | width + height attributes: Resized (width and height px style)',
 		config: configPx,
-		data: '<p><img style="height:400px;width:307px;" src="game_boy.jpg" ' +
-			'alt="" width="384" height="500"></p>'
+		data: '<p><img style="height:400px;width:307px;" src="game_boy.jpg" alt="" width="384" height="500"></p>'
 	},
 	{
 		id: 'inline8',
 		title: '[Inline] natural size | styles only (w/o width & height attributes): Resize in %',
 		config: commonConfig,
-		data: '<p><img style="width:384px;height:500px;" src="game_boy.jpg" ' +
-			'alt=""></p>'
+		data: '<p><img style="width:384px;height:500px;" src="game_boy.jpg" alt=""></p>'
 	},
 	{
 		id: 'inline9',
 		title: '[Inline] natural size | only resize in % (only width style)',
 		config: commonConfig,
-		data: '<p><img class="image_resized" style="width:12.34%;" ' +
-			'src="game_boy.jpg" alt=""></p>'
+		data: '<p><img class="image_resized" style="width:12.34%;" src="game_boy.jpg" alt=""></p>'
 	},
 	{
 		id: 'inline10',
 		title: '[Inline] natural size | styles only (w/o width & height attributes): Resize in px',
 		config: configPx,
-		data: '<p><img style="width:384px;height:500px;" ' +
-			'src="game_boy.jpg" alt=""></p>'
+		data: '<p><img style="width:384px;height:500px;" src="game_boy.jpg" alt=""></p>'
 	},
 	{
 		id: 'inline11',
@@ -150,8 +143,7 @@ const editors = [
 		id: 'inline12',
 		title: '[Inline] broken aspect ratio | styles only (w/o width & height attributes)',
 		config: commonConfig,
-		data: '<p><img style="width:500px;height:500px;" src="game_boy.jpg" ' +
-			'alt=""></p>'
+		data: '<p><img style="width:500px;height:500px;" src="game_boy.jpg" alt=""></p>'
 	},
 	{
 		id: 'block1',
@@ -163,36 +155,31 @@ const editors = [
 		id: 'block2',
 		title: '[Block] natural size | width + height attributes: Resize in %',
 		config: commonConfig,
-		data: '<figure class="image"><img src="game_boy.jpg" width="384" ' +
-			'height="500" alt=""></figure>'
+		data: '<figure class="image"><img src="game_boy.jpg" width="384" height="500" alt=""></figure>'
 	},
 	{
 		id: 'block3',
 		title: '[Block] natural size | width + height attributes: Resized (width % style)',
 		config: commonConfig,
-		data: '<figure class="image" style="width:10.09%;">' +
-			'<img src="game_boy.jpg" alt="" width="384" height="500"></figure>'
+		data: '<figure class="image" style="width:10.09%;"><img src="game_boy.jpg" alt="" width="384" height="500"></figure>'
 	},
 	{
 		id: 'block4',
 		title: '[Block] natural size | width + height attributes: Resized (width % style)',
 		config: commonConfig,
-		data: '<figure class="image image_resized" style="width:10.09%;">' +
-			'<img src="game_boy.jpg" alt="" width="384" height="500"></figure>'
+		data: '<figure class="image image_resized" style="width:10.09%;"><img src="game_boy.jpg" alt="" width="384" height="500"></figure>'
 	},
 	{
 		id: 'block5',
 		title: '[Block] natural size | width + height attributes: Resize in px',
 		config: configPx,
-		data: '<figure class="image"><img src="game_boy.jpg" ' +
-			'width="384" height="500" alt=""></figure>'
+		data: '<figure class="image"><img src="game_boy.jpg" width="384" height="500" alt=""></figure>'
 	},
 	{
 		id: 'block6',
 		title: '[Block] natural size | width + height attributes: Resized (width px style only)',
 		config: configPx,
-		data: '<figure class="image image_resized" style="width:115px;">' +
-			'<img src="game_boy.jpg" alt="" width="384" height="500"></figure>'
+		data: '<figure class="image image_resized" style="width:115px;"><img src="game_boy.jpg" alt="" width="384" height="500"></figure>'
 	},
 	{
 		id: 'block7',
@@ -205,50 +192,43 @@ const editors = [
 		id: 'block8',
 		title: '[Block] natural size | styles only (w/o width & height attributes): Resize in %',
 		config: commonConfig,
-		data: '<figure class="image" style="width:384px;height:500px;">' +
-			'<img src="game_boy.jpg" alt=""></figure>'
+		data: '<figure class="image" style="width:384px;height:500px;"><img src="game_boy.jpg" alt=""></figure>'
 	},
 	{
 		id: 'block9',
 		title: '[Block] natural size | only resize in % (only width style)',
 		config: commonConfig,
-		data: '<figure class="image image_resized" style="width:19.21%;">' +
-			'<img src="game_boy.jpg" alt=""></figure>'
+		data: '<figure class="image image_resized" style="width:19.21%;"><img src="game_boy.jpg" alt=""></figure>'
 	},
 	{
 		id: 'block10',
 		title: '[Block] natural size | styles only (w/o width & height attributes): Resize in px',
 		config: configPx,
-		data: '<figure class="image" style="width:384px;height:500px;">' +
-			'<img src="game_boy.jpg" alt=""></figure>'
+		data: '<figure class="image" style="width:384px;height:500px;"><img src="game_boy.jpg" alt=""></figure>'
 	},
 	{
 		id: 'block11',
 		title: '[Block] broken aspect ratio | width + height attributes',
 		config: commonConfig,
-		data: '<figure class="image">' +
-			'<img src="game_boy.jpg" width="500" height="500" alt=""></figure>'
+		data: '<figure class="image"><img src="game_boy.jpg" width="500" height="500" alt=""></figure>'
 	},
 	{
 		id: 'block12',
 		title: '[Block] broken aspect ratio | styles only (w/o width & height attributes)',
 		config: commonConfig,
-		data: '<figure class="image" style="width:500px;height:500px;">' +
-			'<img src="game_boy.jpg" alt=""></figure>'
+		data: '<figure class="image" style="width:500px;height:500px;"><img src="game_boy.jpg" alt=""></figure>'
 	},
 	{
 		id: 'inline101',
 		title: '[Inline] natural size | width + height attributes: Resized (height % style)',
 		config: commonConfig,
-		data: '<p><img style="height:20%;" src="parrot_2.jpg" ' +
-			'alt="" width="300" height="451"></p>'
+		data: '<p><img style="height:20%;" src="parrot_2.jpg" alt="" width="300" height="451"></p>'
 	},
 	{
 		id: 'inline102',
 		title: '[Inline] natural size | width + height attributes: Resized (height px style)',
 		config: configPx,
-		data: '<p><img style="height:200px;" src="parrot_2.jpg" ' +
-			'alt="" width="300" height="451"></p>'
+		data: '<p><img style="height:200px;" src="parrot_2.jpg" alt="" width="300" height="451"></p>'
 	},
 	{
 		id: 'inline103',
@@ -266,57 +246,49 @@ const editors = [
 		id: 'inline105',
 		title: '[Inline] width + height attributes: Resized (height & width % style)',
 		config: commonConfig,
-		data: '<p><img style="width:20%;height:20%;" src="parrot_2.jpg" ' +
-			'alt="" width="300" height="451"></p>'
+		data: '<p><img style="width:20%;height:20%;" src="parrot_2.jpg" alt="" width="300" height="451"></p>'
 	},
 	{
 		id: 'inline106',
 		title: '[Inline] only resize in % (height & width % style)',
 		config: commonConfig,
-		data: '<p><img style="width:20%;height:20%;" src="parrot_2.jpg" ' +
-			'alt=""></p>'
+		data: '<p><img style="width:20%;height:20%;" src="parrot_2.jpg" alt=""></p>'
 	},
 	{
 		id: 'block101',
 		title: '[Block] natural size | width + height attributes: Resized (height % style)',
 		config: commonConfig,
-		data: '<figure class="image" style="height:20%;">' +
-			'<img src="parrot_2.jpg" alt="" width="300" height="451"></figure>'
+		data: '<figure class="image" style="height:20%;"><img src="parrot_2.jpg" alt="" width="300" height="451"></figure>'
 	},
 	{
 		id: 'block102',
 		title: '[Block] natural size | width + height attributes: Resized (height px style)',
 		config: configPx,
-		data: '<figure class="image" style="height:200px;">' +
-			'<img src="parrot_2.jpg" alt="" width="300" height="451"></figure>'
+		data: '<figure class="image" style="height:200px;"><img src="parrot_2.jpg" alt="" width="300" height="451"></figure>'
 	},
 	{
 		id: 'block103',
 		title: '[Block] natural size | only resize in % (only height style)',
 		config: commonConfig,
-		data: '<figure class="image" style="height:20%;">' +
-			'<img src="parrot_2.jpg" alt=""></figure>'
+		data: '<figure class="image" style="height:20%;"><img src="parrot_2.jpg" alt=""></figure>'
 	},
 	{
 		id: 'block104',
 		title: '[Block] natural size | only resize in px (only height style)',
 		config: configPx,
-		data: '<figure class="image" style="height:200px;">' +
-			'<img src="parrot_2.jpg" alt=""></figure>'
+		data: '<figure class="image" style="height:200px;"><img src="parrot_2.jpg" alt=""></figure>'
 	},
 	{
 		id: 'block105',
 		title: '[Block] width + height attributes: Resized (height & width % style)',
 		config: commonConfig,
-		data: '<figure class="image" style="width:20%;height:20%;">' +
-			'<img src="parrot_2.jpg" alt="" width="300" height="451"></figure>'
+		data: '<figure class="image" style="width:20%;height:20%;"><img src="parrot_2.jpg" alt="" width="300" height="451"></figure>'
 	},
 	{
 		id: 'block106',
 		title: '[Block] only resize in % (height & width % style)',
 		config: commonConfig,
-		data: '<figure class="image" style="width:20%;height:20%;">' +
-			'<img src="parrot_2.jpg" alt=""></figure>'
+		data: '<figure class="image" style="width:20%;height:20%;"><img src="parrot_2.jpg" alt=""></figure>'
 	},
 	{
 		id: 'inline201',
