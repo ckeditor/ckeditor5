@@ -278,7 +278,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				{ language: 'javascript', label: 'JavaScript' },
 				{ language: 'python', label: 'Python' },
 				{ language: 'json', label: 'JSON' },
-				{ language: 'markdown', label: 'Markdown' }
+				{ language: 'markdown', label: 'Markdown' },
+				{ language: 'blocks', label: 'Scratch' }
 			]
 		},
 
