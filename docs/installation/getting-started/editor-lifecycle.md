@@ -67,16 +67,15 @@ Add the elements where CKEditor should initialize the toolbar and the editable t
 Then call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method to create a decoupled editor instance with the toolbar and the editable in two separate containers:
 
 ```js
-DecoupledEditor
-	.create( document.querySelector( '#editor' ) )
-	.then( editor => {
-		const toolbarContainer = document.querySelector( '#toolbar-container' );
+DecoupledEditor.create(document.querySelector("#editor"))
+	.then((editor) => {
+		const toolbarContainer = document.querySelector("#toolbar-container");
 
-		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
+		toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+	})
+	.catch((error) => {
+		console.error(error);
+	});
 ```
 
 ## Getting the editor's instance
@@ -89,6 +88,9 @@ The simplest way is save the reference to the editor somewhere after you create 
 .then((editor) => {
 	window.editor = editor;
 })
+
+// Or with the await:
+const editor = await ClassicEditor( /* ... */  );
 ```
 
 ## Destroying the editor with `destroy()`
