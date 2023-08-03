@@ -25,6 +25,7 @@ The webpack is also already configured, so you can just use the `npm run build` 
 If you want to set up the project yourself, you should follow the steps listed in {@link framework/quick-start#lets-start the Let's start section} of the Quick Start guide.
 
 When this is done, you need to install the following dependencies that will be necessary to proceed:
+
 ```bash
 npm install --save \
     @ckeditor/ckeditor5-dev-utils \
@@ -66,6 +67,31 @@ ClassicEditor
 	} );
 ```
 
+TypeScript implementation differs slightly - we need to assert there will be an HTML element.
+
+```ts
+// app.ts
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+ClassicEditor
+    .create( document.querySelector( '#editor' ) as HTMLElement, {
+        plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
+        toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+    } )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
+```
+
 Your `index.html` should look as listed below. The editor will load with HTML content you put inside the `<div id="editor">` tags.
 
 ```html
@@ -87,9 +113,11 @@ Your `index.html` should look as listed below. The editor will load with HTML co
 ```
 
 Now you just need to build your application using the command below.
+
 ```bash
 ./node_modules/.bin/webpack --mode development
 ```
+
 After opening the `index.html` in the browser, you should be able to see the working editor ready for plugin development.
 
 ## Creating a plugin
@@ -99,6 +127,8 @@ All features in the CKEditor 5 are powered by plugins. In order to create our cu
 We can now create a `Timestamp` class that extends the basic `Plugin` class. After we define it, we can add it into the editor's plugins array.
 
 ```js
+// app.js
+
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -130,6 +160,42 @@ ClassicEditor
 	} );
 ```
 
+The definition of the `Timestamp` class can look identical in TypeScript implementation.
+
+```ts
+// app.ts
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+class Timestamp extends Plugin {
+    init() {
+        console.log( 'Timestamp was initialized.' );
+    }
+}
+
+ClassicEditor
+    .create( document.querySelector( '#editor' ) as HTMLElement, {
+		// Add the Timestamp plugin to config.plugins array.
+        plugins: [
+			Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
+		],
+        toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+    } )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
+```
+
 Rebuild the editor and check in your console whether the timestamp was initialized. You should see this in the browser (on the left) and in the browser's development console (on the right):
 
 {@img assets/img/timestamp-1.png Screenshot of the editor and the console showing 'Editor was initialized".}
@@ -143,8 +209,16 @@ Once we create a new instance of the `ButtonView`, we will be able to customize 
 We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, in order to be able to add it into the {@link features/toolbar toolbar} array.
 
 ```js
-// Imports from the previous example
-// ...
+// app.js
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 class Timestamp extends Plugin {
@@ -185,6 +259,58 @@ ClassicEditor
 
 ```
 
+Registering a toolbar button doesn't differ in TypeScript implementation.
+
+```ts
+// app.ts
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+
+class Timestamp extends Plugin {
+	init() {
+		const editor = this.editor;
+		// The button must be registered among the UI components of the editor
+		// to be displayed in the toolbar.
+		editor.ui.componentFactory.add( 'timestamp', () => {
+			// The button will be an instance of ButtonView.
+			const button = new ButtonView();
+
+			button.set( {
+				label: 'Timestamp',
+				withText: true
+			} );
+
+			return button;
+		} );
+	}
+}
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ) as HTMLElement, {
+		plugins: [
+			Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
+		],
+		// Add the Timestamp button to the config.toolbar array.
+		toolbar: [
+			'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp'
+		]
+	} )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
 Rebuild the editor, and you should be able to see the timestamp button. It doesn't do anything just yet, so let's change that.
 
 ## Inserting a timestamp
@@ -200,13 +326,54 @@ In order to insert anything into the document structure, we need to {@link frame
 We will use the `insertContent()` method to insert our timestamp into the document. Inside, we just need to create a new text node with the  `writer.createText()` method.
 
 ```js
+// app.js
+
 class Timestamp extends Plugin {
 	init() {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'timestamp', () => {
-			// Button-related code from the previous example
-			// ...
+			const button = new ButtonView();
+
+            button.set( {
+                label: 'Timestamp',
+                withText: true
+            } );
+
+			// Execute a callback function when the button is clicked.
+			button.on( 'execute', () => {
+				const now = new Date();
+
+				// Change the model using the model writer.
+				editor.model.change( writer => {
+
+					// Insert the text at the user's current position.
+					editor.model.insertContent( writer.createText( now.toString() ) );
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+```
+
+If you use TypeScript, the code responsible for the plugin functionality can remain the same.
+
+```ts
+// app.ts
+
+class Timestamp extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'timestamp', () => {
+			const button = new ButtonView();
+
+            button.set( {
+                label: 'Timestamp',
+                withText: true
+            } );
 
 			// Execute a callback function when the button is clicked.
 			button.on( 'execute', () => {
@@ -232,12 +399,121 @@ Well done! When you rebuild the editor, you should be able to see that your time
 
 {@snippet framework/timestamp-plugin}
 
+## Final solution
+
+```js
+// app.js
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+
+class Timestamp extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'timestamp', () => {
+			const button = new ButtonView();
+
+            button.set( {
+                label: 'Timestamp',
+                withText: true
+            } );
+
+			button.on( 'execute', () => {
+				const now = new Date();
+                
+				editor.model.change( writer => {
+					editor.model.insertContent( writer.createText( now.toString() ) );
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        plugins: [
+            Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
+        ],
+        toolbar: [
+            'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp'
+        ]
+    } )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
+```
+
+```ts
+// app.ts
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+
+class Timestamp extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'timestamp', () => {
+			const button = new ButtonView();
+
+            button.set( {
+                label: 'Timestamp',
+                withText: true
+            } );
+
+			button.on( 'execute', () => {
+				const now = new Date();
+                
+				editor.model.change( writer => {
+					editor.model.insertContent( writer.createText( now.toString() ) );
+				} );
+			} );
+
+			return button;
+		} );
+	}
+}
+
+ClassicEditor
+    .create( document.querySelector( '#editor' ) as HTMLElement, {
+        plugins: [
+            Essentials, Paragraph, Heading, List, Bold, Italic, Timestamp
+        ],
+        toolbar: [
+            'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'timestamp'
+        ]
+    } )
+    .then( editor => {
+        console.log( 'Editor was initialized', editor );
+    } )
+    .catch( error => {
+        console.error( error.stack );
+    } );
+```
+
 ## Full code
 
-If you got lost at any point, see [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/final-project). You can paste the code from `app.js`, or clone and install the whole thing, and it will run out-of-the-box.
+If you got lost at any point, see [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/timestamp-plugin/final-project). You can clone and install the whole thing, and it will run out of the box.
 
 <info-box>
 	**What's next?**
-
 	You can continue with our next tutorial, where we will create {@link framework/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 an abbreviation plugin} or read more about the {@link framework/index CKEditor 5 framework}.
 </info-box>
