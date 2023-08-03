@@ -49,7 +49,7 @@ The basic build comes with a predefined set of plugins grouped in a bar at the t
 
 {@img assets/img/online-builder-02-predefined-plugins.png 778 Predefined plugins. Feel free to remove unneeded ones.}
 
-Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs.
+Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs. Some of the plugins may not work well with others or require dependencies. Online builder will provide information in such cases.
 
 {@img assets/img/online-builder-03-plugin-choice.png 778 Predefined plugins. Some of the plugins to choose from.}
 
