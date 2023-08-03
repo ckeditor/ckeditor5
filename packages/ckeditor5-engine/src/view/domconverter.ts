@@ -31,7 +31,8 @@ import {
 	isText,
 	isComment,
 	isValidAttributeName,
-	first
+	first,
+	env
 } from '@ckeditor/ckeditor5-utils';
 
 import type ViewNode from './node';
@@ -732,6 +733,10 @@ export default class DomConverter {
 	 * @returns View selection.
 	 */
 	public domSelectionToView( domSelection: DomSelection ): ViewSelection {
+		if ( isGeckoRestrictedDomSelection( domSelection ) ) {
+			return new ViewSelection( [] );
+		}
+
 		// DOM selection might be placed in fake selection container.
 		// If container contains fake selection - return corresponding view selection.
 		if ( domSelection.rangeCount === 1 ) {
@@ -1785,6 +1790,24 @@ function _logUnsafeElement( elementName: string ): void {
 	if ( elementName === 'style' ) {
 		logWarning( 'domconverter-unsafe-style-element-detected' );
 	}
+}
+
+// In certain cases, Firefox mysteriously assigns so called "restricted objects" to native DOM Range properties.
+// Any attempt at accessing restricted object's properties causes errors.
+// https://github.com/ckeditor/ckeditor5/issues/9635
+function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
+	if ( !env.isGecko ) {
+		return false;
+	}
+
+	try {
+		const container = domSelection.getRangeAt( 0 ).startContainer;
+		Object.prototype.toString.call( container );
+	} catch ( error ) {
+		return true;
+	}
+
+	return false;
 }
 
 /**
