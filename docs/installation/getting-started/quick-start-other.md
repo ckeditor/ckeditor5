@@ -17,7 +17,7 @@ Available paths:
 * [Online builder path](#creating-custom-builds-with-online-builder) &ndash; The most beginners-friendly and quickest path.
 * [Building from the source path](#building-the-editor-from-source) &ndash; An advanced path including using `npm` and webpack.
 
-## Creating custom builds with online builder
+## Creating custom builds with the online builder
 
 Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/getting-started/predefined-builds predefined builds}, sometimes these predefined bundled versions are not enough and a need for more customized builds arises. Some of the reasons for creating custom builds are:
 

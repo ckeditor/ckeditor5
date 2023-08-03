@@ -14,8 +14,8 @@
   "dependencies": {
     "ckeditor5": "38.1.1",
     "marked": "4.0.12",
-    "turndown": "^6.0.0",
-    "turndown-plugin-gfm": "^1.0.2"
+    "turndown": "6.0.0",
+    "turndown-plugin-gfm": "1.0.2"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "38.1.1",

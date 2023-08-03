@@ -3,12 +3,12 @@ category: getting-started
 order: 60
 ---
 
-# Editor's lifecycle and APIs
+# Editor's lifecycle
 
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/configuration previous tutorial} you have explored available configuration options of the editor. This article shows the lifecycle methods used to interact with the editor as well as its basic APIs.
+In the {@link installation/getting-started/configuration previous tutorial} you have explored available configuration options of the editor. This article shows the lifecycle methods to create and destroy the editor.
 
 </info-box>
 
@@ -17,6 +17,14 @@ Each CKEditor 5 **type** provides a different **editor class** that handles the 
 ## Creating an editor with `create()`
 
 Regardless of the chosen type, creating an editor is done using the static `create()` method. Usually, you start with an HTML element that will be a place where an editor will render itself on a page.
+
+<info-box tip>
+Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, the classic editor will **replace** the given element with an editor, while the inline editor will use the given element to initialize an editor on it. The decoupled document needs to initialize the toolbar separately from the editable area. See each editor's documentation to learn the details.
+</info-box>
+
+### Example – classic editor
+
+Add an element that CKEditor should replace to your HTML page:
 
 ```html
 <div id="editor">
@@ -36,19 +44,44 @@ ClassicEditor.create(document.querySelector("#editor"))
 	});
 ```
 
-After creation the editor will appear on the page in the selected area.
+After creation, the editor will appear on the page in the selected area.
 
 <info-box tip>
-Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, the classic editor will **replace** the given element with an editor, while the inline editor will use the given element to initialize an editor on it. Decoupled document needs to initialize the toolbar separately from the editable area. See each editor's documentation to learn the details.
+Inline, balloon, and balloon block editors are initialized in the same way.
 </info-box>
 
-## Editor's API
+### Example – decoupled editor
 
-After creating the editor, you might want to use the editor's API. But first, you need to the editor's instance.
+Add the elements where CKEditor should initialize the toolbar and the editable to your page:
 
-### Acquiring the editor's instance
+```html
+<!-- The toolbar will be rendered in this container. -->
+<div id="toolbar-container"></div>
 
-The simplest way would be to save the reference to the editor somewhere after you create it. This is often done by using a window or some state management object. You will often see lines like this in our docs.
+<!-- This container will become the editable. -->
+<div id="editor">
+	<p>This is the initial editor content.</p>
+</div>
+```
+
+Then call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method to create a decoupled editor instance with the toolbar and the editable in two separate containers:
+
+```js
+DecoupledEditor
+	.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		const toolbarContainer = document.querySelector( '#toolbar-container' );
+
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
+```
+
+## Getting the editor's instance
+
+The simplest way is save the reference to the editor somewhere after you create it. This is often done by using a window or some state management object. You will often see lines like this in our docs.
 
 ```js
 // Editor's creation steps.
@@ -57,88 +90,6 @@ The simplest way would be to save the reference to the editor somewhere after yo
 	window.editor = editor;
 })
 ```
-
-The second option is to make a simple function plugin that will be added to the plugins list. The first parameter of this function will be the editor's instance.
-
-```js
-function myPlugin(editor) {
-	// Interact with the API.
-	// ...
-}
-
-ClassicEditor.create(document.querySelector("#editor"), {
-	// If you're using builds, this is going to be extraPlugins property.
-	plugins: [
-		myPlugin,
-		// Other plugins.
-		// ...
-	],
-});
-```
-
-This method allows writing simple plugins that will be executed during the initialization of the editor, and don't need to interact with other plugin schema's or UI.
-
-The last option is to make a plugin that inherits from the Plugin class:
-
-```js
-class MyPlugin extends Plugin {
-	init() {
-		const editor = this.editor;
-		// Interact with the API.
-		// ...
-	}
-}
-
-ClassicEditor.create(document.querySelector("#editor"), {
-	// If you're using builds, this is going to be extraPlugins property.
-	plugins: [
-		MyPlugin,
-		// Other plugins.
-		// ...
-	],
-});
-```
-
-Plugins created in this way can do things after initialization (afterInit) as well as set up new editor UI components.
-TODO links to plugin interface and framework.
-
-### Using the API
-
-The API allows you to do multiple things with the editor and its content:
-
-```js
-editor.model.change((writer) => {
-	// Move selection to the end of the document.
-	writer.setSelection(
-		writer.createPositionAt(editor.model.document.getRoot(), "end")
-	);
-
-	// Execute the enter command.
-	editor.execute("enter");
-
-	// Insert text.
-	editor.model.change((writer) => {
-		editor.model.insertContent(writer.createText("The End!"));
-	});
-});
-```
-
-In the example above, you use a selection, a command, and you change the editor's model. All of this could be reverted with one undo step. This is a simple example of what the API can do. To learn more, read the... or look at other API how-tos.
-
-TODO add more to examples to Examples and link to it. and framwork.
-
-### Editor's events
-
-An editor instance can also be used to set up listeners for events. For example, the {@link module:engine/model/document~Document#event:change:data `Document#change:data`} event is fired when the document changes in such a way that is "visible" in the editor data:
-
-```js
-editor.model.document.on("change:data", () => {
-	console.log("The data has changed!");
-});
-```
-
-Every plugin in the editor publishes events that you can subscribe to and interact with. You can find more information in the examples and in our framework guidelines.
-TODO add more to examples to Examples and link to it. and framwork.
 
 ## Destroying the editor with `destroy()`
 
@@ -155,5 +106,5 @@ Once destroyed, resources used by the editor instance are released and the origi
 <info-box hint>
 **What's next?**
 
-Now you know how to interact with the editor instance. But an editor without the ability to get its content is not particularly useful. It's time to learn how to work with the editor's data {@link installation/getting-started/getting-and-setting-data in the following tutorial}.
+Now you know how to initialize the editor instance. But an editor without the ability to get its content is not particularly useful. It's time to learn how to work with the editor's data {@link installation/getting-started/getting-and-setting-data in the following tutorial}.
 </info-box>
