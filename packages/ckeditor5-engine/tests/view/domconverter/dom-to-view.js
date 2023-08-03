@@ -18,6 +18,7 @@ import { parse, stringify } from '../../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
@@ -1286,6 +1287,24 @@ describe( 'DomConverter', () => {
 			expect( bindViewSelection.isEqual( viewSelection ) ).to.be.true;
 
 			domContainer.remove();
+		} );
+
+		it( 'should detect "restricted objects" in Firefox DOM ranges and prevent an error being thrown', () => {
+			const domRangeStubWithRestrictedObject = document.createRange();
+
+			testUtils.sinon.stub( env, 'isGecko' ).value( true );
+
+			sinon.stub( domRangeStubWithRestrictedObject, 'startContainer' ).get( () => {
+				throw new Error( 'Permission denied to access property Symbol.toStringTag' );
+			} );
+
+			const domSelection = document.getSelection();
+
+			testUtils.sinon.stub( domSelection, 'getRangeAt' ).withArgs( 0 ).returns( domRangeStubWithRestrictedObject );
+
+			expect( () => {
+				converter.domSelectionToView( domSelection );
+			} ).to.not.throw();
 		} );
 	} );
 } );
