@@ -373,14 +373,20 @@ export function getColumnGroupElement( element: Element ): Element {
 }
 
 /**
- * Returns an array of 'tableColumn' elements.
+ * Returns an array of 'tableColumn' elements. It may be empty if there's no `tableColumnGroup` element.
  *
  * @internal
  * @param element A 'table' or 'tableColumnGroup' element.
  * @returns An array of 'tableColumn' elements.
  */
 export function getTableColumnElements( element: Element ): Array<Element> {
-	return Array.from( getColumnGroupElement( element ).getChildren() as IterableIterator<Element> );
+	const columnGroupElement = getColumnGroupElement( element );
+
+	if ( !columnGroupElement ) {
+		return [];
+	}
+
+	return Array.from( columnGroupElement.getChildren() as IterableIterator<Element> );
 }
 
 /**

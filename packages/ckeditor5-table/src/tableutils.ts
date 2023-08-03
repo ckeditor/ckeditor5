@@ -22,6 +22,7 @@ import type {
 import TableWalker, { type TableWalkerOptions } from './tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from './utils/common';
 import { removeEmptyColumns, removeEmptyRows } from './utils/structure';
+import { getTableColumnElements } from './tablecolumnresize/utils';
 
 type Cell = { cell: Element; rowspan: number };
 type CellsToMove = Map<number, Cell>;
@@ -471,6 +472,7 @@ export default class TableUtils extends Plugin {
 
 		model.change( writer => {
 			adjustHeadingColumns( table, { first, last }, writer );
+			const tableColumns = getTableColumnElements( table );
 
 			for ( let removedColumnIndex = last; removedColumnIndex >= first; removedColumnIndex-- ) {
 				for ( const { cell, column, cellWidth } of [ ...new TableWalker( table ) ] ) {
@@ -481,6 +483,26 @@ export default class TableUtils extends Plugin {
 						// The cell in removed column has colspan of 1.
 						writer.remove( cell );
 					}
+				}
+
+				if ( tableColumns[ removedColumnIndex ] ) {
+					let adjacentColumn;
+
+					// If the removed column is the first one then we need to add its width to the next column.
+					// Otherwise we add it to the previous column.
+					if ( removedColumnIndex === 0 ) {
+						adjacentColumn = tableColumns[ 1 ];
+					} else {
+						adjacentColumn = tableColumns[ removedColumnIndex - 1 ];
+					}
+
+					const removedColumnWidth = parseInt( tableColumns[ removedColumnIndex ].getAttribute( 'columnWidth' ) as string );
+					const adjacentColumnWidth = parseInt( adjacentColumn.getAttribute( 'columnWidth' ) as string );
+
+					writer.remove( tableColumns[ removedColumnIndex ] );
+
+					// Add the removed column width (in %) to the adjacent column.
+					writer.setAttribute( 'columnWidth', removedColumnWidth + adjacentColumnWidth + '%', adjacentColumn );
 				}
 			}
 

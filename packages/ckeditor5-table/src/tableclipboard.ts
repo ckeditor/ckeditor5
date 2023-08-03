@@ -150,6 +150,8 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
+		console.log( pastedTable );
+
 		// Override default model.insertContent() handling at this point.
 		evt.stop();
 
