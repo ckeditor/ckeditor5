@@ -55,7 +55,3 @@ msgstr "Barva ozadja pisave"
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
 msgstr "Barve dokumenta"
-
-msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
-msgid "Accept"
-msgstr ""

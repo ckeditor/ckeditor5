@@ -20,10 +20,11 @@ import Mapper from '../conversion/mapper';
 import DowncastDispatcher, {
 	type DowncastInsertEvent,
 	type DowncastRemoveEvent,
-	type DowncastSelectionEvent
+	type DowncastSelectionEvent,
+	type DowncastCleanSelectionEvent
 } from '../conversion/downcastdispatcher';
 import {
-	clearAttributes,
+	cleanSelection,
 	convertCollapsedSelection,
 	convertRangeSelection,
 	insertAttributesAndChildren,
@@ -136,7 +137,7 @@ export default class EditingController extends ObservableMixin() {
 		this.downcastDispatcher.on<DowncastRemoveEvent>( 'remove', remove(), { priority: 'low' } );
 
 		// Attach default model selection converters.
-		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', clearAttributes(), { priority: 'high' } );
+		this.downcastDispatcher.on<DowncastCleanSelectionEvent>( 'cleanSelection', cleanSelection() );
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 

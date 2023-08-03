@@ -137,7 +137,7 @@ class Adapter implements UploadAdapter {
 
 		if ( workspaceId == null ) {
 			/**
-			 * The user is not authorized to access workspace defined in `ckbox.defaultUploadWorkspaceId` configuration.
+			 * The user is not authorized to access the workspace defined in  the`ckbox.defaultUploadWorkspaceId` configuration.
 			 *
 			 * @error ckbox-access-default-workspace-error
 			 */

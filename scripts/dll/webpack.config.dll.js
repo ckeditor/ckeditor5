@@ -8,7 +8,7 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
-const WrapperPlugin = require( 'wrapper-webpack-plugin' );
+const FooterPlugin = require( './webpack-footer-plugin' );
 const { bundler, loaders } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
 const { addTypeScriptLoader } = require( '../docs/utils' );
@@ -105,9 +105,9 @@ const webpackConfig = {
 			format: true,
 			entryOnly: true
 		} ),
-		new WrapperPlugin( {
-			footer: `( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
-		} )
+		new FooterPlugin(
+			`( ( fn, root ) => fn( root ) )( ${ loadCKEditor5modules.toString() }, window );`
+		)
 	],
 	resolve: {
 		extensions: [ '.ts', '.js', '.json' ]

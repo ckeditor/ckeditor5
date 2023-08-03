@@ -247,9 +247,7 @@ export default class Title extends Plugin {
 		let changed = false;
 		const model = this.editor.model;
 
-		for ( const rootName of this.editor.model.document.getRootNames() ) {
-			const modelRoot = model.document.getRoot( rootName )!;
-
+		for ( const modelRoot of this.editor.model.document.getRoots() ) {
 			const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<Element> ).filter( isTitle );
 			const firstTitleElement = titleElements[ 0 ];
 			const firstRootChild = modelRoot.getChild( 0 ) as Element;

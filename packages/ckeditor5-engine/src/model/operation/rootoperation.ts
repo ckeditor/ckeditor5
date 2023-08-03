@@ -102,36 +102,6 @@ export default class RootOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public override _validate(): void {
-		// Keep in mind that at this point the root will always exist as it was created in the `constructor()`, even for detach operation.
-		const root = this._document.getRoot( this.rootName )!;
-
-		if ( root.isAttached() && this.isAdd ) {
-			/**
-			 * Trying to attach a root that is already attached.
-			 *
-			 * @error root-operation-root-attached
-			 */
-			throw new CKEditorError(
-				'root-operation-root-attached',
-				this
-			);
-		} else if ( !root.isAttached() && !this.isAdd ) {
-			/**
-			 * Trying to detach a root that is already detached.
-			 *
-			 * @error root-operation-root-detached
-			 */
-			throw new CKEditorError(
-				'root-operation-root-detached',
-				this
-			);
-		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public override _execute(): void {
 		this._document.getRoot( this.rootName )!._isAttached = this.isAdd;
 	}

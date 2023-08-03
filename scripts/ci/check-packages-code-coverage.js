@@ -37,6 +37,7 @@ const travisFolder = new TravisFolder();
  * @param {Array.<String>} [options.allowNonFullCoveragePackages=[]] Parameter including names of packages that should not enforce full
  * coverage.
  * @param {Boolean} [options.skipCompilingFramework=false] Whether to compile framework packages.
+ * @param {String} [options.ckeditor5FeaturesTitle='Verifying CKEditor 5 Features'] Title displaying when executing feature packages tests.
  * @returns {Number} A bash exit code. When returns `0`, everything is fine (no errors).
  */
 module.exports = function checkPackagesCodeCoverage( {
@@ -46,7 +47,8 @@ module.exports = function checkPackagesCodeCoverage( {
 	isPublicRepository = true,
 	skipPackages = [],
 	allowNonFullCoveragePackages = [],
-	skipCompilingFramework = false
+	skipCompilingFramework = false,
+	ckeditor5FeaturesTitle = 'Verifying CKEditor 5 Features'
 } ) {
 	childProcess.execSync( 'rm -r -f .nyc_output', { stdio: 'inherit' } );
 	childProcess.execSync( 'mkdir .nyc_output', { stdio: 'inherit' } );
@@ -105,7 +107,7 @@ module.exports = function checkPackagesCodeCoverage( {
 		console.log( yellow( '\nSkipping compiling CKEditor 5 Framework TypeScript packages\n' ) );
 	}
 
-	console.log( magenta( '\nVerifying CKEditor 5 Features\n' ) );
+	console.log( magenta( `\n${ ckeditor5FeaturesTitle }\n` ) );
 
 	featurePackages.forEach( packageName => {
 		checkPackage( packageName, allowNonFullCoveragePackages, [ '--resolve-js-first', '--cache' ] );

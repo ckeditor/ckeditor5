@@ -22,7 +22,7 @@ import ViewDocument from '../../src/view/document';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import DowncastHelpers, {
-	clearAttributes,
+	cleanSelection,
 	convertCollapsedSelection,
 	convertRangeSelection,
 	createViewElementFromHighlightDescriptor,
@@ -5004,7 +5004,7 @@ describe( 'downcast selection converters', () => {
 		downcastHelpers.markerToHighlight( { model: 'marker', view: { classes: 'marker' }, converterPriority: 1 } );
 
 		// Default selection converters.
-		dispatcher.on( 'selection', clearAttributes(), { priority: 'high' } );
+		dispatcher.on( 'cleanSelection', cleanSelection() );
 		dispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		dispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 	} );
@@ -5380,7 +5380,7 @@ describe( 'downcast selection converters', () => {
 			} );
 		} );
 
-		describe( 'clearAttributes', () => {
+		describe( 'cleanSelection', () => {
 			it( 'should remove all ranges before adding new range', () => {
 				testSelection(
 					[ 3, 3 ],
