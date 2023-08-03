@@ -160,21 +160,21 @@ The stylesheet for the editor displayed below looks as follows:
 
 ```css
 .ck-content .table {
-    float: left;
-    width: 550px;
-    height: 450px;
+	float: left;
+	width: 550px;
+	height: 450px;
 }
 
 .ck-content .table table {
-    border-style: dashed;
-    border-color: 'hsl(90, 75%, 60%)';
-    border-width: 3px;
+	border-style: dashed;
+	border-color: hsl(90, 75%, 60%);
+	border-width: 3px;
 }
 
 .ck-content .table table td {
-    text-align: center;
-    vertical-align: bottom;
-    padding: 10px
+	text-align: center;
+	vertical-align: bottom;
+	padding: 10px
 }
 ```
 
@@ -185,29 +185,29 @@ The same values must be passed to the editor configuration as:
 
 ```js
 const tableConfig = {
-    table: {
-        tableProperties: {
-            // The default styles for tables in the editor.
+	table: {
+		tableProperties: {
+			// The default styles for tables in the editor.
 			// They should be synchronized with the content styles.
-            defaultProperties: {
-	            borderStyle: 'dashed',
-	            borderColor: 'hsl(90, 75%, 60%)',
-	            borderWidth: '3px',
-	            alignment: 'left',
-	            width: '550px',
-	            height: '450px'
-            },
-            // The default styles for table cells in the editor.
+			defaultProperties: {
+				borderStyle: 'dashed',
+				borderColor: 'hsl(90, 75%, 60%)',
+				borderWidth: '3px',
+				alignment: 'left',
+				width: '550px',
+				height: '450px'
+			},
+			// The default styles for table cells in the editor.
 			// They should be synchronized with the content styles.
-	        tableCellProperties: {
-		        defaultProperties: {
-			        horizontalAlignment: 'center',
-			        verticalAlignment: 'bottom',
-			        padding: '10px'
-		        }
-	        }
-        }
-    }
+		tableCellProperties: {
+			defaultProperties: {
+				horizontalAlignment: 'center',
+				verticalAlignment: 'bottom',
+				padding: '10px'
+			}
+			}
+		}
+	}
 };
 ```
 
