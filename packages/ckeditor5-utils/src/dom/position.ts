@@ -12,10 +12,33 @@ import Rect, { type RectSource } from './rect';
 import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
 import { isFunction } from 'lodash-es';
-import getScrollableAncestors from './getscrollableancestors';
-import getElementsIntersectionRect from './getelementsintersectionrect';
 
-// @if CK_DEBUG_POSITION // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default
+// @if CK_DEBUG_POSITION // const {
+// @if CK_DEBUG_POSITION // 	default: RectDrawer,
+// @if CK_DEBUG_POSITION // 	diagonalBackgroundStyles
+// @if CK_DEBUG_POSITION // } = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' );
+// @if CK_DEBUG_POSITION // const TARGET_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineStyle: 'dashed', outlineColor: 'blue', outlineOffset: '2px'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const VISIBLE_TARGET_RECT_STYLE = Object.assign( {}, diagonalBackgroundStyles, {
+// @if CK_DEBUG_POSITION //		opacity: '1',
+// @if CK_DEBUG_POSITION //		backgroundColor: '#00000033',
+// @if CK_DEBUG_POSITION //		outlineWidth: '2px',
+// @if CK_DEBUG_POSITION //		outlineStyle: 'solid',
+// @if CK_DEBUG_POSITION //		outlineColor: 'black'
+// @if CK_DEBUG_POSITION // } );
+// @if CK_DEBUG_POSITION // const VIEWPORT_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineStyle: 'solid', outlineColor: 'red', outlineOffset: '-2px'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const VISIBLE_LIMITER_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineColor: 'green', outlineOffset: '-2px'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const ELEMENT_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineColor: 'orange', outlineOffset: '-2px'
+// @if CK_DEBUG_POSITION // };
+// @if CK_DEBUG_POSITION // const CHOSEN_POSITION_RECT_STYLE = {
+// @if CK_DEBUG_POSITION // 	opacity: .5, outlineColor: 'magenta', backgroundColor: 'magenta'
+// @if CK_DEBUG_POSITION // };
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the
@@ -101,39 +124,46 @@ export function getOptimalPosition( {
 	}
 
 	const positionedElementAncestor = getPositionedAncestor( element );
+	const constrainedViewportRect = getConstrainedViewportRect( viewportOffsetConfig );
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
+	const visibleTargetRect = getVisibleViewportIntersectionRect( target, constrainedViewportRect );
 
 	let bestPosition: Position | null;
 
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
-	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
+	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, TARGET_RECT_STYLE, 'Target' );
+	// @if CK_DEBUG_POSITION // if ( constrainedViewportRect ) {
+	// @if CK_DEBUG_POSITION //		RectDrawer.draw( constrainedViewportRect, VIEWPORT_RECT_STYLE, 'Viewport' );
+	// @if CK_DEBUG_POSITION // }
 
-	const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig ) || null;
-	const positionOptions = { targetRect, elementRect, positionedElementAncestor, viewportRect };
-	// Get intersection of all scrollable ancestors of `target`.
-	const allScrollableAncestors = getScrollableAncestors( target as HTMLElement );
-	const ancestorsIntersectionRect = getElementsIntersectionRect( allScrollableAncestors, ( viewportOffsetConfig || { top: 0 } ).top );
-
-	if ( !ancestorsIntersectionRect || !targetRect.getVisible() ) {
+	// If the target got cropped by ancestors or went off the screen, positioning does not make any sense.
+	if ( !visibleTargetRect || !constrainedViewportRect.getIntersection( visibleTargetRect ) ) {
 		return null;
 	}
+
+	// @if CK_DEBUG_POSITION //	RectDrawer.draw( visibleTargetRect, VISIBLE_TARGET_RECT_STYLE, 'VisTgt' );
+
+	const positionOptions: PositionObjectOptions = {
+		targetRect: visibleTargetRect,
+		// targetRect,
+		elementRect,
+		positionedElementAncestor,
+		viewportRect: constrainedViewportRect
+	};
 
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
 		bestPosition = new PositionObject( positions[ 0 ], positionOptions );
 	} else {
-		const limiterRect = limiter && new Rect( limiter ).getVisible();
+		if ( limiter ) {
+			const visibleLimiterRect = getVisibleViewportIntersectionRect( limiter, constrainedViewportRect );
 
-		// @if CK_DEBUG_POSITION // if ( viewportRect ) {
-		// @if CK_DEBUG_POSITION //		RectDrawer.draw( viewportRect, { outlineWidth: '5px' }, 'Viewport' );
-		// @if CK_DEBUG_POSITION // }
-
-		// @if CK_DEBUG_POSITION // if ( limiter ) {
-		// @if CK_DEBUG_POSITION // 	RectDrawer.draw( limiterRect, { outlineWidth: '5px', outlineColor: 'green' }, 'Visible limiter' );
-		// @if CK_DEBUG_POSITION // }
-
-		Object.assign( positionOptions, { limiterRect, viewportRect: ancestorsIntersectionRect } );
+			if ( visibleLimiterRect ) {
+				positionOptions.limiterRect = visibleLimiterRect;
+				// @if CK_DEBUG_POSITION // RectDrawer.draw( visibleLimiterRect, VISIBLE_LIMITER_RECT_STYLE, 'VisLim' );
+			}
+		}
 
 		// If there's no best position found, i.e. when all intersections have no area because
 		// rects have no width or height, then just return `null`
@@ -141,6 +171,23 @@ export function getOptimalPosition( {
 	}
 
 	return bestPosition;
+}
+
+/**
+ * TODO
+ *
+ * @param source
+ * @param viewportRect
+ * @returns
+ */
+function getVisibleViewportIntersectionRect( source: RectSource, viewportRect: Rect ): Rect | null {
+	const visibleSourceRect = new Rect( source ).getVisible();
+
+	if ( !visibleSourceRect ) {
+		return null;
+	}
+
+	return visibleSourceRect.getIntersection( viewportRect );
 }
 
 /**
@@ -169,8 +216,6 @@ function getBestPosition(
 ): Position | null {
 	const { elementRect } = options;
 
-	// @if CK_DEBUG_POSITION //		RectDrawer.draw( elementRect, { outlineWidth: '5px', outlineColor: 'orange' }, 'elementRect' );
-
 	// This is when element is fully visible.
 	const elementRectArea = elementRect.getArea();
 
@@ -188,6 +233,11 @@ function getBestPosition(
 		// If a such position is found that element is fully contained by the limiter then, obviously,
 		// there will be no better one, so finishing.
 		if ( limiterIntersectionArea === elementRectArea ) {
+			// @if CK_DEBUG_POSITION //	RectDrawer.draw( position._rect, CHOSEN_POSITION_RECT_STYLE, [
+			// @if CK_DEBUG_POSITION //		position.name,
+			// @if CK_DEBUG_POSITION //		'100% fit',
+			// @if CK_DEBUG_POSITION //	].join( '\n' ) );
+
 			return position;
 		}
 
@@ -195,11 +245,21 @@ function getBestPosition(
 		// and _limiterIntersectionArea plane (without sqrt because we are looking for max value).
 		const fitFactor = viewportIntersectionArea ** 2 + limiterIntersectionArea ** 2;
 
+		// @if CK_DEBUG_POSITION //	RectDrawer.draw( position._rect, { opacity: .4 }, [
+		// @if CK_DEBUG_POSITION //		position.name,
+		// @if CK_DEBUG_POSITION //		'Vi=' +  Math.round( viewportIntersectionArea ),
+		// @if CK_DEBUG_POSITION //		'Li=' + Math.round( limiterIntersectionArea )
+		// @if CK_DEBUG_POSITION //	].join( '\n' ) );
+
 		if ( fitFactor > maxFitFactor ) {
 			maxFitFactor = fitFactor;
 			bestPosition = position;
 		}
 	}
+
+	// @if CK_DEBUG_POSITION // if ( bestPosition ) {
+	// @if CK_DEBUG_POSITION // 	RectDrawer.draw( bestPosition._rect, CHOSEN_POSITION_RECT_STYLE );
+	// @if CK_DEBUG_POSITION // }
 
 	return bestPosition;
 }
@@ -291,6 +351,17 @@ export interface Position {
 }
 
 /**
+ * TODO
+ */
+type PositionObjectOptions = {
+	elementRect: Rect;
+	targetRect: Rect;
+	viewportRect: Rect;
+	positionedElementAncestor?: HTMLElement | null;
+	limiterRect?: Rect;
+};
+
+/**
  * A position class which instances are created and used by the {@link module:utils/dom/position~getOptimalPosition} helper.
  *
  * {@link module:utils/dom/position~Position#top} and {@link module:utils/dom/position~Position#left} properties of the position instance
@@ -320,15 +391,14 @@ class PositionObject implements Position {
 	 */
 	constructor(
 		positioningFunction: PositioningFunction,
-		options: {
-			readonly elementRect: Rect;
-			readonly targetRect: Rect;
-			readonly viewportRect: Rect | null;
-			readonly positionedElementAncestor?: HTMLElement | null;
-			readonly limiterRect?: Rect;
-		}
+		options: Readonly<PositionObjectOptions>
 	) {
-		const positioningFunctionOutput = positioningFunction( options.targetRect, options.elementRect, options.viewportRect );
+		const positioningFunctionOutput = positioningFunction(
+			options.targetRect,
+			options.elementRect,
+			options.viewportRect,
+			options.limiterRect
+		);
 
 		// Nameless position for a function that didn't participate.
 		if ( !positioningFunctionOutput ) {
@@ -367,18 +437,7 @@ class PositionObject implements Position {
 		const limiterRect = this._options.limiterRect;
 
 		if ( limiterRect ) {
-			const viewportRect = this._options.viewportRect;
-
-			if ( viewportRect ) {
-				// Consider only the part of the limiter which is visible in the viewport. So the limiter is getting limited.
-				const limiterViewportIntersectRect = limiterRect.getIntersection( viewportRect );
-
-				if ( limiterViewportIntersectRect ) {
-					// If the limiter is within the viewport, then check the intersection between that part of the
-					// limiter and actual position.
-					return limiterViewportIntersectRect.getIntersectionArea( this._rect );
-				}
-			}
+			return limiterRect.getIntersectionArea( this._rect );
 		}
 
 		return 0;
@@ -515,7 +574,12 @@ export interface Options {
  * @param viewportRect The rect of the visual browser viewport.
  * @returns When the function returns `null`, it will not be considered by {@link module:utils/dom/position~getOptimalPosition}.
  */
-export type PositioningFunction = ( elementRect: Rect, targetRect: Rect, viewportRect: Rect | null ) => PositioningFunctionResult | null;
+export type PositioningFunction = (
+	elementRect: Rect,
+	targetRect: Rect,
+	viewportRect: Rect,
+	limiterRect?: Rect
+) => PositioningFunctionResult | null;
 
 /**
  * The result of {@link module:utils/dom/position~PositioningFunction}.
