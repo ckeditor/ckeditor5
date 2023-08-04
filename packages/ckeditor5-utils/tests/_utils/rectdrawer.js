@@ -116,7 +116,7 @@ RectDrawer._defaultStyles = {
 	outlineStyle: 'solid',
 	outlineColor: 'blue',
 	outlineOffset: '-1px',
-	zIndex: 9999999,
+	zIndex: 999,
 	opacity: .5,
 	pointerEvents: 'none'
 };
