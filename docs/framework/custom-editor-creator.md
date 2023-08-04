@@ -278,10 +278,11 @@ class MultirootEditorUI extends EditorUI {
 				sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
 
 			if ( placeholderText ) {
+				editingRoot.placeholder = placeholderText;
+
 				enablePlaceholder( {
 					view: editingView,
 					element: editingRoot,
-					text: placeholderText,
 					isDirectHost: false,
 					keepOnFocus: true
 				} );
