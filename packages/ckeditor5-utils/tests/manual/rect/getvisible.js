@@ -6,7 +6,7 @@
 /* global document, window */
 
 import Rect from '../../../src/dom/rect';
-import RectDrawer from '../../_utils/rectdrawer';
+import RectDrawer, { diagonalBackgroundStyles } from '../../_utils/rectdrawer';
 
 window.addEventListener( 'scroll', drawVisibleRects, true );
 window.addEventListener( 'resize', drawVisibleRects );
@@ -35,16 +35,12 @@ function drawVisibleRects() {
 		const visibleRect = new Rect( child ).getVisible();
 
 		if ( visibleRect ) {
-			RectDrawer.draw( visibleRect, {
+			RectDrawer.draw( visibleRect, Object.assign( {}, diagonalBackgroundStyles, {
 				opacity: '1',
-				// eslint-disable-next-line max-len
-				backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIuMDAwMDEgMkwxOTAgMTkwTTE5MCAyTDIgMTkwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjMiLz4KPC9zdmc+Cg==")',
-				backgroundRepeat: 'no-repeat',
-				backgroundSize: '100% 100%',
 				outlineWidth: '2px',
 				outlineStyle: 'solid',
 				outlineColor: 'black'
-			} );
+			} ) );
 		}
 	}
 }
