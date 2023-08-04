@@ -485,6 +485,8 @@ export default class TableUtils extends Plugin {
 					}
 				}
 
+				// If table has `tableColumn` elements, we need to update it manually.
+				// See https://github.com/ckeditor/ckeditor5/issues/14521#issuecomment-1662102889 for details.
 				if ( tableColumns[ removedColumnIndex ] ) {
 					let adjacentColumn;
 
@@ -496,8 +498,8 @@ export default class TableUtils extends Plugin {
 						adjacentColumn = tableColumns[ removedColumnIndex - 1 ];
 					}
 
-					const removedColumnWidth = parseInt( tableColumns[ removedColumnIndex ].getAttribute( 'columnWidth' ) as string );
-					const adjacentColumnWidth = parseInt( adjacentColumn.getAttribute( 'columnWidth' ) as string );
+					const removedColumnWidth = parseFloat( tableColumns[ removedColumnIndex ].getAttribute( 'columnWidth' ) as string );
+					const adjacentColumnWidth = parseFloat( adjacentColumn.getAttribute( 'columnWidth' ) as string );
 
 					writer.remove( tableColumns[ removedColumnIndex ] );
 
