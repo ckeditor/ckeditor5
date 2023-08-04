@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import {
 	enablePlaceholder,
 	disablePlaceholder,
@@ -618,8 +620,7 @@ describe( 'placeholder', () => {
 
 			enablePlaceholder( {
 				view,
-				element: viewRoot,
-				text: 'foo bar baz'
+				element: viewRoot
 			} );
 			viewRoot.placeholder = 'new placeholder';
 
@@ -632,12 +633,62 @@ describe( 'placeholder', () => {
 			enablePlaceholder( {
 				view,
 				element: viewRoot,
-				text: 'foo bar baz',
 				isDirectHost: false
 			} );
 			viewRoot.placeholder = 'new placeholder';
 
 			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'new placeholder' );
+		} );
+
+		it( 'should through warning once if "text" is used as argument', () => {
+			const spy = sinon.spy( console, 'warn' );
+			const warning = 'Deprecation Warning: The "text" argument in the "enableProperty" function will be deprecated ' +
+			'in the next version. Please update your code. Refer to the documentation for alternative usage: ' +
+			'https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html#view-element-placeholder';
+
+			setData( view, '<div></div><div>{another div}</div>' );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				isDirectHost: false,
+				text: 'foo bar'
+			} );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				isDirectHost: false,
+				text: 'foo bar baz'
+			} );
+
+			sinon.assert.calledOnce( spy.withArgs( warning ) );
+		} );
+
+		it( 'should set placeholder using "text" argument', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'placeholder'
+			} );
+
+			expect( viewRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder' );
+		} );
+
+		it( 'should use element\'s placeholder as more prior value', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo'
+			} );
+
+			viewRoot.placeholder = 'bar';
+
+			expect( viewRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
 		} );
 	} );
 } );

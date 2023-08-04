@@ -20,6 +20,8 @@ import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 // Each document stores information about its placeholder elements and check functions.
 const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfig>>();
 
+let hasDisplayedWarning = false;
+
 /**
  * A helper that enables a placeholder on the provided view element (also updates its visibility).
  * The placeholder is a CSS pseudo–element (with a text content) attached to the element.
@@ -37,10 +39,11 @@ const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfi
  * editable root elements.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
-export function enablePlaceholder( { view, element, isDirectHost = true, keepOnFocus = false }: {
+export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
 	element: PlaceholderableElement | EditableElement;
 	isDirectHost?: boolean;
+	text?: string;
 	keepOnFocus?: boolean;
 } ): void {
 	const doc = view.document;
@@ -67,6 +70,12 @@ export function enablePlaceholder( { view, element, isDirectHost = true, keepOnF
 
 	if ( element.placeholder ) {
 		setPlaceholder( element.placeholder );
+	} else if ( text ) {
+		setPlaceholder( text );
+	}
+
+	if ( text ) {
+		showDeprecationWarning();
 	}
 
 	function setPlaceholder( text: string ) {
@@ -297,6 +306,19 @@ function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
 	}
 
 	return null;
+}
+
+/**
+ * Displays a deprecation warning message in the console, but only once per page load.
+ */
+function showDeprecationWarning() {
+	if ( !hasDisplayedWarning ) {
+		console.warn( 'Deprecation Warning: The "text" argument in the "enableProperty" function will be deprecated ' +
+		'in the next version. Please update your code. Refer to the documentation for alternative usage: ' +
+		'https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html#view-element-placeholder' );
+	}
+
+	hasDisplayedWarning = true;
 }
 
 /**
