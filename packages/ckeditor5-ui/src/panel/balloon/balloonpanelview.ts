@@ -1148,13 +1148,20 @@ export function generatePositions( options: {
 
 		// ------- Sticky
 
-		viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
-			if ( !targetRect.getIntersection( viewportRect! ) ) {
+		viewportStickyNorth: ( targetRect, balloonRect, viewportRect, limiterRect ) => {
+			const boundaryRect = limiterRect || viewportRect;
+
+			if ( !targetRect.getIntersection( boundaryRect ) ) {
+				return null;
+			}
+
+			// The target must go beyond at least one of the viewport's edges for this position to make sense.
+			if ( targetRect.top > boundaryRect.top && targetRect.bottom < boundaryRect.bottom ) {
 				return null;
 			}
 
 			return {
-				top: viewportRect!.top + stickyVerticalOffset,
+				top: boundaryRect.top + stickyVerticalOffset,
 				left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 				name: 'arrowless',
 				config: {
