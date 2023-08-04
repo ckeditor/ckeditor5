@@ -29,6 +29,9 @@ ClassicEditor
 		ui: {
 			poweredBy: {
 				position: 'inside'
+			},
+			viewportOffset: {
+				top: 30
 			}
 		}
 	} )
@@ -63,6 +66,11 @@ ClassicEditor
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: 30
+			}
 		}
 	} )
 	.then( editor => {
@@ -96,6 +104,11 @@ ClassicEditor
 			contentToolbar: [
 				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: 30
+			}
 		}
 	} )
 	.then( editor => {
