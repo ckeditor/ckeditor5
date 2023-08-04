@@ -202,7 +202,11 @@ export default class Rect {
 		if ( rect.width < 0 || rect.height < 0 ) {
 			return null;
 		} else {
-			return new Rect( rect );
+			const newRect = new Rect( rect );
+
+			newRect._source = this._source;
+
+			return newRect;
 		}
 	}
 
@@ -261,6 +265,8 @@ export default class Rect {
 
 		// Check the ancestors all the way up to the <body>.
 		while ( parent && !isBody( parent ) ) {
+			const isParentOverflowVisible = getElementOverflow( parent as HTMLElement ) === 'visible';
+
 			if ( child instanceof HTMLElement && getElementPosition( child ) === 'absolute' ) {
 				absolutelyPositionedChildElement = child;
 			}
@@ -269,8 +275,8 @@ export default class Rect {
 			// Otherwise there's no chance of visual clipping and the parent can be skipped
 			// https://github.com/ckeditor/ckeditor5/issues/14107.
 			if (
-				absolutelyPositionedChildElement &&
-				( getElementPosition( parent as HTMLElement ) !== 'relative' || getElementOverflow( parent as HTMLElement ) === 'visible' )
+				isParentOverflowVisible ||
+				( absolutelyPositionedChildElement && getElementPosition( parent as HTMLElement ) !== 'relative' )
 			) {
 				child = parent;
 				parent = parent.parentNode;
