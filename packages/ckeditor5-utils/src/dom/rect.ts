@@ -11,6 +11,7 @@ import isRange from './isrange';
 import isWindow from './iswindow';
 import getBorderWidths from './getborderwidths';
 import isText from './istext';
+import getPositionedAncestor from './getpositionedancestor';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -334,6 +335,26 @@ export default class Rect {
 	}
 
 	/**
+	 * TODO
+	 *
+	 * @returns
+	 */
+	public toAbsoluteRect(): Rect {
+		const { scrollX, scrollY } = global.window;
+		const absoluteRect = this.clone().moveBy( scrollX, scrollY );
+
+		if ( isDomElement( absoluteRect._source ) ) {
+			const positionedAncestor = getPositionedAncestor( absoluteRect._source );
+
+			if ( positionedAncestor ) {
+				shiftRectToCompensatePositionedAncestor( absoluteRect, positionedAncestor );
+			}
+		}
+
+		return absoluteRect;
+	}
+
+	/**
 	 * Excludes scrollbars and CSS borders from the rect.
 	 *
 	 * * Borders are removed when {@link #_source} is an HTML element.
@@ -510,4 +531,45 @@ function getElementPosition( element: HTMLElement ): string {
  */
 function getElementOverflow( element: HTMLElement ): string {
 	return element.ownerDocument.defaultView!.getComputedStyle( element ).overflow;
+}
+
+/**
+ * For a given absolute Rect coordinates object and a positioned element ancestor, it updates its
+ * coordinates that make up for the position and the scroll of the ancestor.
+ *
+ * This is necessary because while Rects (and DOMRects) are relative to the browser's viewport, their coordinates
+ * are used in real–life to position elements with `position: absolute`, which are scoped by any positioned
+ * (and scrollable) ancestors.
+ */
+function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementAncestor: HTMLElement ): void {
+	const ancestorPosition = new Rect( positionedElementAncestor ).toAbsoluteRect();
+	const ancestorBorderWidths = getBorderWidths( positionedElementAncestor );
+
+	let moveX = 0;
+	let moveY = 0;
+
+	// (https://github.com/ckeditor/ckeditor5-ui-default/issues/126)
+	// If there's some positioned ancestor of the panel, then its `Rect` must be taken into
+	// consideration. `Rect` is always relative to the viewport while `position: absolute` works
+	// with respect to that positioned ancestor.
+	moveX -= ancestorPosition.left;
+	moveY -= ancestorPosition.top;
+
+	// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
+	// If there's some positioned ancestor of the panel, not only its position must be taken into
+	// consideration (see above) but also its internal scrolls. Scroll have an impact here because `Rect`
+	// is relative to the viewport (it doesn't care about scrolling), while `position: absolute`
+	// must compensate that scrolling.
+	moveX += positionedElementAncestor.scrollLeft;
+	moveY += positionedElementAncestor.scrollTop;
+
+	// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
+	// If there's some positioned ancestor of the panel, then its `Rect` includes its CSS `borderWidth`
+	// while `position: absolute` positioning does not consider it.
+	// E.g. `{ position: absolute, top: 0, left: 0 }` means upper left corner of the element,
+	// not upper-left corner of its border.
+	moveX -= ancestorBorderWidths.left;
+	moveY -= ancestorBorderWidths.top;
+
+	rect.moveBy( moveX, moveY );
 }

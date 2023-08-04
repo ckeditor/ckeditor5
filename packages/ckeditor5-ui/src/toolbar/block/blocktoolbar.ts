@@ -429,8 +429,8 @@ export default class BlockToolbar extends Plugin {
 		// MDN says that 'normal' == ~1.2 on desktop browsers.
 		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
 
-		const buttonRect = new Rect( this.buttonView.element! );
-		const contentRect = new Rect( targetElement );
+		const buttonRect = new Rect( this.buttonView.element! ).toAbsoluteRect();
+		const contentRect = new Rect( targetElement ).toAbsoluteRect();
 
 		let positionLeft;
 
