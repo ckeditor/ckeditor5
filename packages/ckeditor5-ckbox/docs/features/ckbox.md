@@ -157,9 +157,11 @@ Please keep in mind that if you define your own upload category mappings for a p
 * If you have not defined your own category mapping in `defaultUploadCategories` for the uploaded image type:
    * There is no category mapping for the uploaded image type on the server.
 
-### Defining workspaces
+### Defining default upload workspace
 
-The CKBox workspaces allow for the separation of assets at a level independent from categories and folders and based on access permissions. To assign a default workspace to upload to, the `defaultUploadWorkspaceId` option needs to be set.
+The [CKBox workspaces](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html) provide a convenient solution for achieving data isolation and user separation within CKBox. With workspaces, you can easily create separate storage and data spaces, giving you precise control over assigning specific users, user groups, or tenants to each workspace.
+
+If the user is assigned to more than one workspace, by default all the files uploaded directly from CKEditor are located in the first workspace in the list of workspaces allowed in the user's JWT token. This corresponds to uploads through drag and drop into the editor area, pasting images from the clipboard, or images uploaded using the Image {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} feature. If you would like to define a specific workspace for files uploaded this way, you can define its ID in the `defaultUploadWorkspaceId` option. After that, all the files uploaded directly from CKEditor will be placed in the specified workspace.
 
 ```js
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -169,6 +171,7 @@ ClassicEditor
 		plugins: [ CKBox, /* ... */ ],
 		toolbar: [ 'ckbox', /* ... */ ],
 		ckbox: {
+			tokenUrl: 'https://your.token.url',
 			// Sample workspace referenced by its ID.
 			defaultUploadWorkspaceId: [ 'pHUSQFj_QIvc' ]
 		}
@@ -177,7 +180,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-The list of available workspaces can be found in the `auth.ckbox.workspaces` JWT token payload.
+The list of available workspaces can be obtained using the [Workspaces REST API](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html#managing-workspaces-with-the-rest-api).
 
 ### Adding the ID for inserted assets
 
