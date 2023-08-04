@@ -403,7 +403,7 @@ In the editor, all HTML formatting elements such as `<strong>` or `<code>` are r
 
 Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link framework/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
-The support for inline elements in CKEditor 5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
+The support for inline elements in CKEditor&nbsp;5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
 
 <info-box>
 	There is also the `$inlineObject` generic item which has the `isInline` property set to `true`. Most inline object type items will inherit from `$inlineObject` (through `inheritAllFrom`).
@@ -670,11 +670,11 @@ While this is a relatively simple scenario (unlike most real-time collaborative 
 
 Therefore, if your editor needs to implement such rules, you should do that through {@link module:engine/model/document~Document#registerPostFixer model's post-fixers} fixing incorrect content or actively prevent such situations (e.g. by disabling certain features). It means that these constraints will be defined specifically for your scenario by your code which makes their implementation much easier.
 
-To sum up, the answer to who and how should implement additional constraints is: your features or your editor through the CKEditor 5 API.
+To sum up, the answer to who and how should implement additional constraints is: your features or your editor through the CKEditor&nbsp;5 API.
 
 ## Who checks the schema?
 
-The CKEditor 5 API exposes many ways to work on (change) the model. It can be done {@link framework/architecture/editing-engine#changing-the-model through the writer}, via methods like {@link module:engine/model/model~Model#insertContent `Model#insertContent()`}, via commands and so on.
+The CKEditor&nbsp;5 API exposes many ways to work on (change) the model. It can be done {@link framework/architecture/editing-engine#changing-the-model through the writer}, via methods like {@link module:engine/model/model~Model#insertContent `Model#insertContent()`}, via commands and so on.
 
 ### Low-level APIs
 

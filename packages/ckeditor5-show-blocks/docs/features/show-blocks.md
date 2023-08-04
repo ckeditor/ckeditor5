@@ -57,11 +57,11 @@ ClassicEditor
 
 ## Related features
 
-Other CKEditor 5 features related to HTML editing that you may want to check:
+Other CKEditor&nbsp;5 features related to HTML editing that you may want to check:
 
-* {@link features/general-html-support General HTML Support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor 5 plugins.
+* {@link features/general-html-support General HTML Support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor&nbsp;5 plugins.
 * {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
-* {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor 5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
+* {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor&nbsp;5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
 
 ## Common API
 
@@ -75,7 +75,7 @@ editor.execute( 'showBlocks' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

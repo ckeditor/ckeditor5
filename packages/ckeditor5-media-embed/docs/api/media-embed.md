@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# Media embed feature for CKEditor 5
+# Media embed feature for CKEditor&nbsp;5
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-media-embed.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)
 
-This package implements the media embed feature for CKEditor 5. You can use it to insert embeddable media such as YouTube or Vimeo videos and tweets into your rich-text content.
+This package implements the media embed feature for CKEditor&nbsp;5. You can use it to insert embeddable media such as YouTube or Vimeo videos and tweets into your rich-text content.
 
 ## Demo
 

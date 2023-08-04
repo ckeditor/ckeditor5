@@ -5,7 +5,7 @@ order: 25
 
 # Abbreviation plugin tutorial - part 1
 
-This guide will show you how to create a simple abbreviation plugin for CKEditor 5.
+This guide will show you how to create a simple abbreviation plugin for CKEditor&nbsp;5.
 
 <info-box>
 	Before you get to work, you should check out the {@link framework/quick-start Quick start} guide first to set up the framework and building tools. Be sure to check out the {@link framework/using-package-generatorpackage generator guide} as well.
@@ -61,7 +61,7 @@ Now look at `index.html`. We will add here the `<abbr>` element - it won't work 
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – abbreviation plugin</title>
+		<title>CKEditor&nbsp;5 Framework – abbreviation plugin</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -174,7 +174,7 @@ Rebuild your project, refresh the browser and you should see that the `Abbreviat
 
 ## The model and the view layers
 
-CKEditor 5 implements its own custom data model, which does not map to the DOM 1:1. The model document is converted into the view, which represents the content that the user is editing - the DOM structure you see in the browser.
+CKEditor&nbsp;5 implements its own custom data model, which does not map to the DOM 1:1. The model document is converted into the view, which represents the content that the user is editing - the DOM structure you see in the browser.
 
 <info-box>
 	Before moving forward, it is important to understand the editor architecture. Read more about the {@link framework/architecture/editing-engine#model model} and the {@link framework/architecture/editing-engine#view view} to get familiar with the basic concepts.

@@ -7,7 +7,7 @@ modified_at: 2022-07-15
 
 # Defining a model and a view
 
-This guide will show you how to create a simple abbreviation plugin for CKEditor 5.
+This guide will show you how to create a simple abbreviation plugin for CKEditor&nbsp;5.
 
 We will create a toolbar button that lets the users insert abbreviations into their document. These abbreviations will use the [`<abbr>` <abbr title="HyperText Markup Language">HTML</abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr) with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element. You can check the mechanism hovering over the underlined "HTML" text in the previous sentence.
 
@@ -17,14 +17,14 @@ If you want to see the final product of this tutorial before you plunge in, chec
 
 ## Let's start!
 
-The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin). We gathered all the necessary dependencies there, including some CKEditor 5 packages and other files needed to build the editor.
+The easiest way to set up your project is to grab the starter files from our [Github repository for this tutorial](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin). We gathered all the necessary dependencies there, including some CKEditor&nbsp;5 packages and other files needed to build the editor.
 
 The editor has already been created in the `app.js` file with some basic plugins. All you need to do is clone the repository, navigate to the [starter-files directory](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/starter-files), run the `npm install` command, and you can start coding right away.
 
 The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly).
 
 <info-box>
-	Our starter files come with the {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 Inspector} attached to the editor, so you can easily debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	Our starter files come with the {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 Inspector} attached to the editor, so you can easily debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 If you want to set up the project yourself, you should follow the steps listed in the {@link framework/quick-start the "Quick start" section}. Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the `Plugin` class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
@@ -62,7 +62,7 @@ Now take look at `index.html`. We added the `<abbr>` element - it will not work 
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Abbreviation plugin</title>
+		<title>CKEditor&nbsp;5 Framework – Abbreviation plugin</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -182,7 +182,7 @@ Rebuild the project now, refresh the browser and you should see that the `Abbrev
 
 ## The model and the view layers
 
-CKEditor 5 implements its own custom data model, which does not map 1:1 to the DOM. The model document is converted into the view, which represents the content that the user is editing.
+CKEditor&nbsp;5 implements its own custom data model, which does not map 1:1 to the DOM. The model document is converted into the view, which represents the content that the user is editing.
 
 <info-box>
 	Before moving forward, it is important to understand the editor architecture. Read more about the {@link framework/architecture/editing-engine#model model} and the {@link framework/architecture/editing-engine#view view} to get familiar with the basic concepts.

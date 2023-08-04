@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 widget API
+# CKEditor&nbsp;5 widget API
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-widget.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)
 
-This package implements the widget API for CKEditor 5.
+This package implements the widget API for CKEditor&nbsp;5.
 
 The API consists of a few primitives and helpers that make it easy to implement rich content units such as images with captions.
 

@@ -5,7 +5,7 @@ order: 10
 
 # Contributing
 
-CKEditor 5 is an Open Source project and we will be most thankful for your contributions. You can help us by fixing issues, reporting them or translating the editor interface. Community effort and engagement is what has been driving the development of our WYSIWYG editor projects since 2003!
+CKEditor&nbsp;5 is an Open Source project and we will be most thankful for your contributions. You can help us by fixing issues, reporting them or translating the editor interface. Community effort and engagement is what has been driving the development of our WYSIWYG editor projects since 2003!
 
 ## Fixing issues and coding features
 
@@ -42,7 +42,7 @@ Read more about our {@link framework/contributing/testing-environment testing en
 </info-box>
 
 <info-box>
-	The [Angular](https://github.com/ckeditor/ckeditor5-angular), [React](https://github.com/ckeditor/ckeditor5-react) and [Vue](https://github.com/ckeditor/ckeditor5-vue) integrations as well as [CKEditor 5 inspector](https://github.com/ckeditor/ckeditor5-inspector) and [development tools packages](https://github.com/ckeditor/ckeditor5-dev) are kept in separate repositories. The steps below assume that you want to propose a change in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5).
+	The [Angular](https://github.com/ckeditor/ckeditor5-angular), [React](https://github.com/ckeditor/ckeditor5-react) and [Vue](https://github.com/ckeditor/ckeditor5-vue) integrations as well as [CKEditor&nbsp;5 inspector](https://github.com/ckeditor/ckeditor5-inspector) and [development tools packages](https://github.com/ckeditor/ckeditor5-dev) are kept in separate repositories. The steps below assume that you want to propose a change in the [main CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5).
 </info-box>
 
 Assuming that you would like to propose some changes, these are the steps you should take to create a pull request:
@@ -92,7 +92,7 @@ Some additional things you should keep in mind:
 
 ## Translating
 
-CKEditor 5 is a project with global impact, so contributing translations is both an easy and powerful way to help.
+CKEditor&nbsp;5 is a project with global impact, so contributing translations is both an easy and powerful way to help.
 
 We use the Transifex service for translations at the following address: [https://www.transifex.com/ckeditor/ckeditor5/dashboard/](https://www.transifex.com/ckeditor/ckeditor5/dashboard/).
 

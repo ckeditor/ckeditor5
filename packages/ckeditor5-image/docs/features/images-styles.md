@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Image styles
-meta-title: Image style in CKEditor 5
+meta-title: Image style in CKEditor&nbsp;5
 meta-description: Learn all about styling your images.
 order: 60
 modified_at: 2021-06-17
@@ -18,7 +18,7 @@ This package allows for adjusting the image appearance by:
 * **Managing the HTML representation** by changing the image type from inline to block and vice versa. Applying a style may change the type of the image, depending on the configuration of the style.
 
 <info-box>
-	The actual styling of the images is the integrator's job. CKEditor 5 WYSIWYG editor comes with some default styles, but they will only be applied to the images inside the editor. The integrator needs to style them appropriately on the target pages.
+	The actual styling of the images is the integrator's job. CKEditor&nbsp;5 WYSIWYG editor comes with some default styles, but they will only be applied to the images inside the editor. The integrator needs to style them appropriately on the target pages.
 
 	You can find the source of the default styles applied by the editor here: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/theme/imagestyle.css).
 
@@ -170,7 +170,7 @@ There are three ways of defining the image styles in the editor configuration:
 * defining a completely custom image style.
 
 <info-box>
-	Reusing (or modifying) predefined styles has the following advantage: CKEditor 5 will use its official translations provided for the defined button titles.
+	Reusing (or modifying) predefined styles has the following advantage: CKEditor&nbsp;5 will use its official translations provided for the defined button titles.
 </info-box>
 
 ### Demo
@@ -442,7 +442,7 @@ The {@link module:image/imagestyle~ImageStyle} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute
