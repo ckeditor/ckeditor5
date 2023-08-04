@@ -1155,8 +1155,9 @@ export function generatePositions( options: {
 				return null;
 			}
 
-			// The target must go beyond at least one of the viewport's edges for this position to make sense.
-			if ( targetRect.top > boundaryRect.top && targetRect.bottom < boundaryRect.bottom ) {
+			// Engage when the target top and bottom edges are close or off the boundary.
+			// By close, it means there's not enough space for the balloon arrow (offset).
+			if ( boundaryRect.height - targetRect.height > stickyVerticalOffset ) {
 				return null;
 			}
 
