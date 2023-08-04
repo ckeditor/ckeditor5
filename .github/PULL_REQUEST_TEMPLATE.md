@@ -8,6 +8,8 @@ Type: Message. Closes #000.
 
 _For example – encountered issues, assumptions you had to make, other affected tickets, etc._
 
+---
+
 ### PR Scope
 
 - [ ] Is there any breaking change?
