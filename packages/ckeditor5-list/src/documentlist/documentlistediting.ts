@@ -391,7 +391,12 @@ export default class DocumentListEditing extends Plugin {
 		const attributeNames = this._getListAttributeNames();
 
 		editor.conversion.for( 'upcast' )
-			.elementToElement( { view: 'li', model: 'paragraph' } )
+			// Convert <li> to a generic paragraph so the content of <li> is always inside a block.
+			// Setting the listType attribute to let other features (to-do list) know that this is part of a list item.
+			.elementToElement( {
+				view: 'li',
+				model: ( viewElement, { writer } ) => writer.createElement( 'paragraph', { listType: '' } )
+			} )
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 				dispatcher.on<UpcastElementEvent>( 'element:ul', listUpcastCleanList(), { priority: 'high' } );

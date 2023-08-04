@@ -7,17 +7,20 @@
  * @module list/todo/todoediting
  */
 
-import type {
-	View,
-	ViewElement,
-	MapperModelToViewPositionEvent,
-	ElementCreatorFunction,
-	UpcastElementEvent,
-	Element
+import {
+	Matcher,
+	type View,
+	type ViewElement,
+	type MapperModelToViewPositionEvent,
+	type ElementCreatorFunction,
+	type UpcastElementEvent,
+	type Element,
+	type MatcherPattern
 } from 'ckeditor5/src/engine';
 
 import { Plugin } from 'ckeditor5/src/core';
 import type { GetCallback } from 'ckeditor5/src/utils';
+
 import { isListItemBlock } from '../documentlist/utils/model';
 import DocumentListEditing from '../documentlist/documentlistediting';
 import DocumentListCommand from '../documentlist/documentlistcommand';
@@ -48,7 +51,19 @@ export default class TodoEditing extends Plugin {
 		} );
 
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			// Upcast of to-do list item is based on a checkbox at the beginning of a <li> to keep compatibility with markdown input.
 			dispatcher.on( 'element:input', todoItemInputConverter() );
+
+			// Consume other elements that are normally generated in data downcast, so they won't get captured by GHS.
+			dispatcher.on( 'element:label', elementUpcastConsumingConverter(
+				{ name: 'label', classes: 'todo-list__label' }
+			) );
+			dispatcher.on( 'element:span', elementUpcastConsumingConverter(
+				{ name: 'span', classes: 'todo-list__label__description' }
+			) );
+			dispatcher.on( 'element:ul', attributeUpcastConsumingConverter(
+				{ name: 'ul', classes: 'todo-list' }
+			) );
 		} );
 
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
@@ -115,14 +130,16 @@ export default class TodoEditing extends Plugin {
 	}
 }
 
+/**
+ * TODO
+ */
 function todoItemInputConverter(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		const modelCursor = data.modelCursor;
 		const modelItem = modelCursor.parent as Element;
 		const viewItem = data.viewItem;
 
-		// TODO detect if this is a to-do list
-		if ( viewItem.getAttribute( 'type' ) != 'checkbox' /* || !isListItemBlock( modelItem )*/ || !modelCursor.isAtStart ) {
+		if ( viewItem.getAttribute( 'type' ) != 'checkbox' || !modelCursor.isAtStart || !modelItem.hasAttribute( 'listType' ) ) {
 			return;
 		}
 
@@ -139,6 +156,47 @@ function todoItemInputConverter(): GetCallback<UpcastElementEvent> {
 		}
 
 		data.modelRange = writer.createRange( modelCursor );
+	};
+}
+
+/**
+ * TODO
+ */
+function elementUpcastConsumingConverter( matcherPattern: MatcherPattern ): GetCallback<UpcastElementEvent> {
+	const matcher = new Matcher( matcherPattern );
+
+	return ( evt, data, conversionApi ) => {
+		const matcherResult = matcher.match( data.viewItem );
+
+		if ( !matcherResult ) {
+			return;
+		}
+
+		if ( !conversionApi.consumable.consume( data.viewItem, matcherResult.match ) ) {
+			return;
+		}
+
+		Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+	};
+}
+
+/**
+ * TODO
+ */
+function attributeUpcastConsumingConverter( matcherPattern: MatcherPattern ): GetCallback<UpcastElementEvent> {
+	const matcher = new Matcher( matcherPattern );
+
+	return ( evt, data, conversionApi ) => {
+		const matcherResult = matcher.match( data.viewItem );
+
+		if ( !matcherResult ) {
+			return;
+		}
+
+		const match = matcherResult.match;
+
+		match.name = false;
+		conversionApi.consumable.consume( data.viewItem, match );
 	};
 }
 
@@ -165,7 +223,8 @@ function todoItemViewCreator( { dataPipeline }: { dataPipeline?: boolean } = {} 
 		}, [
 			writer.createEmptyElement( 'input', {
 				type: 'checkbox',
-				...( modelElement.getAttribute( 'todoItemChecked' ) ? { checked: 'checked' } : null )
+				...( modelElement.getAttribute( 'todoItemChecked' ) ? { checked: 'checked' } : null ),
+				... ( dataPipeline ? { disabled: 'disabled' } : null )
 			} )
 		] );
 
