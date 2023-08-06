@@ -63,6 +63,15 @@ describe( 'IndentBlockCommand', () => {
 				command.refresh();
 				expect( command.isEnabled ).to.be.false;
 			} );
+
+			// Command should be disabled for block items in Document Lists item. See https://github.com/ckeditor/ckeditor5/issues/14155.
+			it( 'should be disabled for a block element inside a list item', () => {
+				model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+
+				setData( model, '<parentBlock><paragraph listItemId="foo">[]bar</paragraph></parentBlock>' );
+				command.refresh();
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 
 		describe( 'execute()', () => {

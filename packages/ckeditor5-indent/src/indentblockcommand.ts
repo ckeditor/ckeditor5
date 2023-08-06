@@ -56,7 +56,10 @@ export default class IndentBlockCommand extends Command {
 
 		const block = first( model.document.selection.getSelectedBlocks() );
 
-		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) ) {
+		// Command should be disabled for block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
+		const isInListItem = block && block.hasAttribute( 'listItemId' );
+
+		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) || isInListItem ) {
 			this.isEnabled = false;
 
 			return;
