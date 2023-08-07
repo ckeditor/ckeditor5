@@ -1,5 +1,5 @@
 ---
-category: framework-tutorials
+category: tutorials
 order: 20
 modified_at: 2022-11-15
 ---

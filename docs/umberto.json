@@ -539,83 +539,16 @@
 			]
 		},
 		{
-			"name": "Updating",
-			"id": "updating",
-			"navigationIncludeIndex": true,
-			"slug": "updating",
-			"categories": [
-				{
-					"name": "CKEditor 4 migration",
-					"id": "ckeditor4-migration",
-					"slug": "ckeditor4",
-					"order": 10
-				},
-				{
-					"name": "Update guides",
-					"id": "update-guides",
-					"slug": "guides",
-					"order": 30
-				}
-			]
-		},
-		{
-			"name": "Support",
-			"id": "support",
-			"navigationIncludeIndex": true,
-			"slug": "support",
-			"categories": [
-				{
-					"name": "Licensing and activation",
-					"id": "licensing",
-					"slug": "licensing",
-					"order": 20
-				}
-			]
-		},
-		{
 			"name": "Framework",
 			"id": "framework",
 			"slug": "framework",
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Tutorial",
-					"id": "tutorial",
-					"slug": "tutorial",
-					"order": 90
-				},
-				{
 					"name": "Architecture",
 					"id": "framework-architecture",
 					"slug": "architecture",
 					"order": 100
-				},
-				{
-					"name": "Developing custom plugins",
-					"id": "framework-plugins",
-					"slug": "plugins",
-					"order": 200,
-					"categories": [
-						{
-							"name": "Creating an abbreviation plugin",
-							"id": "abbreviation-plugin",
-							"slug": "abbreviation-plugin",
-							"order": 20
-						},
-						{
-							"name": "Package Generator",
-							"id": "package-generator",
-							"slug": "package-generator",
-							"order": 40,
-							"folded": true
-						}
-					]
-				},
-				{
-					"name": "Advanced tutorials",
-					"id": "framework-tutorials",
-					"slug": "tutorials",
-					"order": 250
 				},
 				{
 					"name": "Deep dive",
@@ -648,10 +581,51 @@
 					]
 				},
 				{
+					"name": "Development tools",
+					"id": "development-tools",
+					"slug": "develpment-tools",
+					"order": 200,
+					"categories": [
+						{
+							"name": "Package Generator",
+							"id": "package-generator",
+							"slug": "package-generator",
+							"order": 3,
+							"folded": true
+						}
+					]
+				},
+				{
 					"name": "Contributing",
 					"id": "framework-contributing",
 					"slug": "contributing",
 					"order": 400
+				}
+			]
+		},
+		{
+			"name": "Tutorials",
+			"id": "tutorials",
+			"navigationIncludeIndex": true,
+			"slug": "tutorials",
+			"categories": [
+				{
+					"name": "Crash Course",
+					"id": "crash-course",
+					"slug": "crash-course",
+					"order": 1
+				},
+				{
+					"name": "Creating Abbreviation Plugin",
+					"id": "abbreviation-plugin",
+					"slug": "abbreviation-plugin",
+					"order": 2
+				},
+				{
+					"name": "Widgets",
+					"id": "widget-tutorials",
+					"slug": "widgets",
+					"order": 3
 				}
 			]
 		},
@@ -661,6 +635,40 @@
 			"sourceDir": "api",
 			"slug": "api",
 			"type": "typedoc"
+		},
+		{
+			"name": "Updating",
+			"id": "updating",
+			"navigationIncludeIndex": true,
+			"slug": "updating",
+			"categories": [
+				{
+					"name": "CKEditor 4 migration",
+					"id": "ckeditor4-migration",
+					"slug": "ckeditor4",
+					"order": 10
+				},
+				{
+					"name": "Update guides",
+					"id": "update-guides",
+					"slug": "guides",
+					"order": 30
+				}
+			]
+		},
+		{
+			"name": "Support",
+			"id": "support",
+			"navigationIncludeIndex": true,
+			"slug": "support",
+			"categories": [
+				{
+					"name": "Licensing and activation",
+					"id": "licensing",
+					"slug": "licensing",
+					"order": 20
+				}
+			]
 		}
 	]
 }
