@@ -163,9 +163,9 @@ describe( 'IndentBlock', () => {
 				describe( 'integration with List', () => {
 					beforeEach( () => {
 						return VirtualTestEditor
-							.create( Object.assign( {
+							.create( {
 								plugins: [ Paragraph, DocumentListEditing, IndentEditing, IndentBlock ]
-							} ) )
+							} )
 							.then( newEditor => {
 								editor = newEditor;
 								model = editor.model;
