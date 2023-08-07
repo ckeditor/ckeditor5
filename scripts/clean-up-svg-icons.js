@@ -36,7 +36,7 @@ const globPattern = minimist( process.argv.slice( 2 ) )._
 	.map( pathToIcon => pathToIcon.endsWith( '.svg' ) ? pathToIcon : pathToIcon + '/*.svg' );
 
 globSync( globPattern )
-	.map( upath.normalize )
+	.map( upath.toUnix )
 	.filter( pathToIcon => {
 		const iconName = upath.basename( pathToIcon );
 		const isExcluded = EXCLUDED_ICONS.includes( iconName );
