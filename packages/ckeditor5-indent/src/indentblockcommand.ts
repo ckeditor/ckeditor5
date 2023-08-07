@@ -50,7 +50,6 @@ export default class IndentBlockCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		// Check whether any of the position's ancestors is a list item.
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -100,5 +99,6 @@ function getBlocksToChange( model: Model ): Array<Element> {
 	const schema = model.schema;
 	const blocksInSelection = Array.from( selection.getSelectedBlocks() );
 
-	return blocksInSelection.filter( block => schema.checkAttribute( block, 'blockIndent' ) );
+	// Do not add blockIndent to block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
+	return blocksInSelection.filter( block => schema.checkAttribute( block, 'blockIndent' ) && !block.hasAttribute( 'listItemId' ) );
 }

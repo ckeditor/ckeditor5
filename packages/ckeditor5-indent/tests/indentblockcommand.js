@@ -104,6 +104,18 @@ describe( 'IndentBlockCommand', () => {
 				command.execute();
 				sinon.assert.calledTwice( indentBehavior.getNextIndent );
 			} );
+
+			it( 'should be executed only for blocks that are not in Document Lists', () => {
+				model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+
+				setData( model,
+					'<paragraph>f[oo</paragraph>' +
+					'<paragraph listItemId="bar">foo</paragraph>' +
+					'<paragraph>f]oo</paragraph>'
+				);
+				command.execute();
+				sinon.assert.calledTwice( indentBehavior.getNextIndent );
+			} );
 		} );
 	} );
 
