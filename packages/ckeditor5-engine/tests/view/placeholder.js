@@ -662,6 +662,7 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
+			sinon.assert.calledOnce( console.warn );
 			sinon.assert.calledOnce( spy.withArgs( warning ) );
 		} );
 
