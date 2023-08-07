@@ -185,7 +185,7 @@
     "release:publish-packages": "node ./scripts/release/publishpackages.js",
     "release:switch-latest": "node ./scripts/release/switchlatest.js",
     "release:clean": "node ./scripts/release/clean.js",
-    "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
+    "clean-up-svg-icons": "node ./scripts/clean-up-svg-icons.js",
     "collect-svg-icons": "node scripts/collect-svg-icons.js",
     "check-dependencies": "ckeditor5-dev-dependency-checker",
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.js"
