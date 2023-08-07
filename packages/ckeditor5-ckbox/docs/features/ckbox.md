@@ -1,8 +1,8 @@
 ---
 category: features-file-management
 menu-title: CKBox
-meta-title: CKBox file manager in CKEditor 5
-meta-description: Learn all about using the CKBox file manager and service with CKEditor 5
+meta-title: CKBox file manager in CKEditor&nbsp;5
+meta-description: Learn all about using the CKBox file manager and service with CKEditor&nbsp;5
 modified_at: 2022-06-20
 order: 10
 badges: [ premium ]
@@ -12,7 +12,7 @@ badges: [ premium ]
 
 # CKBox file manager
 
-CKBox is a dedicated asset manager supporting file and image upload. The CKBox feature lets you easily upload various files and insert images and links to other files into your content. It also offers image conversion and optimization capabilities and provides a {@link features/images-responsive responsive images mechanism} for CKEditor 5.
+CKBox is a dedicated asset manager supporting file and image upload. The CKBox feature lets you easily upload various files and insert images and links to other files into your content. It also offers image conversion and optimization capabilities and provides a {@link features/images-responsive responsive images mechanism} for CKEditor&nbsp;5.
 
 <info-box>
 	This is a premium feature and you need a subscription to use it. You can [purchase it here](https://ckeditor.com/pricing/) for your open-source CKEditor implementation. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) if:
@@ -25,9 +25,9 @@ CKBox is a dedicated asset manager supporting file and image upload. The CKBox f
 	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
-## How CKBox enhances CKEditor 5
+## How CKBox enhances CKEditor&nbsp;5
 
-As a full-fledged file manager, CKBox also replaces the basic CKEditor 5 image upload feature. It provides images and files upload and management capabilities:
+As a full-fledged file manager, CKBox also replaces the basic CKEditor&nbsp;5 image upload feature. It provides images and files upload and management capabilities:
 
 * Enables drag & drop uploads of images and other files.
 * Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
@@ -279,14 +279,14 @@ The {@link module:ckbox/ckbox~CKBox} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?
 
-Be sure to check out the comprehensive {@link features/image-upload Image upload overview} guide to learn more about different ways of uploading images in CKEditor 5.
+Be sure to check out the comprehensive {@link features/image-upload Image upload overview} guide to learn more about different ways of uploading images in CKEditor&nbsp;5.
 
-See the {@link features/images-overview image feature} guide to find out more about handling images in CKEditor 5 in general.
+See the {@link features/images-overview image feature} guide to find out more about handling images in CKEditor&nbsp;5 in general.
 
 <info-box warning>
 	Need more functionality? [Take a survey and help us develop CKBox to suit your needs better!](https://www.surveymonkey.com/r/MG97W8S)

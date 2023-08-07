@@ -5,7 +5,7 @@ order: 10
 modified_at: 2023-02-22
 ---
 
-# Tables in CKEditor 5 (overview)
+# Tables in CKEditor&nbsp;5 (overview)
 
 {@snippet features/build-table-source}
 
@@ -18,7 +18,7 @@ Try toggling the caption on and off {@icon @ckeditor/ckeditor5-core/theme/icons/
 
 {@snippet features/tables}
 
-You may look for more interesting details in the [Tables in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-tables-in-ckeditor-5/) blog post after reading this guide.
+You may look for more interesting details in the [Tables in CKEditor&nbsp;5](https://ckeditor.com/blog/feature-of-the-month-tables-in-ckeditor-5/) blog post after reading this guide.
 
 ## Basic table features
 
@@ -157,7 +157,7 @@ To type before or after a table easily, select the table, then press the Arrow k
 
 {@snippet features/build-table-source}
 
-CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
+CKEditor&nbsp;5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
 
 <info-box info>
 	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
@@ -377,7 +377,7 @@ ClassicEditor
 </info-box>
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 
@@ -501,7 +501,7 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 </table>
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

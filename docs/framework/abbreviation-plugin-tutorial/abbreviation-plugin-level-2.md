@@ -50,7 +50,7 @@ export default class FormView extends View {
 }
 ```
 
-Notice that we added two classes. All UI elements of the editor need to have the `ck` class (unless you want to create your own UI and not use CKEditor 5's built-in library). We also created a new class for our form, which we will use later on to style it.
+Notice that we added two classes. All UI elements of the editor need to have the `ck` class (unless you want to create your own UI and not use CKEditor&nbsp;5's built-in library). We also created a new class for our form, which we will use later on to style it.
 
 ### Creating input fields
 
@@ -249,7 +249,7 @@ In the `constructor`, we create a {@link module:ui/viewcollection~ViewCollection
 
 Let's also add `render()` method to our `FormView`.  We will use a helper `submitHandler()` function there, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the `submit` event on a view instead.
 
-We also need a `focus()` method, which will focus on the first child of our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/deep-dive/focus-tracking focus tracking} can do in CKEditor 5. We will get into it more in next part of this tutorial.
+We also need a `focus()` method, which will focus on the first child of our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/deep-dive/focus-tracking focus tracking} can do in CKEditor&nbsp;5. We will get into it more in next part of this tutorial.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -315,7 +315,7 @@ Our `FormView` is done! However, we cannot see it just yet, so let's add it to o
 
 ## Adding the Contextual Balloon
 
-Our form needs to appear in a balloon, and we will use the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon `ContextualBalloon`} class from the CKEditor 5 UI library to make one.
+Our form needs to appear in a balloon, and we will use the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon `ContextualBalloon`} class from the CKEditor&nbsp;5 UI library to make one.
 
 This is where we ended up with our UI in the first part of the tutorial.
 

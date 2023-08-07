@@ -10,7 +10,7 @@ modified_at: 2022-03-02
 
 ## What is the conversion?
 
-The {@link framework/architecture/editing-engine editing engine} of CKEditor 5 works on two separate layers &mdash; {@link framework/architecture/editing-engine#model model} and {@link framework/architecture/editing-engine#view view}. The process of transforming one into the other is called conversion.
+The {@link framework/architecture/editing-engine editing engine} of CKEditor&nbsp;5 works on two separate layers &mdash; {@link framework/architecture/editing-engine#model model} and {@link framework/architecture/editing-engine#view view}. The process of transforming one into the other is called conversion.
 
 ### Upcast conversion
 
@@ -28,7 +28,7 @@ You can think about upcast and downcast as processes working in opposite directi
 
 ## Further reading
 
-In the following guides you will learn how to create the right converter for each case when creating your very own CKEditor 5 plugin.
+In the following guides you will learn how to create the right converter for each case when creating your very own CKEditor&nbsp;5 plugin.
 
 * **{@link framework/deep-dive/conversion/downcast Model to view (downcast)}**
 
