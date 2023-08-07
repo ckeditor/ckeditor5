@@ -16,7 +16,7 @@ You will build an "external data fetch" feature that allows users to insert a pr
 
 ## Before you start ⚠️
 
-This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} and {@link framework/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/architecture/intro CKEditor 5 architecture}.
+This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} and {@link framework/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
 
 ## Bootstrapping the project
 
@@ -114,7 +114,7 @@ Add an `index.html` page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Implementing a simple widget</title>
+		<title>CKEditor&nbsp;5 Framework – Implementing a simple widget</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -250,7 +250,7 @@ The external data widget feature will be {@link module:engine/model/schema~Schem
 ```
 
 <info-box>
-	The syntax presented above is used by our debugging tools, such as {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector}, which is particularly helpful when developing new rich-text editor features.
+	The syntax presented above is used by our debugging tools, such as {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector}, which is particularly helpful when developing new rich-text editor features.
 </info-box>
 
 ### Defining the schema

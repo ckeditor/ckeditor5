@@ -9,7 +9,7 @@ modified_at: 2022-05-19
 
 {@snippet features/build-table-source}
 
-CKEditor 5 comes with some additional tools that help you modify the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
+CKEditor&nbsp;5 comes with some additional tools that help you modify the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
 
 ## Demo
 
@@ -333,7 +333,7 @@ The {@link module:table/tableproperties~TableProperties} and {@link module:table
 </table>
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

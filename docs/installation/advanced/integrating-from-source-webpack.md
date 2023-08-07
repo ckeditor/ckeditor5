@@ -5,15 +5,15 @@ order: 10
 # Integrating from source using webpack
 
 <info-box>
-	CKEditor 5 is currently built using [webpack@5](https://webpack.js.org/). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor 5 using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. However, there is integration for {@link installation/advanced/integrating-from-source-vite Vite}. It is still in an experimental phase and supports a limited number of features. For example, the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows to localize the editor is only available for webpack. More work on this subject will be done in the future.
+	CKEditor&nbsp;5 is currently built using [webpack@5](https://webpack.js.org/). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor&nbsp;5 using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. However, there is integration for {@link installation/advanced/integrating-from-source-vite Vite}. It is still in an experimental phase and supports a limited number of features. For example, the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows to localize the editor is only available for webpack. More work on this subject will be done in the future.
 
 	Therefore, a prerequisite to this guide is that you are using webpack as your build tool.
 </info-box>
 
-This scenario allows you to fully control the building process of CKEditor 5. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
+This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
 <info-box>
-	Similar results to what this method allows can be achieved by {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor 5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
+	Similar results to what this method allows can be achieved by {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor&nbsp;5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
 First of all, you need to install the source packages that you will use in your existing project. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor type and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
@@ -55,15 +55,15 @@ npm install --save ts-loader
 
 ## Webpack configuration
 
-You can now configure webpack. There are a couple of things that you need to take care of when building CKEditor 5:
+You can now configure webpack. There are a couple of things that you need to take care of when building CKEditor&nbsp;5:
 
-* Handling CSS files of the CKEditor theme. They are included in the CKEditor 5 sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
+* Handling CSS files of the CKEditor theme. They are included in the CKEditor&nbsp;5 sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
 * Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
 * Finally, to localize the editor you need to use the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) webpack plugin.
 
 ### JavaScript
 
-The minimal configuration, assuming that you use the same methods of handling assets as CKEditor 5 builds, will look like this:
+The minimal configuration, assuming that you use the same methods of handling assets as CKEditor&nbsp;5 builds, will look like this:
 
 ```js
 // webpack.config.js
@@ -217,13 +217,13 @@ Encore.
 		language: 'pl'
 	} ) )
 
-	// Use raw-loader for CKEditor 5 SVG files.
+	// Use raw-loader for CKEditor&nbsp;5 SVG files.
 	.addRule( {
 		test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 		loader: 'raw-loader'
 	} )
 
-	// Configure other image loaders to exclude CKEditor 5 SVG files.
+	// Configure other image loaders to exclude CKEditor&nbsp;5 SVG files.
 	.configureLoaderRule( 'images', loader => {
 		loader.exclude = /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/;
 	} )
@@ -552,12 +552,12 @@ Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode
 <info-box>
 	Prior to version 1.2.7 `uglifyjs-webpack-plugin` had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable`. If you experienced this error, make sure that your `node_modules` contains an up-to-date version of this package (and that webpack uses this version).
 
-	CKEditor 5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the latter one is not supported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
+	CKEditor&nbsp;5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the latter one is not supported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 
 ## Option: Extracting CSS
 
-One of the most common requirements is to extract CKEditor 5 CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use [`mini-css-extract-plugin`](https://www.npmjs.com/package/mini-css-extract-plugin):
+One of the most common requirements is to extract CKEditor&nbsp;5 CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use [`mini-css-extract-plugin`](https://www.npmjs.com/package/mini-css-extract-plugin):
 
 ```bash
 npm install --save \
@@ -616,11 +616,11 @@ Webpack will now create a separate file called `styles.css` which you will need 
 
 ## Option: Building to ES5 target
 
-CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor 5 is {@link support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 builds are also published in the original ES6 format.
+CKEditor&nbsp;5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor&nbsp;5 is {@link support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor&nbsp;5. Thanks to that, CKEditor&nbsp;5 builds are also published in the original ES6 format.
 
-However, it may happen that your environment requires ES5. For instance, if you use tools like the original [UglifyJS](https://github.com/mishoo/UglifyJS) which do not support ES6+ yet, you may need to transpile CKEditor 5 source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor 5 code.
+However, it may happen that your environment requires ES5. For instance, if you use tools like the original [UglifyJS](https://github.com/mishoo/UglifyJS) which do not support ES6+ yet, you may need to transpile CKEditor&nbsp;5 source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor&nbsp;5 code.
 
-In order to create an ES5 build of CKEditor 5 you can use [Babel](https://babeljs.io/):
+In order to create an ES5 build of CKEditor&nbsp;5 you can use [Babel](https://babeljs.io/):
 
 ```bash
 npm install --save babel-loader @babel/core @babel/preset-env regenerator-runtime

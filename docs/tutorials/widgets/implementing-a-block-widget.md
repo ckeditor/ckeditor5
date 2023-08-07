@@ -5,7 +5,7 @@ order: 10
 
 # Implementing a block widget
 
-In this tutorial, you will learn how to implement a more complex CKEditor 5 plugin.
+In this tutorial, you will learn how to implement a more complex CKEditor&nbsp;5 plugin.
 
 You will build a "Simple box" feature which will allow the user to insert a custom box with a title and body fields into the document. You will use the widget utilities and work with the model-view conversion in order to properly set up the behavior of this feature. Later on, you will create a UI which will allow for inserting new simple boxes into the document with the toolbar button.
 
@@ -17,9 +17,9 @@ You will build a "Simple box" feature which will allow the user to insert a cust
 
 ## Before you start
 
-While it is not strictly necessary to read the {@link framework/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor 5 Framework before you dive into this tutorial.
+While it is not strictly necessary to read the {@link framework/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor&nbsp;5 Framework before you dive into this tutorial.
 
-The tutorial will also reference various parts of the {@link framework/architecture/intro CKEditor 5 architecture} section as you go. While reading them is not necessary to finish this tutorial, it is recommended to read these guides at some point to get a better understanding of the mechanisms used in this tutorial.
+The tutorial will also reference various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section as you go. While reading them is not necessary to finish this tutorial, it is recommended to read these guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
 <info-box>
 	If you want to use your own event handler for events triggered by your widget, you must wrap it with a container that has a `data-cke-ignore-events` attribute to exclude it from the editor's default handlers. Refer to {@link framework/deep-dive/widget-internals#exclude-dom-events-from-default-handlers Exclude DOM events from default handlers} for more details.
@@ -29,7 +29,7 @@ The tutorial will also reference various parts of the {@link framework/architect
 
 This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
 
-First, install packages needed to build and set up a basic CKEditor 5 instance.
+First, install packages needed to build and set up a basic CKEditor&nbsp;5 instance.
 
 ```bash
 npm install --save \
@@ -145,7 +145,7 @@ And an `index.html` page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Implementing a simple widget</title>
+		<title>CKEditor&nbsp;5 Framework – Implementing a simple widget</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -175,13 +175,13 @@ Entrypoint main [big] = bundle.js bundle.js.map
     + 904 hidden modules
 ```
 
-And now see if everything worked well by opening the index page in your browser. You should see a CKEditor 5 instance like this:
+And now see if everything worked well by opening the index page in your browser. You should see a CKEditor&nbsp;5 instance like this:
 
 {@img assets/img/tutorial-implementing-a-widget-1.png Screenshot of a classic editor initialized from source.}
 
 ## Plugin structure
 
-Once the editor is up and running you can start implementing the plugin. The entire plugin code can be kept in a single file, however, it is recommended to split its "editing" and "UI" layers and create a master plugin which loads both. This way, you ensure better separation of concerns and allow for recomposing the features (e.g. picking the editing part of an existing feature but writing your own UI for it). All official CKEditor 5 plugins follow this pattern.
+Once the editor is up and running you can start implementing the plugin. The entire plugin code can be kept in a single file, however, it is recommended to split its "editing" and "UI" layers and create a master plugin which loads both. This way, you ensure better separation of concerns and allow for recomposing the features (e.g. picking the editing part of an existing feature but writing your own UI for it). All official CKEditor&nbsp;5 plugins follow this pattern.
 
 Additionally, you will split the code of commands, buttons and other "self-contained" components to separate files, too. In order not to mix up these files with your project's `app.js` and `webpack.config.js` files, create this directory structure:
 
@@ -286,7 +286,7 @@ Rebuild your project, refresh the browser and you should see that the the `Simpl
 
 ## The model and the view layers
 
-CKEditor 5 implements an MVC architecture and its custom data model, while still being a tree structure, does not map to the DOM 1:1. You can think about the model as about an even more semantical representation of the editor content, while the DOM is one of its possible representations.
+CKEditor&nbsp;5 implements an MVC architecture and its custom data model, while still being a tree structure, does not map to the DOM 1:1. You can think about the model as about an even more semantical representation of the editor content, while the DOM is one of its possible representations.
 
 <info-box>
 	Read more about the {@link framework/architecture/editing-engine#overview editing engine architecture}.
@@ -367,7 +367,7 @@ Converters tell the editor how to convert the view to the model (e.g. when loadi
 	Read more about the {@link framework/deep-dive/conversion/downcast conversion in the editor}.
 </info-box>
 
-This is the moment when you need to think about how you want to render the `<simpleBox>` element and its children to the DOM (what the user will see) and to the data. CKEditor 5 allows converting the model to a different structure for editing purposes and a different one to be stored as "data" or exchanged with other applications when copy-pasting the content. However, for simplicity, use the same representation in both pipelines for now.
+This is the moment when you need to think about how you want to render the `<simpleBox>` element and its children to the DOM (what the user will see) and to the data. CKEditor&nbsp;5 allows converting the model to a different structure for editing purposes and a different one to be stored as "data" or exchanged with other applications when copy-pasting the content. However, for simplicity, use the same representation in both pipelines for now.
 
 The structure in the view that you want to achieve:
 
@@ -443,7 +443,7 @@ Once you have converters, you can try to see the simple box in action. You have 
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Implementing a simple widget</title>
+		<title>CKEditor&nbsp;5 Framework – Implementing a simple widget</title>
 
 		<style>
 			.simple-box {
@@ -495,13 +495,13 @@ Rebuild your project and voila &mdash; that's your first simple box instance:
 
 ### What's in the model?
 
-The HTML that you added to the `index.html` file is your editor's data. This is what `editor.getData()` would return. Also, for now, this also the DOM structure which is rendered by the CKEditor 5 engine in the editable region:
+The HTML that you added to the `index.html` file is your editor's data. This is what `editor.getData()` would return. Also, for now, this also the DOM structure which is rendered by the CKEditor&nbsp;5 engine in the editable region:
 
 {@img assets/img/tutorial-implementing-a-widget-4.png Screenshot of a DOM structure of the simple box instance – it looks exactly like the data loaded into the editor.}
 
 However, what's in the model?
 
-To learn that, use the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector}. Once {@link framework/development-tools#ckeditor-5-inspector#installing-the-inspector installed}, you need to load it in the `app.js` file:
+To learn that, use the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector}. Once {@link framework/development-tools#ckeditor-5-inspector#installing-the-inspector installed}, you need to load it in the `app.js` file:
 
 ```js
 // app.js
@@ -539,7 +539,7 @@ ClassicEditor
 
 After rebuilding your project and refreshing the page you will see the inspector:
 
-{@img assets/img/tutorial-implementing-a-widget-4b.png Screenshot of a the simple box widget's structure displayed by CKEditor 5 inspector.}
+{@img assets/img/tutorial-implementing-a-widget-4b.png Screenshot of a the simple box widget's structure displayed by CKEditor&nbsp;5 inspector.}
 
 You will see the following HTML-like string:
 
@@ -580,13 +580,13 @@ See what else you can improve.
 ### Making simple box a widget
 
 <info-box>
-	If you are familiar with the {@link @ckeditor4 guide/dev/deep_dive/widgets/README Widget System of CKEditor 4} you will notice significant differences in how widgets are implemented in CKEditor 5.
+	If you are familiar with the {@link @ckeditor4 guide/dev/deep_dive/widgets/README Widget System of CKEditor 4} you will notice significant differences in how widgets are implemented in CKEditor&nbsp;5.
 
 	CKEditor 4 implementation exposes a declarative API that controls the entire behavior of a widget (from its schema and internal model to the styles, clicking behavior, context menu and the dialog).
 
-	In CKEditor 5 the widget system was redesigned. Most of its responsibilities were taken over by the engine, some were extracted to a separate package ({@link api/widget `@ckeditor/ckeditor5-widget`}) and some have to be handled by other utilities provided by CKEditor 5 Framework.
+	In CKEditor&nbsp;5 the widget system was redesigned. Most of its responsibilities were taken over by the engine, some were extracted to a separate package ({@link api/widget `@ckeditor/ckeditor5-widget`}) and some have to be handled by other utilities provided by CKEditor&nbsp;5 Framework.
 
-	CKEditor 5 implementation is, therefore, open for extensions and recomposition. You can choose the behaviors that you want (just like you did so far in this tutorial by defining a schema) and skip others or implement them by yourself.
+	CKEditor&nbsp;5 implementation is, therefore, open for extensions and recomposition. You can choose the behaviors that you want (just like you did so far in this tutorial by defining a schema) and skip others or implement them by yourself.
 </info-box>
 
 The converters that you defined convert the model `<simpleBox*>` elements to plain {@link module:engine/view/containerelement~ContainerElement `ContainerElement`}s in the view (and back during upcasting).
@@ -829,7 +829,7 @@ Should result in:
 
 {@img assets/img/tutorial-implementing-a-widget-6.png Screenshot of a simple box instance inserted at the beginning of the editor content.}
 
-You can also try inspecting the `isEnabled` property value (or just checking it in CKEditor 5 inspector):
+You can also try inspecting the `isEnabled` property value (or just checking it in CKEditor&nbsp;5 inspector):
 
 ```js
 console.log( editor.commands.get( 'insertSimpleBox' ).isEnabled );
@@ -907,7 +907,7 @@ Now the command should be disabled also when the selection is inside the descrip
 
 ## Creating a button
 
-It is time to allow the editor users to insert the widget into the content. The best way to do that is through a UI button in the toolbar. You can quickly create one using the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class brought by the {@link framework/architecture/ui-library UI framework} of CKEditor 5.
+It is time to allow the editor users to insert the widget into the content. The best way to do that is through a UI button in the toolbar. You can quickly create one using the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class brought by the {@link framework/architecture/ui-library UI framework} of CKEditor&nbsp;5.
 
 The button should execute the [command](#creating-a-command) when clicked and become inactive if the widget cannot be inserted into some particular position of the selection ([as defined in the schema](#defining-the-schema)).
 

@@ -5,13 +5,13 @@ order: 1
 modified_at: 2022-08-16
 ---
 
-# CKEditor 5 inspector
+# CKEditor&nbsp;5 inspector
 
-The official [CKEditor 5 inspector](https://github.com/ckeditor/ckeditor5-inspector) provides a set of rich debugging tools for editor internals like {@link framework/architecture/editing-engine#model model}, {@link framework/architecture/editing-engine#view view}, and {@link framework/architecture/core-editor-architecture#commands commands}.
+The official [CKEditor&nbsp;5 inspector](https://github.com/ckeditor/ckeditor5-inspector) provides a set of rich debugging tools for editor internals like {@link framework/architecture/editing-engine#model model}, {@link framework/architecture/editing-engine#view view}, and {@link framework/architecture/core-editor-architecture#commands commands}.
 
 It allows you to observe changes to the data structures and the selection live in the editor, which is particularly helpful when developing new rich-text editor features or getting to understand the existing ones.
 
-{@img assets/img/framework-development-tools-inspector.jpg Screenshot of the CKEditor 5 inspector attached to a WYSIWYG editor instance.}
+{@img assets/img/framework-development-tools-inspector.jpg Screenshot of the CKEditor&nbsp;5 inspector attached to a WYSIWYG editor instance.}
 
 ## Importing the inspector
 
@@ -45,7 +45,7 @@ To create such a bookmarklet, paste the following code as the URL of a new bookm
 javascript:(function(){let script=document.createElement('script');script.src='https://unpkg.com/@ckeditor/ckeditor5-inspector/build/inspector.js';script.onload=()=>CKEditorInspector.attachToAll();document.head.appendChild(script);})()
 ```
 
-Now you can load CKEditor 5 inspector by using the newly created bookmark.
+Now you can load CKEditor&nbsp;5 inspector by using the newly created bookmark.
 
 ## Enabling the inspector
 
@@ -66,7 +66,7 @@ The inspector will show up at the bottom of the screen.
 
 ## Inspecting multiple editors
 
-You can inspect multiple CKEditor 5 instances at a time by calling `CKEditorInspector.attach()` for each one of them. Then you can switch the inspector context to inspect different editor instances.
+You can inspect multiple CKEditor&nbsp;5 instances at a time by calling `CKEditorInspector.attach()` for each one of them. Then you can switch the inspector context to inspect different editor instances.
 
 You can specify the name of the editor when attaching to make working with multiple instances easier:
 
@@ -78,16 +78,16 @@ CKEditorInspector.attach( { 'body-editor': editor } );
 
 The editor switcher is in the upper–right corner of the inspector panel.
 
-### Demo
+## Demo
 
 Click the <b>"Inspect editor"</b> button below to attach the inspector to the editor:
 
 {@snippet framework/development-tools/inspector}
 
-### Compatibility
+## Compatibility
 
-The inspector works with CKEditor 5 [v12.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v12.0.0)+.
+The inspector works with CKEditor&nbsp;5 [v12.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v12.0.0)+.
 
-### Contributing to the inspector
+## Contributing to the inspector
 
-The source code of CKEditor 5 inspector and its issue tracker is available on GitHub in [https://github.com/ckeditor/ckeditor5-inspector](https://github.com/ckeditor/ckeditor5-inspector).
+The source code of CKEditor&nbsp;5 inspector and its issue tracker is available on GitHub in [https://github.com/ckeditor/ckeditor5-inspector](https://github.com/ckeditor/ckeditor5-inspector).

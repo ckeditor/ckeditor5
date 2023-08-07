@@ -93,13 +93,13 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([71469ac](https://github.com/ckeditor/ckeditor5-utils/commit/71469ac))
-* Removed the CKEditor 5 logger and its usage. Part of [ckeditor/ckeditor5#383](https://github.com/ckeditor/ckeditor5/issues/383). ([584ef1d](https://github.com/ckeditor/ckeditor5-utils/commit/584ef1d))
+* Removed the CKEditor&nbsp;5 logger and its usage. Part of [ckeditor/ckeditor5#383](https://github.com/ckeditor/ckeditor5/issues/383). ([584ef1d](https://github.com/ckeditor/ckeditor5-utils/commit/584ef1d))
 
 ### BREAKING CHANGES
 
 * The`Locale()` constructor arguments syntax has changed. Please refer to the API documentation to learn more.
 * The `Locale#language` property has been deprecated by `Locale#uiLanguage`. Please refer to the API documentation to learn more.
-* Removed the CKEditor 5 logger utility.
+* Removed the CKEditor&nbsp;5 logger utility.
 
 
 ## [13.0.1](https://github.com/ckeditor/ckeditor5-utils/compare/v13.0.0...v13.0.1) (2019-07-10)
@@ -217,7 +217,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)

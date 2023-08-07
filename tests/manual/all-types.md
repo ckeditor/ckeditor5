@@ -1,6 +1,6 @@
 # All types of editors
 
-This manual test aggregates various editor types brought by the CKEditor 5 core team:
+This manual test aggregates various editor types brought by the CKEditor&nbsp;5 core team:
 
 * Classic
 * Inline

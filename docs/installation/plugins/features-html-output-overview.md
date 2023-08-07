@@ -7,7 +7,7 @@ modified_at: 2021-12-03
 
 # Plugins and HTML output
 
-Listed below are all official CKEditor 5 packages as well as some partner packages together with their possible HTML output. If a plugin generates a different HTML output depending on its configuration, it is described in the "HTML output" column.
+Listed below are all official CKEditor&nbsp;5 packages as well as some partner packages together with their possible HTML output. If a plugin generates a different HTML output depending on its configuration, it is described in the "HTML output" column.
 
 The classes, styles or attributes applied to an HTML element are all **possible** results. It does not mean they all will always be used.
 

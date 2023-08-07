@@ -8,18 +8,7 @@
     "ckeditor 5",
     "ckeditor5-feature",
     "ckeditor5-plugin",
-    "WYSIWYG",
-    "text",
-    "rich-text",
-    "richtext",
-    "ckeditor",
-    "editor",
-    "editing",
-    "html",
-    "contentEditable",
-    "blocks",
-    "content-blocks",
-    "show-blocks"
+    "ckeditor5-dll"
   ],
   "main": "src/index.ts",
   "dependencies": {
@@ -72,10 +61,6 @@
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=5.7.1"
-  },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com/ckeditor-5",
@@ -90,10 +75,12 @@
     "src/**/*.js",
     "src/**/*.d.ts",
     "theme",
+    "build",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json"
+    "build": "tsc -p ./tsconfig.json",
+    "dll:build": "webpack"
   }
 }

@@ -15,7 +15,7 @@ You will build a "placeholder" feature that allows the users to insert predefine
 
 ## Before you start ⚠️
 
-This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial. The tutorial will also reference various concepts from the {@link framework/architecture/intro CKEditor 5 architecture}.
+This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial. The tutorial will also reference various concepts from the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
 
 ## Bootstrapping the project
 
@@ -114,7 +114,7 @@ Add an `index.html` page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Implementing a simple widget</title>
+		<title>CKEditor&nbsp;5 Framework – Implementing a simple widget</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -387,7 +387,7 @@ As you could notice, the editing part imports the `./theme/placeholder.css` CSS 
 
 ### Command
 
-The {@link framework/architecture/core-editor-architecture#commands command} for the placeholder feature will insert a `<placeholder>` element (if allowed by the schema) at the selection. The command will accept the `options.value` parameter (other CKEditor 5 commands also use this pattern) to set the placeholder name.
+The {@link framework/architecture/core-editor-architecture#commands command} for the placeholder feature will insert a `<placeholder>` element (if allowed by the schema) at the selection. The command will accept the `options.value` parameter (other CKEditor&nbsp;5 commands also use this pattern) to set the placeholder name.
 
 ```js
 // placeholder/placeholdercommand.js
@@ -470,7 +470,7 @@ editor.execute( 'placeholder', { value: 'time' } );
 
 This should result in:
 
-{@img assets/img/tutorial-implementing-an-inline-widget-1.png Screenshot of a placeholder widget in action in CKEditor 5 WYSIWYG editor.}
+{@img assets/img/tutorial-implementing-an-inline-widget-1.png Screenshot of a placeholder widget in action in CKEditor&nbsp;5 WYSIWYG editor.}
 
 ### Fixing position mapping
 
@@ -494,7 +494,7 @@ foo<span class="placeholder">{name}</span>bar
 
 You could say that in the view there is "more" text than in the model. This means that some positions in the view cannot automatically map to positions in the model. Namely &mdash; those are positions inside the `<span>` element.
 
-Fortunately, CKEditor 5 {@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition allows customizing the mapping logic}. Also, since mapping to an empty model element is a pretty common scenario, there is a ready-to-use utility {@link module:widget/utils~viewToModelPositionOutsideModelElement `viewToModelPositionOutsideModelElement()`} that you can use here like that:
+Fortunately, CKEditor&nbsp;5 {@link module:engine/conversion/mapper~Mapper#event:viewToModelPosition allows customizing the mapping logic}. Also, since mapping to an empty model element is a pretty common scenario, there is a ready-to-use utility {@link module:widget/utils~viewToModelPositionOutsideModelElement `viewToModelPositionOutsideModelElement()`} that you can use here like that:
 
 ```js
 // placeholder/placeholderediting.js
@@ -549,7 +549,7 @@ After adding the custom mapping, the mapping will work perfectly. Every position
 
 The UI part will provide a dropdown button from which the user can select a placeholder to insert into the editor.
 
-CKEditor 5 Framework includes helpers to create different {@link framework/architecture/ui-library#dropdowns dropdowns} like toolbar or list dropdowns.
+CKEditor&nbsp;5 Framework includes helpers to create different {@link framework/architecture/ui-library#dropdowns dropdowns} like toolbar or list dropdowns.
 
 In this tutorial, you will create a dropdown with a list of available placeholders.
 
@@ -733,7 +733,7 @@ ClassicEditor
 
 If you open the dropdown in the toolbar, you will see a new list of placeholders to insert.
 
-{@img assets/img/tutorial-implementing-an-inline-widget-2.png Screenshot of the placeholder widgets being inserted using the dropdown in CKEditor 5 WYSIWYG editor.}
+{@img assets/img/tutorial-implementing-an-inline-widget-2.png Screenshot of the placeholder widgets being inserted using the dropdown in CKEditor&nbsp;5 WYSIWYG editor.}
 
 ## Demo
 

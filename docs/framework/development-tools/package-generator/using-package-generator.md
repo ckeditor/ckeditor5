@@ -7,7 +7,7 @@ modified_at: 2022-08-16
 
 # Using the package generator
 
-The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) is a tool for developers. It creates a working package with the development environment that allows writing new custom plugins for CKEditor 5.
+The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) is a tool for developers. It creates a working package with the development environment that allows writing new custom plugins for CKEditor&nbsp;5.
 
 ## Quick start
 

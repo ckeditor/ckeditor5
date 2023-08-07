@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# Horizontal line feature for CKEditor 5
+# Horizontal line feature for CKEditor&nbsp;5
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-horizontal-line.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line)
 
-This package implements the horizontal line feature for CKEditor 5.
+This package implements the horizontal line feature for CKEditor&nbsp;5.
 
 ## Demo
 
