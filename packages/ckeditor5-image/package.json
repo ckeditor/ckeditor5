@@ -25,7 +25,7 @@
     "@ckeditor/ckeditor5-clipboard": "39.0.0",
     "@ckeditor/ckeditor5-cloud-services": "39.0.0",
     "@ckeditor/ckeditor5-core": "39.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "39.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
     "@ckeditor/ckeditor5-html-support": "39.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "39.0.0",
     "@ckeditor/ckeditor5-easy-image": "39.0.0",
