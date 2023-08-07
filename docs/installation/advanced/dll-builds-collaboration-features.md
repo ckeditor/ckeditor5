@@ -1,5 +1,5 @@
 ---
-menu-title: DLL builds for CKEditor&nbsp;5 Collaboration Features
+menu-title: DLL builds for CKEditor 5 Collaboration Features
 category: alternative-setups
 order: 30
 modified_at: 2022-02-21
