@@ -95,7 +95,7 @@
 		"builds/guides/integration/saving-data.html": "installation/getting-started/getting-and-setting-data.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
 		"builds/guides/migrate.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
-		"builds/guides/migration/migration-from-ckeditor-4.html": "updating/migration-from-ckeditor-4.html",
+		"builds/guides/migration/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.html": "updating/guides/update-to-25.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "updating/guides/update-to-25.html",
 		"builds/guides/migration/migration-to-26.html": "updating/guides/update-to-26.html",
