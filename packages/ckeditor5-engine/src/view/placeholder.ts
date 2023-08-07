@@ -319,8 +319,7 @@ function showPlaceholderTextDeprecationWarning() {
 		 * The "text" option in the {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
 		 * function is deprecated and will be removed soon.
 		 *
-		 * See {@link https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html#view-element-placeholder migration guide}
-		 * for more information on how to apply this change.
+		 * See the {@glink updating/guides/update-to-39 Migration to v39} guide for more information on how to apply this change.
 		 *
 		 * @error enableplaceholder-deprecated-text-option
 		 */
