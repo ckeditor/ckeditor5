@@ -1,5 +1,5 @@
 ---
-category: framework-tutorials
+category: widget-tutorials
 order: 15
 ---
 

@@ -1,5 +1,5 @@
 ---
-category: tutorial
+category: crash-course
 order: 30
 menu-title: Model and schema
 ---

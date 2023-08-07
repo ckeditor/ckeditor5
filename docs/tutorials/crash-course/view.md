@@ -1,5 +1,5 @@
 ---
-category: tutorial
+category: crash-course
 order: 60
 menu-title: Editor UI
 ---

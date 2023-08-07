@@ -1,5 +1,5 @@
 ---
-category: tutorial
+category: crash-course
 order: 50
 menu-title: Commands
 ---

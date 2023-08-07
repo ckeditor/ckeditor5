@@ -1,6 +1,6 @@
 ---
 menu-title: Using a React component in a widget
-category: framework-tutorials
+category: widget-tutorials
 order: 25
 ---
 

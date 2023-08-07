@@ -1,5 +1,5 @@
 ---
-category: tutorial
+category: crash-course
 order: 20
 menu-title: Plugins
 ---

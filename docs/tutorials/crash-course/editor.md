@@ -1,5 +1,5 @@
 ---
-category: tutorial
+category: crash-course
 order: 10
 menu-title: Editor and configuration
 meta-title: CKEditor 5 tutorial for new developers and integrators

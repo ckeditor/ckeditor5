@@ -1,5 +1,5 @@
 ---
-category: tutorial
+category: crash-course
 order: 40
 menu-title: Data conversion
 ---
