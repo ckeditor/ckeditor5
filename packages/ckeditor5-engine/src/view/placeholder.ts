@@ -20,7 +20,7 @@ import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 // Each document stores information about its placeholder elements and check functions.
 const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfig>>();
 
-let hasDisplayedWarning = false;
+let hasDisplayedPlaceholderDeprecationWarning = false;
 
 /**
  * A helper that enables a placeholder on the provided view element (also updates its visibility).
@@ -37,6 +37,7 @@ let hasDisplayedWarning = false;
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
+ * @param options.text Placeholder text. Is deprecated and will be removed soon.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
 export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
@@ -75,7 +76,7 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 	}
 
 	if ( text ) {
-		showDeprecationWarning();
+		showPlaceholderTextDeprecationWarning();
 	}
 
 	function setPlaceholder( text: string ) {
@@ -311,14 +312,16 @@ function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
 /**
  * Displays a deprecation warning message in the console, but only once per page load.
  */
-function showDeprecationWarning() {
-	if ( !hasDisplayedWarning ) {
-		console.warn( 'Deprecation Warning: The "text" argument in the "enableProperty" function will be deprecated ' +
-		'in the next version. Please update your code. Refer to the documentation for alternative usage: ' +
-		'https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html#view-element-placeholder' );
+function showPlaceholderTextDeprecationWarning() {
+	if ( !hasDisplayedPlaceholderDeprecationWarning ) {
+		console.warn(
+			'Deprecation Warning: The "text" argument in the "enableProperty" function is already deprecated ' +
+			'and will be removed soon. Please update your code. Refer to the documentation for alternative usage: ' +
+			'https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html#view-element-placeholder'
+		);
 	}
 
-	hasDisplayedWarning = true;
+	hasDisplayedPlaceholderDeprecationWarning = true;
 }
 
 /**
