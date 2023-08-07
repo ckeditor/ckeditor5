@@ -7,18 +7,18 @@ modified_at: 2021-07-25
 ---
 
 <info-box>
-	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-# Update to CKEditor 5 v29.x
+# Update to CKEditor&nbsp;5 v29.x
 
-## Update to CKEditor 5 v29.1.0
+## Update to CKEditor&nbsp;5 v29.1.0
 
-For the entire list of changes introduced in version 29.1.0, see the [release notes for CKEditor 5 v29.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v29.1.0).
+For the entire list of changes introduced in version 29.1.0, see the [release notes for CKEditor&nbsp;5 v29.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v29.1.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v29.1.0.
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v29.1.0.
 
 ### Matcher pattern API change
 
@@ -93,11 +93,11 @@ ClassicEditor
     } )
 ```
 
-## Update to CKEditor 5 v29.0.0
+## Update to CKEditor&nbsp;5 v29.0.0
 
-This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
+This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
-For the entire list of changes introduced in version 29.0.0, see the [release notes for CKEditor 5 v29.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v29.0.0).
+For the entire list of changes introduced in version 29.0.0, see the [release notes for CKEditor&nbsp;5 v29.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v29.0.0).
 
 To get to know the new editor UI for the image features, visit the {@link features/images-overview image feature guide}, especially:
 * {@link features/images-styles#semantical-styles Images in the structured content}
@@ -316,7 +316,7 @@ The following helpers were removed from the public API:
 
 Please note that the {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
 However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
@@ -334,13 +334,13 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-Check out the comprehensive {@link features/images-installation installation guide to images} in CKEditor 5 to learn more.
+Check out the comprehensive {@link features/images-installation installation guide to images} in CKEditor&nbsp;5 to learn more.
 
 ### `CKFinder` plugin
 
 Please note that the {@link module:ckfinder/ckfinder~CKFinder} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link installation/getting-started/predefined-builds predefined builds} or using [the CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
 However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get CKFinder working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
@@ -359,4 +359,4 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-Check out the comprehensive {@link features/images-installation installation guide to images} in CKEditor 5 to learn more.
+Check out the comprehensive {@link features/images-installation installation guide to images} in CKEditor&nbsp;5 to learn more.

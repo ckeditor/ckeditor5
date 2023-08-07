@@ -4,9 +4,9 @@ order: -999
 feedback-widget: false
 ---
 
-# CKEditor 5 features overview
+# CKEditor&nbsp;5 features overview
 
-CKEditor 5 has many features, and the number is constantly growing. You can find the most recent list of features on the left. In addition to working on new features, we also expand and improve the existing ones. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon. Premium features, which require an additional license to work, have a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
+CKEditor&nbsp;5 has many features, and the number is constantly growing. You can find the most recent list of features on the left. In addition to working on new features, we also expand and improve the existing ones. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon. Premium features, which require an additional license to work, have a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
 
 <span class="navigation-hint_mobile">
 <info-box>
@@ -14,13 +14,13 @@ CKEditor 5 has many features, and the number is constantly growing. You can find
 </info-box>
 </span>
 
-## Using CKEditor 5 features
+## Using CKEditor&nbsp;5 features
 
 Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (in fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. This is aided by dedicated feature toolbars in many cases. Plenty of actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with a {@link features/ui-language multitude of translations} and it supports RTL languages.
 
-## CKEditor 5 WYSIWYG editor features and functions
+## CKEditor&nbsp;5 WYSIWYG editor features and functions
 
-CKEditor 5 features cover several functional areas of application and use. Listed below are some of the most useful ones.
+CKEditor&nbsp;5 features cover several functional areas of application and use. Listed below are some of the most useful ones.
 
 ### Formatting features
 
@@ -32,7 +32,7 @@ The {@link features/font Font feature} provides support for using different font
 
 Most of these formatting options can be applied from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature} {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg Remove Format}.
 
-{@img assets/img/features-basic-formatting.png 800 CKEditor 5 formatting features.}
+{@img assets/img/features-basic-formatting.png 800 CKEditor&nbsp;5 formatting features.}
 
 ### Advanced content editing
 
@@ -44,23 +44,23 @@ Provide clear and accessible data using {@link features/tables tables} {@icon @c
 
 Enrich you content further by {@link features/html-embed embedding HTML code} {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML} - this one is especially useful for webmasters. If you need to present code instead of employing it - use the {@link features/code-blocks code block} {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Code Block} that lets you produce code listing with a syntax highlight, too!
 
-{@img assets/img/features-images.png 800 CKEditor 5 image feature.}
+{@img assets/img/features-images.png 800 CKEditor&nbsp;5 image feature.}
 
 ### Collaboration
 
-The {@link framework/index CKEditor 5 Framework} was created with {@link features/collaboration collaboration} in mind.
+The {@link framework/index CKEditor&nbsp;5 Framework} was created with {@link features/collaboration collaboration} in mind.
 
 The {@link features/users users API} is used by functions such as {@link features/track-changes track changes} {@icon @ckeditor/ckeditor5-track-changes/theme/icons/track-changes.svg Track changes}, that allow the users to follow any changes made to the edited document in real-time. Accepting or rejecting those changes is done with a single click from a convenient side panel.
 
 Where tracking changes is not enough, the {@link features/comments comments} {@icon @ckeditor/ckeditor5-comments/theme/icons/add-comment.svg Comments} come in, offering a perfect collaboration communication platform for writing and editing as a team.
 
-Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} where only selected parts of the content may be edited by selected users, based on a permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the user access the content, but not edit it.
+Additionally, CKEditor&nbsp;5 offers the {@link features/restricted-editing restricted editing mode} {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} where only selected parts of the content may be edited by selected users, based on a permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the user access the content, but not edit it.
 
-{@img assets/img/features-collaboration.png 800 CKEditor 5 collaboration features.}
+{@img assets/img/features-collaboration.png 800 CKEditor&nbsp;5 collaboration features.}
 
 You can also easily track the progress and changes done in the content with the {@link features/revision-history revision history feature} {@icon @ckeditor/ckeditor5-revision-history/theme/icons/revision-history.svg Revision history}. This modern and robust document versioning tool lets you create named versions, compare changes, and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
 
-{@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
+{@img assets/img/features-revision-history.png 800 CKEditor&nbsp;5 document versioning feature.}
 
 ### Document conversion
 
@@ -68,13 +68,13 @@ If you need to share the document outside your team, use the {@link features/exp
 
 ### HTML and Markdown output
 
-The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text addressing the needs of software professionals.
+The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text addressing the needs of software professionals.
 
-{@img assets/img/features-output.png 800 CKEditor 5 output features.}
+{@img assets/img/features-output.png 800 CKEditor&nbsp;5 output features.}
 
 ### Productivity pack
 
-The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor 5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets the users style their content in a blaze.
+The {@link features/productivity-pack productivity pack} is a set of exclusive premium features only available to holders of a CKEditor&nbsp;5 commercial license. The productivity pack provides tools that make the creation of content faster and more efficient, thanks to providing predefined {@link features/template templates} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} and a new set of {@link features/slash-commands slash commands}. {@link features/document-outline Document outline} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} and {@link features/table-of-contents table of contents} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} make navigating large documents much easier while {@link features/format-painter format painter} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets the users style their content in a blaze.
 
 ### Other productivity features
 
@@ -84,29 +84,29 @@ The {@link features/word-count words and characters counter} will help you track
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spell and grammar check} to ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
-{@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 spell-checking feature.}
+{@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor&nbsp;5 spell-checking feature.}
 
 ### Customizable user experience
 
 Work as you like it - choose user interface approach from {@link installation/getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
 
-{@img assets/img/full-toolbar.png 938 CKEditor 5 customizable UI.}
+{@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 
 ### Cross-platform interoperability
 
-Do not get stopped by technology differences - CKEditor 5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-office from MS Office}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
+Do not get stopped by technology differences - CKEditor&nbsp;5 offers cross-platform interoperability. Being a {@link framework/index web-based JavaScript framework} it works in any and all environments. What is more, you can easily use documents from other editors: easily paste content {@link features/paste-from-office from MS Office}, paste from {@link features/paste-from-google-docs from Google Docs} and we even have extended support for {@link features/paste-plain-text pasting plain text} to inherit formatting for convenience.
 
-{@img assets/img/features-paste.png 800 CKEditor 5 paste features.}
+{@img assets/img/features-paste.png 800 CKEditor&nbsp;5 paste features.}
 
 ## Backward feature compatibility
 
-If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
+If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, please check the {@link updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
 
 ## Feature availability
 
-Plenty of these features are included by default in the predefined {@link installation/getting-started/predefined-builds CKEditor 5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+Plenty of these features are included by default in the predefined {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
 
-However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example, the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. These plugins can also be easily and conveniently added to a custom build with the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+However, some of the presented features need to be manually included in a customized CKEditor&nbsp;5 build, for example, the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. These plugins can also be easily and conveniently added to a custom build with the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
 You can refer to the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds full list of features available in each build} for details.
 
@@ -117,18 +117,18 @@ We also offer the flexibility of the {@link installation/advanced/dll-builds DLL
 Each rich-text editor feature is presented on a separate page, with one or more working demos showcasing a feature along with some customization ideas that you can use in your implementation.
 
 <info-box>
-	**In most feature demos the number of features enabled is limited** to make the currently highlighted piece of functionality stand out more, as shown in the screenshots above. However, in your CKEditor 5 WYSIWYG editor implementation, you are free to choose and combine any features you like from those available. This can be easily and conveniently done in the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+	**In most feature demos the number of features enabled is limited** to make the currently highlighted piece of functionality stand out more, as shown in the screenshots above. However, in your CKEditor&nbsp;5 WYSIWYG editor implementation, you are free to choose and combine any features you like from those available. This can be easily and conveniently done in the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 </info-box>
 
 ## Looking for more?
 
-The examples mentioned above do not present all features included in CKEditor 5, nor does the list on the left panel. For example, some end-user features like undo and redo are quite self-explanatory and therefore only mentioned in the keyboard shortcuts guide.
+The examples mentioned above do not present all features included in CKEditor&nbsp;5, nor does the list on the left panel. For example, some end-user features like undo and redo are quite self-explanatory and therefore only mentioned in the keyboard shortcuts guide.
 
-CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. If you are missing anything in particular, feel free to [suggest a new feature](https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md) and share your feedback with us. If it has already been reported by someone else, upvote it 👍&nbsp; to show your support.
+CKEditor&nbsp;5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. If you are missing anything in particular, feel free to [suggest a new feature](https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md) and share your feedback with us. If it has already been reported by someone else, upvote it 👍&nbsp; to show your support.
 
 ## How about creating your own features?
 
-Probably the most exciting features are the ones you can develop on top of CKEditor 5 Framework!
-We are gradually enhancing the {@link framework/index CKEditor 5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/creating-simple-plugin-timestamp creating custom features}.
+Probably the most exciting features are the ones you can develop on top of CKEditor&nbsp;5 Framework!
+We are gradually enhancing the {@link framework/index CKEditor&nbsp;5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/creating-simple-plugin-timestamp creating custom features}.
 
-The official add-ons repository for CKEditor 4 reached an impressive number of over 300 add-ons created and published by the community. Now it is time for you to add your contributions to the brand new CKEditor 5!
+The official add-ons repository for CKEditor 4 reached an impressive number of over 300 add-ons created and published by the community. Now it is time for you to add your contributions to the brand new CKEditor&nbsp;5!

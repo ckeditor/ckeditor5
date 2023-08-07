@@ -21,19 +21,19 @@ The editor below is configured to output GitHub Flavored Markdown. Edit the cont
 
 ## Additional feature information
 
- Coupled with the {@link features/autoformat autoformatting} feature, the Markdown plugin offers the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
+ Coupled with the {@link features/autoformat autoformatting} feature, the Markdown plugin offers the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor&nbsp;5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
 
-Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
+Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor&nbsp;5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
 ## Extending formatting support
-If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor 5 plugins and extend the formatting capabilities.
+If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor&nbsp;5 plugins and extend the formatting capabilities.
 
 ## The Markdown data processor
 
 The Markdown plugin uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/utils/dataapimixin~DataApi#setData set} or {@link module:core/editor/utils/dataapimixin~DataApi#getData get} data from the editor in the Markdown format:
 
 ```js
-editor.getData(); // -> 'This is [CKEditor 5](https://ckeditor.com).'
+editor.getData(); // -> 'This is [CKEditor&nbsp;5](https://ckeditor.com).'
 
 editor.setData( 'This is **bold**.' );
 ```
@@ -43,7 +43,7 @@ The data processor outputs the GFM Markdown syntax. "GFM" stands for "GitHub Fla
 When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (e.g. the [marked](https://www.npmjs.com/package/marked) library).
 
 <info-box info>
-	While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
+	While the CKEditor&nbsp;5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
 
 	And please do remember &mdash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
 </info-box>

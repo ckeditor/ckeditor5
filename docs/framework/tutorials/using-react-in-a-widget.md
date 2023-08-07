@@ -6,7 +6,7 @@ order: 25
 
 # Using a React component in a block widget
 
-In this tutorial, you will learn how to implement an editor plugin that uses the power of the [React](https://reactjs.org/) library inside the CKEditor 5 widget ecosystem. You will build a "Product preview" feature which renders an actual React component inside the editor to display some useful information about the product.
+In this tutorial, you will learn how to implement an editor plugin that uses the power of the [React](https://reactjs.org/) library inside the CKEditor&nbsp;5 widget ecosystem. You will build a "Product preview" feature which renders an actual React component inside the editor to display some useful information about the product.
 
 Later on, you will use the "Product preview" feature to build a simple React application that displays an editor next to the list of available products, allowing the user to insert the product into the editor content by clicking it on the list.
 
@@ -20,10 +20,10 @@ Later on, you will use the "Product preview" feature to build a simple React app
 
 There are a couple of things you should know before you start:
 
-* Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor 5 has an official {@link installation/integrations/react **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to {@link installation/integrations/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
+* Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor&nbsp;5 has an official {@link installation/integrations/react **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to {@link installation/integrations/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
 * In this tutorial, you are going to implement a block editor widget and that itself could give you a headache. It is recommended to at least skim through the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API, and possible use cases.
-* Also, while it is not strictly necessary to read the {@link framework/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor 5 Framework before you dive into this tutorial.
-* Various parts of the {@link framework/architecture/intro CKEditor 5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
+* Also, while it is not strictly necessary to read the {@link framework/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor&nbsp;5 Framework before you dive into this tutorial.
+* Various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
 <info-box>
 	If you want to use your own event handler for events triggered by your React component, you must wrap it with a container that has a `data-cke-ignore-events` attribute to exclude it from the editor's default handlers. Refer to {@link framework/deep-dive/widget-internals#exclude-dom-events-from-default-handlers Exclude DOM events from default handlers} for more details.
@@ -33,7 +33,7 @@ There are a couple of things you should know before you start:
 
 This guide assumes that you are familiar with [yarn](https://yarnpkg.com) and your project uses yarn already. If not, see the [yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm), you do not have to worry &mdash; you can perform the same installation tasks just as easily using [corresponding npm commands](https://docs.npmjs.com/packages-and-modules/getting-packages-from-the-registry).
 
-First, install the packages needed to build and set up a basic React application with a CKEditor 5 instance.
+First, install the packages needed to build and set up a basic React application with a CKEditor&nbsp;5 instance.
 
 ```bash
 yarn add --dev \
@@ -66,7 +66,7 @@ yarn add --dev \
 	webpack-cli@4
 ```
 
-Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor 5 and React, check out the {@link installation/integrations/react#integrating-ckeditor-5-built-from-source Integrating CKEditor 5 built from source} section of the CKEditor 5 React component guide.
+Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor&nbsp;5 and React, check out the {@link installation/integrations/react#integrating-ckeditor-5-built-from-source Integrating CKEditor&nbsp;5 built from source} section of the CKEditor&nbsp;5 React component guide.
 
 ```js
 // webpack.config.js
@@ -164,7 +164,7 @@ Add an `index.html` page next to the `app.js` file:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>Using React components in CKEditor 5 widgets</title>
+		<title>Using React components in CKEditor&nbsp;5 widgets</title>
 	</head>
 	<body>
 		<div class="app"></div>
@@ -196,7 +196,7 @@ You should see a "Hello world" application in your web browser, which might not 
 
 ## Application structure
 
-Nothing warms the heart of a developer like a good "Hello world!". But you probably agree that what you created is not the most useful application and it is time to change that. In the next sections, you will create some React components and CKEditor 5 classes to bring some real logic to the application.
+Nothing warms the heart of a developer like a good "Hello world!". But you probably agree that what you created is not the most useful application and it is time to change that. In the next sections, you will create some React components and CKEditor&nbsp;5 classes to bring some real logic to the application.
 
 To keep some order in the project, you will put [CKEditor classes](#ckeditor-classes) in the `/ckeditor` directory and [React components](#react-components) in the `/react` directory. [Images and CSS styles](#styles-and-assets) will land in the `/assets` directory. By the time you are finished with this tutorial, the structure of the project should look as follows:
 
@@ -239,14 +239,14 @@ Create the CKEditor–side logic that supports product preview widgets in the ed
 The `ProductPreviewEditing` plugin defines the `productPreview` element in the editor {@link framework/architecture/editing-engine#model model} and specifies the way it is converted to the editing and data {@link framework/architecture/editing-engine#view views}.
 
 <info-box>
-	Read more about the {@link framework/architecture/editing-engine#overview editing engine architecture} of CKEditor 5.
+	Read more about the {@link framework/architecture/editing-engine#overview editing engine architecture} of CKEditor&nbsp;5.
 </info-box>
 
 * In the **data view**, the `productPreview` is represented as an empty `<section class="product" data-id="..."></section>` element with a `data-id` attribute associating it with a particular product. A semantic representation of the product saved in the database can be then consumed in the front–end by retrieving a fresh preview using the `data-id`. Since it does not carry any formatting or styling, the data representation will never get outdated, even if the layout or styles of the application change in the future.
 * In the **editing view**, on the other hand, the product preview is a {@link framework/tutorials/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~UIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link installation/getting-started/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 The differences in data representations of the product preview are summarized in the following table:
@@ -511,7 +511,7 @@ import ReactDOM from 'react-dom';
 // The official <CKEditor> component for React.
 import CKEditor from '@ckeditor/ckeditor5-react';
 
-// The official CKEditor 5 instance inspector. It helps understand the editor view and model.
+// The official CKEditor&nbsp;5 instance inspector. It helps understand the editor view and model.
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 // The base editor class and features required to run the editor.
@@ -606,7 +606,7 @@ class App extends React.Component {
 			editorData: editor.getData()
 		} );
 
-		// CKEditor 5 inspector allows you to take a peek into the editor's model and view
+		// CKEditor&nbsp;5 inspector allows you to take a peek into the editor's model and view
 		// data layers. Use it to debug the application and learn more about the editor.
 		CKEditorInspector.attach( editor );
 	}
@@ -885,7 +885,7 @@ import ReactDOM from 'react-dom';
 // The official <CKEditor> component for React.
 import CKEditor from '@ckeditor/ckeditor5-react';
 
-// The official CKEditor 5 instance inspector. It helps understand the editor view and model.
+// The official CKEditor&nbsp;5 instance inspector. It helps understand the editor view and model.
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 // The base editor class and features required to run the editor.
@@ -1015,7 +1015,7 @@ class App extends React.Component {
 			editorData: editor.getData()
 		} );
 
-		// CKEditor 5 inspector allows you to take a peek into the editor's model and view
+		// CKEditor&nbsp;5 inspector allows you to take a peek into the editor's model and view
 		// data layers. Use it to debug the application and learn more about the editor.
 		CKEditorInspector.attach( editor );
 	}
@@ -1292,7 +1292,7 @@ export default class ProductPreview extends React.Component {
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>Using React components in CKEditor 5 widgets</title>
+		<title>Using React components in CKEditor&nbsp;5 widgets</title>
 		<link rel="stylesheet" href="assets/styles.css">
 	</head>
 	<body>

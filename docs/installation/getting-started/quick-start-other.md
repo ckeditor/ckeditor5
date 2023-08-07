@@ -8,7 +8,7 @@ modified_at: 2022-03-15
 
 ## Introduction
 
-This guide will teach you how to run your own CKEditor 5 instance. Below you can find two unique paths describing the installation process. Choose one (or both!) and start your CKEditor 5 journey!
+This guide will teach you how to run your own CKEditor&nbsp;5 instance. Below you can find two unique paths describing the installation process. Choose one (or both!) and start your CKEditor&nbsp;5 journey!
 
 Available paths:
 
@@ -17,7 +17,7 @@ Available paths:
 
 ## Creating custom builds with online builder
 
-Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/getting-started/predefined-builds predefined builds}, sometimes you need more flexibility. A need for more customized editors arises. Some of the reasons for creating custom builds are:
+Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link installation/getting-started/predefined-builds predefined builds}, sometimes you need more flexibility. A need for more customized editors arises. Some of the reasons for creating custom builds are:
 
 * Adding {@link installation/plugins/plugins plugin-driven features} not included in the existing builds.
 * Removing unnecessary features present in a build.
@@ -25,7 +25,7 @@ Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/gett
 * Changing the {@link installation/getting-started/predefined-builds#available-builds editor type build}.
 * Changing the {@link features/ui-language localization language} of the editor.
 
-The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an application that lets you design and download custom CKEditor 5 builds. It allows you to create your bundles with your desired editor type, toolbar, and plugins in a few easy steps through a simple and intuitive UI.
+The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an application that lets you design and download custom CKEditor&nbsp;5 builds. It allows you to create your bundles with your desired editor type, toolbar, and plugins in a few easy steps through a simple and intuitive UI.
 
 ### Choosing the editor type
 
@@ -111,12 +111,12 @@ Some of the reasons for creating custom builds are:
 * Enabling bug fixes that are still not a part of any public release.
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor 5, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a custom build through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a custom build through a simple and intuitive UI.
 </info-box>
 
 ### Requirements
 
-To start developing CKEditor 5 you will require:
+To start developing CKEditor&nbsp;5 you will require:
 
 * [Node.js](https://nodejs.org/en/) 16.0.0+
 * [npm](https://www.npmjs.com) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
@@ -282,7 +282,7 @@ You can validate whether your new build works by opening the `sample/index.html`
 
 ## Building the editor from source
 
-This scenario allows you to fully control the building process of CKEditor 5. This means that you will not actually use the builds introduced in the previous path, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
+This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds introduced in the previous path, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
 This is an advanced path that assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and check the result.
 
@@ -290,7 +290,7 @@ This is an advanced path that assumes that you are familiar with npm and your pr
 
 Before moving to the integration, you need to prepare three files that will be filled with code presented in this guide. Create the `webpack.config.js`, `app.js`, and `index.html` files.
 
-Then, install the packages needed to build CKEditor 5:
+Then, install the packages needed to build CKEditor&nbsp;5:
 
 ```bash
 npm install --save \
@@ -302,7 +302,7 @@ npm install --save \
 	webpack-cli@4
 ```
 
-The minimal webpack configuration needed to enable building CKEditor 5 is:
+The minimal webpack configuration needed to enable building CKEditor&nbsp;5 is:
 
 ```js
 // webpack.config.js
@@ -373,7 +373,7 @@ module.exports = {
 
 ### Creating an editor
 
-You can now install some of the CKEditor 5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 
 You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
@@ -396,7 +396,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	Note that in this guide, the editor class is used directly (i.e. you use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	No {@link installation/getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/plugins/installing-plugins customizing a build} or by including the CKEditor 5 source into your application (like in this guide).
+	No {@link installation/getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/plugins/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
 </info-box>
 
 ```js
@@ -449,7 +449,7 @@ npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you
 
 	**Note:** Prior to version 1.2.7, `uglifyjs-webpack-plugin` (the default minifier used by webpack) had a bug that caused webpack to crash with the following error: `TypeError: Assignment to constant variable`. If you experienced this error, make sure that your `node_modules` contain an up-to-date version of this package (and that webpack uses this version).
 
-	**Note:** CKEditor 5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the latter one seems to no longer be supported](https://github.com/ckeditor/ckeditor5/issues/1353).
+	**Note:** CKEditor&nbsp;5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the latter one seems to no longer be supported](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 
 If everything worked correctly, you should see:
@@ -478,7 +478,7 @@ Finally, it is time to create an HTML page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Quick start guide</title>
+		<title>CKEditor&nbsp;5 Quick start guide</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -492,16 +492,16 @@ Finally, it is time to create an HTML page:
 
 Open this page in your browser and you should see the simple WYSIWYG editor up and running. Make sure to check the browser console in case anything seems wrong.
 
-{@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of CKEditor 5 classic editor with bold and italic features.}
+{@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of CKEditor&nbsp;5 classic editor with bold and italic features.}
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 <info-box hint>
 **What's next?**
 
-Congratulations, you have just run your first CKEditor 5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
+Congratulations, you have just run your first CKEditor&nbsp;5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
 
-P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
+P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
 </info-box>
