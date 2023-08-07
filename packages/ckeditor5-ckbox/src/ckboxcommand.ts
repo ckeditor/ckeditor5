@@ -395,17 +395,33 @@ function getAssetUrl( asset: CKBoxRawAssetDefinition ) {
  * @param wrapper The element in DOM which wrap CKBox component.
  */
 function focusDialog( wrapper: Element | null ) {
-	// If the DOM is not fully loaded and rendered by the time the focus() method is invoked,
-	// the element might not get focused. So we call the focus() when the thread becomes idle.
+	// Trying every 100 ms get access to the CKBox component until component will be loaded.
 	setTimeout( () => {
-		// Wrapper cannot be focused by default because it's covered by it's children entirely.
-		// Then we getting to the nearest focusable child( dialog container ) inside wrapper.
-		const dialogContainer = wrapper && wrapper.children[ 0 ] && wrapper.children[ 0 ].children[ 0 ];
+		const ckboxGallery = document.getElementsByClassName( 'ckbox-gallery' )[ 0 ];
 
-		if ( dialogContainer instanceof HTMLElement ) {
-			dialogContainer.focus();
+		// Make sure ckbox gallery component loaded.
+		if ( !ckboxGallery ) {
+			focusDialog( wrapper );
+			return;
 		}
-	} );
+
+		if ( ckboxGallery.children.length === 0 ) {
+			return;
+		}
+
+		const firstItem = ckboxGallery.children[ 0 ];
+
+		if ( firstItem instanceof HTMLElement === false ) {
+			focusDialog( wrapper );
+			return;
+		}
+
+		if ( firstItem.className === 'ckbox-gallery-item' && firstItem instanceof HTMLElement ) {
+			firstItem.focus();
+		} else {
+			focusDialog( wrapper );
+		}
+	}, 100 );
 }
 
 /**
