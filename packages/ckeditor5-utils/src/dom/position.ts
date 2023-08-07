@@ -14,23 +14,29 @@ import { isFunction } from 'lodash-es';
 
 // @if CK_DEBUG_POSITION // const {
 // @if CK_DEBUG_POSITION // 	default: RectDrawer,
-// @if CK_DEBUG_POSITION // 	diagonalBackgroundStyles
+// @if CK_DEBUG_POSITION // 	diagonalStylesBlack,
+// @if CK_DEBUG_POSITION // 	diagonalStylesGreen,
+// @if CK_DEBUG_POSITION // 	diagonalStylesRed
 // @if CK_DEBUG_POSITION // } = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' );
 // @if CK_DEBUG_POSITION // const TARGET_RECT_STYLE = {
 // @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineStyle: 'dashed', outlineColor: 'blue', outlineOffset: '2px'
 // @if CK_DEBUG_POSITION // };
-// @if CK_DEBUG_POSITION // const VISIBLE_TARGET_RECT_STYLE = Object.assign( {}, diagonalBackgroundStyles, {
+// @if CK_DEBUG_POSITION // const VISIBLE_TARGET_RECT_STYLE = {
+// @if CK_DEBUG_POSITION //		...diagonalStylesBlack,
 // @if CK_DEBUG_POSITION //		opacity: '1',
 // @if CK_DEBUG_POSITION //		backgroundColor: '#00000033',
-// @if CK_DEBUG_POSITION //		outlineWidth: '2px',
-// @if CK_DEBUG_POSITION //		outlineStyle: 'solid',
-// @if CK_DEBUG_POSITION //		outlineColor: 'black'
-// @if CK_DEBUG_POSITION // } );
+// @if CK_DEBUG_POSITION //		outlineWidth: '2px'
+// @if CK_DEBUG_POSITION // };
 // @if CK_DEBUG_POSITION // const VIEWPORT_RECT_STYLE = {
-// @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineStyle: 'solid', outlineColor: 'red', outlineOffset: '-2px'
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px',
+// @if CK_DEBUG_POSITION // 	outlineOffset: '-2px',
+// @if CK_DEBUG_POSITION // 	outlineStyle: 'solid',
+// @if CK_DEBUG_POSITION // 	outlineColor: 'red'
 // @if CK_DEBUG_POSITION // };
 // @if CK_DEBUG_POSITION // const VISIBLE_LIMITER_RECT_STYLE = {
-// @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineColor: 'green', outlineOffset: '-2px'
+// @if CK_DEBUG_POSITION // 	...diagonalStylesGreen,
+// @if CK_DEBUG_POSITION // 	outlineWidth: '2px',
+// @if CK_DEBUG_POSITION // 	outlineOffset: '-2px'
 // @if CK_DEBUG_POSITION // };
 // @if CK_DEBUG_POSITION // const ELEMENT_RECT_STYLE = {
 // @if CK_DEBUG_POSITION // 	outlineWidth: '2px', outlineColor: 'orange', outlineOffset: '-2px'
