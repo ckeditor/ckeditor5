@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Inserting images via URL
-meta-title: Inserting images into content in CKEditor 5 via URL
+meta-title: Inserting images into content in CKEditor&nbsp;5 via URL
 meta-description: Learn how to insert your images into the content.
 order: 75
 ---
@@ -9,7 +9,7 @@ order: 75
 
 # Inserting images
 
-You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way you can save time by adding images that are already online.
+You can insert images by uploading them directly from your disk, but you can also configure CKEditor&nbsp;5 to let you insert images using URLs. This way you can save time by adding images that are already online.
 
 ## Inserting images via a source URL
 ### Demo
@@ -83,7 +83,7 @@ The {@link module:image/imageupload~ImageUpload} plugin registers:
 * The {@link module:image/imageupload/uploadimagecommand~UploadImageCommand `'uploadImage'` command} that accepts the file to upload.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

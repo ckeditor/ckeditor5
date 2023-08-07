@@ -6,12 +6,12 @@ badges: [ premium ]
 
 # Math equations and chemical formulas
 
-[MathType](http://www.wiris.com/en/mathtype) is a popular mathematical and science formula editor with classical and handwriting input modes. You can use it to create math equations or chemical formulas right inside the CKEditor 5 content.
+[MathType](http://www.wiris.com/en/mathtype) is a popular mathematical and science formula editor with classical and handwriting input modes. You can use it to create math equations or chemical formulas right inside the CKEditor&nbsp;5 content.
 
 <info-box>
-	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee and delivered by our partner, [Wiris](https://www.wiris.com/en/). Please [contact us](https://ckeditor.com/contact/) if you have any feedback or questions.
+	This is a premium feature that is additionally payable on top of CKEditor&nbsp;5 commercial license fee and delivered by our partner, [Wiris](https://www.wiris.com/en/). Please [contact us](https://ckeditor.com/contact/) if you have any feedback or questions.
 
-	You can also report any issues in the official [CKEditor 5 GitHub repository](https://github.com/ckeditor/ckeditor5/issues).
+	You can also report any issues in the official [CKEditor&nbsp;5 GitHub repository](https://github.com/ckeditor/ckeditor5/issues).
 </info-box>
 
 ## Demo
@@ -61,7 +61,7 @@ If you visit a page using MathType with your mobile device, the handwriting inte
 	This is an additionally payable feature. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 </info-box>
 
-MathType is delivered as a CKEditor 5 plugin, so it can be combined into an editor build just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
+MathType is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an editor build just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
 
 ```bash
 npm install --save @wiris/mathtype-ckeditor5
@@ -87,7 +87,7 @@ ClassicEditor
 
 ## Customizing MathType service
 
-It is possible to use different services for MathType support. There are several ways to deploy it in the CKEditor 5 environment. The following instructions will allow you to customize MathType Web Integration services for CKEditor 5.
+It is possible to use different services for MathType support. There are several ways to deploy it in the CKEditor&nbsp;5 environment. The following instructions will allow you to customize MathType Web Integration services for CKEditor&nbsp;5.
 
 ### Java
 
@@ -97,7 +97,7 @@ To install the Java service, follow the steps below:
 
 2. Deploy the `pluginwiris_engine` war file.
 
-3. Add `mathTypeParameters` to CKEditor 5 with the configuration shown below:
+3. Add `mathTypeParameters` to CKEditor&nbsp;5 with the configuration shown below:
 
 	```js
 	ClassicEditor.create( document.querySelector( '#example' ), {
@@ -129,7 +129,7 @@ To install the PHP service, follow the steps below:
 
 2. Copy the `generic_wiris/integration` folder into your project. In this example, it was assumed the services are located at `DOCUMENT_ROOT/php-services/`.
 
-3. Add `mathTypeParameters` to CKEditor 5 with the following configuration:
+3. Add `mathTypeParameters` to CKEditor&nbsp;5 with the following configuration:
 
 	```js
 	ClassicEditor.create( document.querySelector( '#example' ), {
@@ -161,7 +161,7 @@ To install the .NET service, follow the steps below:
 
 2. Copy the `generic_wiris/integration` folder into your project. In this example, it was assumed the services are located at `DOCUMENT_ROOT/aspx-services/`.
 
-3. Add `mathTypeParameters` to CKEditor 5 with this configuration:
+3. Add `mathTypeParameters` to CKEditor&nbsp;5 with this configuration:
 
 	```js
 	ClassicEditor.create( document.querySelector( '#example' ), {
@@ -197,7 +197,7 @@ To install the Ruby on Rails service, follow the steps below:
 	gem install -l wirispluginengine.gem
 	```
 
-3. Add `mathTypeParameters` to CKEditor 5 with the configuration below:
+3. Add `mathTypeParameters` to CKEditor&nbsp;5 with the configuration below:
 
 
 	```js

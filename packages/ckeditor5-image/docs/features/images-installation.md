@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Installation
-meta-title: Installation and configuration of image features in CKEditor 5
+meta-title: Installation and configuration of image features in CKEditor&nbsp;5
 meta-description: Learn how to install and configure various image-related CKEdiotr 5 plugins.
 order: 15
 modified_at: 2021-06-17
@@ -85,9 +85,9 @@ By default, the {@link module:image/image~Image} plugin available in all {@link 
 </figure>
 
 <info-box info>
-	Up to CKEditor 5 v[27.1.0], only **block** images were supported. The support for **inline** images started in v[28.0.0] in all editor builds loading the `Image` plugin.
+	Up to CKEditor&nbsp;5 v[27.1.0], only **block** images were supported. The support for **inline** images started in v[28.0.0] in all editor builds loading the `Image` plugin.
 
-	If your integration depends on a ready–to–use editor build and you want to take advantage of updated CKEditor 5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link updating/update-to-29 official migration guide} that will help you configure the editor.
+	If your integration depends on a ready–to–use editor build and you want to take advantage of updated CKEditor&nbsp;5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link updating/update-to-29 official migration guide} that will help you configure the editor.
 </info-box>
 
 ## Contribute

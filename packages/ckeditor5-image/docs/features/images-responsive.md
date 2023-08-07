@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Responsive images
-meta-title: Responsive images in CKEditor 5
+meta-title: Responsive images in CKEditor&nbsp;5
 meta-description: Learn how responsive images can make your content better.
 order: 55
 modified_at: 2023-06-30
@@ -31,7 +31,7 @@ Responsive images have two main advantages over "traditional" image delivery:
 * **They load faster**. Because only the image matching the size of the screen is transferred, in most cases it can be loaded and displayed much faster than a "regular" full–scale image. The faster it loads, the sooner the users can see it, which greatly improves the user experience of your application. You no longer need to wait for ages for high–resolution photos to load on a tiny smartphone screen.
 * **Accessibility**. By catering to different user devices, you may better address the users' different needs. Paired with the {@link features/images-text-alternative text alternative} it makes your content more accessible.
 
-{@img assets/img/responsive-images.svg 550 The visualization of the responsive images approach for CKEditor 5 WYSIWYG editor.}
+{@img assets/img/responsive-images.svg 550 The visualization of the responsive images approach for CKEditor&nbsp;5 WYSIWYG editor.}
 
 ## Responsive images in the markup
 

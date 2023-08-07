@@ -21,7 +21,7 @@ Incoming data becomes the view which is then converted into the model via regist
 {@snippet framework/mini-inspector}
 
 <info-box>
-	If you just want to quickly enable some common HTML tags that are not explicitly supported by the dedicated CKEditor 5 features, you can use the {@link features/general-html-support General HTML Support} feature instead of writing your own custom upcast converters.
+	If you just want to quickly enable some common HTML tags that are not explicitly supported by the dedicated CKEditor&nbsp;5 features, you can use the {@link features/general-html-support General HTML Support} feature instead of writing your own custom upcast converters.
 </info-box>
 
 ## Registering a converter

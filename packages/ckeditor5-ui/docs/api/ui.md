@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 UI framework
+# CKEditor&nbsp;5 UI framework
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-ui.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)
 
-This package implements a simple UI framework and CKEditor 5's standard UI library.
+This package implements a simple UI framework and CKEditor&nbsp;5's standard UI library.
 
 Together with the {@link api/engine editing engine} and the {@link api/core core editor architecture} they create a platform for implementing rich text editors.
 

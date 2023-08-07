@@ -1,7 +1,7 @@
 ---
 menu-title: Drag and drop
-meta-title: Drag and drop in CKEditor 5
-meta-description: Learn all about using the drag and drop mechanism to manage content and uploads in CKEditor 5
+meta-title: Drag and drop in CKEditor&nbsp;5
+meta-description: Learn all about using the drag and drop mechanism to manage content and uploads in CKEditor&nbsp;5
 category: features
 ---
 
@@ -27,7 +27,7 @@ The source code of the above snippet is available here: [`drag-drop.js`](https:/
 
 ## File upload via drag and drop
 
-When the {@link features/ckbox CKBox file manager} is enabled in your CKEditor 5 integration, you can upload files and images using the drag and drop mechanism. You can test this solution in the {@link features/ckbox#demo CKBox demo}.
+When the {@link features/ckbox CKBox file manager} is enabled in your CKEditor&nbsp;5 integration, you can upload files and images using the drag and drop mechanism. You can test this solution in the {@link features/ckbox#demo CKBox demo}.
 
 ## Installation
 
@@ -125,7 +125,7 @@ BalloonEditor.create(document.querySelector( '#editor' ), {
 
 ## Related features
 
-* CKEditor 5 supports dropping images from the file system thanks to the {@link features/image-upload image upload} feature.
+* CKEditor&nbsp;5 supports dropping images from the file system thanks to the {@link features/image-upload image upload} feature.
 
 ## Contribute
 

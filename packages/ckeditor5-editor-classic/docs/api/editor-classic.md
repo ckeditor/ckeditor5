@@ -2,17 +2,17 @@
 category: api-reference
 ---
 
-# CKEditor 5 classic editor implementation
+# CKEditor&nbsp;5 classic editor implementation
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-classic.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic)
 
-The classic editor implementation for CKEditor 5. See the {@link examples/builds/classic-editor demo}.
+The classic editor implementation for CKEditor&nbsp;5. See the {@link examples/builds/classic-editor demo}.
 
 ## Documentation
 
 This package contains the {@link module:editor-classic/classiceditor~ClassicEditor} class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the classic editor. This editor implementation is also available in the [classic build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic). Read more about {@link installation/index CKEditor 5 builds}.
+This package contains the source version of the classic editor. This editor implementation is also available in the [classic build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic). Read more about {@link installation/index CKEditor&nbsp;5 builds}.
 
 ## Installation
 
