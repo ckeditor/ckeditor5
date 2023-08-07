@@ -37,7 +37,8 @@ let hasDisplayedPlaceholderDeprecationWarning = false;
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
- * @param options.text Placeholder text. Is deprecated and will be removed soon.
+ * @param options.text Placeholder text. It's **deprecated** and will be removed soon. Use
+ * {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `options.element.placeholder`} instead.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
 export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
@@ -316,7 +317,10 @@ function showPlaceholderTextDeprecationWarning() {
 	if ( !hasDisplayedPlaceholderDeprecationWarning ) {
 		/**
 		 * The "text" option in the {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
-		 * function is already deprecated and will be removed soon. Please update your code.
+		 * function is deprecated and will be removed soon.
+		 *
+		 * See {@link https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html#view-element-placeholder migration guide}
+		 * for more information on how to apply this change.
 		 *
 		 * @error enableplaceholder-deprecated-text-option
 		 */
