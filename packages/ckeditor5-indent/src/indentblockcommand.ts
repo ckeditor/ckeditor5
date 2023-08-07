@@ -56,9 +56,9 @@ export default class IndentBlockCommand extends Command {
 		const block = first( model.document.selection.getSelectedBlocks() );
 
 		// Command should be disabled for block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
-		const isInListItem = block && block.hasAttribute( 'listItemId' );
+		const isForwardAndInListItem = this._indentBehavior.isForward && block && block.hasAttribute( 'listItemId' );
 
-		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) || isInListItem ) {
+		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) || isForwardAndInListItem ) {
 			this.isEnabled = false;
 
 			return;
@@ -73,7 +73,7 @@ export default class IndentBlockCommand extends Command {
 	public override execute(): void {
 		const model = this.editor.model;
 
-		const blocksToChange = getBlocksToChange( model );
+		const blocksToChange = getBlocksToChange( model, this._indentBehavior.isForward );
 
 		model.change( writer => {
 			for ( const block of blocksToChange ) {
@@ -94,11 +94,17 @@ export default class IndentBlockCommand extends Command {
 /**
  * Returns blocks from selection that should have blockIndent selection set.
  */
-function getBlocksToChange( model: Model ): Array<Element> {
+function getBlocksToChange( model: Model, isForward: boolean ): Array<Element> {
 	const selection = model.document.selection;
 	const schema = model.schema;
 	const blocksInSelection = Array.from( selection.getSelectedBlocks() );
 
-	// Do not add blockIndent to block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
-	return blocksInSelection.filter( block => schema.checkAttribute( block, 'blockIndent' ) && !block.hasAttribute( 'listItemId' ) );
+	return blocksInSelection.filter( block => {
+		// Do not add blockIndent to block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
+		if ( isForward ) {
+			return schema.checkAttribute( block, 'blockIndent' ) && block.hasAttribute( 'listItemId' );
+		}
+
+		return schema.checkAttribute( block, 'blockIndent' );
+	} );
 }
