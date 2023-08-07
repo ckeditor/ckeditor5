@@ -53,7 +53,7 @@ export function getImageUrls( imageUrls: CKBoxImageUrls ): {
 }
 
 /**
- * Returns workspace id to use for communication with the CKBox service.
+ * Returns a workspace id to use for communication with the CKBox service.
  *
  * @param defaultWorkspaceId The default workspace to use taken from editor config.
  */

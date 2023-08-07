@@ -202,7 +202,7 @@ In the `constructor`, create a {@link module:ui/viewcollection~ViewCollection} w
 
 Let's also add `render()` method to our `FormView`.  We will use there a helper {@link module:ui/bindings/submithandler~submitHandler `submitHandler()`} function, which intercepts a native DOM submit event, prevents the default web browser behavior (navigation and page reload) and fires the submit event on a view instead.
 
-We also need a `focus()` method, which will focus on the first child, so our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/deep-dive/focus-tracking focus tracking} can do in CKEditor 5, we will go into it more in next part of this tutorial.
+We also need a `focus()` method, which will focus on the first child, so our `abbreviation` input view each time the form is added to the editor. This is just a taste of what {@link framework/deep-dive/focus-tracking focus tracking} can do in CKEditor&nbsp;5, we will go into it more in next part of this tutorial.
 
 ```js
 // abbreviation/abbreviationview.js
@@ -265,7 +265,7 @@ Our `FormView` is done! We can't see it just yet, so let's add it to our `Abbrev
 
 ## Adding the Contextual Balloon
 
-Our form needs to appear in a balloon, and we will use the `ContextualBalloon` class from the CKEditor 5 UI library to make one.
+Our form needs to appear in a balloon, and we will use the `ContextualBalloon` class from the CKEditor&nbsp;5 UI library to make one.
 
 This is where we ended up with our UI in the first part of the tutorial.
 

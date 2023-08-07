@@ -12,7 +12,7 @@ In the {@link installation/plugins/installing-plugins previous tutorial} you hav
 </info-box>
 
 
-Each CKEditor 5 **build** provides a different **editor class** that handles the creation of editor instances:
+Each CKEditor&nbsp;5 **build** provides a different **editor class** that handles the creation of editor instances:
 
 * Classic editor &ndash; {@link module:editor-classic/classiceditor~ClassicEditor}
 * Inline editor &ndash; {@link module:editor-inline/inlineeditor~InlineEditor}
@@ -22,7 +22,7 @@ Each CKEditor 5 **build** provides a different **editor class** that handles the
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
 
 <info-box>
-	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include the editor in your application, but you can also {@link installation/advanced/integrating-from-source-webpack use the editor classes and plugins directly} for greater flexibility.
+	A CKEditor&nbsp;5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include the editor in your application, but you can also {@link installation/advanced/integrating-from-source-webpack use the editor classes and plugins directly} for greater flexibility.
 </info-box>
 
 ## Creating an editor with `create()`
@@ -56,7 +56,7 @@ In this case, the `<textarea>` element is hidden and replaced with an editor. Th
 
 ### Example – inline editor
 
-Similarly to the previous example, add an element where CKEditor 5 should initialize to your page:
+Similarly to the previous example, add an element where CKEditor&nbsp;5 should initialize to your page:
 
 ```html
 <div id="editor">
@@ -139,7 +139,7 @@ DecoupledEditor
 
 ## Destroying the editor with `destroy()`
 
-In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases CKEditor 5 instances should be destroyed by using the `destroy()` method:
+In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases CKEditor&nbsp;5 instances should be destroyed by using the `destroy()` method:
 
 ```js
 editor.destroy()

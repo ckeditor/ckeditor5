@@ -136,7 +136,7 @@ Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure t
 </figure>
 ```
 
-Currently, the preview is only available for content providers for which CKEditor 5 can predict the `<iframe>` code: YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allow retrieving this code from an external oEmbed service. Therefore, for non-previewable media it produces the default semantic output:
+Currently, the preview is only available for content providers for which CKEditor&nbsp;5 can predict the `<iframe>` code: YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allow retrieving this code from an external oEmbed service. Therefore, for non-previewable media it produces the default semantic output:
 
 ```html
 <figure class="media">
@@ -150,7 +150,7 @@ Read more about [non-previewable media](#previewable-and-non-previewable-media).
 
 ### Media providers
 
-CKEditor 5 comes with several supported media providers that can be extended or altered.
+CKEditor&nbsp;5 comes with several supported media providers that can be extended or altered.
 
 Names of providers **with previews**:
 
@@ -225,9 +225,9 @@ You can take inspiration from the default configuration of this feature which yo
 
 ## Using external services for preview
 
-To get around the limitations of showing media embed previews, you can use services like [Iframely](https://iframely.com/) - this will allow having a rich preview of the content inside CKEditor 5. By inserting an Iframely-hosted `<iframe>`, you are able to preview the content from hundreds of media providers.
+To get around the limitations of showing media embed previews, you can use services like [Iframely](https://iframely.com/) - this will allow having a rich preview of the content inside CKEditor&nbsp;5. By inserting an Iframely-hosted `<iframe>`, you are able to preview the content from hundreds of media providers.
 
-Follow the [Iframely integration with CKEditor 5](https://iframely.com/docs/ckeditor) page for a detailed explanation. You can also check the final result in the demo below. (Keep in mind that if you are using ad-blocking software, it might also block the previews inside the editor.)
+Follow the [Iframely integration with CKEditor&nbsp;5](https://iframely.com/docs/ckeditor) page for a detailed explanation. You can also check the final result in the demo below. (Keep in mind that if you are using ad-blocking software, it might also block the previews inside the editor.)
 
 {@snippet features/media-embed-preview}
 
@@ -243,7 +243,7 @@ There are many ways to do that. The simplest, plug-and-play solutions are descri
 
 ### Iframely
 
-[Iframely](https://iframely.com) offers the [embed.js](https://iframely.com/docs/embedjs) library which converts [various media](https://iframely.com/docs/providers) URLs into rich previews. It works in the front–end and remains fully compatible with the output produced by CKEditor 5.
+[Iframely](https://iframely.com) offers the [embed.js](https://iframely.com/docs/embedjs) library which converts [various media](https://iframely.com/docs/providers) URLs into rich previews. It works in the front–end and remains fully compatible with the output produced by CKEditor&nbsp;5.
 
 First, having [secured the API key](https://iframely.com/docs/allow-origins), load the `embed.js` library from the CDN into your website:
 
@@ -257,7 +257,7 @@ First, having [secured the API key](https://iframely.com/docs/allow-origins), lo
 
 #### Semantic data
 
-You can convert all `<oembed>` elements like the following Twitter post produced by CKEditor 5:
+You can convert all `<oembed>` elements like the following Twitter post produced by CKEditor&nbsp;5:
 
 ```html
 <figure class="media">
@@ -319,7 +319,7 @@ To start using it, load the library from the CDN into your website:
 
 #### Semantic data
 
-You can convert `<oembed>` elements like the following Twitter post produced by CKEditor 5:
+You can convert `<oembed>` elements like the following Twitter post produced by CKEditor&nbsp;5:
 
 ```html
 <figure class="media">
@@ -473,7 +473,7 @@ The {@link module:media-embed/mediaembed~MediaEmbed} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

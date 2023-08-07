@@ -14,17 +14,17 @@ modified_at: 2023-03-21
 <info-box hint>
 **Quick recap**
 
-In the other tutorials from this section you could learn about installing, configuring, and extending your CKEditor 5. This guide assumes that you know a bit about this editor, so if you are completely new to it, check the previous articles first!
+In the other tutorials from this section you could learn about installing, configuring, and extending your CKEditor&nbsp;5. This guide assumes that you know a bit about this editor, so if you are completely new to it, check the previous articles first!
 </info-box>
 
-When compared to its predecessor, CKEditor 5 should be considered **a totally new editor**.
+When compared to its predecessor, CKEditor&nbsp;5 should be considered **a totally new editor**.
 
 **CKEditor 4 reached its End of Life (EOL) in June 2023.** From then on, it receives no more updates, new features, bug fixes, and most importantly, security patches.
 
-To support you in migration to CKEditor 5, we have created an entire documentation section that covers various aspects of the migration process.
+To support you in migration to CKEditor&nbsp;5, we have created an entire documentation section that covers various aspects of the migration process.
 
 Read more about:
-* {@link updating/migration-from-ckeditor-4#differences-between-ckeditor-4-and-ckeditor-5 Differences between CKEditor 4 and CKEditor 5}
+* {@link updating/migration-from-ckeditor-4#differences-between-ckeditor-4-and-ckeditor-5 Differences between CKEditor 4 and CKEditor&nbsp;5}
 * {@link updating/migration-from-ckeditor-4#before-you-migrate Key aspects to be considered before you migrate}
 * {@link updating/migration-from-ckeditor-4#recommended-migration-strategy Recommended migration strategy}
 * {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin equivalents}

@@ -26,4 +26,4 @@ msgstr "Не вдається визначити категорію для за�
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "Немає доступу до робочого простору за замовчуванням."

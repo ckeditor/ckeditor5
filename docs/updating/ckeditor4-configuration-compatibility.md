@@ -1,20 +1,20 @@
 ---
 # Scope:
-# Compare CKEditor 4 configuration options with their CKEditor 5 equivalents.
+# Compare CKEditor 4 configuration options with their CKEditor&nbsp;5 equivalents.
 
 category: ckeditor4-migration
 menu-title: Configuration options compatibility
 meta-title: CKEditor 4 migration - Configuration options compatibility
-meta-description: Learn about the CKEditor 4 configuration options and their equivalent in CKEditor 5.
+meta-description: Learn about the CKEditor 4 configuration options and their equivalent in CKEditor&nbsp;5.
 order: 50
 modified_at: 2023-03-21
 ---
 
 # CKEditor 4 configuration options compatibility
 
-The following table presents CKEditor 4 configuration options and, if available, their equivalent in CKEditor 5.
+The following table presents CKEditor 4 configuration options and, if available, their equivalent in CKEditor&nbsp;5.
 
-Note: In CKEditor 5, the number of options was reduced on purpose. Configuring CKEditor 4 was a bit too troublesome due to the sheer number of available configuration options (around 300). This is why when designing CKEditor 5 from scratch, we decided to come up with a simplified editor, with well-thought default behavior, based on the results of the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/) project.
+Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configuring CKEditor 4 was a bit too troublesome due to the sheer number of available configuration options (around 300). This is why when designing CKEditor&nbsp;5 from scratch, we decided to come up with a simplified editor, with well-thought default behavior, based on the results of the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/) project.
 
 <style>
 /* See: https://github.com/ckeditor/ckeditor5/issues/1718. */
@@ -32,7 +32,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 	<thead>
 		<tr>
 			<th>CKEditor 4</th>
-			<th>CKEditor 5</th>
+			<th>CKEditor&nbsp;5</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -41,9 +41,9 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><span id="allowedContent"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent">allowedContent</a></span></p>
 			</td>
 			<td>
-				<p>Extending the list of HTML tags or attributes that CKEditor 5 should support can be achieved via the {@link features/general-html-support General HTML Support feature}. The GHS allows adding HTML markup not yet covered by official CKEditor 5 features into the editor's content. Such elements can be loaded, pasted, or output. It does not, however, provide a dedicated UI for the extended HTML markup.</p>
-				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/creating-simple-plugin-timestamp Creating a basic plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
-				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor 5. Check the {@link framework/deep-dive/conversion/intro conversion documentation} to learn how to extend the conversion rules.</p>
+				<p>Extending the list of HTML tags or attributes that CKEditor&nbsp;5 should support can be achieved via the {@link features/general-html-support General HTML Support feature}. The GHS allows adding HTML markup not yet covered by official CKEditor&nbsp;5 features into the editor's content. Such elements can be loaded, pasted, or output. It does not, however, provide a dedicated UI for the extended HTML markup.</p>
+				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/creating-simple-plugin-timestamp Creating a basic plugin} article. Looking at the source code of CKEditor&nbsp;5 plugins may also give you a lot of inspiration.</p>
+				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor&nbsp;5. Check the {@link framework/deep-dive/conversion/intro conversion documentation} to learn how to extend the conversion rules.</p>
 			</td>
 		</tr>
 		<tr>
@@ -52,15 +52,15 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoEmbed_widget">autoEmbed_widget</a></td>
-			<td>Refer to the {@link features/media-embed Media embed} feature guide to learn more about media embedding in CKEditor 5.</td>
+			<td>Refer to the {@link features/media-embed Media embed} feature guide to learn more about media embedding in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td>
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_bottomSpace">autoGrow_bottomSpace</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_maxHeight">autoGrow_maxHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_minHeight">autoGrow_minHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_onStartup">autoGrow_onStartup</a></p>
 			</td>
 			<td>
-				<p>These settings are no longer needed as CKEditor 5 automatically grows with content by default.</p>
-				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the <code>minHeight</code> and <code>maxHeight</code> options can be set with the following code:</p>
+				<p>These settings are no longer needed as CKEditor&nbsp;5 automatically grows with content by default.</p>
+				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the <code>minHeight</code> and <code>maxHeight</code> options can be set with the following code:</p>
 				<pre><code class="language-css">.ck.ck-content:not(.ck-comment__input *) {
 	/* Note: You can use min-height and max-height instead here. */
 	height: 300px;
@@ -70,7 +70,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoUpdateElement">autoUpdateElement</a></td>
-			<td>CKEditor 5 always updates the replaced element. This behavior cannot be disabled.</td>
+			<td>CKEditor&nbsp;5 always updates the replaced element. This behavior cannot be disabled.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autocomplete_commitKeystrokes">autocomplete_commitKeystrokes</a></td>
@@ -78,7 +78,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_commitKeystrokes">autolink_commitKeystrokes</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_emailRegex">autolink_emailRegex</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autolink_urlRegex">autolink_urlRegex</a></td>
-			<td>Refer to the {@link features/link#autolink-feature Autolink section} of the Link guide to learn more about support for automatic linking in CKEditor 5.</td>
+			<td>Refer to the {@link features/link#autolink-feature Autolink section} of the Link guide to learn more about support for automatic linking in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-baseFloatZIndex">baseFloatZIndex</a></td>
@@ -101,7 +101,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-bodyClass">bodyClass</a></p>
 			</td>
 			<td>
-				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so this setting is no longer needed. Simply wrap the editor with a <code>&lt;div class=&quot;...&quot;&gt;</code> to achieve a similar result. When using {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, {@link examples/builds/inline-editor inline}, or {@link examples/builds/document-editor decoupled} editor, you may add a class to the element on which the editor is initialized.</p>
+				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so this setting is no longer needed. Simply wrap the editor with a <code>&lt;div class=&quot;...&quot;&gt;</code> to achieve a similar result. When using {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, {@link examples/builds/inline-editor inline}, or {@link examples/builds/document-editor decoupled} editor, you may add a class to the element on which the editor is initialized.</p>
 				<p>Additionally, all editor types use <code>.ck-content</code> on their main root editable elements. This class can thus also be used to write stylesheet rules for the editor content.</p>
 			</td>
 		</tr>
@@ -110,13 +110,13 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-bodyId">bodyId</a></p>
 			</td>
 			<td>
-				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so this setting is no longer needed. Simply wrap the editor with a <code>&lt;div id=&quot;...&quot;&gt;</code> to achieve a similar result. When using {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, {@link examples/builds/inline-editor inline}, or {@link examples/builds/document-editor decoupled} editor, you may add a class to the element on which the editor is initialized.</p>
+				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so this setting is no longer needed. Simply wrap the editor with a <code>&lt;div id=&quot;...&quot;&gt;</code> to achieve a similar result. When using {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, {@link examples/builds/inline-editor inline}, or {@link examples/builds/document-editor decoupled} editor, you may add a class to the element on which the editor is initialized.</p>
 				<p>Additionally, all editor types use <code>.ck-content</code> on their main root editable elements. This class can thus also be used to write stylesheet rules for the editor content.</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-browserContextMenuOnCtrl">browserContextMenuOnCtrl</a></td>
-			<td>No longer needed as CKEditor 5 does not have its own context menu and does not block the native browser context menu.</td>
+			<td>No longer needed as CKEditor&nbsp;5 does not have its own context menu and does not block the native browser context menu.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-clipboard_defaultContentType">clipboard_defaultContentType</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-clipboard_handleImages">clipboard_handleImages</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-clipboard_notificationDuration">clipboard_notificationDuration</a></td>
@@ -135,7 +135,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippetGeshi_url">codeSnippetGeshi_url</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_codeClass">codeSnippet_codeClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_languages">codeSnippet_languages</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-codeSnippet_theme">codeSnippet_theme</a></p>
 			</td>
 			<td>
-				<p>Refer to the {@link features/code-blocks Code block} feature guide to learn more about support for blocks of pre–formatted code in CKEditor 5.</p>
+				<p>Refer to the {@link features/code-blocks Code block} feature guide to learn more about support for blocks of pre–formatted code in CKEditor&nbsp;5.</p>
 				<p>A plugin adding support for the inline <code>&lt;code&gt;</code> element is included in the {@link features/basic-styles Basic styles} package.<br>
 				Note: The {@link module:basic-styles/code~Code Code feature} is not available by default in any predefined build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
@@ -146,13 +146,13 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			</p>
 			</td>
 			<td>
-				<p>Refer to the {@link features/font#configuring-the-font-color-and-font-background-color-features Font family, size, and color} feature guide to learn more about configuring font and background color in CKEditor 5.</p>
-				<p>CKEditor 5 also provides a new highlight plugin. It allows for highlighting parts of the text with the <code>&lt;mark&gt;</code> element with different CSS classes that can be easily styled. See the {@link features/highlight Highlight} feature guide for more information.</p>
+				<p>Refer to the {@link features/font#configuring-the-font-color-and-font-background-color-features Font family, size, and color} feature guide to learn more about configuring font and background color in CKEditor&nbsp;5.</p>
+				<p>CKEditor&nbsp;5 also provides a new highlight plugin. It allows for highlighting parts of the text with the <code>&lt;mark&gt;</code> element with different CSS classes that can be easily styled. See the {@link features/highlight Highlight} feature guide for more information.</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contentsCss">contentsCss</a></td>
-			<td>{@link examples/builds/classic-editor Classic editor} in CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so such file and configuration setting is no longer needed. If for some reason you need to style the contents of the editing area differently, use the <code>.ck-content</code> selector.</td>
+			<td>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so such file and configuration setting is no longer needed. If for some reason you need to style the contents of the editing area differently, use the <code>.ck-content</code> selector.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contentsLangDirection">contentsLangDirection</a></td>
@@ -164,24 +164,24 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-contextmenu_contentsCss">contextmenu_contentsCss</a></td>
-			<td>No longer needed as CKEditor 5 does not have its own context menu.</td>
+			<td>No longer needed as CKEditor&nbsp;5 does not have its own context menu.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_allowRules">copyFormatting_allowRules</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_allowedContexts">copyFormatting_allowedContexts</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_disallowRules">copyFormatting_disallowRules</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_keystrokeCopy">copyFormatting_keystrokeCopy</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_keystrokePaste">copyFormatting_keystrokePaste</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-copyFormatting_outerCursor">copyFormatting_outerCursor</a></td>
-			<td>Refer to the {@link features/format-painter Format painter} guide to learn how the copy formatting functionality works in CKEditor 5.</td>
+			<td>Refer to the {@link features/format-painter Format painter} guide to learn how the copy formatting functionality works in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_bold">coreStyles_bold</a></td>
-			<td>CKEditor 5 uses the <code>&lt;strong&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/bold.html" target="_blank" rel="noopener">Editor Recommendations - Bold</a>.</td>
+			<td>CKEditor&nbsp;5 uses the <code>&lt;strong&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/bold.html" target="_blank" rel="noopener">Editor Recommendations - Bold</a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_italic">coreStyles_italic</a></td>
-			<td>CKEditor 5 uses the <code>&lt;i&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/italic.html" target="_blank" rel="noopener">Editor Recommendations - Italic</a>.</td>
+			<td>CKEditor&nbsp;5 uses the <code>&lt;i&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/italic.html" target="_blank" rel="noopener">Editor Recommendations - Italic</a>.</td>
 		</tr>
 		<tr>
 			<td>
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_strike">coreStyles_strike</a></td>
-			<td>CKEditor 5 uses the <code>&lt;s&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/strikethrough.html" target="_blank" rel="noopener">Editor Recommendations - Strikethrough</a>.
+			<td>CKEditor&nbsp;5 uses the <code>&lt;s&gt;</code> element, see <a href="https://ckeditor.github.io/editor-recommendations/features/strikethrough.html" target="_blank" rel="noopener">Editor Recommendations - Strikethrough</a>.
 			</p>
 			</td>
 		</tr>
@@ -190,7 +190,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_subscript">coreStyles_subscript</a></p>
 			</td>
 			<td>
-				<p>CKEditor 5 uses the <code>&lt;sub&gt;</code> element.
+				<p>CKEditor&nbsp;5 uses the <code>&lt;sub&gt;</code> element.
 				<p>Note: The {@link module:basic-styles/subscript~Subscript Subscript feature} is not available by default in any predefined build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
@@ -199,7 +199,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_superscript">coreStyles_superscript</a></p>
 			</td>
 			<td>
-				<p>CKEditor 5 uses the <code>&lt;sup&gt;</code> element.
+				<p>CKEditor&nbsp;5 uses the <code>&lt;sup&gt;</code> element.
 				<p>Note: The {@link module:basic-styles/superscript~Superscript Superscript feature} is not available by default in any predefined build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
@@ -208,7 +208,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_toggleSubSup">coreStyles_toggleSubSup</a></p>
 			</td>
 			<td>
-				<p>In CKEditor 5 it is possible to apply subscript and superscript to the same element.</p>
+				<p>In CKEditor&nbsp;5 it is possible to apply subscript and superscript to the same element.</p>
 				<p>Note: The {@link module:basic-styles/subscript~Subscript Subscript} and {@link module:basic-styles/superscript~Superscript Superscript} features are not available by default in any predefined build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
@@ -217,13 +217,13 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-coreStyles_underline">coreStyles_underline</a></p>
 			</td>
 			<td>
-				<p>CKEditor 5 uses the <code>&lt;u&gt;</code> element, see <a href="https://github.com/ckeditor/editor-recommendations/issues/4" target="_blank" rel="noopener">Editor Recommendations - Underline</a>.</p>
+				<p>CKEditor&nbsp;5 uses the <code>&lt;u&gt;</code> element, see <a href="https://github.com/ckeditor/editor-recommendations/issues/4" target="_blank" rel="noopener">Editor Recommendations - Underline</a>.</p>
 				<p>Note: The {@link module:basic-styles/underline~Underline Underline feature} is not available by default in any predefined build, but can be enabled in a {@link installation/getting-started/quick-start-other#building-the-editor-from-source custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-customConfig">customConfig</a></td>
-			<td>For performance reasons, CKEditor 5 no longer loads a separate configuration file. Passing configuration options inline reduces the number of HTTP requests.</td>
+			<td>For performance reasons, CKEditor&nbsp;5 no longer loads a separate configuration file. Passing configuration options inline reduces the number of HTTP requests.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dataIndentationChars">dataIndentationChars</a></td>
@@ -241,7 +241,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-devtools_styles">devtools_styles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-devtools_textCallback">devtools_textCallback</a></td>
-			<td>The old CKEditor 4 Developer Tools plugin is not available for CKEditor 5. However, check out the new {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector}. It is a far more advanced tool that will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.</td>
+			<td>The old CKEditor 4 Developer Tools plugin is not available for CKEditor&nbsp;5. However, check out the new {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector}. It is a far more advanced tool that will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_backgroundCoverColor">dialog_backgroundCoverColor</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_backgroundCoverOpacity">dialog_backgroundCoverOpacity</a></td>
@@ -256,7 +256,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-disableNativeSpellChecker">disableNativeSpellChecker</a></p>
 			</td>
 			<td>
-				<p>Note: An official integration of the spell and grammar checking functionality for CKEditor 5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</p>
+				<p>Note: An official integration of the spell and grammar checking functionality for CKEditor&nbsp;5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</p>
 				<p>A dedicated configuration option to disable the native browser spell checker is unavailable. However, in case of inline, balloon, and balloon block editors it can be done by setting the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck" target="_blank" rel="noopener"><code>spellcheck</code></a> attribute directly on the element where CKEditor should be enabled.</p>
 				<p>Additionally, for all types of editors, including the classic and decoupled ones, you can also call:</p>
 				<pre><code>editor.editing.view.change( writer => {
@@ -278,7 +278,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-disallowedContent">disallowedContent</a></td>
-			<td>See <a href="#allowedContent"><code>config.allowedContent</code></a>. No longer needed as CKEditor 5 removes all unwanted markup that cannot be edited with the editor. This can be controlled by adding plugins to the editor or via the {@link features/general-html-support General HTML Support feature}.</td>
+			<td>See <a href="#allowedContent"><code>config.allowedContent</code></a>. No longer needed as CKEditor&nbsp;5 removes all unwanted markup that cannot be edited with the editor. This can be controlled by adding plugins to the editor or via the {@link features/general-html-support General HTML Support feature}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-div_wrapTable">div_wrapTable</a></td>
@@ -286,15 +286,15 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-docType">docType</a></td>
-			<td>N/A. CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so the editor is using the same doctype as the page where it operates.</td>
+			<td>N/A. CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so the editor is using the same doctype as the page where it operates.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_class">easyimage_class</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_defaultStyle">easyimage_defaultStyle</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_styles">easyimage_styles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-easyimage_toolbar">easyimage_toolbar</a></td>
-			<td>Refer to the {@link features/easy-image Easy Image} and {@link features/images-overview Images} feature guides to learn more about image-related features and Easy Image integration in CKEditor 5.</td>
+			<td>Refer to the {@link features/easy-image Easy Image} and {@link features/images-overview Images} feature guides to learn more about image-related features and Easy Image integration in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-editorplaceholder">editorplaceholder</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-editorplaceholder_delay">editorplaceholder_delay</a></td>
-			<td>Refer to the {@link features/editor-placeholder Editor placeholder} feature guide to learn more about configuring this feature in CKEditor 5.</td>
+			<td>Refer to the {@link features/editor-placeholder Editor placeholder} feature guide to learn more about configuring this feature in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emailProtection">emailProtection</a></td>
@@ -302,15 +302,15 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-embed_provider">embed_provider</a></td>
-			<td>Refer to the {@link features/media-embed Media embed} feature guide to learn more about media embedding in CKEditor 5.</td>
+			<td>Refer to the {@link features/media-embed Media embed} feature guide to learn more about media embedding in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><span id="emoji"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_emojiListUrl">emoji_emojiListUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_followingSpace">emoji_followingSpace</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_minChars">emoji_minChars</a></span></td>
-			<td>Emoji can be pasted into CKEditor 5 as Unicode content. You can use the emoji picker of your operating system to insert emoji characters. Use the <kbd>Ctrl</kbd>+<kbd>Cmd</kbd>+<kbd>Space</kbd> keyboard shortcut (macOS) or <kbd>Win</kbd>+<kbd>.</kbd> (Windows) or the relevant emoji key on the touch keyboard of your device to open the picker. The {@link features/text-transformation Automatic text transformation feature} may be configured to deliver emojis with shortcodes, too.</td>
+			<td>Emoji can be pasted into CKEditor&nbsp;5 as Unicode content. You can use the emoji picker of your operating system to insert emoji characters. Use the <kbd>Ctrl</kbd>+<kbd>Cmd</kbd>+<kbd>Space</kbd> keyboard shortcut (macOS) or <kbd>Win</kbd>+<kbd>.</kbd> (Windows) or the relevant emoji key on the touch keyboard of your device to open the picker. The {@link features/text-transformation Automatic text transformation feature} may be configured to deliver emojis with shortcodes, too.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enableContextMenu">enableContextMenu</a></td>
-			<td>N/A. CKEditor 5 does not come with a context menu. A configurable contextual inline toolbar is preferred instead to offer contextual actions for features such as {@link features/tables#table-contextual-toolbar tables} or {@link features/images-overview#image-contextual-toolbar images}. See also {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}.</td>
+			<td>N/A. CKEditor&nbsp;5 does not come with a context menu. A configurable contextual inline toolbar is preferred instead to offer contextual actions for features such as {@link features/tables#table-contextual-toolbar tables} or {@link features/images-overview#image-contextual-toolbar images}. See also {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enableTabKeyTools">enableTabKeyTools</a></td>
@@ -321,7 +321,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><span id="enterMode"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enterMode">enterMode</a></span></p>
 			</td>
 			<td>
-				<p>N/A. CKEditor 5 always creates a new paragraph (<code>&lt;p&gt;</code> element) as specified by <a href="http://ckeditor.github.io/editor-recommendations/usability/enter-key.html" target="_blank" rel="noopener">Editor Recommendations - Enter key</a>.</p>
+				<p>N/A. CKEditor&nbsp;5 always creates a new paragraph (<code>&lt;p&gt;</code> element) as specified by <a href="http://ckeditor.github.io/editor-recommendations/usability/enter-key.html" target="_blank" rel="noopener">Editor Recommendations - Enter key</a>.</p>
 				<p><kbd>Shift</kbd>+<kbd>Enter</kbd> can be used for creating soft line breaks.</p>
 			</td>
 		</tr>
@@ -334,7 +334,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_fileName">exportPdf_fileName</a> <br><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_options">exportPdf_options</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_service">exportPdf_service</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_stylesheets">exportPdf_stylesheets</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_tokenUrl">exportPdf_tokenUrl</a> <br>
 			</td>
 			<td>
-				Refer to the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html">Export to PDF feature</a> guide to learn more about about configuring the HTML to PDF converter in CKEditor 5.
+				Refer to the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html">Export to PDF feature</a> guide to learn more about about configuring the HTML to PDF converter in CKEditor&nbsp;5.
 			</td>
 		</tr>
 		<tr>
@@ -343,7 +343,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraPlugins">extraPlugins</a></td>
-			<td>Learn how to {@link installation/plugins/installing-plugins install plugins in CKEditor 5}.</td>
+			<td>Learn how to {@link installation/plugins/installing-plugins install plugins in CKEditor&nbsp;5}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName">fileTools_defaultFileName</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_requestHeaders">fileTools_requestHeaders</a></td>
@@ -351,11 +351,11 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserBrowseUrl">filebrowserBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserFlashBrowseUrl">filebrowserFlashBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserFlashUploadUrl">filebrowserFlashUploadUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageBrowseLinkUrl">filebrowserImageBrowseLinkUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageBrowseUrl">filebrowserImageBrowseUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserImageUploadUrl">filebrowserImageUploadUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserUploadMethod">filebrowserUploadMethod</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserUploadUrl">filebrowserUploadUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowFeatures">filebrowserWindowFeatures</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowHeight">filebrowserWindowHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-filebrowserWindowWidth">filebrowserWindowWidth</a></td>
-			<td>There is no equivalent of the file browser plugin in CKEditor 5 yet. See also <a href="#uploadUrl"><code>config.uploadUrl</code></a>.</td>
+			<td>There is no equivalent of the file browser plugin in CKEditor&nbsp;5 yet. See also <a href="#uploadUrl"><code>config.uploadUrl</code></a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fillEmptyBlocks">fillEmptyBlocks</a></td>
-			<td>Blocks are always filled in CKEditor 5 because this ensures that the intention of the content author (who left such empty lines) will be preserved in the output data.</td>
+			<td>Blocks are always filled in CKEditor&nbsp;5 because this ensures that the intention of the content author (who left such empty lines) will be preserved in the output data.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-find_highlight">find_highlight</a></td>
@@ -371,7 +371,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fontSize_defaultLabel">fontSize_defaultLabel</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fontSize_sizes">fontSize_sizes</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fontSize_style">fontSize_style</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-font_defaultLabel">font_defaultLabel</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-font_names">font_names</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-font_style">font_style</a></td>
-			<td>Refer to the {@link features/font Font family, size, and color} feature guide to learn more about font size, family, and color support in CKEditor 5.</td>
+			<td>Refer to the {@link features/font Font family, size, and color} feature guide to learn more about font size, family, and color support in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forceEnterMode">forceEnterMode</a></td>
@@ -379,7 +379,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forcePasteAsPlainText">forcePasteAsPlainText</a></td>
-			<td>N/A. No longer needed as CKEditor 5 removes all unwanted markup that cannot be edited with the enabled editor plugins.</td>
+			<td>N/A. No longer needed as CKEditor&nbsp;5 removes all unwanted markup that cannot be edited with the enabled editor plugins.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forceSimpleAmpersand">forceSimpleAmpersand</a></td>
@@ -395,7 +395,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_tags">format_tags</a></td>
-			<td>In order to enable additional block tags in CKEditor 5, the {@link features/general-html-support General HTML Support feature} may be used. Alternatively, a dedicated plugin must be provided. See also <a href="#allowedContent"><code>config.allowedContent</code></a>.</td>
+			<td>In order to enable additional block tags in CKEditor&nbsp;5, the {@link features/general-html-support General HTML Support feature} may be used. Alternatively, a dedicated plugin must be provided. See also <a href="#allowedContent"><code>config.allowedContent</code></a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fullPage">fullPage</a></td>
@@ -403,24 +403,24 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-grayt_autoStartup">grayt_autoStartup</a></td>
-			<td>An official integration of the spell and grammar checking functionality for CKEditor 5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</td>
+			<td>An official integration of the spell and grammar checking functionality for CKEditor&nbsp;5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</td>
 		</tr>
 		<tr>
 			<td>
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-height">height</a></p>
 			</td>
 			<td>
-				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the height setting can be achieved with <code>.ck-editor__editable_inline { height:400px; }</code>.</p>
+				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the height setting can be achieved with <code>.ck-editor__editable_inline { height:400px; }</code>.</p>
 				<p>To set the height dynamically (from JavaScript), use the view writer:</p>
 				<pre><code>editor.editing.view.change( writer => {
     writer.setStyle( 'height', '400px', editor.editing.view.document.getRoot() );
 } );</code></pre>
-				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
+				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor&nbsp;5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-htmlEncodeOutput">htmlEncodeOutput</a></td>
-			<td>N/A. CKEditor 5 outputs HTML markup. See also <a href="https://stackoverflow.com/questions/47555667/ckeditor-5-htmlencodeoutput-doesnt-work" target="_blank" rel="noopener">this StackOverflow question</a> and a <a href="https://github.com/ckeditor/ckeditor5/issues/698" target="_blank" rel="noopener">dedicated issue</a>.</td>
+			<td>N/A. CKEditor&nbsp;5 outputs HTML markup. See also <a href="https://stackoverflow.com/questions/47555667/ckeditor-5-htmlencodeoutput-doesnt-work" target="_blank" rel="noopener">this StackOverflow question</a> and a <a href="https://github.com/ckeditor/ckeditor5/issues/698" target="_blank" rel="noopener">dedicated issue</a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-ignoreEmptyParagraph">ignoreEmptyParagraph</a></td>
@@ -432,7 +432,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_altRequired">image2_altRequired</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_captionedClass">image2_captionedClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_defaultLockRatio">image2_defaultLockRatio</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_disableResizer">image2_disableResizer</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_maxSize">image2_maxSize</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image2_prefillDimensions">image2_prefillDimensions</a></td>
-			<td>Refer to the {@link features/images-overview Image} feature guide to learn more about image-related features and customization options in CKEditor 5.</td>
+			<td>Refer to the {@link features/images-overview Image} feature guide to learn more about image-related features and customization options in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-imageUploadUrl">imageUploadUrl</a></td>
@@ -440,7 +440,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image_prefillDimensions">image_prefillDimensions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image_previewText">image_previewText</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-image_removeLinkByEmptyURL">image_removeLinkByEmptyURL</a></td>
-			<td>Refer to the {@link features/images-overview Image} feature guide to learn more about image-related features and customization options in CKEditor 5.</td>
+			<td>Refer to the {@link features/images-overview Image} feature guide to learn more about image-related features and customization options in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-indentClasses">indentClasses</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-indentOffset">indentOffset</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-indentUnit">indentUnit</a></td>
@@ -493,7 +493,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mathJaxClass">mathJaxClass</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mathJaxLib">mathJaxLib</a></td>
-			<td>N/A. Math equation functionality for CKEditor 5 is provided by a partner solution, {@link features/math-equations MathType}.</td>
+			<td>N/A. Math equation functionality for CKEditor&nbsp;5 is provided by a partner solution, {@link features/math-equations MathType}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-maximize_historyIntegration">maximize_historyIntegration</a></td>
@@ -501,11 +501,11 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-mentions">mentions</a></td>
-			<td>Refer to the {@link features/mentions Mentions} feature guide to learn more about smart autocompletion based on user input in CKEditor 5.</td>
+			<td>Refer to the {@link features/mentions Mentions} feature guide to learn more about smart autocompletion based on user input in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-menu_groups">menu_groups</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-menu_subMenuDelay">menu_subMenuDelay</a></td>
-			<td>CKEditor 5 does not come with a context menu. A configurable contextual inline toolbar is preferred instead to offer contextual actions for features such as {@link features/tables#table-contextual-toolbar tables} or {@link features/images-overview#image-contextual-toolbar images}. See also {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}.</td>
+			<td>CKEditor&nbsp;5 does not come with a context menu. A configurable contextual inline toolbar is preferred instead to offer contextual actions for features such as {@link features/tables#table-contextual-toolbar tables} or {@link features/images-overview#image-contextual-toolbar images}. See also {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-newpage_html">newpage_html</a></td>
@@ -530,19 +530,19 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFilter">pasteFilter</a></td>
-			<td>Not needed as CKEditor 5 always trims the pasted content to match what the available plugins can handle. If you would like to filter the pasted content even further, please <a href="https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md" target="_blank" rel="noopener">report a ticket</a>.</td>
+			<td>Not needed as CKEditor&nbsp;5 always trims the pasted content to match what the available plugins can handle. If you would like to filter the pasted content even further, please <a href="https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Afeature&template=2-feature-request.md" target="_blank" rel="noopener">report a ticket</a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordCleanupFile">pasteFromWordCleanupFile</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordNumberedHeadingToList">pasteFromWordNumberedHeadingToList</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordPromptCleanup">pasteFromWordPromptCleanup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWordRemoveStyles">pasteFromWordRemoveStyles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWord_heuristicsEdgeList">pasteFromWord_heuristicsEdgeList</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteFromWord_inlineImages">pasteFromWord_inlineImages</a></td>
-			<td>Refer to the {@link features/paste-from-word Paste from Word} feature guide to learn more about support for pasting from Microsoft Word in CKEditor 5.</td>
+			<td>Refer to the {@link features/paste-from-office Paste from Office} feature guide to learn more about support for pasting from Microsoft Word in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-pasteTools_keepZeroMargins">pasteTools_keepZeroMargins</a></td>
-			<td>Refer to the {@link features/paste-from-word Paste from Word} and {@link features/paste-from-word Paste from Google Docs} feature guides to learn more about support for pasting from external applications in CKEditor 5.</td>
+			<td>Refer to the {@link features/paste-from-office Paste from Office} and {@link features/paste-from-google-docs Paste from Google Docs} feature guides to learn more about support for pasting from external applications in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins">plugins</a></td>
-			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor 5 has changed in general. Check the articles about {@link installation/plugins/plugins plugins} and {@link installation/getting-started/quick-start-other custom builds} for more information.</td>
+			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor&nbsp;5 has changed in general. Check the articles about {@link installation/plugins/plugins plugins} and {@link installation/getting-started/quick-start-other custom builds} for more information.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-protectedSource">protectedSource</a></td>
@@ -562,7 +562,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-removeFormatAttributes">removeFormatAttributes</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-removeFormatTags">removeFormatTags</a></td>
-			<td>Refer to the {@link features/remove-format Remove formatting} feature guide to learn how to quickly remove any text formatting applied using inline HTML elements and CSS styles in CKEditor 5.</td>
+			<td>Refer to the {@link features/remove-format Remove formatting} feature guide to learn how to quickly remove any text formatting applied using inline HTML elements and CSS styles in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-removePlugins">removePlugins</a></td>
@@ -574,7 +574,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_autoStartup">scayt_autoStartup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_contextCommands">scayt_contextCommands</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_contextMenuItemsOrder">scayt_contextMenuItemsOrder</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customDictionaryIds">scayt_customDictionaryIds</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customPunctuation">scayt_customPunctuation</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_customerId">scayt_customerId</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_disableOptionsStorage">scayt_disableOptionsStorage</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_elementsToIgnore">scayt_elementsToIgnore</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_handleCheckDirty">scayt_handleCheckDirty</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_handleUndoRedo">scayt_handleUndoRedo</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreAllCapsWords">scayt_ignoreAllCapsWords</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreDomainNames">scayt_ignoreDomainNames</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreWordsWithMixedCases">scayt_ignoreWordsWithMixedCases</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_ignoreWordsWithNumbers">scayt_ignoreWordsWithNumbers</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_inlineModeImmediateMarkup">scayt_inlineModeImmediateMarkup</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_maxSuggestions">scayt_maxSuggestions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_minWordLength">scayt_minWordLength</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_moreSuggestions">scayt_moreSuggestions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_sLang">scayt_sLang</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_serviceHost">scayt_serviceHost</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_servicePath">scayt_servicePath</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_servicePort">scayt_servicePort</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_serviceProtocol">scayt_serviceProtocol</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_srcUrl">scayt_srcUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_uiTabs">scayt_uiTabs</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-scayt_userDictionaryName">scayt_userDictionaryName</a></td>
-			<td>The spell and grammar checking functionality for CKEditor 5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</td>
+			<td>The spell and grammar checking functionality for CKEditor&nbsp;5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</td>
 		</tr>
 		<tr>
 			<td>
@@ -583,14 +583,14 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<td>
 				<p>N/A.</p>
 				<p>The {@link module:editor-decoupled/decouplededitor~DecoupledEditor decoupled editor} allows configuring where to insert the toolbar and the editable element.</p>
-				<p>In addition to that, CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See the {@link examples/builds/multi-root-editor multi-root editor example}.</p>
+				<p>In addition to that, CKEditor&nbsp;5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See the {@link examples/builds/multi-root-editor multi-root editor example}.</p>
 		</tr>
 		<tr>
 			<td>
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-shiftEnterMode">shiftEnterMode</a></p>
 			</td>
 			<td>
-				<p>N/A. CKEditor 5 always creates a new paragraph (<code>&lt;p&gt;</code> element) as specified by <a href="http://ckeditor.github.io/editor-recommendations/usability/enter-key.html" target="_blank" rel="noopener">Editor Recommendations - Enter key</a>.</p>
+				<p>N/A. CKEditor&nbsp;5 always creates a new paragraph (<code>&lt;p&gt;</code> element) as specified by <a href="http://ckeditor.github.io/editor-recommendations/usability/enter-key.html" target="_blank" rel="noopener">Editor Recommendations - Enter key</a>.</p>
 				<p><kbd>Shift</kbd>+<kbd>Enter</kbd> can be used for creating soft line breaks.</p>
 			</td>
 		</tr>
@@ -599,7 +599,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-shiftLineBreaks">shiftLineBreaks</a></p>
 			</td>
 			<td>
-				<p>N/A. CKEditor 5 always moves line breaks (<code>&lt;br&gt;</code> elements) outside inline elements.</p>
+				<p>N/A. CKEditor&nbsp;5 always moves line breaks (<code>&lt;br&gt;</code> elements) outside inline elements.</p>
 			</td>
 		</tr>
 		<tr>
@@ -607,13 +607,13 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-skin">skin</a></p>
 			</td>
 			<td>
-				<p>In CKEditor 5 lots of changes to the interface can be easily made by changing the default CKEditor theme. See the {@link framework/theme-customization Theme customization} guide.</p>
+				<p>In CKEditor&nbsp;5 lots of changes to the interface can be easily made by changing the default CKEditor theme. See the {@link framework/theme-customization Theme customization} guide.</p>
 				<p>For heavy UI modifications, like integrating CKEditor with a custom UI framework, building a custom editor is needed. See the {@link framework/external-ui Third-party UI} guide.</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-smiley_columns">smiley_columns</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-smiley_descriptions">smiley_descriptions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-smiley_images">smiley_images</a> <br>  <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-smiley_path">smiley_path</a></td>
-			<td>There is no dedicated smiley plugin in CKEditor 5. However, the <a href="#emoji">emoji</a> can be pasted into the rich-text editor as Unicode content. Also the {@link features/text-transformation Automatic text transformation feature} may be configured to deliver Unicode emojis with shortcodes. The {@link features/special-characters Special characters} feature may be used to input emojis as well.</td>
+			<td>There is no dedicated smiley plugin in CKEditor&nbsp;5. However, the <a href="#emoji">emoji</a> can be pasted into the rich-text editor as Unicode content. Also the {@link features/text-transformation Automatic text transformation feature} may be configured to deliver Unicode emojis with shortcodes. The {@link features/special-characters Special characters} feature may be used to input emojis as well.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-sourceAreaTabSize">sourceAreaTabSize</a></td>
@@ -621,7 +621,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-specialChars">specialChars</a></td>
-			<td>Refer to the {@link features/special-characters Special characters} feature guide to learn more about support for inserting special characters in CKEditor 5.</td>
+			<td>Refer to the {@link features/special-characters Special characters} feature guide to learn more about support for inserting special characters in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-startupFocus">startupFocus</a></td>
@@ -661,7 +661,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates">templates</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates_files">templates_files</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-templates_replaceContent">templates_replaceContent</a></td>
-			<td>Refer to the {@link features/template Templates} guide to learn about support for templates in CKEditor 5.</td>
+			<td>Refer to the {@link features/template Templates} guide to learn about support for templates in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-title">title</a></td>
@@ -672,7 +672,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbar">toolbar</a></p>
 			</td>
 			<td>
-				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}. Refer to the {@link features/toolbar toolbar} feature guide to learn more about managing toolbars in CKEditor 5.</p>
+				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}. Refer to the {@link features/toolbar toolbar} feature guide to learn more about managing toolbars in CKEditor&nbsp;5.</p>
 				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar `config.balloonToolbar`} to define the toolbar of a balloon editor and the {@link features/blocktoolbar block toolbar} feature.</p>
 			</td>
 		</tr>
@@ -682,7 +682,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroupCycling">toolbarGroupCycling</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroups">toolbarGroups</a></td>
-			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into multiple lines by using <code>'-'</code>. Refer to the {@link features/toolbar toolbar} guide to learn more about managing toolbar items behavior in CKEditor 5.</td>
+			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into multiple lines by using <code>'-'</code>. Refer to the {@link features/toolbar toolbar} guide to learn more about managing toolbar items behavior in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarLocation">toolbarLocation</a></td>
@@ -694,7 +694,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uiColor">uiColor</a></td>
-			<td>CKEditor 5 comes with a concept of much more powerful themes, where almost every aspect of the UI can be styled easily. See the {@link framework/theme-customization Theme customization} guide and {@link examples/theme-customization Theme customization example}. Thanks to {@link framework/theme-customization#customization-with-css-variables CSS variables} rebuilding the editor is not needed to change its styles.</td>
+			<td>CKEditor&nbsp;5 comes with a concept of much more powerful themes, where almost every aspect of the UI can be styled easily. See the {@link framework/theme-customization Theme customization} guide and {@link examples/theme-customization Theme customization example}. Thanks to {@link framework/theme-customization#customization-with-css-variables CSS variables} rebuilding the editor is not needed to change its styles.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-undoStackSize">undoStackSize</a></td>
@@ -705,7 +705,7 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 			<p><span id="uploadUrl"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uploadUrl">uploadUrl</a></span></p>
 			</td>
 			<td>
-				<p>There are several image upload strategies supported by CKEditor 5. Check out the {@link features/image-upload Image upload} guide to learn more.</p>
+				<p>There are several image upload strategies supported by CKEditor&nbsp;5. Check out the {@link features/image-upload Image upload} guide to learn more.</p>
 			</td>
 		</tr>
 		<tr>
@@ -714,19 +714,19 @@ Note: In CKEditor 5, the number of options was reduced on purpose. Configuring C
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-widget_keystrokeInsertLineAfter">widget_keystrokeInsertLineAfter</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-widget_keystrokeInsertLineBefore">widget_keystrokeInsertLineBefore</a></td>
-			<td>In CKEditor 5 a new paragraph can be inserted directly after a widget with <kbd>Enter</kbd> and directly before a widget &mdash; with <kbd>Shift</kbd> + <kbd>Enter</kbd>.</td>
+			<td>In CKEditor&nbsp;5 a new paragraph can be inserted directly after a widget with <kbd>Enter</kbd> and directly before a widget &mdash; with <kbd>Shift</kbd> + <kbd>Enter</kbd>.</td>
 		</tr>
 		<tr>
 			<td>
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-width">width</a></p>
 			</td>
 			<td>
-				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the width (and similar options) of the editing area can be easily controlled with CSS. For instance, to set the width of any of the editor types, use <code>.ck-editor__editable_inline { width:400px; }</code>.</p>
+				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the width (and similar options) of the editing area can be easily controlled with CSS. For instance, to set the width of any of the editor types, use <code>.ck-editor__editable_inline { width:400px; }</code>.</p>
 				<p>To set the width dynamically (from JavaScript), use the view writer:</p>
 				<pre><code>editor.editing.view.change( writer => {
     writer.setStyle( 'width', '400px', editor.editing.view.document.getRoot() );
 } );</code></pre>
-				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
+				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor&nbsp;5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
 	</tbody>
