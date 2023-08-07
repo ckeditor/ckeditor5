@@ -15,7 +15,7 @@ import type EditableElement from './editableelement';
 import type Element from './element';
 import type View from './view';
 
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { logWarning, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 // Each document stores information about its placeholder elements and check functions.
 const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfig>>();
@@ -314,11 +314,13 @@ function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
  */
 function showPlaceholderTextDeprecationWarning() {
 	if ( !hasDisplayedPlaceholderDeprecationWarning ) {
-		console.warn(
-			'Deprecation Warning: The "text" argument in the "enableProperty" function is already deprecated ' +
-			'and will be removed soon. Please update your code. Refer to the documentation for alternative usage: ' +
-			'https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html#view-element-placeholder'
-		);
+		/**
+		 * The "text" option in the {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
+		 * function is already deprecated and will be removed soon. Please update your code.
+		 *
+		 * @error enableplaceholder-deprecated-text-option
+		 */
+		logWarning( 'enableplaceholder-deprecated-text-option' );
 	}
 
 	hasDisplayedPlaceholderDeprecationWarning = true;

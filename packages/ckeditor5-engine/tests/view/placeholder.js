@@ -642,9 +642,6 @@ describe( 'placeholder', () => {
 
 		it( 'should through warning once if "text" is used as argument', () => {
 			sinon.stub( console, 'warn' );
-			const warning = 'Deprecation Warning: The "text" argument in the "enableProperty" function is already deprecated ' +
-			'and will be removed soon. Please update your code. Refer to the documentation for alternative usage: ' +
-			'https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-39.html#view-element-placeholder';
 
 			setData( view, '<div></div><div>{another div}</div>' );
 
@@ -663,7 +660,7 @@ describe( 'placeholder', () => {
 			} );
 
 			sinon.assert.calledOnce( console.warn );
-			sinon.assert.calledWithExactly( console.warn, warning );
+			expect( console.warn.calledWith( sinon.match( /^enableplaceholder-deprecated-text-option/ ) ) ).to.be.true;
 		} );
 
 		it( 'should set placeholder using "text" argument', () => {
