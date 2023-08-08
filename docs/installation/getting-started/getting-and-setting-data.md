@@ -287,7 +287,6 @@ How to understand this demo:
 <info-box hint>
 **What's next?**
 
-Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
+Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link installation/getting-started/api-and-events API and events guide} for more.
 
-If you would like to integrate your CKEditor 5 installation with the Angular, React, and Vue.js JavaScript frameworks, {@link installation/integrations/overview we have dedicated guides for that}.
 </info-box>
