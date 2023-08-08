@@ -3,10 +3,10 @@ menu-title: Paste from Office
 meta-title: CKEditor 5 Paste from Office
 meta-description: CKEditor 5 lets you handle content that you paste from Word and paste from Excel.
 category: features-pasting
-order: 10
+order: 15
 ---
 
-{@snippet features/build-paste-from-office-demo-source}
+{@snippet features/build-paste-from-office-source}
 
 # Pasting content from Word and Excel
 
@@ -19,7 +19,7 @@ Use these sample documents to test pasting from Microsoft Office Word and Excel:
 * [Sample Word document](../../assets/Sample_Word_document.docx)
 * [Sample Excel spreadsheet](../../assets/Sample_Excel_spreadsheet.xlsx)
 
-To test pasting from Office, download the sample documents and open them in Microsoft Office applications. Then, copy the content and paste it into the editor below. Use the tab to switch between the basic plugin and the premium paste from Office enhanced version.
+To test pasting from Office, download the sample documents and open them in Microsoft Office applications. Then, copy the content and paste it into the editor below.
 
 <!-- <div class="tabs" id="snippet-paste-from-office">
 	<ul class="tabs__list" role="tablist">
@@ -41,7 +41,7 @@ To test pasting from Office, download the sample documents and open them in Micr
 
 </div>
 </div> -->
-{@snippet features/paste-from-office-demo-basic}
+{@snippet features/paste-from-office}
 
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
@@ -49,7 +49,7 @@ To test pasting from Office, download the sample documents and open them in Micr
 
 ## Features comparison
 
-Paste from Office enhanced retains rich content pasted from Microsoft Office applications. Refer to the {@link features/paste-from-office-enhanced#features-comparison paste from Office enhanced} guide for a full comparison of supported styles and formatting.
+Paste from Office enhanced retains rich content pasted from Microsoft Office applications. Refer to the {@link features/paste-from-office-enhanced#features-comparison paste from Office enhanced} guide for a full comparison of supported styles and formatting between the basic and premium versions.
 
 ## Support for other MS Office applications
 
@@ -65,6 +65,24 @@ If you think that support for any of the applications needs improvements, please
 * [Support pasting from Pages](https://github.com/ckeditor/ckeditor5/issues/2527).
 
 Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
+
+## Additional feature information
+
+<info-box info>
+	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
+</info-box>
+
+Thanks to the paste from Office feature, you can copy and paste Microsoft Word documents into CKEditor&nbsp;5 and maintain basic text styling, heading levels, links, lists, tables, and images.
+
+When the plugin is enabled, it automatically detects Microsoft Word content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
+
+The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Google Docs. See the {@link features/paste-from-google-docs pasting content from Google Docs guide} to learn more.
+
+## Automatic content filtering
+
+With CKEditor&nbsp;5 you do not need to worry about pasting messy content from Microsoft Word (or any other possible sources). Thanks to the CKEditor&nbsp;5 {@link framework/index custom data model}, only content that is specifically handled by the loaded rich-text editor features will be preserved.
+
+This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Microsoft Word and other sources (e.g. other websites). See the [features comparison table](#features-comparison).
 
 ## Installation
 
@@ -94,24 +112,6 @@ ClassicEditor
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
-
-## Additional feature information
-
-<info-box info>
-	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
-</info-box>
-
-Thanks to the paste from Office feature, you can copy and paste Microsoft Word documents into CKEditor&nbsp;5 and maintain basic text styling, heading levels, links, lists, tables, and images.
-
-When the plugin is enabled, it automatically detects Microsoft Word content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
-
-The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Google Docs. See the {@link features/paste-from-google-docs pasting content from Google Docs guide} to learn more.
-
-## Automatic content filtering
-
-With CKEditor&nbsp;5 you do not need to worry about pasting messy content from Microsoft Word (or any other possible sources). Thanks to the CKEditor&nbsp;5 {@link framework/index custom data model}, only content that is specifically handled by the loaded rich-text editor features will be preserved.
-
-This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Microsoft Word and other sources (e.g. other websites). See the [features comparison table](#features-comparison).
 
 ## Known issues
 
