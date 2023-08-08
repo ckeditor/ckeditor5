@@ -42,28 +42,28 @@ Learn more about {@link installation/advanced/integrating-from-source-webpack#we
 If you have a reference to the editor instance, use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}:
 
 ```js
-editor.editing.view.change((writer) => {
+editor.editing.view.change( writer => {
 	const viewEditableRoot = editor.editing.view.document.getRoot();
 
-	writer.setAttribute("myAttribute", "value", viewEditableRoot);
-});
+	writer.setAttribute( 'myAttribute', 'value', viewEditableRoot );
+} );
 ```
 
 If you do not have the reference to the editor instance but you have access to the editable element in the DOM, you can [access it using the `ckeditorInstance` property](#how-to-get-the-editor-instance-object-from-the-dom-element) and then use the same API to set the attribute:
 
 ```js
-const domEditableElement = document.querySelector(".ck-editor__editable");
+const domEditableElement = document.querySelector( '.ck-editor__editable' );
 const editorInstance = domEditableElement.ckeditorInstance;
 
-editorInstance.editing.view.change((writer) => {
+editorInstance.editing.view.change( writer => {
 	// Map the editable element in the DOM to the editable element in the editor's view.
 	const viewEditableRoot =
 		editorInstance.editing.view.domConverter.mapDomToView(
 			domEditableElement
 		);
 
-	writer.setAttribute("myAttribute", "value", viewEditableRoot);
-});
+	writer.setAttribute( 'myAttribute', 'value', viewEditableRoot );
+} );
 ```
 
 ### How to check the CKEditor version?
@@ -81,19 +81,19 @@ Enter the `CKEDITOR_VERSION` command to check the currently used CKEditor 5 vers
 In a simple plugin, you can get editor's instance using a plugin functions' attribute
 
 ```js
-function myPlugin(editor) {
+function MyPlugin(editor) {
 	// Interact with the API.
 	// ...
 }
 
-ClassicEditor.create(document.querySelector("#editor"), {
+ClassicEditor.create( document.querySelector( '#editor' ), {
 	// If you're using builds, this is going to be extraPlugins property.
 	plugins: [
-		myPlugin,
+		myPlugin
 		// Other plugins.
 		// ...
-	],
-});
+	]
+} );
 ```
 
 ### How to get the editor instance object from the DOM element?
@@ -109,13 +109,13 @@ If you have a reference to the editor editable's DOM element (the one with the `
 
 ```js
 // A reference to the editor editable element in the DOM.
-const domEditableElement = document.querySelector(".ck-editor__editable");
+const domEditableElement = document.querySelector( '.ck-editor__editable' );
 
 // Get the editor instance from the editable element.
 const editorInstance = domEditableElement.ckeditorInstance;
 
 // Use the editor instance API.
-editorInstance.setData("<p>Hello world!<p>");
+editorInstance.setData( '<p>Hello world!<p>' );
 ```
 
 ### How to list all instances of the editor?
@@ -131,26 +131,26 @@ Because CKEditor 5 uses a custom {@link framework/architecture/editing-engine da
 For example, to insert a new link at the current position, use the following snippet:
 
 ```js
-editor.model.change((writer) => {
+editor.model.change( writer => {
 	const insertPosition = editor.model.document.selection.getFirstPosition();
 
 	writer.insertText(
-		"CKEditor 5 rocks!",
-		{ linkHref: "https://ckeditor.com/" },
+		'CKEditor 5 rocks!',
+		{ linkHref: 'https://ckeditor.com/' },
 		insertPosition
 	);
-});
+} );
 ```
 
 And to insert some plain text, you can use a slightly shorter one:
 
 ```js
-editor.model.change((writer) => {
+editor.model.change( writer => {
 	writer.insertText(
-		"Plain text",
+		'Plain text',
 		editor.model.document.selection.getFirstPosition()
 	);
-});
+} );
 ```
 
 You may have noticed that a link is represented as a text with an attribute in the editor model. See the API of the {@link module:engine/model/writer~Writer model writer} to learn about other useful methods that can help you modify the editor model.
@@ -160,13 +160,11 @@ To insert some longer HTML code, you can parse it to the {@link module:engine/mo
 ```js
 const content =
 	'<p>A paragraph with <a href="https://ckeditor.com">some link</a>.</p>';
-const viewFragment = editor.data.processor.toView(content);
-const modelFragment = editor.data.toModel(viewFragment);
+const viewFragment = editor.data.processor.toView( content );
+const modelFragment = editor.data.toModel( viewFragment );
 
-editor.model.insertContent(modelFragment);
+editor.model.insertContent( modelFragment );
 ```
-
-TODO commands
 
 ### How to focus the editor?
 
@@ -184,66 +182,66 @@ editor.editing.view.focus();
 const selectedBlocks = Array.from(
 	editor.model.document.selection.getSelectedBlocks()
 );
-const firstBlock = selectedBlocks[0];
-const lastBlock = selectedBlocks[selectedBlocks.length - 1];
+const firstBlock = selectedBlocks[ 0 ];
+const lastBlock = selectedBlocks[ selectedBlocks.length - 1 ];
 
-editor.model.change((writer) => {
+editor.model.change( writer => {
 	const range = writer.createRange(
-		writer.createPositionAt(firstBlock, 0),
-		writer.createPositionAt(lastBlock, lastBlock.maxOffset)
+		writer.createPositionAt( firstBlock, 0 ),
+		writer.createPositionAt( lastBlock, lastBlock.maxOffset )
 	);
 
-	writer.remove(range);
-});
+	writer.remove( range );
+} );
 ```
 
 ### How to delete all specific elements (e.g. block images) in the editor?
 
 ```js
-editor.model.change((writer) => {
-	const range = writer.createRangeIn(editor.model.document.getRoot());
+editor.model.change( writer => {
+	const range = writer.createRangeIn( editor.model.document.getRoot() );
 	const itemsToRemove = [];
 
-	for (const value of range.getWalker()) {
-		if (value.item.is("element", "imageBlock")) {
+	for ( const value of range.getWalker() ) {
+		if ( value.item.is( 'element', 'imageBlock' ) ) {
 			// a different `is` usage.
-			itemsToRemove.push(value.item);
+			itemsToRemove.push( value.item );
 		}
 	}
 
-	for (const item of itemsToRemove) {
-		writer.remove(item); // remove all of the items.
+	for ( const item of itemsToRemove ) {
+		writer.remove( item ); // remove all of the items.
 	}
-});
+} );
 ```
 
 ### How to place the caret at the beginning or the end?
 
 ```js
 // Place it at the beginning.
-editor.model.change((writer) => {
+editor.model.change( writer => {
 	writer.setSelection(
-		writer.createPositionAt(editor.model.document.getRoot(), [0])
+		writer.createPositionAt( editor.model.document.getRoot(), [ 0 ] )
 	);
-});
+} );
 
 // Place it at the end.
-editor.model.change((writer) => {
+editor.model.change( writer => {
 	writer.setSelection(
-		writer.createPositionAt(editor.model.document.getRoot(), "end")
+		writer.createPositionAt( editor.model.document.getRoot(), 'end' )
 	);
-});
+} );
 ```
 
 ### How to find all specific elements (e.g. links) in the editor?
 
 ```js
-const range = editor.model.createRangeIn(editor.model.document.getRoot());
+const range = editor.model.createRangeIn( editor.model.document.getRoot() );
 const items = [];
 
-for (const value of range.getWalker()) {
-	if (value.type === "text" && value.item.hasAttribute("linkHref")) {
-		console.log(value.item);
+for ( const value of range.getWalker() ) {
+	if ( value.type === 'text' && value.item.hasAttribute( 'linkHref' ) ) {
+		console.log( value.item );
 	}
 }
 ```
@@ -252,17 +250,17 @@ for (const value of range.getWalker()) {
 
 ```js
 // Add observer for double click and extend a generic DomEventObserver class by a native DOM dblclick event:
-import DomEventObserver from "@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver";
+import { DomEventObserver } from 'ckeditor5/src/engine';
 
 class DoubleClickObserver extends DomEventObserver {
-	constructor(view) {
-		super(view);
+	constructor( view ) {
+		super( view );
 
-		this.domEventType = "dblclick";
+		this.domEventType = 'dblclick';
 	}
 
-	onDomEvent(domEvent) {
-		this.fire(domEvent.type, domEvent);
+	onDomEvent( domEvent ) {
+		this.fire( domEvent.type, domEvent );
 	}
 }
 
@@ -270,129 +268,129 @@ class DoubleClickObserver extends DomEventObserver {
 const view = editor.editing.view;
 const viewDocument = view.document;
 
-view.addObserver(DoubleClickObserver);
+view.addObserver( DoubleClickObserver );
 
 editor.listenTo(
 	viewDocument,
-	"dblclick",
-	(evt, data) => {
-		console.log("clicked");
+	'dblclick',
+	( evt, data ) => {
+		console.log( 'clicked' );
 		// Fire your custom actions here
 	},
-	{ context: "a" }
+	{ context: 'a' }
 );
 ```
 
 ### How to create a widget with a single view element and multiple/nested model elements?
 
 ```js
-import { Plugin } from "ckeditor5/src/core";
-import { toWidget, toWidgetEditable } from "ckeditor5/src/widget";
+import { Plugin } from 'ckeditor5/src/core';
+import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
 
 class Forms extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		schema.register("forms", {
-			inheritAllFrom: "$inlineObject",
-			allowAttributes: "type",
-		});
+		schema.register( 'forms', {
+			inheritAllFrom: '$inlineObject',
+			allowAttributes: 'type'
+		} );
 
-		schema.register("formName", {
-			allowIn: "forms",
-			allowChildren: "$text",
-			isLimit: true,
-		});
+		schema.register( 'formName', {
+			allowIn: 'forms',
+			allowChildren: '$text',
+			isLimit: true
+		} );
 
 		// Disallow all attributes on $text inside `formName` (there won't be any bold/italic etc. inside).
-		schema.addAttributeCheck((context) => {
-			if (context.endsWith("formName $text")) {
+		schema.addAttributeCheck( context => {
+			if ( context.endsWith( 'formName $text' ) ) {
 				return false;
 			}
-		});
+		} );
 
 		// Allow only text nodes inside `formName` (without any elements that could be down-casted to HTML elements).
-		schema.addChildCheck((context, childDefinition) => {
+		schema.addChildCheck( ( context, childDefinition ) => {
 			if (
-				context.endsWith("formName") &&
-				childDefinition.name !== "$text"
+				context.endsWith( 'formName' ) &&
+				childDefinition.name !== '$text'
 			) {
 				return false;
 			}
-		});
+		} );
 
 		// Data upcast. Convert a single element loaded by the editor to a structure of model elements.
-		editor.conversion.for("upcast").elementToElement({
+		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: {
-				name: "input",
-				attributes: ["type", "name"],
+				name: 'input',
+				attributes: [ 'type', 'name' ]
 			},
-			model: (viewElement, { writer }) => {
-				const modelElement = writer.createElement("forms", {
-					type: viewElement.getAttribute("type"),
-				});
-				const nameModelElement = writer.createElement("formName");
+			model: ( viewElement, { writer } ) => {
+				const modelElement = writer.createElement( 'forms', {
+					type: viewElement.getAttribute( 'type' )
+				} );
+				const nameModelElement = writer.createElement( 'formName' );
 
 				// Build model structure out of a single view element.
-				writer.insert(nameModelElement, modelElement, 0);
+				writer.insert( nameModelElement, modelElement, 0 );
 				writer.insertText(
-					viewElement.getAttribute("name"),
+					viewElement.getAttribute( 'name' ),
 					nameModelElement,
 					0
 				);
 
 				return modelElement;
-			},
-		});
+			}
+		} );
 
 		// Editing downcast. Convert model elements separately to widget and to widget-editable nested inside.
 		editor.conversion
-			.for("editingDowncast")
-			.elementToElement({
-				model: "forms",
-				view: (modelElement, { writer }) => {
-					const viewElement = writer.createContainerElement("span", {
-						"data-type": modelElement.getAttribute("type"),
-						style: "display: inline-block",
-					});
+			.for( 'editingDowncast' )
+			.elementToElement( {
+				model: 'forms',
+				view: ( modelElement, { writer } ) => {
+					const viewElement = writer.createContainerElement( 'span', {
+						'data-type': modelElement.getAttribute( 'type' ),
+						style: 'display: inline-block'
+					} );
 
-					return toWidget(viewElement, writer);
-				},
-			})
-			.elementToElement({
-				model: "formName",
-				view: (modelElement, { writer }) => {
-					const viewElement = writer.createEditableElement("span");
+					return toWidget( viewElement, writer );
+				}
+			} )
+			.elementToElement( {
+				model: 'formName',
+				view: ( modelElement, { writer } ) => {
+					const viewElement = writer.createEditableElement( 'span' );
 
-					return toWidgetEditable(viewElement, writer);
-				},
-			});
+					return toWidgetEditable( viewElement, writer );
+				}
+			} );
 
 		// Data downcast. Convert the outermost model element and all its content into a single view element.
-		editor.conversion.for("dataDowncast").elementToElement({
-			model: "forms",
-			view: (modelElement, { writer, consumable }) => {
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'forms',
+			view: ( modelElement, { writer, consumable } ) => {
 				let nameModelElement;
 
 				// Find the `formName` model element and consume everything inside the model element range,
 				// so it won't get converted by any other downcast converters.
-				for (const { item } of editor.model.createRangeIn(
+				for ( const { item } of editor.model.createRangeIn(
 					modelElement
-				)) {
-					if (item.is("element", "formName")) {
-						nameModelElement = modelElement.getChild(0);
+				) ) {
+					if ( item.is( 'element', 'formName' ) ) {
+						nameModelElement = modelElement.getChild( 0 );
 					}
 
-					consumable.consume(item, "insert");
+					consumable.consume( item, 'insert' );
 				}
 
-				return writer.createContainerElement("input", {
-					type: modelElement.getAttribute("type"),
-					name: nameModelElement.getChild(0).data,
-				});
-			},
-		});
+				return writer.createContainerElement( 'input', {
+					type: modelElement.getAttribute( 'type' ),
+					name: nameModelElement.getChild( 0 ).data
+				} );
+			}
+		} );
 	}
 }
 ```
