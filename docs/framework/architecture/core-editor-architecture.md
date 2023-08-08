@@ -65,7 +65,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-You can see how to implement a simple plugin in the {@link tutorial/editor step-by-step tutorial}.
+You can see how to implement a simple plugin in the {@link tutorials/editor step-by-step tutorial}.
 
 ## Commands
 

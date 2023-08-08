@@ -16,11 +16,11 @@ You will build an "external data fetch" feature that allows users to insert a pr
 
 ## Before you start ⚠️
 
-This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} and {@link framework/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
+This guide assumes that you are familiar with the widgets concept introduced in the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} and {@link tutorials/implementing-an-inline-widget Implementing an inline widget} tutorials. The tutorial also references various concepts concerning the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
 
 ## Bootstrapping the project
 
-The overall project structure will be similar to one described in the {@link framework/tutorials/implementing-an-inline-widget#bootstrapping-the-project Bootstrapping the project} section of the "Implementing an inline widget" tutorial.
+The overall project structure will be similar to one described in the {@link tutorials/implementing-an-inline-widget#bootstrapping-the-project Bootstrapping the project} section of the "Implementing an inline widget" tutorial.
 
 First, install the required dependencies:
 
@@ -255,7 +255,7 @@ The external data widget feature will be {@link module:engine/model/schema~Schem
 
 ### Defining the schema
 
-The schema definition of this widget is almost the same as in the {@link framework/tutorials/implementing-an-inline-widget#defining-the-schema inline widget} tutorial, the only thing that is different is the `allowAttributes`. In our case we want to allow the `'data-resource-url'` attribute.
+The schema definition of this widget is almost the same as in the {@link tutorials/implementing-an-inline-widget#defining-the-schema inline widget} tutorial, the only thing that is different is the `allowAttributes`. In our case we want to allow the `'data-resource-url'` attribute.
 Instead of passing all the attributes to the config object we can use {@link framework/deep-dive/schema#generic-items generic items} to inherit already predefined options.
 
 You can also use this opportunity to import the theme file (`theme/externaldatawidget.css`).

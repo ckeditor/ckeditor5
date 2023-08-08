@@ -151,4 +151,4 @@ The editor and it's contents should disappear. Note that **this method returns a
 
 ## What's next
 
-In the next chapter you'll {@link tutorial/plugins learn more about plugins} and we'll start creating a new one from scratch.
+In the next chapter you'll {@link tutorials/plugins learn more about plugins} and we'll start creating a new one from scratch.

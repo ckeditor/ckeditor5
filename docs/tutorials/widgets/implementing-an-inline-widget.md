@@ -15,11 +15,11 @@ You will build a "placeholder" feature that allows the users to insert predefine
 
 ## Before you start ⚠️
 
-This guide assumes that you are familiar with the widgets concept introduced in the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial. The tutorial will also reference various concepts from the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
+This guide assumes that you are familiar with the widgets concept introduced in the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial. The tutorial will also reference various concepts from the {@link framework/architecture/intro CKEditor&nbsp;5 architecture}.
 
 ## Bootstrapping the project
 
-The overall project structure will be similar to one described in {@link framework/tutorials/implementing-a-block-widget#lets-start Let's start} and {@link framework/tutorials/implementing-a-block-widget#plugin-structure Plugin structure} sections of the "Implementing a block widget" tutorial.
+The overall project structure will be similar to one described in {@link tutorials/widgets/implementing-a-block-widget#lets-start Let's start} and {@link tutorials/widgets/implementing-a-block-widget#plugin-structure Plugin structure} sections of the "Implementing a block widget" tutorial.
 
 First, install required dependencies:
 
