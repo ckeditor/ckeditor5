@@ -137,6 +137,68 @@ describe( 'InsertParagraphCommand', () => {
 			);
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/14714.
+		it( 'should insert paragraph bellow the block widget (inside container)', () => {
+			schema.register( 'blockContainer', { inheritAllFrom: '$container' } );
+			schema.register( 'blockWidget', { inheritAllFrom: '$blockObject', allowIn: 'allowP' } );
+
+			setData( model,
+				'<blockContainer>' +
+					'[<blockWidget></blockWidget>]' +
+				'</blockContainer>'
+			);
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<blockContainer>' +
+					'<blockWidget></blockWidget>' +
+					'<paragraph>[]</paragraph>' +
+				'</blockContainer>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/14714.
+		it( 'should insert paragraph bellow the block widget (inside table cell)', () => {
+			schema.register( 'table', { inheritAllFrom: '$blockObject' } );
+			schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			schema.register( 'tableCell', {
+				allowContentOf: '$container',
+				allowIn: 'tableRow',
+				isLimit: true,
+				isSelectable: true
+			} );
+
+			schema.register( 'blockWidget', { inheritAllFrom: '$blockObject' } );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'[<blockWidget></blockWidget>]' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>[]</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
 		it( 'should do nothing if the paragraph is not allowed at the provided position', () => {
 			// Create a situation where "paragraph" is disallowed even in the "root".
 			schema.addChildCheck( ( context, childDefinition ) => {

@@ -6,7 +6,7 @@ classes: custom-adapter
 
 # Custom image upload adapter
 
-In this guide you will learn the basic concepts of the file upload architecture in CKEditor 5 WYSIWYG editor which will help you implement your own custom upload adapter.
+In this guide you will learn the basic concepts of the file upload architecture in CKEditor&nbsp;5 WYSIWYG editor which will help you implement your own custom upload adapter.
 
 While this guide is mainly focused on the image upload (the most common kind of upload), keep in mind that the presented concepts and the API allow developing all sorts of file upload adapters for different file types like PDFs, movies, etc.
 
@@ -15,7 +15,7 @@ While this guide is mainly focused on the image upload (the most common kind of 
 </info-box>
 
 <info-box>
-	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
+	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor&nbsp;5.
 </info-box>
 
 ## Glossary of terms
@@ -35,7 +35,7 @@ Before we start, let's make sure all terms used in this guide are clear.
 			<td>
 				<p>A piece of code (a class) that handles the image upload from the moment it is requested by the user (e.g. when the file is dropped into the content) to the moment the server returns a response to the requested upload. A bridge between the feature and the server.</p>
 				<p>Upload adapters are used by other plugins like {@link module:image/imageupload~ImageUpload image upload} to connect to the server and fetch the response. For every user action (e.g. when a file is dropped into the content), a new upload adapter instance is created.</p>
-				<p>CKEditor 5 comes with some {@link features/image-upload#official-upload-adapters official upload adapters} but you can also <a href="#implementing-a-custom-upload-adapter">implement your own adapters</a>.</p>
+				<p>CKEditor&nbsp;5 comes with some {@link features/image-upload#official-upload-adapters official upload adapters} but you can also <a href="#implementing-a-custom-upload-adapter">implement your own adapters</a>.</p>
 				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more.</p>
 			</td>
 		</tr>
@@ -49,7 +49,7 @@ Before we start, let's make sure all terms used in this guide are clear.
 		<tr>
 			<td>{@link module:upload/filerepository~FileRepository File repository} plugin</td>
 			<td>
-				<p>A central point for managing file upload in CKEditor 5. It glues upload adapters and features using them:</p>
+				<p>A central point for managing file upload in CKEditor&nbsp;5. It glues upload adapters and features using them:</p>
 				<ul>
 					<li>Upload adapters are enabled in the editor by defining the {@link module:upload/filerepository~FileRepository#createUploadAdapter `FileRepository.createUploadAdapter()`} factory method.</li>
 					<li>Features like {@link module:image/imageupload~ImageUpload image upload} use the <code>FileRepository</code> API to create a new upload adapter instance each time an upload is requested by the user.</li>
@@ -69,7 +69,7 @@ Before we start, let's make sure all terms used in this guide are clear.
 
 ## How does the image upload work?
 
-Before you can implement your own custom upload adapter, you should learn about the image upload process in CKEditor 5. The whole process boils down to the following steps:
+Before you can implement your own custom upload adapter, you should learn about the image upload process in CKEditor&nbsp;5. The whole process boils down to the following steps:
 
 1. First, an image (or images) need to get into the rich-text editor content. There are many ways to do that, for instance:
 
@@ -96,7 +96,7 @@ This is just an overview of the image upload process. Actually, the whole thing 
 
 To sum up, for the image upload to work in the rich-text editor, two conditions must be true:
 
-* **The {@link module:image/imageupload~ImageUpload image upload} plugin must be enabled** in the editor. It is enabled by default in all official {@link installation/getting-started/predefined-builds builds}, but if you are {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing} CKEditor 5, do not forget to include it.
+* **The {@link module:image/imageupload~ImageUpload image upload} plugin must be enabled** in the editor. It is enabled by default in all official {@link installation/getting-started/predefined-builds builds}, but if you are {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing} CKEditor&nbsp;5, do not forget to include it.
 * **The upload adapter needs to be defined**. This can be done by using (enabling *and* configuring):
 
 	* {@link features/image-upload#official-upload-adapters One of the existing upload adapters}.
@@ -560,7 +560,7 @@ ClassicEditor
 
 ## What's next?
 
-Check out the comprehensive {@link features/image-upload image upload overview} guide to learn more about different ways of uploading images in CKEditor 5. See the {@link features/images-overview image feature} guide to find out more about handling images in CKEditor 5.
+Check out the comprehensive {@link features/image-upload image upload overview} guide to learn more about different ways of uploading images in CKEditor&nbsp;5. See the {@link features/images-overview image feature} guide to find out more about handling images in CKEditor&nbsp;5.
 
 <style>
 .custom-adapter td:first-child {

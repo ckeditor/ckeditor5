@@ -168,7 +168,8 @@ const tasks = new Listr( [
 		title: 'Clean up phase.',
 		task: () => {
 			return releaseTools.cleanUpPackages( {
-				packagesDirectory: RELEASE_DIRECTORY
+				packagesDirectory: RELEASE_DIRECTORY,
+				packageJsonFieldsToRemove: defaults => [ ...defaults, 'engines' ]
 			} );
 		}
 	},

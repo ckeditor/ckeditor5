@@ -15,10 +15,12 @@ import type EditableElement from './editableelement';
 import type Element from './element';
 import type View from './view';
 
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { logWarning, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 // Each document stores information about its placeholder elements and check functions.
 const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfig>>();
+
+let hasDisplayedPlaceholderDeprecationWarning = false;
 
 /**
  * A helper that enables a placeholder on the provided view element (also updates its visibility).
@@ -35,12 +37,15 @@ const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfi
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
+ * @param options.text Placeholder text. It's **deprecated** and will be removed soon. Use
+ * {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `options.element.placeholder`} instead.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
-export function enablePlaceholder( { view, element, isDirectHost = true, keepOnFocus = false }: {
+export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
 	element: PlaceholderableElement | EditableElement;
 	isDirectHost?: boolean;
+	text?: string;
 	keepOnFocus?: boolean;
 } ): void {
 	const doc = view.document;
@@ -67,6 +72,12 @@ export function enablePlaceholder( { view, element, isDirectHost = true, keepOnF
 
 	if ( element.placeholder ) {
 		setPlaceholder( element.placeholder );
+	} else if ( text ) {
+		setPlaceholder( text );
+	}
+
+	if ( text ) {
+		showPlaceholderTextDeprecationWarning();
 	}
 
 	function setPlaceholder( text: string ) {
@@ -297,6 +308,26 @@ function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
 	}
 
 	return null;
+}
+
+/**
+ * Displays a deprecation warning message in the console, but only once per page load.
+ */
+function showPlaceholderTextDeprecationWarning() {
+	if ( !hasDisplayedPlaceholderDeprecationWarning ) {
+		/**
+		 * The "text" option in the {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
+		 * function is deprecated and will be removed soon.
+		 *
+		 * See the {@glink updating/guides/update-to-39#view-element-placeholder Migration to v39} guide for
+		 * more information on how to apply this change.
+		 *
+		 * @error enableplaceholder-deprecated-text-option
+		 */
+		logWarning( 'enableplaceholder-deprecated-text-option' );
+	}
+
+	hasDisplayedPlaceholderDeprecationWarning = true;
 }
 
 /**

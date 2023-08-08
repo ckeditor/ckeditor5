@@ -7,7 +7,7 @@ Changes for the past releases are available below.
 
 ## [19.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v18.0.0...v19.0.0) (2020-04-29)
 
-We are happy to announce the release of CKEditor 5 v19.0.0.
+We are happy to announce the release of CKEditor&nbsp;5 v19.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v19.0.0) to find out about all the new features, improvements and possible breaking changes.
 
@@ -63,7 +63,7 @@ Major releases (dependencies of those packages have breaking changes):
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v17.0.0...v18.0.0) (2020-03-19)
 
-We are happy to announce the release of CKEditor 5 v18.0.0.
+We are happy to announce the release of CKEditor&nbsp;5 v18.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v18.0.0) to find out about all the new features, improvements and possible breaking changes.
 
@@ -120,7 +120,7 @@ Major releases (dependencies of those packages have breaking changes):
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v16.0.0...v17.0.0) (2020-02-19)
 
-We are happy to announce the release of CKEditor 5 v17.0.0.
+We are happy to announce the release of CKEditor&nbsp;5 v17.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v17.0.0) to find out about all the new features, improvements and possible breaking changes.
 
@@ -173,7 +173,7 @@ Other releases:
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v15.0.0...v16.0.0) (2019-12-04)
 
-We are happy to announce the release of CKEditor 5 v16.0.0. This release introduces one of the most community-requested features: [code blocks](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html). We included a new [restricted editing](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) plugin, too.
+We are happy to announce the release of CKEditor&nbsp;5 v16.0.0. This release introduces one of the most community-requested features: [code blocks](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html). We included a new [restricted editing](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) plugin, too.
 
 We also did some changes in the default UI colors to improve accessibility. In addition to that, as always, the release contains many [more improvements and bug fixes](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+28%22+is%3Aclosed+-label%3Atype%3Adocs+-label%3Atype%3Atask+-label%3Apackage%3Arestricted-editing+-label%3Apackage%3Acode-block+-label%3Atype%3Afeature).
 
@@ -224,7 +224,7 @@ Major releases (dependencies of those packages have breaking changes):
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.4.0...v15.0.0) (2019-10-23)
 
-We are happy to announce the release of CKEditor 5 v15.0.0. This editor version introduces support for inserting [horizontal lines](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html), [page breaks](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) and [SVG images](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageupload-ImageUploadConfig.html#member-types) into the WYSIWYG editor. It also allows you to define the [document title section](https://ckeditor.com/docs/ckeditor5/latest/features/title.html) thanks to the new title plugin. The editor toolbar is now responsive which improves the UX, especially for mobile devices.
+We are happy to announce the release of CKEditor&nbsp;5 v15.0.0. This editor version introduces support for inserting [horizontal lines](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html), [page breaks](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) and [SVG images](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageupload-ImageUploadConfig.html#member-types) into the WYSIWYG editor. It also allows you to define the [document title section](https://ckeditor.com/docs/ckeditor5/latest/features/title.html) thanks to the new title plugin. The editor toolbar is now responsive which improves the UX, especially for mobile devices.
 
 Regarding the build itself, we added the [list indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html#indenting-lists) button to the build's default setup. See [ckeditor/ckeditor5#1844](https://github.com/ckeditor/ckeditor5/issues/1844). ([42cfd97](https://github.com/ckeditor/ckeditor5-build-balloon-block/commit/42cfd97))
 
@@ -322,7 +322,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.3.1](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.0...v12.3.1) (2019-07-10)
 
-We are happy to report the release of CKEditor 5 v12.3.0 (and v12.3.1 with a small fix). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
+We are happy to report the release of CKEditor&nbsp;5 v12.3.0 (and v12.3.1 with a small fix). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
 
 ### Dependencies
 
@@ -406,7 +406,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.2.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.1.0...v12.2.0) (2019-06-05)
 
-We are happy to report the release of CKEditor 5 v12.2.0. This is a minor release with many bug fixes and a new UI feature which allows to navigating between multiple balloons.
+We are happy to report the release of CKEditor&nbsp;5 v12.2.0. This is a minor release with many bug fixes and a new UI feature which allows to navigating between multiple balloons.
 
 **Note:** The `config.table.toolbar` property that had been deprecated last year has now been completely removed. Use [`config.table.contentToolbar`](https://ckeditor.com/docs/ckeditor5/latest/api/module_table_table-TableConfig.html#member-contentToolbar) instead.
 
@@ -452,7 +452,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.1.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.0.0...v12.1.0) (2019-04-10)
 
-We are happy to report the release of CKEditor 5 v12.1.0. This release introduces 3 new features ([mentions](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html), [font color and background color](https://ckeditor.com/docs/ckeditor5/latest/features/font.html) and [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html)).
+We are happy to report the release of CKEditor&nbsp;5 v12.1.0. This release introduces 3 new features ([mentions](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html), [font color and background color](https://ckeditor.com/docs/ckeditor5/latest/features/font.html) and [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html)).
 
 Check out the linked guides for information how to install and configure those features in your editor.
 
