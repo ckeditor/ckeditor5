@@ -49,7 +49,7 @@ To test pasting from Office, download the sample documents and open them in Micr
 
 ## Features comparison
 
-Paste from Office enhanced retains rich content pasted from Microsoft Office applications. Refer to the {@link features/paste-from-office-enhanced#features-comparison paste from Office enhanced} guide for a full comparison of supported styles and formatting between the basic and premium versions.
+Refer to the {@link features/paste-from-office-enhanced#features-comparison paste from Office enhanced} guide for a full comparison of supported styles and formatting between the basic and premium versions.
 
 ## Support for other MS Office applications
 
