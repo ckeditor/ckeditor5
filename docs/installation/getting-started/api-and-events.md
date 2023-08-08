@@ -3,7 +3,7 @@ category: getting-started
 order: 80
 ---
 
-# API and Events
+# API and events
 
 <info-box hint>
 **Quick recap**
@@ -68,3 +68,9 @@ editor.editing.view.document.on( 'enter', ( evt, data ) => {
 ```
 
 You can find more information about events in {@link framework/architecture/core-editor-architecture#event-system-and-observables the framework documentation}.
+
+<info-box hint>
+**What's next?**
+
+Having explored the API and events, it's time to take the next step: {@link installation/getting-started/extending-features extend your editor's features}.
+</info-box>
