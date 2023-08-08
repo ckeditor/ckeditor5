@@ -8,7 +8,7 @@ order: 90
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/using-api-and-events previous guide} you have explored events and API. This article shows how to extend and create features in the editor.
+In the {@link installation/getting-started/api-and-events previous guide} you have explored events and API. This article shows how to extend and create features in the editor.
 
 </info-box>
 
@@ -54,7 +54,7 @@ It is not possible to do everything with simple plugins as shown above.
 * Adding new UI elements (e.g., a new button to a toolbar).
 * Creation of widgets or new commands.
 
-To build more advanced features, create plugins extending classes like `Plugin` or `Button`.
+Creating advanced plugins often involves using classes like `Plugin` or the UI package, and requires a build step.
 
 </info-box>
 
@@ -85,6 +85,6 @@ ClassicEditor
 <info-box hint>
 **What's next?**
 
-Want to deepen your understanding of CKEditor 5? Dive into our {@link framework/abbreviation-plugin/abbreviation-plugin-level-1 tutorial} to explore creating plugins hands-on.
+Want to deepen your understanding of CKEditor 5? Dive into our {@link framework/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 tutorial} to explore creating plugins hands-on.
 
 </info-box>
