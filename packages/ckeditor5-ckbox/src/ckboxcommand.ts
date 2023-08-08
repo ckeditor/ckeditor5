@@ -178,7 +178,9 @@ export default class CKBoxCommand extends Command {
 
 			window.CKBox.mount( this._wrapper, this._prepareOptions() );
 
-			focusDialog( this._wrapper );
+			const MAX_NUMBER_OF_ATTEMPTS_TO_FOCUS = 50;
+
+			focusCKBoxItem( MAX_NUMBER_OF_ATTEMPTS_TO_FOCUS );
 		} );
 
 		// Handle closing of the CKBox dialog.
@@ -390,22 +392,45 @@ function getAssetUrl( asset: CKBoxRawAssetDefinition ) {
 }
 
 /**
- * Focuses the CKBox dialog.
+ * Focuses the CKBox first item in gallery.
+ * This is a temporary fix. A permanent solution to this issue will be provided soon.
  *
- * @param wrapper The element in DOM which wrap CKBox component.
+ * @param limiter Max number of attempts to focus the ckbox item.
  */
-function focusDialog( wrapper: Element | null ) {
-	// If the DOM is not fully loaded and rendered by the time the focus() method is invoked,
-	// the element might not get focused. So we call the focus() when the thread becomes idle.
+function focusCKBoxItem( limiter: number ): void {
+	// Trying every 100 ms get access to the CKBox component until component will be loaded.
 	setTimeout( () => {
-		// Wrapper cannot be focused by default because it's covered by it's children entirely.
-		// Then we getting to the nearest focusable child( dialog container ) inside wrapper.
-		const dialogContainer = wrapper && wrapper.children[ 0 ] && wrapper.children[ 0 ].children[ 0 ];
-
-		if ( dialogContainer instanceof HTMLElement ) {
-			dialogContainer.focus();
+		if ( limiter === 0 ) {
+			return;
 		}
-	} );
+
+		const ckboxGallery = document.getElementsByClassName( 'ckbox-gallery' )[ 0 ];
+		// In case there is no items, "upload button" will be appeared in "div" with
+		// classname ".ckbox-empty-view".
+		const uploadButton = document.querySelector( '.ckbox-empty-view .ckbox-btn' );
+
+		// In case "upload button" is loaded in ".ckbox-empty-view" we focus actual button.
+		if ( uploadButton && uploadButton instanceof HTMLElement ) {
+			uploadButton.focus();
+			return;
+		}
+
+		if ( !ckboxGallery ) {
+			focusCKBoxItem( limiter - 1 );
+			return;
+		}
+
+		const firstItem = ckboxGallery.children[ 0 ];
+
+		if ( firstItem &&
+			firstItem.className === 'ckbox-gallery-item' &&
+			firstItem instanceof HTMLElement
+		) {
+			firstItem.focus();
+		} else {
+			focusCKBoxItem( limiter - 1 );
+		}
+	}, 100 );
 }
 
 /**

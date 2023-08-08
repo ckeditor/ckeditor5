@@ -148,6 +148,14 @@ describe( 'CKBoxCommand', () => {
 
 	describe( 'events', () => {
 		describe( 'opening dialog ("ckbox:open")', () => {
+			beforeEach( () => {
+				sinon.useFakeTimers( { now: Date.now() } );
+			} );
+
+			afterEach( () => {
+				sinon.restore();
+			} );
+
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
 				command.execute();
 
@@ -159,24 +167,77 @@ describe( 'CKBoxCommand', () => {
 				expect( document.body.appendChild.args[ 0 ][ 0 ] ).to.equal( wrapper );
 			} );
 
-			it( 'should focus dialog after initialization', () => {
-				const wrapper = document.createElement( 'div' );
-				const resetContainer = document.createElement( 'div' );
-				const ckboxDialogContainer = document.createElement( 'div' );
+			it( 'should focus ckbox gallery item after initialization', () => {
+				const ckboxGallery = document.createElement( 'div' );
+				const ckboxGalleryItem = document.createElement( 'div' );
 
-				wrapper.appendChild( resetContainer );
-				resetContainer.appendChild( ckboxDialogContainer );
+				ckboxGallery.setAttribute( 'class', 'ckbox-gallery' );
+				ckboxGalleryItem.setAttribute( 'class', 'ckbox-gallery-item' );
 
-				Object.defineProperty( command, '_wrapper', {
-					get: sinon.stub().returns( wrapper ),
-					set: sinon.stub().callsFake( value => value )
-				} );
+				ckboxGallery.appendChild( ckboxGalleryItem );
+				document.body.append( ckboxGallery );
 
-				const spy = sinon.spy( ckboxDialogContainer, 'focus' );
+				const spy = sinon.spy( ckboxGalleryItem, 'focus' );
 				command.execute();
 
-				spy.calledOnce;
-				sinon.restore();
+				sinon.clock.tick( 100 );
+				expect( spy.calledOnce ).to.be.true;
+				ckboxGallery.remove();
+			} );
+
+			it( 'should focus upload button item after initialization', () => {
+				const emptyView = document.createElement( 'div' );
+				const uploadButton = document.createElement( 'button' );
+
+				emptyView.setAttribute( 'class', 'ckbox-empty-view' );
+				uploadButton.setAttribute( 'class', 'ckbox-btn' );
+
+				emptyView.appendChild( uploadButton );
+				document.body.append( emptyView );
+
+				const spy = sinon.spy( uploadButton, 'focus' );
+				command.execute();
+
+				sinon.clock.tick( 100 );
+				expect( spy.calledOnce ).to.be.true;
+				emptyView.remove();
+			} );
+
+			it( 'should wait until ckbox will be loaded', () => {
+				const ckboxGallery = document.createElement( 'div' );
+				const ckboxGalleryItem = document.createElement( 'div' );
+
+				ckboxGallery.setAttribute( 'class', 'ckbox-gallery' );
+				ckboxGalleryItem.setAttribute( 'class', 'ckbox-gallery-item' );
+
+				const spy = sinon.spy( ckboxGalleryItem, 'focus' );
+				command.execute();
+
+				sinon.clock.tick( 100 );
+				expect( spy.notCalled ).to.be.true;
+
+				document.body.append( ckboxGallery );
+
+				sinon.clock.tick( 100 );
+				expect( spy.notCalled ).to.be.true;
+
+				ckboxGallery.appendChild( ckboxGalleryItem );
+				sinon.clock.tick( 100 );
+
+				expect( spy.calledOnce ).to.be.true;
+				ckboxGallery.remove();
+			} );
+
+			it( 'should giveup after 5 seconds', () => {
+				const ckboxGalleryItem = document.createElement( 'div' );
+
+				ckboxGalleryItem.setAttribute( 'class', 'ckbox-gallery-item' );
+
+				const spy = sinon.spy( ckboxGalleryItem, 'focus' );
+				command.execute();
+
+				sinon.clock.tick( 5100 );
+				expect( spy.notCalled ).to.be.true;
 			} );
 
 			it( 'should create and mount a wrapper only once', () => {
