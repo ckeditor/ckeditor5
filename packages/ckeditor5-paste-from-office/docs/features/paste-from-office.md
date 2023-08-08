@@ -8,9 +8,9 @@ order: 15
 
 {@snippet features/build-paste-from-office-source}
 
-# Pasting content from Word and Excel
+# Pasting content from Microsoft Office
 
-The two available paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. There is this basic, open-source Paste from Office feature and the more advanced, premium {@link features/paste-from-office-enhanced paste from Office enhanced} feature.
+Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is basic, open-source Paste from Office feature. You can try more advanced, premium {@link features/paste-from-office-enhanced paste from Office enhanced} feature.
 
 ## Demo
 
@@ -47,11 +47,23 @@ To test pasting from Office, download the sample documents and open them in Micr
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-## Features comparison
+## Paste from Office enhanced
 
-Refer to the {@link features/paste-from-office-enhanced#features-comparison paste from Office enhanced} guide for a full comparison of supported styles and formatting between the basic and premium versions.
+Refer to the {@link features/paste-from-office-enhanced#content-formatting-support paste from Office enhanced} guide for a full comparison of supported styles and formatting between the basic and premium versions.
 
-## Support for other MS Office applications
+## Additional feature information
+
+<info-box info>
+	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
+</info-box>
+
+Thanks to the paste from Office feature, you can copy and paste Microsoft Word documents into CKEditor&nbsp;5 and maintain basic text styling, heading levels, links, lists, tables, and images.
+
+When the plugin is enabled, it automatically detects Microsoft Word content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
+
+The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Google Docs. See the {@link features/paste-from-google-docs pasting content from Google Docs guide} to learn more.
+
+## Support for other office applications
 
 At the current stage, the focus of `@ckeditor/ckeditor5-paste-from-office` and `@ckeditor/ckeditor5-paste-from-office-enhanced` packages is on supporting content that comes from Microsoft Word, Microsoft Excel, and {@link features/paste-from-google-docs Google Docs}. However, it does not mean that pasting from other similar applications (such as Microsoft PowerPoint) is not supported.
 
@@ -66,23 +78,11 @@ If you think that support for any of the applications needs improvements, please
 
 Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
 
-## Additional feature information
-
-<info-box info>
-	The Paste from Office plugin only preserves content formatting and structures that are included in your CKEditor&nbsp;5 build. This means that you may need to add missing features such as font color or text alignment to your build. Read more in the [Automatic content filtering](#automatic-content-filtering) section below.
-</info-box>
-
-Thanks to the paste from Office feature, you can copy and paste Microsoft Word documents into CKEditor&nbsp;5 and maintain basic text styling, heading levels, links, lists, tables, and images.
-
-When the plugin is enabled, it automatically detects Microsoft Word content and transforms its structure and formatting to clean HTML which is then transformed into semantic content by the editor.
-
-The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Google Docs. See the {@link features/paste-from-google-docs pasting content from Google Docs guide} to learn more.
-
 ## Automatic content filtering
 
 With CKEditor&nbsp;5 you do not need to worry about pasting messy content from Microsoft Word (or any other possible sources). Thanks to the CKEditor&nbsp;5 {@link framework/index custom data model}, only content that is specifically handled by the loaded rich-text editor features will be preserved.
 
-This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Microsoft Word and other sources (e.g. other websites). See the [features comparison table](#features-comparison).
+This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Microsoft Word and other sources (e.g. other websites).
 
 ## Installation
 
