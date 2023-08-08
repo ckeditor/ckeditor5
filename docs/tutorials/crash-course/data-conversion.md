@@ -70,4 +70,4 @@ Notice that we called the `elementToAttribute` method in the upcast and the `att
 
 If your case requires a more complex conversion than we covered in this tutorial, see the {@link framework/deep-dive/conversion/intro Conversion deep dive} document.
 
-Otherwise, go to the next chapter, where you'll {@link tutorial/commands learn more about updating the model using commands}.
+Otherwise, go to the next chapter, where you'll {@link tutorials/commands learn more about updating the model using commands}.

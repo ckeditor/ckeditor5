@@ -371,7 +371,7 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 
 A more in-depth introduction with examples can be found in the {@link framework/deep-dive/conversion/intro dedicated conversion guide}.
 
-For additional information, you can also check out the {@link framework/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
+For additional information, you can also check out the {@link tutorials/widgets/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
 
 <!--TODO: upcasting, downcasting, mapping nodes and positions, API.
 

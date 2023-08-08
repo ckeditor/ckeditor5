@@ -373,7 +373,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 <info-box>
-	Check the {@link tutorial/editor step-by-step tutorial} if you need more information about the technical side of this solution.
+	Check the {@link tutorials/editor step-by-step tutorial} if you need more information about the technical side of this solution.
 </info-box>
 
 <info-box>
