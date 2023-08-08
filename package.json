@@ -33,6 +33,7 @@
     "@ckeditor/ckeditor5-build-decoupled-document": "39.0.0",
     "@ckeditor/ckeditor5-build-inline": "39.0.0",
     "@ckeditor/ckeditor5-build-multi-root": "39.0.0",
+    "@ckeditor/ckeditor5-ckbox": "^39.0.0",
     "@ckeditor/ckeditor5-ckfinder": "39.0.0",
     "@ckeditor/ckeditor5-clipboard": "39.0.0",
     "@ckeditor/ckeditor5-cloud-services": "39.0.0",
