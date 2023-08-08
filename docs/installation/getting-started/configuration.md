@@ -123,5 +123,7 @@ ClassicEditor
 <info-box hint>
 **What's next?**
 
-You have learned how to configure your own CKEditor 5 instance. Awesome! In the next tutorial, you will learn more about extending your editor with plugins. Ready for a ride? {@link installation/plugins/installing-plugins Jump in}!
+You have learned how to configure your own CKEditor 5 instance. Awesome! Learn more about CKEditor 5 by moving on to {@link installation/getting-started/editor-lifecycle the editor's lifecycle guide}!
+
+If you would like to integrate your CKEditor 5 installation with the Angular, React, and Vue.js JavaScript frameworks, {@link installation/integrations/overview we have dedicated guides for that}.
 </info-box>
