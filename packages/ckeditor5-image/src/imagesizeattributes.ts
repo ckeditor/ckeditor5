@@ -26,8 +26,8 @@ export default class ImageSizeAttributes extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get pluginName(): 'ImageSizeAttributes' {
-		return 'ImageSizeAttributes';
+	public static get pluginName() {
+		return 'ImageSizeAttributes' as const;
 	}
 
 	/**
