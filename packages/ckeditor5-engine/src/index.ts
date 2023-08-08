@@ -45,6 +45,7 @@ export type {
 	HighlightDescriptor,
 	RemoveHighlightCallback,
 	MarkerElementCreatorFunction,
+	AttributeCreatorFunction,
 	SlotFilter
 } from './conversion/downcasthelpers';
 export type {

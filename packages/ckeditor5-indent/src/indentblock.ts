@@ -8,7 +8,9 @@
  */
 
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
-import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine';
+import { addMarginRules, type ViewElement, type AttributeCreatorFunction } from 'ckeditor5/src/engine';
+
+import type { DocumentListEditing, DocumentListEditingCheckAttributesEvent } from '@ckeditor/ckeditor5-list';
 
 import IndentBlockCommand from './indentblockcommand';
 import IndentUsingOffset from './indentcommandbehavior/indentusingoffset';
@@ -131,7 +133,11 @@ export default class IndentBlock extends Plugin {
 
 		conversion.for( 'downcast' ).attributeToAttribute( {
 			model: 'blockIndent',
-			view: modelAttributeValue => {
+			view: ( modelAttributeValue, conversionApi, { item } ) => {
+				if ( item.hasAttribute( 'listItemId' ) ) {
+					return null;
+				}
+
 				return {
 					key: 'style',
 					value: {
@@ -140,15 +146,37 @@ export default class IndentBlock extends Plugin {
 				};
 			}
 		} );
+
+		if ( this.editor.plugins.has( 'DocumentListEditing' ) ) {
+			const documentListEditing: DocumentListEditing = this.editor.plugins.get( 'DocumentListEditing' );
+
+			documentListEditing.registerDowncastStrategy( {
+				scope: 'item',
+				attributeName: 'blockIndent',
+				setAttributeOnDowncast( writer, value: string, element ) {
+					writer.setStyle( marginProperty, value, element );
+				}
+			} );
+
+			documentListEditing.on<DocumentListEditingCheckAttributesEvent>(
+				'checkAttributes:item',
+				( evt, { viewElement, modelAttributes } ) => {
+					if ( viewElement.getStyle( 'margin-left' ) != modelAttributes.blockIndent ) {
+						evt.return = true;
+						evt.stop();
+					}
+				}
+			);
+		}
 	}
 
 	/**
 	 * Setups conversion for using classes.
 	 */
 	private _setupConversionUsingClasses( classes: Array<string> ) {
-		const definition: {
+		const downcastDefinition: {
 			model: { key: string; values: Array<string> };
-			view: Record<string, AttributeDescriptor>;
+			view: Record<string, AttributeCreatorFunction>;
 		} = {
 			model: {
 				key: 'blockIndent',
@@ -158,13 +186,66 @@ export default class IndentBlock extends Plugin {
 		};
 
 		for ( const className of classes ) {
-			definition.model.values.push( className );
-			definition.view[ className ] = {
-				key: 'class',
-				value: [ className ]
+			downcastDefinition.model.values.push( className );
+
+			downcastDefinition.view[ className ] = ( modelAttributeValue, conversionApi, { item } ) => {
+				if ( item.hasAttribute( 'listItemId' ) ) {
+					return null;
+				}
+
+				return {
+					key: 'class',
+					value: [ modelAttributeValue as string ]
+				};
 			};
+
+			this.editor.conversion.for( 'upcast' ).attributeToAttribute( {
+				view: {
+					key: 'class',
+					value: [ className ]
+				},
+				model: {
+					key: 'blockIndent',
+					value: className
+				}
+			} );
 		}
 
-		this.editor.conversion.attributeToAttribute( definition );
+		this.editor.conversion.for( 'downcast' ).attributeToAttribute( downcastDefinition );
+
+		if ( this.editor.plugins.has( 'DocumentListEditing' ) ) {
+			const documentListEditing: DocumentListEditing = this.editor.plugins.get( 'DocumentListEditing' );
+
+			documentListEditing.registerDowncastStrategy( {
+				scope: 'item',
+				attributeName: 'blockIndent',
+				setAttributeOnDowncast( writer, value: string, element ) {
+					writer.addClass( value, element );
+				}
+			} );
+
+			documentListEditing.on<DocumentListEditingCheckAttributesEvent>(
+				'checkAttributes:item',
+				( evt, { viewElement, modelAttributes } ) => {
+					const viewElementClasses = Array.from( viewElement.getClassNames() )
+						.filter( name => classes.includes( name ) );
+
+					if (
+						modelAttributes.blockIndent && !viewElement.hasClass( modelAttributes.blockIndent ) ||
+						!modelAttributes.blockIndent && viewElementClasses.length ||
+						viewElementClasses.length > 1
+					) {
+						evt.return = true;
+						evt.stop();
+					}
+				}
+			);
+		}
+	}
+}
+
+declare module '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting' {
+	interface ListItemAttributesMap {
+		blockIndent?: string;
 	}
 }
