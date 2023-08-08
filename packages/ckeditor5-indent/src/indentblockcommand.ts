@@ -102,7 +102,7 @@ function getBlocksToChange( model: Model, isForward: boolean ): Array<Element> {
 	return blocksInSelection.filter( block => {
 		// Do not add blockIndent to block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
 		if ( isForward ) {
-			return schema.checkAttribute( block, 'blockIndent' ) && block.hasAttribute( 'listItemId' );
+			return schema.checkAttribute( block, 'blockIndent' ) && !block.hasAttribute( 'listItemId' );
 		}
 
 		return schema.checkAttribute( block, 'blockIndent' );
