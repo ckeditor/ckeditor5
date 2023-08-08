@@ -613,19 +613,19 @@
 					"name": "Crash Course",
 					"id": "crash-course",
 					"slug": "crash-course",
-					"order": 1
+					"order": 10
 				},
 				{
 					"name": "Creating Abbreviation Plugin",
 					"id": "abbreviation-plugin",
 					"slug": "abbreviation-plugin",
-					"order": 2
+					"order": 20
 				},
 				{
 					"name": "Widgets",
 					"id": "widget-tutorials",
 					"slug": "widgets",
-					"order": 3
+					"order": 30
 				}
 			]
 		},

@@ -122,4 +122,4 @@ In the CKEditor Inspector, open the `Commands` tab to see all available commands
 
 If you want to read more about the commands, see the {@link framework/architecture/core-editor-architecture#commands Commands} document.
 
-Otherwise go to the next chapter, where you'll {@link tutorials/view learn more about updating the model UI}.
+Otherwise go to the next chapter, where you'll {@link tutorials/crash-course/view learn more about updating the model UI}.

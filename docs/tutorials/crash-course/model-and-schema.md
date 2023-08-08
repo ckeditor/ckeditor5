@@ -109,4 +109,4 @@ We will be using this tool in the next stages of plugin development.
 
 If you want to read more about the editing engine, see the {@link framework/architecture/editing-engine Editing engine} document.
 
-Otherwise, go to the next chapter, where you'll {@link tutorials/data-conversion learn more about data conversion} and what really happens when we call the `attributeToElement()` method.
+Otherwise, go to the next chapter, where you'll {@link tutorials/crash-course/data-conversion learn more about data conversion} and what really happens when we call the `attributeToElement()` method.
