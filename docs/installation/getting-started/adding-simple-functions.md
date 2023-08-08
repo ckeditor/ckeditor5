@@ -5,10 +5,17 @@ order: 90
 
 # Adding simple functions
 
+<info-box hint>
+**Quick recap**
+
+In the {@link installation/getting-started/using-api-and-events previous guide} you have explored events and API. This article shows how to add features to the editor.
+
+</info-box>
+
 You can make use of the API exposed by the editor and its plugins and extend the editor using the {@link module:core/plugin~PluginInterface plugin interface} like this:
 
 ```js
-function MyPlugin( editor ) {
+function myPlugin( editor ) {
 	// Plugin code.
 	// ...
 }
@@ -17,7 +24,7 @@ function MyPlugin( editor ) {
 or
 
 ```js
-class MyPlugin extends Plugin {
+class MyPlugin {
 	constructor( editor ) {
 		// Constructor code.
 		// ...

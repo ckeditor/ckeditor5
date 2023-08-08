@@ -8,7 +8,7 @@ order: 60
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/configuration previous tutorial} you have explored available configuration options of the editor. This article shows the lifecycle methods to create and destroy the editor.
+In the {@link installation/getting-started/configuration previous guide} you have explored available configuration options of the editor. This article shows the lifecycle methods to create and destroy the editor.
 
 </info-box>
 
@@ -35,13 +35,13 @@ Add an element that CKEditor should replace to your HTML page:
 Then you call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<div>` element with a {@link installation/getting-started/predefined-builds#classic-editor classic editor}:
 
 ```js
-ClassicEditor.create(document.querySelector("#editor"))
-	.then((editor) => {
-		console.log(editor);
-	})
-	.catch((error) => {
-		console.error(error);
-	});
+ClassicEditor.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 After creation, the editor will appear on the page in the selected area.
@@ -67,15 +67,15 @@ Add the elements where CKEditor should initialize the toolbar and the editable t
 Then call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method to create a decoupled editor instance with the toolbar and the editable in two separate containers:
 
 ```js
-DecoupledEditor.create(document.querySelector("#editor"))
-	.then((editor) => {
-		const toolbarContainer = document.querySelector("#toolbar-container");
+DecoupledEditor.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		const toolbarContainer = document.querySelector( '#toolbar-container' );
 
-		toolbarContainer.appendChild(editor.ui.view.toolbar.element);
-	})
-	.catch((error) => {
-		console.error(error);
-	});
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 ## Getting the editor's instance
@@ -85,11 +85,11 @@ The simplest way is save the reference to the editor somewhere after you create 
 ```js
 // Editor's creation steps.
 // ...
-.then((editor) => {
+.then( editor => {
 	window.editor = editor;
 })
 
-// Or with the await:
+// Or with the await (if your setup supports it):
 const editor = await ClassicEditor( /* ... */  );
 ```
 
@@ -98,9 +98,8 @@ const editor = await ClassicEditor( /* ... */  );
 In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases CKEditor 5 instances should be destroyed by using the `destroy()` method:
 
 ```js
-editor.destroy().catch((error) => {
-	console.log(error);
-});
+editor.destroy().catch( error => {
+	console.log( error );
 ```
 
 Once destroyed, resources used by the editor instance are released and the original element used to create the editor is automatically displayed and updated to reflect the final editor data.
