@@ -6,7 +6,7 @@
 /* global document, window */
 
 import Rect from '../../../src/dom/rect';
-import RectDrawer, { diagonalBackgroundStyles } from '../../_utils/rectdrawer';
+import RectDrawer, { diagonalStylesBlack } from '../../_utils/rectdrawer';
 
 window.addEventListener( 'scroll', drawVisibleRects, true );
 window.addEventListener( 'resize', drawVisibleRects );
@@ -35,7 +35,7 @@ function drawVisibleRects() {
 		const visibleRect = new Rect( child ).getVisible();
 
 		if ( visibleRect ) {
-			RectDrawer.draw( visibleRect, Object.assign( {}, diagonalBackgroundStyles, {
+			RectDrawer.draw( visibleRect, Object.assign( {}, diagonalStylesBlack, {
 				opacity: '1',
 				outlineWidth: '2px',
 				outlineStyle: 'solid',
