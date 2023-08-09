@@ -1,6 +1,6 @@
 ---
-category: tutorials
-order: 20
+category: widget-tutorials
+order: 26
 modified_at: 2022-11-15
 ---
 
