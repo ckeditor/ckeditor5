@@ -26,7 +26,7 @@ These are only available to holders of a [CKEditor&nbsp;5 commercial license](ht
 
 * Paste from Office Enhanced
 
-	The {@link features/paste-from-office Paste from Office Enhanced feature} lets you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. It will retain the basic text styling, heading levels, links, lists, tables, and images.
+	The {@link features/paste-from-office-enhanced Paste from Office Enhanced feature} lets you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. It will retain the basic text styling, heading levels, links, lists, tables, and images.
 
 * Slash commands
 
