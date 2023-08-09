@@ -501,7 +501,7 @@ The HTML that you added to the `index.html` file is your editor's data. This is 
 
 However, what's in the model?
 
-To learn that, use the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}. Once {@link framework/development-tools/inspector#installing-the-inspector installed}, you need to load it in the `app.js` file:
+To learn that, use the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}. Once {@link framework/development-tools/inspector#importing-the-inspector installed}, you need to load it in the `app.js` file:
 
 ```js
 // app.js
