@@ -9,7 +9,7 @@ modified_at: 2022-07-15
 
 In this part of the tutorial we will focus on creating a dialog box, which will get the user's input.
 
-We will pick up where we left off in the first part, so make sure you {@link tutorials/abbreviation-plugin/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-1).
+We will pick up where we left off in the first part, so make sure you {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 start there}, or grab our [starter files for this part](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-1).
 
 <info-box>
 	As we will mostly work on the UI, we recommend reading about our {@link framework/architecture/ui-library UI library} before you start coding.
@@ -614,5 +614,5 @@ If you got lost at any point, this is [the final implementation of the plugin](h
 <info-box>
 	**What's next?**
 
-	That's it for the second part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding a {@link framework/architecture/core-editor-architecture#commands command}, focus tracking, and more. We will do it in the {@link tutorials/abbreviation-plugin/abbreviation-plugin-level-3 third part of the tutorial}, so head over there.
+	That's it for the second part of the tutorial! We have a working UI, and our plugin does what we want it to do. We can improve it according to our best practices, adding a {@link framework/architecture/core-editor-architecture#commands command}, focus tracking, and more. We will do it in the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-3 third part of the tutorial}, so head over there.
 </info-box>

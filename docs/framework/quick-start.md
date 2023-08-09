@@ -17,7 +17,7 @@ This guide will show you how to initialize the CKEditor&nbsp;5 rich-text editor 
 	npx ckeditor5-package-generator <packageName>
 	```
 
-	More info about this tool can be found in the {@link framework/package-generator/using-package-generator dedicated guide}.
+	More info about this tool can be found in the {@link framework/development-tools/package-generator/using-package-generator dedicated guide}.
 </info-box>
 
 The CKEditor&nbsp;5 Framework consist of several [npm packages](https://npmjs.com). To install it you need:
@@ -233,11 +233,11 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 {@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of CKEditor&nbsp;5 classic editor with bold and italic features.}
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?
 
-If you finished this guide, you should definitely check out the {@link tutorial/editor step-by-step tutorial} that will teach you some basics of developing features in the CKEditor&nbsp;5 ecosystem.
+If you finished this guide, you should definitely check out the tutorials/crash-course/editor Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor&nbsp;5 ecosystem.
 
 If you are more into reading about the CKEditor&nbsp;5 architecture, check out the {@link framework/architecture/intro Introduction to CKEditor&nbsp;5 architecture}.

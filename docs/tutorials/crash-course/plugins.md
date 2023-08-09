@@ -82,4 +82,4 @@ Now when the page refreshes, you should see a `Highlight plugin has been registe
 
 ## What's next
 
-In the next chapter you'll continue creating a custom plugin and {@link tutorials/model-and-schema learn more about model and schema}, which control the state of the editor.
+In the next chapter you'll continue creating a custom plugin and {@link tutorials/crash-course/model-and-schema learn more about model and schema}, which control the state of the editor.
