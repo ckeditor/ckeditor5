@@ -82,4 +82,4 @@ The latest versions of our official components for Angular, React, and Vue 3 are
 
 CKEditor&nbsp;5's API is extensive and complex, but using TypeScript can make it easier to work with.
 
-You can use {@link framework/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.
+You can use {@link framework/development-tools/package-generator/typescript-package package generator} to scaffold TypeScript-based plugins.

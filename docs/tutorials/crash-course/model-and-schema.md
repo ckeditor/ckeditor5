@@ -81,7 +81,7 @@ If all went well, the word `world` should be highlighted in the editor.
 
 ## CKEditor inspector
 
-Let's inspect the editor to validate the schema and model. Open the `src/main.js` file and install the {@link framework/development-tools#ckeditor-5-inspector CKEditor inspector}.
+Let's inspect the editor to validate the schema and model. Open the `src/main.js` file and install the {@link framework/development-tools/inspector CKEditor inspector}.
 
 ```js
 // Import inspector.

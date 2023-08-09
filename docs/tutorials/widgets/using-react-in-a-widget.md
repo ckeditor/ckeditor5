@@ -246,7 +246,7 @@ The `ProductPreviewEditing` plugin defines the `productPreview` element in the e
 * In the **editing view**, on the other hand, the product preview is a {@link tutorials/widgets/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~UIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link installation/getting-started/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 The differences in data representations of the product preview are summarized in the following table:
