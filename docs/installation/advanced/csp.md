@@ -10,7 +10,7 @@ order: 40
 
 # Content Security Policy
 
-CKEditor 5 is compatible with applications that use [<abbr title="Content Security Policy">CSP</abbr> rules](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) and helps developers build a secure web.
+CKEditor&nbsp;5 is compatible with applications that use [<abbr title="Content Security Policy">CSP</abbr> rules](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) and helps developers build a secure web.
 
 ## Recommended CSP configuration
 
@@ -30,9 +30,9 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 	* Allows {@link features/autosave auto–saving editor data} using `XMLHttpRequest`.
 
 	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance: `connect-src 'self' http://*.cke-cs.com`.
-* `script-src 'self'`: Allows the execution of JavaScript from the current host only and can be applied only if the CKEditor 5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
+* `script-src 'self'`: Allows the execution of JavaScript from the current host only and can be applied only if the CKEditor&nbsp;5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
 
-	**Note**: If CKEditor 5 is served from another host, for example the {@link installation/getting-started/predefined-builds#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
+	**Note**: If CKEditor&nbsp;5 is served from another host, for example the {@link installation/getting-started/predefined-builds#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
 * `img-src * data:`
 	* The `*` directive value allows images in the editor content to come from any hosts.
 	* The `data:` value allows:
@@ -50,12 +50,12 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 	**Note**: Use the more strict `frame-src 'self'` if all the media in the edited content come from the same domain as your application.
 
 <info-box>
-	A different set of Content Security Policy directives might be necessary to run {@link features/ckfinder CKFinder} along with CKEditor 5. Check out the file manager [documentation](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/guide/dev_integration-section-csp-directives-required-by-ckfinder) to learn more.
+	A different set of Content Security Policy directives might be necessary to run {@link features/ckfinder CKFinder} along with CKEditor&nbsp;5. Check out the file manager [documentation](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/guide/dev_integration-section-csp-directives-required-by-ckfinder) to learn more.
 </info-box>
 
 ## Strictest working configuration
 
-Knowing the role of each directive, the strictest set of rules that allows CKEditor 5 to run is as follows:
+Knowing the role of each directive, the strictest set of rules that allows CKEditor&nbsp;5 to run is as follows:
 
 ```
 default-src 'none'; connect-src 'self'; script-src 'self'; img-src 'self'; style-src 'self'; frame-src 'self'
@@ -67,4 +67,4 @@ This comes with some trade–offs, though. For example, it requires you to:
 * Load images in the content from the same host.
 * Load previewable media in the content from the same host.
 * Give up certain features that use inline styles like {@link features/font font} or {@link features/text-alignment text alignment}.
-* Give up pasting images from the clipboard or {@link features/paste-from-office from Word}.
+* Give up pasting images from the clipboard or {@link features/paste-from-office from Office}.

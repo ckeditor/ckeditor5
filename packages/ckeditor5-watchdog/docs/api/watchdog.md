@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# CKEditor 5 watchdog feature
+# CKEditor&nbsp;5 watchdog feature
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-watchdog.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog)
 
-This package implements the watchdog feature for CKEditor 5. It keeps a CKEditor 5 rich-text editor instance running.
+This package implements the watchdog feature for CKEditor&nbsp;5. It keeps a CKEditor&nbsp;5 rich-text editor instance running.
 
 ## Documentation
 
