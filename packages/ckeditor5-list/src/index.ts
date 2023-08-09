@@ -8,7 +8,11 @@
  */
 
 export { default as DocumentList } from './documentlist';
-export { default as DocumentListEditing, type DocumentListEditingPostFixerEvent } from './documentlist/documentlistediting';
+export {
+	default as DocumentListEditing,
+	type DocumentListEditingPostFixerEvent,
+	type DocumentListEditingCheckAttributesEvent
+} from './documentlist/documentlistediting';
 export { default as DocumentListIndentCommand } from './documentlist/documentlistindentcommand';
 export { default as AdjacentListsSupport } from './documentlist/adjacentlistssupport';
 export { default as DocumentListProperties } from './documentlistproperties';
