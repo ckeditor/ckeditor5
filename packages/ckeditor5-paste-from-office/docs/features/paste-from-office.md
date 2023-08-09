@@ -10,7 +10,7 @@ order: 15
 
 # Pasting content from Microsoft Office
 
-Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is basic, open-source Paste from Office feature. You can try more advanced, premium {@link features/paste-from-office-enhanced paste from Office enhanced} feature.
+Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature. You can also try the more advanced, premium {@link features/paste-from-office-enhanced paste from Office enhanced} feature.
 
 ## Demo
 
