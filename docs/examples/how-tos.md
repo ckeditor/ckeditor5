@@ -78,7 +78,7 @@ Enter the `CKEDITOR_VERSION` command to check the currently used CKEditor 5 vers
 
 ### How to get the editor instance in the plugin?
 
-In a simple plugin, you can get editor's instance using a plugin functions' attribute
+In a simple plugin, you can get the editor's instance using a plugin functions' attribute
 
 ```js
 function MyPlugin(editor) {

@@ -160,7 +160,7 @@ Please refer to the {@link features/autosave Autosave} guide for details.
 
 ## Handling users exiting the page
 
-An additional concern when integrating the editor in your website is that the user may mistakenly leave before saving the data. This problem is automatically handled by the {@link features/autosave autosave feature}, but if you do not use it and instead chose different integration methods, you should consider handling these two scenarios:
+An additional concern when integrating the editor into your website is that the user may mistakenly leave before saving the data. This problem is automatically handled by the {@link features/autosave autosave feature}, but if you do not use it and instead chose different integration methods, you should consider handling these two scenarios:
 
 * The user leaves the page before saving the data (e.g. mistakenly closes a tab or clicks some link).
 * The user saved the data, but there are some pending actions like an image upload.

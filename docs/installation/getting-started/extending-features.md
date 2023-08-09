@@ -12,7 +12,7 @@ In the {@link installation/getting-started/api-and-events previous guide} you ha
 
 </info-box>
 
-Editor has a lot of already built features. But there's always room for more! You can make use of the API exposed by the editor and its plugins and extend the editor using the {@link module:core/plugin~PluginInterface plugin interface} like this:
+The editor has a lot of ready-made features. However, there is always room for more! You can make use of the API exposed by the editor and its plugins and extend the editor using the {@link module:core/plugin~PluginInterface plugin interface} like this:
 
 ```js
 function MyPlugin( editor ) {
@@ -37,19 +37,19 @@ class MyPlugin {
 }
 ```
 
-This method allows writing simple, vanilla JS plugins that will be executed during the initialization of the editor, and don't need to interact with other plugin schema's or UI. To add a newly created plugin to an editor you need to use {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} property in configuration (or {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins` for predefined builds}).
+This method allows writing simple, vanilla JS plugins that will be executed during the initialization of the editor, and don't need to interact with other plugin schemas or UI. To add a newly created plugin to an editor you need to use {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} property in configuration (or {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins` for predefined builds}).
 
 <info-box warning>
 
 It is not possible to do everything with simple plugins as shown above.
 
-**What's possible:**
+**What is possible:**
 
 * Reacting to plugins' events.
 * Executing commands.
 * Overwriting editor's conversion mechanism.
 
-**What's not possible:**
+**What is not possible:**
 
 * Adding new UI elements (e.g., a new button to a toolbar).
 * Creation of widgets or new commands.

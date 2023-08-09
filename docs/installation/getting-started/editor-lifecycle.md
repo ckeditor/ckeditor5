@@ -95,7 +95,7 @@ const editor = await ClassicEditor( /* ... */  );
 
 ## Destroying the editor with `destroy()`
 
-In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases CKEditor 5 instances should be destroyed by using the `destroy()` method:
+In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases, CKEditor 5 instances should be destroyed by using the `destroy()` method:
 
 ```js
 editor.destroy().catch( error => {

@@ -8,7 +8,7 @@ order: 80
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/getting-and-setting-data previous guide} you have learned how to set and get data from the editor. You can also start using editor's API and events.
+In the {@link installation/getting-started/getting-and-setting-data previous guide} you have learned how to set and get data from the editor. You can also start using the editor's API and events.
 </info-box>
 
 CKEditor 5 and its plugins expose structured API and Events that are allowing to interact with an editor and to react to changes.
@@ -52,18 +52,18 @@ Events could be used to alter the behavior of the editor. Imagine a user wants t
 
 ```js
 editor.editing.view.document.on( 'enter', ( evt, data ) => {
-    data.preventDefault();
-    evt.stop();
+	data.preventDefault();
+	evt.stop();
 
-    if ( data.isSoft ) {
-            editor.execute( 'enter' );
-            editor.editing.view.scrollToTheSelection();
+	if ( data.isSoft ) {
+			editor.execute( 'enter' );
+			editor.editing.view.scrollToTheSelection();
 
-            return;
-    }
+			return;
+	}
 
-    editor.execute( 'shiftEnter' );
-    editor.editing.view.scrollToTheSelection();
+	editor.execute( 'shiftEnter' );
+	editor.editing.view.scrollToTheSelection();
 }, { priority: 'high' } );
 ```
 
