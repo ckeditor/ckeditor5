@@ -404,7 +404,7 @@ function focusCKBoxItem( limiter: number ): void {
 			return;
 		}
 
-		const ckboxGallery = document.getElementsByClassName( 'ckbox-gallery' )[ 0 ];
+		const ckboxGalleryFirstItem = document.querySelector( '.ckbox-gallery .ckbox-gallery-item' );
 		// In case there is no items, "upload button" will be appeared in "div" with
 		// classname ".ckbox-empty-view".
 		const uploadButton = document.querySelector( '.ckbox-empty-view .ckbox-btn' );
@@ -415,18 +415,8 @@ function focusCKBoxItem( limiter: number ): void {
 			return;
 		}
 
-		if ( !ckboxGallery ) {
-			focusCKBoxItem( limiter - 1 );
-			return;
-		}
-
-		const firstItem = ckboxGallery.children[ 0 ];
-
-		if ( firstItem &&
-			firstItem.className === 'ckbox-gallery-item' &&
-			firstItem instanceof HTMLElement
-		) {
-			firstItem.focus();
+		if ( ckboxGalleryFirstItem && ckboxGalleryFirstItem instanceof HTMLElement ) {
+			ckboxGalleryFirstItem.focus();
 		} else {
 			focusCKBoxItem( limiter - 1 );
 		}
