@@ -1,19 +1,19 @@
 ---
 menu-title: Versioning policy
 meta-title: CKEditor 5 versioning policy
-meta-description: The versioning approach to the CKEditor 5 project.
+meta-description: The versioning approach to the CKEditor&nbsp;5 project.
 category: updating
 order: 25
 ---
 
 # Versioning policy
 
-CKEditor 5 consists of multiple npm packages (over 80). When releasing them, we use the following rules:
+CKEditor&nbsp;5 consists of multiple npm packages (over 80). When releasing them, we use the following rules:
 
 * We use the `MAJOR.MINOR.PATCH` version identifiers.
 * All packages are always in the same version.
-* A major release of CKEditor 5 (i.e. of all its packages) is published when at least one of its packages must have a major release.
-* A minor version of CKEditor 5 (i.e. of all its packages) is published when at least one of its packages must have a minor release and none of them require a major release.
+* A major release of CKEditor&nbsp;5 (i.e. of all its packages) is published when at least one of its packages must have a major release.
+* A minor version of CKEditor&nbsp;5 (i.e. of all its packages) is published when at least one of its packages must have a minor release and none of them require a major release.
 * A package must have a major release when it contains a *major breaking change*.
 * If none of the packages contain any *major breaking change*, the following rules are used to determine the new version of each package:
 	* If a package contains a *minor breaking change*, a `MINOR` version is increased.
@@ -23,7 +23,7 @@ CKEditor 5 consists of multiple npm packages (over 80). When releasing them, we 
 
 ## Major and minor breaking changes
 
-The ecosystem of CKEditor 5 consists of multiple layers. Our approach to breaking changes and their effect depends on which layer is affected.
+The ecosystem of CKEditor&nbsp;5 consists of multiple layers. Our approach to breaking changes and their effect depends on which layer is affected.
 
 * **The integration layer.** This is the most commonly used API which is used to integrate and customize existing builds or editors built from source. It also includes their setup (whose features are included and their default configuration).
 	* Breaking changes frequency: as rarely as possible. Therefore, changes to this layer are usually done in a backward-compatible way.
@@ -32,7 +32,7 @@ The ecosystem of CKEditor 5 consists of multiple layers. Our approach to breakin
 	* Breaking changes frequency: rarely. This layer is still frequently used by developers, therefore, we try to limit breaking changes. However, to avoid increasing the technical debt, from time to time we will introduce breaking changes to one or more packages. We also try to "batch" them in order to have as many breaking changes done in one release as possible, to reduce the frequency of major releases.
 	* A breaking change in this layer is understood as a **major breaking change**.
 * **The low-level customizability API layer.** This is the part of package APIs that allows tweaking the behavior of existing features, their UI, etc., and building other features on top of the existing ones or by using their helpers.
-	* Breaking changes frequency: frequent. This layer, while exposed by CKEditor 5 Framework, is often closely connected to the architecture of a certain feature and may expose some implementation details. We want this layer to be public as it increases the ability to reuse the code, however, we cannot guarantee its stability on the same level as in the two previous layers.
+	* Breaking changes frequency: frequent. This layer, while exposed by CKEditor&nbsp;5 Framework, is often closely connected to the architecture of a certain feature and may expose some implementation details. We want this layer to be public as it increases the ability to reuse the code, however, we cannot guarantee its stability on the same level as in the two previous layers.
 	* A breaking change in this layer is understood as a **minor breaking change**.
 
 ## Why not semantic versioning?

@@ -13,7 +13,7 @@ The {@link module:widget/widgettypearound/widgettypearound~WidgetTypeAround `Wid
 * When typing outside widgets should be impossible (content made exclusively of widgets).
 * When certain widgets have a fixed location in the document that should never change.
 
-In the sections that follow, you will learn how to configure CKEditor 5 WYSIWYG editor to address these specific needs.
+In the sections that follow, you will learn how to configure CKEditor&nbsp;5 WYSIWYG editor to address these specific needs.
 
 ### Hiding the buttons that insert paragraphs around widgets
 

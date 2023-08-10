@@ -20,7 +20,7 @@ Use the block quote toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/q
 
 ## Nested block quotes
 
-Starting from version 27.1.0, CKEditor 5 will properly display a block quote nested in another block quote. This sort of structure is indispensable in email editors or discussion forums. The ability to cite previous messages and preserve a correct quotation structure is often crucial to maintain the flow of communication. Nested block quotes may also prove useful for scientific or academic papers, but articles citing sources and referring to previous writing would often use it, too.
+Starting from version 27.1.0, CKEditor&nbsp;5 will properly display a block quote nested in another block quote. This sort of structure is indispensable in email editors or discussion forums. The ability to cite previous messages and preserve a correct quotation structure is often crucial to maintain the flow of communication. Nested block quotes may also prove useful for scientific or academic papers, but articles citing sources and referring to previous writing would often use it, too.
 
 Support for nested block quotes is provided as backward compatibility for loading pre-existing content, for example created in CKEditor 4. Additionally, pasting content with nested block quotes is supported. You can also nest a block quote in another block quote using the {@link features/drag-drop drag and drop} mechanism &mdash; just select an existing block quote and drag it into another.
 
@@ -96,7 +96,7 @@ ClassicEditor
 
 ## Related features
 
-Here are some other CKEditor 5 features that you can use similarly to the block quote plugin to structure your text better:
+Here are some other CKEditor&nbsp;5 features that you can use similarly to the block quote plugin to structure your text better:
 
 * {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.
 * {@link features/code-blocks Code block} &ndash; Insert longer, multiline code listings.
@@ -118,7 +118,7 @@ editor.execute( 'blockQuote' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

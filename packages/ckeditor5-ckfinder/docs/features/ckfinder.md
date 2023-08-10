@@ -1,8 +1,8 @@
 ---
 category: features-file-management
 menu-title: CKFinder
-meta-title: CKFinder file manager in CKEditor 5
-meta-description: Learn all about using the CKFinder file manager and service with CKEditor 5
+meta-title: CKFinder file manager in CKEditor&nbsp;5
+meta-description: Learn all about using the CKFinder file manager and service with CKEditor&nbsp;5
 order: 20
 badges: [ premium ]
 ---
@@ -14,7 +14,7 @@ badges: [ premium ]
 The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.
 
 <info-box info>
-	This is a premium feature and you need a license for it on top of your CKEditor 5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
+	This is a premium feature and you need a license for it on top of your CKEditor&nbsp;5 commercial license. [Contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
 
@@ -47,7 +47,7 @@ This demo shows the [full integration](#configuring-the-full-integration) with t
 
 ## Additional feature information
 
-The CKFinder integration feature is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET, and Java and version 2.x for ASP and ColdFusion.
+The CKFinder integration feature is a bridge between the CKEditor&nbsp;5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader. CKFinder is a commercial application that was designed with CKEditor compatibility in mind. It is currently available as version 3.x for PHP, ASP.NET, and Java and version 2.x for ASP and ColdFusion.
 
 This feature can be used in the rich-text editor in two different ways:
 
@@ -107,7 +107,7 @@ The easiest way to load the CKFinder library is to include the `<script>` tag lo
 
 Then:
 
-* Make sure that the {@link module:ckfinder/ckfinder~CKFinder CKFinder plugin} for CKEditor 5 is enabled. See the [Installation](#installation) section.
+* Make sure that the {@link module:ckfinder/ckfinder~CKFinder CKFinder plugin} for CKEditor&nbsp;5 is enabled. See the [Installation](#installation) section.
 * In order to enable the automatic file upload to the server when an image is pasted or dropped into the editor content, remember to set the correct {@link module:ckfinder/ckfinderconfig~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
 * In order to display the toolbar button that opens the CKFinder file manager UI allowing the users to choose the files on the server, make sure that `'ckfinder'` is present in your {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}.
 * Additionally, you can use {@link module:ckfinder/ckfinderconfig~CKFinderConfig#options `config.ckfinder.options`} to define [CKFinder's options](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config). For example:
@@ -166,12 +166,12 @@ ClassicEditor
 
 The allowed file types that can be uploaded should be configured in two places:
 
-* On the client side, in CKEditor 5, restricting image upload through the CKEditor 5 UI and commands
+* On the client side, in CKEditor&nbsp;5, restricting image upload through the CKEditor&nbsp;5 UI and commands
 * On the server side, in CKFinder, restricting the file formats that are accepted in CKFinder
 
 #### Client-side configuration
 
-Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
+Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor&nbsp;5.
 
 By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
 
@@ -228,14 +228,14 @@ Additionally, in the "image upload only" integration, you can use the following 
 * The `'uploadImage'` command implemented by the {@link module:image/imageupload/uploadimagecommand~UploadImageCommand}
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?
 
-Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
+Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor&nbsp;5.
 
-See the {@link features/images-overview image feature guide} to find out more about handling images in CKEditor 5.
+See the {@link features/images-overview image feature guide} to find out more about handling images in CKEditor&nbsp;5.
 
 ## Contribute
 

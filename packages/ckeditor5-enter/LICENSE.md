@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 enter feature** – https://github.com/ckeditor/ckeditor5-enter <br>
+**CKEditor&nbsp;5 enter feature** – https://github.com/ckeditor/ckeditor5-enter <br>
 Copyright (c) 2003-2023, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).

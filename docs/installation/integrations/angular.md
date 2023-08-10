@@ -14,16 +14,16 @@ order: 20
 	</a>
 </p>
 
-CKEditor 5 consists of the {@link installation/getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor 5 Framework} upon which the builds are based.
+CKEditor&nbsp;5 consists of the {@link installation/getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source-webpack CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
+Currently, the CKEditor&nbsp;5 component for Angular supports integrating CKEditor&nbsp;5 only via builds. Integrating {@link installation/advanced/integrating-from-source-webpack CKEditor&nbsp;5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
-	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start-other#customizing-builds create a custom build of CKEditor 5} and include it in your Angular application.
+	While there is no support to integrate CKEditor&nbsp;5 from source yet, you can still {@link installation/getting-started/quick-start-other#customizing-builds create a custom build of CKEditor&nbsp;5} and include it in your Angular application.
 </info-box>
 
 <info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor 5. Check the details about {@link installation/working-with-typescript TypeScript support}.
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link installation/working-with-typescript TypeScript support}.
 </info-box>
 
 ## Supported Angular versions
@@ -87,7 +87,7 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 
 ## Quick start
 
-In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
+In your existing Angular project, install the [CKEditor&nbsp;5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
 npm install --save @ckeditor/ckeditor5-angular
@@ -97,7 +97,7 @@ npm install --save @ckeditor/ckeditor5-angular
 	If you don't have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
 </info-box>
 
-Install one of the {@link installation/getting-started/predefined-builds CKEditor 5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
+Install one of the {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
 
 This tutorial assumes that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -173,7 +173,7 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
 ```
 
-Rebuild your application and CKEditor 5 should greet you with a "Hello, world!".
+Rebuild your application and CKEditor&nbsp;5 should greet you with a "Hello, world!".
 
 ### Using the Document editor build
 
@@ -214,7 +214,7 @@ And then, in the template:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
 ```
 
-### Using a custom CKEditor 5 build
+### Using a custom CKEditor&nbsp;5 build
 
 If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link installation/getting-started/configuration editor configuration} you need to create a custom build first, as described in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
 
@@ -252,7 +252,7 @@ Note that to allow importing JavaScript files without providing their correspond
 
 ### Integrating a build from the online builder
 
-This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This guide assumes that you have created a zip archive with the editor built using the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
 Unpack it into you application's main directory. The directory with the editor build cannot be placed inside the `src/` directory as Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
 
@@ -297,13 +297,13 @@ export class AppComponent {
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application &mdash; see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).
+The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application &mdash; see [Using a custom CKEditor&nbsp;5 build](#using-a-custom-ckeditor-5-build).
 
 For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in Angular applications:
 
-- [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+- [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
 
-- [CKEditor 5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
+- [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
 
 It is not mandatory to build applications on top of the above samples, however, they should help you to get started.
 
@@ -333,7 +333,7 @@ Use the model in the template to enable a two–way data binding:
 
 ## Supported `@Input` properties
 
-The following `@Input` properties are supported by the CKEditor 5 rich text editor component for Angular:
+The following `@Input` properties are supported by the CKEditor&nbsp;5 rich text editor component for Angular:
 
 ### `editor` (required)
 
@@ -481,7 +481,7 @@ This option allows the integrator to disable the default behavior and only call 
 
 ## Supported `@Output` properties
 
-The following `@Output` properties are supported by the CKEditor 5 rich text editor component for Angular:
+The following `@Output` properties are supported by the CKEditor&nbsp;5 rich text editor component for Angular:
 
 ### `ready`
 
@@ -493,7 +493,7 @@ Note that this method might be called multiple times. Apart from initialization,
 ### `change`
 
 Fired when the content of the editor has changed. It corresponds with the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
-It is fired with an object containing the editor and the CKEditor 5 `change:data` event object.
+It is fired with an object containing the editor and the CKEditor&nbsp;5 `change:data` event object.
 
 ```html
 <ckeditor [editor]="Editor" (change)="onChange($event)"></ckeditor>
@@ -521,12 +521,12 @@ export class MyComponent {
 ### `blur`
 
 Fired when the editing view of the editor is blurred. It corresponds with the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
-It is fired with an object containing the editor and the CKEditor 5 `blur` event data.
+It is fired with an object containing the editor and the CKEditor&nbsp;5 `blur` event data.
 
 ### `focus`
 
 Fired when the editing view of the editor is focused. It corresponds with the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
-It is fired with an object containing the editor and the CKEditor 5 `focus` event data.
+It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus` event data.
 
 ### `error`
 
@@ -534,7 +534,7 @@ Fired when the editor crashes (except of crashes during the editor initializatio
 
 ## Styling
 
-The CKEditor 5 rich text editor component for Angular can be styled using the component stylesheet or using a global stylesheet. See how to set the CKEditor 5 component's height using these two approaches.
+The CKEditor&nbsp;5 rich text editor component for Angular can be styled using the component stylesheet or using a global stylesheet. See how to set the CKEditor&nbsp;5 component's height using these two approaches.
 
 ### Setting the height via the component stylesheet
 
@@ -587,7 +587,7 @@ Then, add it in the `angular.json` configuration file:
 
 ### Setting the placeholder
 
-To display {@link features/editor-placeholder the placeholder} in the main editable element, set the `placeholder` field in the CKEditor 5 rich text editor component configuration:
+To display {@link features/editor-placeholder the placeholder} in the main editable element, set the `placeholder` field in the CKEditor&nbsp;5 rich text editor component configuration:
 
 ```ts
 @Component( {
@@ -602,7 +602,7 @@ export class MyComponent {
 
 ## Accessing the editor instance
 
-The CKEditor 5 rich text editor component provides all the functionality needed for most use cases. When access to the full CKEditor 5 API is needed you can get the editor instance with an additional step.
+The CKEditor&nbsp;5 rich text editor component provides all the functionality needed for most use cases. When access to the full CKEditor&nbsp;5 API is needed you can get the editor instance with an additional step.
 
 To do this, create a template reference variable `#editor` pointing to the `<ckeditor>` component:
 
@@ -626,12 +626,12 @@ export class MyComponent {
 ```
 
 <info-box>
-	The editor creation is asynchronous so the `editorInstance` will not be available until the editor is created. If you want to make changes to an editor that has just been created, a better option would be getting the CKEditor 5 instance on the [`ready`](#ready) event.
+	The editor creation is asynchronous so the `editorInstance` will not be available until the editor is created. If you want to make changes to an editor that has just been created, a better option would be getting the CKEditor&nbsp;5 instance on the [`ready`](#ready) event.
 </info-box>
 
 ## Localization
 
-The CKEditor 5 rich text editor component can be localized in two steps.
+The CKEditor&nbsp;5 rich text editor component can be localized in two steps.
 
 ### Loading translation files
 
@@ -693,4 +693,4 @@ More details:
 
 ## Contributing and reporting issues
 
-The source code of the CKEditor 5 rich text editor component for Angular is available on GitHub in [https://github.com/ckeditor/ckeditor5-angular](https://github.com/ckeditor/ckeditor5-angular).
+The source code of the CKEditor&nbsp;5 rich text editor component for Angular is available on GitHub in [https://github.com/ckeditor/ckeditor5-angular](https://github.com/ckeditor/ckeditor5-angular).

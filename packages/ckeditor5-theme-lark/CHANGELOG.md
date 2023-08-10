@@ -264,7 +264,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
@@ -332,7 +332,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * The `.ck-editor-toolbar` CSS class has been removed.
 * Various CSS variables (mostly colors) have been removed. Please make sure your code uses the latest theme API.
-* From now on there's only one subset of the theme, aligned to the default look of CKEditor 5.
+* From now on there's only one subset of the theme, aligned to the default look of CKEditor&nbsp;5.
 * Various UI components' styles have been rewritten. The CSS selectors that used to style them may have a different specificity and appear in a different order.
 * The styles are no longer developed in SASS which means various `.scss` files (including variables, mixins, etc.) became unavailable. Please refer to the [Theme Customization](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
 

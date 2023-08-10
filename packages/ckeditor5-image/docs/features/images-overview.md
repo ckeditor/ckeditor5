@@ -1,16 +1,16 @@
 ---
 category: features-images
 menu-title: Basics
-meta-title: Images in CKEditor 5
-meta-description: Find out all about images in CKEditor 5.
+meta-title: Images in CKEditor&nbsp;5
+meta-description: Find out all about images in CKEditor&nbsp;5.
 order: 10
 modified_at: 2021-06-17
 ---
 {@snippet features/build-image-source}
 
-# Images in CKEditor 5 (overview)
+# Images in CKEditor&nbsp;5 (overview)
 
-CKEditor 5 comes with various tools to insert, upload, resize, style, caption, and link images. All these features work out of the box with block, inline, and responsive images alike.
+CKEditor&nbsp;5 comes with various tools to insert, upload, resize, style, caption, and link images. All these features work out of the box with block, inline, and responsive images alike.
 
 ## Demo
 
@@ -25,7 +25,7 @@ To see all the image features in action, check out the demo below. To learn more
 
 ## Base image feature
 
-The base image feature does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (listed below) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
+The base image feature does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (listed below) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor&nbsp;5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
 
 ## Image features
 
@@ -38,7 +38,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link features/images-resizing Image resizing} lets the user control the dimensions of images in the content.
 * {@link features/images-linking Linking images} makes it possible to use them as URL anchors.
 * A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor inserting an image via a URL} and even {@link features/images-inserting#inserting-images-via-a-source-url via pasting a URL into the editor} along with custom integrations.
-* Support for {@link features/images-responsive responsive images} in CKEditor 5 is brought by the {@link features/ckbox CKBox} management platform. Responsive images will display properly on any viewport, enhancing the accessibility, reach and user experience.
+* Support for {@link features/images-responsive responsive images} in CKEditor&nbsp;5 is brought by the {@link features/ckbox CKBox} management platform. Responsive images will display properly on any viewport, enhancing the accessibility, reach and user experience.
 
 The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
 

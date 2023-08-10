@@ -30,7 +30,7 @@ An overview of the project's directory structure:
 │  └─ **/*.js              # All tests should be saved here.
 ├─ theme
 │  ├─ icons
-│  │  ├─ ckeditor.svg      # The CKEditor 5 icon displayed in the toolbar.
+│  │  ├─ ckeditor.svg      # The CKEditor&nbsp;5 icon displayed in the toolbar.
 │  │  └─ **/*.svg          # All icon files should be saved here.
 │  └─ **/*.css             # All CSS files should be saved here.
 │
@@ -139,7 +139,7 @@ npm run dll:build -- --watch
 
 ### `dll:serve`
 
-Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor 5 {@link installation/advanced/dll-builds DLL builds}.
+Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor&nbsp;5 {@link installation/advanced/dll-builds DLL builds}.
 
 Examples:
 
@@ -214,11 +214,11 @@ To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/c
 
 ### Why are the predefined ESLint rules recommended?
 
-To make CKEditor 5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link installation/advanced/dll-builds DLL guide} and {@link framework/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see a detailed explanation} about the limitations.
+To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link installation/advanced/dll-builds DLL guide} and {@link framework/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see a detailed explanation} about the limitations.
 
 ## Translations
 
-Packages created by this tool, just like the entirety of the CKEditor 5 ecosystem, include full support for localization. If you wish to include translations for your package, visit the {@link framework/deep-dive/localization dedicated translation guide} and learn more.
+Packages created by this tool, just like the entirety of the CKEditor&nbsp;5 ecosystem, include full support for localization. If you wish to include translations for your package, visit the {@link framework/deep-dive/localization dedicated translation guide} and learn more.
 
 The package generator provides several tools for handling translations in the created package. We recommend the following flow when dealing with translations:
 
@@ -230,7 +230,7 @@ The package generator provides several tools for handling translations in the cr
 
 ## Reporting issues
 
-If you found a problem with CKEditor 5 or the package generator, please, report an issue:
+If you found a problem with CKEditor&nbsp;5 or the package generator, please, report an issue:
 
-* [CKEditor 5](https://github.com/ckeditor/ckeditor5/issues/new/choose)
+* [CKEditor&nbsp;5](https://github.com/ckeditor/ckeditor5/issues/new/choose)
 * [The package generator](https://github.com/ckeditor/ckeditor5-package-generator/issues/new)

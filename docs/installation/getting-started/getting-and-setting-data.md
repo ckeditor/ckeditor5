@@ -13,7 +13,7 @@ order: 70
 In the {@link installation/getting-started/editor-lifecycle previous tutorial} you have learned about lifecycle methods. Having the editor created, you can now set or get its data.
 </info-box>
 
-CKEditor 5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
+CKEditor&nbsp;5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
 
 ## Automatic integration with HTML forms
 
@@ -26,7 +26,7 @@ This approach is only available in the {@link installation/getting-started/prede
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor 5 - Classic editor</title>
+	<title>CKEditor&nbsp;5 - Classic editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
@@ -139,7 +139,7 @@ document.querySelector( '#submit' ).addEventListener( 'click', () => {
 
 ## Updating the source element
 
-If the source element is not `<textarea>`, CKEditor 5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
+If the source element is not `<textarea>`, CKEditor&nbsp;5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
 
 ```js
 ClassicEditor.create( document.querySelector( '#editor' ), {
@@ -165,7 +165,7 @@ An additional concern when integrating the editor in your website is that the us
 * The user leaves the page before saving the data (e.g. mistakenly closes a tab or clicks some link).
 * The user saved the data, but there are some pending actions like an image upload.
 
-To handle the former situation you can listen to the native [`window#beforeunload`](https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload) event. The latter situation can be handled by using CKEditor 5 {@link module:core/pendingactions~PendingActions} plugin.
+To handle the former situation you can listen to the native [`window#beforeunload`](https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload) event. The latter situation can be handled by using CKEditor&nbsp;5 {@link module:core/pendingactions~PendingActions} plugin.
 
 ### Demo
 
@@ -287,7 +287,7 @@ How to understand this demo:
 <info-box hint>
 **What's next?**
 
-Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
+Having read this guide, you know how to communicate with the editor, but remember that CKEditor&nbsp;5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
 
-If you would like to integrate your CKEditor 5 installation with the Angular, React, and Vue.js JavaScript frameworks, {@link installation/integrations/overview we have dedicated guides for that}.
+If you would like to integrate your CKEditor&nbsp;5 installation with the Angular, React, and Vue.js JavaScript frameworks, {@link installation/integrations/overview we have dedicated guides for that}.
 </info-box>
