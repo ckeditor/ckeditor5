@@ -7,7 +7,8 @@ import type {
 	BalloonToolbar,
 	BlockToolbar,
 	ContextualBalloon,
-	Notification
+	Notification,
+	Modal
 } from './index';
 
 import type {
@@ -94,6 +95,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ BalloonToolbar.pluginName ]: BalloonToolbar;
 		[ BlockToolbar.pluginName ]: BlockToolbar;
 		[ ContextualBalloon.pluginName ]: ContextualBalloon;
+		[ Modal.pluginName ]: Modal;
 		[ Notification.pluginName ]: Notification;
 	}
 }

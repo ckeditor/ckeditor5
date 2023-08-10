@@ -80,6 +80,8 @@ export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarcon
 export { default as BalloonToolbar, type BalloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar';
 
+export { default as Modal } from './modal/modal';
+
 export { default as View, type UIViewRenderEvent } from './view';
 export { default as ViewCollection } from './viewcollection';
 

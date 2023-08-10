@@ -12,6 +12,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "39.0.1",
+    "@ckeditor/ckeditor5-theme-lark": "39.0.1",
     "@ckeditor/ckeditor5-utils": "39.0.1",
     "color-convert": "2.0.1",
     "color-parse": "1.4.2",
@@ -37,6 +38,7 @@
     "@ckeditor/ckeditor5-mention": "39.0.1",
     "@ckeditor/ckeditor5-paragraph": "39.0.1",
     "@ckeditor/ckeditor5-source-editing": "39.0.1",
+    "@ckeditor/ckeditor5-special-characters": "39.0.1",
     "@ckeditor/ckeditor5-table": "39.0.1",
     "@ckeditor/ckeditor5-typing": "39.0.1",
     "@types/color-convert": "2.0.0",
