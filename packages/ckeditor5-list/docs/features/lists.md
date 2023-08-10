@@ -11,6 +11,7 @@ The list feature lets you create ordered (numbered) and unordered (bulleted) lis
 
 <info-box warning>
 	We will replace the regular lists feature with the new document lists in the upcoming releases. Consider migrating if you need that functionality. If you wish to switch to the document lists feature, you need to {@link features/document-lists#installation install it} first.
+	See [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) for more details.
 </info-box>
 
 {@snippet features/lists-source}
