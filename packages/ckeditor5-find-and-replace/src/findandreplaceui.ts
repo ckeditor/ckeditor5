@@ -8,12 +8,11 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { createDropdown, CssTransitionDisablerMixin, type DropdownView, type ViewWithCssTransitionDisabler } from 'ckeditor5/src/ui';
+import { ButtonView, CssTransitionDisablerMixin, type DropdownView, type ViewWithCssTransitionDisabler } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 import loupeIcon from '../theme/icons/find-replace.svg';
 import type FindAndReplaceEditing from './findandreplaceediting';
-import type FindCommand from './findcommand';
 import type FindNextCommand from './findnextcommand';
 import type FindPreviousCommand from './findpreviouscommand';
 import type ReplaceCommand from './replacecommand';
@@ -55,44 +54,55 @@ export default class FindAndReplaceUI extends Plugin {
 
 		// Register the toolbar dropdown component.
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
-			const dropdown = createDropdown( locale );
+			const buttonView = new ButtonView( locale );
+			const formView = this.formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
+			const modal = editor.plugins.get( 'Modal' );
+			const t = editor.locale.t;
 
-			// Dropdown should be disabled when in source editing mode. See #10001.
-			const findCommand: FindCommand = editor.commands.get( 'find' )!;
-			dropdown.bind( 'isEnabled' ).to( findCommand );
-
-			dropdown.once( 'change:isOpen', () => {
-				this.formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
-
-				dropdown.panelView.children.add( this.formView );
-
-				this._setupFormView( this.formView );
+			buttonView.set( {
+				icon: loupeIcon,
+				label: t( 'Find and replace' ),
+				keystroke: 'CTRL+F',
+				tooltip: true
 			} );
 
-			// Every time a dropdown is opened, the search text field should get focused and selected for better UX.
-			// Note: Using the low priority here to make sure the following listener starts working after
-			// the default action of the drop-down is executed (i.e. the panel showed up). Otherwise,
-			// the invisible form/input cannot be focused/selected.
-			//
-			// Each time a dropdown is closed, move the focus back to the find and replace toolbar button
+			// Button should be disabled when in source editing mode. See #10001.
+			buttonView.bind( 'isEnabled' ).to( editor.commands.get( 'find' )! );
+
+			// Every time a modal is opened, the search text field should get focused and selected for better UX.
+			// Each time a modal is closed, move the focus back to the find and replace toolbar button
 			// and let the find and replace editing feature know that all search results can be invalidated
 			// and no longer should be marked in the content.
-			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
-				if ( isOpen ) {
-					this.formView!.disableCssTransitions();
+			buttonView.on( 'execute', () => {
+				modal.show( {
+					isDraggable: true,
 
-					this.formView!.reset();
-					this.formView!._findInputView.fieldView.select();
+					onShow: modal => {
+						modal.view.children.add( formView );
+						modal.view.showHeader( t( 'Find and replace' ) );
 
-					this.formView!.enableCssTransitions();
-				} else {
-					this.fire( 'searchReseted' );
-				}
-			}, { priority: 'low' } );
+						formView.disableCssTransitions();
 
-			this._setupDropdownButton( dropdown );
+						formView.reset();
+						formView._findInputView.fieldView.select();
 
-			return dropdown;
+						formView.enableCssTransitions();
+					},
+
+					onHide: () => {
+						this.fire( 'searchReseted' );
+					}
+				} );
+			} );
+
+			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
+				buttonView.fire( 'execute' );
+				cancelEvent();
+			} );
+
+			this._setupFormView( formView );
+
+			return buttonView;
 		} );
 	}
 

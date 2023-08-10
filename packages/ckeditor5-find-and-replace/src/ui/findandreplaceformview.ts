@@ -10,7 +10,6 @@
 import {
 	View,
 	ButtonView,
-	FormHeaderView,
 	LabeledFieldView,
 
 	Model,
@@ -315,9 +314,6 @@ export default class FindAndReplaceFormView extends View {
 				tabindex: '-1'
 			},
 			children: [
-				new FormHeaderView( locale, {
-					label: t( 'Find and replace' )
-				} ),
 				this._findFieldsetView,
 				this._replaceFieldsetView
 			]
