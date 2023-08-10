@@ -156,11 +156,13 @@ export default class DocumentListEditing extends Plugin {
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
 
-		editor.commands.add( 'mergeListItemBackward', new DocumentListMergeCommand( editor, 'backward' ) );
-		editor.commands.add( 'mergeListItemForward', new DocumentListMergeCommand( editor, 'forward' ) );
-
 		editor.commands.add( 'splitListItemBefore', new DocumentListSplitCommand( editor, 'before' ) );
 		editor.commands.add( 'splitListItemAfter', new DocumentListSplitCommand( editor, 'after' ) );
+
+		if ( multiBlock ) {
+			editor.commands.add( 'mergeListItemBackward', new DocumentListMergeCommand( editor, 'backward' ) );
+			editor.commands.add( 'mergeListItemForward', new DocumentListMergeCommand( editor, 'forward' ) );
+		}
 
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
@@ -222,8 +224,8 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupDeleteIntegration() {
 		const editor = this.editor;
-		const mergeBackwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemBackward' )!;
-		const mergeForwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemForward' )!;
+		const mergeBackwardCommand: DocumentListMergeCommand | undefined = editor.commands.get( 'mergeListItemBackward' );
+		const mergeForwardCommand: DocumentListMergeCommand | undefined = editor.commands.get( 'mergeListItemForward' );
 
 		this.listenTo<ViewDocumentDeleteEvent>( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
@@ -262,7 +264,7 @@ export default class DocumentListEditing extends Plugin {
 					}
 					// Merge block with previous one (on the block level or on the content level).
 					else {
-						if ( !mergeBackwardCommand.isEnabled ) {
+						if ( !mergeBackwardCommand || !mergeBackwardCommand.isEnabled ) {
 							return;
 						}
 
@@ -281,7 +283,7 @@ export default class DocumentListEditing extends Plugin {
 						return;
 					}
 
-					if ( !mergeForwardCommand.isEnabled ) {
+					if ( !mergeForwardCommand || !mergeForwardCommand.isEnabled ) {
 						return;
 					}
 
