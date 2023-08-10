@@ -221,7 +221,7 @@ editor.model.change( writer => {
 // Place it at the beginning.
 editor.model.change( writer => {
 	writer.setSelection(
-		writer.createPositionAt( editor.model.document.getRoot(), [ 0 ] )
+		writer.createPositionAt( editor.model.document.getRoot(), 0 )
 	);
 } );
 
