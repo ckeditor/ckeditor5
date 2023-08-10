@@ -93,13 +93,6 @@ export default class DocumentListCommand extends Command {
 					changedBlocks.push( ...splitListItemBefore( itemBlocks[ 1 ], writer ) );
 				}
 
-				// Convert simple list items to plain paragraphs.
-				for ( const block of blocks ) {
-					if ( block.is( 'element', 'listItem' ) ) {
-						writer.rename( block, 'paragraph' );
-					}
-				}
-
 				// Strip list attributes.
 				changedBlocks.push( ...removeListAttributes( blocks, writer ) );
 

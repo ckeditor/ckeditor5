@@ -393,6 +393,14 @@ export function removeListAttributes(
 ): Array<Element> {
 	blocks = toArray( blocks );
 
+	// Convert simple list items to plain paragraphs.
+	for ( const block of blocks ) {
+		if ( block.is( 'element', 'listItem' ) ) {
+			writer.rename( block, 'paragraph' );
+		}
+	}
+
+	// Remove list attributes.
 	for ( const block of blocks ) {
 		for ( const attributeKey of block.getAttributeKeys() ) {
 			if ( attributeKey.startsWith( 'list' ) ) {
@@ -548,6 +556,8 @@ export function getSelectedBlockObject( model: Model ): Element | null {
 
 /**
  * Checks whether the given block can be replaced by a listItem.
+ *
+ * Note that this is possible only when multiBlock = false option is set in feature config.
  *
  * @param block A block to be tested.
  * @param schema The schema of the document.
