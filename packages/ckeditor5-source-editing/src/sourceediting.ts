@@ -10,7 +10,7 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { ButtonView, View } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
 
@@ -124,6 +124,99 @@ export default class SourceEditing extends Plugin {
 
 			this.listenTo( buttonView, 'execute', () => {
 				this.isSourceEditingMode = !this.isSourceEditingMode;
+			} );
+
+			return buttonView;
+		} );
+
+		editor.ui.componentFactory.add( 'sourceEditingModal', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Source' ),
+				icon: sourceEditingIcon,
+				tooltip: true,
+				withText: true,
+				class: 'ck-source-editing-button'
+			} );
+
+			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
+
+			// The button should be disabled if one of the following conditions is met:
+			buttonView.bind( 'isEnabled' ).to(
+				this, 'isEnabled',
+				editor, 'isReadOnly',
+				editor.plugins.get( PendingActions ), 'hasAny',
+				( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
+					// (1) The plugin itself is disabled.
+					if ( !isEnabled ) {
+						return false;
+					}
+
+					// (2) The editor is in read-only mode.
+					if ( isEditorReadOnly ) {
+						return false;
+					}
+
+					// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
+					// until the model is finally set.
+					if ( hasAnyPendingActions ) {
+						return false;
+					}
+
+					return true;
+				}
+			);
+
+			this.listenTo( buttonView, 'execute', () => {
+				const modal = editor.plugins.get( 'Modal' );
+
+				modal.show( {
+					isDraggable: true,
+
+					onShow: modal => {
+						// modal.view.children.add( specialCharactersView );
+						modal.view.showHeader( t( 'Source Editing' ) );
+
+						const data = formatSource( editor.data.get( { rootName: 'main' } ) );
+						const textareaView = new View( locale );
+
+						textareaView.setTemplate( {
+							tag: 'textarea',
+							attributes: {
+								class: [ 'ck', 'ck-source-editing-modal-source' ],
+								rows: '1',
+								'aria-label': 'Source code editing area'
+							}
+						} );
+
+						textareaView.render();
+
+						const textareaDomElement = textareaView.element as HTMLTextAreaElement;
+						textareaDomElement.value = data;
+
+						modal.view.children.add( textareaView );
+						modal.view.setActionButtons( [
+							{
+								label: t( 'Cancel' ),
+								withText: true,
+								onExecute: () => modal.hide()
+							},
+							{
+								label: t( 'Save' ),
+								class: 'ck-button-action',
+								withText: true,
+								onExecute: () => {
+									editor.data.set( textareaDomElement.value );
+									modal.hide();
+								}
+							}
+						] );
+
+						textareaDomElement.setSelectionRange( 0, 0 );
+						textareaDomElement.focus();
+					}
+				} );
 			} );
 
 			return buttonView;
