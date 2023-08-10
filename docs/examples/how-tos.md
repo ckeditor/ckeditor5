@@ -109,7 +109,7 @@ If you have a reference to the editor editable's DOM element (the one with the `
 
 ```js
 // A reference to the editor editable element in the DOM.
-const domEditableElement = document.querySelector( '.ck-editor__editable' );
+const domEditableElement = document.querySelector( '.ck-editor__editable_inline' );
 
 // Get the editor instance from the editable element.
 const editorInstance = domEditableElement.ckeditorInstance;
