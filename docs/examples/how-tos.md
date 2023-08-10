@@ -375,9 +375,7 @@ class Forms extends Plugin {
 
 				// Find the `formName` model element and consume everything inside the model element range,
 				// so it won't get converted by any other downcast converters.
-				for ( const { item } of editor.model.createRangeIn(
-					modelElement
-				) ) {
+				for ( const { item } of editor.model.createRangeIn( modelElement ) ) {
 					if ( item.is( 'element', 'formName' ) ) {
 						nameModelElement = modelElement.getChild( 0 );
 					}
