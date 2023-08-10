@@ -185,7 +185,8 @@ const tasks = new Listr( [
 					...ctx.updatedFiles
 				]
 			} );
-		}
+		},
+		skip: cliArguments.nightly
 	}
 ], getListrOptions( cliArguments ) );
 
