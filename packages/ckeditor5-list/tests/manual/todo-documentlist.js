@@ -23,6 +23,7 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import DocumentList from '../../src/documentlist';
 import Todo from '../../src/todo';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -43,14 +44,15 @@ ClassicEditor
 			DocumentList,
 			Todo,
 			SourceEditing,
-			GeneralHtmlSupport
+			GeneralHtmlSupport,
+			Alignment
 		],
 		toolbar: [
 			'heading',
 			'|',
 			'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent',
 			'|',
-			'bold', 'link', 'insertTable', 'fontSize',
+			'bold', 'link', 'insertTable', 'fontSize', 'alignment',
 			'|',
 			'undo', 'redo', '|', 'sourceEditing'
 		],

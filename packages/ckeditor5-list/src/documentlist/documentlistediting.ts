@@ -397,6 +397,22 @@ export default class DocumentListEditing extends Plugin {
 				view: 'li',
 				model: ( viewElement, { writer } ) => writer.createElement( 'paragraph', { listType: '' } )
 			} )
+			// Convert paragraph to the list block (without list type defined yet).
+			// This is important to properly handle bogus paragraph and to-do lists.
+			// Most of the time the bogus paragraph should not appear in the data of to-do list,
+			// but if there is any marker or an attribute on the paragraph then the bogus paragraph
+			// is preserved in the data, and we need to be able to detect this case.
+			.elementToElement( {
+				view: 'p',
+				model: ( viewElement, { writer } ) => {
+					if ( viewElement.parent && viewElement.parent.is( 'element', 'li' ) ) {
+						return writer.createElement( 'paragraph', { listType: '' } );
+					}
+
+					return null;
+				},
+				converterPriority: 'high'
+			} )
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 				dispatcher.on<UpcastElementEvent>( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
