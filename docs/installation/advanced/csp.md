@@ -67,4 +67,4 @@ This comes with some trade–offs, though. For example, it requires you to:
 * Load images in the content from the same host.
 * Load previewable media in the content from the same host.
 * Give up certain features that use inline styles like {@link features/font font} or {@link features/text-alignment text alignment}.
-* Give up pasting images from the clipboard or {@link features/paste-from-office from Word}.
+* Give up pasting images from the clipboard or {@link features/paste-from-office from Office}.
