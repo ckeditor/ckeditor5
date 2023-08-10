@@ -135,12 +135,17 @@ export default class DocumentListEditing extends Plugin {
 			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'ListEditing' } );
 		}
 
+		model.schema.register( '$listItem', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+
 		if ( multiBlock ) {
-			model.schema.extend( '$container', { allowAttributes: LIST_BASE_ATTRIBUTES } );
-			model.schema.extend( '$block', { allowAttributes: LIST_BASE_ATTRIBUTES } );
-			model.schema.extend( '$blockObject', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+			model.schema.extend( '$container', { allowAttributesOf: '$listItem' } );
+			model.schema.extend( '$block', { allowAttributesOf: '$listItem' } );
+			model.schema.extend( '$blockObject', { allowAttributesOf: '$listItem' } );
 		} else {
-			model.schema.register( 'listItem', { allowAttributes: LIST_BASE_ATTRIBUTES, inheritAllFrom: '$block' } );
+			model.schema.register( 'listItem', {
+				inheritAllFrom: '$block',
+				allowAttributesOf: '$listItem'
+			} );
 		}
 
 		for ( const attribute of LIST_BASE_ATTRIBUTES ) {

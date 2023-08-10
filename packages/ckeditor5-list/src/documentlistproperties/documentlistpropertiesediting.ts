@@ -89,10 +89,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
 
-			// TODO
-			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
-			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
-			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
+			model.schema.extend( '$listItem', { allowAttributes: strategy.attributeName } );
 
 			// Register downcast strategy.
 			documentListEditing.registerDowncastStrategy( {
