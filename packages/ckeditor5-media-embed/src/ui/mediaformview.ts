@@ -18,7 +18,6 @@ import {
 	submitHandler
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -50,16 +49,6 @@ export default class MediaFormView extends View {
 	 * The URL input view.
 	 */
 	public urlInputView: LabeledFieldView<InputTextView>;
-
-	/**
-	 * The Save button view.
-	 */
-	public saveButtonView: ButtonView;
-
-	/**
-	 * The Cancel button view.
-	 */
-	public cancelButtonView: ButtonView;
 
 	/**
 	 * A collection of views that can be focused in the form.
@@ -94,18 +83,10 @@ export default class MediaFormView extends View {
 	constructor( validators: Array<( v: MediaFormView ) => string | undefined>, locale: Locale ) {
 		super( locale );
 
-		const t = locale.t;
-
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.set( 'mediaURLInputValue', '' );
 		this.urlInputView = this._createUrlInput();
-
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
-		this.saveButtonView.type = 'submit';
-		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
-
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
 
 		this._focusables = new ViewCollection();
 
@@ -138,9 +119,7 @@ export default class MediaFormView extends View {
 			},
 
 			children: [
-				this.urlInputView,
-				this.saveButtonView,
-				this.cancelButtonView
+				this.urlInputView
 			]
 		} );
 	}
@@ -156,9 +135,7 @@ export default class MediaFormView extends View {
 		} );
 
 		const childViews = [
-			this.urlInputView,
-			this.saveButtonView,
-			this.cancelButtonView
+			this.urlInputView
 		];
 
 		childViews.forEach( v => {

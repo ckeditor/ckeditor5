@@ -16,6 +16,7 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import '../../theme/components/modal/modal.css';
 import ButtonView from '../button/buttonview';
+import type Button from '../button/button';
 
 export default class Modal extends Plugin {
 	public readonly view: ModalView;
@@ -382,6 +383,6 @@ class ModalActionsView extends View {
 }
 
 type ModalActionButtonDefinition =
-	Pick<ButtonView, 'label' | 'withText' | 'class' | 'icon'>
-	&
+	Pick<Button, 'label'> &
+	Partial<Pick<Button, 'withText' | 'class' | 'icon'>> &
 	{ onExecute: Function };
