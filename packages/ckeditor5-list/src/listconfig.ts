@@ -33,6 +33,13 @@ export interface ListConfig {
 	 * Read more in {@link module:list/listconfig~ListPropertiesConfig}.
 	 */
 	properties?: ListPropertiesConfig;
+
+	/**
+	 * Allows multiple blocks in single list item.
+	 *
+	 * @default true
+	 */
+	multiBlock?: boolean;
 }
 
 /**

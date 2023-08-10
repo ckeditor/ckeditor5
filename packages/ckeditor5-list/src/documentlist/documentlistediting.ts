@@ -9,6 +9,7 @@
 
 import {
 	Plugin,
+	type Editor,
 	type MultiCommand
 } from 'ckeditor5/src/core';
 
@@ -110,9 +111,19 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'list.multiBlock', true );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
+		const multiBlock = editor.config.get( 'list.multiBlock' )!;
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
@@ -124,9 +135,13 @@ export default class DocumentListEditing extends Plugin {
 			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'ListEditing' } );
 		}
 
-		model.schema.extend( '$container', { allowAttributes: LIST_BASE_ATTRIBUTES } );
-		model.schema.extend( '$block', { allowAttributes: LIST_BASE_ATTRIBUTES } );
-		model.schema.extend( '$blockObject', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+		if ( multiBlock ) {
+			model.schema.extend( '$container', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+			model.schema.extend( '$block', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+			model.schema.extend( '$blockObject', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+		} else {
+			model.schema.register( 'listItem', { allowAttributes: LIST_BASE_ATTRIBUTES, inheritAllFrom: '$block' } );
+		}
 
 		for ( const attribute of LIST_BASE_ATTRIBUTES ) {
 			model.schema.setAttributeProperties( attribute, {
@@ -389,9 +404,11 @@ export default class DocumentListEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const attributeNames = this._getListAttributeNames();
+		const multiBlock = editor.config.get( 'list.multiBlock' )!;
+		const elementName = multiBlock ? 'paragraph' : 'listItem';
 
 		editor.conversion.for( 'upcast' )
-			.elementToElement( { view: 'li', model: 'paragraph' } )
+			.elementToElement( { view: 'li', model: elementName } )
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 				dispatcher.on<UpcastElementEvent>( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
@@ -400,15 +417,15 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
-				model: 'paragraph',
-				view: bogusParagraphCreator( attributeNames ),
+				model: elementName,
+				view: bogusParagraphCreator( attributeNames, { multiBlock } ),
 				converterPriority: 'high'
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
-				model: 'paragraph',
-				view: bogusParagraphCreator( attributeNames, { dataPipeline: true } ),
+				model: elementName,
+				view: bogusParagraphCreator( attributeNames, { dataPipeline: true, multiBlock } ),
 				converterPriority: 'high'
 			} );
 

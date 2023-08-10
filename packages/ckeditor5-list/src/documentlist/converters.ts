@@ -361,11 +361,11 @@ export function listItemDowncastConverter(
  */
 export function bogusParagraphCreator(
 	attributeNames: Array<string>,
-	{ dataPipeline }: { dataPipeline?: boolean } = {}
+	{ dataPipeline, multiBlock }: { dataPipeline?: boolean; multiBlock: boolean }
 ): ElementCreatorFunction {
 	return ( modelElement, { writer } ) => {
 		// Convert only if a bogus paragraph should be used.
-		if ( !shouldUseBogusParagraph( modelElement, attributeNames ) ) {
+		if ( multiBlock && !shouldUseBogusParagraph( modelElement, attributeNames ) ) {
 			return null;
 		}
 
