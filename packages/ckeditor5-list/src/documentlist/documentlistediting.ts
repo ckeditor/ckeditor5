@@ -416,6 +416,21 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: elementName } )
+			// Convert paragraph to the list item block (without list type defined yet).
+			// This is important to properly handle simple lists so that paragraphs inside a list item won't break the list item.
+			// <li>  <-- converted to listItem
+			//   <p></p> <-- should be also converted to listItem, so it won't split and replace the listItem generated from the above li.
+			.elementToElement( {
+				view: 'p',
+				model: ( viewElement, { writer } ) => {
+					if ( viewElement.parent && viewElement.parent.is( 'element', 'li' ) ) {
+						return writer.createElement( elementName );
+					}
+
+					return null;
+				},
+				converterPriority: 'high'
+			} )
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 				dispatcher.on<UpcastElementEvent>( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
