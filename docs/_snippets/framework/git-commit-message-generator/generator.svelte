@@ -8,7 +8,7 @@
 	let commits = [ {
 		id: id,
 		type: '',
-		packageName: '',
+		packageName: [],
 		message: '',
 		description: ''
 	} ];
@@ -23,7 +23,7 @@
 		commits = commits.concat( {
 			id: ++id,
 			type: '',
-			packageName: '',
+			packageName: [],
 			message: '',
 			description: ''
 		} );

@@ -72,6 +72,17 @@
 		'widget',
 		'word-count'
 	];
+
+	function handleMultiselectValueAdded( items ) {
+		onValueChanged(commit.id, 'packageName', items );
+	}
+
+	function handleMultiselectValueRemoved( items ) {
+		const itemsArr = Array.isArray(items) ? items : [ items ];
+		onValueChanged(commit.id, 'packageName', commit.packageName.filter(p => !itemsArr
+			.map(i => i.value).includes(p.value)
+		));
+	}
 </script>
 
 <div>
@@ -84,9 +95,11 @@
 		/>
 		<Select
 			items={scopes}
+			multiple={true}
 			placeholder="(scope)"
 			value={commit.packageName}
-			on:change={event => onValueChanged(commit.id, 'packageName', event.detail.value)}
+			on:change={event => handleMultiselectValueAdded(event.detail)}
+			on:clear={event => handleMultiselectValueRemoved(event.detail)}
 		/>
 		<input
 			type="text"
