@@ -124,7 +124,7 @@ function ModalWithText( editor ) {
 		const buttonView = new ButtonView( locale );
 
 		buttonView.set( {
-			label: t( 'Show text' ),
+			label: t( 'Show modal' ),
 			tooltip: true,
 			withText: true
 		} );
@@ -148,6 +148,7 @@ function ModalWithText( editor ) {
 								maxWidth: '500px'
 							}
 						},
+						tabindex: -1,
 						children: [
 							`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
 							magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
@@ -160,8 +161,13 @@ function ModalWithText( editor ) {
 					modal.view.children.add( textView );
 					modal.view.setActionButtons( [
 						{
-							label: t( 'Close' ),
+							label: t( 'Let\'s do this!' ),
 							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => modal.hide()
+						},
+						{
+							label: t( 'Cancel' ),
 							withText: true,
 							onExecute: () => modal.hide()
 						}
