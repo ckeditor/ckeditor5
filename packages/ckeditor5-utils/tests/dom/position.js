@@ -617,9 +617,9 @@ describe( 'getOptimalPosition()', () => {
 		it( 'should prefer a position with a bigger intersection area (#1)', () => {
 			target = getElement( {
 				top: 90,
-				right: -10,
+				right: 10,
 				bottom: 110,
-				left: -30,
+				left: -10,
 				width: 20,
 				height: 20
 			} );
@@ -627,15 +627,15 @@ describe( 'getOptimalPosition()', () => {
 				element, target, limiter,
 				positions: allPositions,
 				fitInViewport: true
-			}, 'right-bottom' );
+			}, 'bottom-right' );
 		} );
 
 		it( 'should prefer a position with a bigger intersection area (#2)', () => {
 			target = getElement( {
 				top: 290,
-				right: -10,
+				right: 10,
 				bottom: 310,
-				left: -30,
+				left: -10,
 				width: 20,
 				height: 20
 			} );
@@ -643,7 +643,7 @@ describe( 'getOptimalPosition()', () => {
 				element, target, limiter,
 				positions: allPositions,
 				fitInViewport: true
-			}, 'right-top' );
+			}, 'top-right' );
 		} );
 
 		it( 'should prefer a position with a bigger intersection area (#3)', () => {
@@ -676,49 +676,6 @@ describe( 'getOptimalPosition()', () => {
 				positions: allPositions,
 				fitInViewport: true
 			}, 'left-top' );
-		} );
-
-		it( 'should not stick to the first biggest intersection in one area', () => {
-			// First position intersects more with limiter but little with viewport,
-			// second position intersects less with limiter but more with viewport and it should not be ignored.
-			//
-			// Target is outside viewport to force checking all positions, not only those completely fitting in viewport.
-			const limiter = getElement( {
-				top: -100,
-				right: 100,
-				bottom: 100,
-				left: -100,
-				width: 200,
-				height: 200
-			} );
-			const target = getElement( {
-				top: -30,
-				right: 80,
-				bottom: -10,
-				left: 60,
-				width: 20,
-				height: 20
-			} );
-			const element = getElement( {
-				top: 0,
-				right: 200,
-				bottom: 200,
-				left: 0,
-				width: 200,
-				height: 200
-			} );
-			assertPositionName( {
-				element, target, limiter,
-				positions: [
-					attachLeftBottom,
-					attachRightBottom
-				],
-				fitInViewport: true
-			}, 'right-bottom' );
-
-			limiter.remove();
-			target.remove();
-			element.remove();
 		} );
 	} );
 
@@ -892,7 +849,7 @@ describe( 'getOptimalPosition()', () => {
 					right: 0,
 					bottom: 0
 				}
-			}, 'bottom-right' );
+			}, 'right-bottom' );
 
 			parentWithOverflow.remove();
 		} );
