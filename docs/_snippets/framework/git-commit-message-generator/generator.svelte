@@ -46,17 +46,17 @@
 	}
 
 	function handleOnCommitValueChanged( commitId, propertyName, newValue ) {
-		// TODO check if there is a better implementation
-		const newCommit = commits.find( commit => commit.id === commitId );
-		newCommit[propertyName] = newValue;
-		commits = commits;
+		commits = commits.map( commit => commit.id === commitId ?
+			( { ...commit, [propertyName]: newValue } ) :
+			commit
+		);
 	}
 
 	function handleOnBreakingChangeValueChanged( breakingChangeId, propertyName, newValue ) {
-		// TODO check if there is a better implementation
-		const newCommit = breakingChanges.find( breakingChange => breakingChange.id === breakingChangeId );
-		newCommit[propertyName] = newValue;
-		breakingChanges = breakingChanges;
+		breakingChanges = breakingChanges.map( breakingChange => breakingChange.id === breakingChangeId ?
+			( { ...breakingChange, [propertyName]: newValue } ) :
+			breakingChangeId
+		);
 	}
 </script>
 
@@ -76,7 +76,6 @@
 			breakingChange={breakingChange}
 			onRemoveClick={handleRemoveBreakingChangeClick}
 			onValueChanged={handleOnBreakingChangeValueChanged}
-
 		/>
 	{/each}
 	<button type="button" on:click={handleAddNewBreakingChangeClick}>New Breaking Change</button>
