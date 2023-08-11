@@ -60,6 +60,7 @@ export { default as LabelView } from './label/labelview';
 export { default as LabeledFieldView } from './labeledfield/labeledfieldview';
 export * from './labeledfield/utils';
 
+export { default as ListItemGroupView } from './list/listitemgroupview';
 export { default as ListItemView } from './list/listitemview';
 export { default as ListView } from './list/listview';
 
