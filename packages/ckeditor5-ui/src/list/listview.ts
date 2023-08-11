@@ -10,9 +10,10 @@
 import View from '../view';
 import FocusCycler from '../focuscycler';
 
-import type ListItemView from './listitemview';
+import ListItemView from './listitemview';
+import ListItemGroupView from './listitemgroupview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
-import type ViewCollection from '../viewcollection';
+import ViewCollection from '../viewcollection';
 
 import {
 	FocusTracker,
@@ -28,6 +29,11 @@ import '../../theme/components/list/list.css';
  * The list view class.
  */
 export default class ListView extends View<HTMLUListElement> implements DropdownPanelFocusable {
+	/**
+	 * TODO
+	 */
+	public readonly focusables: ViewCollection;
+
 	/**
 	 * Collection of the child list views.
 	 */
@@ -70,12 +76,13 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 
 		const bind = this.bindTemplate;
 
+		this.focusables = new ViewCollection();
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
 		this._focusCycler = new FocusCycler( {
-			focusables: this.items,
+			focusables: this.focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
@@ -113,17 +120,52 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	public override render(): void {
 		super.render();
 
+		const registerItem = ( item: ListItemView ) => {
+			if ( this.focusables.has( item ) ) {
+				return;
+			}
+
+			this.focusTracker.add( item.element! );
+			this.focusables.add( item );
+		};
+
+		const registerGroupItems = ( group: ListItemGroupView ) => {
+			for ( const child of group.items ) {
+				registerItem( child );
+			}
+		};
+
 		// Items added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
-			this.focusTracker.add( item.element! );
+			if ( item instanceof ListItemView ) {
+				registerItem( item );
+			} else if ( item instanceof ListItemGroupView ) {
+				registerGroupItems( item );
+			}
 		}
 
 		this.items.on<CollectionAddEvent<ListItemView>>( 'add', ( evt, item ) => {
-			this.focusTracker.add( item.element! );
+			if ( item instanceof ListItemView ) {
+				registerItem( item );
+			}
+
+			if ( item instanceof ListItemGroupView ) {
+				registerGroupItems( item );
+			}
 		} );
 
 		this.items.on<CollectionRemoveEvent<ListItemView>>( 'remove', ( evt, item ) => {
-			this.focusTracker.remove( item.element! );
+			if ( item instanceof ListItemView ) {
+				this.focusTracker.remove( item.element! );
+				this.focusables.remove( item );
+			}
+
+			if ( item instanceof ListItemGroupView ) {
+				for ( const child of item.items ) {
+					this.focusTracker.remove( child.element! );
+					this.focusables.remove( child );
+				}
+			}
 		} );
 
 		// Start listening for the keystrokes coming from #element.
