@@ -112,6 +112,9 @@ export default class SpecialCharacters extends Plugin {
 						modal.hide();
 						editor.editing.view.focus();
 					} );
+
+					specialCharactersView.focusCycler.on( 'forwardCycle', () => modal.view.focusNext() );
+					specialCharactersView.focusCycler.on( 'backwardCycle', () => modal.view.focusPrevious() );
 				}
 
 				modal.show( {
@@ -125,8 +128,6 @@ export default class SpecialCharacters extends Plugin {
 							character: null,
 							name: t( 'Select a character to learn more...' )
 						} );
-
-						specialCharactersView.focus();
 					}
 				} );
 			} );

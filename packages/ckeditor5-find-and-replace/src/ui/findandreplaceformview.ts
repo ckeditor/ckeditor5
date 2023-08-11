@@ -204,7 +204,7 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
 	 */
-	private readonly _focusCycler: FocusCycler;
+	public readonly focusCycler: FocusCycler;
 
 	public declare locale: Locale;
 
@@ -290,7 +290,7 @@ export default class FindAndReplaceFormView extends View {
 
 		this._focusables = new ViewCollection();
 
-		this._focusCycler = new FocusCycler( {
+		this.focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this._focusTracker,
 			keystrokeHandler: this._keystrokes,
@@ -346,7 +346,21 @@ export default class FindAndReplaceFormView extends View {
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	public focus(): void {
-		this._focusCycler.focusFirst();
+		this.focusFirst();
+	}
+
+	/**
+	 * TODO
+	 */
+	public focusFirst(): void {
+		this.focusCycler.focusFirst();
+	}
+
+	/**
+	 * TODO
+	 */
+	public focusLast(): void {
+		this.focusCycler.focusLast();
 	}
 
 	/**

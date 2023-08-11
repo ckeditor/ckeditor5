@@ -107,10 +107,7 @@ export default class MediaEmbedUI extends Plugin {
 					// didn't change the selection), they would see the old value instead of the actual value of the
 					// command.
 					mediaForm.url = command.value || '';
-
 					mediaForm.urlInputView.fieldView.select();
-					mediaForm.urlInputView.focus();
-
 					mediaForm.enableCssTransitions();
 				},
 
@@ -142,6 +139,8 @@ export default class MediaEmbedUI extends Plugin {
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		form.urlInputView.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		form.focusCycler.on( 'forwardCycle', () => modal.view.focusNext() );
+		form.focusCycler.on( 'backwardCycle', () => modal.view.focusPrevious() );
 	}
 }
 

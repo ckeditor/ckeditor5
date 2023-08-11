@@ -139,6 +139,7 @@ export default class FindAndReplaceUI extends Plugin {
 		const findAndReplaceEditing: FindAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
 		const editingState = findAndReplaceEditing.state!;
 		const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
+		const modal = this.editor.plugins.get( 'Modal' );
 
 		// Let the form know which result is being highlighted.
 		formView.bind( 'highlightOffset' ).to( editingState, 'highlightedResult', highlightedResult => {
@@ -181,6 +182,9 @@ export default class FindAndReplaceUI extends Plugin {
 				this.fire( 'searchReseted' );
 			}
 		} );
+
+		formView.focusCycler.on( 'forwardCycle', () => modal.view.focusNext() );
+		formView.focusCycler.on( 'backwardCycle', () => modal.view.focusPrevious() );
 	}
 }
 

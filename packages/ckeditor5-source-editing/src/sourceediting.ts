@@ -195,13 +195,15 @@ export default class SourceEditing extends Plugin {
 						const textareaDomElement = textareaView.element as HTMLTextAreaElement;
 						textareaDomElement.value = data;
 
+						// TODO: Proper class for textareaview.
+						Object.assign( textareaView, {
+							focus() {
+								textareaDomElement.focus();
+							}
+						} );
+
 						modal.view.children.add( textareaView );
 						modal.view.setActionButtons( [
-							{
-								label: t( 'Cancel' ),
-								withText: true,
-								onExecute: () => modal.hide()
-							},
 							{
 								label: t( 'Save' ),
 								class: 'ck-button-action',
@@ -210,11 +212,15 @@ export default class SourceEditing extends Plugin {
 									editor.data.set( textareaDomElement.value );
 									modal.hide();
 								}
+							},
+							{
+								label: t( 'Cancel' ),
+								withText: true,
+								onExecute: () => modal.hide()
 							}
 						] );
 
 						textareaDomElement.setSelectionRange( 0, 0 );
-						textareaDomElement.focus();
 					}
 				} );
 			} );

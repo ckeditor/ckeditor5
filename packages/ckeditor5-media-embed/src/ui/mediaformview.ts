@@ -58,7 +58,7 @@ export default class MediaFormView extends View {
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
 	 */
-	private readonly _focusCycler: FocusCycler;
+	public readonly focusCycler: FocusCycler;
 
 	/**
 	 * An array of form validators used by {@link #isValid}.
@@ -90,7 +90,7 @@ export default class MediaFormView extends View {
 
 		this._focusables = new ViewCollection();
 
-		this._focusCycler = new FocusCycler( {
+		this.focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
@@ -174,7 +174,7 @@ export default class MediaFormView extends View {
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	public focus(): void {
-		this._focusCycler.focusFirst();
+		this.focusCycler.focusFirst();
 	}
 
 	/**

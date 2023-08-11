@@ -39,7 +39,7 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	/**
 	 * Helps cycling over focusable {@link #items} in the view.
 	 */
-	protected readonly _focusCycler: FocusCycler;
+	public readonly focusCycler: FocusCycler;
 
 	/**
 	 * An instance of the `SpecialCharactersCategoriesView`.
@@ -74,7 +74,7 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		this._focusCycler = new FocusCycler( {
+		this.focusCycler = new FocusCycler( {
 			focusables: this.items,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
@@ -100,8 +100,8 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 			}
 		} );
 
-		this.items.add( this.gridView );
 		this.items.add( this.categoriesView );
+		this.items.add( this.gridView );
 	}
 
 	/**
@@ -131,6 +131,20 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	 * Focuses the first focusable in {@link #items}.
 	 */
 	public focus(): void {
-		this.categoriesView.focus();
+		this.focusFirst();
+	}
+
+	/**
+	 * TODO
+	 */
+	public focusFirst(): void {
+		this.focusCycler.focusFirst();
+	}
+
+	/**
+	 * TODO
+	 */
+	public focusLast(): void {
+		this.focusCycler.focusLast();
 	}
 }
