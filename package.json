@@ -142,6 +142,7 @@
     "stylelint": "^13.5.0",
     "stylelint-config-ckeditor5": "^4.0.0",
     "svgo": "^2.2.2",
+    "svelte-select": "^5.6.1",
     "table": "^6.8.1",
     "terser-webpack-plugin": "^4.2.3",
     "umberto": "^3.2.1",

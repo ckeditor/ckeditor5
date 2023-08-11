@@ -7,22 +7,22 @@
 
 	let commits = [ {
 		id: id,
-		type: 'test' + id,
+		type: '',
 		packageName: '',
 		message: '',
-		description: '123'
+		description: ''
 	} ];
 
 	let breakingChanges = [ {
 		id: breakingChangeId,
-		type: 'test' + breakingChangeId,
+		type: '',
 		message: ''
 	} ];
 
 	function handleAddNewCommitClick() {
 		commits = commits.concat( {
 			id: ++id,
-			type: 'test' + id,
+			type: '',
 			packageName: '',
 			message: '',
 			description: ''
@@ -44,6 +44,20 @@
 	function handleRemoveBreakingChangeClick( removedEntryId ) {
 		breakingChanges = breakingChanges.filter( entry => entry.id !== removedEntryId );
 	}
+
+	function handleOnCommitValueChanged( commitId, propertyName, newValue ) {
+		// TODO check if there is a better implementation
+		const newCommit = commits.find( commit => commit.id === commitId );
+		newCommit[propertyName] = newValue;
+		commits = commits;
+	}
+
+	function handleOnBreakingChangeValueChanged( breakingChangeId, propertyName, newValue ) {
+		// TODO check if there is a better implementation
+		const newCommit = breakingChanges.find( breakingChange => breakingChange.id === breakingChangeId );
+		newCommit[propertyName] = newValue;
+		breakingChanges = breakingChanges;
+	}
 </script>
 
 <div>
@@ -51,6 +65,8 @@
         <CommitForm
 			commit={commit}
 			onRemoveClick={handleRemoveCommitClick}
+			onValueChanged={handleOnCommitValueChanged}
+
 		/>
     {/each}
 	<button type="button" on:click={handleAddNewCommitClick}>New Commit</button>
@@ -59,9 +75,13 @@
 		<BreakingChangeForm
 			breakingChange={breakingChange}
 			onRemoveClick={handleRemoveBreakingChangeClick}
+			onValueChanged={handleOnBreakingChangeValueChanged}
+
 		/>
 	{/each}
 	<button type="button" on:click={handleAddNewBreakingChangeClick}>New Breaking Change</button>
 </div>
 <hr>
-<textarea/>
+<textarea style="width: 100%"/>
+<div>{JSON.stringify( commits )}</div>
+<div>{JSON.stringify( breakingChanges )}</div>
