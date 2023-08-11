@@ -11,7 +11,8 @@ import {
 	isVisible,
 	type ArrayOrItem,
 	type FocusTracker,
-	type KeystrokeHandler
+	type KeystrokeHandler,
+	EmitterMixin
 } from '@ckeditor/ckeditor5-utils';
 
 import type View from './view';
@@ -69,7 +70,7 @@ import type ViewCollection from './viewcollection';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-export default class FocusCycler {
+export default class FocusCycler extends EmitterMixin() {
 	/**
 	 * A {@link module:ui/view~View view} collection that the cycler operates on.
 	 */
@@ -116,6 +117,8 @@ export default class FocusCycler {
 		keystrokeHandler?: KeystrokeHandler;
 		actions?: FocusCyclerActions;
 	} ) {
+		super();
+
 		this.focusables = options.focusables;
 		this.focusTracker = options.focusTracker;
 		this.keystrokeHandler = options.keystrokeHandler;
@@ -210,7 +213,7 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusFirst(): void {
-		this._focus( this.first );
+		this._focus( this.first, 1 );
 	}
 
 	/**
@@ -219,7 +222,7 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusLast(): void {
-		this._focus( this.last );
+		this._focus( this.last, -1 );
 	}
 
 	/**
@@ -228,7 +231,13 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusNext(): void {
-		this._focus( this.next );
+		const next = this.next;
+
+		this._focus( next, 1 );
+
+		if ( next == this.first ) {
+			this.fire( 'forwardCycle' );
+		}
 	}
 
 	/**
@@ -237,16 +246,38 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusPrevious(): void {
-		this._focus( this.previous );
+		const previous = this.previous;
+
+		this._focus( previous, -1 );
+
+		if ( previous == this.last ) {
+			this.fire( 'backwardCycle' );
+		}
 	}
 
 	/**
 	 * Focuses the given view if it exists.
 	 */
-	private _focus( view: FocusableView | null ) {
-		if ( view ) {
-			view.focus();
+	private _focus( view: FocusableView | null, direction: 1 | -1 ) {
+		if ( !view ) {
+			return;
 		}
+
+		if ( isCompoundFocusable( view ) ) {
+			if ( direction === 1 ) {
+				view.focusFirst();
+
+				return;
+			}
+
+			if ( direction === -1 ) {
+				view.focusLast();
+
+				return;
+			}
+		}
+
+		view.focus();
 	}
 
 	/**
@@ -288,7 +319,17 @@ export default class FocusCycler {
 	}
 }
 
-export type FocusableView = View & { focus(): void };
+export type FocusableView = StandaloneFocusableView	| CompoundFocusableView;
+
+type StandaloneFocusableView = View & {
+	focus(): void;
+};
+
+type CompoundFocusableView = View & {
+	focus(): void;
+	focusFirst(): void;
+	focusLast(): void;
+};
 
 export interface FocusCyclerActions {
 	focusFirst?: ArrayOrItem<string>;
@@ -302,6 +343,15 @@ export interface FocusCyclerActions {
  *
  * @param view A view to be checked.
  */
-function isFocusable( view: View & { focus?: unknown } ) {
-	return !!( view.focus && isVisible( view.element ) );
+function isFocusable( view: View ): view is StandaloneFocusableView {
+	return !!( 'focus' in view && isVisible( view.element ) );
+}
+
+/**
+ * TODO
+ * @param view
+ * @returns
+ */
+function isCompoundFocusable( view: View ): view is CompoundFocusableView {
+	return isFocusable( view ) && 'focusFirst' in view && 'focusLast' in view;
 }
