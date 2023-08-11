@@ -152,7 +152,9 @@ export default class ModalView extends View {
 					'ck-modal-overlay',
 					bind.if( 'isDraggable', 'ck-modal-overlay__transparent' ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
-				]
+				],
+				// Prevent from editor losing focus when clicking on the modal overlay.
+				tabindex: '-1'
 			},
 			children: [
 				{
@@ -296,7 +298,7 @@ export default class ModalView extends View {
 
 		this._focusables.clear();
 
-		[ ...this.children, this.actionsView ].forEach( v => {
+		[ ...this.children, this.actionsView, this.closeButtonView ].forEach( v => {
 			this._focusables.add( v );
 			this.focusTracker.add( v.element! );
 		} );
