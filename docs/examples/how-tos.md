@@ -4,7 +4,7 @@ order: 500
 modified_at: 2023-07-17
 ---
 
-# How to's
+# How tos
 
 ## Basics
 
@@ -13,7 +13,8 @@ modified_at: 2023-07-17
 The height of the editing area can be easily controlled with CSS.
 
 ```css
-.ck.ck-content:not(.ck-comment__input *) {
+/* This selector targets the editable element (excluding comments). */
+.ck-editor__editable_inline:not(.ck-comment__input *) {
 	height: 300px;
 	overflow-y: auto;
 }
@@ -49,10 +50,10 @@ editor.editing.view.change( writer => {
 } );
 ```
 
-If you do not have the reference to the editor instance but you have access to the editable element in the DOM, you can [access it using the `ckeditorInstance` property](#how-to-get-the-editor-instance-object-from-the-dom-element) and then use the same API to set the attribute:
+If you do not have the reference to the editor instance, but you have access to the editable element in the DOM, you can [access it using the `ckeditorInstance` property](#how-to-get-the-editor-instance-object-from-the-dom-element) and then use the same API to set the attribute:
 
 ```js
-const domEditableElement = document.querySelector( '.ck-editor__editable' );
+const domEditableElement = document.querySelector( '.ck-editor__editable_inline' );
 const editorInstance = domEditableElement.ckeditorInstance;
 
 editorInstance.editing.view.change( writer => {
@@ -68,7 +69,7 @@ editorInstance.editing.view.change( writer => {
 
 ### How to check the CKEditor version?
 
-To check your editor version, open the JavaScript console available in the browser's developer tools. This is usually done through the browser's menu or by right-clicking anywhere on the page and choosing the `Inpect` option from the dropdown.
+To check your editor version, open the JavaScript console available in the browser's developer tools. This is usually done through the browser's menu or by right-clicking anywhere on the page and choosing the `Inspect` option from the dropdown.
 
 Enter the `CKEDITOR_VERSION` command to check the currently used CKEditor 5 version.
 
@@ -134,11 +135,12 @@ For example, to insert a new link at the current position, use the following sni
 editor.model.change( writer => {
 	const insertPosition = editor.model.document.selection.getFirstPosition();
 
-	writer.insertText(
+	const myLink = writer.createText(
 		'CKEditor 5 rocks!',
-		{ linkHref: 'https://ckeditor.com/' },
-		insertPosition
+		{ linkHref: 'https://ckeditor.com/' }
 	);
+
+	editor.model.insertContent( myLink, insertPosition )
 } );
 ```
 
@@ -146,14 +148,13 @@ And to insert some plain text, you can use a slightly shorter one:
 
 ```js
 editor.model.change( writer => {
-	writer.insertText(
-		'Plain text',
-		editor.model.document.selection.getFirstPosition()
-	);
+	const insertPosition = editor.model.document.selection.getFirstPosition();
+
+	editor.model.insertContent( writer.createText( 'Plain text' ), insertPosition );
 } );
 ```
 
-You may have noticed that a link is represented as a text with an attribute in the editor model. See the API of the {@link module:engine/model/writer~Writer model writer} to learn about other useful methods that can help you modify the editor model.
+You may have noticed that a link is represented as a text with an attribute in the editor model. See the API of the {@link module:engine/model/writer~Writer model writer} to learn about other useful methods that can help you modify the editor model. {@link module:engine/model/model~Model#insertContent model.insertContent} will ensure that the content can be inserted to the selected place according to the schema.
 
 To insert some longer HTML code, you can parse it to the {@link module:engine/model/documentfragment~DocumentFragment model fragment} first and then {@link module:engine/model/model~Model#insertContent insert} it into the editor model:
 
@@ -166,14 +167,13 @@ const modelFragment = editor.data.toModel( viewFragment );
 editor.model.insertContent( modelFragment );
 ```
 
+Remember, if some element or attribute does not have declared converters (whether by the dedicated feature or {@link features/html/general-html-support General HTML support) plugin then those won't get inserted.
+
 ### How to focus the editor?
 
 ```js
 // Focus the editor.
 editor.focus();
-
-// Focus the editing area of the editor.
-editor.editing.view.focus();
 ```
 
 ### How to delete selected blocks?
@@ -188,10 +188,12 @@ const lastBlock = selectedBlocks[ selectedBlocks.length - 1 ];
 editor.model.change( writer => {
 	const range = writer.createRange(
 		writer.createPositionAt( firstBlock, 0 ),
-		writer.createPositionAt( lastBlock, lastBlock.maxOffset )
+		writer.createPositionAt( lastBlock, 'end' )
 	);
 
-	writer.remove( range );
+	const selection = writer.createSelection( range )
+
+	editor.model.deleteContent( selection );
 } );
 ```
 
@@ -233,15 +235,20 @@ editor.model.change( writer => {
 } );
 ```
 
-### How to find all specific elements (e.g. links) in the editor?
+### How to find all specific elements in the editor?
+
+In the example below, we try to find all links, and store the unique ones.
 
 ```js
 const range = editor.model.createRangeIn( editor.model.document.getRoot() );
-const items = [];
+
+const links = new Set();
 
 for ( const value of range.getWalker() ) {
+	// Link is an attribute on a Text element.
 	if ( value.type === 'text' && value.item.hasAttribute( 'linkHref' ) ) {
-		console.log( value.item );
+		// Set will store only unique links, preventing duplication.
+		links.add( value.item.getAttribute( 'linkHref' ) );
 	}
 }
 ```
@@ -275,11 +282,13 @@ editor.listenTo(
 	'dblclick',
 	( evt, data ) => {
 		console.log( 'clicked' );
-		// Fire your custom actions here
+		// Fire your custom actions here.
 	},
 	{ context: 'a' }
 );
 ```
+
+There are many observers provided with our features, and you should check if there is no conflicting observer that already fires for the given DOM event.
 
 ### How to create a widget with a single view element and multiple/nested model elements?
 
