@@ -34,8 +34,8 @@
 	   it is extended to an extremely high height. Even for screens with a very high pixel density, the resizer will fulfill its role as
 	   it should, i.e. for a screen of 476 ppi the total height of the resizer will take over 350 sheets of A4 format, which is totally
 	   unrealistic height for a single table. */
-	top: -999999px;
-	bottom: -999999px;
+	top: 0;
+	bottom: 0;
 	right: var(--ck-table-column-resizer-position-offset);
 	width: var(--ck-table-column-resizer-width);
 	cursor: col-resize;
@@ -57,6 +57,8 @@
 .ck.ck-editor__editable .table .ck-table-column-resizer__active {
 	background-color: var(--ck-color-selector-column-resizer-hover);
 	opacity: 0.25;
+	top: -999999px;
+	bottom: -999999px;
 }
 
 .ck.ck-editor__editable[dir=rtl] .table .ck-table-column-resizer {
