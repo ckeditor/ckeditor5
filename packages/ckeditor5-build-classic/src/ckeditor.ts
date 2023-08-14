@@ -11,30 +11,50 @@ import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { Table, TableToolbar, TableProperties, TableCellProperties, TableColumnResize, TableCaption } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { Mention, MentionUI, MentionEditing } from '@ckeditor/ckeditor5-mention';
+import VideoToolbar from '@flockjay/ckeditor5-video/src/videotoolbar.js';
+import Video from '@flockjay/ckeditor5-video/src/video.js';
+import VideoUpload from '@flockjay/ckeditor5-video/src/videoupload.js';
+import VideoResize from '@flockjay/ckeditor5-video/src/videoresize.js';
+import VideoStyle from '@flockjay/ckeditor5-video/src/videostyle.js';
+import VideoInsert from '@flockjay/ckeditor5-video/src/videoinsert.js';
+import {
+	Emoji,
+	EmojiActivity,
+	EmojiFlags,
+	EmojiFood,
+	EmojiNature,
+	EmojiObjects,
+	EmojiPeople,
+	EmojiPlaces,
+	EmojiSymbols
+} from '@phudak/ckeditor5-emoji/src';
+import '../theme/emoji.css';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 export default class ClassicEditor extends ClassicEditorBase {
 	public static override builtinPlugins = [
+		Alignment,
 		Essentials,
 		UploadAdapter,
 		Autoformat,
 		Bold,
 		Italic,
 		BlockQuote,
-		CKBox,
 		CKFinder,
 		CloudServices,
 		EasyImage,
@@ -45,26 +65,68 @@ export default class ClassicEditor extends ClassicEditorBase {
 		ImageToolbar,
 		ImageUpload,
 		Indent,
+		IndentBlock,
 		Link,
 		List,
 		MediaEmbed,
 		Paragraph,
 		PasteFromOffice,
-		PictureEditing,
 		Table,
 		TableToolbar,
-		TextTransformation
+		TableProperties,
+		TableCellProperties,
+		TableColumnResize,
+		TableCaption,
+		TextTransformation,
+		HtmlEmbed,
+		Mention,
+		MentionUI,
+		MentionEditing,
+		VideoToolbar,
+		Video,
+		VideoUpload,
+		VideoResize,
+		VideoStyle,
+		VideoInsert,
+		Emoji,
+		EmojiPeople,
+		EmojiNature,
+		EmojiPlaces,
+		EmojiFood,
+		EmojiActivity,
+		EmojiObjects,
+		EmojiSymbols,
+		EmojiFlags
 	];
 
 	public static override defaultConfig = {
 		toolbar: {
 			items: [
-				'undo', 'redo',
-				'|', 'heading',
-				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-			]
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'blockQuote',
+				'bulletedList',
+				'numberedList',
+				'insertTable',
+				'|',
+				'outdent',
+				'indent',
+				'alignment:center',
+				'alignment:left',
+				'alignment:right',
+				'alignment:justify',
+				'|',
+				'emoji',
+				'|',
+				'uploadImage',
+				'mediaEmbed',
+				'|',
+				'htmlEmbed'
+			],
+			shouldNotGroupWhenFull: true
 		},
 		image: {
 			toolbar: [
@@ -80,10 +142,35 @@ export default class ClassicEditor extends ClassicEditorBase {
 			contentToolbar: [
 				'tableColumn',
 				'tableRow',
-				'mergeTableCells'
-			]
+				'mergeTableCells',
+				'tableProperties',
+				'tableCellProperties',
+				'toggleTableCaption'
+			],
+			// Configuration of the TableProperties plugin.
+			tableProperties: {
+				// ...
+				defaultProperties: {
+					width: '100%'
+				}
+			},
+
+			// Configuration of the TableCellProperties plugin.
+			tableCellProperties: {
+				// ...
+			}
 		},
+		htmlEmbed: { showPreviews: true },
+		mediaEmbed: { previewsInData: true },
 		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en'
+		language: 'en',
+		video: {
+			styles: [ 'alignLeft', 'alignCenter', 'alignRight' ],
+			toolbar: [
+				'videoStyle:alignLeft',
+				'videoStyle:alignCenter',
+				'videoStyle:alignRight'
+			]
+		}
 	};
 }

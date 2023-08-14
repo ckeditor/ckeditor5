@@ -59,10 +59,38 @@ export default class ImageUploadEditing extends Plugin {
 
 		editor.config.define( 'image', {
 			upload: {
-				types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
+				types: [ '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff' ]
+			}
+		} );
+		editor.config.define( 'video', {
+			upload: {
+				types: [ '.mp4', '.webm', '.mov', '.mkv' ]
+			}
+		} );
+		editor.config.define( 'file', {
+			upload: {
+				types: [ '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', '.odp', '.pps', '.ppt', '.pptx' ]
+			}
+		} );
+		editor.config.define( 'extraFile', {
+			upload: {
+				types: [ '.rtf', '.txt', '.key', '.mp3', '.email', '.eml', '.emlx', '.mpg', '.mpeg', '.zip', '.sketch', '.m4a' ]
 			}
 		} );
 
+		/**
+		 * An internal mapping of {@link module:upload/filerepository~FileLoader#id file loader UIDs} and
+		 * model elements during the upload.
+		 *
+		 * Model element of the uploaded image can change, for instance, when {@link module:image/image/imagetypecommand~ImageTypeCommand}
+		 * is executed as a result of adding caption or changing image style. As a result, the upload logic must keep track of the model
+		 * element (reference) and resolve the upload for the correct model element (instead of the one that landed in the `$graveyard`
+		 * after image type changed).
+		 *
+		 * @private
+		 * @readonly
+		 * @member {Map.<String,module:engine/model/element~Element>}
+		 */
 		this._uploadImageElements = new Map();
 	}
 

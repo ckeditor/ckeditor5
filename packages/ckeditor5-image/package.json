@@ -13,6 +13,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "39.0.0",
+    "@flockjay/ckeditor5-file-upload": "https://github.com/Flockjay/ckeditor5-file-upload.git#8eee70876f65f9605b7e1e586c6d06c9e257f376",
     "ckeditor5": "39.0.0",
     "lodash-es": "4.17.21"
   },

@@ -8,10 +8,11 @@
  */
 
 import type { Locale } from 'ckeditor5/src/utils';
-import { Plugin, icons } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core';
 import { FileDialogButtonView } from 'ckeditor5/src/upload';
-import { createImageTypeRegExp } from './utils';
+import { createFileTypeRegExp, createImageTypeRegExp, createVideoTypeRegExp } from './utils';
 import type UploadImageCommand from './uploadimagecommand';
+import mediaUploadIcon from '../../theme/icons/upload-media.svg';
 
 /**
  * The image upload button plugin.
@@ -39,16 +40,29 @@ export default class ImageUploadUI extends Plugin {
 			const view = new FileDialogButtonView( locale );
 			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
 			const imageTypes = editor.config.get( 'image.upload.types' )!;
+			const videoTypes = editor.config.get( 'video.upload.types' ) as Array<string>;
+			const fileTypes = editor.config.get( 'file.upload.types' ) as Array<string>;
+			const extraFileTypes = editor.config.get( 'extraFile.upload.types' ) as Array<string>;
+
 			const imageTypesRegExp = createImageTypeRegExp( imageTypes );
+			const videoTypesRegExp = createVideoTypeRegExp( videoTypes );
+			const fileTypesRegExp = createFileTypeRegExp( fileTypes );
 
 			view.set( {
-				acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
+				acceptedType:
+					imageTypes.map( type => `${ type }` ).join( ',' ) +
+					',' +
+					videoTypes.map( type => `${ type }` ).join( ',' ) +
+					',' +
+					fileTypes.map( type => `${ type }` ).join( ',' ) +
+					',' +
+					extraFileTypes.map( type => `${ type }` ).join( ',' ),
 				allowMultipleFiles: true
 			} );
 
 			view.buttonView.set( {
-				label: t( 'Insert image' ),
-				icon: icons.image,
+				label: t( 'Upload media' ),
+				icon: mediaUploadIcon,
 				tooltip: true
 			} );
 
@@ -56,11 +70,29 @@ export default class ImageUploadUI extends Plugin {
 
 			view.on( 'done', ( evt, files: FileList ) => {
 				const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
+				const videosToUpload = Array.from( files ).filter( file => {
+					return videoTypesRegExp.test( file.type ) || file.name.includes( '.mkv' );
+				} );
+				const filesToUpload = Array.from( files ).filter( file => {
+					return fileTypesRegExp.test( file.type );
+				} );
+				const extraFilesToUpload = Array.from( files ).filter( file => {
+					return extraFileTypes.some( type => file.name.includes( type ) );
+				} );
 
 				if ( imagesToUpload.length ) {
 					editor.execute( 'uploadImage', { file: imagesToUpload } );
 
 					editor.editing.view.focus();
+				}
+				if ( videosToUpload.length ) {
+					editor.execute( 'uploadVideo', { file: videosToUpload } );
+				}
+				if ( filesToUpload.length ) {
+					editor.execute( 'fileUpload', { file: filesToUpload } );
+				}
+				if ( extraFilesToUpload.length ) {
+					editor.execute( 'fileUpload', { file: extraFilesToUpload } );
 				}
 			} );
 
