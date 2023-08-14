@@ -525,6 +525,15 @@ describe( 'PoweredBy', () => {
 				language: 'ar'
 			} );
 
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
+			} );
+
 			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
@@ -587,6 +596,15 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
+			} );
+
 			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
@@ -623,6 +641,15 @@ describe( 'PoweredBy', () => {
 				}
 			} );
 
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
+			} );
+
 			focusEditor( editor );
 
 			const pinSpy = testUtils.sinon.spy( editor.ui.poweredBy._balloonView, 'pin' );
@@ -657,6 +684,15 @@ describe( 'PoweredBy', () => {
 						position: 'inside'
 					}
 				}
+			} );
+
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
 			} );
 
 			focusEditor( editor );
@@ -710,14 +746,7 @@ describe( 'PoweredBy', () => {
 			const positioningFunction = pinArgs.positions[ 0 ];
 
 			expect( pinArgs.target ).to.equal( domRoot );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: -99999,
-				left: -99999,
-				name: 'invalid',
-				config: {
-					withArrow: false
-				}
-			} );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.equal( null );
 
 			await editor.destroy();
 		} );
@@ -750,14 +779,7 @@ describe( 'PoweredBy', () => {
 			const positioningFunction = pinArgs.positions[ 0 ];
 
 			expect( pinArgs.target ).to.equal( domRoot );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: -99999,
-				left: -99999,
-				name: 'invalid',
-				config: {
-					withArrow: false
-				}
-			} );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.equal( null );
 
 			await editor.destroy();
 		} );
@@ -794,14 +816,7 @@ describe( 'PoweredBy', () => {
 			const positioningFunction = pinArgs.positions[ 0 ];
 
 			expect( pinArgs.target ).to.equal( domRoot );
-			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: -99999,
-				left: -99999,
-				name: 'invalid',
-				config: {
-					withArrow: false
-				}
-			} );
+			expect( positioningFunction( rootRect, balloonRect ) ).to.equal( null );
 
 			await editor.destroy();
 		} );
@@ -814,6 +829,15 @@ describe( 'PoweredBy', () => {
 						horizontalOffset: 10
 					}
 				}
+			} );
+
+			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {
+				top: 0,
+				left: 0,
+				right: 400,
+				width: 400,
+				bottom: 100,
+				height: 100
 			} );
 
 			focusEditor( editor );
@@ -898,7 +922,7 @@ describe( 'PoweredBy', () => {
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
 				top: 95,
-				left: 375,
+				left: 325,
 				name: 'position_border-side_right',
 				config: {
 					withArrow: false
@@ -960,8 +984,8 @@ describe( 'PoweredBy', () => {
 
 			expect( pinArgs.target ).to.equal( editor.editing.view.getDomRoot() );
 			expect( positioningFunction( rootRect, balloonRect ) ).to.deep.equal( {
-				top: 95,
-				left: 375,
+				top: 45,
+				left: 975,
 				name: 'position_border-side_right',
 				config: {
 					withArrow: false

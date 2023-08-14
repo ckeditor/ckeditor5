@@ -530,7 +530,7 @@ function getElementPosition( element: HTMLElement ): string {
  * Returns the value of the `overflow` style of an `HTMLElement`.
  */
 function getElementOverflow( element: HTMLElement ): string {
-	return element.ownerDocument.defaultView!.getComputedStyle( element ).overflow;
+	return element?.ownerDocument?.defaultView ? element.ownerDocument.defaultView.getComputedStyle( element ).overflow : 'visible';
 }
 
 /**
