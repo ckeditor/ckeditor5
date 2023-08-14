@@ -390,19 +390,26 @@ export function getTableColumnElements( element: Element ): Array<Element> {
 }
 
 /**
- * Returns an array of table column widths. If the `writer` is provided, it will also translate the `colSpan` model attribute.
+ * Returns an array of table column widths.
  *
  * @internal
  * @param element A 'table' or 'tableColumnGroup' element.
- * @param [writer] A writer instance.
  * @returns An array of table column widths.
  */
-export function getTableColumnsWidths( element: Element, writer?: Writer ): Array<string> {
-	const tableColumnElements = getTableColumnElements( element );
+export function getTableColumnsWidths( element: Element ): Array<string> {
+	return getTableColumnElements( element ).map( column => column.getAttribute( 'columnWidth' ) as string );
+}
 
-	if ( !writer ) {
-		return tableColumnElements.map( column => column.getAttribute( 'columnWidth' ) as string );
-	}
+/**
+ * Translates the `colSpan` model attribute into additional column widths and returns the resulting array.
+ *
+ * @internal
+ * @param element A 'table' or 'tableColumnGroup' element.
+ * @param writer A writer instance.
+ * @returns An array of table column widths.
+ */
+export function translateColSpanAttribute( element: Element, writer: Writer ): Array<string> {
+	const tableColumnElements = getTableColumnElements( element );
 
 	return tableColumnElements.reduce( ( acc: Array<string>, element ) => {
 		const columnWidth = element.getAttribute( 'columnWidth' ) as string;

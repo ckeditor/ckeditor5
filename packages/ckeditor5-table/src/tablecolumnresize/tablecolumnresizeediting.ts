@@ -419,6 +419,7 @@ export default class TableColumnResizeEditing extends Plugin {
 					const viewColWidth = viewElement.getStyle( 'width' );
 
 					// 'pt' is the default unit for table column width pasted from MS Office.
+					// See https://github.com/ckeditor/ckeditor5/issues/14521#issuecomment-1662102889 for more details.
 					if ( !viewColWidth || ( !viewColWidth.endsWith( '%' ) && !viewColWidth.endsWith( 'pt' ) ) ) {
 						return 'auto';
 					}

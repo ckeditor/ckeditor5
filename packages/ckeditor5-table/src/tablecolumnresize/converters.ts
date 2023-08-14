@@ -21,7 +21,7 @@ import {
 	updateColumnElements,
 	getColumnGroupElement,
 	getTableColumnElements,
-	getTableColumnsWidths
+	translateColSpanAttribute
 } from './utils';
 
 /**
@@ -39,7 +39,7 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
 
 		const columnElements = getTableColumnElements( tableColumnGroup );
 		const columnsCount = tableUtilsPlugin.getColumns( modelTable );
-		let columnWidths = getTableColumnsWidths( tableColumnGroup, conversionApi.writer );
+		let columnWidths = translateColSpanAttribute( tableColumnGroup, conversionApi.writer );
 
 		// Fill the array with 'auto' values if the number of columns is higher than number of declared values.
 		columnWidths = Array.from( { length: columnsCount }, ( _, index ) => columnWidths[ index ] || 'auto' );

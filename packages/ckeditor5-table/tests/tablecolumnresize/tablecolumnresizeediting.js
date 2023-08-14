@@ -567,7 +567,7 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 				} );
 
-				it( 'should consume the `col[span]` attribute', () => {
+				it( 'should convert the `col[span]` attribute', () => {
 					editor.setData(
 						`<figure class="table">
 							<table>
