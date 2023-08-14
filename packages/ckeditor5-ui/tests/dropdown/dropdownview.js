@@ -207,7 +207,7 @@ describe( 'DropdownView', () => {
 
 						view.isOpen = true;
 
-						expect( view.panelView.position ).is.equal( 'southEast' ); // first position from position list.
+						expect( view.panelView.position ).is.equal( 'se' ); // first position from position list.
 
 						view.element.remove();
 						parentWithOverflow.remove();
