@@ -21,8 +21,6 @@ const GLOB_PATTERNS = [
 	'external/ckeditor5-commercial/packages/*/package.json'
 ];
 
-const cloudServicesCollaborationPkg = require( '../../external/ckeditor-cloud-services-collaboration/package.json' );
-
 Promise.resolve()
 	// CKEditor 5 packages.
 	.then( () => releaseTools.reassignNpmTags( {
@@ -30,13 +28,5 @@ Promise.resolve()
 		version: rootPkgJson.version,
 		packages: globSync( GLOB_PATTERNS, { absolute: true, cwd: ROOT_DIRECTORY } )
 			.map( packageJsonPath => require( packageJsonPath ).name )
-	} ) )
-	// CKEditor Cloud Services package is versioned independently of CKEditor 5.
-	.then( () => releaseTools.reassignNpmTags( {
-		npmOwner: 'ckeditor',
-		version: cloudServicesCollaborationPkg.version,
-		packages: [
-			cloudServicesCollaborationPkg.name
-		]
 	} ) );
 
