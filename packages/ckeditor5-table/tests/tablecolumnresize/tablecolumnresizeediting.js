@@ -17,6 +17,7 @@ import PlainTableOutput from '../../src/plaintableoutput';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
@@ -2806,6 +2807,69 @@ describe( 'TableColumnResizeEditing', () => {
 							'</tr>' +
 						'</tbody>' +
 					'</table>'
+				);
+			} );
+
+			it( 'should not overflow table after scrolling', () => {
+				setModelData( editor.model,
+					'<table tableWidth="100%">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table tableWidth="90%">' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>[]foo</paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph>bar</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableColumnGroup>' +
+										'<tableColumn columnWidth="50%"></tableColumn>' +
+										'<tableColumn columnWidth="50%"></tableColumn>' +
+									'</tableColumnGroup>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="100%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>' + '<paragraph></paragraph>'.repeat( 50 )
+				);
+
+				const table = document.getElementsByTagName( 'tbody' )[ 0 ];
+
+				editor.editing.view.scrollToTheSelection( {
+					alignToTop: true,
+					forceScroll: true
+				} );
+
+				expect( Math.floor( table.getBoundingClientRect().y ) ).to.be.equal(
+					Math.floor( table.parentElement.getBoundingClientRect().y )
 				);
 			} );
 		} );
