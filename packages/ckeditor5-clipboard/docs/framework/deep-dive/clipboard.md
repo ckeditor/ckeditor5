@@ -6,7 +6,7 @@ category: framework-deep-dive
 
 The clipboard feature (implemented by the {@link module:clipboard/clipboard~Clipboard} plugin) is responsible for the integration with the native clipboard &mdash; a feature of the operating system and the browser used when the user copies, cuts, pastes, or drags and drops content within the editor or from/to the "outside".
 
-CKEditor 5 intercepts all native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the rich text editor which would lead to the browser messing it up.
+CKEditor&nbsp;5 intercepts all native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the rich text editor which would lead to the browser messing it up.
 
 There are two directions in which the content is processed:
 
@@ -124,7 +124,7 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', ( evt, data ) 
 
 You can use the knowledge from the previous sections to create a complete plugin that will allow users to paste the content as plain text while the feature is toggled on.
 
-If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to get a better understanding of what happens in the code below.
+If you are not familiar with creating plugins in CKEditor&nbsp;5, it is recommended to start from reading the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to get a better understanding of what happens in the code below.
 
 ```js
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';

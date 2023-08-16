@@ -26,11 +26,11 @@ You can also use Markdown code recognized by the {@link features/autoformat auto
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-After reading this guide, check out the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post where you will find more information about lists with examples.
+After reading this guide, check out the [Lists in CKEditor&nbsp;5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post where you will find more information about lists with examples.
 
 ## List properties
 
-In addition to the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
+In addition to the basic functionality of creating the ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
@@ -85,7 +85,7 @@ Refer to the {@link features/indent#indenting-lists Indenting lists} section of 
 ## Installation
 
 <info-box info>
-	There are currently two plugins providing lists support for CKEditor 5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
+	There are currently two plugins providing lists support for CKEditor&nbsp;5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
 
 	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
 

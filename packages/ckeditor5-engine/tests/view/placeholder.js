@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals console */
+
 import {
 	enablePlaceholder,
 	disablePlaceholder,
@@ -618,8 +620,7 @@ describe( 'placeholder', () => {
 
 			enablePlaceholder( {
 				view,
-				element: viewRoot,
-				text: 'foo bar baz'
+				element: viewRoot
 			} );
 			viewRoot.placeholder = 'new placeholder';
 
@@ -632,12 +633,60 @@ describe( 'placeholder', () => {
 			enablePlaceholder( {
 				view,
 				element: viewRoot,
-				text: 'foo bar baz',
 				isDirectHost: false
 			} );
 			viewRoot.placeholder = 'new placeholder';
 
 			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'new placeholder' );
+		} );
+
+		it( 'should through warning once if "text" is used as argument', () => {
+			sinon.stub( console, 'warn' );
+
+			setData( view, '<div></div><div>{another div}</div>' );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				isDirectHost: false,
+				text: 'foo bar'
+			} );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				isDirectHost: false,
+				text: 'foo bar baz'
+			} );
+
+			sinon.assert.calledOnce( console.warn );
+			expect( console.warn.calledWith( sinon.match( /^enableplaceholder-deprecated-text-option/ ) ) ).to.be.true;
+		} );
+
+		it( 'should set placeholder using "text" argument', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'placeholder'
+			} );
+
+			expect( viewRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder' );
+		} );
+
+		it( 'should prefer element\'s placeholder value over text parameter', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+
+			enablePlaceholder( {
+				view,
+				element: viewRoot,
+				text: 'foo'
+			} );
+
+			viewRoot.placeholder = 'bar';
+
+			expect( viewRoot.getAttribute( 'data-placeholder' ) ).to.equal( 'bar' );
 		} );
 	} );
 } );
