@@ -2,6 +2,8 @@
 category: crash-course
 order: 20
 menu-title: Plugins
+meta-title: CKEditor 5 crash course - plugins
+modified_at: 2023-08-16
 ---
 
 # Plugins

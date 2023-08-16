@@ -2,6 +2,8 @@
 category: crash-course
 order: 30
 menu-title: Model and schema
+meta-title: CKEditor 5 crash course - Model and schema
+modified_at: 2023-08-16
 ---
 
 # Model and schema

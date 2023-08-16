@@ -2,6 +2,8 @@
 category: crash-course
 order: 50
 menu-title: Commands
+meta-title: CKEditor 5 crash course - Commands
+modified_at: 2023-08-16
 ---
 
 # Commands
