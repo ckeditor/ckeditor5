@@ -73,7 +73,7 @@ export default class IndentBlockCommand extends Command {
 	public override execute(): void {
 		const model = this.editor.model;
 
-		const blocksToChange = getBlocksToChange( model, this._indentBehavior.isForward );
+		const blocksToChange = this._getBlocksToChange();
 
 		model.change( writer => {
 			for ( const block of blocksToChange ) {
@@ -89,22 +89,23 @@ export default class IndentBlockCommand extends Command {
 			}
 		} );
 	}
-}
 
-/**
- * Returns blocks from selection that should have blockIndent selection set.
- */
-function getBlocksToChange( model: Model, isForward: boolean ): Array<Element> {
-	const selection = model.document.selection;
-	const schema = model.schema;
-	const blocksInSelection = Array.from( selection.getSelectedBlocks() );
+	/**
+	 * Returns blocks from selection that should have blockIndent selection set.
+	 */
+	private _getBlocksToChange(): Array<Element> {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+		const schema = model.schema;
+		const blocksInSelection = Array.from( selection.getSelectedBlocks() );
 
-	return blocksInSelection.filter( block => {
-		// Do not add blockIndent to block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
-		if ( isForward ) {
-			return schema.checkAttribute( block, 'blockIndent' ) && !block.hasAttribute( 'listItemId' );
-		}
+		return blocksInSelection.filter( block => {
+			// Do not add blockIndent to block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
+			if ( this._indentBehavior.isForward ) {
+				return schema.checkAttribute( block, 'blockIndent' ) && !block.hasAttribute( 'listItemId' );
+			}
 
-		return schema.checkAttribute( block, 'blockIndent' );
-	} );
+			return schema.checkAttribute( block, 'blockIndent' );
+		} );
+	}
 }
