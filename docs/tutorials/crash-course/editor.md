@@ -12,7 +12,7 @@ meta-description: Learn how to use CKEditor 5 APIs to create a custom editor plu
 
 For the purposes of this tutorial, we have created a repository with the minimal setup required to use the editor. To follow along:
 
-1. [Clone this repository](https://github.com/ckeditor/tutorial-setup).
+1. Clone [this repository](https://github.com/ckeditor/tutorial-setup).
 2. Run the `npm install` command to install the dependencies.
 3. Run the `npm run dev` command to start the project.
 4. Open the URL displayed in your terminal.
