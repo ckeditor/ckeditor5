@@ -10,7 +10,7 @@ modified_at: 2022-05-12
 The list feature lets you create ordered (numbered) and unordered (bulleted) lists. You can use ordered lists where the order of the items matters (as in instructions) and unordered lists where it is not that important (as in a list of ingredients).
 
 <info-box warning>
-	We will replace the regular lists feature with the new document lists in the upcoming releases. Consider migrating if you need that functionality. If you wish to switch to the document lists feature, you need to {@link features/document-lists#installation install it} first.
+	The regular lists feature will be replaced with the new {@link features/document-lists document lists} in the upcoming releases and will be sunset at the beginning of 2024. Consider migrating if you need that functionality. If you wish to switch to the document lists feature, you need to {@link features/document-lists#installation install it} first.
 	See [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) for more details.
 </info-box>
 
