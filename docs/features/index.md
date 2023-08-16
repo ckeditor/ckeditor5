@@ -120,6 +120,14 @@ Each rich-text editor feature is presented on a separate page, with one or more 
 	**In most feature demos the number of features enabled is limited** to make the currently highlighted piece of functionality stand out more, as shown in the screenshots above. However, in your CKEditor&nbsp;5 WYSIWYG editor implementation, you are free to choose and combine any features you like from those available. This can be easily and conveniently done in the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 </info-box>
 
+## Why does the editor filter out my content (styles, classes, elements)?
+
+CKEditor 5 implements a custom {@link framework/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
+
+Each kind of content must be handled by some feature. For example, the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
+
+If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them or use {@link features/general-html-support general HTML support} feature. Once you do that, CKEditor 5 will not filter anything out.
+
 ## Looking for more?
 
 The examples mentioned above do not present all features included in CKEditor&nbsp;5, nor does the list on the left panel. For example, some end-user features like undo and redo are quite self-explanatory and therefore only mentioned in the keyboard shortcuts guide.
