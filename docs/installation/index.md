@@ -49,6 +49,10 @@ Learn how to install a custom CKEditor&nbsp;5 build easily with the use of {@lin
 
 Get to know the supported {@link installation/integrations/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor&nbsp;5 with your software.
 
+## Tutorial
+
+To learn how to use, configure and extend CKEditor, see our {@link tutorials/crash-course/editor step-by-step tutorial}.
+
 ## Advanced installation concepts
 
 Find out more about the {@link installation/plugins/plugins plugin development}, how to {@link installation/getting-started/getting-and-setting-data handle and save the data}, and what the {@link installation/plugins/features-html-output-overview features' HTML output} is for each plugin. Learn about alternative setups such as {@link installation/advanced/dll-builds DLL builds} or integrating CKEditor&nbsp;5 from source {@link installation/advanced/integrating-from-source-webpack using webpack} or {@link installation/advanced/integrating-from-source-vite Vite}.
