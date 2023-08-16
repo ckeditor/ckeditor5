@@ -51,7 +51,7 @@ Get to know the supported {@link installation/integrations/overview integrations
 
 ## Tutorial
 
-To learn how to use, configure and extend CKEditor, see our {@link tutorial/editor step-by-step tutorial}.
+To learn how to use, configure and extend CKEditor, see our {@link tutorials/crash-course/editor step-by-step tutorial}.
 
 ## Advanced installation concepts
 
