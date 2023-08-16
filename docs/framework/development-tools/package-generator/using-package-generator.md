@@ -52,5 +52,5 @@ Now the plugin can be seen within the example editor.
 
 You can check out what is available inside your package depending on the language you used:
 
-* {@link framework/package-generator/javascript-package JavaScript}
-* {@link framework/package-generator/typescript-package TypeScript}
+* {@link framework/development-tools/package-generator/javascript-package JavaScript}
+* {@link framework/development-tools/package-generator/typescript-package TypeScript}

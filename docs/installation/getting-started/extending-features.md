@@ -85,6 +85,6 @@ ClassicEditor
 <info-box hint>
 **What's next?**
 
-Want to deepen your understanding of CKEditor 5? Dive into our {@link framework/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 tutorial} to explore creating plugins hands-on.
+Want to deepen your understanding of CKEditor 5? Dive into our {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 tutorial} to explore creating plugins hands-on.
 
 </info-box>
