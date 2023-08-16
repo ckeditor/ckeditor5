@@ -12,6 +12,7 @@
 const upath = require( 'upath' );
 const { EventEmitter } = require( 'events' );
 const releaseTools = require( '@ckeditor/ckeditor5-dev-release-tools' );
+const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { Listr } = require( 'listr2' );
 const updateVersionReferences = require( './utils/updateversionreferences' );
 const buildTsAndDllForCkeditor5Root = require( './utils/buildtsanddllforckeditor5root' );
@@ -166,10 +167,24 @@ const tasks = new Listr( [
 	},
 	{
 		title: 'Clean up phase.',
-		task: () => {
-			return releaseTools.cleanUpPackages( {
-				packagesDirectory: RELEASE_DIRECTORY
-			} );
+		task: ( _, task ) => {
+			return task.newListr( [
+				{
+					title: 'Removing files that will not be published.',
+					task: () => {
+						return releaseTools.cleanUpPackages( {
+							packagesDirectory: RELEASE_DIRECTORY,
+							packageJsonFieldsToRemove: defaults => [ ...defaults, 'engines' ]
+						} );
+					}
+				},
+				{
+					title: 'Removing local typings.',
+					task: () => {
+						return tools.shExec( 'yarn run release:clean', { async: true, verbosity: 'silent' } );
+					}
+				}
+			], taskOptions );
 		}
 	},
 	{
@@ -184,7 +199,8 @@ const tasks = new Listr( [
 					...ctx.updatedFiles
 				]
 			} );
-		}
+		},
+		skip: cliArguments.nightly
 	}
 ], getListrOptions( cliArguments ) );
 

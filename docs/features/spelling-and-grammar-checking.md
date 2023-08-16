@@ -10,7 +10,7 @@ badges: [ premium ]
 [WProofreader SDK](https://webspellchecker.com/wsc-proofreader) is an AI-driven, multi-language text correction tool. Spelling, grammar, and punctuation suggestions appear on hover as you type or in a separate dialog aggregating all mistakes and replacement suggestions in one place.
 
 <info-box>
-	This is a premium feature that is additionally payable on top of CKEditor 5 commercial license fee and delivered by our partner, [WebSpellChecker](https://webspellchecker.com/). Please [contact us](https://ckeditor.com/contact/) if you have any feedback or questions.
+	This is a premium feature that is additionally payable on top of CKEditor&nbsp;5 commercial license fee and delivered by our partner, [WebSpellChecker](https://webspellchecker.com/). Please [contact us](https://ckeditor.com/contact/) if you have any feedback or questions.
 
 	You can report any issues in the WebSpellChecker [GitHub repository](https://github.com/WebSpellChecker/wproofreader).
 </info-box>
@@ -37,7 +37,7 @@ You can access the WProofreader settings from the toolbar, too. Set the primary 
 
 You can fine-tune WProofreader via the dedicated settings menu. Choose a primary language from a set of available ones. Create and manage additional custom dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, you can easily disable the spell checker and enable it again with one click.
 
-After reading this guide, you may find additional interesting details and examples in the [Spell and grammar check in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/) blog post.
+After reading this guide, you may find additional interesting details and examples in the [Spell and grammar check in CKEditor&nbsp;5](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/) blog post.
 
 ## Multi-language support
 
@@ -71,7 +71,7 @@ Custom dictionaries can be used in two ways.
 
 One is the **user-level dictionary** that can be expanded during regular use by adding new words. This is a perfect solution for users working on specific content that may contain slang or professional jargon.
 
-The other is the so-called **company-level dictionary**. These premade dictionaries can be uploaded by system administrators or CKEditor 5 integrators and made available across the company, accessible for all users. This way all benefits of a user-generated dictionary can be shared among the team, making the proofreading process more structured and controlled.
+The other is the so-called **company-level dictionary**. These premade dictionaries can be uploaded by system administrators or CKEditor&nbsp;5 integrators and made available across the company, accessible for all users. This way all benefits of a user-generated dictionary can be shared among the team, making the proofreading process more structured and controlled.
 
 ## Accessibility
 
@@ -87,7 +87,7 @@ The spell and grammar check is compliant with WCAG 2.1 and Section 508 accessibi
 	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
 </info-box>
 
-WProofreader is delivered as a CKEditor 5 plugin, so it can be combined into an editor build just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
+WProofreader is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an editor build just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
 ```
 npm install --save @webspellchecker/wproofreader-ckeditor5
@@ -107,7 +107,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Please be aware that when you try to build CKEditor 5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two way to do this.
+Please be aware that when you try to build CKEditor&nbsp;5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two way to do this.
 
 The first configuration option is simpler:
 
@@ -162,7 +162,7 @@ Therefore, the best option is to use the other config solution. This one will on
 	}
 ```
 
-With this modification to the `webpack.config.js`, it is possible to build CKEditor 5 from source with WProofreader included.
+With this modification to the `webpack.config.js`, it is possible to build CKEditor&nbsp;5 from source with WProofreader included.
 
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
@@ -219,8 +219,8 @@ Refer to the [official documentation](https://github.com/WebSpellChecker/wproofr
 
 ## Configuration
 
-WProofreader configuration is set inside the CKEditor 5 configuration in the `wproofreader` object. Refer to the [WProofreader API](https://webspellchecker.com/docs/api/wscbundle/Options.html) for further information.
+WProofreader configuration is set inside the CKEditor&nbsp;5 configuration in the `wproofreader` object. Refer to the [WProofreader API](https://webspellchecker.com/docs/api/wscbundle/Options.html) for further information.
 
 ## Contribute
 
-You can report issues and request features in the [official WProofreader for CKEditor 5 repository](https://github.com/WebSpellChecker/wproofreader-ckeditor5/issues).
+You can report issues and request features in the [official WProofreader for CKEditor&nbsp;5 repository](https://github.com/WebSpellChecker/wproofreader-ckeditor5/issues).

@@ -24,6 +24,7 @@ import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting';
 import TableWalker from '../src/tablewalker';
 
 import TableClipboard from '../src/tableclipboard';
+import TableColumnResize from '../src/tablecolumnresize';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
@@ -181,6 +182,75 @@ describe( 'table clipboard', () => {
 					[ '30', '31', '32', '33' ]
 				] )
 			);
+		} );
+
+		it( 'should adjust `<colgroup>` element while normalizing pasted table', async () => {
+			const editorWithColumnResize = await ClassicTestEditor.create( element, {
+				plugins: [ TableEditing, TableClipboard, Paragraph, Clipboard, TableColumnResize ]
+			} );
+
+			model = editorWithColumnResize.model;
+			modelRoot = model.document.getRoot();
+			viewDocument = editorWithColumnResize.editing.view.document;
+			tableSelection = editorWithColumnResize.plugins.get( 'TableSelection' );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 'before' );
+				writer.setSelection( modelRoot.getChild( 0 ), 'before' );
+			} );
+
+			const table =
+				'<table>' +
+					'<colgroup>' +
+						'<col span="2" style="width:20%">' +
+						'</col>' +
+						'<col style="width:60%">' +
+						'</col>' +
+					'</colgroup>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td colspan="3">foo</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<td colspan="2">bar</td>' +
+							'<td>baz</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>';
+
+			const data = {
+				dataTransfer: createDataTransfer(),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			data.dataTransfer.setData( 'text/html', table );
+			viewDocument.fire( 'paste', data );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'[<table>' +
+					'<tableRow>' +
+						'<tableCell colspan="2">' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>bar</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>baz</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableColumnGroup>' +
+						'<tableColumn columnWidth="40%"></tableColumn>' +
+						'<tableColumn columnWidth="60%"></tableColumn>' +
+					'</tableColumnGroup>' +
+				'</table>]' +
+				'<paragraph></paragraph>'
+			);
+
+			await editorWithColumnResize.destroy();
 		} );
 
 		it( 'should not alter model.insertContent if no table pasted', () => {

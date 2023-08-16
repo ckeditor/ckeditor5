@@ -1,4 +1,4 @@
-# CKEditor 5 multi-root editor build – standard version (CommonJS `require()`)
+# CKEditor&nbsp;5 multi-root editor build – standard version (CommonJS `require()`)
 
 Just play with it.
 

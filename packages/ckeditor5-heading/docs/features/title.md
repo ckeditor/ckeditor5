@@ -79,7 +79,7 @@ When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getD
 
 ### Model representation
 
-In the CKEditor 5 data model the document title is represented as follows:
+In the CKEditor&nbsp;5 data model the document title is represented as follows:
 
 ```html
 <title>
@@ -90,12 +90,12 @@ In the CKEditor 5 data model the document title is represented as follows:
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Related features
 
-CKEditor 5 has more features that can help you structure your document better:
+CKEditor&nbsp;5 has more features that can help you structure your document better:
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/indent Block indentation} &ndash; Organize your content into visually separated blocks, indent crucial paragraphs, etc.
 * {@link features/editor-placeholder Editor placeholder} &ndash; Set placeholder text to display when the content is empty. It helps users locate the editor in the application and prompts to input the content.
