@@ -2862,15 +2862,14 @@ describe( 'TableColumnResizeEditing', () => {
 				);
 
 				const table = document.getElementsByTagName( 'tbody' )[ 0 ];
+				const shift = table.getBoundingClientRect().y - table.parentElement.getBoundingClientRect().y;
 
 				editor.editing.view.scrollToTheSelection( {
 					alignToTop: true,
 					forceScroll: true
 				} );
 
-				expect( Math.floor( table.getBoundingClientRect().y ) ).to.be.equal(
-					Math.floor( table.parentElement.getBoundingClientRect().y )
-				);
+				expect( table.getBoundingClientRect().y - table.parentElement.getBoundingClientRect().y ).to.be.equal( shift );
 			} );
 		} );
 
