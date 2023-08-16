@@ -12,7 +12,7 @@ modified_at: 2022-09-20
 The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
 
 <info-box warning>
-	The document lists feature will become the default list feature for CKEditor&nbsp;5 in the upcoming releases and will replace the {@link features/lists current one}. This plugin will then be witdrawn at the beginning of 2024.
+	The document lists feature will become the default list feature for CKEditor&nbsp;5 in the upcoming releases and will replace the {@link features/lists current one}. This plugin will then be withdrawn at the beginning of 2024.
 	See [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) for more details.
 </info-box>
 
