@@ -16,8 +16,6 @@ const CKEDITOR5_ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 main();
 
 function main() {
-	console.log( 'CKE5_IS_NIGHTLY_BUILD = ', process.env.CKE5_IS_NIGHTLY_BUILD );
-
 	const { packageName, checkCoverage, allowNonFullCoverage } = getOptions( process.argv.slice( 2 ) );
 
 	runTests( { packageName, checkCoverage } );
