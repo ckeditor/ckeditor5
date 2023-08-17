@@ -22,7 +22,7 @@ import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import DocumentList from '../../src/documentlist';
-import Todo from '../../src/todo';
+import TodoDocumentlist from '../../src/tododocumentlist';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 ClassicEditor
@@ -42,7 +42,7 @@ ClassicEditor
 			FontSize,
 			Indent,
 			DocumentList,
-			Todo,
+			TodoDocumentlist,
 			SourceEditing,
 			GeneralHtmlSupport,
 			Alignment

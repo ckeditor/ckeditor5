@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/todo/todoediting
+ * @module list/tododocumentlist/tododocumentlistediting
  */
 
 import {
@@ -28,7 +28,14 @@ import DocumentListCommand from '../documentlist/documentlistcommand';
 /**
  * TODO
  */
-export default class TodoEditing extends Plugin {
+export default class TodoDocumentListEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get pluginName() {
+		return 'TodoDocumentListEditing' as const;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
