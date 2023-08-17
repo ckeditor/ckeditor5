@@ -19,7 +19,7 @@ Following this convention, we will add an optional `highlight` key to the config
 
 ```js
 const editor = await ClassicEditor.create( element, {
-	// Other options are omitted for readability - don't remove them.
+	// Other options are omitted for readability - do not remove them.
 	highlight: {
 		keystroke: '...'
 	}
@@ -74,7 +74,7 @@ Then, open the `src/main.js` file and update the editor's configuration to chang
 
 ```js
 const editor = await ClassicEditor.create( element, {
-	// Other options are omitted for readability - don't remove them.
+	// Other options are omitted for readability - do not remove them.
 	highlight: {
 		keystroke: 'Ctrl+Alt+9'
 	}

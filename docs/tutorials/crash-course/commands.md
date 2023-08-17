@@ -43,7 +43,7 @@ Our command class has two methods:
 
 ### Command state
 
-Our plugin only allows text highlighting, so when only an image or table is selected in the editor, we should disable the command. We also want to remove highlighting if the command is called and selected text is already highlighted.
+Our plugin only allows text highlighting, so when only an image or table is selected in the editor, we should disable the command. We also want to remove highlighting if the command is called and the selected text is already highlighted.
 
 For this reason, we need a state that indicates whether selections in the editor can be highlighted and whether they're already highlighted.
 
@@ -100,9 +100,9 @@ execute() {
 }
 ```
 
-All changes to the model are made using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so that's what we'll use.
+All changes to the model are made using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so that's what we will use.
 
-In the callback, we first check if the selection is collapsed. Unlike a standard selection, which can span multiple letters, elements, or even blocks, a collapsed selection has a range of zero, meaning that it starts and ends at the same position. In other words, collapsed selection is just a caret.
+In the callback, we first check if the selection is collapsed. Unlike a standard selection, which can span multiple letters, elements, or even blocks, a collapsed selection has a range of zero, meaning that it starts and ends at the same position. In other words, the collapsed selection is just a caret.
 
 So, if we are dealing with a standard (not collapsed) selection, we check for all the ranges where the `highlight` attribute can be used, loop over them, and either add or remove this attribute depending on the current state.
 
@@ -124,4 +124,4 @@ In the CKEditor Inspector, open the `Commands` tab to see all available commands
 
 If you want to read more about the commands, see the {@link framework/architecture/core-editor-architecture#commands Commands} document.
 
-Otherwise go to the next chapter, where you'll {@link tutorials/crash-course/view learn more about updating the model UI}.
+Otherwise go to the next chapter, where you will {@link tutorials/crash-course/view learn more about updating the model UI}.
