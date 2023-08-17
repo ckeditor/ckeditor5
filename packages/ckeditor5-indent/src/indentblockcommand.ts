@@ -8,7 +8,8 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element, Model } from 'ckeditor5/src/engine';
+import type { Element } from 'ckeditor5/src/engine';
+import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
 import { first } from 'ckeditor5/src/utils';
 
 import type { IndentBehavior } from './indentcommandbehavior/indentbehavior';
@@ -55,12 +56,8 @@ export default class IndentBlockCommand extends Command {
 
 		const block = first( model.document.selection.getSelectedBlocks() );
 
-		// Command should be disabled for block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
-		const isForwardAndInListItem = this._indentBehavior.isForward && block && block.hasAttribute( 'listItemId' );
-
-		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) || isForwardAndInListItem ) {
+		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) || !this._isIndentationChangeAllowed( block ) ) {
 			this.isEnabled = false;
-
 			return;
 		}
 
@@ -100,12 +97,27 @@ export default class IndentBlockCommand extends Command {
 		const blocksInSelection = Array.from( selection.getSelectedBlocks() );
 
 		return blocksInSelection.filter( block => {
-			// Do not add blockIndent to block items in Document List items. See https://github.com/ckeditor/ckeditor5/issues/14155.
-			if ( this._indentBehavior.isForward ) {
-				return schema.checkAttribute( block, 'blockIndent' ) && !block.hasAttribute( 'listItemId' );
-			}
-
-			return schema.checkAttribute( block, 'blockIndent' );
+			return schema.checkAttribute( block, 'blockIndent' ) && this._isIndentationChangeAllowed( block );
 		} );
+	}
+
+	/**
+	 * Returns false for blocks in Document Lists (forward indentation only). See https://github.com/ckeditor/ckeditor5/issues/14155.
+	 * Otherwise returns true.
+	 */
+	private _isIndentationChangeAllowed( element: Element ): boolean {
+		if ( !this.editor.plugins.has( 'DocumentListUtils' ) ) {
+			return true;
+		}
+
+		// Disallow indenting a block in a list item. Outdenting a block is still allowed, because if the user already has
+		// a list item with an indented block in their content, it should be possible to reduce the indentation of the block.
+		if ( !this._indentBehavior.isForward ) {
+			return true;
+		}
+
+		const DocumentListUtils: DocumentListUtils = this.editor.plugins.get( 'DocumentListUtils' );
+
+		return !DocumentListUtils.isListItemBlock( element );
 	}
 }
