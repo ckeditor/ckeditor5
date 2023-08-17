@@ -7,7 +7,7 @@
  * @module utils/version
  */
 
-/* globals global */
+/* globals window, global */
 
 import CKEditorError from './ckeditorerror';
 
