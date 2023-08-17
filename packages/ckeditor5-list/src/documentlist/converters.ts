@@ -80,7 +80,7 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 
 		for ( const item of items ) {
 			// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
-			if ( !isListItemBlock( item ) ) {
+			if ( !item.hasAttribute( 'listItemId' ) ) {
 				// Preserve list type if was already set (for example by to-do list feature).
 				if ( item.getAttribute( 'listType' ) ) {
 					writer.setAttributes( { ...attributes, listType: item.getAttribute( 'listType' ) }, item );

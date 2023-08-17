@@ -19,7 +19,7 @@ import '../theme/todolist.css';
  * This is a "glue" plugin that loads the {@link module:list/todolist/todolistediting~TodoListEditing to-do list editing feature}
  * and the {@link module:list/todolist/todolistui~TodoListUI to-do list UI feature}.
  */
-export default class TodoDocumentlist extends Plugin {
+export default class TodoDocumentList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -31,6 +31,6 @@ export default class TodoDocumentlist extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'TodoDocumentlist' as const;
+		return 'TodoDocumentList' as const;
 	}
 }

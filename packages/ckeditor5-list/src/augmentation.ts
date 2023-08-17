@@ -23,6 +23,8 @@ import type {
 	TodoList,
 	TodoListEditing,
 	TodoListUI,
+	TodoDocumentList,
+	TodoDocumentListEditing,
 
 	ListCommand,
 	DocumentListCommand,
@@ -36,7 +38,8 @@ import type {
 	DocumentListStartCommand,
 	ListReversedCommand,
 	DocumentListReversedCommand,
-	CheckTodoListCommand
+	CheckTodoListCommand,
+	CheckTodoDocumentListCommand
 } from '.';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -69,6 +72,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TodoList.pluginName ]: TodoList;
 		[ TodoListEditing.pluginName ]: TodoListEditing;
 		[ TodoListUI.pluginName ]: TodoListUI;
+		[ TodoDocumentList.pluginName ]: TodoDocumentList;
+		[ TodoDocumentListEditing.pluginName ]: TodoDocumentListEditing;
 	}
 
   interface CommandsMap {
@@ -84,6 +89,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		listStart: ListStartCommand | DocumentListStartCommand;
 		listReversed: ListReversedCommand | DocumentListReversedCommand;
 		todoList: ListCommand | DocumentListCommand;
-		checkTodoList: CheckTodoListCommand;
+		checkTodoList: CheckTodoListCommand | CheckTodoDocumentListCommand;
 	}
 }

@@ -15,15 +15,29 @@ import {
 	type ElementCreatorFunction,
 	type UpcastElementEvent,
 	type Element,
-	type MatcherPattern
+	type MatcherPattern,
+	type Model,
+	type ViewDocumentArrowKeyEvent,
+	type ViewDocumentKeyDownEvent
 } from 'ckeditor5/src/engine';
 
+import {
+	getCode,
+	getLocalizedArrowKeyCodeDirection,
+	parseKeystroke,
+	type Locale,
+	type GetCallback
+} from 'ckeditor5/src/utils';
+
 import { Plugin } from 'ckeditor5/src/core';
-import type { GetCallback } from 'ckeditor5/src/utils';
 
 import { isListItemBlock } from '../documentlist/utils/model';
 import DocumentListEditing from '../documentlist/documentlistediting';
 import DocumentListCommand from '../documentlist/documentlistcommand';
+import CheckTodoDocumentListCommand from './checktododocumentlistcommand';
+import InputChangeObserver, { type ViewDocumentInputChangeEvent } from './inputchangeobserver';
+
+const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 
 /**
  * TODO
@@ -45,14 +59,26 @@ export default class TodoDocumentListEditing extends Plugin {
 
 		editor.commands.add( 'todoList', new DocumentListCommand( editor, 'todo' ) );
 
+		const checkTodoListCommand = new CheckTodoDocumentListCommand( editor );
+
+		// Register `checkTodoList` command and add `todoListCheck` command as an alias for backward compatibility.
+		editor.commands.add( 'checkTodoList', checkTodoListCommand );
+		editor.commands.add( 'todoListCheck', checkTodoListCommand );
+
+		editor.editing.view.addObserver( InputChangeObserver );
+
 		model.schema.extend( 'paragraph', {
-			allowAttributes: 'todoItemChecked'
+			allowAttributes: 'todoListChecked'
 		} );
 
-		model.schema.addAttributeCheck( ( context: any, attributeName ) => {
+		model.schema.addAttributeCheck( ( context, attributeName ) => {
 			const item = context.last;
 
-			if ( attributeName == 'todoItemChecked' && isListItemBlock( item ) && item.getAttribute( 'listType' ) != 'todo' ) {
+			if ( attributeName != 'todoListChecked' ) {
+				return;
+			}
+
+			if ( !item.getAttribute( 'listItemId' ) || item.getAttribute( 'listType' ) != 'todo' ) {
 				return false;
 			}
 		} );
@@ -76,7 +102,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: {
 				name: 'paragraph',
-				attributes: 'todoItemChecked'
+				attributes: 'todoListChecked'
 			},
 			view: todoItemViewCreator( { dataPipeline: true } ),
 			converterPriority: 'highest'
@@ -85,7 +111,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: {
 				name: 'paragraph',
-				attributes: 'todoItemChecked'
+				attributes: 'todoListChecked'
 			},
 			view: todoItemViewCreator(),
 			converterPriority: 'highest'
@@ -120,19 +146,61 @@ export default class TodoDocumentListEditing extends Plugin {
 				const element = change.range.start.nodeAfter!;
 
 				if ( change.attributeNewValue == 'todo' ) {
-					if ( !element.hasAttribute( 'todoItemChecked' ) ) {
-						writer.setAttribute( 'todoItemChecked', false, element );
+					if ( !element.hasAttribute( 'todoListChecked' ) ) {
+						writer.setAttribute( 'todoListChecked', false, element );
 						wasFixed = true;
 					}
 				} else if ( change.attributeOldValue == 'todo' ) {
-					if ( element.hasAttribute( 'todoItemChecked' ) ) {
-						writer.removeAttribute( 'todoItemChecked', element );
+					if ( element.hasAttribute( 'todoListChecked' ) ) {
+						writer.removeAttribute( 'todoListChecked', element );
 						wasFixed = true;
 					}
 				}
 			}
 
 			return wasFixed;
+		} );
+
+		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
+		//
+		// <blockquote><p>Foo</p></blockquote>
+		// <ul><li><checkbox/>{}Bar</li></ul>
+		//
+		// press: `<-`
+		//
+		// <blockquote><p>Foo{}</p></blockquote>
+		// <ul><li><checkbox/>Bar</li></ul>
+		//
+		this.listenTo<ViewDocumentArrowKeyEvent>(
+			editor.editing.view.document,
+			'arrowKey',
+			jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ),
+			{ context: 'li' }
+		);
+
+		// Toggle check state of selected to-do list items on keystroke.
+		this.listenTo<ViewDocumentKeyDownEvent>( editor.editing.view.document, 'keydown', ( evt, data ) => {
+			if ( getCode( data ) === ITEM_TOGGLE_KEYSTROKE ) {
+				editor.execute( 'checkTodoList' );
+				evt.stop();
+			}
+		}, { priority: 'high' } );
+
+		this.listenTo<ViewDocumentInputChangeEvent>( editor.editing.view.document, 'inputChange', ( evt, data ) => {
+			const viewTarget = data.target;
+
+			if ( !viewTarget || !viewTarget.is( 'element', 'input' ) ) {
+				return;
+			}
+
+			const viewElement = editor.editing.mapper.findMappedViewAncestor( editor.editing.view.createPositionBefore( data.target ) );
+			const modelElement = editor.editing.mapper.toModelElement( viewElement );
+
+			if ( modelElement && isListItemBlock( modelElement ) && modelElement.getAttribute( 'listType' ) == 'todo' ) {
+				editor.execute( 'checkTodoList', {
+					selection: editor.model.createSelection( modelElement, 'end' )
+				} );
+			}
 		} );
 	}
 }
@@ -159,7 +227,7 @@ function todoItemInputConverter(): GetCallback<UpcastElementEvent> {
 		writer.setAttribute( 'listType', 'todo', modelItem );
 
 		if ( data.viewItem.hasAttribute( 'checked' ) ) {
-			writer.setAttribute( 'todoItemChecked', true, modelItem );
+			writer.setAttribute( 'todoListChecked', true, modelItem );
 		}
 
 		data.modelRange = writer.createRange( modelCursor );
@@ -226,12 +294,13 @@ function todoItemViewCreator( { dataPipeline }: { dataPipeline?: boolean } = {} 
 		}
 
 		const labelWithCheckbox = writer.createContainerElement( 'label', {
-			class: 'todo-list__label'
+			class: 'todo-list__label',
+			...( !dataPipeline ? { contenteditable: false } : null )
 		}, [
 			writer.createEmptyElement( 'input', {
 				type: 'checkbox',
-				...( modelElement.getAttribute( 'todoItemChecked' ) ? { checked: 'checked' } : null ),
-				... ( dataPipeline ? { disabled: 'disabled' } : null )
+				...( modelElement.getAttribute( 'todoListChecked' ) ? { checked: 'checked' } : null ),
+				... ( dataPipeline ? { disabled: 'disabled' } : { tabindex: '-1' } )
 			} )
 		] );
 
@@ -288,4 +357,43 @@ function findDescription( viewItem: ViewElement, view: View ) {
 			return value.item;
 		}
 	}
+}
+
+/**
+ * Handles the left/right (LTR/RTL content) arrow key and moves the selection at the end of the previous block element
+ * if the selection is just after the checkbox element. In other words, it jumps over the checkbox element when
+ * moving the selection to the left/right (LTR/RTL).
+ *
+ * @returns Callback for 'keydown' events.
+ */
+function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): GetCallback<ViewDocumentArrowKeyEvent> {
+	return ( eventInfo, domEventData ) => {
+		const direction = getLocalizedArrowKeyCodeDirection( domEventData.keyCode, locale.contentLanguageDirection );
+
+		if ( direction != 'left' ) {
+			return;
+		}
+
+		const schema = model.schema;
+		const selection = model.document.selection;
+
+		if ( !selection.isCollapsed ) {
+			return;
+		}
+
+		const position = selection.getFirstPosition()!;
+		const parent = position.parent;
+
+		if ( isListItemBlock( parent ) && parent.getAttribute( 'listType' ) == 'todo' && position.isAtStart ) {
+			const newRange = schema.getNearestSelectionRange( model.createPositionBefore( parent ), 'backward' );
+
+			if ( newRange ) {
+				model.change( writer => writer.setSelection( newRange ) );
+			}
+
+			domEventData.preventDefault();
+			domEventData.stopPropagation();
+			eventInfo.stop();
+		}
+	};
 }
