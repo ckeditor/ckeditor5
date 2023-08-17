@@ -239,6 +239,7 @@ describe( 'Keyboard', () => {
 		describe( 'on Macintosh', () => {
 			beforeEach( () => {
 				env.isMac = true;
+				env.isiOS = false;
 			} );
 
 			it( 'replaces CTRL with ⌘', () => {
@@ -285,6 +286,7 @@ describe( 'Keyboard', () => {
 		describe( 'on iOS', () => {
 			beforeEach( () => {
 				env.isiOS = true;
+				env.isMac = false;
 			} );
 
 			it( 'replaces CTRL with ⌘', () => {
