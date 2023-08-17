@@ -2809,7 +2809,7 @@ describe( 'TableColumnResizeEditing', () => {
 				);
 			} );
 
-			it( 'should not overflow table after scrolling', () => {
+			it( 'should not scroll `tbody` inside `table` after scrolling to the selection in a cell.', () => {
 				setModelData( editor.model,
 					'<table tableWidth="100%">' +
 						'<tableRow>' +
