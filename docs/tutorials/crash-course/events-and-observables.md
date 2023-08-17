@@ -35,11 +35,7 @@ Since the `ButtonView` class is already an observable, we didn't have to do anyt
 const button = new ButtonView( locale );
 ```
 
-If you want to make a custom class an observable, see the {@link framework/deep-dive/observables Observables} document.
-
-### Setting the observable properties
-
-Then, we called the `.set()` method to update few button properties. Calling this method fires an event that can also be listened to, if necessary.
+Then, we called the `.set()` method to update few button properties.
 
 ```js
 button.set( {
@@ -49,6 +45,8 @@ button.set( {
 	isToggleable: true
 } );
 ```
+
+If you want to make a custom class an observable, see the {@link framework/deep-dive/observables Observables} document.
 
 ### Reacting to user input
 
