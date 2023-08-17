@@ -95,6 +95,7 @@ describe( 'Keyboard', () => {
 		describe( 'on Macintosh', () => {
 			beforeEach( () => {
 				env.isMac = true;
+				env.isiOS = false;
 			} );
 
 			it( 'parses string', () => {
@@ -139,6 +140,7 @@ describe( 'Keyboard', () => {
 		describe( 'on iOS', () => {
 			beforeEach( () => {
 				env.isiOS = true;
+				env.isMac = false;
 			} );
 
 			it( 'parses string', () => {
