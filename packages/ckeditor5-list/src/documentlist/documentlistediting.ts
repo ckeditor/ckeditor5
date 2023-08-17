@@ -437,17 +437,25 @@ export default class DocumentListEditing extends Plugin {
 				dispatcher.on<UpcastElementEvent>( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
 			} );
 
+		if ( !multiBlock ) {
+			editor.conversion.for( 'downcast' )
+				.elementToElement( {
+					model: 'listItem',
+					view: 'p'
+				} );
+		}
+
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: elementName,
-				view: bogusParagraphCreator( attributeNames, { multiBlock } ),
+				view: bogusParagraphCreator( attributeNames ),
 				converterPriority: 'high'
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: elementName,
-				view: bogusParagraphCreator( attributeNames, { dataPipeline: true, multiBlock } ),
+				view: bogusParagraphCreator( attributeNames, { dataPipeline: true } ),
 				converterPriority: 'high'
 			} );
 
