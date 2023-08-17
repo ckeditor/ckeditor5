@@ -15,9 +15,9 @@ The editors come in a few flavors. While each looks very different visually, the
 * Editing engine,
 * Editing UI.
 
-In this and the next chapters of this tutorial you'll learn about the **editing engine**, which is responsible for reading, maintaining and outputting the state of the editor, and everything else that powers the editor under the hood.
+In this and the next chapters of this tutorial you will learn about the **editing engine**, which is responsible for reading, maintaining and outputting the state of the editor, and everything else that powers the editor under the hood.
 
-Later you'll also learn about the **editing UI**, but for now all you need to know is that it's the interface the user sees and interacts with.
+Later you will also learn about the **editing UI**, but for now all you need to know is that it's the interface the user sees and interacts with.
 
 ### Model
 
@@ -111,4 +111,4 @@ We will be using this tool in the next stages of plugin development.
 
 If you want to read more about the editing engine, see the {@link framework/architecture/editing-engine Editing engine} document.
 
-Otherwise, go to the next chapter, where you'll {@link tutorials/crash-course/data-conversion learn more about data conversion} and what really happens when we call the `attributeToElement()` method.
+Otherwise, go to the next chapter, where you will {@link tutorials/crash-course/data-conversion learn more about data conversion} and what really happens when we call the `attributeToElement()` method.

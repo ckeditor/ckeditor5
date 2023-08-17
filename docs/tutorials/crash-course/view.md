@@ -19,7 +19,7 @@ The editor interface consists of two parts:
 * **toolbar** with buttons, dropdowns and other elements for performing various types of operations,
 * **editing view** for typing and modifying content.
 
-In this section, we'll focus on updating the toolbar.
+In this section, we will focus on updating the toolbar.
 
 {@img assets/img/tutorial/ui.jpg Screenshot of the editor highlighting toolbar at the top and editing view at the bottom}
 
@@ -68,7 +68,7 @@ In the callback we do four things:
 
 ## Registering a new button
 
-When we go back to the browser, we see that nothing has changed. The button we just created isn't there.
+When we go back to the browser, we see that nothing has changed. The button we just created is not there.
 
 That's because to see the button, we need to register it in the editor's configuration. To do this, add the `'highlight'` string (the name we passed as the first argument to the `editor.ui.componentFactory.add()` method) to the `toolbar.items` array.
 
@@ -103,4 +103,6 @@ If all went well, the text you selected should be highlighted in the editor and 
 
 Congratulations, you have just finished this tutorial!
 
-If you want to continue learning, go to the {@link framework/index Framework section} of our documentation.
+If you want to read more about the editor's UI, see the {@link framework/architecture/ui-library UI library} document.
+
+Otherwise, go to the next chapter, where you will {@link tutorials/crash-course/events-and-observables learn more about events and observables} and better understand the `bind(...).to(...)` mechanism we used to make the button reactive.
