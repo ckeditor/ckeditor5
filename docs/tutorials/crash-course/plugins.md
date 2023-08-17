@@ -37,29 +37,29 @@ The `Essentials` plugin is a wrapper for other plugins, each providing the basic
 
 Another common pattern is that plugins depend on other plugins and need them to work properly. This is usually noted in the documentation of a given plugin, and the error messages thrown by the editor will include an explanation of what's missing.
 
-Since the `Essentials` plugin doesn't define block-level containers, we also installed the `Paragraph` plugin to add support for the `<p>` HTML tag.
+Since the `Essentials` plugin does not define block-level containers, we also installed the `Paragraph` plugin to add support for the `<p>` HTML tag.
 
 ## List of plugins
 
 The editor we created so far still lacks many features, such as support for headings, tables, block quotes, and much more. You can add them using plugins, of course.
 
-For a list of plugins, usage examples, installation and configuration options, see the {@link features/index Features} page.
+For a list of plugins, usage examples, installation, and configuration options, see the {@link installation/plugins/features-html-output-overview Plugins and HTML output} guide.
 
 ## Predefined builds
 
-The fact that individual plugins add support for such minor features as typing, <kbd>Enter</kbd>, or `<p>` doesn't mean that you have to browse through the long list of plugins and painstakingly install the ones you need to get a good typing experience. You can do that if you want to have full control over the editor. But if that's not your thing, you can use one of the {@link installation/getting-started/predefined-builds predefined builds} with the most important and popular plugins already installed and configured.
+The fact that individual plugins add support for such minor features as typing, <kbd>Enter</kbd>, or `<p>` does not mean that you have to browse through the long list of plugins and painstakingly install the ones you need to get a good typing experience. You can do that if you want to have full control over the editor. But if that's not your thing, you can use one of the {@link installation/getting-started/predefined-builds predefined builds} with the most important and popular plugins already installed and configured.
 
 ## Creating custom plugins
 
-If the editor and any of its plugins doesn't provide the functionality you need, you may want to create a custom plugin. This requires knowledge of the editor internals, which we will discover in the next chapters of the tutorial.
+If the editor and any of its plugins do not provide the functionality you need, you may want to create a custom plugin. This requires knowledge of the editor's internals, which we will discover in the next chapters of the tutorial.
 
-We'll create a simplified version of the existing {@link features/highlight highlight} plugin. We want to be able to highlight certain parts of the text to make them stand out from the rest.
+We will create a simplified version of the existing {@link features/highlight highlight} plugin. We want to be able to highlight certain parts of the text to make them stand out from the rest.
 
 If you ever get stuck, want to see an example of writing a TypeScript plugin, or just want to see our APIs in action, check out the [`Highlight` plugin source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight).
 
 ### Registering custom plugin
 
-In the project we created in the previous chapter, open the `src/plugin.js` file. Inside it, create and export a `Highlight` function.
+In the project, we created in the previous chapter, open the `src/plugin.js` file. Inside it, create and export a `Highlight` function.
 
 ```js
 export function Highlight( editor ) {
@@ -74,14 +74,14 @@ import { Highlight } from './plugin';
 
 const editor = await ClassicEditor.create( element, {
 	plugins: [
-		// Other plugins are omitted for readability - don't remove them.
+		// Other plugins are omitted for readability - do not remove them.
 		Highlight
 	]
 } );
 ```
 
-Now when the page refreshes, you should see a `Highlight plugin has been registered` text printed in the console. This confirms that the plugin contructor is called correctly.
+Now when the page refreshes, you should see a `Highlight plugin has been registered` text printed in the console. This confirms that the plugin constructor is called correctly.
 
 ## What's next
 
-In the next chapter you'll continue creating a custom plugin and {@link tutorials/crash-course/model-and-schema learn more about model and schema}, which control the state of the editor.
+In the next chapter, you will continue creating a custom plugin and {@link tutorials/crash-course/model-and-schema learn more about model and schema}, which control the state of the editor.

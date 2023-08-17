@@ -41,11 +41,11 @@ const editor = await ClassicEditor.create( element );
 
 As you can see, the {@link module:core/editor/editor~Editor.create `create()`} method creates a new editor instance. It replaces the DOM element passed as the first argument with the editor UI, and sets the initial state of the editor to the content of that DOM element.
 
-However, you may have noticed that the "Hello world!" text doesn't appear in the editor, and you can't write anything into it. This may seem strange at first, but it is by design. Let's fix this with the right configuration.
+However, you may have noticed that the "Hello world!" text does not appear in the editor, and you can't write anything into it. This may seem strange at first, but it is by design. Let's fix this with the right configuration.
 
 ## Configuration
 
-The editor itself doesn't do much - it's just an empty shell at this stage. What gives the editor almost all of its functionality are the plugins. We'll talk more about plugins in the next chapter, but for now let's just install two plugins that provide the bare minimum needed to type in the editor.
+The editor itself does not do much - it's just an empty shell at this stage. What gives the editor almost all of its functionality are the plugins. We will talk more about plugins in the next chapter, but for now let's just install two plugins that provide the bare minimum needed to type in the editor.
 
 ```js
 // Add these two imports.
@@ -90,14 +90,14 @@ The configuration object we just updated controls the features, appearance, and 
 
 ## Editor methods
 
-Now that you can type in the editor, let's test other editor methods besides `create()`. Add the following to the bottom of the `src/main.js` file. It'll allow us to access the editor instance globally for testing purposes.
+Now that you can type in the editor, let's test other editor methods besides `create()`. Add the following to the bottom of the `src/main.js` file. It will allow us to access the editor instance globally for testing purposes.
 
 ```js
 // Add the global `editor` variable (only needed for debugging).
 window.editor = editor;
 ```
 
-Four common methods we'll test are:
+Four common methods we will test are:
 
 * {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`}
 * {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`}
@@ -152,4 +152,4 @@ The editor and it's contents should disappear. Note that **this method returns a
 
 ## What's next
 
-In the next chapter you'll {@link tutorials/crash-course/plugins learn more about plugins} and we'll start creating a new one from scratch.
+In the next chapter you will {@link tutorials/crash-course/plugins learn more about plugins} and we will start creating a new one from scratch.
