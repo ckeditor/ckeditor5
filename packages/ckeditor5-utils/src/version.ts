@@ -7,7 +7,7 @@
  * @module utils/version
  */
 
-/* globals window, global */
+/* globals global */
 
 import CKEditorError from './ckeditorerror';
 
@@ -19,6 +19,8 @@ export default version;
 export const releaseDate = new Date( 2023, 7, 10 );
 
 /* istanbul ignore next -- @preserve */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const windowOrGlobal = typeof window === 'object' ? window : global;
 
 declare global {

@@ -21,6 +21,7 @@
     ],
     "lib": [
       "ES2019", // Must match the "target"
+      "ES2020.String",
       "DOM",
       "DOM.Iterable"
     ],

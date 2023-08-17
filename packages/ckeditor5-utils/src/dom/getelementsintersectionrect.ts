@@ -24,7 +24,7 @@ export default function getElementsIntersectionRect(
 	const elementRects = elements.map( element => {
 		// The document (window) is yet another "element", but cropped by the top offset.
 		if ( element instanceof Document ) {
-			const windowRect = new Rect( global.window );
+			const windowRect = new Rect( window );
 
 			windowRect.top += viewportTopOffset;
 			windowRect.height -= viewportTopOffset;
