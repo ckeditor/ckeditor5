@@ -69,7 +69,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: 30
+				top: 0
 			}
 		}
 	} )
@@ -107,7 +107,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: 30
+				top: 0
 			}
 		}
 	} )
