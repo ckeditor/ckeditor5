@@ -46,7 +46,7 @@ button.set( {
 } );
 ```
 
-If you want to make a custom class an observable, see the {@link framework/deep-dive/observables Observables} document.
+If you want to make a custom class an observable, see the {@link framework/deep-dive/observables Observables} guide.
 
 ### Reacting to user input
 
