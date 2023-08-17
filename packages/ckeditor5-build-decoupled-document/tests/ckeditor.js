@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import DecoupledEditor from '../src/ckeditor';
 import BaseDecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';

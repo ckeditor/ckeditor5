@@ -4,7 +4,6 @@
  */
 
 /* eslint-env commonjs */
-/* globals window, document, console */
 
 const ClassicEditor = require( '../../build/ckeditor' );
 

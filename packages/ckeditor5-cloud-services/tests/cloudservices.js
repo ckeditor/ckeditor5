@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import CloudServices from '../src/cloudservices';
 import CloudServicesCore from '../src/cloudservicescore';
 import Context from '@ckeditor/ckeditor5-core/src/context';

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ClassicEditor, Markdown */
+/* globals ClassicEditor, Markdown */
 
 ClassicEditor
 	.create( document.querySelector( '#editor-markdown' ), {

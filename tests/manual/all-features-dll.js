@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, CKEditorInspector */
+/* globals CKEditorInspector */
 // Dll core.
 import 'ckeditor5/build/ckeditor5-dll.js';
 

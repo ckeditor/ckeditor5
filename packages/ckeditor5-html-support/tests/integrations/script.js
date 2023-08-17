@@ -9,8 +9,6 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-/* global console, document */
-
 describe( 'ScriptElementSupport', () => {
 	const CODE = 'console.log( "Hello World" )';
 	const CODE_CPP = 'cout << "Hello World" << endl;';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { TableProperties, TableCellProperties, TableCaption, TableColumnResize } from '@ckeditor/ckeditor5-table';

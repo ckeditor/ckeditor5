@@ -15,8 +15,6 @@ import stubUid from '@ckeditor/ckeditor5-list/tests/documentlist/_utils/uid';
 import { getModelDataWithAttributes } from '../_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-/* global document */
-
 describe( 'DocumentListElementSupport', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
 

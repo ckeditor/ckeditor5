@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals DOMParser */
-
 import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space';
 
 describe( 'PasteFromOffice - filters', () => {

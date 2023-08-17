@@ -9,7 +9,7 @@
  * This is due to legacy reasons.
  */
 
-/* globals ClassicEditor, console, window, document, setTimeout */
+/* globals ClassicEditor */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 

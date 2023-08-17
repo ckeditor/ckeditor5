@@ -13,8 +13,6 @@ import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-/* globals document */
-
 describe( 'Delete feature', () => {
 	let element, editor, viewDocument;
 

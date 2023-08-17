@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, document, Event */
-
 import ViewCollection from '../../../src/viewcollection';
 import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview';
 import ButtonView from '../../../src/button/buttonview';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console */
-
 import EditingController from '../../src/controller/editingcontroller';
 import DataController from '../../src/controller/datacontroller';
 

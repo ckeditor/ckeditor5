@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver';
 

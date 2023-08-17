@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
-
 import MediaFormView from '../../src/ui/mediaformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';

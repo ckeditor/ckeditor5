@@ -7,8 +7,6 @@
  * @module ui/editorui/bodycollection
  */
 
-/* globals document */
-
 import Template from '../template';
 import ViewCollection from '../viewcollection';
 import type View from '../view';

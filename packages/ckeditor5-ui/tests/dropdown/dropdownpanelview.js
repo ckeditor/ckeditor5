@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event, console */
-
 import ViewCollection from '../../src/viewcollection';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import View from '../../src/view';

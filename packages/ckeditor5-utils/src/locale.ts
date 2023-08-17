@@ -7,8 +7,6 @@
  * @module utils/locale
  */
 
-/* globals console */
-
 import toArray from './toarray';
 import { _translate, type Message } from './translation-service';
 import { getLanguageDirection, type LanguageDirection } from './language';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
 import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';

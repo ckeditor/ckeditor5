@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { Autosave } from '@ckeditor/ckeditor5-autosave';
 import ClassicEditor from '../../build-classic';
 

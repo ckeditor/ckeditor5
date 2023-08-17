@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Locale, ButtonView, ToolbarLineBreakView, ToolbarView, document */
+/* globals Locale, ButtonView, ToolbarLineBreakView, ToolbarView */
 
 const locale = new Locale();
 

@@ -7,8 +7,6 @@
  * @module engine/view/observer/selectionobserver
  */
 
-/* global setInterval, clearInterval */
-
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
 import { env } from '@ckeditor/ckeditor5-utils';

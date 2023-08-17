@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window */
-
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';

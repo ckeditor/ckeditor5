@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, MouseEvent, Event */
-
 import EditorUI from '../../src/editorui/editorui';
 import View from '../../src/view';
 import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';

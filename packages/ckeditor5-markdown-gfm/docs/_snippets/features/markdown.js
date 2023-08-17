@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, setTimeout */
-
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';

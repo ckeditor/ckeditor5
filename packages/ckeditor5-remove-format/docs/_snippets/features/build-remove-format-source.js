@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { Bold, Italic, Code, Strikethrough, Underline, Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';

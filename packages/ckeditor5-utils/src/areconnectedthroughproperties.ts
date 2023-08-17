@@ -7,8 +7,6 @@
  * @module utils/areconnectedthroughproperties
  */
 
-/* globals EventTarget, Event */
-
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.
  */

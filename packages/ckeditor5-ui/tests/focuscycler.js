@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import ViewCollection from '../src/viewcollection';
 import View from '../src/view';
 import FocusCycler from '../src/focuscycler';

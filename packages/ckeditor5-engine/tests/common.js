@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console */
-
 // eslint-disable-next-line mocha/no-top-level-hooks
 before( () => {
 	// This is a temporary special handling for https://github.com/ckeditor/ckeditor5/issues/8263

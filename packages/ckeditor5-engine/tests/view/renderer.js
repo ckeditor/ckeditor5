@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
-
 import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
 import ViewEditableElement from '../../src/view/editableelement';

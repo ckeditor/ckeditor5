@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window */
-
 import { getElementsIntersectionRect } from '../../src';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 

@@ -7,8 +7,6 @@
  * @module watchdog/utils/getsubnodes
  */
 
-/* globals EventTarget, Event */
-
 export default function getSubNodes( head: unknown, excludedProperties = new Set() ): Set<unknown> {
 	const nodes = [ head ];
 

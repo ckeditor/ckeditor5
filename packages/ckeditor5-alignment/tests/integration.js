@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import Alignment from '../src/alignment';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, document, Event */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import HtmlEmbedEditing from '../src/htmlembedediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';

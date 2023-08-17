@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import Editor from '../../src/editor/editor';
 import ClassicTestEditor from '../../tests/_utils/classictesteditor';
 

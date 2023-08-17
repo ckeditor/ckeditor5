@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals ClassicEditor, console, window, document */
+/* globals ClassicEditor */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-ckfinder-options' ), {

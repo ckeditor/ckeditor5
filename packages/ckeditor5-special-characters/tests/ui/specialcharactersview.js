@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import SpecialCahractersView from '../../src/ui/specialcharactersview';
 import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview';
 import CharacterGridView from '../../src/ui/charactergridview';

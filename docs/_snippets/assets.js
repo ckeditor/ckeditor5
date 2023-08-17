@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, window, document */
-
 import isRelativeUrl from 'is-relative-url';
 
 import './tour-balloon.css';

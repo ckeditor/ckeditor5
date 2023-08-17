@@ -7,8 +7,6 @@
  * @module engine/dev-utils/view
  */
 
-/* globals document */
-
 /**
  * Collection of methods for manipulating the {@link module:engine/view/view view} for testing purposes.
  */

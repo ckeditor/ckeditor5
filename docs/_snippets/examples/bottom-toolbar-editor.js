@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { Indent } from '@ckeditor/ckeditor5-indent';

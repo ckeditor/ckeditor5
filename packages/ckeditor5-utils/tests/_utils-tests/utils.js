@@ -38,8 +38,6 @@ describe( 'utils - testUtils', () => {
 		} );
 
 		describe( 'Observer', () => {
-			/* global console:false  */
-
 			it( 'logs changes in the observable', () => {
 				const spy = sinon.stub( console, 'log' );
 

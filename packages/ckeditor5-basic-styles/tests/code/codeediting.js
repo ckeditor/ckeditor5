@@ -13,8 +13,6 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-/* global document */
-
 describe( 'CodeEditing', () => {
 	let editor, model;
 

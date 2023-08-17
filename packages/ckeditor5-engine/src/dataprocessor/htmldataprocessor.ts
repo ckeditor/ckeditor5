@@ -7,8 +7,6 @@
  * @module engine/dataprocessor/htmldataprocessor
  */
 
-/* globals DOMParser */
-
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
 

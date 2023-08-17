@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import DocumentListEditing from '../../../src/documentlist/documentlistediting';
 
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';

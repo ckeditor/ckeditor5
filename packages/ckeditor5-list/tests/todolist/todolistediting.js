@@ -25,8 +25,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-/* global Event, document */
-
 describe( 'TodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc;
 

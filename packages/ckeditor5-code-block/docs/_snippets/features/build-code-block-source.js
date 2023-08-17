@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { Code } from '@ckeditor/ckeditor5-basic-styles';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';

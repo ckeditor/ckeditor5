@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import InlineEditor from '../src/ckeditor';
 import BaseInlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';

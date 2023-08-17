@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
-
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import StickyPanelView from '../../../src/panel/sticky/stickypanelview';
 import View from '../../../src/view';

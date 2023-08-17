@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, console, $ */
+/* globals $ */
 
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';

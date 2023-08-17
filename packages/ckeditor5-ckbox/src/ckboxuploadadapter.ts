@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals AbortController, FormData, URL, XMLHttpRequest, window */
-
 /**
  * @module ckbox/ckboxuploadadapter
  */

@@ -31,8 +31,6 @@ const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-/* global document, window, Event */
-
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
 	let resizeCallback, addToolbarSpy;

@@ -18,8 +18,6 @@ import { Editor } from '@ckeditor/ckeditor5-core';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-/* global document, console */
-
 describe( 'EditorUI', () => {
 	let editor, ui;
 

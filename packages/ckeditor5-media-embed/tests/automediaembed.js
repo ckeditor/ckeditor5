@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global setTimeout */
-
 import MediaEmbed from '../src/mediaembed';
 import AutoMediaEmbed from '../src/automediaembed';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';

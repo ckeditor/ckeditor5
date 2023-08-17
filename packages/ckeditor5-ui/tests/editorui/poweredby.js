@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, window, HTMLElement, getComputedStyle  */
-
 import { Editor } from '@ckeditor/ckeditor5-core';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EditorUI from '../../src/editorui/editorui';

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals $, window, console:false */
+/* globals $:false */
 
 // Basic classes to create an editor.
 // Basic features to associated with the edited content.

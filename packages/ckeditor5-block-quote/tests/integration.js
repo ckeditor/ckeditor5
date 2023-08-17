@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import BlockQuote from '../src/blockquote';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Image from '@ckeditor/ckeditor5-image/src/image';

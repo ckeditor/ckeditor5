@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Locale, ToolbarView, coreIcons, IconView, document */
+/* globals Locale, ToolbarView, coreIcons, IconView */
 
 const locale = new Locale();
 

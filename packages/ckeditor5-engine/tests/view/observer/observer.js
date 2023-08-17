@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import Observer from '../../../src/view/observer/observer';
 import View from '../../../src/view/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';

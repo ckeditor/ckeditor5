@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import DomEventData from '../../../src/view/observer/domeventdata';
 import View from '../../../src/view/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';

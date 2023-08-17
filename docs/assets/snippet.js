@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, setTimeout */
-
 // Show clipboard input notification when user tries to paste a content from MS Word or Google Docs.
 setTimeout( () => {
 	// Don't show the warning notification in "Paste from Office" and "Paste from Google Docs" demos.

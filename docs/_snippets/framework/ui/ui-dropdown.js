@@ -4,7 +4,7 @@
  */
 
 /* globals Locale, Collection, Model, createDropdown, addListToDropdown, ButtonView,
-boldIcon, italicIcon, SplitButtonView, addToolbarToDropdown, ToolbarView, document */
+boldIcon, italicIcon, SplitButtonView, addToolbarToDropdown, ToolbarView */
 
 const locale = new Locale();
 

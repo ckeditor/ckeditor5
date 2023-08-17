@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import View from '../../../src/view/view';
 import ViewPosition from '../../../src/view/position';
 import ViewRange from '../../../src/view/range';

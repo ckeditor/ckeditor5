@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ClassicEditor, CS_CONFIG */
+/* globals ClassicEditor, CS_CONFIG */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-link-decorators' ), {

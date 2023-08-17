@@ -7,8 +7,6 @@
  * @module utils/version
  */
 
-/* globals window, global */
-
 import CKEditorError from './ckeditorerror';
 
 const version = '39.0.1';

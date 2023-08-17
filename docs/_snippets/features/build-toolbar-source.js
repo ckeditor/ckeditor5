@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { Code, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';

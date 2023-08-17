@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global HTMLElement, setTimeout, document */
-
 import WordCount from '../src/wordcount';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';

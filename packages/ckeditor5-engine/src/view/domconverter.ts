@@ -7,8 +7,6 @@
  * @module engine/view/domconverter
  */
 
-/* globals Node, NodeFilter, DOMParser, Text */
-
 import ViewText from './text';
 import ViewElement from './element';
 import ViewUIElement from './uielement';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, setTimeout */
-
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';

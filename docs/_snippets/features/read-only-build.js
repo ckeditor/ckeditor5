@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import { ExportPdf } from '@ckeditor/ckeditor5-export-pdf';
 import { ExportWord } from '@ckeditor/ckeditor5-export-word';

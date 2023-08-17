@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import Rect from '../../src/dom/rect';
 import createElement from '../../src/dom/createelement';
 import RectDrawer from '../../tests/_utils/rectdrawer';
