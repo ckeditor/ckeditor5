@@ -26,4 +26,4 @@ msgstr "Kan geen categorie bepalen voor het geüploade bestand."
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "Geen toegang mogelijk tot standaard werkplek."

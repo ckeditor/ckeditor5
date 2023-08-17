@@ -26,4 +26,4 @@ msgstr "לא ניתן לקבוע קטגוריה עבור הקובץ שהועלה
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "אין גישה למרחב העבודה של ברירת המחדל."

@@ -536,13 +536,13 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	}
 
 	/**
-	 * Loads a root that has been previously declared in {@link module:core/editor/editorconfig~EditorConfig#lazyRoots `lazyRoots`}
+	 * Loads a root that has previously been declared in {@link module:core/editor/editorconfig~EditorConfig#lazyRoots `lazyRoots`}
 	 * configuration option.
 	 *
 	 * Only roots specified in the editor config can be loaded. A root cannot be loaded multiple times. A root cannot be unloaded and
 	 * loading a root cannot be reverted using the undo feature.
 	 *
-	 * When a root becomes loaded, it will be treated by the editor as though it was just added. This, among other, means that all
+	 * When a root becomes loaded, it will be treated by the editor as though it was just added. This, among others, means that all
 	 * related events and mechanisms will be fired, including {@link ~MultiRootEditor#event:addRoot `addRoot` event},
 	 * {@link module:engine/model/document~Document#event:change `model.Document` `change` event}, model post-fixers and conversion.
 	 *

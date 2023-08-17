@@ -26,4 +26,4 @@ msgstr "আপলোড করা ফাইলের জন্য একটি �
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "ডিফল্ট ওয়ার্কস্পেস অ্যাক্সেস করতে পারবেন না।"
