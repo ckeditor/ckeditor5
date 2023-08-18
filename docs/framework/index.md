@@ -3,7 +3,7 @@ category: framework
 order: 10
 menu-title: Overview
 meta-title: CKEditor 5 Framework documentation
-meta-description: Learn how to install, integrate, configure, and develop CKEditor&nbsp;5 Framework. Browse through API documentation and online samples.
+meta-description: Learn how to install, integrate, configure, and develop CKEditor 5 Framework. Browse through the API documentation and online samples.
 ---
 
 # CKEditor&nbsp;5 Framework overview

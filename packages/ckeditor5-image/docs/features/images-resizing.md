@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Resizing images
-meta-title: Resizing images in CKEditor&nbsp;5
+meta-title: Resizing images in CKEditor 5
 meta-description: All about various ways of resizing images to fit the content better.
 order: 50
 modified_at: 2021-06-17
