@@ -7,7 +7,7 @@
 
 	let commits = [ {
 		id: id,
-		type: '',
+		type: 'Internal',
 		packageName: [],
 		message: '',
 		description: ''
@@ -15,14 +15,70 @@
 
 	let breakingChanges = [ {
 		id: breakingChangeId,
-		type: '',
+		type: 'MINOR',
 		message: ''
 	} ];
+
+	$: textareaData = buildMessage( commits, breakingChanges );
+
+	function buildMessage( otherCommits, otherBreakingChanges ) {
+		const commitMessages = otherCommits
+				.filter( value => {
+					if ( !value.message ) {
+						return false;
+					}
+
+					if ( !value.message.trim().length ) {
+						return false;
+					}
+
+					return true;
+				} )
+				.map( value => {
+					let parts = `${ value.type || 'Internal' }`
+
+					if ( value.packageName.length ) {
+						let scope = '('
+						scope += value.packageName.map( item => item.value ).join( ', ' )
+						scope += ')'
+						parts += ` ${ scope }`
+					}
+
+					parts += `: ${ value.message }`;
+
+					if ( value.description ) {
+						parts += `\n\n${ value.description }`;
+					}
+
+					return parts;
+				} );
+
+		const commitBreakingChanges = breakingChanges
+				.filter( value => {
+					if ( !value.message ) {
+						return false;
+					}
+
+					if ( !value.message.trim().length ) {
+						return false;
+					}
+
+					return true;
+				} )
+				.map( value => {
+					return `${ value.type || 'MINOR' } BREAKING CHANGE: ${ value.message }`;
+				} );
+
+		return [
+			commitMessages.join( '\n\n' ),
+			commitBreakingChanges.join( '\n\n' )
+		].join( '\n\n' );
+	}
 
 	function handleAddNewCommitClick() {
 		commits = commits.concat( {
 			id: ++id,
-			type: '',
+			type: 'Internal',
 			packageName: [],
 			message: '',
 			description: ''
@@ -32,7 +88,7 @@
 	function handleAddNewBreakingChangeClick() {
 		breakingChanges = breakingChanges.concat( {
 			id: ++breakingChangeId,
-			type: 'test' + breakingChangeId,
+			type: 'MINOR',
 			message: ''
 		} );
 	}
@@ -55,7 +111,7 @@
 	function handleOnBreakingChangeValueChanged( breakingChangeId, propertyName, newValue ) {
 		breakingChanges = breakingChanges.map( breakingChange => breakingChange.id === breakingChangeId ?
 			( { ...breakingChange, [propertyName]: newValue } ) :
-			breakingChangeId
+			breakingChange
 		);
 	}
 </script>
@@ -66,7 +122,6 @@
 			commit={commit}
 			onRemoveClick={handleRemoveCommitClick}
 			onValueChanged={handleOnCommitValueChanged}
-
 		/>
     {/each}
 	<button type="button" on:click={handleAddNewCommitClick}>New Commit</button>
@@ -81,6 +136,4 @@
 	<button type="button" on:click={handleAddNewBreakingChangeClick}>New Breaking Change</button>
 </div>
 <hr>
-<textarea style="width: 100%"/>
-<div>{JSON.stringify( commits )}</div>
-<div>{JSON.stringify( breakingChanges )}</div>
+<textarea readonly style="width: 100%; height: 200px; resize: none;" value={ textareaData } />

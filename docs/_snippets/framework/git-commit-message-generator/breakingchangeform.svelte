@@ -18,7 +18,7 @@
 	<input
 		type="text"
 		value={breakingChange.message}
-		on:change={event => onValueChanged(breakingChange.id, 'message', event.target.value)}
+		on:input={event => onValueChanged(breakingChange.id, 'message', event.target.value)}
 	/>
 	<button on:click={() => onRemoveClick(breakingChange.id)}>🗑️</button>
 </div>

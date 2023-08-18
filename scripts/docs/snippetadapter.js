@@ -23,6 +23,12 @@ const SNIPPETS_BUILD_CHUNK_SIZE = 50;
 
 const CKEDITOR5_ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
+// Required for the `docs/_snippets/framework/git-commit-message-generator/generator.svelte` snippet.
+const CKEDITOR5_PACKAGES = globSync( [ 'packages/*/', 'external/ckeditor5-commercial/packages/*/' ], { cwd: CKEDITOR5_ROOT_DIRECTORY } )
+	.map( relativePath => `'${ upath.parse( relativePath ).name }'` );
+CKEDITOR5_PACKAGES.sort();
+CKEDITOR5_PACKAGES.unshift( '\'ckeditor5\'' );
+
 const CLOUD_SERVICES_CONFIG_PATH = path.join(
 	CKEDITOR5_ROOT_DIRECTORY, 'packages', 'ckeditor5-cloud-services', 'tests', '_utils', 'cloud-services-config'
 );
@@ -393,7 +399,9 @@ function getConstantDefinitions( snippets ) {
 function getWebpackConfig( snippets, config ) {
 	// Stringify all definitions values. The `DefinePlugin` injects definition values as they are so we need to stringify them,
 	// so they will become real strings in the generated code. See https://webpack.js.org/plugins/define-plugin/ for more information.
-	const definitions = {};
+	const definitions = {
+		CKEDITOR5_PACKAGES
+	};
 
 	for ( const definitionKey in config.definitions ) {
 		definitions[ definitionKey ] = JSON.stringify( config.definitions[ definitionKey ] );
