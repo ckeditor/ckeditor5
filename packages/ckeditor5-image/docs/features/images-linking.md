@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Linking images
-meta-title: Linking images in CKEditor&nbsp;5
+meta-title: Linking images in CKEditor 5
 meta-description: Learn how to use your images as link anchors.
 order: 70
 ---
