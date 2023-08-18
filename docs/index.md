@@ -3,7 +3,7 @@ toc: false
 sitenav: false
 feedback-widget: false
 meta-title: CKEditor 5 documentation
-meta-description: Learn how to install, integrate, update, configure and develop CKEditor&nbsp;5. Browse through API documentation and online samples.
+meta-description: Learn how to install, integrate, update, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
 ---
 
 # CKEditor&nbsp;5 documentation
