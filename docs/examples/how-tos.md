@@ -4,7 +4,7 @@ order: 500
 modified_at: 2023-07-17
 ---
 
-# How tos
+# How-tos
 
 ## Basics
 

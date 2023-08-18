@@ -2995,6 +2995,68 @@ describe( 'TableColumnResizeEditing', () => {
 					'</table>'
 				);
 			} );
+
+			it( 'should not scroll `tbody` inside `table` after scrolling to the selection in a cell.', () => {
+				setModelData( editor.model,
+					'<table tableWidth="100%">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table tableWidth="90%">' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>[]foo</paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph>bar</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableColumnGroup>' +
+										'<tableColumn columnWidth="50%"></tableColumn>' +
+										'<tableColumn columnWidth="50%"></tableColumn>' +
+									'</tableColumnGroup>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="100%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>' + '<paragraph></paragraph>'.repeat( 50 )
+				);
+
+				const table = document.getElementsByTagName( 'tbody' )[ 0 ];
+				const shift = table.getBoundingClientRect().y - table.parentElement.getBoundingClientRect().y;
+
+				editor.editing.view.scrollToTheSelection( {
+					alignToTop: true,
+					forceScroll: true
+				} );
+
+				expect( table.getBoundingClientRect().y - table.parentElement.getBoundingClientRect().y ).to.be.equal( shift );
+			} );
 		} );
 
 		describe( 'multi-root editor integration', () => {

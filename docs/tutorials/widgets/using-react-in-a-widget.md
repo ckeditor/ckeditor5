@@ -1,6 +1,6 @@
 ---
 menu-title: Using a React component in a widget
-category: framework-tutorials
+category: widget-tutorials
 order: 25
 ---
 
@@ -21,7 +21,7 @@ Later on, you will use the "Product preview" feature to build a simple React app
 There are a couple of things you should know before you start:
 
 * Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor&nbsp;5 has an official {@link installation/integrations/react **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to {@link installation/integrations/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
-* In this tutorial, you are going to implement a block editor widget and that itself could give you a headache. It is recommended to at least skim through the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API, and possible use cases.
+* In this tutorial, you are going to implement a block editor widget and that itself could give you a headache. It is recommended to at least skim through the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API, and possible use cases.
 * Also, while it is not strictly necessary to read the {@link framework/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor&nbsp;5 Framework before you dive into this tutorial.
 * Various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
@@ -141,7 +141,7 @@ Create your project's entry point and save it as `app.js`, also in the root of t
 
 // Imports necessary to run a React application.
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 // The React application class.
 class App extends React.Component {
@@ -151,10 +151,8 @@ class App extends React.Component {
 }
 
 // Render the <App> in the <div class="app"></div> element found in the DOM.
-ReactDOM.render(
-	<App />,
-	document.querySelector( '.app' )
-);
+const root = createRoot( document.querySelector( '.app' ) );
+root.render( <App /> );
 ```
 
 Add an `index.html` page next to the `app.js` file:
@@ -231,7 +229,7 @@ Create the CKEditor–side logic that supports product preview widgets in the ed
 * The [`InsertProductPreviewCommand`](#command) provides an easy way for the "outside world" to insert product previews into the editor content.
 
 <info-box>
-	This guide assumes you are familiar with the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} guide which explains the basic concepts behind data structures and widgets. If in doubt, please refer to that guide for more information.
+	This guide assumes you are familiar with the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} guide which explains the basic concepts behind data structures and widgets. If in doubt, please refer to that guide for more information.
 </info-box>
 
 ### Editing plugin
@@ -243,10 +241,10 @@ The `ProductPreviewEditing` plugin defines the `productPreview` element in the e
 </info-box>
 
 * In the **data view**, the `productPreview` is represented as an empty `<section class="product" data-id="..."></section>` element with a `data-id` attribute associating it with a particular product. A semantic representation of the product saved in the database can be then consumed in the front–end by retrieving a fresh preview using the `data-id`. Since it does not carry any formatting or styling, the data representation will never get outdated, even if the layout or styles of the application change in the future.
-* In the **editing view**, on the other hand, the product preview is a {@link framework/tutorials/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~UIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link installation/getting-started/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
+* In the **editing view**, on the other hand, the product preview is a {@link tutorials/widgets/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~UIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link installation/getting-started/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 The differences in data representations of the product preview are summarized in the following table:
@@ -394,7 +392,7 @@ export default class ProductPreviewEditing extends Plugin {
 
 The `InsertProductPreviewCommand` inserts the `productPreview` element into the model at the current selection position. It is executed by the `<ProductPreview>` React component in the application sidebar to insert a widget into the editor content.
 
-Learn more about widget commands in the {@link framework/tutorials/implementing-a-block-widget#creating-a-command Implementing a block widget} guide. You can see this command in action in the section about the [main application component](#main-application-component).
+Learn more about widget commands in the {@link tutorials/widgets/implementing-a-block-widget#creating-a-command Implementing a block widget} guide. You can see this command in action in the section about the [main application component](#main-application-component).
 
 ```js
 // ckeditor/insertproductpreviewcommand.js
@@ -454,7 +452,7 @@ export default class ProductList extends React.Component {
 				})}
 			</ul>
 			<p><b>Tip</b>: Clicking the product will add it to the editor.</p>
-		</div>;
+		</div>
 	}
 }
 ```
@@ -477,8 +475,9 @@ export default class ProductPreview extends React.Component {
 		};
 
 		return <div
-			className="product-preview"
-			style={style}>
+					className="product-preview"
+					style={style}
+				>
 				<button
 					className="product-preview__add"
 					onClick={() => this.props.onClick( this.props.id )}
@@ -506,10 +505,10 @@ Have a look at the full source code of the `App` class:
 
 // Imports necessary to run a React application.
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 // The official <CKEditor> component for React.
-import CKEditor from '@ckeditor/ckeditor5-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 // The official CKEditor&nbsp;5 instance inspector. It helps understand the editor view and model.
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
@@ -532,115 +531,152 @@ import ProductPreview from './react/productpreview';
 
 // The React application class. It renders the editor and the product list.
 class App extends React.Component {
-	constructor( props ) {
-		super( props );
+    constructor( props ) {
+        super( props );
 
-		// A place to store the reference to the editor instance created by the <CKEditor> component.
-		// The editor instance is created asynchronously and is only available when the editor is ready.
-		this.editor = null;
+        // A place to store the reference to the editor instance created by the <CKEditor> component.
+        // The editor instance is created asynchronously and is only available when the editor is ready.
+        this.editor = null;
 
-		this.state = {
-			// The initial editor data. It is bound to the editor instance and will change as
-			// the user types and modifies the content of the editor.
-			editorData: '<h2>Check our last minute deals!</h2><p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta">Malta</a> is the top destination this summer. It’s home to cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine, and at least 8 months of sun.</p><section class="product" data-id="2"></section><p>You’ll definitely love exploring <a href="https://en.wikipedia.org/wiki/Warsaw">Warsaw</a>! The best time to visit the city is July and August when it’s cool enough not to break a sweat and hot enough to enjoy summer. The city, which has quite a combination of both old and modern textures, is located by the river of Vistula.</p><section class="product" data-id="1"></section><h3>Other destinations</h3><figure class="table"><table><thead><tr><th>Destination</th><th>Trip details</th></tr></thead><tbody><tr><td><section class="product" data-id="3"></section><p>&nbsp;</p></td><td>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid. <a href="http://ckeditor.com">Find out more...</a></td></tr><tr><td><section class="product" data-id="4"></section><p>&nbsp;</p></td><td>Tourists frequently admit that Taj Mahal "simply cannot be described with words". And that’s probably true. The more you try the more speechless you become. Words give only a semblance of truth. <a href="http://ckeditor.com">Find out more...</a></td></tr></tbody></table></figure>'
-		};
+        this.state = {
+            // The initial editor data. It is bound to the editor instance and will change as
+            // the user types and modifies the content of the editor.
+            editorData: `
+                <h2>Check our last minute deals!</h2>
 
-		// The configuration of the <CKEditor> instance.
-		this.editorConfig = {
-			plugins: [
-				// A set of editor features to be enabled and made available to the user.
-				Essentials, Heading, Bold, Italic, Underline,
-				Link, Paragraph, Table, TableToolbar,
+                <p>Aenean erat conubia pretium libero habitant turpis vivamus dignissim molestie, phasellus libero! Curae; consequat cubilia mattis. Litora non iaculis tincidunt.</p>
+                <section class="product" data-id="2">&nbsp;</section>
+                <p>Mollis gravida parturient ad maecenas euismod consectetur lacus rutrum urna eget ligula. Nisi imperdiet scelerisque natoque scelerisque cubilia nulla gravida. Eleifend malesuada pharetra est commodo venenatis aenean habitasse curae; fusce elit.</p>
+                <section class="product" data-id="1">&nbsp;</section>
 
-				// Your custom plugin implementing the widget is loaded here.
-				ProductPreviewEditing
-			],
-			toolbar: [
-				'heading',
-				'|',
-				'bold', 'italic', 'underline',
-				'|',
-				'link', 'insertTable',
-				'|',
-				'undo', 'redo'
-			],
-			table: {
-				contentToolbar: [
-					'tableColumn',
-					'tableRow',
-					'mergeTableCells'
-				]
-			},
-			// The configuration of the Products plugin. It specifies a function that will allow
-			// the editor to render a React <ProductPreview> component inside a product widget.
-			products: {
-				productRenderer: ( id, domElement ) => {
-					const product = this.props.products.find( product => product.id === id );
+                <h3>Other deals</h3>
+                <p>Ultricies dapibus placerat orci natoque fames commodo facilisi sollicitudin. Sed hendrerit mi dis non lacinia ipsum. Luctus fames scelerisque auctor pellentesque mi nunc mattis, amet sapien.</p>
 
-					ReactDOM.render(
-						<ProductPreview id={id} {...product} />,
-						domElement
-					);
-				}
-			}
-		};
+                <figure class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Our deal</th>
+                                <th>Why this one?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <section class="product" data-id="3">&nbsp;</section>
+                                </td>
+                                <td>Nascetur, nullam hac nibh curabitur elementum. Est ridiculus turpis adipiscing erat maecenas habitant montes. Curabitur mauris ut luctus semper. Neque orci auctor luctus accumsan quam cursus purus condimentum dis?</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <section class="product" data-id="4">&nbsp;</section>
+                                </td>
+                                <td>Elementum condimentum convallis porttitor cubilia consectetur cum. In pretium neque accumsan pharetra. Magna in quisque dignissim praesent facilisi diam. Ad habitant ultricies at faucibus. Ultricies auctor sodales massa nisi eget sem porta?</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </figure>
+            `,
+        };
 
-		this.handleEditorDataChange = this.handleEditorDataChange.bind( this );
-		this.handleEditorReady = this.handleEditorReady.bind( this );
-	}
+        // The configuration of the <CKEditor> instance.
+        this.editorConfig = {
+            plugins: [
+                // A set of editor features to be enabled and made available to the user.
+                Essentials, Heading, Bold, Italic, Underline,
+                Link, Paragraph, Table, TableToolbar,
 
-	// A handler executed when the user types or modifies the editor content.
-	// It updates the state of the application.
-	handleEditorDataChange( evt, editor ) {
-		this.setState( {
-			editorData: editor.getData()
-		} );
-	}
+                // Your custom plugin implementing the widget is loaded here.
+                ProductPreviewEditing
+            ],
+            toolbar: [
+                'heading',
+                '|',
+                'bold', 'italic', 'underline',
+                '|',
+                'link', 'insertTable',
+                '|',
+                'undo', 'redo'
+            ],
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            },
+            // The configuration of the Products plugin. It specifies a function that will allow
+            // the editor to render a React <ProductPreview> component inside a product widget.
+            products: {
+                productRenderer: ( id, domElement ) => {
+                    const product = this.props.products.find( product => product.id === id );
+                    const root = createRoot( domElement );
 
-	// A handler executed when the editor has been initialized and is ready.
-	// It synchronizes the initial data state and saves the reference to the editor instance.
-	handleEditorReady( editor ) {
-		this.editor = editor;
+                    root.render(
+                        <ProductPreview id={id} {...product} />
+                    );
+                }
+            }
+        };
 
-		this.setState( {
-			editorData: editor.getData()
-		} );
+        this.handleEditorDataChange = this.handleEditorDataChange.bind( this );
+        this.handleEditorReady = this.handleEditorReady.bind( this );
+    }
 
-		// CKEditor&nbsp;5 inspector allows you to take a peek into the editor's model and view
-		// data layers. Use it to debug the application and learn more about the editor.
-		CKEditorInspector.attach( editor );
-	}
+    // A handler executed when the user types or modifies the editor content.
+    // It updates the state of the application.
+    handleEditorDataChange( evt, editor ) {
+        this.setState( {
+            editorData: editor.getData()
+        } );
+    }
 
-	render() {
-		return [
-			// The application renders two columns:
-			// * in the left one, the <CKEditor> and the textarea displaying live
-			//   editor data are rendered.
-			// * in the right column, a <ProductList> is rendered with available <ProductPreviews>
-			//   to choose from.
-			<div className="app__offer-editor" key="offer-editor">
-				<h3>Product offer editor</h3>
-				<CKEditor
-					editor={ClassicEditor}
-					data={this.state.editorData}
-					config={this.editorConfig}
-					onChange={this.handleEditorDataChange}
-					onReady={this.handleEditorReady}
-				/>
+    // A handler executed when the editor has been initialized and is ready.
+    // It synchronizes the initial data state and saves the reference to the editor instance.
+    handleEditorReady( editor ) {
+        this.editor = editor;
 
-				<h3>Editor data</h3>
-				<textarea value={this.state.editorData} readOnly={true}></textarea>
-			</div>,
-			<ProductList
-				key="product-list"
-				products={this.props.products}
-				onClick={( id ) => {
-					this.editor.execute( 'insertProduct', id );
-					this.editor.editing.view.focus();
-				}}
-			/>
-		];
-	}
+        this.setState( {
+            editorData: editor.getData()
+        } );
+
+        // CKEditor&nbsp;5 inspector allows you to take a peek into the editor's model and view
+        // data layers. Use it to debug the application and learn more about the editor.
+        CKEditorInspector.attach( editor );
+    }
+
+    onClick( id ) {
+        this.editor.execute( 'insertProduct', id );
+        this.editor.editing.view.focus();
+    }
+
+    render() {
+        return [
+            // The application renders two columns:
+            // * in the left one, the <CKEditor> and the textarea displaying live
+            //   editor data are rendered.
+            // * in the right column, a <ProductList> is rendered with available <ProductPreviews>
+            //   to choose from.
+            <div className="app__offer-editor" key="offer-editor">
+                <h3>Product offer editor</h3>
+                <CKEditor
+                    editor={ClassicEditor}
+                    data={this.state.editorData}
+                    config={this.editorConfig}
+                    onChange={this.handleEditorDataChange}
+                    onReady={this.handleEditorReady}
+                />
+
+                <h3>Editor data</h3>
+                <textarea value={this.state.editorData} readOnly={true}></textarea>
+            </div>,
+            <ProductList
+                key="product-list"
+                products={this.props.products}
+                onClick={( id ) => this.onClick( id )}
+            />
+        ];
+    }
 }
 ```
 
@@ -655,7 +691,8 @@ class App extends React.Component {
 }
 
 // Render the <App> in the <div class="app"></div> element found in the DOM.
-ReactDOM.render(
+const root = createRoot( document.querySelector( '.app' ) );
+root.render(
 	<App
 		// Feeding the application with predefined products.
 		// In a real-life application, this sort of data would be loaded
@@ -687,8 +724,7 @@ ReactDOM.render(
 				image: 'product4.jpg'
 			}
 		]}
-	/>,
-	document.querySelector( '.app' )
+	/>
 );
 ```
 
@@ -880,10 +916,10 @@ The following code snippets present the complete implementation of the applicati
 
 // Imports necessary to run a React application.
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 // The official <CKEditor> component for React.
-import CKEditor from '@ckeditor/ckeditor5-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 // The official CKEditor&nbsp;5 instance inspector. It helps understand the editor view and model.
 import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
@@ -906,188 +942,189 @@ import ProductPreview from './react/productpreview';
 
 // The React application class. It renders the editor and the product list.
 class App extends React.Component {
-	constructor( props ) {
-		super( props );
+    constructor( props ) {
+        super( props );
 
-		// A place to store the reference to the editor instance created by the <CKEditor> component.
-		// The editor instance is created asynchronously and is only available when the editor is ready.
-		this.editor = null;
+        // A place to store the reference to the editor instance created by the <CKEditor> component.
+        // The editor instance is created asynchronously and is only available when the editor is ready.
+        this.editor = null;
 
-		this.state = {
-			// The initial editor data. It is bound to the editor instance and will change as
-			// the user types and modifies the content of the editor.
-			editorData: `
-				<h2>Check our last minute deals!</h2>
+        this.state = {
+            // The initial editor data. It is bound to the editor instance and will change as
+            // the user types and modifies the content of the editor.
+            editorData: `
+                <h2>Check our last minute deals!</h2>
 
-				<p>Aenean erat conubia pretium libero habitant turpis vivamus dignissim molestie, phasellus libero! Curae; consequat cubilia mattis. Litora non iaculis tincidunt.</p>
-				<section class="product" data-id="2">&nbsp;</section>
-				<p>Mollis gravida parturient ad maecenas euismod consectetur lacus rutrum urna eget ligula. Nisi imperdiet scelerisque natoque scelerisque cubilia nulla gravida. Eleifend malesuada pharetra est commodo venenatis aenean habitasse curae; fusce elit.</p>
-				<section class="product" data-id="1">&nbsp;</section>
+                <p>Aenean erat conubia pretium libero habitant turpis vivamus dignissim molestie, phasellus libero! Curae; consequat cubilia mattis. Litora non iaculis tincidunt.</p>
+                <section class="product" data-id="2">&nbsp;</section>
+                <p>Mollis gravida parturient ad maecenas euismod consectetur lacus rutrum urna eget ligula. Nisi imperdiet scelerisque natoque scelerisque cubilia nulla gravida. Eleifend malesuada pharetra est commodo venenatis aenean habitasse curae; fusce elit.</p>
+                <section class="product" data-id="1">&nbsp;</section>
 
-				<h3>Other deals</h3>
-				<p>Ultricies dapibus placerat orci natoque fames commodo facilisi sollicitudin. Sed hendrerit mi dis non lacinia ipsum. Luctus fames scelerisque auctor pellentesque mi nunc mattis, amet sapien.</p>
+                <h3>Other deals</h3>
+                <p>Ultricies dapibus placerat orci natoque fames commodo facilisi sollicitudin. Sed hendrerit mi dis non lacinia ipsum. Luctus fames scelerisque auctor pellentesque mi nunc mattis, amet sapien.</p>
 
-				<figure class="table">
-					<table>
-						<thead>
-							<tr>
-								<th>Our deal</th>
-								<th>Why this one?</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<section class="product" data-id="3">&nbsp;</section>
-								</td>
-								<td>Nascetur, nullam hac nibh curabitur elementum. Est ridiculus turpis adipiscing erat maecenas habitant montes. Curabitur mauris ut luctus semper. Neque orci auctor luctus accumsan quam cursus purus condimentum dis?</td>
-							</tr>
-							<tr>
-								<td>
-									<section class="product" data-id="4">&nbsp;</section>
-								</td>
-								<td>Elementum condimentum convallis porttitor cubilia consectetur cum. In pretium neque accumsan pharetra. Magna in quisque dignissim praesent facilisi diam. Ad habitant ultricies at faucibus. Ultricies auctor sodales massa nisi eget sem porta?</td>
-							</tr>
-						</tbody>
-					</table>
-				</figure>
-			`,
-		};
+                <figure class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Our deal</th>
+                                <th>Why this one?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <section class="product" data-id="3">&nbsp;</section>
+                                </td>
+                                <td>Nascetur, nullam hac nibh curabitur elementum. Est ridiculus turpis adipiscing erat maecenas habitant montes. Curabitur mauris ut luctus semper. Neque orci auctor luctus accumsan quam cursus purus condimentum dis?</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <section class="product" data-id="4">&nbsp;</section>
+                                </td>
+                                <td>Elementum condimentum convallis porttitor cubilia consectetur cum. In pretium neque accumsan pharetra. Magna in quisque dignissim praesent facilisi diam. Ad habitant ultricies at faucibus. Ultricies auctor sodales massa nisi eget sem porta?</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </figure>
+            `,
+        };
 
-		// The configuration of the <CKEditor> instance.
-		this.editorConfig = {
-			plugins: [
-				// A set of editor features to be enabled and made available to the user.
-				Essentials, Heading, Bold, Italic, Underline,
-				Link, Paragraph, Table, TableToolbar,
+        // The configuration of the <CKEditor> instance.
+        this.editorConfig = {
+            plugins: [
+                // A set of editor features to be enabled and made available to the user.
+                Essentials, Heading, Bold, Italic, Underline,
+                Link, Paragraph, Table, TableToolbar,
 
-				// Your custom plugin implementing the widget is loaded here.
-				ProductPreviewEditing
-			],
-			toolbar: [
-				'heading',
-				'|',
-				'bold', 'italic', 'underline',
-				'|',
-				'link', 'insertTable',
-				'|',
-				'undo', 'redo'
-			],
-			table: {
-				contentToolbar: [
-					'tableColumn',
-					'tableRow',
-					'mergeTableCells'
-				]
-			},
-			// The configuration of the Products plugin. It specifies a function that will allow
-			// the editor to render a React <ProductPreview> component inside a product widget.
-			products: {
-				productRenderer: ( id, domElement ) => {
-					const product = this.props.products.find( product => product.id === id );
+                // Your custom plugin implementing the widget is loaded here.
+                ProductPreviewEditing
+            ],
+            toolbar: [
+                'heading',
+                '|',
+                'bold', 'italic', 'underline',
+                '|',
+                'link', 'insertTable',
+                '|',
+                'undo', 'redo'
+            ],
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            },
+            // The configuration of the Products plugin. It specifies a function that will allow
+            // the editor to render a React <ProductPreview> component inside a product widget.
+            products: {
+                productRenderer: ( id, domElement ) => {
+                    const product = this.props.products.find( product => product.id === id );
+                    const root = createRoot( domElement );
 
-					ReactDOM.render(
-						<ProductPreview id={id} {...product} />,
-						domElement
-					);
-				}
-			}
-		};
+                    root.render(
+                        <ProductPreview id={id} {...product} />
+                    );
+                }
+            }
+        };
 
-		this.handleEditorDataChange = this.handleEditorDataChange.bind( this );
-		this.handleEditorReady = this.handleEditorReady.bind( this );
-	}
+        this.handleEditorDataChange = this.handleEditorDataChange.bind( this );
+        this.handleEditorReady = this.handleEditorReady.bind( this );
+    }
 
-	// A handler executed when the user types or modifies the editor content.
-	// It updates the state of the application.
-	handleEditorDataChange( evt, editor ) {
-		this.setState( {
-			editorData: editor.getData()
-		} );
-	}
+    // A handler executed when the user types or modifies the editor content.
+    // It updates the state of the application.
+    handleEditorDataChange( evt, editor ) {
+        this.setState( {
+            editorData: editor.getData()
+        } );
+    }
 
-	// A handler executed when the editor has been initialized and is ready.
-	// It synchronizes the initial data state and saves the reference to the editor instance.
-	handleEditorReady( editor ) {
-		this.editor = editor;
+    // A handler executed when the editor has been initialized and is ready.
+    // It synchronizes the initial data state and saves the reference to the editor instance.
+    handleEditorReady( editor ) {
+        this.editor = editor;
 
-		this.setState( {
-			editorData: editor.getData()
-		} );
+        this.setState( {
+            editorData: editor.getData()
+        } );
 
-		// CKEditor&nbsp;5 inspector allows you to take a peek into the editor's model and view
-		// data layers. Use it to debug the application and learn more about the editor.
-		CKEditorInspector.attach( editor );
-	}
+        // CKEditor&nbsp;5 inspector allows you to take a peek into the editor's model and view
+        // data layers. Use it to debug the application and learn more about the editor.
+        CKEditorInspector.attach( editor );
+    }
 
-	render() {
-		return [
-			// The application renders two columns:
-			// * in the left one, the <CKEditor> and the textarea displaying live
-			//   editor data are rendered.
-			// * in the right column, a <ProductList> is rendered with available <ProductPreviews>
-			//   to choose from.
-			<div className="app__offer-editor" key="offer-editor">
-				<h3>Product offer editor</h3>
-				<CKEditor
-					editor={ClassicEditor}
-					data={this.state.editorData}
-					config={this.editorConfig}
-					onChange={this.handleEditorDataChange}
-					onReady={this.handleEditorReady}
-				/>
+    onClick( id ) {
+        this.editor.execute( 'insertProduct', id );
+        this.editor.editing.view.focus();
+    }
 
-				<h3>Editor data</h3>
-				<textarea value={this.state.editorData} readOnly={true}></textarea>
-			</div>,
-			<ProductList
-				key="product-list"
-				products={this.props.products}
-				onClick={( id ) => {
-					this.editor.execute( 'insertProduct', id );
-					this.editor.editing.view.focus();
-				}}
-			/>
-		];
-	}
+    render() {
+        return [
+            // The application renders two columns:
+            // * in the left one, the <CKEditor> and the textarea displaying live
+            //   editor data are rendered.
+            // * in the right column, a <ProductList> is rendered with available <ProductPreviews>
+            //   to choose from.
+            <div className="app__offer-editor" key="offer-editor">
+                <h3>Product offer editor</h3>
+                <CKEditor
+                    editor={ClassicEditor}
+                    data={this.state.editorData}
+                    config={this.editorConfig}
+                    onChange={this.handleEditorDataChange}
+                    onReady={this.handleEditorReady}
+                />
+
+                <h3>Editor data</h3>
+                <textarea value={this.state.editorData} readOnly={true}></textarea>
+            </div>,
+            <ProductList
+                key="product-list"
+                products={this.props.products}
+                onClick={( id ) => this.onClick( id )}
+            />
+        ];
+    }
 }
 
 // Render the <App> in the <div class="app"></div> element found in the DOM.
-ReactDOM.render(
-	<App
-		// Feeding the application with predefined products.
-		// In a real-life application, this sort of data would be loaded
-		// from a database. To keep this tutorial simple, a few
-		//  hard–coded product definitions will be used.
-		products={[
-			{
-				id: 1,
-				name: 'Colors of summer in Poland',
-				price: '$1500',
-				image: 'product1.jpg'
-			},
-			{
-				id: 2,
-				name: 'Mediterranean sun on Malta',
-				price: '$1899',
-				image: 'product2.jpg'
-			},
-			{
-				id: 3,
-				name: 'Tastes of Asia',
-				price: '$2599',
-				image: 'product3.jpg'
-			},
-			{
-				id: 4,
-				name: 'Exotic India',
-				price: '$2200',
-				image: 'product4.jpg'
-			}
-		]}
-	/>,
-	document.querySelector( '.app' )
-);
+
+const root = createRoot( document.querySelector( '.app' ) );
+root.render(<App
+    // Feeding the application with predefined products.
+    // In a real-life application, this sort of data would be loaded
+    // from a database. To keep this tutorial simple, a few
+    //  hard–coded product definitions will be used.
+    products={ [
+        {
+            id: 1,
+            name: 'Colors of summer in Poland',
+            price: '$1500',
+            image: 'product1.jpg'
+        },
+        {
+            id: 2,
+            name: 'Mediterranean sun on Malta',
+            price: '$1899',
+            image: 'product2.jpg'
+        },
+        {
+            id: 3,
+            name: 'Tastes of Asia',
+            price: '$2599',
+            image: 'product3.jpg'
+        },
+        {
+            id: 4,
+            name: 'Exotic India',
+            price: '$2200',
+            image: 'product4.jpg'
+        }
+    ] }
+/>)
 ```
 
 ### `productpreviewediting.js`
@@ -1246,11 +1283,11 @@ export default class ProductList extends React.Component {
 							onClick={this.props.onClick}
 							{...product}
 						/>
-					</li>;
+					</li>
 				})}
 			</ul>
 			<p><b>Tip</b>: Clicking the product will add it to the editor.</p>
-		</div>;
+		</div>
 	}
 }
 ```

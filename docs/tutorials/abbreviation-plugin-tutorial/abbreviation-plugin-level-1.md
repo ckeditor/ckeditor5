@@ -11,7 +11,7 @@ This guide will show you how to create a simple abbreviation plugin for CKEditor
 
 We will create a toolbar button that lets the users insert abbreviations into their document. These abbreviations will use the [`<abbr>` <abbr title="HyperText Markup Language">HTML</abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr) with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element. You can check the mechanism hovering over the underlined "HTML" text in the previous sentence.
 
-This first part of the tutorial will only cover the basics. We will just insert one possible abbreviation: "WYSIWYG". We will get user input in the {@link framework/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 next part of this tutorial series}.
+This first part of the tutorial will only cover the basics. We will just insert one possible abbreviation: "WYSIWYG". We will get user input in the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 next part of this tutorial series}.
 
 If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo).
 
@@ -24,7 +24,7 @@ The editor has already been created in the `app.js` file with some basic plugins
 The webpack is also already configured, so you can just use the `npm run build` command to build your application. Whenever you want to check anything in the browser, save the changes and run build again. Then, refresh the page in your browser (remember to turn off caching, so that new changes are displayed instantly).
 
 <info-box>
-	Our starter files come with the {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 Inspector} attached to the editor, so you can easily debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	Our starter files come with the {@link framework/development-tools/inspector CKEditor&nbsp;5 Inspector} attached to the editor, so you can easily debug and observe what is happening in the model and the view layers. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 If you want to set up the project yourself, you should follow the steps listed in the {@link framework/quick-start the "Quick start" section}. Additionally, you will need to install the [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the `Plugin` class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
@@ -346,6 +346,7 @@ We need to register it in the editor's UI `componentFactory`, so it can be displ
 // abbreviation/abbreviationui.js
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 export default class AbbreviationUI extends Plugin {
 	init() {
@@ -444,6 +445,6 @@ If you got lost at any point, this is [the final implementation of the plugin](h
 <info-box>
 	**What's next?**
 
-	That's it for the first part of this tutorial! Your plugin should now work (at least in its most basic form). Move on to the {@link framework/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation.
+	That's it for the first part of this tutorial! Your plugin should now work (at least in its most basic form). Move on to the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 second part}, where you will create a balloon with a form to get user's input, replacing our hard-coded "WYSIWYG" abbreviation.
 </info-box>
 
