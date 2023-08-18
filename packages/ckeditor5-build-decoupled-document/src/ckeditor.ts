@@ -14,7 +14,7 @@ import {
 	FontSize,
 	FontFamily,
 	FontColor,
-	FontBackgroundColor
+	FontBackgroundColor,
 } from '@ckeditor/ckeditor5-font';
 import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -24,7 +24,7 @@ import {
 	Strikethrough,
 	Underline,
 	Superscript,
-	Subscript
+	Subscript,
 } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -41,7 +41,7 @@ import {
 	ImageToolbar,
 	ImageUpload,
 	PictureEditing,
-	AutoImage
+	AutoImage,
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -53,7 +53,7 @@ import {
 	Table,
 	TableToolbar,
 	TableProperties,
-	TableCellProperties
+	TableCellProperties,
 } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
@@ -79,6 +79,7 @@ import { StyledLink } from './plugins/styledLink/index';
 // @ts-ignore
 import { FullScreen } from './plugins/fullScreen/index';
 import { Source } from './plugins/source/index';
+import { RemoveBlockStyle } from './plugins/removeBlockStyle/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -137,7 +138,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		TableToolbar,
 		TextTransformation,
 		Underline,
-		UploadAdapter
+		UploadAdapter,
+		RemoveBlockStyle,
 	];
 
 	public static override defaultConfig = {
@@ -176,6 +178,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'removeFormat',
 				'|',
 				'style',
+				'removeBlockStyle',
 				'|',
 				'iframe',
 				'scratchBlocks',
@@ -184,8 +187,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'modal',
 				'styledLink',
 				'fullScreen',
-				'source'
-			]
+				'source',
+			],
 		},
 		image: {
 			resizeUnit: 'px' as const,
@@ -194,58 +197,58 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				{
 					name: 'resizeImage:original',
 					value: null,
-					label: 'Original'
+					label: 'Original',
 				},
 				{
 					name: 'resizeImage:10',
 					value: '126',
-					label: '10%'
+					label: '10%',
 				},
 				{
 					name: 'resizeImage:20',
 					value: '253',
-					label: '20%'
+					label: '20%',
 				},
 				{
 					name: 'resizeImage:30',
 					value: '380',
-					label: '30%'
+					label: '30%',
 				},
 				{
 					name: 'resizeImage:40',
 					value: '506',
-					label: '40%'
+					label: '40%',
 				},
 				{
 					name: 'resizeImage:50',
 					value: '633',
-					label: '50%'
+					label: '50%',
 				},
 				{
 					name: 'resizeImage:60',
 					value: '760',
-					label: '60%'
+					label: '60%',
 				},
 				{
 					name: 'resizeImage:70',
 					value: '886',
-					label: '70%'
+					label: '70%',
 				},
 				{
 					name: 'resizeImage:80',
 					value: '1013',
-					label: '80%'
+					label: '80%',
 				},
 				{
 					name: 'resizeImage:90',
 					value: '1139',
-					label: '90%'
+					label: '90%',
 				},
 				{
 					name: 'resizeImage:100',
 					value: '1266',
-					label: '100%'
-				}
+					label: '100%',
+				},
 			],
 			toolbar: [
 				'imageStyle:inline',
@@ -254,22 +257,18 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative',
-				'imageResize'
-			]
+				'imageResize',
+			],
 		},
 		table: {
-			contentToolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
+			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
 		},
 		list: {
 			properties: {
 				styles: true,
 				startIndex: true,
-				reversed: true
-			}
+				reversed: true,
+			},
 		},
 		codeBlock: {
 			languages: [
@@ -279,11 +278,11 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				{ language: 'python', label: 'Python' },
 				{ language: 'json', label: 'JSON' },
 				{ language: 'markdown', label: 'Markdown' },
-				{ language: 'blocks', label: 'Scratch' }
-			]
+				{ language: 'blocks', label: 'Scratch' },
+			],
 		},
 
 		// This value must be kept in sync with the language defined in webpack.config.js.
-		language: 'en'
+		language: 'en',
 	};
 }
