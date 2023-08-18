@@ -11,7 +11,7 @@ The {@link features/mentions mention} feature allows developing rich–text appl
 
 {@snippet examples/chat-with-mentions}
 
-Learn how to {@link features/mentions#configuration configure mention feeds} in the dedicated guide and check out the full source code of this example below if you want to implement your own chat using CKEditor 5 WYSIWYG editor.
+Learn how to {@link features/mentions#configuration configure mention feeds} in the dedicated guide and check out the full source code of this example below if you want to implement your own chat using CKEditor&nbsp;5 WYSIWYG editor.
 
 ## Editor example configuration
 

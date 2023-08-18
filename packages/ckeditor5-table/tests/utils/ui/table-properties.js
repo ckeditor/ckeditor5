@@ -101,6 +101,8 @@ describe( 'table utils', () => {
 				expect( colorFieldValidator( '#FFF' ) ).to.be.true;
 				expect( colorFieldValidator( '#FFAA11' ) ).to.be.true;
 				expect( colorFieldValidator( 'rgb(255,123,100)' ) ).to.be.true;
+				expect( colorFieldValidator( 'RGB(255,123,100)' ) ).to.be.true;
+				expect( colorFieldValidator( 'RED' ) ).to.be.true;
 				expect( colorFieldValidator( 'red' ) ).to.be.true;
 			} );
 

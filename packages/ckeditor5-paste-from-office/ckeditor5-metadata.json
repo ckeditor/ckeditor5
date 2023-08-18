@@ -4,7 +4,7 @@
 			"name": "Paste from Office",
 			"className": "PasteFromOffice",
 			"description": "Handles the content pasted from Microsoft Office or Google Docs and transforms it (if necessary) to a valid structure which can then be understood by the editor features.",
-			"docs": "features/pasting/paste-from-word.html",
+			"docs": "features/pasting/paste-from-office.html",
 			"path": "src/pastefromoffice.js"
 		}
 	]

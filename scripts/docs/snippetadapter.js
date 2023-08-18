@@ -432,6 +432,8 @@ function getWebpackConfig( snippets, config ) {
 			filename: '[name]/snippet.js'
 		},
 
+		devtool: 'source-map',
+
 		optimization: {
 			minimizer: [
 				new TerserPlugin( {

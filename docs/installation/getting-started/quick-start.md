@@ -10,7 +10,7 @@ modified_at: 2022-06-27
 # Quick start
 
 ## Introduction
-In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor 5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
+In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor&nbsp;5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
 
 <info-box>
 	Please bear in mind that the CDN solution only offers {@link installation/getting-started/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
@@ -20,7 +20,7 @@ In this guide, you will find the quickest and easiest way to run ready-to-use CK
 
 ## Running a simple editor
 
-Creating an editor using a CKEditor 5 build is very simple and can be described in two steps:
+Creating an editor using a CKEditor&nbsp;5 build is very simple and can be described in two steps:
 
 1. Load the desired editor via the `<script>` tag.
 2. Call the static `create()` method to create the editor.
@@ -51,14 +51,14 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 
 ### Sample implementation
 
-A full webpage with embedded CKEditor 5 from the above example would look like this:
+A full webpage with embedded CKEditor&nbsp;5 from the above example would look like this:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor 5 – Classic editor</title>
+	<title>CKEditor&nbsp;5 – Classic editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
@@ -85,7 +85,7 @@ A full webpage with embedded CKEditor 5 from the above example would look like t
 
 ## Running a full-featured editor from CDN
 
-The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor 5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
+The fastest way to run an advanced editor using the {@link features/index rich editing features offered by CKEditor&nbsp;5} is using a superbuild. The superbuild, available instantly from CDN, is a preconfigured package that offers access to almost all available plugins and all predefined editor types.
 
 <info-box>
 	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in your implementation, so using the superbuild should be considered for evaluation purposes and tests rather, than for the production environment.
@@ -93,7 +93,7 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 	We strongly advise using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/getting-started/predefined-builds predefined builds} tailored for specific needs.
 </info-box>
 
-### Using the CKEditor 5 superbuild
+### Using the CKEditor&nbsp;5 superbuild
 
 In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link installation/getting-started/predefined-builds#available-builds available builds documentation}.
 
@@ -131,7 +131,7 @@ In this example, we remove the premium collaboration features as well as several
 			</div>
 		</div>
 		<!--
-			The "super-build" of CKEditor 5 served via CDN contains a large set of plugins and multiple editor types.
+			The "super-build" of CKEditor&nbsp;5 served via CDN contains a large set of plugins and multiple editor types.
 			See https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
 		-->
 		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
@@ -140,7 +140,7 @@ In this example, we remove the premium collaboration features as well as several
 			<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/translations/es.js"></script>
 		-->
 		<script>
-			// This sample still does not showcase all CKEditor 5 features (!)
+			// This sample still does not showcase all CKEditor&nbsp;5 features (!)
 			// Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
 			CKEDITOR.ClassicEditor.create(document.getElementById("editor"), {
 				// https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format
@@ -185,7 +185,7 @@ In this example, we remove the premium collaboration features as well as several
 					]
 				},
 				// https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html#using-the-editor-configuration
-				placeholder: 'Welcome to CKEditor 5!',
+				placeholder: 'Welcome to CKEditor&nbsp;5!',
 				// https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-family-feature
 				fontFamily: {
 					options: [
@@ -293,7 +293,7 @@ In this example, we remove the premium collaboration features as well as several
 </html>
 ```
 
-### The CKEditor 5 superbuild limitations
+### The CKEditor&nbsp;5 superbuild limitations
 
 While the superbuild is designed to provide as many of them as possible, some of these plugins may conflict with each other. Due to that fact, several of those needed to be excluded from the superbuild and are not available that way:
 
@@ -305,20 +305,20 @@ While the superbuild is designed to provide as many of them as possible, some of
 
 ## Running a full-featured editor with Premium features
 
-If you would like to quickly evaluate CKEditor 5 with premium features such as real-time collaboration, track changes and revision history then sign up for a [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
+If you would like to quickly evaluate CKEditor&nbsp;5 with premium features such as real-time collaboration, track changes and revision history then sign up for a [30-day free trial](https://orders.ckeditor.com/trial/premium-features).
 
 After you sign up, you will find in the customer dashboard the full code snippet to run the editor with premium features with all the necessary configurations.
 
-## Adjusting plugins included in the CKEditor 5 superbuild
+## Adjusting plugins included in the CKEditor&nbsp;5 superbuild
 
 You may disable any features available in the superbuild using the {@link installation/getting-started/configuration#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link installation/getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
 
 <info-box hint>
 **What's next?**
 
-Congratulations, you have just run your first CKEditor 5 instance!
+Congratulations, you have just run your first CKEditor&nbsp;5 instance!
 
 You can also try another simple installation method, like the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 
-And if you use Angular, React, or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
+And if you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
 </info-box>

@@ -1,4 +1,4 @@
-# CKEditor 5 document editor build – standard version
+# CKEditor&nbsp;5 document editor build – standard version
 
 Just play with it.
 

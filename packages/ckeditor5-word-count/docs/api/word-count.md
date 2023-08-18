@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# Word count and character count feature for CKEditor 5
+# Word count and character count feature for CKEditor&nbsp;5
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-word-count.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count)
 
-This package implements the word count and character count features for CKEditor 5. You can use it to obtain the number of words or characters from the editor.
+This package implements the word count and character count features for CKEditor&nbsp;5. You can use it to obtain the number of words or characters from the editor.
 
 ## Demo
 

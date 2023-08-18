@@ -7,7 +7,7 @@ order: 10
 
 # Editor toolbar
 
-The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
+The toolbar is the most basic user interface element of CKEditor&nbsp;5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
 
 ## Demo
 
@@ -279,7 +279,7 @@ Array.from( editor.ui.componentFactory.names() );
 
 ## Adding a custom button
 
-Refer to the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to learn how to build your own plugin, register its button and add it to the toolbar configuration.
 
 ## Block toolbar
 

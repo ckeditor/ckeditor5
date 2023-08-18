@@ -6,32 +6,32 @@ order: 30
 
 # Installing plugins
 
-CKEditor 5 plugins, responsible for various features, are distributed through [npm](https://www.npmjs.com) packages. We implemented them modularly. It means a single plugin may contain multiple JavaScript files. Don't hesitate and explore available CKEditor 5 features - they are waiting for you to install them!
+CKEditor&nbsp;5 plugins, responsible for various features, are distributed through [npm](https://www.npmjs.com) packages. We implemented them modularly. It means a single plugin may contain multiple JavaScript files. Don't hesitate and explore available CKEditor&nbsp;5 features - they are waiting for you to install them!
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor 5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a build with a custom set of plugins through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a build with a custom set of plugins through a simple and intuitive UI.
 </info-box>
 
 ## Requirements
 
-To enrich the CKEditor 5 by installing plugins, you will require:
+To enrich the CKEditor&nbsp;5 by installing plugins, you will require:
 
 * [Node.js](https://nodejs.org/en/) 16.0.0+
 * [npm](https://www.npmjs.com/) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 <info-box warning>
-	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `18.0.0`, you should consider updating your editor and other packages to the latest version or install the alignment package at version `18.0.0`. Otherwise, this will result in [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
+	When installing CKEditor&nbsp;5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `38.0.0`, you should consider updating your editor and all other packages to the latest `{@var ckeditor5-version}` version. You might also install the alignment package at version `38.0.0` (which is not advised, actually). Otherwise, if package versions are different, this will result in an [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
 
-	The simplest way to avoid such situations is to always use the latest versions of the official packages. If you already stumbled upon this error, you can use [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
+	The simplest way to avoid such situations is to always use the latest `{@var ckeditor5-version}` versions of the official packages. If you already stumbled upon this error, you can use [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
 
-	**NOTE:** The above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
+	**NOTE:** The above rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
 </info-box>
 
-If you're here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you do not, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
+If you are here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you do not, you have two options: create a custom build with an {@link installation/getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
 
 ## Adding a plugin to an editor
 
-You can start adding plugins if you are in a directory with the CKEditor 5 build or the root folder of your application if you are integrating the editor from the source. Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
+You can start adding plugins if you are in a directory with the CKEditor&nbsp;5 build or the root folder of your application if you are integrating the editor from the source. Every plugin has its corresponding npm package. To install any plugin, you can use this template in a terminal:
 
 ```bash
 npm install <plugin-name>
@@ -195,7 +195,7 @@ If you are integrating an editor from the source into your application, then thi
 
 ## Adding a JavaScript plugin
 
-The CKEditor 5 is a TypeScript project, and all plugins provided by CKEditor 5 also use TypeScript. However, there are ways to use JavaScript packages with the editor.
+The CKEditor&nbsp;5 is a TypeScript project, and all plugins provided by CKEditor&nbsp;5 also use TypeScript. However, there are ways to use JavaScript packages with the editor.
 
 ### Community types
 
