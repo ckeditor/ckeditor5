@@ -31,8 +31,8 @@ import {
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import { isListItemBlock } from '../documentlist/utils/model';
-import DocumentListEditing from '../documentlist/documentlistediting';
+import { isListItemBlock, removeListAttributes } from '../documentlist/utils/model';
+import DocumentListEditing, { type DocumentListEditingPostFixerEvent } from '../documentlist/documentlistediting';
 import DocumentListCommand from '../documentlist/documentlistcommand';
 import CheckTodoDocumentListCommand from './checktododocumentlistcommand';
 import InputChangeObserver, { type ViewDocumentInputChangeEvent } from './inputchangeobserver';
@@ -53,11 +53,18 @@ export default class TodoDocumentListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static get requires() {
+		return [ DocumentListEditing ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
 
-		editor.commands.add( 'todoList', new DocumentListCommand( editor, 'todo' ) );
+		editor.commands.add( 'todoList', new DocumentListCommand( editor, 'todo', 'paragraph' ) );
 
 		const checkTodoListCommand = new CheckTodoDocumentListCommand( editor );
 
@@ -139,26 +146,38 @@ export default class TodoDocumentListEditing extends Plugin {
 			let wasFixed = false;
 
 			for ( const change of changes ) {
-				if ( change.type != 'attribute' || change.attributeKey != 'listType' ) {
-					continue;
-				}
+				if ( change.type == 'attribute' && change.attributeKey == 'listType' ) {
+					const element = change.range.start.nodeAfter!;
 
-				const element = change.range.start.nodeAfter!;
-
-				if ( change.attributeNewValue == 'todo' ) {
-					if ( !element.hasAttribute( 'todoListChecked' ) ) {
-						writer.setAttribute( 'todoListChecked', false, element );
-						wasFixed = true;
-					}
-				} else if ( change.attributeOldValue == 'todo' ) {
-					if ( element.hasAttribute( 'todoListChecked' ) ) {
+					if ( change.attributeOldValue == 'todo' && element.hasAttribute( 'todoListChecked' ) ) {
 						writer.removeAttribute( 'todoListChecked', element );
 						wasFixed = true;
+					}
+				} else if ( change.type == 'insert' && change.name != '$text' ) {
+					for ( const { item } of writer.createRangeOn( change.position.nodeAfter! ) ) {
+						if ( item.is( 'element' ) && item.getAttribute( 'listType' ) != 'todo' && item.hasAttribute( 'todoListChecked' ) ) {
+							writer.removeAttribute( 'todoListChecked', item );
+							wasFixed = true;
+						}
 					}
 				}
 			}
 
 			return wasFixed;
+		} );
+
+		// Make sure that only paragraphs can be a to-do list item.
+		this.listenTo<DocumentListEditingPostFixerEvent>( documentListEditing, 'postFixer', ( evt, { listNodes, writer } ) => {
+			let applied = false;
+
+			for ( const { node } of listNodes ) {
+				if ( node.getAttribute( 'listType' ) == 'todo' && node.name != 'paragraph' ) {
+					removeListAttributes( node, writer );
+					applied = true;
+				}
+			}
+
+			evt.return = applied || evt.return;
 		} );
 
 		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.

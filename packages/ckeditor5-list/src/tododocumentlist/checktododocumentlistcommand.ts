@@ -59,7 +59,11 @@ export default class CheckTodoDocumentListCommand extends Command {
 			const value = ( options.forceValue === undefined ) ? !this._getValue( selectedElements ) : options.forceValue;
 
 			for ( const element of selectedElements ) {
-				writer.setAttribute( attributeKey, value, element );
+				if ( value ) {
+					writer.setAttribute( attributeKey, true, element );
+				} else {
+					writer.removeAttribute( attributeKey, element );
+				}
 			}
 		} );
 	}

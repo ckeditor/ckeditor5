@@ -19,7 +19,8 @@ import {
 	ListItemUid,
 	sortBlocks,
 	getSelectedBlockObject,
-	isListItemBlock
+	isListItemBlock,
+	checkCanBeRenamed
 } from './utils/model';
 
 /**
@@ -40,15 +41,21 @@ export default class DocumentListCommand extends Command {
 	public declare value: boolean;
 
 	/**
+	 * TODO
+	 */
+	private _requiredElementName?: string;
+
+	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param editor The editor instance.
 	 * @param type List type that will be handled by this command.
 	 */
-	constructor( editor: Editor, type: 'numbered' | 'bulleted' | 'todo' ) {
+	constructor( editor: Editor, type: 'numbered' | 'bulleted' | 'todo', requiredElementName?: string ) {
 		super( editor );
 
 		this.type = type;
+		this._requiredElementName = requiredElementName;
 	}
 
 	/**
@@ -75,7 +82,10 @@ export default class DocumentListCommand extends Command {
 		const selectedBlockObject = getSelectedBlockObject( model );
 
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => model.schema.checkAttribute( block, 'listType' ) );
+			.filter( block => (
+				model.schema.checkAttribute( block, 'listType' ) ||
+				this._requiredElementName && checkCanBeRenamed( block, model.schema, this._requiredElementName )
+			) );
 
 		// Whether we are turning off some items.
 		const turnOff = options.forceValue !== undefined ? !options.forceValue : this.value;
@@ -100,7 +110,7 @@ export default class DocumentListCommand extends Command {
 
 				this._fireAfterExecute( changedBlocks );
 			}
-			// Turning on the list items for a collapsed selection inside a list item.
+			// Changing type of list items for a collapsed selection inside a list item.
 			else if ( ( selectedBlockObject || document.selection.isCollapsed ) && isListItemBlock( blocks[ 0 ] ) ) {
 				const changedBlocks = getListItems( selectedBlockObject || blocks[ 0 ] );
 
@@ -115,6 +125,15 @@ export default class DocumentListCommand extends Command {
 				const changedBlocks = [];
 
 				for ( const block of blocks ) {
+					// Rename block to a required element name if type of the list requires it.
+					if (
+						this._requiredElementName &&
+						!block.is( 'element', this._requiredElementName ) &&
+						checkCanBeRenamed( block, model.schema, this._requiredElementName )
+					) {
+						writer.rename( block, this._requiredElementName );
+					}
+
 					// Promote the given block to the list item.
 					if ( !block.hasAttribute( 'listType' ) ) {
 						writer.setAttributes( {

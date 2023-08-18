@@ -109,7 +109,7 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Allowed element definitions by {@link module:html-support/datafilter~DataFilter#allowElement} method.
 	*/
-	private readonly _allowedElements: Set<DataSchemaDefinition & { coupledAttribute?: string }>;
+	private readonly _allowedElements: Set<DataSchemaBlockElementDefinition | DataSchemaInlineElementDefinition>;
 
 	/**
 	 * Disallowed element names by {@link module:html-support/datafilter~DataFilter#disallowElement} method.
@@ -128,22 +128,22 @@ export default class DataFilter extends Plugin {
 	 */
 	private _coupledAttributes: Map<string, Array<string>> | null;
 
+	/**
+	 * TODO
+	 */
+	private _coupledGHSAttributes: Map<string, string> | null;
+
 	constructor( editor: Editor ) {
 		super( editor );
 
 		this._dataSchema = editor.plugins.get( 'DataSchema' );
-
 		this._allowedAttributes = new Matcher();
-
 		this._disallowedAttributes = new Matcher();
-
 		this._allowedElements = new Set();
-
 		this._disallowedElements = new Set();
-
 		this._dataInitialized = false;
-
 		this._coupledAttributes = null;
+		this._coupledGHSAttributes = null;
 
 		this._registerElementsAfterInit();
 		this._registerElementHandlers();
@@ -449,27 +449,44 @@ export default class DataFilter extends Plugin {
 			const changes = model.document.differ.getChanges();
 			let changed = false;
 
-			const coupledAttributes = this._getCoupledAttributesMap();
+			const [ coupledAttributes, coupledGHSAttributes ] = this._getCoupledAttributesMaps();
 
 			for ( const change of changes ) {
-				// Handle only attribute removals.
-				if ( change.type != 'attribute' || change.attributeNewValue !== null ) {
-					continue;
+				// Handle attribute removals.
+				if ( change.type == 'attribute' && change.attributeNewValue === null ) {
+					// Find a list of coupled GHS attributes.
+					const attributeKeys = coupledAttributes.get( change.attributeKey );
+
+					if ( !attributeKeys ) {
+						continue;
+					}
+
+					// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
+					for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
+						for ( const attributeKey of attributeKeys ) {
+							if ( item.hasAttribute( attributeKey ) ) {
+								writer.removeAttribute( attributeKey, item );
+								changed = true;
+							}
+						}
+					}
 				}
+				// Handle element rename (and attribute remove on it).
+				// Example: <paragraph htmlLiAttributes listItemId> -> <heading1>
+				// The GHS element attributes can't exist without coupled feature attribute (for example in lists).
+				else if ( change.type == 'insert' && change.name != '$text' ) {
+					for ( const { item } of writer.createRangeOn( change.position.nodeAfter! ) ) {
+						if ( !item.is( 'element' ) ) {
+							continue;
+						}
 
-				// Find a list of coupled GHS attributes.
-				const attributeKeys = coupledAttributes.get( change.attributeKey );
+						for ( const [ key ] of item.getAttributes() ) {
+							const coupledAttribute = coupledGHSAttributes.get( key );
 
-				if ( !attributeKeys ) {
-					continue;
-				}
-
-				// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
-				for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
-					for ( const attributeKey of attributeKeys ) {
-						if ( item.hasAttribute( attributeKey ) ) {
-							writer.removeAttribute( attributeKey, item );
-							changed = true;
+							if ( coupledAttribute && !item.hasAttribute( coupledAttribute ) ) {
+								writer.removeAttribute( key, item );
+								changed = true;
+							}
 						}
 					}
 				}
@@ -540,26 +557,37 @@ export default class DataFilter extends Plugin {
 	 * Collects the map of coupled attributes. The returned map is keyed by the feature attribute name
 	 * and coupled GHS attribute names are stored in the value array.
 	 */
-	private _getCoupledAttributesMap(): Map<string, Array<string>> {
-		if ( this._coupledAttributes ) {
-			return this._coupledAttributes;
+	private _getCoupledAttributesMaps(): [ Map<string, Array<string>>, Map<string, string> ] {
+		if ( this._coupledAttributes && this._coupledGHSAttributes ) {
+			return [ this._coupledAttributes, this._coupledGHSAttributes ];
 		}
 
 		this._coupledAttributes = new Map<string, Array<string>>();
+		this._coupledGHSAttributes = new Map<string, string>();
 
 		for ( const definition of this._allowedElements ) {
-			if ( definition.coupledAttribute && definition.model ) {
-				const attributeNames = this._coupledAttributes.get( definition.coupledAttribute );
+			if ( !definition.isInline ) {
+				continue;
+			}
+
+			const inlineDefinition = definition as DataSchemaInlineElementDefinition;
+
+			if ( inlineDefinition.coupledAttribute && inlineDefinition.model ) {
+				const attributeNames = this._coupledAttributes.get( inlineDefinition.coupledAttribute );
 
 				if ( attributeNames ) {
-					attributeNames.push( definition.model );
+					attributeNames.push( inlineDefinition.model );
 				} else {
-					this._coupledAttributes.set( definition.coupledAttribute, [ definition.model ] );
+					this._coupledAttributes.set( inlineDefinition.coupledAttribute, [ inlineDefinition.model ] );
+				}
+
+				if ( inlineDefinition.appliesToBlock ) {
+					this._coupledGHSAttributes.set( inlineDefinition.model, inlineDefinition.coupledAttribute );
 				}
 			}
 		}
 
-		return this._coupledAttributes;
+		return [ this._coupledAttributes, this._coupledGHSAttributes ];
 	}
 
 	/**
