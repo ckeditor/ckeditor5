@@ -25,7 +25,6 @@ import {
 	KeystrokeHandler,
 	Rect,
 	ResizeObserver,
-	global,
 	isVisible,
 	logWarning,
 	type CollectionAddEvent,
@@ -938,7 +937,7 @@ class DynamicGrouping implements ToolbarBehavior {
 		const toolbarRect = new Rect( element! );
 
 		if ( !this.cachedPadding ) {
-			const computedStyle = global.window.getComputedStyle( element! );
+			const computedStyle = window.getComputedStyle( element! );
 			const paddingProperty = uiLanguageDirection === 'ltr' ? 'paddingRight' : 'paddingLeft';
 
 			// parseInt() is essential because of quirky floating point numbers logic and DOM.

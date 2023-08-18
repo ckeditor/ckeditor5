@@ -22,7 +22,6 @@ import {
 import {
 	FocusTracker,
 	KeystrokeHandler,
-	global,
 	type Locale
 } from 'ckeditor5/src/utils';
 
@@ -199,7 +198,7 @@ export default class ListPropertiesView extends View {
 				gridItems: this.stylesView.children,
 				// Note: The styles view has a different number of columns depending on whether the other properties
 				// are enabled in the dropdown or not (https://github.com/ckeditor/ckeditor5/issues/12340)
-				numberOfColumns: () => global.window
+				numberOfColumns: () => window
 					.getComputedStyle( this.stylesView!.element! )
 					.getPropertyValue( 'grid-template-columns' )
 					.split( ' ' )

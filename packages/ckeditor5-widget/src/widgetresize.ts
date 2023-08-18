@@ -34,7 +34,6 @@ import type { EditorUIUpdateEvent } from '@ckeditor/ckeditor5-ui';
 
 import {
 	DomEmitterMixin,
-	global,
 	type DomEmitter,
 	type EventInfo
 } from '@ckeditor/ckeditor5-utils';
@@ -87,7 +86,7 @@ export default class WidgetResize extends Plugin {
 	 */
 	public init(): void {
 		const editing = this.editor.editing;
-		const domDocument = global.window.document;
+		const domDocument = window.document;
 
 		this.set( 'selectedResizer', null );
 		this.set( '_activeResizer', null );
@@ -124,7 +123,7 @@ export default class WidgetResize extends Plugin {
 		}, { priority: 'lowest' } );
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
-		this._observer.listenTo( global.window, 'resize', this._redrawSelectedResizerThrottled );
+		this._observer.listenTo( window, 'resize', this._redrawSelectedResizerThrottled );
 
 		const viewSelection = this.editor.editing.view.document.selection;
 

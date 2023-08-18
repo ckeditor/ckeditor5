@@ -24,7 +24,6 @@ import {
 } from './filler';
 
 import {
-	global,
 	logWarning,
 	indexOf,
 	getAncestors,
@@ -50,9 +49,9 @@ type DomRange = globalThis.Range;
 type DomText = globalThis.Text;
 type DomSelection = globalThis.Selection;
 
-const BR_FILLER_REF = BR_FILLER( global.document ); // eslint-disable-line new-cap
-const NBSP_FILLER_REF = NBSP_FILLER( global.document ); // eslint-disable-line new-cap
-const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( global.document ); // eslint-disable-line new-cap
+const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
+const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
+const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
 const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
 
@@ -159,13 +158,13 @@ export default class DomConverter {
 	 * or improve editing experience by filtering out interactive data.
 	 */
 	constructor(
-		document: Document,
+		doc: Document,
 		{ blockFillerMode, renderingMode = 'editing' }: {
 			blockFillerMode?: BlockFillerMode;
 			renderingMode?: 'data' | 'editing';
 		} = {}
 	) {
-		this.document = document;
+		this.document = doc;
 		this.renderingMode = renderingMode;
 		this.blockFillerMode = blockFillerMode || ( renderingMode === 'editing' ? 'br' : 'nbsp' );
 		this.preElements = [ 'pre' ];
@@ -180,7 +179,7 @@ export default class DomConverter {
 		];
 		this.unsafeElements = [ 'script', 'style' ];
 
-		this._domDocument = this.renderingMode === 'editing' ? global.document : global.document.implementation.createHTMLDocument( '' );
+		this._domDocument = this.renderingMode === 'editing' ? document : document.implementation.createHTMLDocument( '' );
 	}
 
 	/**
@@ -1030,7 +1029,7 @@ export default class DomConverter {
 
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
-			const { scrollX, scrollY } = global.window;
+			const { scrollX, scrollY } = window;
 			const scrollPositions: Array<[ number, number ]> = [];
 
 			// Save all scrollLeft and scrollTop values starting from domEditable up to
@@ -1056,7 +1055,7 @@ export default class DomConverter {
 
 			// Restore the scrollX and scrollY positions after the focus.
 			// https://github.com/ckeditor/ckeditor5-engine/issues/951
-			global.window.scrollTo( scrollX, scrollY );
+			window.scrollTo( scrollX, scrollY );
 		}
 	}
 

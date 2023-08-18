@@ -7,8 +7,6 @@
  * @module utils/dom/getpositionedancestor
  */
 
-import global from './global';
-
 /**
  * For a given element, returns the nearest ancestor element which CSS position is not "static".
  *
@@ -19,7 +17,7 @@ export default function getPositionedAncestor( element?: HTMLElement ): HTMLElem
 		return null;
 	}
 
-	if ( element.offsetParent === global.document.body ) {
+	if ( element.offsetParent === document.body ) {
 		return null;
 	}
 

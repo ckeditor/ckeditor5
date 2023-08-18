@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event, console */
-
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -360,20 +358,20 @@ describe( 'utils', () => {
 					dropdownView.panelView.children.add( button );
 					dropdownView.isOpen = true;
 
-					expect( global.document.activeElement ).to.equal( button.element );
+					expect( document.activeElement ).to.equal( button.element );
 
 					dropdownView.isOpen = false;
 
-					expect( global.document.activeElement ).to.equal( dropdownView.buttonView.element );
+					expect( document.activeElement ).to.equal( dropdownView.buttonView.element );
 					sinon.assert.calledOnce( spy );
 				} );
 
 				it( 'should not focus dropdown button if focus is outside the dropdown while closing', () => {
 					const spy = sinon.spy( dropdownView.buttonView, 'focus' );
 					// Setup an element that is not a child of the dropdown to be focused.
-					const externalButton = global.document.createElement( 'button' );
+					const externalButton = document.createElement( 'button' );
 
-					global.document.body.appendChild( externalButton );
+					document.body.appendChild( externalButton );
 
 					// Create a button inside the dropdown panel.
 					const buttonInsideDropdown = new ButtonView( locale );
@@ -381,13 +379,13 @@ describe( 'utils', () => {
 					dropdownView.panelView.children.add( buttonInsideDropdown );
 					dropdownView.isOpen = true;
 
-					expect( global.document.activeElement ).to.equal( buttonInsideDropdown.element );
+					expect( document.activeElement ).to.equal( buttonInsideDropdown.element );
 
 					externalButton.focus();
 
 					dropdownView.isOpen = false;
 
-					expect( global.document.activeElement ).to.equal( externalButton );
+					expect( document.activeElement ).to.equal( externalButton );
 					sinon.assert.notCalled( spy );
 
 					// Cleanup.
@@ -1174,6 +1172,6 @@ describe( 'utils', () => {
 
 function wait( time ) {
 	return new Promise( res => {
-		global.window.setTimeout( res, time );
+		window.setTimeout( res, time );
 	} );
 }

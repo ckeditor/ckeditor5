@@ -4,7 +4,6 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Element from '@ckeditor/ckeditor5-engine/src/view/element';
 import Text from '@ckeditor/ckeditor5-engine/src/view/text';
 
@@ -16,8 +15,8 @@ describe( 'Mention', () => {
 	let editorElement, editor, viewDocument;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {

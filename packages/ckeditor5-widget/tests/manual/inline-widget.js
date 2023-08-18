@@ -3,10 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, window */
-
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -119,7 +116,7 @@ class InlineWidget extends Plugin {
 }
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget, Table, Link ],
 		toolbar: [ 'heading', '|', 'bold', 'link', '|', 'placeholder', '|', 'insertTable', '|', 'undo', 'redo' ]
 	} )
@@ -136,7 +133,7 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-const modelDiv = global.document.querySelector( '#model' );
+const modelDiv = document.querySelector( '#model' );
 
 function printModelContents( editor ) {
 	modelDiv.innerText = formatData( getData( editor.model ) );

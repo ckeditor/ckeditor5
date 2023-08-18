@@ -15,7 +15,6 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Widget - vertical keyboard navigation near widgets', () => {
@@ -26,8 +25,8 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		'O0f+u/hoAHNZUJFRERERERERERERERERLYiD9N4FAFj2iK6AAAAAElFTkSuQmCC';
 
 	beforeEach( async () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ Paragraph, Image, ImageCaption, HorizontalLine, BlockQuote, Bold, BlockWidgetWithNestedEditable ]
@@ -43,31 +42,31 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			keyCode: getCode( 'ArrowLeft' ),
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy(),
-			domTarget: global.document.body
+			domTarget: document.body
 		};
 		rightArrowDomEvtDataStub = {
 			keyCode: getCode( 'ArrowRight' ),
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy(),
-			domTarget: global.document.body
+			domTarget: document.body
 		};
 		upArrowDomEvtDataStub = {
 			keyCode: getCode( 'ArrowUp' ),
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy(),
-			domTarget: global.document.body
+			domTarget: document.body
 		};
 		downArrowDomEvtDataStub = {
 			keyCode: getCode( 'ArrowDown' ),
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy(),
-			domTarget: global.document.body
+			domTarget: document.body
 		};
 
 		// Those tests are checking text line wrapping so forcing some sizes are needed to make those tests stable.
 		// Some tests are excluded for Gecko because of differences in font rendering (text line wraps in different places).
-		styleElement = global.document.createElement( 'style' );
-		styleElement.appendChild( global.document.createTextNode(
+		styleElement = document.createElement( 'style' );
+		styleElement.appendChild( document.createTextNode(
 			`
 			* {
 				font-size: 12px !important;
@@ -79,7 +78,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			.ck.ck-editor__editable { width: 300px !important; }
 			`
 		) );
-		global.document.querySelector( 'head' ).appendChild( styleElement );
+		document.querySelector( 'head' ).appendChild( styleElement );
 	} );
 
 	afterEach( async () => {

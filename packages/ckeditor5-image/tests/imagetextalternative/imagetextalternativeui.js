@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event, document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../../src/image';
 import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
@@ -13,7 +11,6 @@ import ImageCaption from '../../src/imagecaption';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -21,8 +18,8 @@ describe( 'ImageTextAlternativeUI', () => {
 	let editor, model, doc, plugin, command, form, balloon, editorElement, button;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -340,7 +337,7 @@ describe( 'ImageTextAlternativeUI', () => {
 					setData( model, '[<imageBlock src=""></imageBlock>]' );
 					button.fire( 'execute' );
 
-					global.document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+					document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 					sinon.assert.called( hideSpy );
 					sinon.assert.notCalled( focusSpy );
 				} );

@@ -12,7 +12,6 @@ import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { LivePosition, LiveRange } from 'ckeditor5/src/engine';
 import { Undo } from 'ckeditor5/src/undo';
 import { Delete } from 'ckeditor5/src/typing';
-import { global } from 'ckeditor5/src/utils';
 
 import ImageUtils from './imageutils';
 
@@ -94,7 +93,7 @@ export default class AutoImage extends Plugin {
 
 		editor.commands.get( 'undo' )!.on( 'execute', () => {
 			if ( this._timeoutId ) {
-				global.window.clearTimeout( this._timeoutId );
+				window.clearTimeout( this._timeoutId );
 				this._positionToInsert!.detach();
 
 				this._timeoutId = null;

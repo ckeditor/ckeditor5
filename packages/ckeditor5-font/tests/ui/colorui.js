@@ -3,12 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import TestColorPlugin from '../_utils/testcolorplugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
@@ -165,7 +162,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'should focus the first active button when dropdown is opened', () => {
-			global.document.body.appendChild( dropdown.element );
+			document.body.appendChild( dropdown.element );
 
 			const secondButton = dropdown.colorSelectorView.colorGridsFragmentView.staticColorsGrid.items.get( 1 );
 			const spy = sinon.spy( secondButton, 'focus' );
@@ -179,7 +176,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'should show the color grids fragment of the color selector when opened', () => {
-			global.document.body.appendChild( dropdown.element );
+			document.body.appendChild( dropdown.element );
 
 			const showGridsSpy = sinon.spy( dropdown.colorSelectorView, 'showColorGridsFragment' );
 
@@ -195,7 +192,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'should update selected colors of the color selector when opened', () => {
-			global.document.body.appendChild( dropdown.element );
+			document.body.appendChild( dropdown.element );
 
 			const updateColorSpy = sinon.spy( dropdown.colorSelectorView, 'updateSelectedColors' );
 
@@ -344,7 +341,7 @@ describe( 'ColorUI', () => {
 				dropdown = editor.ui.componentFactory.create( 'testColor' );
 				dropdown.render();
 				documentColorsModel = dropdown.colorSelectorView.colorGridsFragmentView.documentColors;
-				global.document.body.appendChild( dropdown.element );
+				document.body.appendChild( dropdown.element );
 			} );
 			afterEach( () => {
 				dropdown.element.remove();

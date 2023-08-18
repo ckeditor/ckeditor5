@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
@@ -17,8 +16,8 @@ describe( 'table cell properties', () => {
 
 	describe( 'TableCellProperties', () => {
 		beforeEach( async () => {
-			editorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( editorElement );
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [ TableCellProperties, Paragraph, TableEditing ]

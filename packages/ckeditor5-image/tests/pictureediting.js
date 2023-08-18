@@ -9,7 +9,6 @@ import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicedi
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -1860,7 +1859,7 @@ describe( 'PictureEditing', () => {
 		let editor, model, fileRepository, nativeReaderMock, adapterMock, loader;
 
 		beforeEach( async () => {
-			testUtils.sinon.stub( global.window, 'FileReader' ).callsFake( () => {
+			testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 				nativeReaderMock = new NativeFileReaderMock();
 
 				return nativeReaderMock;

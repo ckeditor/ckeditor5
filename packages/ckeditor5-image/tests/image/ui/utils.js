@@ -5,7 +5,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Image from '../../../src/image';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
@@ -29,8 +28,8 @@ describe( 'Utils', () => {
 	let editor, converter, selection, balloon, editorElement;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {
@@ -55,12 +54,12 @@ describe( 'Utils', () => {
 			const spy = sinon.spy( balloon, 'updatePosition' );
 			const view = new View();
 
-			view.element = global.document.createElement( 'div' );
+			view.element = document.createElement( 'div' );
 
 			balloon.add( {
 				view,
 				position: {
-					target: global.document.body
+					target: document.body
 				}
 			} );
 
@@ -77,12 +76,12 @@ describe( 'Utils', () => {
 			const spy = sinon.spy( balloon, 'updatePosition' );
 			const view = new View();
 
-			view.element = global.document.createElement( 'div' );
+			view.element = document.createElement( 'div' );
 
 			balloon.add( {
 				view,
 				position: {
-					target: global.document.body
+					target: document.body
 				}
 			} );
 

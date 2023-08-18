@@ -3,10 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
-
 import FocusTracker from '../src/focustracker';
-import global from '../src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from './_utils/utils';
 
@@ -55,7 +52,7 @@ describe( 'FocusTracker', () => {
 
 				focusTracker.listenTo( focusTracker, 'change:focusedElement', observableSpy );
 
-				focusTracker.focusedElement = global.document.body;
+				focusTracker.focusedElement = document.body;
 
 				expect( observableSpy.calledOnce ).to.true;
 			} );

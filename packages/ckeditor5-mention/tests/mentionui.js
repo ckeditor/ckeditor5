@@ -3,14 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, document, setTimeout, Event, console */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
@@ -1923,7 +1920,7 @@ describe( 'MentionUI', () => {
 								return Promise.resolve( issues.filter( issue => issue.id.includes( feedText ) ) );
 							},
 							itemRenderer: item => {
-								const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
+								const span = document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
 								span.innerHTML = `<span id="issue-${ item.id.slice( 1 ) }">@${ item.title }</span>`;
 

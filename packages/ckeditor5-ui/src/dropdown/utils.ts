@@ -29,7 +29,6 @@ import type { FocusableView } from '../focuscycler';
 import type { FalsyValue } from '../template';
 
 import {
-	global,
 	priorities,
 	logWarning,
 	type Collection,
@@ -523,7 +522,7 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 		// If the dropdown was closed, move the focus back to the button (#12125).
 		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
-		if ( element && element.contains( global.document.activeElement ) ) {
+		if ( element && element.contains( document.activeElement ) ) {
 			dropdownView.buttonView.focus();
 		}
 	} );

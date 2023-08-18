@@ -9,7 +9,7 @@
  * @module minimap/utils
  */
 
-import { Rect, global } from 'ckeditor5/src/utils';
+import { Rect } from 'ckeditor5/src/utils';
 import { DomConverter, Renderer } from 'ckeditor5/src/engine';
 import type { Editor } from 'ckeditor5/src/core';
 
@@ -72,10 +72,10 @@ export function cloneEditingViewDomRoot( editor: Editor, rootName?: string ): HT
  * @internal
  */
 export function getPageStyles(): Array<string | { href: string }> {
-	return Array.from( global.document.styleSheets )
+	return Array.from( document.styleSheets )
 		.map( styleSheet => {
 			// CORS
-			if ( styleSheet.href && !styleSheet.href.startsWith( global.window.location.origin ) ) {
+			if ( styleSheet.href && !styleSheet.href.startsWith( window.location.origin ) ) {
 				return { href: styleSheet.href };
 			}
 
@@ -92,7 +92,7 @@ export function getPageStyles(): Array<string | { href: string }> {
  * @internal
  */
 export function getDomElementRect( domElement: HTMLElement ): Rect {
-	return new Rect( domElement === global.document.body ? global.window : domElement );
+	return new Rect( domElement === document.body ? window : domElement );
 }
 
 /**
@@ -101,7 +101,7 @@ export function getDomElementRect( domElement: HTMLElement ): Rect {
  * @internal
  */
 export function getClientHeight( domElement: HTMLElement ): number {
-	return domElement === global.document.body ? global.window.innerHeight : domElement.clientHeight;
+	return domElement === document.body ? window.innerHeight : domElement.clientHeight;
 }
 
 /**
@@ -110,5 +110,5 @@ export function getClientHeight( domElement: HTMLElement ): number {
  * @internal
  */
 export function getScrollable( domElement: HTMLElement ): Window | HTMLElement {
-	return domElement === global.document.body ? global.window : domElement;
+	return domElement === document.body ? window : domElement;
 }

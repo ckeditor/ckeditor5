@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global setTimeout */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
@@ -13,7 +11,6 @@ import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -26,8 +23,8 @@ describe( 'AutoImage - integration', () => {
 	let editorElement, editor;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {

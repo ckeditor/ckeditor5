@@ -6,7 +6,6 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Table from '../../../src/table';
 import TableCellProperties from '../../../src/tablecellproperties';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
@@ -22,8 +21,8 @@ describe( 'table utils', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {
@@ -50,12 +49,12 @@ describe( 'table utils', () => {
 					const defaultPositions = BalloonPanelView.defaultPositions;
 					const view = new View();
 
-					view.element = global.document.createElement( 'div' );
+					view.element = document.createElement( 'div' );
 
 					balloon.add( {
 						view,
 						position: {
-							target: global.document.body
+							target: document.body
 						}
 					} );
 
@@ -101,12 +100,12 @@ describe( 'table utils', () => {
 					const defaultPositions = BalloonPanelView.defaultPositions;
 					const view = new View();
 
-					view.element = global.document.createElement( 'div' );
+					view.element = document.createElement( 'div' );
 
 					balloon.add( {
 						view,
 						position: {
-							target: global.document.body
+							target: document.body
 						}
 					} );
 

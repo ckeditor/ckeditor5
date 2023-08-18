@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -15,8 +14,8 @@ describe( 'ShowBlocksUI', () => {
 	let editor, element, button;
 
 	beforeEach( () => {
-		element = global.document.createElement( 'div' );
-		global.document.body.appendChild( element );
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
 
 		return ClassicTestEditor
 			.create( element, {

@@ -3,14 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, console */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import ImageToolbar from '../src/imagetoolbar';
 import ImageCaption from '../src/imagecaption';
 import Image from '../src/image';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -25,8 +22,8 @@ describe( 'ImageToolbar', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {
@@ -65,8 +62,8 @@ describe( 'ImageToolbar', () => {
 
 	it( 'should not initialize if there is no configuration', () => {
 		const consoleWarnStub = sinon.stub( console, 'warn' );
-		const editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicEditor.create( editorElement, {
 			plugins: [ ImageToolbar ]

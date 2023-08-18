@@ -21,7 +21,6 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'TableKeyboard', () => {
@@ -31,8 +30,8 @@ describe( 'TableKeyboard', () => {
 		'O0f+u/hoAHNZUJFRERERERERERERERERLYiD9N4FAFj2iK6AAAAAElFTkSuQmCC';
 
 	beforeEach( async () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine, MediaEmbed ]
@@ -62,7 +61,7 @@ describe( 'TableKeyboard', () => {
 				keyCode: getCode( 'Tab' ),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy(),
-				domTarget: global.document.body
+				domTarget: document.body
 			};
 		} );
 
@@ -671,25 +670,25 @@ describe( 'TableKeyboard', () => {
 				keyCode: getCode( 'ArrowLeft' ),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy(),
-				domTarget: global.document.body
+				domTarget: document.body
 			};
 			rightArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowRight' ),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy(),
-				domTarget: global.document.body
+				domTarget: document.body
 			};
 			upArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowUp' ),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy(),
-				domTarget: global.document.body
+				domTarget: document.body
 			};
 			downArrowDomEvtDataStub = {
 				keyCode: getCode( 'ArrowDown' ),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy(),
-				domTarget: global.document.body
+				domTarget: document.body
 			};
 		} );
 
@@ -2572,9 +2571,9 @@ describe( 'TableKeyboard', () => {
 				let styleElement;
 
 				beforeEach( async () => {
-					styleElement = global.document.createElement( 'style' );
+					styleElement = document.createElement( 'style' );
 					styleElement.type = 'text/css';
-					styleElement.appendChild( global.document.createTextNode(
+					styleElement.appendChild( document.createTextNode(
 						`
 						* {
 							font-size: 12px !important;
@@ -2590,7 +2589,7 @@ describe( 'TableKeyboard', () => {
 						tr:nth-child(2) td:nth-child(2) { width: 300px !important; }
 						`
 					) );
-					global.document.querySelector( 'head' ).appendChild( styleElement );
+					document.querySelector( 'head' ).appendChild( styleElement );
 
 					// The editing view must be focused because otherwise in Chrome the DOM selection will not contain
 					// any ranges and jumpOverUiElement will crash (for the right arrow when shift is pressed).

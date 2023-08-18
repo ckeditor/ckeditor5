@@ -4,7 +4,6 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import Link from '@ckeditor/ckeditor5-link/src/link';
@@ -17,8 +16,8 @@ describe( 'CKFinder', () => {
 	let editorElement, editor;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {

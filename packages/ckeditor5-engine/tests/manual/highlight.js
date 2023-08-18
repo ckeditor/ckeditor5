@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, window, document */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
@@ -14,7 +12,6 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
@@ -53,7 +50,7 @@ class FancyWidget extends Plugin {
 	}
 }
 
-ClassicEditor.create( global.document.querySelector( '#editor' ), {
+ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, List, Table, FancyWidget ],
 	toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList', 'insertTable' ]
 } )

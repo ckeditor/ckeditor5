@@ -6,7 +6,6 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -21,8 +20,8 @@ describe( 'FindAndReplaceUI', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -35,7 +34,7 @@ describe( 'FindAndReplaceUI', () => {
 				plugin = editor.plugins.get( 'FindAndReplaceUI' );
 
 				dropdown.render();
-				global.document.body.appendChild( dropdown.element );
+				document.body.appendChild( dropdown.element );
 
 				// Trigger lazy init.
 				dropdown.isOpen = true;

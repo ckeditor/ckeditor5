@@ -25,7 +25,6 @@ import {
 	Rect,
 	ResizeObserver,
 	env,
-	global,
 	toUnit,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
@@ -357,7 +356,7 @@ export default class BalloonToolbar extends Plugin {
 			// smaller as the user zooms in. No less than the default v-offset, though.
 			heightOffset: Math.max(
 				BalloonPanelView.arrowHeightOffset,
-				Math.round( 20 / global.window.visualViewport!.scale )
+				Math.round( 20 / window.visualViewport!.scale )
 			)
 		} ) : BalloonPanelView.defaultPositions;
 

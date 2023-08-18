@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, window, Event */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
 
@@ -20,7 +18,6 @@ import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -45,7 +42,7 @@ describe( 'BlockToolbar', () => {
 		// in DOM, the following DOM mock will have no effect.
 		ResizeObserver._observerInstance = null;
 
-		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+		testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( callback => {
 			resizeCallback = callback;
 
 			return {
@@ -75,7 +72,7 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	after( () => {
-		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
+		// Clean up after the ResizeObserver stub in beforeEach(). Even though the window.ResizeObserver
 		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native
 		// observer. Resetting it will allow fresh start for any other test using ResizeObserver.
 		ResizeObserver._observerInstance = null;

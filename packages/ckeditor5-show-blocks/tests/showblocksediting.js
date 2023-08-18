@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -16,8 +15,8 @@ describe( 'ShowBlocksEditing', () => {
 	let editor, domElement;
 
 	beforeEach( async () => {
-		domElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( domElement );
+		domElement = document.createElement( 'div' );
+		document.body.appendChild( domElement );
 
 		editor = await ClassicTestEditor.create( domElement, {
 			plugins: [

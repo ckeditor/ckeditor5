@@ -7,7 +7,6 @@
  * @module utils/dom/getscrollableancestors
  */
 
-import global from './global';
 import findClosestScrollableAncestor from './findclosestscrollableancestor';
 
 /**
@@ -23,12 +22,12 @@ export default function getScrollableAncestors( element: HTMLElement ): Array<HT
 	const scrollableAncestors = [];
 	let scrollableAncestor = findClosestScrollableAncestor( element );
 
-	while ( scrollableAncestor && scrollableAncestor !== global.document.body ) {
+	while ( scrollableAncestor && scrollableAncestor !== document.body ) {
 		scrollableAncestors.push( scrollableAncestor );
 		scrollableAncestor = findClosestScrollableAncestor( scrollableAncestor! );
 	}
 
-	scrollableAncestors.push( global.document );
+	scrollableAncestors.push( document );
 
 	return scrollableAncestors;
 }

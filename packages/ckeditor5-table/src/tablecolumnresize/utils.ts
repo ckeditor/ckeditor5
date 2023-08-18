@@ -9,7 +9,6 @@
 
 import type { Editor } from 'ckeditor5/src/core';
 import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine';
-import { global } from 'ckeditor5/src/utils';
 import type TableUtils from '../tableutils';
 import {
 	COLUMN_WIDTH_PRECISION,
@@ -134,7 +133,7 @@ function getChildrenViewElement( modelTable: Element, elementName: string, edito
  * @returns The width of the DOM element in pixels.
  */
 export function getElementWidthInPixels( domElement: HTMLElement ): number {
-	const styles = global.window.getComputedStyle( domElement );
+	const styles = window.getComputedStyle( domElement );
 
 	// In the 'border-box' box sizing algorithm, the element's width
 	// already includes the padding and border width (#12335).
@@ -308,7 +307,7 @@ function calculateMissingColumnWidths( columnWidths: Array<number | string> ): A
  * @returns Width in pixels without `px` at the end.
  */
 export function getDomCellOuterWidth( domCell: HTMLElement ): number {
-	const styles = global.window.getComputedStyle( domCell );
+	const styles = window.getComputedStyle( domCell );
 
 	// In the 'border-box' box sizing algorithm, the element's width
 	// already includes the padding and border width (#12335).

@@ -16,7 +16,6 @@ import {
 import {
 	KeystrokeHandler,
 	FocusTracker,
-	global,
 	type Locale
 } from 'ckeditor5/src/utils';
 
@@ -81,7 +80,7 @@ export default class CharacterGridView extends View<HTMLDivElement> {
 			keystrokeHandler: this.keystrokes,
 			focusTracker: this.focusTracker,
 			gridItems: this.tiles,
-			numberOfColumns: () => global.window
+			numberOfColumns: () => window
 				.getComputedStyle( this.element!.firstChild as Element ) // Responsive .ck-character-grid__tiles
 				.getPropertyValue( 'grid-template-columns' )
 				.split( ' ' )

@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils';
+import { findClosestScrollableAncestor } from 'ckeditor5/src/utils';
 import MinimapView, { type MinimapDragEvent, type MinimapClickEvent } from './minimapview';
 import {
 	cloneEditingViewDomRoot,
@@ -127,9 +127,9 @@ export default class Minimap extends Plugin {
 		minimapView.render();
 
 		// Scrollable ancestor scroll -> minimap position update.
-		minimapView.listenTo( global.document, 'scroll', ( evt, data ) => {
-			if ( scrollableRootAncestor === global.document.body ) {
-				if ( data.target !== global.document ) {
+		minimapView.listenTo( document, 'scroll', ( evt, data ) => {
+			if ( scrollableRootAncestor === document.body ) {
+				if ( data.target !== document ) {
 					return;
 				}
 			} else if ( data.target !== scrollableRootAncestor ) {
@@ -140,7 +140,7 @@ export default class Minimap extends Plugin {
 		}, { useCapture: true, usePassive: true } );
 
 		// Viewport resize -> minimap position update.
-		minimapView.listenTo( global.window, 'resize', () => {
+		minimapView.listenTo( window, 'resize', () => {
 			this._syncMinimapToEditingRootScrollPosition();
 		} );
 

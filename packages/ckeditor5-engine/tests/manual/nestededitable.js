@@ -3,10 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console */
-
 import { getData } from '../../src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -73,7 +70,7 @@ class NestedEditable extends Plugin {
 }
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, NestedEditable, Undo ],
 		toolbar: [ 'undo', 'redo' ]
 	} )
@@ -88,7 +85,7 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-const modelDiv = global.document.querySelector( '#model' );
+const modelDiv = document.querySelector( '#model' );
 function printModelContents( editor ) {
 	modelDiv.innerText = getData( editor.model );
 }

@@ -6,7 +6,6 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Table from '../../../src/table';
 import TableCellProperties from '../../../src/tablecellproperties';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -35,8 +34,8 @@ describe( 'table utils', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicEditor
 			.create( editorElement, {

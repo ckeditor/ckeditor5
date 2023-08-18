@@ -10,7 +10,6 @@
 /* global fetch, File */
 
 import type { ViewElement } from 'ckeditor5/src/engine';
-import { global } from 'ckeditor5/src/utils';
 import type ImageUtils from '../imageutils';
 
 /**
@@ -115,10 +114,10 @@ function convertLocalImageOnCanvas( imageSrc: string ): Promise<File> {
  */
 function getBlobFromCanvas( imageSrc: string ): Promise<Blob> {
 	return new Promise( ( resolve, reject ) => {
-		const image = global.document.createElement( 'img' );
+		const image = document.createElement( 'img' );
 
 		image.addEventListener( 'load', () => {
-			const canvas = global.document.createElement( 'canvas' );
+			const canvas = document.createElement( 'canvas' );
 
 			canvas.width = image.width;
 			canvas.height = image.height;

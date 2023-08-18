@@ -12,7 +12,6 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 
 const toPx = toUnit( 'px' );
@@ -37,7 +36,7 @@ describe( 'InlineEditorUIView', () => {
 		// in DOM, the following DOM mock will have no effect.
 		ResizeObserver._observerInstance = null;
 
-		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+		testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( callback => {
 			resizeCallback = callback;
 
 			return {
@@ -142,7 +141,7 @@ describe( 'InlineEditorUIView', () => {
 
 					// View element should be inside the body, otherwise the `Rect` instance will complain
 					// that it's not available in the DOM.
-					global.document.body.appendChild( editableElement );
+					document.body.appendChild( editableElement );
 
 					editableElement.style.width = '400px';
 

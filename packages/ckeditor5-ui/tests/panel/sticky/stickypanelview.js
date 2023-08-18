@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
-
-import { Rect, global } from '@ckeditor/ckeditor5-utils';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 import StickyPanelView from '../../../src/panel/sticky/stickypanelview';
 import View from '../../../src/view';
 import LabelView from '../../../src/label/labelview';
@@ -28,8 +26,8 @@ describe( 'StickyPanelView', () => {
 		contentElement = view.element.lastChild;
 		placeholderElement = view.element.firstChild;
 
-		sinon.stub( global.window, 'innerWidth' ).value( 1000 );
-		sinon.stub( global.window, 'innerHeight' ).value( 500 );
+		sinon.stub( window, 'innerWidth' ).value( 1000 );
+		sinon.stub( window, 'innerHeight' ).value( 500 );
 
 		document.body.appendChild( element );
 	} );
@@ -208,7 +206,7 @@ describe( 'StickyPanelView', () => {
 			view.render();
 			expect( spy.calledOnce ).to.be.true;
 
-			global.document.dispatchEvent( new Event( 'scroll' ) );
+			document.dispatchEvent( new Event( 'scroll' ) );
 			expect( spy.calledTwice ).to.be.true;
 		} );
 
@@ -402,7 +400,7 @@ describe( 'StickyPanelView', () => {
 					scrollableContainer.className = 'scrollable';
 					scrollableContainer.style.overflow = 'scroll';
 					scrollableContainer.appendChild( limiterElement );
-					global.document.body.appendChild( scrollableContainer );
+					document.body.appendChild( scrollableContainer );
 
 					view.isActive = true;
 				} );
@@ -590,7 +588,7 @@ describe( 'StickyPanelView', () => {
 
 					scrollableInnerParent.appendChild( limiterElement );
 					scrollableOuterParent.appendChild( scrollableInnerParent );
-					global.document.body.appendChild( scrollableOuterParent );
+					document.body.appendChild( scrollableOuterParent );
 
 					view.isActive = true;
 				} );
@@ -762,8 +760,8 @@ describe( 'StickyPanelView', () => {
 					height: 20
 				} );
 
-				sinon.stub( global.window, 'scrollX' ).value( 10 );
-				sinon.stub( global.window, 'scrollY' ).value( 0 );
+				sinon.stub( window, 'scrollX' ).value( 10 );
+				sinon.stub( window, 'scrollY' ).value( 0 );
 
 				expect( view.isSticky ).to.be.false;
 				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
@@ -792,7 +790,7 @@ describe( 'StickyPanelView', () => {
 					left: 40
 				} );
 
-				sinon.stub( global.window, 'innerHeight' ).value( 100 );
+				sinon.stub( window, 'innerHeight' ).value( 100 );
 
 				expect( view.isSticky ).to.be.false;
 				expect( view._isStickyToTheBottomOfLimiter ).to.be.false;

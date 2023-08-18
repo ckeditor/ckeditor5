@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import global from '../../src/dom/global';
-
 /**
  * A helper class that makes it possible to visualize {@link module:utils/dom/rect~Rect rect objects}.
  */
@@ -35,10 +33,10 @@ export default class RectDrawer {
 			RectDrawer._injectStyles();
 		}
 
-		const element = global.document.createElement( 'div' );
+		const element = document.createElement( 'div' );
 
 		// Make it work when the browser viewport is zoomed in (mainly on mobiles).
-		const { offsetLeft, offsetTop } = global.window.visualViewport;
+		const { offsetLeft, offsetTop } = window.visualViewport;
 
 		const rectGeometryStyles = {
 			top: `${ rect.top + offsetTop }px`,
@@ -55,7 +53,7 @@ export default class RectDrawer {
 			element.dataset.name = name;
 		}
 
-		global.document.body.appendChild( element );
+		document.body.appendChild( element );
 
 		this._domElements.push( element );
 	}
@@ -78,7 +76,7 @@ export default class RectDrawer {
 	 * @static
 	 */
 	static _injectStyles() {
-		RectDrawer._stylesElement = global.document.createElement( 'style' );
+		RectDrawer._stylesElement = document.createElement( 'style' );
 		RectDrawer._stylesElement.innerHTML = `
 			div.ck-rect-drawer-preview[data-name]::after {
 				content: attr(data-name);
@@ -94,7 +92,7 @@ export default class RectDrawer {
 			}
 		`;
 
-		global.document.head.appendChild( RectDrawer._stylesElement );
+		document.head.appendChild( RectDrawer._stylesElement );
 	}
 }
 
