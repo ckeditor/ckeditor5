@@ -2,7 +2,7 @@
 category: updating
 order: 20
 meta-title: CKEditor 5 release process
-meta-description: What CKEditor&nbsp;5 versions are published and how is it done? What is the difference between stable, nighly, alpha and RC versions?
+meta-description: What CKEditor 5 versions are published and how is it done? What is the difference between stable, nighly, alpha and RC versions?
 ---
 
 # Release process

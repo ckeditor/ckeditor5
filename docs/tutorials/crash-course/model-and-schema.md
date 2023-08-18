@@ -15,15 +15,15 @@ The editors come in a few flavors. While each looks very different visually, the
 * Editing engine,
 * Editing UI.
 
-In this and the next chapters of this tutorial you'll learn about the **editing engine**, which is responsible for reading, maintaining and outputting the state of the editor, and everything else that powers the editor under the hood.
+In this and the next chapters of this tutorial, you will learn about the **editing engine**, which is responsible for reading, maintaining, and outputting the state of the editor, and everything else that powers the editor under the hood.
 
-Later you'll also learn about the **editing UI**, but for now all you need to know is that it's the interface the user sees and interacts with.
+Later you will also learn about the **editing UI**, but for now, all you need to know is that it's the interface the user sees and interacts with.
 
 ### Model
 
-The first and most important part of the editing engine is the model. The model is an HTML-like structure that represents the content of the editor. When the {@link module:core/editor/utils/dataapimixin~DataApi#setData `editor.setData()`} method is called, the HTML passed as the argument is converted into the model. Then, when the {@link module:core/editor/utils/dataapimixin~DataApi#getData `model.getData()`} method is called, the model is converted back to HTML.
+The first and most important part of the editing engine is the model. The model is an HTML-like structure that represents the content of the editor. When the {@link module:core/editor/utils/dataapimixin~DataApi#setData `editor.setData()`} method is called, HTML passed as the argument is converted into the model. Then, when the {@link module:core/editor/utils/dataapimixin~DataApi#getData `model.getData()`} method is called, the model is converted back to HTML.
 
-One major difference between model and HTML is that in model, both text and elements can have attributes.
+One major difference between the model and HTML is that in the model, both text and elements can have attributes.
 
 Let's see how model compares to HTML.
 
@@ -33,9 +33,9 @@ Let's see how model compares to HTML.
 
 ### Schema
 
-You cannot put everything in the model. At least not until you update the schema. Schema defines what is allowed and where, what attributes are allowed for certain nodes, and so on.
+You cannot put everything in the model. At least not until you update the schema. The schema defines what is allowed and where, what attributes are allowed for certain nodes, and so on.
 
-Schema determines things like whether the given element can be enclosed in a block quote, or whether the bold button is enabled on a selected content.
+Schema determines things like whether the given element can be enclosed in a block quote, or whether the bold button is enabled on selected content.
 
 ## Extending the model to support text highlighting
 
@@ -111,4 +111,4 @@ We will be using this tool in the next stages of plugin development.
 
 If you want to read more about the editing engine, see the {@link framework/architecture/editing-engine Editing engine} document.
 
-Otherwise, go to the next chapter, where you'll {@link tutorials/crash-course/data-conversion learn more about data conversion} and what really happens when we call the `attributeToElement()` method.
+Otherwise, go to the next chapter, where you will {@link tutorials/crash-course/data-conversion learn more about data conversion} and what really happens when we call the `attributeToElement()` method.
