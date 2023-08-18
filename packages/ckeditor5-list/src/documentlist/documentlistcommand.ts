@@ -132,6 +132,7 @@ export default class DocumentListCommand extends Command {
 						checkCanBeRenamed( block, model.schema, this._requiredElementName )
 					) {
 						writer.rename( block, this._requiredElementName );
+						changedBlocks.push( block );
 					}
 
 					// Promote the given block to the list item.
