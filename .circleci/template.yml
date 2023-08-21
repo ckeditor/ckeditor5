@@ -129,7 +129,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - prepare_environment_command
+      - bootstrap_repositories_command
       - run:
           name: Trigger the Uber CI
           command: node -e "require('./scripts/ci/trigger-ckeditor5-continuous-integration.js')( 'ckeditor/ckeditor5', '$CIRCLE_SHA1' );"
@@ -170,32 +170,30 @@ workflows:
     jobs:
       - cke5_tests_framework
       - cke5_tests_features
-#      - cke5_validators
-#      - cke5_manual
-#      - release_prepare
       - cke5_coverage:
           requires:
             - cke5_tests_framework
             - cke5_tests_features
+      - cke5_validators
+      - cke5_manual
+      - release_prepare
       - cke5_trigger_uber_ci:
           requires:
-#            - cke5_tests_framework
-#            - cke5_tests_features
             - cke5_coverage
-#            - cke5_validators
-#            - cke5_manual
-#            - release_prepare
+            - cke5_validators
+            - cke5_manual
+            - release_prepare
           filters:
             branches:
               only:
                 - master
                 - ci/3559-circleci
-#      - notify_ci_failure:
-#          filters:
-#            branches:
-#              only:
-#                - master
-#                - ci/3559-circleci
+      - notify_ci_failure:
+          filters:
+            branches:
+              only:
+                - master
+                - ci/3559-circleci
 
   nightly:
     when: << pipeline.parameters.isNightly >>
@@ -206,6 +204,7 @@ workflows:
       - cke5_manual
       - release_prepare
       - notify_ci_failure:
+          hideAuthor: "true"
           filters:
             branches:
               only:
