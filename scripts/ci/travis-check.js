@@ -74,7 +74,7 @@ async function validationJob() {
 	exec( 'yarn', 'run', 'lint' );
 	exec( 'yarn', 'run', 'stylelint' );
 	exec( 'yarn', 'run', 'check-dependencies' );
-	await validateMetadataIcons( { cwd: ROOT_DIRECTORY } );
+	await validateMetadataIcons( ROOT_DIRECTORY );
 
 	if ( shortFlow ) {
 		process.exit();
