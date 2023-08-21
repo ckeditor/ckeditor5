@@ -6,7 +6,7 @@ modified_at: 2022-07-15
 
 # Creating a basic plugin
 
-This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their content. This is a beginner-friendly tutorial, perfect for your first interaction with the CKEditor 5 framework.
+This guide will show you how to create a simple, basic plugin that will let the users insert timestamps into their content. This is a beginner-friendly tutorial, perfect for your first interaction with the CKEditor 5 framework. While is not necessary to be familiar with the {@link tutorials/crash-course/editor CKEditor 5 Crash course} to follow it, you should consider reading that one, too.
 
 We will create a toolbar button that will insert the current date and time at the caret position into the document. If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo) below.
 
@@ -22,21 +22,22 @@ The webpack is also already configured, so you can just use the `npm run build` 
 
 ### DIY path with setting up the environment from the scratch
 
-If you want to set up the project yourself, you should follow the steps listed in {@link framework/quick-start#lets-start the Let's start section} of the Quick Start guide.
+If you want to set up the project yourself, you should follow the steps listed in the {@link framework/quick-start#lets-start Let's start section} of the Quick Start guide.
 
 When this is done, you need to install the following dependencies that will be necessary to proceed:
+
 ```bash
 npm install --save \
-    @ckeditor/ckeditor5-dev-utils \
-    @ckeditor/ckeditor5-editor-classic \
-    @ckeditor/ckeditor5-essentials \
-    @ckeditor/ckeditor5-paragraph \
-    @ckeditor/ckeditor5-basic-styles \
-    @ckeditor/ckeditor5-theme-lark \
-    @ckeditor/ckeditor5-heading \
-    @ckeditor/ckeditor5-list \
-    @ckeditor/ckeditor5-core \
-    @ckeditor/ckeditor5-ui
+	@ckeditor/ckeditor5-dev-utils \
+	@ckeditor/ckeditor5-editor-classic \
+	@ckeditor/ckeditor5-essentials \
+	@ckeditor/ckeditor5-paragraph \
+	@ckeditor/ckeditor5-basic-styles \
+	@ckeditor/ckeditor5-theme-lark \
+	@ckeditor/ckeditor5-heading \
+	@ckeditor/ckeditor5-list \
+	@ckeditor/ckeditor5-core \
+	@ckeditor/ckeditor5-ui
 ```
 
 In this guide especially useful will be [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package, which contains the `Plugin` class, and the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package, which contains the UI library and the framework.
@@ -67,7 +68,7 @@ ClassicEditor
 	} );
 ```
 
-Your `index.html` should look as listed below. The editor will load with HTML content you put inside the `<div id="editor">` tags.
+Your `index.html` should look as listed below. The editor will load with the HTML content you put inside the `<div id="editor">` tags.
 
 ```html
 <!DOCTYPE html>
@@ -113,9 +114,9 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 class Timestamp extends Plugin {
-    init() {
-        console.log( 'Timestamp was initialized.' );
-    }
+	init() {
+		console.log( 'Timestamp was initialized.' );
+	}
 }
 
 ClassicEditor
@@ -142,7 +143,7 @@ Rebuild the editor and check in your console whether the timestamp was initializ
 
 CKEditor 5 has a rich UI library. We will grab the `ButtonView` class for our toolbar button from there.
 
-Once we create a new instance of the `ButtonView`, we will be able to customize it by setting its properties. We will create a label, which will be visible on the button thanks to the `withText` property.
+Once we create a new instance of `ButtonView`, we will be able to customize it by setting its properties. We will create a label, which will be visible on the button thanks to the `withText` property.
 
 We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, in order to be able to add it into the {@link features/toolbar toolbar} array.
 
