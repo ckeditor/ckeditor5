@@ -11,7 +11,7 @@ const fs = require( 'fs-extra' );
 const { glob } = require( 'glob' );
 const upath = require( 'upath' );
 const { table, getBorderCharacters } = require( 'table' );
-const { red, green, magenta } = require( './ansi-colors' );
+const { red, green, magenta } = require( 'chalk' );
 
 module.exports = async function validateMetadataIcons( cwd = process.cwd() ) {
 	console.log( magenta( 'Validating icon paths in plugins\' metadata...' ) );
