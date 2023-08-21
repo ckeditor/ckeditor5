@@ -13,7 +13,7 @@ const upath = require( 'upath' );
 const { table, getBorderCharacters } = require( 'table' );
 const { red, green, magenta } = require( './ansi-colors' );
 
-module.exports = async function validateMetadataIcons( { cwd = process.cwd() } = {} ) {
+module.exports = async function validateMetadataIcons( cwd = process.cwd() ) {
 	console.log( magenta( 'Validating icon paths in plugins\' metadata...' ) );
 
 	const globPattern = upath.join( cwd, 'packages', '*', 'ckeditor5-metadata.json' );
