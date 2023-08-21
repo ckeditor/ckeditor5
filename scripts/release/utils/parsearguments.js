@@ -17,7 +17,8 @@ module.exports = function parseArguments( cliArguments ) {
 	const config = {
 		boolean: [
 			'nightly',
-			'verbose'
+			'verbose',
+			'compile-only'
 		],
 
 		number: [
@@ -34,6 +35,7 @@ module.exports = function parseArguments( cliArguments ) {
 		default: {
 			nightly: false,
 			concurrency: require( 'os' ).cpus().length / 2,
+			'compile-only': false,
 			packages: null,
 			branch: 'release',
 			'npm-tag': 'staging',
@@ -50,6 +52,9 @@ module.exports = function parseArguments( cliArguments ) {
 	options.npmTag = options[ 'npm-tag' ];
 	delete options[ 'npm-tag' ];
 
+	options.compileOnly = options[ 'compile-only' ];
+	delete options[ 'compile-only' ];
+
 	if ( options.nightly ) {
 		options.npmTag = 'nightly';
 	}
@@ -61,6 +66,8 @@ module.exports = function parseArguments( cliArguments ) {
  * @typedef {Object} ReleaseOptions
  *
  * @property {Boolean} nightly
+ *
+ * @property {Boolean} [compileOnly=false]
  *
  * @property {Number} concurrency
  *
