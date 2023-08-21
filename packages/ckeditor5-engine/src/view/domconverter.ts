@@ -1799,13 +1799,17 @@ function _logUnsafeElement( elementName: string ): void {
  * https://github.com/ckeditor/ckeditor5/issues/9635
  */
 function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
-	if ( !env.isGecko || !domSelection.rangeCount ) {
+	if ( !env.isGecko ) {
 		return false;
 	}
 
-	try {
-		const container = domSelection.getRangeAt( 0 ).startContainer;
+	if ( !domSelection.rangeCount ) {
+		return false;
+	}
 
+	const container = domSelection.getRangeAt( 0 ).startContainer;
+
+	try {
 		Object.prototype.toString.call( container );
 	} catch ( error ) {
 		return true;
