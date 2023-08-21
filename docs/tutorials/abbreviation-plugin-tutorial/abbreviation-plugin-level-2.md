@@ -605,7 +605,7 @@ export default class AbbreviationUI extends Plugin {
 
 ## Demo
 
-{@snippet framework/abbreviation-level-2}
+{@snippet tutorials/abbreviation-level-2}
 
 ## Final code
 
