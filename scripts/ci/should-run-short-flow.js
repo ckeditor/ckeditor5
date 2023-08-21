@@ -7,6 +7,7 @@
 
 const { execSync } = require( 'child_process' );
 const minimatch = require( 'minimatch' );
+const isNightlyBuild = require( './is-nightly-build' );
 
 const {
 	TRAVIS,
@@ -15,7 +16,6 @@ const {
 
 	CIRCLECI,
 
-	CKE5_IS_NIGHTLY_BUILD,
 	CIRCLE_PULL_REQUEST
 } = process.env;
 
@@ -56,7 +56,7 @@ module.exports = cwd => {
 		}
 	} else if ( CIRCLECI ) {
 		// Nightly builds should always execute the full flow.
-		if ( CKE5_IS_NIGHTLY_BUILD === '1' || CKE5_IS_NIGHTLY_BUILD === 'true' ) {
+		if ( isNightlyBuild() ) {
 			return false;
 		}
 
