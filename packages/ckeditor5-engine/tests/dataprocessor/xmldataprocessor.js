@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, DOMParser */
-
 import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
 import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter';
 import DomConverter from '../../src//view/domconverter';

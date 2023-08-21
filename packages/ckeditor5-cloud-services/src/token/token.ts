@@ -7,8 +7,6 @@
  * @module cloud-services/token/token
  */
 
-/* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
-
 import { ObservableMixin, CKEditorError } from 'ckeditor5/src/utils';
 import type { TokenUrl } from '../cloudservicesconfig';
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import FontBackgroundColorEditing from './../../src/fontbackgroundcolor/fontbackgroundcolorediting';
 import FontBackgroundColorUI from './../../src/fontbackgroundcolor/fontbackgroundcolorui';
 import ColorUI from './../../src/ui/colorui';

@@ -7,8 +7,6 @@
  * @module source-editing/sourceediting
  */
 
-/* global console */
-
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';

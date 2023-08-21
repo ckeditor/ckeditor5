@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, document */
-
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import EditingController from '../../src/controller/editingcontroller';

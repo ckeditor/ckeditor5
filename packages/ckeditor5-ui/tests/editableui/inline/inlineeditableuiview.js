@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
 import ViewRootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import InlineEditableUIView from '../../../src/editableui/inline/inlineeditableuiview';

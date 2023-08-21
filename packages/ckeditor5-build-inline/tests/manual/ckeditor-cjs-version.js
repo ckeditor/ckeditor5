@@ -4,7 +4,6 @@
  */
 
 /* eslint-env commonjs */
-/* globals window, document, console */
 
 const InlineEditor = require( '../../build/ckeditor' );
 

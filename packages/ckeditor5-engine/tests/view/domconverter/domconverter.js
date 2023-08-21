@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console */
-
 import DomConverter from '../../../src/view/domconverter';
 import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';

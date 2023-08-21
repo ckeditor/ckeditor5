@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text, console */
-
 import ViewText from '../../../src/view/text';
 import ViewElement from '../../../src/view/element';
 import ViewUIElement from '../../../src/view/uielement';

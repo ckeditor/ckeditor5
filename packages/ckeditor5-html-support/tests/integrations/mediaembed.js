@@ -10,8 +10,6 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 import { range } from 'lodash-es';
 
-/* global document */
-
 describe( 'MediaEmbedElementSupport', () => {
 	describe( 'MediaEmbed feature is available', () => {
 		let editor, model, editorElement, dataFilter;

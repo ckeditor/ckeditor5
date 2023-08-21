@@ -7,8 +7,6 @@
  * @module link/utils
  */
 
-/* global window */
-
 import type {
 	DowncastConversionApi,
 	Element,

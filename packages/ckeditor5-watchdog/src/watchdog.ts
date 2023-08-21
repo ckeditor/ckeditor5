@@ -7,8 +7,6 @@
  * @module watchdog/watchdog
  */
 
-/* globals window */
-
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type { CKEditorError } from 'ckeditor5/src/utils';
 import type { EditorWatchdogRestartEvent } from './editorwatchdog';

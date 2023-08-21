@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console */
-
 import Matcher from '../../src/view/matcher';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';

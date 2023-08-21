@@ -29,8 +29,6 @@ import {
 	translateColSpanAttribute
 } from '../../src/tablecolumnresize/utils';
 
-/* globals window, document */
-
 describe( 'TableColumnResize utils', () => {
 	let editorElement, editor, model, root, tableUtils;
 

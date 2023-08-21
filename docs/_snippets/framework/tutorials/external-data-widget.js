@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, fetch, setInterval, setTimeout, clearInterval */
-
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Command, Plugin } from '@ckeditor/ckeditor5-core';

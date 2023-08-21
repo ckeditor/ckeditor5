@@ -13,8 +13,6 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-/* global document */
-
 describe( 'DualContentModelElementSupport', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
 

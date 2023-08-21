@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import FontColorEditing from './../../src/fontcolor/fontcolorediting';
 import FontColorUI from './../../src/fontcolor/fontcolorui';
 import ColorUI from './../../src/ui/colorui';

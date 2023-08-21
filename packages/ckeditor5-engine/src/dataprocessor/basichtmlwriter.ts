@@ -7,8 +7,6 @@
  * @module engine/dataprocessor/basichtmlwriter
  */
 
-/* globals document */
-
 import type HtmlWriter from './htmlwriter';
 
 /**

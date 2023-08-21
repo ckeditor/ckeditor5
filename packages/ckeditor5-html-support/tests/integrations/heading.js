@@ -9,8 +9,6 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 
-/* global document */
-
 describe( 'HeadingElementSupport', () => {
 	let editor, editorElement, model, doc, dataSchema, dataFilter, htmlSupport;
 

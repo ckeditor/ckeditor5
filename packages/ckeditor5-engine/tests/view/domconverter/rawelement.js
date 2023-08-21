@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals HTMLElement */
-
 import ViewRawElement from '../../../src/view/rawelement';
 import ViewContainer from '../../../src/view/containerelement';
 import DomConverter from '../../../src/view/domconverter';

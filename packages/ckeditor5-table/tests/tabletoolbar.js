@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import TableToolbar from '../src/tabletoolbar';
 import Table from '../src/table';

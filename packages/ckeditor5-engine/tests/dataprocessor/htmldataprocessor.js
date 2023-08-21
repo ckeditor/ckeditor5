@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, window, Node, DOMParser */
-
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter';
 import DomConverter from '../../src/view/domconverter';

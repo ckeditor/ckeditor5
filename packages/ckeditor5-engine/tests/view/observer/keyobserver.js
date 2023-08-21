@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import KeyObserver from '../../../src/view/observer/keyobserver';
 import View from '../../../src/view/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';

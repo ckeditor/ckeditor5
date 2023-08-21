@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import Document from '../../src/view/document';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';

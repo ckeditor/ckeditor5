@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
 import TableColumnResize from '../../src/tablecolumnresize';
 import TableCaption from '../../src/tablecaption';

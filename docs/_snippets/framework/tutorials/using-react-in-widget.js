@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window */
-
 import Babel from 'babel-standalone';
 
 // Imports necessary to run a React application.

@@ -15,8 +15,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 
-/* global document, console */
-
 describe( 'CustomElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 

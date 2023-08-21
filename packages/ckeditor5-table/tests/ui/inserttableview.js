@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
-
 import { ViewCollection, ButtonView } from '@ckeditor/ckeditor5-ui';
 import InsertTableView from '../../src/ui/inserttableview';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';

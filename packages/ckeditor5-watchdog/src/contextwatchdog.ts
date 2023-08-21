@@ -7,8 +7,6 @@
  * @module watchdog/contextwatchdog
  */
 
-/* globals console */
-
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import type {
 	Context,

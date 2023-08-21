@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals ClassicEditor, window, document, console */
+/* globals ClassicEditor */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-nested-block-quote' ) )

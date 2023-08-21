@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, document, console, Event */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import ViewRange from '../../../src/view/range';

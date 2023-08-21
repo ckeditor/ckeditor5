@@ -22,8 +22,6 @@ import type { DocumentChangeEvent } from 'ckeditor5/src/engine';
 
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
-/* globals window */
-
 /**
  * The {@link module:autosave/autosave~Autosave} plugin allows you to automatically save the data (e.g. send it to the server)
  * when needed (when the user changed the content).

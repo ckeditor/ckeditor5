@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import { parse, stringify, getData, setData } from '../../src/dev-utils/view';
 import ViewDocument from '../../src/view/document';
 import DocumentFragment from '../../src/view/documentfragment';

@@ -7,8 +7,6 @@
  * @module utils/delay
  */
 
-/* globals setTimeout, clearTimeout */
-
 /**
  * Returns a function wrapper that will trigger a function after a specified wait time.
  * The timeout can be canceled by calling the cancel function on the returned wrapped function.

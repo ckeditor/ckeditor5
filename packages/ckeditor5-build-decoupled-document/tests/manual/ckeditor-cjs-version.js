@@ -4,7 +4,6 @@
  */
 
 /* eslint-env commonjs */
-/* globals window, document, console */
 
 const DecoupledEditor = require( '../../build/ckeditor' );
 

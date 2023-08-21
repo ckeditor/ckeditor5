@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import FontFamilyEditing from '../../src/fontfamily/fontfamilyediting';
 import FontFamilyUI from '../../src/fontfamily/fontfamilyui';
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, setTimeout */
-
 import Editor from '../../src/editor/editor';
 import Context from '../../src/context';
 import Plugin from '../../src/plugin';

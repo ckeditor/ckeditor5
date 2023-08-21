@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, console, window */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ImageBlockEditing from '../../src/image/imageblockediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';

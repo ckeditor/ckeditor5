@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event */
-
 import preventDefault from '../../src/bindings/preventdefault';
 import View from '../../src/view';
 

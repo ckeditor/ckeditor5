@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, setTimeout */
-
 import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 
 const defaultPositions = BalloonPanelView.defaultPositions;

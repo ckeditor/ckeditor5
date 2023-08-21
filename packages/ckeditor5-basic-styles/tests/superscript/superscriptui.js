@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import SuperscriptEditing from '../../src/superscript/superscriptediting';
 import SuperscriptUI from '../../src/superscript/superscriptui';

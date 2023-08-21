@@ -5,8 +5,6 @@
 
 /* eslint-disable ckeditor5-rules/ckeditor-error-message */
 
-/* global console */
-
 import { default as CKEditorError, DOCUMENTATION_URL, logError, logWarning } from '../src/ckeditorerror';
 import { expectToThrowCKEditorError } from './_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';

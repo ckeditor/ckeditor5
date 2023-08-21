@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document,Event */
+/* globalsEvent */
 
 import ColorSelectorView from './../../src/colorselector/colorselectorview';
 import ColorTileView from '../../src/colorgrid/colortileview';

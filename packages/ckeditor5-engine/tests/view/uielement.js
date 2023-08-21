@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, HTMLElement */
-
 import UIElement from '../../src/view/uielement';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';

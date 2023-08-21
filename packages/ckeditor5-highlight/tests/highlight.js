@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import Highlight from './../src/highlight';
 import HighlightEditing from './../src/highlightediting';
 import HighlightUI from './../src/highlightui';

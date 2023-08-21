@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, window */
-
 import { getOptimalPosition } from '../../src/dom/position';
 import Rect from '../../src/dom/rect';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';

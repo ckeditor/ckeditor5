@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, Event */
-
 import areConnectedThroughProperties from '../../src/utils/areconnectedthroughproperties';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 

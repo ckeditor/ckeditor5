@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
-
 import Widget from '../../src/widget';
 import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '../../src/utils';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';

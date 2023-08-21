@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
-
 import TablePropertiesView from '../../../src/tableproperties/ui/tablepropertiesview';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';

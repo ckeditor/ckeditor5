@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import ClipboardObserver from '../src/clipboardobserver';
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view';

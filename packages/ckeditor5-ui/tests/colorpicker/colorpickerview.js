@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals CustomEvent, document */
-
 import ColorPickerView from './../../src/colorpicker/colorpickerview';
 import 'vanilla-colorful/hex-color-picker.js';
 import env from '@ckeditor/ckeditor5-utils/src/env';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { UpcastWriter } from '@ckeditor/ckeditor5-engine';
 import {

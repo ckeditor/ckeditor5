@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import MultiRootEditor from '../src/ckeditor';
 import BaseMultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';

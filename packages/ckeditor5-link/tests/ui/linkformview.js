@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event, document */
-
 import LinkFormView from '../../src/ui/linkformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';

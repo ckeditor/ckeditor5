@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';

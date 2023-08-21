@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import FileReader from '../src/filereader';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { NativeFileReaderMock, createNativeFileMock } from './_utils/mocks';

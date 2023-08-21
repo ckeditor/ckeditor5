@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';

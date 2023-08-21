@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import ArticlePluginSet from '../_utils/articlepluginset';
 import ClassicTestEditor from '../_utils/classictesteditor';
 

@@ -9,8 +9,6 @@ import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 
-/* global document */
-
 describe( 'CodeBlockElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 

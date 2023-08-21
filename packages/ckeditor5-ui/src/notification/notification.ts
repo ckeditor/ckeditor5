@@ -7,8 +7,6 @@
  * @module ui/notification/notification
  */
 
-/* globals window */
-
 import { ContextPlugin } from '@ckeditor/ckeditor5-core';
 
 /**

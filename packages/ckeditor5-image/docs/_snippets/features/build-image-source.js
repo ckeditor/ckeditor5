@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
-
 import { ImageResize, ImageInsert, AutoImage, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event */
-
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import InputView from '../../src/input/inputview';
 

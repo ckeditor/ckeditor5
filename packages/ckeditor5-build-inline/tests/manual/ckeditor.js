@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console */
-
 import InlineEditor from '../../build/ckeditor';
 
 InlineEditor.create( document.querySelector( '#editor' ) )

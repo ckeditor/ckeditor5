@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, location, console */
-
 import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console, setTimeout, FocusEvent */
-
 import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
 import KeyObserver from '../../../src/view/observer/keyobserver';

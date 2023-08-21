@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, window, console, document */
-
 import EditorWatchdog from '../src/editorwatchdog';
 import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';

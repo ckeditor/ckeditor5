@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event, console */
-
 import SourceEditing from '../src/sourceediting';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';

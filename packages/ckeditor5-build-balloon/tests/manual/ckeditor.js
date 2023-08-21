@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console */
-
 import BalloonEditor from '../../build/ckeditor';
 
 BalloonEditor.create( document.querySelector( '#editor' ) )

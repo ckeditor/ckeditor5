@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
-
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import TextAlternativeFormView from '../../../src/imagetextalternative/ui/textalternativeformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';

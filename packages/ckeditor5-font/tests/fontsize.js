@@ -8,8 +8,6 @@ import FontSizeEditing from './../src/fontsize/fontsizeediting';
 import FontSizeUI from './../src/fontsize/fontsizeui';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-/* global document */
-
 describe( 'FontSize', () => {
 	let element, editor;
 

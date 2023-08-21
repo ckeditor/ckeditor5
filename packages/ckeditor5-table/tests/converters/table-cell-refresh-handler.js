@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';

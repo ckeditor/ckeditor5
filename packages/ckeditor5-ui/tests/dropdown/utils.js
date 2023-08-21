@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event, console */
-
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';

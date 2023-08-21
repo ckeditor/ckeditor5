@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview';
 import CollapsibleView from '../../../src/listproperties/ui/collapsibleview';
 

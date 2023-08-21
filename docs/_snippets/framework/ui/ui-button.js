@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console, Locale, ButtonView, checkIcon, ToolbarView, ClassicEditor, TooltipManager, Essentials */
+/* globals Locale, ButtonView, checkIcon, ToolbarView, ClassicEditor, TooltipManager, Essentials */
 
 const locale = new Locale();
 

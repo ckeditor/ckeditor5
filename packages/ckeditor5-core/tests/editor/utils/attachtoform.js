@@ -8,8 +8,6 @@ import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-/* global document, Event */
-
 describe( 'attachToForm()', () => {
 	let editor, form, textarea, submitStub;
 

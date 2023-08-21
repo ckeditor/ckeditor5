@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';

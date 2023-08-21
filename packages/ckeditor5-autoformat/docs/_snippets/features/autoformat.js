@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
-
 import { Strikethrough, Code, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';

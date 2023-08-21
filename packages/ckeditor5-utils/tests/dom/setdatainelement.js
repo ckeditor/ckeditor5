@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import setDataInElement from '../../src/dom/setdatainelement';
 import getDataFromElement from '../../src/dom/getdatafromelement';
 

@@ -7,8 +7,6 @@
  * @module engine/view/observer/mutationobserver
  */
 
-/* globals window */
-
 import Observer from './observer';
 import { startsWithFiller } from '../filler';
 import { isEqualWith } from 'lodash-es';

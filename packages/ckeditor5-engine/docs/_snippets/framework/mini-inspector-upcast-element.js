@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals DecoupledEditor, MiniCKEditorInspector, Essentials, console, document */
+/* globals DecoupledEditor, MiniCKEditorInspector, Essentials */
 
 function Example( editor ) {
 	editor.model.schema.register( 'example', {

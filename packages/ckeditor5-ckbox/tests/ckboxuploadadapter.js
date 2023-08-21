@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, console, document, btoa */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';

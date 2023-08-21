@@ -16,8 +16,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getModelDataWithAttributes } from '../_utils/utils';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
-/* global document */
-
 describe( 'ImageElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 

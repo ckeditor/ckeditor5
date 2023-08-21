@@ -7,8 +7,6 @@
  * @module paste-from-office/filters/image
  */
 
-/* globals btoa */
-
 import {
 	Matcher,
 	UpcastWriter,

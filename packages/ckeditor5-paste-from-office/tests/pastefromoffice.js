@@ -19,8 +19,6 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import { DomConverter } from '@ckeditor/ckeditor5-engine';
 
-/* global document, DOMParser */
-
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
 	let editor, pasteFromOffice, clipboard, element;

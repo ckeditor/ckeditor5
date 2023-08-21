@@ -7,8 +7,6 @@
  * @module ui/template
  */
 
-/* global document */
-
 import View from './view';
 import ViewCollection from './viewcollection';
 
