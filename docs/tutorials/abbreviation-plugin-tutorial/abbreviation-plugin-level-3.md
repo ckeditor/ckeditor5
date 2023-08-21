@@ -717,11 +717,11 @@ The command is now done, check how it works by trying all our different cases - 
 
 ## Demo
 
-{@snippet framework/abbreviation-level-3}
+{@snippet tutorials/abbreviation-level-3}
 
 ## Final code
 
-If you got lost at any point, this is [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-3). You can paste the code from different files into your project, or clone and install the whole thing, and it will run out-of-the-box.
+If you got lost at any point, this is [the final implementation of the plugin](https://github.com/ckeditor/ckeditor5-tutorials-examples/tree/main/abbreviation-plugin/part-3). You can paste the code from different files into your project, or clone and install the whole thing, and it will run out of the box.
 
 <info-box>
 	**What's next?**
