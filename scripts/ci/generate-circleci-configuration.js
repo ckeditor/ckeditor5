@@ -43,15 +43,13 @@ const prepareCodeCoverageDirectories = () => ( {
 	}
 } );
 
-const persistToWorkspace = () => ( {
+const persistToWorkspace = fileName => ( {
 	unless: {
 		condition: '<< pipeline.parameters.isNightly >>',
 		steps: {
 			persist_to_workspace: {
 				root: '.out',
-				paths: [
-					'combined_features.info'
-				]
+				paths: [ fileName ]
 			}
 		}
 	}
@@ -85,7 +83,7 @@ const persistToWorkspace = () => ( {
 				checkCoverage: true,
 				coverageFile: '.out/combined_framework.info'
 			} ),
-			persistToWorkspace()
+			persistToWorkspace( 'combined_framework.info' )
 		]
 	};
 
@@ -98,7 +96,7 @@ const persistToWorkspace = () => ( {
 				checkCoverage: true,
 				coverageFile: '.out/combined_features.info'
 			} ),
-			persistToWorkspace()
+			persistToWorkspace( 'combined_features.info' )
 		]
 	};
 

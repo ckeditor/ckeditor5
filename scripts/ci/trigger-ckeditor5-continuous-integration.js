@@ -5,14 +5,13 @@
 
 /* eslint-env node */
 
-const fetch = require( 'node-fetch' );
+// const fetch = require( 'node-fetch' );
 
 const {
 	INTEGRATION_CI_ORGANIZATION,
-	INTEGRATION_CI_REPOSITORY,
-	TRAVIS_EVENT_TYPE,
-	TRAVIS_BRANCH,
-	INTEGRATION_CI_CIRCLE_CI_TOKEN
+	INTEGRATION_CI_REPOSITORY
+	// INTEGRATION_CI_REPOSITORY,
+	// INTEGRATION_CI_CIRCLE_CI_TOKEN
 } = process.env;
 
 /**
@@ -25,37 +24,40 @@ const {
  *
  * @param {String} repository A slug of repository that triggers a new build.
  * @param {String} lastCommit A hash of latest commit.
- * @returns {Object} Travis API response as JSON.
+ * @returns {Object} CircleCI API response as JSON.
  */
 module.exports = function triggerCkeditor5ContinuousIntegration( repository, lastCommit ) {
-	// We want to trigger the integration build when current build was triggered by push commit or API call.
-	if ( TRAVIS_EVENT_TYPE !== 'push' && TRAVIS_EVENT_TYPE !== 'api' ) {
-		return;
-	}
-
-	// Trigger the integration build only when checking the "master" branch in the repository.
-	if ( TRAVIS_BRANCH !== 'master' ) {
-		return;
-	}
-
 	const requestUrl =
 		`https://circleci.com/api/v2/project/github/${ INTEGRATION_CI_ORGANIZATION }/${ INTEGRATION_CI_REPOSITORY }/pipeline`;
-	const requestOptions = {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-			'Circle-Token': INTEGRATION_CI_CIRCLE_CI_TOKEN
-		},
-		body: JSON.stringify( {
-			branch: 'master',
-			parameters: {
-				triggerRepositorySlug: repository,
-				triggerCommitHash: lastCommit
-			}
-		} )
-	};
 
-	return fetch( requestUrl, requestOptions )
-		.then( res => res.json() );
+	console.log( { requestUrl, repository, lastCommit } );
+
+	// TODO: To remove.
+	return Promise.resolve();
+	//
+	// const requestOptions = {
+	// 	method: 'post',
+	// 	headers: {
+	// 		'Content-Type': 'application/json',
+	// 		'Accept': 'application/json',
+	// 		'Circle-Token': INTEGRATION_CI_CIRCLE_CI_TOKEN
+	// 	},
+	// 	body: JSON.stringify( {
+	// 		branch: 'master',
+	// 		parameters: {
+	// 			triggerRepositorySlug: repository,
+	// 			triggerCommitHash: lastCommit
+	// 		}
+	// 	} )
+	// };
+	//
+	// return fetch( requestUrl, requestOptions )
+	// 	.then( res => res.json() )
+	// 	.then( response => {
+	// 		if ( response.error_message ) {
+	// 			throw new Error( `CI trigger failed: "${ response.error_message }".` );
+	// 		}
+	//
+	// 		console.log( 'CI triggered successfully.' );
+	// 	} );
 };
