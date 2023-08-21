@@ -10,12 +10,6 @@ const minimatch = require( 'minimatch' );
 const isNightlyBuild = require( './is-nightly-build' );
 
 const {
-	TRAVIS,
-	TRAVIS_COMMIT_RANGE,
-	TRAVIS_EVENT_TYPE,
-
-	CIRCLECI,
-
 	CIRCLE_PULL_REQUEST
 } = process.env;
 
@@ -34,41 +28,22 @@ const filePatterns = [
  * @returns {Boolean}
  */
 module.exports = cwd => {
-	// We target last commit content by default if we're not processing a pull request.
-	let diffTargets = 'HEAD HEAD~1';
 	let changedFilesPaths;
 
-	// TODO: To remove once CKEditor 5 migrates to CircleCI.
-	if ( TRAVIS ) {
-		// Nightly builds should always execute the full flow.
-		if ( TRAVIS_EVENT_TYPE === 'cron' ) {
-			return false;
-		}
-
-		if ( TRAVIS_EVENT_TYPE === 'pull_request' ) {
-			// We have to find merge base in case the feature branch is not up-to-date with target branch.
-			// Without this step, the comparison would include all changes from merging target branch into feature branch.
-			// https://stackoverflow.com/a/25071749
-			const [ commitRangeStart, commitRangeEnd ] = TRAVIS_COMMIT_RANGE.split( '...' );
-			const mergeBase = execSync( `git merge-base ${ commitRangeStart } ${ commitRangeEnd }`, { cwd } ).toString().trim();
-
-			diffTargets = `${ mergeBase } ${ commitRangeEnd }`;
-		}
-	} else if ( CIRCLECI ) {
-		// Nightly builds should always execute the full flow.
-		if ( isNightlyBuild() ) {
-			return false;
-		}
-
-		// If processing a pull request build, find all changed files.
-		if ( CIRCLE_PULL_REQUEST ) {
-			const prId = CIRCLE_PULL_REQUEST.split( '/' ).pop();
-
-			changedFilesPaths = execSync( `gh pr view ${ prId } --json files --jq '.files.[].path'`, { cwd } ).toString();
-		}
+	// Nightly builds should always execute the full flow.
+	if ( isNightlyBuild() ) {
+		return false;
 	}
 
-	if ( !changedFilesPaths ) {
+	// If processing a pull request build, find all changed files.
+	if ( CIRCLE_PULL_REQUEST ) {
+		const prId = CIRCLE_PULL_REQUEST.split( '/' ).pop();
+
+		changedFilesPaths = execSync( `gh pr view ${ prId } --json files --jq '.files.[].path'`, { cwd } ).toString();
+	} else {
+		// We target last commit content by default if we're not processing a pull request.
+		const diffTargets = 'HEAD HEAD~1';
+
 		changedFilesPaths = execSync( `git diff --name-only ${ diffTargets }`, { cwd } ).toString();
 	}
 
