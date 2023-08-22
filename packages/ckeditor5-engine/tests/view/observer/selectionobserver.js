@@ -213,28 +213,30 @@ describe( 'SelectionObserver', () => {
 		} );
 
 		it( 'should do nothing in Firefox if the DOM selection is correct', done => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domP = createElement( document, 'p', null, [ domFoo ] );
+
+			const viewP = parse( '<p>foo</p>' );
+
+			converter.bindElements( domP, viewP );
+
+			document.body.appendChild( domP );
+
+			const domRange = document.createRange();
+			domRange.setStart( domFoo, 1 );
+			domRange.setEnd( domFoo, 2 );
+
+			const domSelection = document.getSelection();
+			domSelection.removeAllRanges();
+			domSelection.addRange( domRange );
+
 			expect( () => {
-				const domFoo = document.createTextNode( 'foo' );
-				const domP = createElement( document, 'p', null, [ domFoo ] );
-
-				const viewP = parse( '<p>foo</p>' );
-
-				converter.bindElements( domP, viewP );
-
-				document.body.appendChild( domP );
-
-				const domRange = document.createRange();
-				domRange.setStart( domFoo, 1 );
-				domRange.setEnd( domFoo, 2 );
-
-				const domSelection = document.getSelection();
-				domSelection.removeAllRanges();
-				domSelection.addRange( domRange );
-
 				converter.domSelectionToView( domSelection );
 
 				setTimeout( done, 100 );
 			} ).to.not.throw();
+
+			domP.remove();
 		} );
 	} );
 
