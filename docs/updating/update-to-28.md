@@ -1,5 +1,6 @@
 ---
 category: update-guides
+meta-title: Update to version 28.x | CKEditor 5 Documentation
 menu-title: Update to v28.x
 order: 96
 modified_at: 2021-06-01
