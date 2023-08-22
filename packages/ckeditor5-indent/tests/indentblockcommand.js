@@ -132,6 +132,15 @@ describe( 'IndentBlockCommand', () => {
 					setData( model, '<paragraph blockIndent="indent-4">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.false;
 				} );
+
+				// Should be disabled for block items in Document Lists. See https://github.com/ckeditor/ckeditor5/issues/14155.
+				it( 'should be false for a block element inside a list item', () => {
+					model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+
+					setData( model, '<parentBlock><paragraph listItemId="foo">[]bar</paragraph></parentBlock>' );
+					command.refresh();
+					expect( command.isEnabled ).to.be.false;
+				} );
 			} );
 
 			describe( 'execute()', () => {
@@ -157,6 +166,22 @@ describe( 'IndentBlockCommand', () => {
 					expect( getData( model ) ).to.equal(
 						'<paragraph blockIndent="indent-1">f[oo</paragraph>' +
 						'<parentBlock><paragraph>foo</paragraph><paragraph>foo</paragraph></parentBlock>' +
+						'<paragraph blockIndent="indent-1">f]oo</paragraph>'
+					);
+				} );
+
+				it( 'should be executed only for blocks that are not in Document Lists', () => {
+					model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+
+					setData( model,
+						'<paragraph>f[oo</paragraph>' +
+						'<paragraph listItemId="bar">foo</paragraph>' +
+						'<paragraph>f]oo</paragraph>'
+					);
+					command.execute();
+					expect( getData( model ) ).to.equal(
+						'<paragraph blockIndent="indent-1">f[oo</paragraph>' +
+						'<paragraph listItemId="bar">foo</paragraph>' +
 						'<paragraph blockIndent="indent-1">f]oo</paragraph>'
 					);
 				} );
@@ -192,6 +217,15 @@ describe( 'IndentBlockCommand', () => {
 					setData( model, '<paragraph blockIndent="2em">f[]oo</paragraph>' );
 					expect( command.isEnabled ).to.be.true;
 				} );
+
+				// Should be disabled for block items in Document Lists. See https://github.com/ckeditor/ckeditor5/issues/14155.
+				it( 'should be false for a block element inside a list item', () => {
+					model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+
+					setData( model, '<parentBlock><paragraph listItemId="foo">[]bar</paragraph></parentBlock>' );
+					command.refresh();
+					expect( command.isEnabled ).to.be.false;
+				} );
 			} );
 
 			describe( 'execute()', () => {
@@ -217,6 +251,22 @@ describe( 'IndentBlockCommand', () => {
 					setData( model, '<paragraph blockIndent="3mm">f[]oo</paragraph>' );
 					command.execute();
 					expect( getData( model ) ).to.equal( '<paragraph blockIndent="50px">f[]oo</paragraph>' );
+				} );
+
+				it( 'should be executed only for blocks that are not in Document Lists', () => {
+					model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+
+					setData( model,
+						'<paragraph>f[oo</paragraph>' +
+						'<paragraph listItemId="bar">foo</paragraph>' +
+						'<paragraph>f]oo</paragraph>'
+					);
+					command.execute();
+					expect( getData( model ) ).to.equal(
+						'<paragraph blockIndent="50px">f[oo</paragraph>' +
+						'<paragraph listItemId="bar">foo</paragraph>' +
+						'<paragraph blockIndent="50px">f]oo</paragraph>'
+					);
 				} );
 			} );
 		} );
