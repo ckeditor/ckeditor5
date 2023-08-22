@@ -30,7 +30,6 @@ async function main() {
 	if ( checkCoverage && !allowNonFullCoverage ) {
 		const exitCode = checkCodeCoverage();
 
-		// TODO: Add checks if the coverage should be uploaded.
 		if ( coverageFile ) {
 			const matches = await glob( 'coverage/*/lcov.info' );
 
