@@ -1,5 +1,6 @@
 ---
 category: update-guides
+meta-title: Update to version 26.x | CKEditor 5 Documentation
 menu-title: Update to v26.x
 order: 98
 ---

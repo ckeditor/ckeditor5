@@ -1,5 +1,6 @@
 ---
 category: update-guides
+meta-title: Update to version 31.x | CKEditor 5 Documentation
 menu-title: Update to v31.x
 order: 93
 modified_at: 2021-11-03

@@ -1,5 +1,6 @@
 ---
 category: update-guides
+meta-title: Update to version 27.x | CKEditor 5 Documentation
 menu-title: Update to v27.x
 order: 97
 ---
