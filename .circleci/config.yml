@@ -39,9 +39,7 @@ jobs:
       isNightly:
         type: boolean
     steps:
-      - run:
-          name: Checkout code (single branch)
-          command: git clone --single-branch --depth 10 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
+      - checkout
       - install_ssh_keys_command
       - run:
           name: Install dependencies

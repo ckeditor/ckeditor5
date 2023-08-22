@@ -41,7 +41,7 @@ commands:
           fingerprints:
             - "2a:97:94:d9:ae:a0:8d:bd:c2:2a:2d:cf:8d:d1:94:bd"
 
-  bootstrap_repositories_command:
+  bootstrap_repository_command:
     description: "Bootstrap the CKEditor 5 project"
     steps:
       - install_ssh_keys_command
@@ -61,7 +61,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - prepare_environment_command
       - run:
           name: Prepare DLL builds in CKEditor 5
@@ -74,7 +74,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - prepare_environment_command
       - run:
           when: always
@@ -105,7 +105,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - prepare_environment_command
       - run:
           # In the PRs that comes from forked repositories, we do not share secret variables.
@@ -131,7 +131,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - run:
           name: Trigger the Uber CI
           command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1
@@ -140,7 +140,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - prepare_environment_command
       - run:
           name: Check if packages are ready to be released
@@ -155,7 +155,7 @@ jobs:
         default: "false"
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - run:
           environment:
             CKE5_SLACK_NOTIFY_HIDE_AUTHOR: << parameters.hideAuthor >>

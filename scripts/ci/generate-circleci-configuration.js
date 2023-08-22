@@ -28,11 +28,9 @@ const NON_FULL_COVERAGE_PACKAGES = [
 	'ckeditor5-minimap'
 ];
 
-// Constants as the functions due to `&ref` symbols in the generated output.
-
 const bootstrapCommands = () => ( [
 	'checkout_command',
-	'bootstrap_repositories_command',
+	'bootstrap_repository_command',
 	'prepare_environment_command'
 ] );
 
@@ -94,9 +92,17 @@ const persistToWorkspace = fileName => ( {
 		]
 	};
 
-	// In the PRs that comes from forked repositories, we do not share secret variables.
-	// Hence, some of the scripts will not. See: https://github.com/ckeditor/ckeditor5/issues/7745.
-	if ( !IS_COMMUNITY_PR ) {
+	if ( IS_COMMUNITY_PR ) {
+		// CircleCI does not understand custom cloning when a PR comes from the community.
+		// In such a case, the goal to use the built-in command.
+		Object.keys( config.jobs )
+			.forEach( jobName => {
+				replaceShortCheckout( config, jobName );
+			} );
+	} else {
+		// We aim to send the coverage report only from builds triggered by the CKEditor team.
+		// For the community PRs we do not share secret variables.
+		// Hence, some of the scripts will not. See: https://github.com/ckeditor/ckeditor5/issues/7745.
 		config.jobs.cke5_tests_framework.steps.push( persistToWorkspace( 'combined_framework.info' ) );
 		config.jobs.cke5_tests_features.steps.push( persistToWorkspace( 'combined_features.info' ) );
 	}
@@ -150,6 +156,22 @@ function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 				command: testCommand
 			}
 		};
+	} );
+}
+
+/**
+ * @param {CircleCIConfiguration} config
+ * @param {String} jobName
+ */
+function replaceShortCheckout( config, jobName ) {
+	const job = config.jobs[ jobName ];
+
+	job.steps = job.steps.map( ( item, index ) => {
+		if ( index === 0 ) {
+			return 'checkout';
+		}
+
+		return item;
 	} );
 }
 
