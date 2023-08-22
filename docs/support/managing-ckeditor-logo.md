@@ -1,6 +1,7 @@
 ---
 category: licensing
 order: 30
+meta-title: Managing the "Powered by CKEditor" logo | CKEditor 5 Documentation
 meta-description: Managing the "Powered by CKEditor" logo
 ---
 
