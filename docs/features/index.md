@@ -2,6 +2,7 @@
 category: features
 order: -999
 feedback-widget: false
+meta-title: CKEditor 5 features overview | CKEditor 5 Documentation
 ---
 
 # CKEditor&nbsp;5 features overview

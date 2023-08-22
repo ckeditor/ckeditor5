@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Math and chemical formulas
+meta-title: Math equations and chemical formulas | CKEditor 5 Documentation
 badges: [ premium ]
 ---
 
