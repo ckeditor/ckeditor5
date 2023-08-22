@@ -1,0 +1,27 @@
+name: "Close stale issues and PRs"
+on:
+  schedule:
+    - cron:  '00 05 * * *'
+
+jobs:
+  stale:
+    permissions:
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: gorzelinski/stale@add-reaction-updates
+        with:
+          repo-token: ${{ secrets.GH_BOT_TOKEN }}
+          stale-issue-label: status:stale
+          stale-issue-message: "There has been no activity in this issue for the last five years. Now it is marked as stale and will be closed in 30 days. We know it may be valid, so if you're interested in the solution, leave a comment or reaction under the issue."
+          stale-pr-message: "There has been no activity in this PR for the last five years. Now it is marked as stale and will be closed in 30 days. We know it may be valid, so if you're interested in the contribution, leave a comment or reaction under the PR."
+          close-issue-message: "We have closed the issue because of the lack of activity for the last five years. We know it might be valid, so you can reopen a similar issue if needed."
+          close-pr-message: "We have closed the PR because of the lack of activity for the last five years. We know it might be valid, so you can reopen a similar PR if needed."
+          days-before-stale: 1825
+          days-before-close: 30
+          exempt-issue-labels: support, domain:accessibility
+          exempt-pr-labels: support, domain:accessibility
+          ignore-reactions: false
+          operations-per-run: 60
+          ascending: true
