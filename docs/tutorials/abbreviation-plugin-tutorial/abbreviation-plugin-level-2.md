@@ -2,6 +2,7 @@
 category: abbreviation-plugin
 menu-title: Getting user input with a custom UI
 order: 25
+meta-title: Creating an advanced plugin tutorial pt. 2 | CKEditor 5 Documentation
 modified_at: 2022-07-15
 ---
 
