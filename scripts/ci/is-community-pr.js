@@ -6,14 +6,15 @@
 /* eslint-env node */
 
 const {
-	CKE5_IS_NIGHTLY_BUILD
+	// The number of the associated GitHub or Bitbucket pull request. Only available on forked PRs.
+	CIRCLE_PR_NUMBER
 } = process.env;
 
 /**
  * @returns {Boolean}
  */
 module.exports = () => {
-	if ( CKE5_IS_NIGHTLY_BUILD === '1' || CKE5_IS_NIGHTLY_BUILD === 'true' ) {
+	if ( CIRCLE_PR_NUMBER ) {
 		return true;
 	}
 

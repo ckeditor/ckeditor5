@@ -108,8 +108,10 @@ jobs:
       - bootstrap_repositories_command
       - prepare_environment_command
       - run:
-          name: 🌙️ Upload the code coverage (nightly check) - Check if the build should continue
-          command: '[ $( node -p "require( ''./scripts/ci/is-nightly-build.js'' )().toString()" ) == "true" ] && circleci-agent step halt || echo "" > /dev/null'
+          # In the PRs that comes from forked repositories, we do not share secret variables.
+          # Hence, some of the scripts will not. See: https://github.com/ckeditor/ckeditor5/issues/7745.
+          name: 👤 Verify if the build was triggered by community - Check if the build should continue
+          command: '[ $( node -p "require( ''./scripts/ci/is-community-pr.js'' )().toString()" ) == "true" ] && circleci-agent step halt || echo "" > /dev/null'
       - attach_workspace:
           at: .out
       - run:
@@ -174,6 +176,11 @@ workflows:
           requires:
             - cke5_tests_framework
             - cke5_tests_features
+          filters:
+            branches:
+              only:
+                - master
+                - ci/3559-circleci
       - cke5_validators
 #      - cke5_manual
 #      - release_prepare
