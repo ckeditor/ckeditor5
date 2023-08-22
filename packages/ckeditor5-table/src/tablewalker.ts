@@ -249,7 +249,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 */
 	public next(): IteratorResult<TableSlot, undefined> {
 		if ( this._canJumpToStartRow() ) {
-			this._scanForSpannedCellsAffectingStartRow();
+			this._jumpToNonSpannedRowClosestToStartRow();
 		}
 
 		const row = this._table.getChild( this._rowIndex );
@@ -433,13 +433,42 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 		rowSpans.set( column, data );
 	}
 
-	private _canJumpToStartRow() {
-		return this._startRow &&
+	/**
+	 * Checks if part of the table can be skipped.
+	 */
+	private _canJumpToStartRow(): boolean {
+		return !!this._startRow &&
 			this._startRow > 0 &&
 			!this._updatedSpansBeforeStartRow;
 	}
 
-	private _scanForSpannedCellsAffectingStartRow(): void {
+	/**
+	 * Sets the current row to `this._startRow` or the first row before it that doesn't contain
+	 * cells that started in another row (using `rowspan`).
+	 *
+	 * Example:
+	 * 	+----+----+----+
+	 *  | 00 | 01 | 02 |
+	 *  |----+----+----+
+	 *  | 10      | 12 |
+	 *  |         +----+
+	 *  |         | 22 |
+	 *  |         +----+
+	 *  |         | 32 | <--- Start row
+	 *  +----+----+----+
+	 *  | 40 | 41 | 42 |
+	 *  +----+----+----+
+	 *
+	 * Since the 4th row is a `this._startRow`, this method will:
+	 * 1.) Count the number of columns this table has based on the first row (3 columns in this case).
+	 * 2.) Check if the 4th row contains 3 cells. It doesn't, so go to the row before it.
+	 * 3.) Check if the 3rd row contains 3 cells. It doesn't, so go to the row before it.
+	 * 4.) Check if the 2nd row contains 3 cells. It does, so set the current row to that row.
+	 *
+	 * Setting the `this._row` and `this._rowIndex` to the row where span starts is necessary to let
+	 * the `next()` method loop over it and update the `this._spannedCells` property.
+	 */
+	private _jumpToNonSpannedRowClosestToStartRow(): void {
 		const firstRow = this._table.getChild( 0 ) as Element;
 		const firstRowLength = this._getRowLenght( firstRow );
 
@@ -456,6 +485,9 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 		this._updatedSpansBeforeStartRow = true;
 	}
 
+	/**
+	 * Returns a number of columns in a row taking `colspan` into consideration.
+	 */
 	private _getRowLenght( row: Element ): number {
 		return [ ...row.getChildren() ].reduce( ( cols, row ) => {
 			return cols + parseInt( row.getAttribute( 'colspan' ) as string || '1' );
