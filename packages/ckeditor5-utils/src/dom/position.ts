@@ -131,11 +131,11 @@ export function getOptimalPosition( {
 	const positionedElementAncestor = getPositionedAncestor( element );
 	const constrainedViewportRect = getConstrainedViewportRect( viewportOffsetConfig );
 	const elementRect = new Rect( element );
-	const targetRect = new Rect( target );
 	const visibleTargetRect = getVisibleViewportIntersectionRect( target, constrainedViewportRect );
 
 	let bestPosition: Position | null;
 
+	// @if CK_DEBUG_POSITION // const targetRect = new Rect( target );
 	// @if CK_DEBUG_POSITION // RectDrawer.clear();
 	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, TARGET_RECT_STYLE, 'Target' );
 	// @if CK_DEBUG_POSITION // if ( constrainedViewportRect ) {

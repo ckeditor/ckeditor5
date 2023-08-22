@@ -197,8 +197,9 @@ describe( 'DropdownView', () => {
 						view.render();
 
 						const parentWithOverflow = global.document.createElement( 'div' );
-						parentWithOverflow.style.width = '100px';
+						parentWithOverflow.style.width = '1px';
 						parentWithOverflow.style.height = '1px';
+						parentWithOverflow.style.marginTop = '-1000px';
 						parentWithOverflow.style.overflow = 'scroll';
 
 						parentWithOverflow.appendChild( view.element );
@@ -207,7 +208,7 @@ describe( 'DropdownView', () => {
 
 						view.isOpen = true;
 
-						expect( view.panelView.position ).is.equal( 'se' ); // first position from position list.
+						expect( view.panelView.position ).is.equal( 'southEast' ); // first position from position list.
 
 						view.element.remove();
 						parentWithOverflow.remove();

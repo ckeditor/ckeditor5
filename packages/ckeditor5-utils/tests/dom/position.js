@@ -899,7 +899,7 @@ describe( 'getOptimalPosition()', () => {
 				element, target, limiter,
 				positions: allPositions,
 				fitInViewport: true
-			}, 'right-bottom' );
+			}, 'bottom-right' );
 
 			limiter.remove();
 			element.remove();

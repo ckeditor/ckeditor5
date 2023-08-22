@@ -446,10 +446,10 @@ describe( 'Rect', () => {
 		let element, range, ancestorA, ancestorB;
 
 		beforeEach( () => {
-			element = document.createElement( 'div' );
+			element = document.createElement( 'section' );
 			range = document.createRange();
-			ancestorA = document.createElement( 'div' );
-			ancestorB = document.createElement( 'div' );
+			ancestorA = document.createElement( 'header' );
+			ancestorB = document.createElement( 'main' );
 
 			ancestorA.appendChild( element );
 			document.body.appendChild( ancestorA );
@@ -518,11 +518,11 @@ describe( 'Rect', () => {
 
 				assertRect( new Rect( element ).getVisible(), {
 					top: 0,
-					right: 50,
-					bottom: 50,
+					right: 100,
+					bottom: 100,
 					left: 0,
-					width: 50,
-					height: 50
+					width: 100,
+					height: 100
 				} );
 
 				iframe.remove();
@@ -533,6 +533,8 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the visible rect (HTMLElement), partially cropped', () => {
+			ancestorA.style.overflow = 'scroll';
+
 			sinon.stub( element, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 100,
@@ -593,6 +595,8 @@ describe( 'Rect', () => {
 		it( 'should return the visible rect (HTMLElement), partially cropped, deep ancestor overflow', () => {
 			ancestorB.appendChild( ancestorA );
 			document.body.appendChild( ancestorB );
+			ancestorA.style.overflow = 'scroll';
+			ancestorB.style.overflow = 'scroll';
 
 			sinon.stub( element, 'getBoundingClientRect' ).returns( {
 				top: 0,
@@ -652,7 +656,7 @@ describe( 'Rect', () => {
 
 			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 50,
-				right: 100,
+				right: 50,
 				bottom: 100,
 				left: 0,
 				width: 50,
@@ -669,18 +673,19 @@ describe( 'Rect', () => {
 			} );
 
 			assertRect( new Rect( element ).getVisible(), {
-				top: 50,
+				top: 0,
 				right: 100,
 				bottom: 100,
 				left: 50,
 				width: 50,
-				height: 50
+				height: 100
 			} );
 		} );
 
 		it( 'should return the visible rect (Range), partially cropped', () => {
 			range.setStart( ancestorA, 0 );
 			range.setEnd( ancestorA, 1 );
+			ancestorA.style.overflow = 'scroll';
 
 			sinon.stub( range, 'getClientRects' ).returns( [ {
 				top: 0,
@@ -710,7 +715,7 @@ describe( 'Rect', () => {
 			} );
 		} );
 
-		it( 'should return null if there\'s no visible rect', () => {
+		it( 'should return null if there\'s no visible rect and parent has overflow scroll', () => {
 			sinon.stub( element, 'getBoundingClientRect' ).returns( {
 				top: 0,
 				right: 100,
@@ -719,6 +724,8 @@ describe( 'Rect', () => {
 				width: 100,
 				height: 100
 			} );
+
+			ancestorA.style.overflow = 'scroll';
 
 			sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
 				top: 150,

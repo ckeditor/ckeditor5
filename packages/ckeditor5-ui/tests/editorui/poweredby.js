@@ -507,7 +507,7 @@ describe( 'PoweredBy', () => {
 
 			parentWithOverflow.style.overflow = 'scroll';
 			// Is not enough width to be visible horizontally.
-			parentWithOverflow.style.width = '390px';
+			parentWithOverflow.style.width = '399px';
 
 			document.body.appendChild( parentWithOverflow );
 			parentWithOverflow.appendChild( domRoot );

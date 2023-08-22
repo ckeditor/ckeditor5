@@ -15,8 +15,8 @@ drawVisibleRects();
 function drawVisibleRects() {
 	RectDrawer.clear();
 
-	const children = Array.from( document.querySelectorAll( '.child' ) );
-	const parents = Array.from( document.querySelectorAll( '.parent' ) );
+	const children = Array.from( document.querySelectorAll( '.js-child' ) );
+	const parents = Array.from( document.querySelectorAll( '.js-parent' ) );
 
 	for ( const element of [ ...parents, ...children ] ) {
 		const elementRect = new Rect( element );

@@ -264,6 +264,11 @@ export default class Rect {
 		let parent = source.parentNode || source.commonAncestorContainer;
 		let absolutelyPositionedChildElement;
 
+		// const parentRectInit = new Rect( parent as HTMLElement );
+		// const childRectInit = new Rect( child as HTMLElement );
+
+		// console.log( `parentRect: ${ JSON.stringify( parentRectInit ) }, childRect: ${ JSON.stringify( childRectInit ) }` );
+
 		// Check the ancestors all the way up to the <body>.
 		while ( parent && !isBody( parent ) ) {
 			const isParentOverflowVisible = getElementOverflow( parent as HTMLElement ) === 'visible';
@@ -276,7 +281,9 @@ export default class Rect {
 			// Otherwise there's no chance of visual clipping and the parent can be skipped
 			// https://github.com/ckeditor/ckeditor5/issues/14107.
 			if (
-				isParentOverflowVisible ||
+				( isParentOverflowVisible && !absolutelyPositionedChildElement ) ||
+				( absolutelyPositionedChildElement && getElementPosition( parent as HTMLElement ) === 'relative' &&
+					isParentOverflowVisible ) ||
 				( absolutelyPositionedChildElement && getElementPosition( parent as HTMLElement ) !== 'relative' )
 			) {
 				child = parent;
@@ -527,9 +534,9 @@ function getElementPosition( element: HTMLElement ): string {
 }
 
 /**
- * Returns the value of the `overflow` style of an `HTMLElement`.
+ * Returns the value of the `overflow` style of an `HTMLElement` or a `Range`.
  */
-function getElementOverflow( element: HTMLElement ): string {
+function getElementOverflow( element: HTMLElement | Range ): string {
 	return element instanceof HTMLElement ? element.ownerDocument.defaultView!.getComputedStyle( element ).overflow : 'visible';
 }
 
