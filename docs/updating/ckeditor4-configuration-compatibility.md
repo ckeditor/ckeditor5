@@ -4,7 +4,7 @@
 
 category: ckeditor4-migration
 menu-title: Configuration options compatibility
-meta-title: CKEditor 4 migration - Configuration options compatibility
+meta-title: Migration from CKEditor 4 - Configuration options compatibility | CKEditor 5 Documentation
 meta-description: Learn about the CKEditor 4 configuration options and their equivalent in CKEditor 5.
 order: 50
 modified_at: 2023-03-21

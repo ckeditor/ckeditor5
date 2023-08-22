@@ -1,5 +1,6 @@
 ---
 category: update-guides
+meta-title: Update to version 37.x | CKEditor 5 Documentation
 menu-title: Update to v37.x
 order: 87
 ---
