@@ -195,16 +195,16 @@ workflows:
                 - ci/3559-circleci
                 - pull/14834
       - cke5_validators
-#      - cke5_manual
-#      - release_prepare
+      - cke5_manual
+      - release_prepare
       - cke5_trigger_uber_ci:
           requires:
             - cke5_tests_framework
             - cke5_tests_features
             - cke5_coverage
             - cke5_validators
-#            - cke5_manual
-#            - release_prepare
+            - cke5_manual
+            - release_prepare
           filters:
             branches:
               only:
@@ -225,8 +225,8 @@ workflows:
       - cke5_tests_framework
       - cke5_tests_features
       - cke5_validators
-#      - cke5_manual
-#      - release_prepare
+      - cke5_manual
+      - release_prepare
       - notify_ci_failure:
           hideAuthor: "true"
           filters:
