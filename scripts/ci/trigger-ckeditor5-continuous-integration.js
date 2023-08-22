@@ -9,9 +9,8 @@
 
 const {
 	INTEGRATION_CI_ORGANIZATION,
-	INTEGRATION_CI_REPOSITORY
-	// INTEGRATION_CI_REPOSITORY,
-	// INTEGRATION_CI_CIRCLE_CI_TOKEN
+	INTEGRATION_CI_REPOSITORY,
+	INTEGRATION_CI_CIRCLE_CI_TOKEN
 } = process.env;
 
 /**
@@ -32,33 +31,30 @@ module.exports = function triggerCkeditor5ContinuousIntegration( repository, las
 
 	console.log( { requestUrl, repository, lastCommit } );
 
-	// TODO: To remove.
-	return Promise.resolve();
-	//
-	// const requestOptions = {
-	// 	method: 'post',
-	// 	headers: {
-	// 		'Content-Type': 'application/json',
-	// 		'Accept': 'application/json',
-	// 		'Circle-Token': INTEGRATION_CI_CIRCLE_CI_TOKEN
-	// 	},
-	// 	body: JSON.stringify( {
-	// 		branch: 'master',
-	// 		parameters: {
-	// 			triggerRepositorySlug: repository,
-	// 			triggerCommitHash: lastCommit,
-	// 			isExternal: true
-	// 		}
-	// 	} )
-	// };
-	//
-	// return fetch( requestUrl, requestOptions )
-	// 	.then( res => res.json() )
-	// 	.then( response => {
-	// 		if ( response.error_message ) {
-	// 			throw new Error( `CI trigger failed: "${ response.error_message }".` );
-	// 		}
-	//
-	// 		console.log( 'CI triggered successfully.' );
-	// 	} );
+	const requestOptions = {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+			'Circle-Token': INTEGRATION_CI_CIRCLE_CI_TOKEN
+		},
+		body: JSON.stringify( {
+			branch: 'ci/3559-circleci',
+			parameters: {
+				triggerRepositorySlug: repository,
+				triggerCommitHash: lastCommit,
+				isExternal: true
+			}
+		} )
+	};
+
+	return fetch( requestUrl, requestOptions )
+		.then( res => res.json() )
+		.then( response => {
+			if ( response.error_message ) {
+				throw new Error( `CI trigger failed: "${ response.error_message }".` );
+			}
+
+			console.log( 'CI triggered successfully.' );
+		} );
 };

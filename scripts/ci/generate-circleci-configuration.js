@@ -97,8 +97,8 @@ const persistToWorkspace = fileName => ( {
 	// In the PRs that comes from forked repositories, we do not share secret variables.
 	// Hence, some of the scripts will not. See: https://github.com/ckeditor/ckeditor5/issues/7745.
 	if ( !isCommunityPr() ) {
-		config.jobs.cke5_tests_framework.push( persistToWorkspace( 'combined_framework.info' ) );
-		config.jobs.cke5_tests_features.push( persistToWorkspace( 'combined_features.info' ) );
+		config.jobs.cke5_tests_framework.steps.push( persistToWorkspace( 'combined_framework.info' ) );
+		config.jobs.cke5_tests_features.steps.push( persistToWorkspace( 'combined_features.info' ) );
 	}
 
 	Object.keys( config.jobs )
@@ -229,11 +229,17 @@ function injectShortFlowDetection( config, jobName ) {
 /**
  * @typedef {Object} CircleCITask
  *
- * @property {Object} run
+ * @property {Object} [persist_to_workspace]
  *
- * @property {String} run.name
+ * @property {String} [persist_to_workspace.root]
  *
- * @property {String} run.command
+ * @property {Array.<String>} [persist_to_workspace.paths]
+ *
+ * @property {Object} [run]
+ *
+ * @property {String} [run.name]
+ *
+ * @property {String} [run.command]
  *
  * @property {String} [run.when]
  *
