@@ -133,6 +133,11 @@ jobs:
       - checkout_command
       - bootstrap_repository_command
       - run:
+          # In the PRs that comes from forked repositories, we do not share secret variables.
+          # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
+          name: 👤 Verify if the build was triggered by community - Check if the build should continue
+          command: node scripts/ci/is-community-pr.js --exit && circleci-agent step halt || echo "" > /dev/null
+      - run:
           name: Trigger the Uber CI
           command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1
 
@@ -156,6 +161,11 @@ jobs:
     steps:
       - checkout_command
       - bootstrap_repository_command
+      - run:
+          # In the PRs that comes from forked repositories, we do not share secret variables.
+          # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
+          name: 👤 Verify if the build was triggered by community - Check if the build should continue
+          command: node scripts/ci/is-community-pr.js --exit && circleci-agent step halt || echo "" > /dev/null
       - run:
           environment:
             CKE5_SLACK_NOTIFY_HIDE_AUTHOR: << parameters.hideAuthor >>
