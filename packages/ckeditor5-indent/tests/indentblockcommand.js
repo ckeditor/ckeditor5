@@ -4,9 +4,14 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import IndentBlockCommand from '../src/indentblockcommand';
+import IndentBlock from '../src/indentblock';
+import IndentEditing from '../src/indentediting';
 import IndentUsingClasses from '../src/indentcommandbehavior/indentusingclasses';
 import IndentUsingOffset from '../src/indentcommandbehavior/indentusingoffset';
 
@@ -133,13 +138,36 @@ describe( 'IndentBlockCommand', () => {
 					expect( command.isEnabled ).to.be.false;
 				} );
 
-				// Should be disabled for block items in Document Lists. See https://github.com/ckeditor/ckeditor5/issues/14155.
-				it( 'should be false for a block element inside a list item', () => {
-					model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+				describe( 'integration with List', () => {
+					let editor, model, command;
 
-					setData( model, '<parentBlock><paragraph listItemId="foo">[]bar</paragraph></parentBlock>' );
-					command.refresh();
-					expect( command.isEnabled ).to.be.false;
+					beforeEach( () => {
+						return VirtualTestEditor
+							.create( {
+								plugins: [ Paragraph, DocumentListEditing, IndentEditing, IndentBlock ]
+							} )
+							.then( newEditor => {
+								editor = newEditor;
+								model = editor.model;
+								command = new IndentBlockCommand( editor, new IndentUsingClasses( {
+									classes: [
+										'indent-1',
+										'indent-2'
+									],
+									direction: 'forward'
+								} ) );
+							} );
+					} );
+
+					afterEach( () => {
+						return editor.destroy();
+					} );
+
+					// Should be disabled for block items in Document Lists. See https://github.com/ckeditor/ckeditor5/issues/14155.
+					it( 'should be false for a block element inside a list item', () => {
+						setData( model, '<paragraph listItemId="foo">[]bar</paragraph>' );
+						expect( command.isEnabled ).to.be.false;
+					} );
 				} );
 			} );
 
@@ -170,20 +198,44 @@ describe( 'IndentBlockCommand', () => {
 					);
 				} );
 
-				it( 'should be executed only for blocks that are not in Document Lists', () => {
-					model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+				describe( 'integration with List', () => {
+					let editor, model, command;
 
-					setData( model,
-						'<paragraph>f[oo</paragraph>' +
-						'<paragraph listItemId="bar">foo</paragraph>' +
-						'<paragraph>f]oo</paragraph>'
-					);
-					command.execute();
-					expect( getData( model ) ).to.equal(
-						'<paragraph blockIndent="indent-1">f[oo</paragraph>' +
-						'<paragraph listItemId="bar">foo</paragraph>' +
-						'<paragraph blockIndent="indent-1">f]oo</paragraph>'
-					);
+					beforeEach( () => {
+						return VirtualTestEditor
+							.create( {
+								plugins: [ Paragraph, DocumentListEditing, IndentEditing, IndentBlock ]
+							} )
+							.then( newEditor => {
+								editor = newEditor;
+								model = editor.model;
+								command = new IndentBlockCommand( editor, new IndentUsingClasses( {
+									classes: [
+										'indent-1',
+										'indent-2'
+									],
+									direction: 'forward'
+								} ) );
+							} );
+					} );
+
+					afterEach( () => {
+						return editor.destroy();
+					} );
+
+					it( 'should be executed only for blocks that are not in Document Lists', () => {
+						setData( model,
+							'<paragraph>f[oo</paragraph>' +
+							'<paragraph listItemId="bar">foo</paragraph>' +
+							'<paragraph>f]oo</paragraph>'
+						);
+						command.execute();
+						expect( getData( model ) ).to.equal(
+							'<paragraph blockIndent="indent-1">f[oo</paragraph>' +
+							'<paragraph listItemId="bar">foo</paragraph>' +
+							'<paragraph blockIndent="indent-1">f]oo</paragraph>'
+						);
+					} );
 				} );
 			} );
 		} );
@@ -218,13 +270,34 @@ describe( 'IndentBlockCommand', () => {
 					expect( command.isEnabled ).to.be.true;
 				} );
 
-				// Should be disabled for block items in Document Lists. See https://github.com/ckeditor/ckeditor5/issues/14155.
-				it( 'should be false for a block element inside a list item', () => {
-					model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+				describe( 'integration with List', () => {
+					let editor, model, command;
 
-					setData( model, '<parentBlock><paragraph listItemId="foo">[]bar</paragraph></parentBlock>' );
-					command.refresh();
-					expect( command.isEnabled ).to.be.false;
+					beforeEach( () => {
+						return VirtualTestEditor
+							.create( {
+								plugins: [ Paragraph, DocumentListEditing, IndentEditing, IndentBlock ]
+							} )
+							.then( newEditor => {
+								editor = newEditor;
+								model = editor.model;
+								command = new IndentBlockCommand( editor, new IndentUsingOffset( {
+									offset: 50,
+									unit: 'px',
+									direction: 'forward'
+								} ) );
+							} );
+					} );
+
+					afterEach( () => {
+						return editor.destroy();
+					} );
+
+					// Should be disabled for block items in Document Lists. See https://github.com/ckeditor/ckeditor5/issues/14155.
+					it( 'should be false for a block element inside a list item', () => {
+						setData( model, '<paragraph listItemId="foo">[]bar</paragraph>' );
+						expect( command.isEnabled ).to.be.false;
+					} );
 				} );
 			} );
 
@@ -253,20 +326,43 @@ describe( 'IndentBlockCommand', () => {
 					expect( getData( model ) ).to.equal( '<paragraph blockIndent="50px">f[]oo</paragraph>' );
 				} );
 
-				it( 'should be executed only for blocks that are not in Document Lists', () => {
-					model.schema.extend( 'paragraph', { allowAttributes: [ 'listItemId' ] } );
+				describe( 'integration with List', () => {
+					let editor, model, command;
 
-					setData( model,
-						'<paragraph>f[oo</paragraph>' +
-						'<paragraph listItemId="bar">foo</paragraph>' +
-						'<paragraph>f]oo</paragraph>'
-					);
-					command.execute();
-					expect( getData( model ) ).to.equal(
-						'<paragraph blockIndent="50px">f[oo</paragraph>' +
-						'<paragraph listItemId="bar">foo</paragraph>' +
-						'<paragraph blockIndent="50px">f]oo</paragraph>'
-					);
+					beforeEach( () => {
+						return VirtualTestEditor
+							.create( {
+								plugins: [ Paragraph, DocumentListEditing, IndentEditing, IndentBlock ]
+							} )
+							.then( newEditor => {
+								editor = newEditor;
+								model = editor.model;
+								command = new IndentBlockCommand( editor, new IndentUsingOffset( {
+									offset: 50,
+									unit: 'px',
+									direction: 'forward'
+								} ) );
+							} );
+					} );
+
+					afterEach( () => {
+						return editor.destroy();
+					} );
+
+					// Should be disabled for block items in Document Lists. See https://github.com/ckeditor/ckeditor5/issues/14155.
+					it( 'should be executed only for blocks that are not in Document Lists', () => {
+						setData( model,
+							'<paragraph>f[oo</paragraph>' +
+							'<paragraph listItemId="bar">foo</paragraph>' +
+							'<paragraph>f]oo</paragraph>'
+						);
+						command.execute();
+						expect( getData( model ) ).to.equal(
+							'<paragraph blockIndent="50px">f[oo</paragraph>' +
+							'<paragraph listItemId="bar">foo</paragraph>' +
+							'<paragraph blockIndent="50px">f]oo</paragraph>'
+						);
+					} );
 				} );
 			} );
 		} );
