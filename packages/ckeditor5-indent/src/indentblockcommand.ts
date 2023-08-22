@@ -56,7 +56,7 @@ export default class IndentBlockCommand extends Command {
 
 		const block = first( model.document.selection.getSelectedBlocks() );
 
-		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) || !this._isIndentationChangeAllowed( block ) ) {
+		if ( !block || !this._isIndentationChangeAllowed( block ) ) {
 			this.isEnabled = false;
 
 			return;
@@ -98,26 +98,33 @@ export default class IndentBlockCommand extends Command {
 		const blocksInSelection = Array.from( selection.getSelectedBlocks() );
 
 		return blocksInSelection.filter( block => {
-			return schema.checkAttribute( block, 'blockIndent' ) && this._isIndentationChangeAllowed( block );
+			return this._isIndentationChangeAllowed( block );
 		} );
 	}
 
 	/**
-	 * Returns false for blocks in Document Lists (forward indentation only). See https://github.com/ckeditor/ckeditor5/issues/14155.
+	 * Returns false if indentation cannot be applied, i.e.:
+	 * - for blocks disallowed by schema declaration
+	 * - for blocks in Document Lists (disallowed forward indentation only). See https://github.com/ckeditor/ckeditor5/issues/14155.
 	 * Otherwise returns true.
 	 */
 	private _isIndentationChangeAllowed( element: Element ): boolean {
-		if ( !this.editor.plugins.has( 'DocumentListUtils' ) ) {
+		const editor = this.editor;
+
+		if ( !editor.model.schema.checkAttribute( element, 'blockIndent' ) ) {
+			return false;
+		}
+
+		if ( !editor.plugins.has( 'DocumentListUtils' ) ) {
 			return true;
 		}
 
-		// Disallow indenting a block in a list item. Outdenting a block is still allowed, because if the user already has
-		// a list item with an indented block in their content, it should be possible to reduce the indentation of the block.
+		// Only forward indentation is disallowed in list items. This allows the user to outdent blocks that are already indented.
 		if ( !this._indentBehavior.isForward ) {
 			return true;
 		}
 
-		const DocumentListUtils: DocumentListUtils = this.editor.plugins.get( 'DocumentListUtils' );
+		const DocumentListUtils: DocumentListUtils = editor.plugins.get( 'DocumentListUtils' );
 
 		return !DocumentListUtils.isListItemBlock( element );
 	}
