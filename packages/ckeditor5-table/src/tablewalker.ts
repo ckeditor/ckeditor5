@@ -139,6 +139,11 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	private _nextCellAtColumn: number;
 
 	/**
+	 * Indicates if rows before the start row were scanned for spans.
+	 */
+	private _updatedSpansBeforeStartRow = false;
+
+	/**
 	 * Creates an instance of the table walker.
 	 *
 	 * The table walker iterates internally by traversing the table from row index = 0 and column index = 0.
@@ -243,6 +248,10 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 * @returns The next table walker's value.
 	 */
 	public next(): IteratorResult<TableSlot, undefined> {
+		if ( this._canJumpToStartRow() ) {
+			this._scanForSpannedCellsAffectingStartRow();
+		}
+
 		const row = this._table.getChild( this._rowIndex );
 
 		// Iterator is done when there's no row (table ended) or the row is after `endRow` limit.
@@ -422,6 +431,35 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 		const rowSpans = this._spannedCells.get( row )!;
 
 		rowSpans.set( column, data );
+	}
+
+	private _canJumpToStartRow() {
+		return this._startRow &&
+			this._startRow > 0 &&
+			!this._updatedSpansBeforeStartRow;
+	}
+
+	private _scanForSpannedCellsAffectingStartRow(): void {
+		const firstRow = this._table.getChild( 0 ) as Element;
+		const firstRowLength = this._getRowLenght( firstRow );
+
+		for ( let i = this._startRow!; i >= 0; i-- ) {
+			const row = this._table.getChild( this._startRow! ) as Element;
+
+			if ( firstRowLength === this._getRowLenght( row ) ) {
+				this._row = i;
+				this._rowIndex = i;
+				break;
+			}
+		}
+
+		this._updatedSpansBeforeStartRow = true;
+	}
+
+	private _getRowLenght( row: Element ): number {
+		return [ ...row.getChildren() ].reduce( ( cols, row ) => {
+			return cols + parseInt( row.getAttribute( 'colspan' ) as string || '1' );
+		}, 0 );
 	}
 }
 

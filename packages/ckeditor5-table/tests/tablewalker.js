@@ -195,6 +195,23 @@ describe( 'TableWalker', () => {
 		expect( tableWalker[ 3 ].rowIndex ).to.equal( 2 );
 	} );
 
+	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables. ', () => {
+		const rowsCount = 3000;
+		const data = Array( rowsCount ).fill( [ '1', 'Example content', '3' ] );
+		const table = parse(
+			modelTable( data ),
+			model.schema
+		);
+
+		function getAllItems() {
+			return Array.from(
+				new TableWalker( table, { row: rowsCount } )
+			);
+		}
+
+		expect( getAllItems ).to.not.throw( RangeError, 'Maximum call stack size exceeded' );
+	} );
+
 	describe( 'option.startRow', () => {
 		it( 'should start iterating from given row but with cell spans properly calculated', () => {
 			// +----+----+----+
