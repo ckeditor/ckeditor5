@@ -19,7 +19,7 @@ const upath = require( 'upath' );
 const fs = require( 'fs/promises' );
 const { glob } = require( 'glob' );
 const yaml = require( 'js-yaml' );
-const isCommunityPr = require( './is-community-pr' );
+const IS_COMMUNITY_PR = require( './is-community-pr' );
 
 const CKEDITOR5_ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_DIRECTORY, '.circleci' );
@@ -96,7 +96,7 @@ const persistToWorkspace = fileName => ( {
 
 	// In the PRs that comes from forked repositories, we do not share secret variables.
 	// Hence, some of the scripts will not. See: https://github.com/ckeditor/ckeditor5/issues/7745.
-	if ( !isCommunityPr() ) {
+	if ( !IS_COMMUNITY_PR ) {
 		config.jobs.cke5_tests_framework.steps.push( persistToWorkspace( 'combined_framework.info' ) );
 		config.jobs.cke5_tests_features.steps.push( persistToWorkspace( 'combined_features.info' ) );
 	}
@@ -162,17 +162,12 @@ function injectShortFlowDetection( config, jobName ) {
 	job.environment = job.environment || {};
 
 	const { steps, environment } = job;
-	const stopCommand = [
-		// eslint-disable-next-line max-len,quotes
-		`[ $( node -p "require('./scripts/ci/should-run-short-flow.js')( './' ).toString()" ) == "true" ]`,
-		'circleci-agent step halt'
-	].join( ' && ' );
 
 	steps.splice( 3, 0, {
 		run: {
 			name: '⭐ Short flow breakpoint - Check if the build should continue',
 			// This command should not impact on the error code.
-			command: `${ stopCommand } || echo "" > /dev/null`
+			command: 'node scripts/ci/should-run-short-flow.js && circleci-agent step halt || echo ""'
 		}
 	} );
 
