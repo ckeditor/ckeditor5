@@ -7,6 +7,8 @@
 
 /* eslint-env node */
 
+/* eslint-disable */
+
 const minimist = require( 'minimist' );
 const fetch = require( 'node-fetch' );
 
@@ -37,6 +39,8 @@ function main() {
 	const { repository, commit } = getOptions( process.argv.slice( 2 ) );
 	const requestUrl =
 		`https://circleci.com/api/v2/project/github/${ INTEGRATION_CI_ORGANIZATION }/${ INTEGRATION_CI_REPOSITORY }/pipeline`;
+
+	return Promise.resolve();
 
 	const requestOptions = {
 		method: 'post',

@@ -27,12 +27,14 @@ commands:
             sudo apt install gh
             
             # The "GITHUB_TOKEN" is defined in "Environment Variables".
-
-            # Authenticate & configure.
-            gh auth setup-git
-            gh auth status
-            gh config set prompt disabled
-            gh --version
+            if [[ -v GITHUB_TOKEN ]];
+            then
+              # Authenticate & configure.
+              gh auth setup-git
+              gh auth status
+              gh config set prompt disabled
+              gh --version
+            fi
 
   install_ssh_keys_command:
     description: "Install SSH keys"
@@ -190,6 +192,7 @@ workflows:
             branches:
               only:
                 - master
+                - ci/3559-circleci
       - cke5_validators
 #      - cke5_manual
 #      - release_prepare
@@ -205,6 +208,7 @@ workflows:
             branches:
               only:
                 - master
+                - ci/3559-circleci
       - notify_ci_failure:
           filters:
             branches:
