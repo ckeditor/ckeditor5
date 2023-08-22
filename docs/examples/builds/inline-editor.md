@@ -1,5 +1,6 @@
 ---
 category: examples-builds
+meta-title: Inline editor build example | CKEditor 5 Documentation
 order: 20
 toc: false
 classes: main__content--no-toc

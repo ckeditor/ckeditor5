@@ -1,6 +1,7 @@
 ---
 category: widget-tutorials
 order: 26
+meta-title: Data from an external source tutorial | CKEditor 5 Documentation
 modified_at: 2022-11-15
 ---
 
