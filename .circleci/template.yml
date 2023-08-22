@@ -27,12 +27,14 @@ commands:
             sudo apt install gh
             
             # The "GITHUB_TOKEN" is defined in "Environment Variables".
-
-            # Authenticate & configure.
-            gh auth setup-git
-            gh auth status
-            gh config set prompt disabled
-            gh --version
+            if [[ -v GITHUB_TOKEN ]];
+            then
+              # Authenticate & configure.
+              gh auth setup-git
+              gh auth status
+              gh config set prompt disabled
+              gh --version
+            fi
 
   install_ssh_keys_command:
     description: "Install SSH keys"
@@ -41,7 +43,7 @@ commands:
           fingerprints:
             - "2a:97:94:d9:ae:a0:8d:bd:c2:2a:2d:cf:8d:d1:94:bd"
 
-  bootstrap_repositories_command:
+  bootstrap_repository_command:
     description: "Bootstrap the CKEditor 5 project"
     steps:
       - install_ssh_keys_command
@@ -61,7 +63,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - prepare_environment_command
       - run:
           name: Prepare DLL builds in CKEditor 5
@@ -74,7 +76,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - prepare_environment_command
       - run:
           when: always
@@ -105,7 +107,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - prepare_environment_command
       - run:
           # In the PRs that comes from forked repositories, we do not share secret variables.
@@ -131,7 +133,12 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
+      - run:
+          # In the PRs that comes from forked repositories, we do not share secret variables.
+          # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
+          name: 👤 Verify if the build was triggered by community - Check if the build should continue
+          command: node scripts/ci/is-community-pr.js --exit && circleci-agent step halt || echo "" > /dev/null
       - run:
           name: Trigger the Uber CI
           command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1
@@ -140,7 +147,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
       - prepare_environment_command
       - run:
           name: Check if packages are ready to be released
@@ -155,7 +162,12 @@ jobs:
         default: "false"
     steps:
       - checkout_command
-      - bootstrap_repositories_command
+      - bootstrap_repository_command
+      - run:
+          # In the PRs that comes from forked repositories, we do not share secret variables.
+          # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
+          name: 👤 Verify if the build was triggered by community - Check if the build should continue
+          command: node scripts/ci/is-community-pr.js --exit && circleci-agent step halt || echo "" > /dev/null
       - run:
           environment:
             CKE5_SLACK_NOTIFY_HIDE_AUTHOR: << parameters.hideAuthor >>
@@ -181,16 +193,16 @@ workflows:
               only:
                 - master
       - cke5_validators
-#      - cke5_manual
-#      - release_prepare
+      - cke5_manual
+      - release_prepare
       - cke5_trigger_uber_ci:
           requires:
             - cke5_tests_framework
             - cke5_tests_features
             - cke5_coverage
             - cke5_validators
-#            - cke5_manual
-#            - release_prepare
+            - cke5_manual
+            - release_prepare
           filters:
             branches:
               only:
@@ -200,7 +212,6 @@ workflows:
             branches:
               only:
                 - master
-                - ci/3559-circleci
 
   nightly:
     when: << pipeline.parameters.isNightly >>
@@ -208,12 +219,11 @@ workflows:
       - cke5_tests_framework
       - cke5_tests_features
       - cke5_validators
-#      - cke5_manual
-#      - release_prepare
+      - cke5_manual
+      - release_prepare
       - notify_ci_failure:
           hideAuthor: "true"
           filters:
             branches:
               only:
                 - master
-                - ci/3559-circleci

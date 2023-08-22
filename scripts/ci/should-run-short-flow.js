@@ -13,6 +13,7 @@ const { execSync } = require( 'child_process' );
 const upath = require( 'upath' );
 const minimatch = require( 'minimatch' );
 const minimist = require( 'minimist' );
+const IS_COMMUNITY_PR = require( './is-community-pr' );
 
 const {
 	CIRCLE_PULL_REQUEST,
@@ -39,6 +40,11 @@ function main() {
 	const cwd = upath.resolve( options.cwd );
 
 	let changedFilesPaths;
+
+	// For community PRs, always check the entire repository.
+	if ( IS_COMMUNITY_PR ) {
+		return process.exit( 1 );
+	}
 
 	// Nightly builds should always execute the full flow.
 	if ( CKE5_IS_NIGHTLY_BUILD === '1' || CKE5_IS_NIGHTLY_BUILD === 'true' ) {
