@@ -58,6 +58,7 @@ export default class IndentBlockCommand extends Command {
 
 		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) || !this._isIndentationChangeAllowed( block ) ) {
 			this.isEnabled = false;
+
 			return;
 		}
 
