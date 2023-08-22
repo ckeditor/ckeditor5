@@ -1,5 +1,6 @@
 ---
 title: Text alignment
+meta-title: Text alignment | CKEditor 5 Documentation
 category: features
 ---
 

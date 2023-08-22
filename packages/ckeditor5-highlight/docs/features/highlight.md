@@ -1,5 +1,6 @@
 ---
 category: features
+meta-title: Highlight | CKEditor 5 Documentation
 ---
 
 # Highlight
