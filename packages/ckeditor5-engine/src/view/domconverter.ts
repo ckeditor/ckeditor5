@@ -733,7 +733,7 @@ export default class DomConverter {
 	 * @returns View selection.
 	 */
 	public domSelectionToView( domSelection: DomSelection ): ViewSelection {
-		// https://github.com/ckeditor/ckeditor5/issues/9635
+		// See: https://github.com/ckeditor/ckeditor5/issues/9635.
 		if ( isGeckoRestrictedDomSelection( domSelection ) ) {
 			return new ViewSelection( [] );
 		}
@@ -1796,7 +1796,7 @@ function _logUnsafeElement( elementName: string ): void {
 /**
  * In certain cases, Firefox mysteriously assigns so called "restricted objects" to native DOM Range properties.
  * Any attempt at accessing restricted object's properties causes errors.
- * https://github.com/ckeditor/ckeditor5/issues/9635
+ * See: https://github.com/ckeditor/ckeditor5/issues/9635.
  */
 function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
 	if ( !env.isGecko ) {

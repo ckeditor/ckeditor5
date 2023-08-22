@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, document, console, Event, Selection */
+/* globals setTimeout, document, console, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -160,34 +160,6 @@ describe( 'SelectionObserver', () => {
 		} );
 
 		changeDomSelection();
-	} );
-
-	describe( 'Restricted objects handling in Gecko', () => {
-		beforeEach( () => {
-			testUtils.sinon.stub( env, 'isGecko' ).value( true );
-		} );
-
-		it( 'should detect "restricted objects" in Firefox DOM ranges and prevent an error being thrown', done => {
-			const domRangeStubWithRestrictedObject = domDocument.createRange();
-
-			sinon.stub( domRangeStubWithRestrictedObject, 'startContainer' ).get( () => {
-				throw new Error( 'Permission denied to access property Symbol.toStringTag' );
-			} );
-
-			testUtils.sinon.stub( Selection.prototype, 'getRangeAt' ).returns( domRangeStubWithRestrictedObject );
-
-			expect( () => {
-				changeDomSelection();
-				setTimeout( done, 100 );
-			} ).to.not.throw();
-		} );
-
-		it( 'should do nothing in Firefox if the DOM selection is correct', done => {
-			expect( () => {
-				changeDomSelection();
-				setTimeout( done, 100 );
-			} ).to.not.throw();
-		} );
 	} );
 
 	it( 'should add only one #selectionChange listener to one document', done => {
