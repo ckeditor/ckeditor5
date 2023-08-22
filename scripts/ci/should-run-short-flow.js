@@ -21,7 +21,7 @@ const {
 	CKE5_IS_EXTERNAL_BUILD
 } = process.env;
 
-const filePatterns = [
+const shortFlowFilePatterns = [
 	'docs/**',
 	'packages/*/docs/**',
 	'*.md',
@@ -72,7 +72,7 @@ function main() {
 	const files = changedFilesPaths.trim().split( '\n' );
 
 	return process.exit(
-		doAllFilesMatchPattern( files ) ? 0 : 1
+		doAllFilesMatchShortFlow( files ) ? 0 : 1
 	);
 }
 
@@ -82,9 +82,9 @@ function main() {
  * @param {Array.<String>} filePaths
  * @returns {Boolean}
  */
-function doAllFilesMatchPattern( filePaths ) {
+function doAllFilesMatchShortFlow( filePaths ) {
 	return filePaths.every( filepath => {
-		return filePatterns.some( pattern => {
+		return shortFlowFilePatterns.some( pattern => {
 			return minimatch.match( [ filepath ], pattern ).length;
 		} );
 	} );
