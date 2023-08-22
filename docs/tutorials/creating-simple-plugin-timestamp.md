@@ -1,6 +1,7 @@
 ---
 category: tutorials
 order: 10
+meta-title: Creating a basic plugin tutorial | CKEditor 5 Documentation
 modified_at: 2022-07-15
 ---
 

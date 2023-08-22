@@ -1,7 +1,7 @@
 ---
 category: examples
 order: 10
-meta-title: CKEditor 5 documentation - online examples
+meta-title: CKEditor 5 online examples | CKEditor 5 Documentation
 meta-description: Navigate through CKEditor 5 examples to see what you are able to create using this rich text editing framework.
 ---
 

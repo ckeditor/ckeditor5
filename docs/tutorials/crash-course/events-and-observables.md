@@ -1,7 +1,7 @@
 ---
 category: crash-course
 order: 70
-menu-title: Events and observables
+meta-title: CKEditor 5 crash course - Events and observables | CKEditor 5 Documentation
 modified_at: 2023-08-16
 ---
 

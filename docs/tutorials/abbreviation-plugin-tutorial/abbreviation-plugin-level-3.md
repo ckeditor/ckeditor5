@@ -2,6 +2,7 @@
 category: abbreviation-plugin
 menu-title: Improving accessibility and adding a command
 order: 26
+meta-title: Creating an advanced plugin tutorial pt. 3 | CKEditor 5 Documentation
 modified_at: 2022-07-15
 ---
 
