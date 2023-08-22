@@ -193,6 +193,7 @@ workflows:
               only:
                 - master
                 - ci/3559-circleci
+                - pull/14834
       - cke5_validators
 #      - cke5_manual
 #      - release_prepare
@@ -209,12 +210,14 @@ workflows:
               only:
                 - master
                 - ci/3559-circleci
+                - pull/14834
       - notify_ci_failure:
           filters:
             branches:
               only:
                 - master
                 - ci/3559-circleci
+                - pull/14834
 
   nightly:
     when: << pipeline.parameters.isNightly >>
@@ -231,3 +234,4 @@ workflows:
               only:
                 - master
                 - ci/3559-circleci
+                - pull/14834
