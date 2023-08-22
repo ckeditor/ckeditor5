@@ -2,6 +2,7 @@
 category: features-html
 order: 40
 menu-title: HTML embed
+meta-title: HTML embed | CKEditor 5 Documentation
 ---
 
 # HTML embed

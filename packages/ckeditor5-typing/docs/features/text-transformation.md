@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Automatic text transformation
+meta-title: Automatic text transformation (autocorrect) | CKEditor 5 Documentation
 ---
 
 # Automatic text transformation (autocorrect)

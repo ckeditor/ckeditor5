@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Page break
+meta-title: Page break | CKEditor 5 Documentation
 ---
 
 # Page break

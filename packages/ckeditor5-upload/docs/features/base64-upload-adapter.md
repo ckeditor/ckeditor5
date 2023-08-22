@@ -1,6 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Base64 upload adapter
+meta-title: Base64 upload adapter | CKEditor 5 Documentation
 order: 50
 ---
 

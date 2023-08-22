@@ -1,6 +1,7 @@
 ---
 title: Show blocks
 menu-title: Show blocks
+meta-title: Show blocks | CKEditor 5 Documentation
 category: features
 modified_at: 2023-06-20
 ---

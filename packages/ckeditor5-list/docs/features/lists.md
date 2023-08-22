@@ -1,5 +1,6 @@
 ---
 menu-title: Ordered and unordered lists
+meta-title: Ordered and unordered lists | CKEditor 5 Documentation
 category: features-lists
 order: 10
 modified_at: 2022-05-12

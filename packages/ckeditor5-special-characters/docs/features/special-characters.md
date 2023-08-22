@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Special characters
+meta-title: Special characters | CKEditor 5 Documentation
 ---
 
 # Special characters

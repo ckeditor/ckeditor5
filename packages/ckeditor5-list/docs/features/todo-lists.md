@@ -1,5 +1,6 @@
 ---
 menu-title: To-do lists
+meta-title: To-do lists | CKEditor 5 Documentation
 category: features-lists
 order: 20
 ---
