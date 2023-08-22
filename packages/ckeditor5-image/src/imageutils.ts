@@ -156,23 +156,21 @@ export default class ImageUtils extends Plugin {
 			return;
 		}
 
-		const img = new global.window.Image();
+		this.editor.model.change( writer => {
+			const img = new global.window.Image();
 
-		this._domEmitter.listenTo( img, 'load', ( evt, data ) => {
-			this._setWidthAndHeight( imageElement, img.naturalWidth, img.naturalHeight );
-			this._domEmitter.stopListening( img, 'load' );
-		} );
+			this._domEmitter.listenTo( img, 'load', ( evt, data ) => {
+				if ( !imageElement.getAttribute( 'width' ) && !imageElement.getAttribute( 'height' ) ) {
+					this.editor.model.enqueueChange( writer.batch, writer => {
+						writer.setAttribute( 'width', img.naturalWidth, imageElement );
+						writer.setAttribute( 'height', img.naturalHeight, imageElement );
+					} );
+				}
 
-		img.src = src;
-	}
+				this._domEmitter.stopListening( img, 'load' );
+			} );
 
-	/**
-	 * Sets image `width` and `height` attributes.
-	 */
-	private _setWidthAndHeight( imageElement: Element, width: number, height: number ): void {
-		this.editor.model.enqueueChange( { isUndoable: false }, writer => {
-			writer.setAttribute( 'width', width, imageElement );
-			writer.setAttribute( 'height', height, imageElement );
+			img.src = src;
 		} );
 	}
 

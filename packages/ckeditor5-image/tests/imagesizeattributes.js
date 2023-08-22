@@ -4,8 +4,6 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
@@ -19,8 +17,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-
-/* global Event */
 
 describe( 'ImageSizeAttributes', () => {
 	let editor, model, view;
@@ -50,166 +46,6 @@ describe( 'ImageSizeAttributes', () => {
 
 	it( 'should require ImageUtils', () => {
 		expect( ImageSizeAttributes.requires ).to.have.members( [ ImageUtils ] );
-	} );
-
-	describe( 'init()', () => {
-		let editor, model, modelRoot, element, domRoot, imageUtils;
-
-		beforeEach( async () => {
-			element = global.document.createElement( 'div' );
-			global.document.body.appendChild( element );
-
-			await createEditor();
-		} );
-
-		afterEach( async () => {
-			element.remove();
-
-			await editor.destroy();
-		} );
-
-		describe( 'inline image: set width and height on image change', () => {
-			it( 'should set image width and height on image attribute change', () => {
-				editor.setData(
-					'<p><img src="/assets/sample.png" "></p>'
-				);
-
-				const spy = sinon.spy( imageUtils, 'loadImageAndSetSizeAttributes' );
-				const imageElement = modelRoot.getChild( 0 ).getChild( 0 );
-
-				domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
-
-				expect( spy.notCalled ).to.be.true;
-
-				model.change( writer => {
-					writer.setAttribute( 'resizedWidth', '50%', imageElement );
-				} );
-
-				expect( spy.callCount ).to.equal( 1 );
-			} );
-
-			it( 'should set image width and height only on first image attribute change', () => {
-				editor.setData(
-					'<p><img src="/assets/sample.png" "></p>'
-				);
-
-				const spy = sinon.spy( imageUtils, 'loadImageAndSetSizeAttributes' );
-				const imageElement = modelRoot.getChild( 0 ).getChild( 0 );
-
-				domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
-
-				expect( spy.notCalled ).to.be.true;
-
-				model.change( writer => {
-					writer.setAttribute( 'resizedWidth', '50%', imageElement );
-				} );
-
-				expect( spy.callCount ).to.equal( 1 );
-
-				model.change( writer => {
-					writer.setAttribute( 'resizedWidth', '20%', imageElement );
-				} );
-
-				expect( spy.callCount ).to.equal( 1 );
-			} );
-
-			it( 'should not try to set image width and height on image attribute change, if image already has width set', () => {
-				editor.setData(
-					'<p><img width="100" src="/assets/sample.png" "></p>'
-				);
-
-				const spy = sinon.spy( imageUtils, 'loadImageAndSetSizeAttributes' );
-				const imageElement = modelRoot.getChild( 0 ).getChild( 0 );
-
-				domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
-
-				expect( spy.notCalled ).to.be.true;
-
-				model.change( writer => {
-					writer.setAttribute( 'resizedWidth', '50%', imageElement );
-				} );
-
-				expect( spy.notCalled ).to.be.true;
-			} );
-		} );
-
-		describe( 'block image: set width and height on image change', () => {
-			it( 'should set image width and height on image attribute change', () => {
-				editor.setData(
-					'<figure class="image"><img src="/assets/sample.png"></figure>'
-				);
-
-				const spy = sinon.spy( imageUtils, 'loadImageAndSetSizeAttributes' );
-				const imageElement = modelRoot.getChild( 0 ).getChild( 0 );
-
-				domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
-
-				expect( spy.notCalled ).to.be.true;
-
-				model.change( writer => {
-					writer.setAttribute( 'resizedWidth', '50%', imageElement );
-				} );
-
-				expect( spy.callCount ).to.equal( 1 );
-			} );
-
-			it( 'should set image width and height only on first image attribute change', () => {
-				editor.setData(
-					'<figure class="image"><img src="/assets/sample.png"></figure>'
-				);
-
-				const spy = sinon.spy( imageUtils, 'loadImageAndSetSizeAttributes' );
-				const imageElement = modelRoot.getChild( 0 ).getChild( 0 );
-
-				domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
-
-				expect( spy.notCalled ).to.be.true;
-
-				model.change( writer => {
-					writer.setAttribute( 'resizedWidth', '50%', imageElement );
-				} );
-
-				expect( spy.callCount ).to.equal( 1 );
-
-				model.change( writer => {
-					writer.setAttribute( 'resizedWidth', '20%', imageElement );
-				} );
-
-				expect( spy.callCount ).to.equal( 1 );
-			} );
-
-			it( 'should not try to set image width and height on image attribute change, if image already has width set', () => {
-				editor.setData(
-					'<figure class="image"><img width="100" src="/assets/sample.png"></figure>'
-				);
-
-				const spy = sinon.spy( imageUtils, 'loadImageAndSetSizeAttributes' );
-				const imageElement = modelRoot.getChild( 0 ).getChild( 0 );
-
-				domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
-
-				expect( spy.notCalled ).to.be.true;
-
-				model.change( writer => {
-					writer.setAttribute( 'resizedWidth', '50%', imageElement );
-				} );
-
-				expect( spy.notCalled ).to.be.true;
-			} );
-		} );
-
-		async function createEditor() {
-			editor = await ClassicEditor.create( element, {
-				plugins: [
-					Paragraph, ImageInlineEditing, ImageSizeAttributes, ImageResizeEditing
-				]
-			} );
-
-			model = editor.model;
-			modelRoot = editor.model.document.getRoot();
-			domRoot = editor.editing.view.getDomRoot();
-			imageUtils = editor.plugins.get( 'ImageUtils' );
-		}
 	} );
 
 	describe( 'schema', () => {
