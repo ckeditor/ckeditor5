@@ -19,6 +19,7 @@ const upath = require( 'upath' );
 const fs = require( 'fs/promises' );
 const { glob } = require( 'glob' );
 const yaml = require( 'js-yaml' );
+const isCommunityPr = require( './is-community-pr' );
 
 const CKEDITOR5_ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_DIRECTORY, '.circleci' );
@@ -44,14 +45,9 @@ const prepareCodeCoverageDirectories = () => ( {
 } );
 
 const persistToWorkspace = fileName => ( {
-	unless: {
-		condition: '<< pipeline.parameters.isNightly >>',
-		steps: {
-			persist_to_workspace: {
-				root: '.out',
-				paths: [ fileName ]
-			}
-		}
+	persist_to_workspace: {
+		root: '.out',
+		paths: [ fileName ]
 	}
 } );
 
@@ -82,8 +78,7 @@ const persistToWorkspace = fileName => ( {
 			...generateTestSteps( frameworkPackages, {
 				checkCoverage: true,
 				coverageFile: '.out/combined_framework.info'
-			} ),
-			persistToWorkspace( 'combined_framework.info' )
+			} )
 		]
 	};
 
@@ -95,10 +90,16 @@ const persistToWorkspace = fileName => ( {
 			...generateTestSteps( featurePackages, {
 				checkCoverage: true,
 				coverageFile: '.out/combined_features.info'
-			} ),
-			persistToWorkspace( 'combined_features.info' )
+			} )
 		]
 	};
+
+	// In the PRs that comes from forked repositories, we do not share secret variables.
+	// Hence, some of the scripts will not. See: https://github.com/ckeditor/ckeditor5/issues/7745.
+	if ( !isCommunityPr() ) {
+		config.jobs.cke5_tests_framework.push( persistToWorkspace( 'combined_framework.info' ) );
+		config.jobs.cke5_tests_features.push( persistToWorkspace( 'combined_features.info' ) );
+	}
 
 	Object.keys( config.jobs )
 		.filter( jobName => {
@@ -112,27 +113,7 @@ const persistToWorkspace = fileName => ( {
 
 			return false;
 		} )
-		.forEach( jobName => {
-			const job = config.jobs[ jobName ];
-			job.environment = job.environment || {};
-
-			const { steps, environment } = job;
-			const stopCommand = [
-				// eslint-disable-next-line max-len,quotes
-				`[ $( node -p "require('./scripts/ci/should-run-short-flow.js')( './' ).toString()" ) == "true" ]`,
-				'circleci-agent step halt'
-			].join( ' && ' );
-
-			steps.splice( 3, 0, {
-				run: {
-					name: '⭐ Short flow breakpoint - Check if the build should continue',
-					// This command should not impact on the error code.
-					command: `${ stopCommand } || echo "" > /dev/null`
-				}
-			} );
-
-			environment.CKE5_IS_NIGHTLY_BUILD = '<< pipeline.parameters.isNightly >>';
-		} );
+		.forEach( jobName => injectShortFlowDetection( config, jobName ) );
 
 	await fs.writeFile(
 		upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
@@ -170,6 +151,32 @@ function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 			}
 		};
 	} );
+}
+
+/**
+ * @param {CircleCIConfiguration} config
+ * @param {String} jobName
+ */
+function injectShortFlowDetection( config, jobName ) {
+	const job = config.jobs[ jobName ];
+	job.environment = job.environment || {};
+
+	const { steps, environment } = job;
+	const stopCommand = [
+		// eslint-disable-next-line max-len,quotes
+		`[ $( node -p "require('./scripts/ci/should-run-short-flow.js')( './' ).toString()" ) == "true" ]`,
+		'circleci-agent step halt'
+	].join( ' && ' );
+
+	steps.splice( 3, 0, {
+		run: {
+			name: '⭐ Short flow breakpoint - Check if the build should continue',
+			// This command should not impact on the error code.
+			command: `${ stopCommand } || echo "" > /dev/null`
+		}
+	} );
+
+	environment.CKE5_IS_NIGHTLY_BUILD = '<< pipeline.parameters.isNightly >>';
 }
 
 /**

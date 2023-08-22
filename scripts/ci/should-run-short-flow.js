@@ -7,10 +7,11 @@
 
 const { execSync } = require( 'child_process' );
 const minimatch = require( 'minimatch' );
-const isNightlyBuild = require( './is-nightly-build' );
 
 const {
-	CIRCLE_PULL_REQUEST
+	CIRCLE_PULL_REQUEST,
+	CKE5_IS_NIGHTLY_BUILD,
+	CKE5_IS_EXTERNAL_BUILD
 } = process.env;
 
 const filePatterns = [
@@ -31,7 +32,13 @@ module.exports = cwd => {
 	let changedFilesPaths;
 
 	// Nightly builds should always execute the full flow.
-	if ( isNightlyBuild() ) {
+	if ( CKE5_IS_NIGHTLY_BUILD === '1' || CKE5_IS_NIGHTLY_BUILD === 'true' ) {
+		return false;
+	}
+
+	// When processing a build triggered via API, it was triggered by a change in CKEditor 5.
+	// In such a case, run the full flow too.
+	if ( CKE5_IS_EXTERNAL_BUILD === '1' || CKE5_IS_EXTERNAL_BUILD === 'true' ) {
 		return false;
 	}
 

@@ -46,7 +46,8 @@ module.exports = function triggerCkeditor5ContinuousIntegration( repository, las
 	// 		branch: 'master',
 	// 		parameters: {
 	// 			triggerRepositorySlug: repository,
-	// 			triggerCommitHash: lastCommit
+	// 			triggerCommitHash: lastCommit,
+	// 			isExternal: true
 	// 		}
 	// 	} )
 	// };
