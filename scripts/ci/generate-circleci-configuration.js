@@ -50,16 +50,13 @@ const persistToWorkspace = fileName => ( {
 } );
 
 ( async () => {
-	let frameworkPackages = ( await fs.readdir( upath.join( CKEDITOR5_ROOT_DIRECTORY, 'src' ) ) )
+	const frameworkPackages = ( await fs.readdir( upath.join( CKEDITOR5_ROOT_DIRECTORY, 'src' ) ) )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
-	let featurePackages = ( await glob( '*/', { cwd: upath.join( CKEDITOR5_ROOT_DIRECTORY, 'packages' ) } ) )
+	const featurePackages = ( await glob( '*/', { cwd: upath.join( CKEDITOR5_ROOT_DIRECTORY, 'packages' ) } ) )
 		.filter( packageName => !frameworkPackages.includes( packageName ) );
 
 	featurePackages.sort();
-
-	featurePackages = featurePackages.slice( 0, 1 );
-	frameworkPackages = frameworkPackages.slice( 0, 1 );
 
 	/**
 	 * @type CircleCIConfiguration
