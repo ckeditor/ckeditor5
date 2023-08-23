@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive
 classes: schema-deep-dive
+meta-title: Schema | CKEditor 5 Documentation
 ---
 
 # Schema

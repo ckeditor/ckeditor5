@@ -1,13 +1,14 @@
 ---
 category: framework-deep-dive-ui
 menu-title: Widget internals
+meta-title: Widget internals | CKEditor 5 Documentation
 ---
 
 # Deep dive into widget internals
 
 ## Disabling the widget type around feature
 
-The {@link module:widget/widgettypearound/widgettypearound~WidgetTypeAround `WidgetTypeAround`} plugin allows users to type around the widgets, in places where it is normally impossible to place the caret due to limitations of the web browsers. Although this feature boosts the productivity and ease of typing, some integrations may not want or need it, for instance:
+The {@link module:widget/widgettypearound/widgettypearound~WidgetTypeAround `WidgetTypeAround`} plugin allows users to type around the widgets, in places where it is normally impossible to place the caret due to limitations of the web browsers. Although this feature boosts productivity and ease of typing, some integrations may not want or need it, for instance:
 
 * When the UI of the feature collides with the integration.
 * When typing outside widgets should be impossible (content made exclusively of widgets).

@@ -1,5 +1,6 @@
 ---
 category: framework-deep-dive
+meta-title: Clipboard | CKEditor 5 Documentation
 ---
 
 # Clipboard
