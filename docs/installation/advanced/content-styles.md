@@ -4,6 +4,7 @@
 # * Offer developers a way to obtain the editor content styles.
 
 category: advanced
+meta-title: Content styles | CKEditor 5 documentation
 order: 30
 ---
 
