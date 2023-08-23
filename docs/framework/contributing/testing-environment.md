@@ -1,5 +1,6 @@
 ---
 category: framework-contributing
+meta-title: Testing environment | CKEditor 5 Framework Documentation
 order: 20
 modified_at: 2022-09-07
 ---

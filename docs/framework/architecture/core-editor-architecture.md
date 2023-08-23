@@ -1,5 +1,6 @@
 ---
 category: framework-architecture
+meta-title: Core editor architecture | CKEditor 5 Framework Documentation
 order: 20
 modified_at: 2021-10-25
 ---

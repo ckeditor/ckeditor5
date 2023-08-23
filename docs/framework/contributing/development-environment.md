@@ -1,5 +1,6 @@
 ---
 category: framework-contributing
+meta-title: Development environment | CKEditor 5 Framework Documentation
 order: 10
 modified_at: 2022-09-29
 ---
