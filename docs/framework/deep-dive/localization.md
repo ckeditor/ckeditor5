@@ -116,7 +116,7 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 ```
 
 <info-box warning>
-	See tutorials/crash-course/editor how to create a complete plugin} to have a better understanding of creating CKEditor&nbsp;5 plugins.
+	See {@link tutorials/crash-course/editor how to create a complete plugin} to have a better understanding of creating CKEditor&nbsp;5 plugins.
 </info-box>
 
 ### Example: Localizing pending actions
