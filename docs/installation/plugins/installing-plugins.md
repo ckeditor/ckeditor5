@@ -1,5 +1,6 @@
 ---
 menu-title: Installing plugins
+meta-title: Installing plugins | CKEditor 5 documentation
 category: plugins
 order: 30
 ---
