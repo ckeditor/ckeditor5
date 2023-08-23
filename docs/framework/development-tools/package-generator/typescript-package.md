@@ -1,6 +1,6 @@
 ---
 menu-title: TypeScript package
-meta-title: Package generator TypeScript package | CKEditor 5 Framework Documentation
+meta-title: Package generator TypeScript package content | CKEditor 5 Framework Documentation
 category: package-generator
 order: 43
 modified_at: 2022-08-16
