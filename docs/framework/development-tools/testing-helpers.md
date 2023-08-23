@@ -1,5 +1,6 @@
 ---
 menu-title: Testing helpers
+meta-title: Testing helpers | CKEditor 5 Framework Documentation
 category: development-tools
 order: 2
 modified_at: 2022-08-16
