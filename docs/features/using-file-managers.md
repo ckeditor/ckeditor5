@@ -1,6 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Using file managers
+meta-title: Using file managers | CKEditor 5 Documentation
 order: 20
 badges: [ premium ]
 ---

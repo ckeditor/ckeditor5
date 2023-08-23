@@ -1,5 +1,6 @@
 ---
 title: Basic text styles
+meta-title: Basic text styles | CKEditor 5 Documentation
 category: features
 ---
 

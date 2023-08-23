@@ -2,6 +2,7 @@
 category: features-html
 order: 50
 modified_at: 2023-05-15
+meta-title: Full page HTML | CKEditor 5 Documentation
 ---
 
 # Full page HTML

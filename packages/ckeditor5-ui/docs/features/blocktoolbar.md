@@ -1,5 +1,6 @@
 ---
 title: Block toolbar
+meta-title: Block toolbar | CKEditor 5 Documentation
 category: features-toolbar
 order: 20
 ---

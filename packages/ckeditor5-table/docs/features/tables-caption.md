@@ -1,5 +1,6 @@
 ---
 menu-title: Table caption
+meta-title: Table caption | CKEditor 5 Documentation
 category: tables
 order: 50
 modified_at: 2022-05-19

@@ -1,6 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Overview
+meta-title: Image upload overview | CKEditor 5 Documentation
 order: 10
 ---
 
