@@ -1,5 +1,6 @@
 ---
 category: getting-started
+meta-title: Customized installation | CKEditor 5 documentation
 order: 30
 modified_at: 2022-03-15
 ---
