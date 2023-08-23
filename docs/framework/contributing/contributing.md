@@ -1,11 +1,12 @@
 ---
 category: framework-contributing
+meta-title: Contributing | CKEditor 5 Framework Documentation
 order: 10
 ---
 
 # Contributing
 
-CKEditor&nbsp;5 is an Open Source project and we will be most thankful for your contributions. You can help us by fixing issues, reporting them or translating the editor interface. Community effort and engagement is what has been driving the development of our WYSIWYG editor projects since 2003!
+CKEditor&nbsp;5 is an Open Source project and we will be most thankful for your contributions. You can help us by fixing issues, reporting them, or translating the editor interface. Community effort and engagement is what has been driving the development of our WYSIWYG editor projects since 2003!
 
 ## Fixing issues and coding features
 
@@ -104,6 +105,6 @@ Read the {@link support/reporting-issues reporting issues} guide to learn more.
 
 ## Contributor License Agreement (CLA)
 
-To accept contributions sent to us in form of code, documentation or translations, a Contributor License Agreement (CLA) must be in place in order to clarify the intellectual property license granted with them. This license is for your protection as a contributor as well as the protection of us and our users; it does not change your rights to use your own contributions for any other purpose.
+To accept contributions sent to us in the form of code, documentation, or translations, a Contributor License Agreement (CLA) must be in place in order to clarify the intellectual property license granted with them. This license is for your protection as a contributor as well as the protection of us and our users; it does not change your rights to use your own contributions for any other purpose.
 
 To sign the CLA and to get more information, please follow this link: [https://cla.ckeditor.com/](https://cla.ckeditor.com/).
