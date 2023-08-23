@@ -1,5 +1,6 @@
 ---
 menu-title: Paste from Google Docs
+meta-title: Paste from Google Docs | CKEditor 5 Documentation
 category: features-pasting
 order: 20
 ---

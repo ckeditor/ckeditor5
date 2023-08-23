@@ -1,5 +1,6 @@
 ---
 category: features
+meta-title: Code blocks | CKEditor 5 Documentation
 ---
 
 # Code blocks

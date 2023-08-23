@@ -1,6 +1,7 @@
 ---
 title: Removing text formatting
 menu-title: Remove formatting
+meta-title: Removing text formatting | CKEditor 5 Documentation
 category: features
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Link
+meta-title: Links | CKEditor 5 Documentation
 category: features
 ---
 

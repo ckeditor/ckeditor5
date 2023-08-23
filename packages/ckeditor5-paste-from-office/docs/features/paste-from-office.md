@@ -1,6 +1,6 @@
 ---
 menu-title: Paste from Office
-meta-title: CKEditor 5 Paste from Office
+meta-title: Paste from Office | CKEditor 5 Documentation
 meta-description: CKEditor 5 lets you handle content that you paste from Word and paste from Excel.
 category: features-pasting
 order: 15

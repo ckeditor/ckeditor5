@@ -1,5 +1,6 @@
 ---
 category: features
+meta-title: Undo/Redo | CKEditor 5 Documentation
 modified_at: 2022-08-29
 ---
 
