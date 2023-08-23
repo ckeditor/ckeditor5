@@ -1,5 +1,6 @@
 ---
 category: framework-deep-dive
+meta-title: Observables | CKEditor 5 Framework Documentation
 ---
 
 # Observables

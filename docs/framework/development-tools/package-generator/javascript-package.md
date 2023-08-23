@@ -1,5 +1,6 @@
 ---
 menu-title: JavaScript package
+meta-title: Package generator JavaScript package content | CKEditor 5 Framework Documentation
 category: package-generator
 order: 42
 modified_at: 2022-08-16
