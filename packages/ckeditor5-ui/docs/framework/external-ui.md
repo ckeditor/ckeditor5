@@ -1,6 +1,6 @@
 ---
 category: framework-deep-dive-ui
-meta-title: Third party UI | CKEditor 5 Documentation
+meta-title: Third party UI | CKEditor 5 Framework Documentation
 order: 20
 ---
 

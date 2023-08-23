@@ -1,7 +1,7 @@
 ---
 category: framework-deep-dive-ui
 menu-title: Widget internals
-meta-title: Widget internals | CKEditor 5 Documentation
+meta-title: Widget internals | CKEditor 5 Framework Documentation
 ---
 
 # Deep dive into widget internals
@@ -20,7 +20,7 @@ In the sections that follow, you will learn how to configure CKEditor&nbsp;5 WYS
 
 {@img assets/img/framework-deep-dive-widget-type-around-buttons.gif A screenshot showing the location of the buttons that insert paragraphs around widgets.}
 
-The easiest way to get rid of the type around widget buttons is to hide them using CSS. Put the following code snippet anywhere in your application and the buttons will no longer be displayed:
+The easiest way to get rid of the type-around widget buttons is to hide them using CSS. Put the following code snippet anywhere in your application and the buttons will no longer be displayed:
 
 ```css
 .ck.ck-editor__editable .ck-widget .ck-widget__type-around__button {

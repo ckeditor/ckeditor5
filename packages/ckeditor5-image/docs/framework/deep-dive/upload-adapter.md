@@ -1,7 +1,7 @@
 ---
 category: framework-deep-dive
 menu-title: Custom upload adapter
-meta-title: Custom image upload adapter | CKEditor 5 Documentation
+meta-title: Custom image upload adapter | CKEditor 5 Framework Documentation
 classes: custom-adapter
 ---
 

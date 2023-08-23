@@ -1,7 +1,7 @@
 ---
 category: framework-deep-dive-ui
 menu-title: Focus tracking
-meta-title: Deep dive into focus tracking | CKEditor 5 Documentation
+meta-title: Deep dive into focus tracking | CKEditor 5 Framework Documentation
 classes: focus-tracking
 ---
 
