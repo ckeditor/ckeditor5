@@ -1,5 +1,6 @@
 ---
 category: getting-started
+meta-title: Getting and setting data | CKEditor 5 documentation
 order: 70
 ---
 
@@ -10,10 +11,57 @@ order: 70
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/editor-lifecycle previous tutorial} you have learned about lifecycle methods. Having the editor created, you can now set or get its data.
+In the {@link installation/getting-started/editor-lifecycle previous guide} you have learned about lifecycle methods. Having the editor created, you can now set or get its data.
 </info-box>
 
 CKEditor 5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
+
+## Manually retrieving the data
+
+When you:
+
+* Use Ajax requests instead of the classic integration with HTML forms,
+* Implement a single-page application,
+* Use a different editor type than the Classic editor (and hence, cannot use the previous method),
+
+### Getting the editor data with `getData()`
+
+If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, use the `getData()` method:
+
+```js
+const data = editor.getData();
+```
+<!-- you can retrieve the data from the editor by using the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method. -->
+
+### Setting the editor data with `setData()`
+
+To replace the editor content with new data, use the `setData()` method:
+
+```js
+editor.setData( '<p>Some text.</p>' );
+```
+
+For that, you need to store the reference to the `editor` because there is no global `CKEDITOR.instances` property. You can do that in multiple ways, for example by assigning the `editor` to a variable defined outside the `then()`'s callback:
+
+```js
+let editor;
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ) )
+	.then( newEditor => {
+		editor = newEditor;
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
+
+// Assuming there is a <button id="submit">Submit</button> in your application.
+document.querySelector( '#submit' ).addEventListener( 'click', () => {
+	const editorData = editor.getData();
+
+	// ...
+} );
+```
 
 ## Automatic integration with HTML forms
 
@@ -90,53 +138,6 @@ In your HTTP server, you can now read the editor data from the `content` variabl
 	While simple content like that mentioned above does not itself require to be encoded, encoding the data will prevent losing text like "&lt;" or "&lt;img&gt;".
 </info-box>
 
-## Manually retrieving the data
-
-When you:
-
-* Use Ajax requests instead of the classic integration with HTML forms,
-* Implement a single-page application,
-* Use a different editor type than the Classic editor (and hence, cannot use the previous method),
-
-### Getting the editor data with `getData()`
-
-If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, use the `getData()` method:
-
-```js
-const data = editor.getData();
-```
-<!-- you can retrieve the data from the editor by using the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method. -->
-
-### Setting the editor data with `setData()`
-
-To replace the editor content with new data, use the `setData()` method:
-
-```js
-editor.setData( '<p>Some text.</p>' );
-```
-
-For that, you need to store the reference to the `editor` because there is no global `CKEDITOR.instances` property. You can do that in multiple ways, for example by assigning the `editor` to a variable defined outside the `then()`'s callback:
-
-```js
-let editor;
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ) )
-	.then( newEditor => {
-		editor = newEditor;
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
-
-// Assuming there is a <button id="submit">Submit</button> in your application.
-document.querySelector( '#submit' ).addEventListener( 'click', () => {
-	const editorData = editor.getData();
-
-	// ...
-} );
-```
-
 ## Updating the source element
 
 If the source element is not `<textarea>`, CKEditor 5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
@@ -160,7 +161,7 @@ Please refer to the {@link features/autosave Autosave} guide for details.
 
 ## Handling users exiting the page
 
-An additional concern when integrating the editor in your website is that the user may mistakenly leave before saving the data. This problem is automatically handled by the {@link features/autosave autosave feature}, but if you do not use it and instead chose different integration methods, you should consider handling these two scenarios:
+An additional concern when integrating the editor into your website is that the user may mistakenly leave before saving the data. This problem is automatically handled by the {@link features/autosave autosave feature}, but if you do not use it and instead chose different integration methods, you should consider handling these two scenarios:
 
 * The user leaves the page before saving the data (e.g. mistakenly closes a tab or clicks some link).
 * The user saved the data, but there are some pending actions like an image upload.
@@ -287,7 +288,6 @@ How to understand this demo:
 <info-box hint>
 **What's next?**
 
-Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
+Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link installation/getting-started/api-and-events API and events guide} for more.
 
-If you would like to integrate your CKEditor 5 installation with the Angular, React, and Vue.js JavaScript frameworks, {@link installation/integrations/overview we have dedicated guides for that}.
 </info-box>

@@ -2,11 +2,11 @@
 category: api-reference
 ---
 
-# Special characters feature for CKEditor 5
+# Special characters feature for CKEditor&nbsp;5
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-special-characters.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters)
 
-This package implements the special characters feature for CKEditor 5.
+This package implements the special characters feature for CKEditor&nbsp;5.
 
 ## Demo
 

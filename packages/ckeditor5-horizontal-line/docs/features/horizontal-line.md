@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Horizontal line
+meta-title: Horizontal line | CKEditor 5 Documentation
 ---
 
 # Horizontal line
@@ -49,7 +50,7 @@ ClassicEditor
 
 ## Related features
 
-CKEditor 5 has more features that can help you better organize your document content:
+CKEditor&nbsp;5 has more features that can help you better organize your document content:
 * {@link features/headings Headings} &ndash; Organize your content into thematic sections.
 * {@link features/page-break Page break} &ndash; Divide your document into pages.
 * {@link features/title Document title} &ndash; Clearly separate the title from the body.
@@ -70,7 +71,7 @@ editor.execute( 'horizontalLine' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Word and character count
+meta-title: Word and character count | CKEditor 5 Documentation
 ---
 
 {@snippet features/build-word-count-source}
@@ -261,7 +262,7 @@ ClassicEditor
 
 ## Related features
 
-CKEditor 5 provides other productivity-boosting features that you may find helpful:
+CKEditor&nbsp;5 provides other productivity-boosting features that you may find helpful:
 
 * {@link features/spelling-and-grammar-checking Proofreading, spelling and grammar checking} &ndash; Track and correct any possible errors as you type.
 * {@link features/autosave Autosave} &ndash; Never lose your content by accident, stay safe and automatically save.
@@ -288,7 +289,7 @@ The {@link module:word-count/wordcount~WordCount} plugin provides:
 * The {@link module:word-count/wordcount~WordCount#characters} and {@link module:word-count/wordcount~WordCount#words} properties from which you can retrieve the stats at any moment.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

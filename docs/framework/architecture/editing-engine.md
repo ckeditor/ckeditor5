@@ -1,5 +1,6 @@
 ---
 category: framework-architecture
+meta-title: Editing engine | CKEditor 5 Framework Documentation
 order: 30
 ---
 
@@ -8,7 +9,7 @@ order: 30
 The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package is by far the biggest package of all. Therefore, this guide will only scratch the surface here by introducing the main architecture layers and concepts. More detailed guides will follow.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Overview
@@ -72,7 +73,7 @@ editor.model.change( writer => {
 ```
 
 <info-box>
-	All changes made to the document structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionality. Since OT requires a system to be able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor 5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor 5 uses a tree structure), hence the set of potential semantic changes is more complex. Operations are grouped in {@link module:engine/model/batch~Batch batches}. A batch may be understood as a single undo step.
+	All changes made to the document structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionality. Since OT requires a system to be able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor&nbsp;5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor&nbsp;5 uses a tree structure), hence the set of potential semantic changes is more complex. Operations are grouped in {@link module:engine/model/batch~Batch batches}. A batch may be understood as a single undo step.
 </info-box>
 
 ### Text attributes
@@ -108,11 +109,11 @@ Such representation of inline text styling allows to significantly reduce the co
 </p>
 ```
 
-and you have a selection before the letter `"b"` (`"Foo ^bar"`), is this position inside or outside `<strong>`? If you use [native DOM Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection), you may get both positions &mdash; one anchored in `<p>` and the other anchored in `<strong>`. In CKEditor 5 this position translates exactly to `"Foo ^bar"`.
+and you have a selection before the letter `"b"` (`"Foo ^bar"`), is this position inside or outside `<strong>`? If you use [native DOM Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection), you may get both positions &mdash; one anchored in `<p>` and the other anchored in `<strong>`. In CKEditor&nbsp;5 this position translates exactly to `"Foo ^bar"`.
 
 ### Selection attributes
 
-OK, but how to let CKEditor 5 know that I want the selection to "be bold" in the case described above? This is important information because it affects whether or not the typed text will be bold, too.
+OK, but how to let CKEditor&nbsp;5 know that I want the selection to "be bold" in the case described above? This is important information because it affects whether or not the typed text will be bold, too.
 
 To handle that, the selection also {@link module:engine/model/selection~Selection#setAttribute has attributes}. If the selection is placed in `"Foo ^bar"` and it has the attribute `bold=true`, you know that the user will type bold text.
 
@@ -122,7 +123,7 @@ However, it has just been said that inside `<paragraph>` there are two text node
 
 This is, indeed, another problem with DOM APIs. Not only can positions outside and inside some element be identical visually but also they can be anchored inside or outside a text node (if the position is at a text node boundary). This all creates extreme complications when implementing editing algorithms.
 
-To avoid such troubles, and to make collaborative editing possible for real, CKEditor 5 uses the concepts of **indexes** and **offsets**. Indexes relate to nodes (elements and text nodes) while offsets relate to positions. For example, in the following structure:
+To avoid such troubles, and to make collaborative editing possible for real, CKEditor&nbsp;5 uses the concepts of **indexes** and **offsets**. Indexes relate to nodes (elements and text nodes) while offsets relate to positions. For example, in the following structure:
 
 ```html
 <paragraph>
@@ -297,7 +298,7 @@ As you can see, two of these positions represent what you can consider the same 
 * `{ parent: paragraphElement, offset: 1 }`
 * `{ parent: fooTextNode, offset: 3 }`
 
-Some browsers (Safari, Chrome and Opera) consider them identical, too (when used in a selection) and often normalize the first position (anchored in an element) to a position anchored in a text node (the second position). Do not be surprised that the view selection is not directly where you would like it to be. The good news is that the CKEditor 5 renderer can tell that two positions are identical and avoids re-rendering the DOM selection unnecessarily.
+Some browsers (Safari, Chrome and Opera) consider them identical, too (when used in a selection) and often normalize the first position (anchored in an element) to a position anchored in a text node (the second position). Do not be surprised that the view selection is not directly where you would like it to be. The good news is that the CKEditor&nbsp;5 renderer can tell that two positions are identical and avoids re-rendering the DOM selection unnecessarily.
 
 <info-box>
 	Sometimes you may find in the documentation that positions are marked in HTML with the `{}` and `[]` characters. The difference between them is that the former indicates positions anchored in text nodes and the latter in elements. So, for example, the following example:
@@ -371,7 +372,7 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 
 A more in-depth introduction with examples can be found in the {@link framework/deep-dive/conversion/intro dedicated conversion guide}.
 
-For additional information, you can also check out the {@link framework/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
+For additional information, you can also check out the {@link tutorials/widgets/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link tutorials/widgets/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
 
 <!--TODO: upcasting, downcasting, mapping nodes and positions, API.
 
@@ -379,4 +380,4 @@ For additional information, you can also check out the {@link framework/tutorial
 -->
 ## Read next
 
-Once you have learnt how to implement editing features, it is time to add a UI for them. You can read about the CKEditor 5 standard UI framework and UI library in the {@link framework/architecture/ui-library UI library} guide.
+Once you have learnt how to implement editing features, it is time to add a UI for them. You can read about the CKEditor&nbsp;5 standard UI framework and UI library in the {@link framework/architecture/ui-library UI library} guide.

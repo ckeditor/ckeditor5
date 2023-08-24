@@ -11,12 +11,12 @@
 
 import CKEditorError from './ckeditorerror';
 
-const version = '38.1.1';
+const version = '39.0.1';
 
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2023, 6, 11 );
+export const releaseDate = new Date( 2023, 7, 10 );
 
 /* istanbul ignore next -- @preserve */
 const windowOrGlobal = typeof window === 'object' ? window : global;

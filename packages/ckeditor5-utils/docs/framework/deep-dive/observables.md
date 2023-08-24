@@ -1,12 +1,13 @@
 ---
 category: framework-deep-dive
+meta-title: Observables | CKEditor 5 Framework Documentation
 ---
 
 # Observables
 
 {@link module:utils/observablemixin~Observable Observables} are objects which have properties that can be observed. That means when the value of such property changes, an event is fired by the observable and the change can be reflected in other pieces of the code that listen to that event.
 
-Observables are common building blocks of the {@link framework/index CKEditor 5 Framework}. They are particularly popular in the UI, the {@link module:ui/view~View `View`} class and its subclasses  benefiting from the observable interface the most: it is the {@link framework/architecture/ui-library#interaction templates bound to the observables} what makes the user interface dynamic and interactive. Some of the basic classes like {@link module:core/editor/editor~Editor `Editor`} or {@link module:core/command~Command `Command`} are observables too.
+Observables are common building blocks of the {@link framework/index CKEditor&nbsp;5 Framework}. They are particularly popular in the UI, the {@link module:ui/view~View `View`} class and its subclasses  benefiting from the observable interface the most: it is the {@link framework/architecture/ui-library#interaction templates bound to the observables} what makes the user interface dynamic and interactive. Some of the basic classes like {@link module:core/editor/editor~Editor `Editor`} or {@link module:core/command~Command `Command`} are observables too.
 
 Any class can become observable; all you need to do is mix the {@link module:utils/observablemixin~Observable} into it:
 

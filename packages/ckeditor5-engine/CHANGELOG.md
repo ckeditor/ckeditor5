@@ -87,7 +87,7 @@ Changes for the past releases are available below.
 
 ### MAJOR BREAKING CHANGES
 
-* The behavior of block filler detection on DOM to view conversion was changed. Now, it specifically checks the parent of a text node to check whether it is a block. Which means that a list of block element names has to be used. If you use custom elements or use one of the HTML elements which CKEditor 5 does not recognize as a block element, see [#404](https://github.com/ckeditor/ckeditor5-engine/issues/404) and `DomConverter.blockElements` documentation.
+* The behavior of block filler detection on DOM to view conversion was changed. Now, it specifically checks the parent of a text node to check whether it is a block. Which means that a list of block element names has to be used. If you use custom elements or use one of the HTML elements which CKEditor&nbsp;5 does not recognize as a block element, see [#404](https://github.com/ckeditor/ckeditor5-engine/issues/404) and `DomConverter.blockElements` documentation.
 * The `Selection#getTopMostBlocks()` was removed from the public API. Use `Selection#getSelectedBlocks()` instead.
 * The `Selection#getSelectedBlocks()` does not return blocks nested in other blocks now.
 
@@ -440,7 +440,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)

@@ -1,18 +1,19 @@
 ---
 category: framework-contributing
+meta-title: Testing environment | CKEditor 5 Framework Documentation
 order: 20
 modified_at: 2022-09-07
 ---
 
 # Testing environment
 
-Before reading this article we recommend getting familiar with the CKEditor 5 {@link framework/contributing/development-environment development environment}.
+Before reading this article we recommend getting familiar with the CKEditor&nbsp;5 {@link framework/contributing/development-environment development environment}.
 
 ## Introduction
 
-The CKEditor 5 testing environment uses a popular setup with [Karma](https://karma-runner.github.io), [webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created some [npm scripts](https://docs.npmjs.com/cli/run-script) which glue all these pieces and special requirements for CKEditor together.
+The CKEditor&nbsp;5 testing environment uses a popular setup with [Karma](https://karma-runner.github.io), [webpack](https://webpack.github.io/), [babel-loader](https://github.com/babel/babel-loader) and [Istanbul](https://github.com/gotwarlost/istanbul). We created some [npm scripts](https://docs.npmjs.com/cli/run-script) which glue all these pieces and special requirements for CKEditor together.
 
-Each CKEditor 5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)), however, the test runner is available in the root of the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be easily reused outside of `ckeditor5`.
+Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engine's tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests)), however, the test runner is available in the root of the [`ckeditor5`](https://github.com/ckeditor/ckeditor5) repository which is the central development environment. The actual code of the test runner is implemented in the [`@ckeditor/ckeditor5-dev-tests`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-tests) package and can be easily reused outside of `ckeditor5`.
 
 <info-box hint>
 	Both automated and manual tests support TypeScript. Simply use the `.ts` extension.
@@ -110,8 +111,8 @@ In order to start the manual tests server, use the `yarn run manual` task. After
 The `yarn run manual` task accepts the following options:
 
 * `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
-* `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor 5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
-* `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor 5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more.
+* `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
+* `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link features/ui-language UI language guide} to learn more.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `8125`.
 * `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
@@ -184,7 +185,7 @@ ClassicEditor
 </info-box>
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 <info-box>

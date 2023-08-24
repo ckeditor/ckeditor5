@@ -1,14 +1,15 @@
 ---
 category: framework-contributing
+meta-title: Package metadata | CKEditor 5 Framework Documentation
 order: 40
 modified_at: 2021-06-07
 ---
 
 # Package metadata
 
-The package metadata is a set of CKEditor 5-related data describing plugins that the package delivers. It allows for an automated detection of plugins and building them by an external builder.
+The package metadata is a set of CKEditor&nbsp;5-related data describing plugins that the package delivers. It allows for the automated detection of plugins and building them by an external builder.
 
-In case of official CKEditor 5 packages (as well as some partner ones), this data is used by the [CKEditor 5 Online Builder](https://ckeditor.com/ckeditor-5/online-builder/) and allows for building the {@link installation/plugins/features-html-output-overview Features' HTML output} page presenting a list of all official CKEditor 5 plugins.
+In the case of official CKEditor&nbsp;5 packages (as well as some partner ones), this data is used by the [CKEditor&nbsp;5 Online Builder](https://ckeditor.com/ckeditor-5/online-builder/) and allows for building the {@link installation/plugins/features-html-output-overview Features' HTML output} page presenting a list of all official CKEditor&nbsp;5 plugins.
 
 The package metadata should be saved in the special `ckeditor5-metadata.json` file in the root of the package published on npm.
 
@@ -22,7 +23,7 @@ The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` arr
 
 * `name` &ndash; A human-readable name of the plugin.
 * `description` &ndash; A human-readable short description of the plugin.
-* `docs` &ndash; An absolute or relative URL to the plugin documentation. If this URL is relative, it leads to the CKEditor 5 documentation in [https://ckeditor.com/docs/ckeditor5/latest/](https://ckeditor.com/docs/ckeditor5/latest/).
+* `docs` &ndash; An absolute or relative URL to the plugin documentation. If this URL is relative, it leads to the CKEditor&nbsp;5 documentation in [https://ckeditor.com/docs/ckeditor5/latest/](https://ckeditor.com/docs/ckeditor5/latest/).
 * `path` &ndash; A path to the file, relative to the metadata file that exports the plugin.
 * `className` &ndash; The name of the class used to create the plugin. This class should be exported from the file using the `export default` syntax.
 * `requires` &ndash; An array of the plugin's soft requirements and other non-explicit requirements. It should contain class names of plugins that should be included if this plugin is added. If the element of this array is another (nested) array containing plugins' class names, it means that at least one plugin listed from this nested array is required, but not all of them.
@@ -66,4 +67,4 @@ Below is an example showing how the `Bold` plugin can be documented using this f
 }
 ```
 
-If you want to check how plugins are documented in other packages, visit the [CKEditor 5 packages](https://github.com/ckeditor/ckeditor5/tree/master/packages) section on GitHub and find the `ckeditor5-metadata.json` file in a package you are interested in.
+If you want to check how plugins are documented in other packages, visit the [CKEditor&nbsp;5 packages](https://github.com/ckeditor/ckeditor5/tree/master/packages) section on GitHub and find the `ckeditor5-metadata.json` file in a package you are interested in.

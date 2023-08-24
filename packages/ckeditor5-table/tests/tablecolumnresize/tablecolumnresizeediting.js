@@ -322,6 +322,90 @@ describe( 'TableColumnResizeEditing', () => {
 					);
 				} );
 
+				it( 'should handle <col> with pt width', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:30pt;">
+									<col style="width:30pt;">
+									<col style="width:60pt">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should handle <col> with pt width summing to less than 100', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:15pt;">
+									<col style="width:15pt;">
+									<col style="width:30pt">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="25%"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
 				it( 'should adjust the missing column widths proportionally', () => {
 					editor.setData(
 						`<figure class="table">
@@ -478,6 +562,109 @@ describe( 'TableColumnResizeEditing', () => {
 								'<tableColumn columnWidth="33.33%"></tableColumn>' +
 								'<tableColumn columnWidth="33.33%"></tableColumn>' +
 								'<tableColumn columnWidth="33.34%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should convert the `col[span]` attribute', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:10%;" span="2">
+									<col style="width:50%;">
+									<col style="width:10%;" span="3">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+										<td>14</td>
+										<td>15</td>
+										<td>16</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>14</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>15</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>16</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+							'</tableColumnGroup>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should handle the `col[span]` attribute and missing cols', () => {
+					editor.setData(
+						`<figure class="table">
+							<table>
+								<colgroup>
+									<col style="width:10%;" span="2">
+									<col style="width:50%;">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>11</td>
+										<td>12</td>
+										<td>13</td>
+										<td>14</td>
+									</tr>
+								</tbody>
+							</table>
+						</figure>`
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>11</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>12</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>13</paragraph>' +
+								'</tableCell>' +
+								'<tableCell>' +
+									'<paragraph>14</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<tableColumnGroup>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="10%"></tableColumn>' +
+								'<tableColumn columnWidth="50%"></tableColumn>' +
+								'<tableColumn columnWidth="30%"></tableColumn>' +
 							'</tableColumnGroup>' +
 						'</table>'
 					);
@@ -2807,6 +2994,68 @@ describe( 'TableColumnResizeEditing', () => {
 						'</tbody>' +
 					'</table>'
 				);
+			} );
+
+			it( 'should not scroll `tbody` inside `table` after scrolling to the selection in a cell.', () => {
+				setModelData( editor.model,
+					'<table tableWidth="100%">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table tableWidth="90%">' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph></paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>[]foo</paragraph>' +
+										'</tableCell>' +
+										'<tableCell>' +
+											'<paragraph>bar</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+									'<tableColumnGroup>' +
+										'<tableColumn columnWidth="50%"></tableColumn>' +
+										'<tableColumn columnWidth="50%"></tableColumn>' +
+									'</tableColumnGroup>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="100%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>' + '<paragraph></paragraph>'.repeat( 50 )
+				);
+
+				const table = document.getElementsByTagName( 'tbody' )[ 0 ];
+				const shift = table.getBoundingClientRect().y - table.parentElement.getBoundingClientRect().y;
+
+				editor.editing.view.scrollToTheSelection( {
+					alignToTop: true,
+					forceScroll: true
+				} );
+
+				expect( table.getBoundingClientRect().y - table.parentElement.getBoundingClientRect().y ).to.be.equal( shift );
 			} );
 		} );
 

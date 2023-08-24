@@ -1,5 +1,6 @@
 ---
 title: Text alignment
+meta-title: Text alignment | CKEditor 5 Documentation
 category: features
 ---
 
@@ -121,7 +122,7 @@ ClassicEditor
 
 ## Related features
 
-CKEditor 5 has more features that can help you organize your content:
+CKEditor&nbsp;5 has more features that can help you organize your content:
 * {@link features/title Document title} &ndash; Clearly divide your content into a title and body.
 * {@link features/headings Headings} &ndash; Split your content into logical sections.
 * {@link features/indent Block indentation} &ndash; Organize your content into visually separated blocks, indent crucial paragraphs, etc.
@@ -146,7 +147,7 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Content compatibility

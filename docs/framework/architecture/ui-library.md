@@ -1,11 +1,12 @@
 ---
 category: framework-architecture
+meta-title: UI library | CKEditor 5 Framework Documentation
 order: 40
 ---
 
 # UI library
 
-The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui). It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.
+The standard UI library of CKEditor&nbsp;5 is [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui). It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.
 
 ## Views
 

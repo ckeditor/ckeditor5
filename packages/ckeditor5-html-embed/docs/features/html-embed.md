@@ -2,6 +2,7 @@
 category: features-html
 order: 40
 menu-title: HTML embed
+meta-title: HTML embed | CKEditor 5 Documentation
 ---
 
 # HTML embed
@@ -20,7 +21,7 @@ Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/ic
 
 ## Additional feature information
 
-This feature lets you embed any HTML code and bypass CKEditor 5's filtering mechanisms. You can use it to enrich content produced by CKEditor 5 with fragments of HTML that are not supported by any other CKEditor 5 feature.
+This feature lets you embed any HTML code and bypass CKEditor&nbsp;5's filtering mechanisms. You can use it to enrich content produced by CKEditor&nbsp;5 with fragments of HTML that are not supported by any other CKEditor&nbsp;5 feature.
 
 Some examples of content that can be embedded thanks to the HTML embed feature:
 
@@ -133,7 +134,7 @@ In addition to using a sanitizer, you can use the built-in browser mechanism cal
 
 ## Related features
 
-CKEditor 5 supports a wider range of embed and code features, including:
+CKEditor&nbsp;5 supports a wider range of embed and code features, including:
 
 * {@link features/media-embed Media embed} &ndash; Insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 * {@link features/code-blocks Code blocks} &ndash; Insert longer, multiline listings of pre-formatted code with a programming language assigned.
@@ -158,7 +159,7 @@ editor.execute( 'htmlEmbed', '<b>New content.</b>' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

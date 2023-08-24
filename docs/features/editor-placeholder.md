@@ -1,5 +1,6 @@
 ---
 category: features
+meta-title: Editor placeholder | CKEditor 5 Documentation
 ---
 
 {@snippet build-classic-source}
@@ -110,7 +111,7 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 
 ## Changing the placeholder
 
-The editor placeholder could be updated at runtime by changing the `placeholder` property in editing root.
+The editor placeholder could be updated at runtime by changing the `placeholder` property in the editing root.
 
 ```js
 editor.editing.view.document.getRoot( 'main' ).placeholder = 'new placeholder';

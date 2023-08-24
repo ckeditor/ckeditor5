@@ -1,24 +1,25 @@
 ---
 category: update-guides
+meta-title: Update to version 37.x | CKEditor 5 Documentation
 menu-title: Update to v37.x
 order: 87
 ---
 
-# Update to CKEditor 5 v37.0.0
+# Update to CKEditor&nbsp;5 v37.0.0
 
 <info-box>
-	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-For the entire list of changes introduced in version 37.0.0, see the [release notes for CKEditor 5 v37.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0).
+For the entire list of changes introduced in version 37.0.0, see the [release notes for CKEditor&nbsp;5 v37.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v37.0.0.
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v37.0.0.
 
 ## Bump of minimal version of Node.js to 16.x
 
-[Node.js 14 ends its long-term support in April 2023](https://nodejs.org/en/about/releases/). Because of that, starting from v37.0.0, the minimal version of Node.js required by CKEditor 5 will be 16.
+[Node.js 14 ends its long-term support in April 2023](https://nodejs.org/en/about/releases/). Because of that, starting from v37.0.0, the minimal version of Node.js required by CKEditor&nbsp;5 will be 16.
 
 ## TypeScript typings
 
@@ -83,7 +84,7 @@ We want to thank our community for providing the types so far!
 
 ## Comments archive
 
-CKEditor 5 v37.0.0 introduces the comments archive feature. Below you will find notes regarding the feature as well as migration tips in case of breaking changes that may affect some integrations.
+CKEditor&nbsp;5 v37.0.0 introduces the comments archive feature. Below you will find notes regarding the feature as well as migration tips in case of breaking changes that may affect some integrations.
 
 Note that the [documentation for the previous editor version (36.0.1)](https://ckeditor.com/docs/ckeditor5/36.0.1/) is still available if you would like to compare the differences.
 

@@ -1,11 +1,12 @@
 ---
 category: framework-deep-dive-ui
+meta-title: Theme customization | CKEditor 5 Framework Documentation
 order: 10
 ---
 
 # Theme customization
 
-The [`@ckeditor/ckeditor5-theme-lark`](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) package contains the default theme of CKEditor 5. Lark is modular, [BEM–friendly](https://en.bem.info/methodology/css/) and built using [PostCSS](http://postcss.org/).
+The [`@ckeditor/ckeditor5-theme-lark`](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) package contains the default theme of CKEditor&nbsp;5. Lark is modular, [BEM–friendly](https://en.bem.info/methodology/css/) and built using [PostCSS](http://postcss.org/).
 
 Although it was designed with versatility and the most common editor use cases in mind, some integrations may require adjustments to make it match the style guidelines of the ecosystem. This kind of customization can be done by importing an extra `.css` file and overriding the [native CSS variables](https://www.w3.org/TR/css-variables/).
 
@@ -15,7 +16,7 @@ Below you can see a demo of an editor with the dark theme as a result of customi
 
 ## Styles processing and bundling
 
-CKEditor 5 is bundled using [webpack](https://webpack.js.org/) and it handles the importing and processing of styles using [loaders](https://webpack.js.org/concepts/loaders/). Its configuration can be found in the `webpack.config.js` file.
+CKEditor&nbsp;5 is bundled using [webpack](https://webpack.js.org/) and it handles the importing and processing of styles using [loaders](https://webpack.js.org/concepts/loaders/). Its configuration can be found in the `webpack.config.js` file.
 
 <info-box info>
 	To learn more about building CKEditor, check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.

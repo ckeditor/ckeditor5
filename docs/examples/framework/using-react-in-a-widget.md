@@ -2,6 +2,7 @@
 category: examples-framework
 order: 130
 toc: false
+meta-title: React components in an editor example | CKEditor 5 Documentation
 classes: main__content--no-toc
 modified_at: 2022-12-16
 ---
@@ -14,7 +15,7 @@ The editor below presents integration between React library and a block widget f
 
 ## Detailed guide
 
-If you would like to create such a widget on your own, take a look at the {@link framework/tutorials/using-react-in-a-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided.
+If you would like to create such a widget on your own, take a look at the {@link tutorials/widgets/using-react-in-a-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided.
 
 ## Editor example configuration
 
@@ -22,18 +23,11 @@ If you would like to create such a widget on your own, take a look at the {@link
 <summary>View editor configuration script</summary>
 
 ```js
-/**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
-
-/* global window */
-
 import Babel from 'babel-standalone';
 
 // Imports necessary to run a React application.
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 // The official <CKEditor> component for React.
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -173,7 +167,7 @@ class InsertProductPreviewCommand extends Command {
 Object.assign( window, {
 	Babel,
 	React,
-	ReactDOM,
+	createRoot,
 	CKEditor,
 	ClassicEditor,
 	Essentials,
@@ -195,7 +189,7 @@ Object.assign( window, {
 <details>
 <summary>View editor content listing</summary>
 
-```
+```html
 <style>
 /* assets/styles.css */
 
@@ -359,200 +353,232 @@ Object.assign( window, {
 // react/productpreview.js
 
 class ProductPreview extends React.Component {
-	render() {
-		const style = {
-			'--product-image': `url(${ this.props.image })`
-		};
+    render() {
+        const style = {
+            '--product-image': `url(${ this.props.image })`
+        };
 
-		return <div
-			className="product-preview"
-			style={style}>
-				<button
-					className="product-preview__add"
-					onClick={() => this.props.onClick( this.props.id )}
-					title="Add to the offer"
-				>
-					<span>+</span>
-				</button>
-				<span className="product-preview__name">{this.props.name}</span>
-				<span className="product-preview__price">from {this.props.price}</span>
-			</div>
-	}
+        return <div
+            className="product-preview"
+            style={style}>
+                <button
+                    className="product-preview__add"
+                    onClick={() => this.props.onClick( this.props.id )}
+                    title="Add to the offer"
+                >
+                    <span>+</span>
+                </button>
+                <span className="product-preview__name">{this.props.name}</span>
+                <span className="product-preview__price">from {this.props.price}</span>
+            </div>
+    }
 }
 
 // react/productlist.js
 
 class ProductList extends React.Component {
-	render() {
-		return <div className="app__product-list">
-			<h3>Products</h3>
-			<ul>
-				{this.props.products.map( product => {
-					return <li key={product.id}>
-						<ProductPreview
-							id={product.id}
-							onClick={this.props.onClick}
-							{...product}
-						/>
-					</li>;
-				})}
-			</ul>
-			<p><b>Tip</b>: Clicking the product will add it to the editor.</p>
-		</div>;
-	}
+    render() {
+        return <div className="app__product-list">
+            <h3>Products</h3>
+            <ul>
+                {this.props.products.map( product => {
+                    return <li key={product.id}>
+                        <ProductPreview
+                            id={product.id}
+                            onClick={this.props.onClick}
+                            {...product}
+                        />
+                    </li>
+                })}
+            </ul>
+            <p><b>Tip</b>: Clicking the product will add it to the editor.</p>
+        </div>
+    }
 }
 
 // app.js
 
 // The React application class. It renders the editor and the product list.
 class App extends React.Component {
-	constructor( props ) {
-		super( props );
+    constructor( props ) {
+        super( props );
 
-		// A place to store the reference to the editor instance created by the <CKEditor> component.
-		// The editor instance is created asynchronously and is only available when the editor is ready.
-		this.editor = null;
+        // A place to store the reference to the editor instance created by the <CKEditor> component.
+        // The editor instance is created asynchronously and is only available when the editor is ready.
+        this.editor = null;
 
-		this.state = {
-			// The initial editor data. It is bound to the editor instance and will change as
-			// the user types and modifies the content of the editor.
-			editorData: '<h2>Check out our last-minute deals!</h2><p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta">Malta</a> is the top destination this summer. It’s home to cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine, and at least 8 months of sun.</p><section class="product" data-id="2"></section><p>You’ll definitely love exploring <a href="https://en.wikipedia.org/wiki/Warsaw">Warsaw</a>! The best time to visit the city is July and August when it’s cool enough to not break a sweat and hot enough to enjoy summer. The city which has quite a combination of both old and modern textures is located by the river Vistula.</p><section class="product" data-id="1"></section><h3>Other destinations</h3><figure class="table"><table><thead><tr><th>Destination</th><th>Trip details</th></tr></thead><tbody><tr><td><section class="product" data-id="3"></section><p>&nbsp;</p></td><td>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid. <a href="http://ckeditor.com">Find out more...</a></td></tr><tr><td><section class="product" data-id="4"></section><p>&nbsp;</p></td><td>Tourists frequently admit that Taj Mahal "simply cannot be described with words". And that’s probably true. The more you try the more speechless you become. Words give only a semblance of truth. <a href="http://ckeditor.com">Find out more...</a></td></tr></tbody></table></figure>'
-		};
+        this.state = {
+            // The initial editor data. It is bound to the editor instance and will change as
+            // the user types and modifies the content of the editor.
+            editorData: `
+                <h2>Check our last minute deals!</h2>
 
-		// The configuration of the <CKEditor> instance.
-		this.editorConfig = {
-			plugins: [
-				// A set of editor features to be enabled and made available to the user.
-				Essentials, Heading, Bold, Italic, Underline,
-				Link, Paragraph, Table, TableToolbar,
+                <p>Aenean erat conubia pretium libero habitant turpis vivamus dignissim molestie, phasellus libero! Curae; consequat cubilia mattis. Litora non iaculis tincidunt.</p>
+                <section class="product" data-id="2">&nbsp;</section>
+                <p>Mollis gravida parturient ad maecenas euismod consectetur lacus rutrum urna eget ligula. Nisi imperdiet scelerisque natoque scelerisque cubilia nulla gravida. Eleifend malesuada pharetra est commodo venenatis aenean habitasse curae; fusce elit.</p>
+                <section class="product" data-id="1">&nbsp;</section>
 
-				// Your custom plugin implementing the widget is loaded here.
-				ProductPreviewEditing
-			],
-			toolbar: {
-				items: [
-				'undo', 'redo',
-				'|', 'heading',
-				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-			]
-			ui: {
-				viewportOffset: {
-					top: window.getViewportTopOffsetConfig()
-				}
-			},
-			table: {
-				contentToolbar: [
-					'tableColumn',
-					'tableRow',
-					'mergeTableCells'
-				]
-			},
-			// The configuration of the Products plugin. It specifies a function that will allow
-			// the editor to render a React <ProductPreview> component inside a product widget.
-			products: {
-				productRenderer: ( id, domElement ) => {
-					const product = this.props.products.find( product => product.id === id );
+                <h3>Other deals</h3>
+                <p>Ultricies dapibus placerat orci natoque fames commodo facilisi sollicitudin. Sed hendrerit mi dis non lacinia ipsum. Luctus fames scelerisque auctor pellentesque mi nunc mattis, amet sapien.</p>
 
-					ReactDOM.render(
-						<ProductPreview id={id} {...product} />,
-						domElement
-					);
-				}
-			}
-		};
+                <figure class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Our deal</th>
+                                <th>Why this one?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <section class="product" data-id="3">&nbsp;</section>
+                                </td>
+                                <td>Nascetur, nullam hac nibh curabitur elementum. Est ridiculus turpis adipiscing erat maecenas habitant montes. Curabitur mauris ut luctus semper. Neque orci auctor luctus accumsan quam cursus purus condimentum dis?</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <section class="product" data-id="4">&nbsp;</section>
+                                </td>
+                                <td>Elementum condimentum convallis porttitor cubilia consectetur cum. In pretium neque accumsan pharetra. Magna in quisque dignissim praesent facilisi diam. Ad habitant ultricies at faucibus. Ultricies auctor sodales massa nisi eget sem porta?</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </figure>
+            `,
+        };
 
-		this.handleEditorDataChange = this.handleEditorDataChange.bind( this );
-		this.handleEditorReady = this.handleEditorReady.bind( this );
-	}
+        // The configuration of the <CKEditor> instance.
+        this.editorConfig = {
+            plugins: [
+                // A set of editor features to be enabled and made available to the user.
+                Essentials, Heading, Bold, Italic, Underline,
+                Link, Paragraph, Table, TableToolbar,
 
-	// A handler executed when the user types or modifies the editor content.
-	// It updates the state of the application.
-	handleEditorDataChange( evt, editor ) {
-		this.setState( {
-			editorData: editor.getData()
-		} );
-	}
+                // Your custom plugin implementing the widget is loaded here.
+                ProductPreviewEditing
+            ],
+            toolbar: [
+                'heading',
+                '|',
+                'bold', 'italic', 'underline',
+                '|',
+                'link', 'insertTable',
+                '|',
+                'undo', 'redo'
+            ],
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            },
+            // The configuration of the Products plugin. It specifies a function that will allow
+            // the editor to render a React <ProductPreview> component inside a product widget.
+            products: {
+                productRenderer: ( id, domElement ) => {
+                    const product = this.props.products.find( product => product.id === id );
+                    const root = createRoot( domElement );
 
-	// A handler executed when the editor has been initialized and is ready.
-	// It synchronizes the initial data state and saves the reference to the editor instance.
-	handleEditorReady( editor ) {
-		this.editor = editor;
+                    root.render(
+                        <ProductPreview id={id} {...product} />
+                    );
+                }
+            }
+        };
 
-		this.setState( {
-			editorData: editor.getData()
-		} );
-	}
+        this.handleEditorDataChange = this.handleEditorDataChange.bind( this );
+        this.handleEditorReady = this.handleEditorReady.bind( this );
+    }
 
-	render() {
-		return [
-			// The application renders two columns:
-			// * in the left one, the <CKEditor> and the textarea displaying live
-			//   editor data are rendered.
-			// * in the right column, a <ProductList> is rendered with available <ProductPreviews>
-			//   to choose from.
-			<div className="app__offer-editor" key="offer-editor">
-				<h3>Product offer editor</h3>
-				<CKEditor
-					editor={ClassicEditor}
-					data={this.state.editorData}
-					config={this.editorConfig}
-					onChange={this.handleEditorDataChange}
-					onReady={this.handleEditorReady}
-				/>
+    // A handler executed when the user types or modifies the editor content.
+    // It updates the state of the application.
+    handleEditorDataChange( evt, editor ) {
+        this.setState( {
+            editorData: editor.getData()
+        } );
+    }
 
-				<h4>Editor data</h4>
-				<textarea value={this.state.editorData} readOnly={true}></textarea>
-			</div>,
-			<ProductList
-				key="product-list"
-				products={this.props.products}
-				onClick={( id ) => {
-					this.editor.execute( 'insertProduct', id );
-					this.editor.editing.view.focus();
-				}}
-			/>
-		];
-	}
+    // A handler executed when the editor has been initialized and is ready.
+    // It synchronizes the initial data state and saves the reference to the editor instance.
+    handleEditorReady( editor ) {
+        this.editor = editor;
+
+        this.setState( {
+            editorData: editor.getData()
+        } );
+    }
+
+    onClick( id ) {
+        this.editor.execute( 'insertProduct', id );
+        this.editor.editing.view.focus();
+    }
+
+    render() {
+        return [
+            // The application renders two columns:
+            // * in the left one, the <CKEditor> and the textarea displaying live
+            //   editor data are rendered.
+            // * in the right column, a <ProductList> is rendered with available <ProductPreviews>
+            //   to choose from.
+            <div className="app__offer-editor" key="offer-editor">
+                <h3>Product offer editor</h3>
+                <CKEditor
+                    editor={ClassicEditor}
+                    data={this.state.editorData}
+                    config={this.editorConfig}
+                    onChange={this.handleEditorDataChange}
+                    onReady={this.handleEditorReady}
+                />
+
+                <h3>Editor data</h3>
+                <textarea value={this.state.editorData} readOnly={true}></textarea>
+            </div>,
+            <ProductList
+                key="product-list"
+                products={this.props.products}
+                onClick={( id ) => this.onClick( id )}
+            />
+        ];
+    }
 }
 
 // Render the <App> in the <div class="app"></div> element found in the DOM.
-ReactDOM.render(
-	<App
-		// Feeding the application with predefined products.
-		// In a real-life application, this sort of data would be loaded
-		// from a database. To keep this tutorial simple, a few
-		//  hard–coded product definitions will be used.
-		products={[
-			{
-				id: 1,
-				name: 'Colors of summer in Poland',
-				price: '$1500',
-				image: '../../../assets/img/fields.jpg'
-			},
-			{
-				id: 2,
-				name: 'Mediterranean sun on Malta',
-				price: '$1899',
-				image: '../../../assets/img/malta.jpg'
-			},
-			{
-				id: 3,
-				name: 'Tastes of Asia',
-				price: '$2599',
-				image: '../../../assets/img/umbrellas.jpg'
-			},
-			{
-				id: 4,
-				name: 'Exotic India',
-				price: '$2200',
-				image: '../../../assets/img/tajmahal.jpg'
-			}
-		]}
-	/>,
-	document.querySelector( '.app' )
-);
+
+const root = createRoot( document.querySelector( '.app' ) );
+root.render(<App
+    // Feeding the application with predefined products.
+    // In a real-life application, this sort of data would be loaded
+    // from a database. To keep this tutorial simple, a few
+    //  hard–coded product definitions will be used.
+    products={ [
+        {
+            id: 1,
+            name: 'Colors of summer in Poland',
+            price: '$1500',
+            image: 'product1.jpg'
+        },
+        {
+            id: 2,
+            name: 'Mediterranean sun on Malta',
+            price: '$1899',
+            image: 'product2.jpg'
+        },
+        {
+            id: 3,
+            name: 'Tastes of Asia',
+            price: '$2599',
+            image: 'product3.jpg'
+        },
+        {
+            id: 4,
+            name: 'Exotic India',
+            price: '$2200',
+            image: 'product4.jpg'
+        }
+    ] }
+/>);
 </script>
 ```
 

@@ -1,5 +1,6 @@
 ---
 menu-title: To-do lists
+meta-title: To-do lists | CKEditor 5 Documentation
 category: features-lists
 order: 20
 ---
@@ -22,7 +23,7 @@ Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/to
 
 You can add to-do lists using a dedicated toolbar button. Thanks to the integration with the {@link features/autoformat autoformatting feature}, they can also be added with Markdown code. Simply start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item, respectively.
 
-After reading this guide, you may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post.
+After reading this guide, you may find additional interesting details and examples in the [Lists in CKEditor&nbsp;5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post.
 
 ## Keyboard support
 
@@ -96,7 +97,7 @@ For nested lists:
 
 ### Model representation
 
-From the technical point of view, to-do lists are built on top of the {@link module:list/list~List list feature}. In the CKEditor 5 data model they are represented as a special `listType`, with an optional `todoListChecked` attribute:
+From the technical point of view, to-do lists are built on top of the {@link module:list/list~List list feature}. In the CKEditor&nbsp;5 data model they are represented as a special `listType`, with an optional `todoListChecked` attribute:
 
 ```html
 <listItem listType="todo">Foo</listItem>
