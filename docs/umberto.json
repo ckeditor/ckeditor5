@@ -3,7 +3,6 @@
 	"slug": "ckeditor5",
 	"hooks": {
 		"beforeHexo": [
-			"../scripts/docs/build-content-styles.js"
 		]
 	},
 	"reportIssueWidget": {

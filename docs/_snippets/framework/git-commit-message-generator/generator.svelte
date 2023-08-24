@@ -2,6 +2,8 @@
 	import CommitForm from './commitform.svelte';
 	import BreakingChangeForm from './breakingchangeform.svelte';
 
+	let scopes = CKEDITOR5_PACKAGES.map( shortPackageName => shortPackageName.replace( /^ckeditor5-/, '' ) );
+
 	let id = 0;
 	let breakingChangeId = 0;
 
@@ -16,7 +18,8 @@
 	let breakingChanges = [ {
 		id: breakingChangeId,
 		type: 'MINOR',
-		message: ''
+		packageName: [],
+		message: '',
 	} ];
 
 	$: textareaData = buildMessage( commits, breakingChanges );
@@ -66,7 +69,18 @@
 					return true;
 				} )
 				.map( value => {
-					return `${ value.type || 'MINOR' } BREAKING CHANGE: ${ value.message }`;
+					let parts = `${ value.type || 'MINOR' } BREAKING CHANGE`;
+
+					if ( value.packageName.length ) {
+						let scope = '('
+						scope += value.packageName.map( item => item.value ).join( ', ' )
+						scope += ')'
+						parts += ` ${ scope }`
+					}
+
+					parts += `: ${ value.message }`;
+
+					return parts;
 				} );
 
 		return [
@@ -116,24 +130,41 @@
 	}
 </script>
 
+<style>
+    .textarea-output {
+        border: 1px solid #b2b8bf;
+        border-radius: 5px;
+        padding: 2px 5px;
+        width: 100%;
+        height: 200px;
+        resize: none;
+        min-height: 48px;
+        margin-bottom: 10px;
+		margin-top: 20px;
+    }
+</style>
+
 <div>
     {#each commits as commit}
         <CommitForm
 			commit={commit}
+			packages={scopes}
 			onRemoveClick={handleRemoveCommitClick}
 			onValueChanged={handleOnCommitValueChanged}
 		/>
     {/each}
+
 	<button type="button" on:click={handleAddNewCommitClick}>New Commit</button>
-	<hr>
+	<button type="button" on:click={handleAddNewBreakingChangeClick}>New Breaking Change</button>
+
 	{#each breakingChanges as breakingChange}
 		<BreakingChangeForm
+			packages={scopes}
 			breakingChange={breakingChange}
 			onRemoveClick={handleRemoveBreakingChangeClick}
 			onValueChanged={handleOnBreakingChangeValueChanged}
 		/>
 	{/each}
-	<button type="button" on:click={handleAddNewBreakingChangeClick}>New Breaking Change</button>
 </div>
-<hr>
-<textarea readonly style="width: 100%; height: 200px; resize: none;" value={ textareaData } />
+
+<textarea readonly class="textarea-output" value={ textareaData } />
