@@ -443,8 +443,8 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	}
 
 	/**
-	 * Sets the current row to `this._startRow` or the first row before it that doesn't contain
-	 * cells that started in another row (using `rowspan`).
+	 * Sets the current row to `this._startRow` or the first row before it that has the number of cells
+	 * equal to the number of columns in the table.
 	 *
 	 * Example:
 	 * 	+----+----+----+
@@ -459,14 +459,14 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 *  | 40 | 41 | 42 |
 	 *  +----+----+----+
 	 *
-	 * Since the 4th row is a `this._startRow`, this method will:
+	 * If the 4th row is a `this._startRow`, this method will:
 	 * 1.) Count the number of columns this table has based on the first row (3 columns in this case).
 	 * 2.) Check if the 4th row contains 3 cells. It doesn't, so go to the row before it.
 	 * 3.) Check if the 3rd row contains 3 cells. It doesn't, so go to the row before it.
 	 * 4.) Check if the 2nd row contains 3 cells. It does, so set the current row to that row.
 	 *
-	 * Setting the `this._row` and `this._rowIndex` to the row where span starts is necessary to let
-	 * the `next()` method loop over it and update the `this._spannedCells` property.
+	 * Setting the current row this way is necessary to let the `next()`  method loop over the cells
+	 * spanning multiple rows or columns and update the `this._spannedCells` property.
 	 */
 	private _jumpToNonSpannedRowClosestToStartRow(): void {
 		const firstRow = this._table.getChild( 0 ) as Element;
