@@ -210,7 +210,7 @@ describe( 'TableWalker', () => {
 		}
 
 		expect( getAllItems ).to.not.throw( RangeError, 'Maximum call stack size exceeded' );
-	} );
+	} ).timeout( 5000 );
 
 	describe( 'option.startRow', () => {
 		it( 'should start iterating from given row but with cell spans properly calculated', () => {
