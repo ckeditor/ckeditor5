@@ -1,5 +1,6 @@
 ---
 title: Watchdog
+meta-title: Watchdog | CKEditor 5 Documentation
 category: features
 ---
 

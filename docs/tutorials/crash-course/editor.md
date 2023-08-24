@@ -2,7 +2,7 @@
 category: crash-course
 order: 10
 menu-title: Editor and configuration
-meta-title: CKEditor 5 crash course tutorial for new developers and integrators
+meta-title: CKEditor 5 crash course - Editor and configuration | CKEditor 5 Documentation
 meta-description: Learn how to use CKEditor 5 APIs to create a custom editor plugin.
 modified_at: 2023-08-16
 ---

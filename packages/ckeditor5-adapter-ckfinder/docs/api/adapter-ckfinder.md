@@ -1,5 +1,6 @@
 ---
 category: api-reference
+meta-title: CKFinder file manager adapter | CKEditor 5 Documentation
 ---
 
 # CKFinder adapter for CKEditor&nbsp;5

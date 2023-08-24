@@ -1,5 +1,6 @@
 ---
 title: Find and replace
+meta-title: Find and replace | CKEditor 5 Documentation
 category: features
 modified_at: 2021-06-29
 ---

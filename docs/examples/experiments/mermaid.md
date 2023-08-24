@@ -3,7 +3,7 @@ category: experiments
 order: 20
 classes: main__content--no-toc
 toc: false
-meta-title: Flowcharts and diagrams in a Mermaid-enabled editor
+meta-title: Mermaid flowcharts and diagrams example | CKEditor 5 Documentation
 menu-title: Flowcharts and diagrams
 modified_at: 2023-06-14
 ---

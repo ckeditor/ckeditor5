@@ -8,20 +8,37 @@
 /* eslint-env node */
 
 const { execSync } = require( 'child_process' );
+const fs = require( 'fs/promises' );
 const upath = require( 'upath' );
+const { glob } = require( 'glob' );
 const minimist = require( 'minimist' );
 
 const CKEDITOR5_ROOT_DIRECTORY = upath.join( __dirname, '..', '..' );
 
-main();
+main()
+	.catch( err => {
+		console.error( err );
 
-function main() {
-	const { packageName, checkCoverage, allowNonFullCoverage } = getOptions( process.argv.slice( 2 ) );
+		process.exit( 1 );
+	} );
+
+async function main() {
+	const { packageName, checkCoverage, allowNonFullCoverage, coverageFile } = getOptions( process.argv.slice( 2 ) );
 
 	runTests( { packageName, checkCoverage } );
 
 	if ( checkCoverage && !allowNonFullCoverage ) {
 		const exitCode = checkCodeCoverage();
+
+		if ( coverageFile ) {
+			const matches = await glob( 'coverage/*/lcov.info' );
+
+			for ( const filePath of matches ) {
+				const buffer = await fs.readFile( filePath );
+
+				await fs.writeFile( coverageFile, buffer, { flag: 'as' } );
+			}
+		}
 
 		process.exit( exitCode );
 	}
@@ -74,22 +91,26 @@ function checkCodeCoverage() {
  * @returns {String} options.packageName
  * @returns {Boolean} options.checkCoverage
  * @returns {Boolean} options.allowNonFullCoverage
+ * @returns {String|null} options.coverageFile
  */
 function getOptions( argv ) {
 	const options = minimist( argv, {
 		string: [
-			'package-name'
+			'package-name',
+			'coverage-file'
 		],
 		boolean: [
 			'check-coverage',
 			'allow-non-full-coverage'
 		],
 		default: {
-			'allow-non-full-coverage': false
+			'allow-non-full-coverage': false,
+			'coverage-file': null
 		}
 	} );
 
 	options.packageName = options[ 'package-name' ];
+	options.coverageFile = options[ 'coverage-file' ];
 	options.checkCoverage = options[ 'check-coverage' ];
 	options.allowNonFullCoverage = options[ 'allow-non-full-coverage' ];
 

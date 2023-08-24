@@ -1,5 +1,6 @@
 ---
 category: framework-contributing
+meta-title: Code style | CKEditor 5 Framework Documentation
 order: 30
 modified_at: 2022-11-03
 ---

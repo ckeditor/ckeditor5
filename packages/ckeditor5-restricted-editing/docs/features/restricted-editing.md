@@ -1,6 +1,7 @@
 ---
 title: Restricted editing
 menu-title: Restricted editing
+meta-title: Restricted editing | CKEditor 5 Documentation
 category: features
 ---
 

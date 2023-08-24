@@ -1,5 +1,6 @@
 ---
 menu-title: Document lists
+meta-title: Document lists | CKEditor 5 Documentation
 category: features-lists
 order: 30
 modified_at: 2022-09-20

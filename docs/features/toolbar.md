@@ -1,6 +1,7 @@
 ---
 title: Editor toolbar
 category: features-toolbar
+meta-title: Editor toolbar | CKEditor 5 Documentation
 order: 10
 ---
 {@snippet features/build-toolbar-source}

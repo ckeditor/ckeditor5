@@ -1,5 +1,6 @@
 ---
 menu-title: Styling tables
+meta-title: Table and cell styling tools | CKEditor 5 Documentation
 category: tables
 order: 30
 modified_at: 2022-05-19

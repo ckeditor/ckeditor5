@@ -1,5 +1,6 @@
 ---
 category: features
+meta-title: Headings | CKEditor 5 Documentation
 ---
 
 # Headings

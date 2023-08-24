@@ -1,6 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Simple upload adapter
+meta-title: Simple upload adapter | CKEditor 5 Documentation
 order: 60
 ---
 

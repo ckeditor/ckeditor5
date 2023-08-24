@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Document title
+meta-title: Document title | CKEditor 5 Documentation
 ---
 
 # Document title

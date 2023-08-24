@@ -2,6 +2,7 @@
 menu-title: Using a React component in a widget
 category: widget-tutorials
 order: 25
+meta-title: Using a React component in a block widget tutorial | CKEditor 5 Documentation
 ---
 
 # Using a React component in a block widget

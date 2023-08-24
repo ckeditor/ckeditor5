@@ -1,5 +1,6 @@
 ---
 menu-title: Table column resizing
+meta-title: Table column resizing | CKEditor 5 Documentation
 category: tables
 order: 40
 modified_at: 2022-05-19
