@@ -63,7 +63,7 @@ It is not possible to do everything with simple plugins as shown above.
 * Creation of widgets or new commands.
 * Depending on other plugins' or commands' behaviors.
 
-Creating more advanced plugins often involves using classes like `Plugin` or the UI package, and requires a build step.
+Creating more {@link framework/architecture/core-editor-architecture#plugins advanced plugins} often involves using classes like `Plugin` or the UI package, and requires a build step.
 
 </info-box>
 
