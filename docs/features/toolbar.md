@@ -1,6 +1,7 @@
 ---
 title: Editor toolbar
 category: features-toolbar
+meta-title: Editor toolbar | CKEditor 5 Documentation
 order: 10
 ---
 {@snippet features/build-toolbar-source}
@@ -279,7 +280,7 @@ Array.from( editor.ui.componentFactory.names() );
 
 ## Adding a custom button
 
-Refer to the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to learn how to build your own plugin, register its button and add it to the toolbar configuration.
 
 ## Block toolbar
 

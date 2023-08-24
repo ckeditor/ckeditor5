@@ -1,6 +1,7 @@
 ---
 category: features
 modified_at: 2021-11-15
+meta-title: Read-only support | CKEditor 5 Documentation
 ---
 
 # Read-only support

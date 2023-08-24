@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Productivity pack
+meta-title: CKEditor 5 Productivity pack | CKEditor 5 Documentation
 order: -998
 modified_at: 2023-05-31
 badges: [ premium ]

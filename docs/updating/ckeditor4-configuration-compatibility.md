@@ -4,8 +4,8 @@
 
 category: ckeditor4-migration
 menu-title: Configuration options compatibility
-meta-title: CKEditor 4 migration - Configuration options compatibility
-meta-description: Learn about the CKEditor 4 configuration options and their equivalent in CKEditor&nbsp;5.
+meta-title: Migration from CKEditor 4 - Configuration options compatibility | CKEditor 5 Documentation
+meta-description: Learn about the CKEditor 4 configuration options and their equivalent in CKEditor 5.
 order: 50
 modified_at: 2023-03-21
 ---
@@ -42,7 +42,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			</td>
 			<td>
 				<p>Extending the list of HTML tags or attributes that CKEditor&nbsp;5 should support can be achieved via the {@link features/general-html-support General HTML Support feature}. The GHS allows adding HTML markup not yet covered by official CKEditor&nbsp;5 features into the editor's content. Such elements can be loaded, pasted, or output. It does not, however, provide a dedicated UI for the extended HTML markup.</p>
-				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/creating-simple-plugin-timestamp Creating a basic plugin} article. Looking at the source code of CKEditor&nbsp;5 plugins may also give you a lot of inspiration.</p>
+				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} article. Looking at the source code of CKEditor&nbsp;5 plugins may also give you a lot of inspiration.</p>
 				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor&nbsp;5. Check the {@link framework/deep-dive/conversion/intro conversion documentation} to learn how to extend the conversion rules.</p>
 			</td>
 		</tr>
@@ -241,7 +241,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-devtools_styles">devtools_styles</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-devtools_textCallback">devtools_textCallback</a></td>
-			<td>The old CKEditor 4 Developer Tools plugin is not available for CKEditor&nbsp;5. However, check out the new {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector}. It is a far more advanced tool that will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.</td>
+			<td>The old CKEditor 4 Developer Tools plugin is not available for CKEditor&nbsp;5. However, check out the new {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector}. It is a far more advanced tool that will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_backgroundCoverColor">dialog_backgroundCoverColor</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-dialog_backgroundCoverOpacity">dialog_backgroundCoverOpacity</a></td>

@@ -1,11 +1,12 @@
 ---
 menu-title: DLL builds
+meta-title: CKEditor 5 DLL builds | CKEditor 5 documentation
 category: alternative-setups
 order: 20
 modified_at: 2022-02-22
 ---
 
-# CKEditor&nbsp;5 DLL builds
+# CKEditor 5 DLL builds
 
 The purpose of a DLL build is to allow adding plugins to an editor build without having to rebuild (recompile) the build itself.
 

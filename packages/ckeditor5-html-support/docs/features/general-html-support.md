@@ -2,6 +2,7 @@
 category: features-html
 order: 20
 modified_at: 2021-10-25
+meta-title: General HTML Support | CKEditor 5 Documentation
 ---
 
 # General HTML Support

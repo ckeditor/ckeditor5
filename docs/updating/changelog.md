@@ -2,7 +2,7 @@
 category: update-guides
 order: 11
 feedback-widget: false
-meta-title: CKEditor 5 changelog
+meta-title: CKEditor 5 recent changelog | CKEditor 5 Documentation
 menu-title: Recent release changelog
 toc-limit: 1
 ---

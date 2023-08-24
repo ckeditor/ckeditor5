@@ -1,5 +1,6 @@
 ---
 title: Markdown output
+meta-title: Markdown output | CKEditor 5 Documentation
 category: features
 ---
 
