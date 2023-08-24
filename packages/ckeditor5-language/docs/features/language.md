@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Text part language
+meta-title: Text part language | CKEditor 5 Documentation
 ---
 
 # Text part language

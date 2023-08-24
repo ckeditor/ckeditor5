@@ -1,7 +1,7 @@
 ---
 category: crash-course
 order: 80
-menu-title: Handling keystrokes
+meta-title: CKEditor 5 crash course - handling keystrokes | CKEditor 5 Documentation
 modified_at: 2023-08-16
 ---
 

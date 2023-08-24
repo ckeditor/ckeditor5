@@ -1,6 +1,7 @@
 ---
 title: Block indentation
 category: features
+meta-title: Block indentation | CKEditor 5 Documentation
 ---
 
 {@snippet features/build-indent-source}

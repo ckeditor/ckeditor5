@@ -1,5 +1,6 @@
 ---
 category: framework-architecture
+meta-title: Editing engine | CKEditor 5 Framework Documentation
 order: 30
 ---
 

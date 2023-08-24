@@ -5,6 +5,7 @@
 # * Point where to find the list of configuration options.
 
 category: getting-started
+meta-title: Configuration | CKEditor 5 documentation
 order: 40
 ---
 

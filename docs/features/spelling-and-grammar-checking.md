@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Spell and grammar checker
+meta-title: Spelling, grammar, and punctuation checking | CKEditor 5 Documentation
 modified_at: 2022-10-05
 badges: [ premium ]
 ---

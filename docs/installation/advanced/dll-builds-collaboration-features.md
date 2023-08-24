@@ -1,11 +1,12 @@
 ---
 menu-title: DLL builds for CKEditor 5 Collaboration Features
+meta-title: CKEditor 5 DLL builds for CKEditor 5 Collaboration Features | CKEditor 5 documentation
 category: alternative-setups
 order: 30
 modified_at: 2022-02-21
 ---
 
-# CKEditor&nbsp;5 DLL builds for CKEditor&nbsp;5 Collaboration Features
+# CKEditor 5 DLL builds for CKEditor 5 Collaboration Features
 
 <info-box>
     This guide discusses using a DLL build together with CKEditor&nbsp;5 Collaboration Features and is supplemental to the {@link installation/advanced/dll-builds CKEditor&nbsp;5 DLL builds guide}.

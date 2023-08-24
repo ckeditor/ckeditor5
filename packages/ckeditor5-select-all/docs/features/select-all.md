@@ -1,5 +1,6 @@
 ---
 title: Select all
+meta-title: Select all | CKEditor 5 Documentation
 category: features
 ---
 

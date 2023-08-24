@@ -1,6 +1,7 @@
 ---
 category: features
 classes: keyboard-shortcuts
+meta-title: Keyboard support | CKEditor 5 Documentation
 ---
 
 # Keyboard support

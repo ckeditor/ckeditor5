@@ -1,6 +1,7 @@
 ---
 menu-title: Mr. Git
 category: development-tools
+meta-title: Mr. Git | CKEditor 5 Framework Documentation
 order: 4
 modified_at: 2022-08-16
 ---

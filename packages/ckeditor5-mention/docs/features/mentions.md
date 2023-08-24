@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Mentions
+meta-title: Mentions| CKEditor 5 Documentation
 modified_at: 2021-10-20
 ---
 

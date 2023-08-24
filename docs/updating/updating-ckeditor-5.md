@@ -1,7 +1,7 @@
 ---
 category: update-guides
 order: 10
-meta-title: CKEditor 5 updating documentation
+meta-title: Updating | CKEditor 5 Documentation
 meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at all times.
 ---
 

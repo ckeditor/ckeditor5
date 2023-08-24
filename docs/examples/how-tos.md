@@ -1,6 +1,7 @@
 ---
 category: examples
 order: 500
+meta-title: CKEditor 5 How-tos | CKEditor 5 Documentation
 modified_at: 2023-07-17
 ---
 
@@ -90,7 +91,7 @@ function MyPlugin(editor) {
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	// If you're using builds, this is going to be extraPlugins property.
 	plugins: [
-		myPlugin
+		MyPlugin,
 		// Other plugins.
 		// ...
 	]
