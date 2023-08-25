@@ -1,5 +1,6 @@
 ---
 menu-title: CSS frameworks
+meta-title: Compatibility with CSS frameworks | CKEditor 5 documentation
 category: integrations
 order: 80
 ---

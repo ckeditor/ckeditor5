@@ -1,5 +1,6 @@
 ---
 category: getting-started
+meta-title: API and events | CKEditor 5 documentation
 order: 80
 ---
 
@@ -11,7 +12,7 @@ order: 80
 In the {@link installation/getting-started/getting-and-setting-data previous guide} you have learned how to set and get data from the editor. You can also start using the editor's API and events.
 </info-box>
 
-CKEditor 5 and its plugins expose structured API and Events that are allowing to interact with an editor and to react to changes.
+CKEditor 5 API allows developers to interact with the editor and its plugins to create new behaviors. Through the event system, you can tailor reactions to specific actions that are happening.
 
 ## Using the API
 
@@ -36,7 +37,7 @@ editor.model.change( writer => {
 
 In the example above, you use a selection, a command, and you change the content using the editor's model. All of this could be reverted with one undo step. This is a simple example of what the API can do.
 
-Check more {@link examples/how-tos#editors-api examples how to use the API}.
+Check more {@link examples/how-tos#editors-api examples how to use the API} or deep dive into our {@link tutorials/crash-course/editor step-by-step tutorial}.
 
 ## Using events
 

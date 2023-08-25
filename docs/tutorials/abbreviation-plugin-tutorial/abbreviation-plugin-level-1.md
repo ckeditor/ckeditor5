@@ -2,6 +2,7 @@
 category: abbreviation-plugin
 menu-title: Defining a model and a view
 order: 24
+meta-title: Creating an advanced plugin tutorial pt. 1 | CKEditor 5 Documentation
 modified_at: 2022-07-15
 ---
 
@@ -436,7 +437,7 @@ export default class AbbreviationUI extends Plugin {
 
 ## Demo
 
-{@snippet framework/abbreviation-level-1}
+{@snippet tutorials/abbreviation-level-1}
 
 ## Final code
 

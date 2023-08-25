@@ -56,7 +56,19 @@ const tasks = new Listr( [
 
 			return Promise.reject( 'Aborted due to errors.\n' + errors.map( message => `* ${ message }` ).join( '\n' ) );
 		},
-		skip: cliArguments.nightly
+		skip: () => {
+			// Nightly releases are not described in the changelog.
+			if ( cliArguments.nightly ) {
+				return true;
+			}
+
+			// When compiling the packages only, do not validate the release.
+			if ( cliArguments.compileOnly ) {
+				return true;
+			}
+
+			return false;
+		}
 	},
 	{
 		title: 'Preparation phase.',
@@ -92,6 +104,14 @@ const tasks = new Listr( [
 					}
 				}
 			], taskOptions );
+		},
+		skip: () => {
+			// When compiling the packages only, do not update any values.
+			if ( cliArguments.compileOnly ) {
+				return true;
+			}
+
+			return false;
 		}
 	},
 	{
@@ -200,7 +220,19 @@ const tasks = new Listr( [
 				]
 			} );
 		},
-		skip: cliArguments.nightly
+		skip: () => {
+			// Nightly releases are not stored in the repository.
+			if ( cliArguments.nightly ) {
+				return true;
+			}
+
+			// When compiling the packages only, do not commit anything.
+			if ( cliArguments.compileOnly ) {
+				return true;
+			}
+
+			return false;
+		}
 	}
 ], getListrOptions( cliArguments ) );
 

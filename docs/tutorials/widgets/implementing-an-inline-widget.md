@@ -1,6 +1,7 @@
 ---
 category: widget-tutorials
 order: 15
+meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
 ---
 
 # Implementing an inline widget

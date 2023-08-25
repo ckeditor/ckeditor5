@@ -1,5 +1,6 @@
 ---
 menu-title: Basics
+meta-title: Tables overview | CKEditor 5 Documentation
 category: tables
 order: 10
 modified_at: 2023-02-22

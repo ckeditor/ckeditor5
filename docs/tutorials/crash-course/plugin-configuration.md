@@ -2,6 +2,7 @@
 category: crash-course
 order: 90
 menu-title: Plugin configuration
+meta-title: CKEditor 5 crash course - Plugin configuration | CKEditor 5 Documentation
 modified_at: 2023-08-16
 ---
 

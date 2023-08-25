@@ -1,5 +1,6 @@
 ---
 category: framework
+meta-title: Framework Quick Start | CKEditor 5 Framework Documentation
 order: 20
 ---
 
@@ -20,7 +21,7 @@ This guide will show you how to initialize the CKEditor&nbsp;5 rich-text editor 
 	More info about this tool can be found in the {@link framework/development-tools/package-generator/using-package-generator dedicated guide}.
 </info-box>
 
-The CKEditor&nbsp;5 Framework consist of several [npm packages](https://npmjs.com). To install it you need:
+The CKEditor&nbsp;5 Framework consists of several [npm packages](https://npmjs.com). To install it you need:
 
 * [Node.js](https://nodejs.org/en/) 16.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
@@ -31,9 +32,9 @@ Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a
 
 ## Let's start!
 
-This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
+This guide assumes that you are familiar with npm and that your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
 
-First, install packages needed to build CKEditor&nbsp;5:
+First, install the packages needed to build CKEditor&nbsp;5:
 
 ```bash
 npm install --save \
@@ -112,7 +113,7 @@ module.exports = {
 
 ## Creating an editor
 
-You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
 ```bash
@@ -238,6 +239,6 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 
 ## What's next?
 
-If you finished this guide, you should definitely check out the tutorials/crash-course/editor Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor&nbsp;5 ecosystem.
+If you finished this guide, you should definitely check out the {@link tutorials/crash-course/editor Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor&nbsp;5 ecosystem.
 
 If you are more into reading about the CKEditor&nbsp;5 architecture, check out the {@link framework/architecture/intro Introduction to CKEditor&nbsp;5 architecture}.

@@ -1,6 +1,7 @@
 ---
 menu-title: Creating custom editor
 category: framework-deep-dive-ui
+meta-title: Implementing a custom editor creator | CKEditor 5 Framework Documentation
 order: 40
 ---
 

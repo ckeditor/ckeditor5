@@ -2,6 +2,7 @@
 category: examples-framework
 order: 120
 toc: false
+meta-title: Data from an external source example | CKEditor 5 Documentation
 classes: main__content--no-toc
 modified_at: 2022-11-15
 ---

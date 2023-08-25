@@ -1,5 +1,6 @@
 ---
 menu-title: Using package generator
+meta-title: Using the package generator | CKEditor 5 Framework Documentation
 category: package-generator
 order: 41
 modified_at: 2022-08-16

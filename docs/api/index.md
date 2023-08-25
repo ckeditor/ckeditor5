@@ -1,5 +1,6 @@
 ---
 category: api-reference
+meta-title: CKEditor 5 API | CKEditor 5 documentation
 ---
 
 # API documentation

@@ -1,5 +1,6 @@
 ---
 category: alternative-setups
+meta-title: Integrating CKEditor 5 from source using Webpack | CKEditor 5 documentation
 order: 10
 ---
 # Integrating from source using webpack
@@ -58,7 +59,7 @@ npm install --save ts-loader
 You can now configure webpack. There are a couple of things that you need to take care of when building CKEditor&nbsp;5:
 
 * Handling CSS files of the CKEditor theme. They are included in the CKEditor&nbsp;5 sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
-* Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
+* Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that, you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
 * Finally, to localize the editor you need to use the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) webpack plugin.
 
 ### JavaScript
