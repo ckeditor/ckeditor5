@@ -16,6 +16,9 @@ import {
 	MouseObserver,
 	type DataTransfer,
 	type Element,
+	type Model,
+	type Node,
+	type Range,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
@@ -590,15 +593,15 @@ export default class DragDropExperimental extends Plugin {
 			const blocks = Array.from( selection.getSelectedBlocks() );
 
 			if ( blocks.length > 1 ) {
-				this._draggedRange = LiveRange.fromRange( model.createRange(
-					model.createPositionBefore( blocks[ 0 ] ),
-					model.createPositionAfter( blocks[ blocks.length - 1 ] )
-				) );
+				this._draggedRange = LiveRange.fromRange(
+					getRangeExtendedToLargestFullySelectedParent( model, blocks )
+				);
 
 				model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
 				this._blockMode = true;
 				// TODO block mode for dragging from outside editor? or inline? or both?
 			}
+
 			else if ( blocks.length == 1 ) {
 				const draggedRange = selection.getFirstRange()!;
 				const blockRange = model.createRange(
@@ -606,16 +609,11 @@ export default class DragDropExperimental extends Plugin {
 					model.createPositionAfter( blocks[ 0 ] )
 				);
 
-				if (
-					draggedRange.start.isTouching( blockRange.start ) &&
-					draggedRange.end.isTouching( blockRange.end )
-				) {
-					this._draggedRange = LiveRange.fromRange( blockRange );
-					this._blockMode = true;
-				} else {
-					this._draggedRange = LiveRange.fromRange( selection.getFirstRange()! );
-					this._blockMode = false;
-				}
+				const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
+					draggedRange.end.isTouching( blockRange.end );
+
+				this._draggedRange = LiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
+				this._blockMode = touchesBlockEdges;
 			}
 		}
 	}
@@ -692,4 +690,37 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 	}
 
 	return null;
+}
+
+/**
+ * Recursively checks if all provided elements have the same parent and if that parent doesn't have
+ * any other children. If that's the case, it returns range including this parent. Otherwise,
+ * it returns only the range from first to last element.
+ *
+ * Example:
+ *
+ * <blockQuote>
+ *   <paragraph>[Test 1</paragraph>
+ *   <paragraph>Test 2</paragraph>
+ *   <paragraph>Test 3]</paragraph>
+ * <blockQuote>
+ *
+ * Because all elements inside the `blockQuote` are selected, the range includes the `blockQuote` too.
+ * If only first and second paragraphs would be selected, the range would not include it.
+ */
+function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: Array<Node> ): Range {
+	const parent = elements[ 0 ].parent as Element | null;
+
+	if (
+		parent &&																										// Parent exists
+		elements.every( element => element.parent === parent ) &&		// All elements have the same parent
+		parent.childCount === elements.length												// Parent has no other elements
+	) {
+		return getRangeExtendedToLargestFullySelectedParent( model, [ parent ] );
+	}
+
+	return model.createRange(
+		model.createPositionBefore( elements[ 0 ] ),
+		model.createPositionAfter( elements[ elements.length - 1 ] )
+	);
 }
