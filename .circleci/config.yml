@@ -52,7 +52,7 @@ jobs:
 
 workflows:
   version: 2
-  main:
+  config:
     jobs:
       - generate_configuration:
           isNightly: false
