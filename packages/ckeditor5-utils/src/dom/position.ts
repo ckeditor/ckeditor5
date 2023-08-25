@@ -151,7 +151,6 @@ export function getOptimalPosition( {
 
 	const positionOptions: PositionObjectOptions = {
 		targetRect: visibleTargetRect,
-		// targetRect,
 		elementRect,
 		positionedElementAncestor,
 		viewportRect: constrainedViewportRect
@@ -179,7 +178,7 @@ export function getOptimalPosition( {
 }
 
 /**
- * TODO
+ * Returns intersection of visible source `Rect` with Viewport `Rect`.
  *
  * @param source
  * @param viewportRect
@@ -305,7 +304,8 @@ export interface Position {
 }
 
 /**
- * TODO
+ * A position options object which options are passed in the {@link module:utils/dom/position~PositionObject Class constructor},
+ * to be used by {@link module:utils/dom/position~PositioningFunction positioning function}.
  */
 type PositionObjectOptions = {
 	elementRect: Rect;
