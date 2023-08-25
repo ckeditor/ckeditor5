@@ -94,12 +94,9 @@ export default class IndentBlockCommand extends Command {
 	private _getBlocksToChange(): Array<Element> {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const schema = model.schema;
 		const blocksInSelection = Array.from( selection.getSelectedBlocks() );
 
-		return blocksInSelection.filter( block => {
-			return this._isIndentationChangeAllowed( block );
-		} );
+		return blocksInSelection.filter( block => this._isIndentationChangeAllowed( block ) );
 	}
 
 	/**
