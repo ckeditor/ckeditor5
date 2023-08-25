@@ -11,7 +11,7 @@ import TodoDocumentListEditing from './tododocumentlist/tododocumentlistediting'
 import TodoListUI from './todolist/todolistui';
 import { Plugin } from 'ckeditor5/src/core';
 
-import '../theme/todolist.css';
+import '../theme/tododocumentlist.css';
 
 /**
  * The to-do list feature.

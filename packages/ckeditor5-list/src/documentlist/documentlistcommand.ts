@@ -82,10 +82,10 @@ export default class DocumentListCommand extends Command {
 		const selectedBlockObject = getSelectedBlockObject( model );
 
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => (
-				model.schema.checkAttribute( block, 'listType' ) ||
-				this._requiredElementName && checkCanBeRenamed( block, model.schema, this._requiredElementName )
-			) );
+			.filter( block => this._requiredElementName ?
+				checkCanBeRenamed( block, model.schema, this._requiredElementName ) :
+				model.schema.checkAttribute( block, 'listType' )
+			);
 
 		// Whether we are turning off some items.
 		const turnOff = options.forceValue !== undefined ? !options.forceValue : this.value;
@@ -198,8 +198,9 @@ export default class DocumentListCommand extends Command {
 	 * @returns Whether the command should be enabled.
 	 */
 	private _checkEnabled(): boolean {
-		const selection = this.editor.model.document.selection;
-		const schema = this.editor.model.schema;
+		const model = this.editor.model;
+		const selection = model.document.selection;
+
 		const blocks = Array.from( selection.getSelectedBlocks() );
 
 		if ( !blocks.length ) {
@@ -212,7 +213,11 @@ export default class DocumentListCommand extends Command {
 		}
 
 		for ( const block of blocks ) {
-			if ( schema.checkAttribute( block, 'listType' ) ) {
+			const isEnabled = this._requiredElementName ?
+				checkCanBeRenamed( block, model.schema, this._requiredElementName ) :
+				model.schema.checkAttribute( block, 'listType' );
+
+			if ( isEnabled ) {
 				return true;
 			}
 		}

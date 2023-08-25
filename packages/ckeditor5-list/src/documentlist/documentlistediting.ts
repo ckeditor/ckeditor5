@@ -73,7 +73,7 @@ import '../../theme/list.css';
 /**
  * A list of base list model attributes.
  */
-const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
+const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId', 'todoListChecked' ];
 
 /**
  * Map of model attributes applicable to list blocks.
@@ -424,20 +424,25 @@ export default class DocumentListEditing extends Plugin {
 				model: 'paragraph',
 				view: bogusParagraphCreator( attributeNames ),
 				converterPriority: 'high'
+			} )
+			.add( dispatcher => {
+				dispatcher.on<DowncastAttributeEvent<ListElement>>(
+					'attribute',
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+				);
 			} );
+
 
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'paragraph',
 				view: bogusParagraphCreator( attributeNames, { dataPipeline: true } ),
 				converterPriority: 'high'
-			} );
-
-		editor.conversion.for( 'downcast' )
+			} )
 			.add( dispatcher => {
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
-					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, { dataPipeline: true } )
 				);
 			} );
 

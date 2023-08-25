@@ -30,6 +30,7 @@ import {
 	getAllListItemBlocks,
 	getListItemBlocks,
 	isListItemBlock,
+	isFirstBlockOfListItem,
 	ListItemUid,
 	type ListElement
 } from './utils/model';
@@ -72,21 +73,19 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 			return;
 		}
 
+		// Preserve list type if was already set (for example by to-do list feature).
+		const firstItemListType = items[ 0 ].getAttribute( 'listType' );
+
 		const attributes = {
 			listItemId: ListItemUid.next(),
 			listIndent: getIndent( data.viewItem ),
-			listType: data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted'
+			listType: firstItemListType || ( data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted' )
 		};
 
 		for ( const item of items ) {
 			// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
 			if ( !item.hasAttribute( 'listItemId' ) ) {
-				// Preserve list type if was already set (for example by to-do list feature).
-				if ( item.getAttribute( 'listType' ) ) {
-					writer.setAttributes( { ...attributes, listType: item.getAttribute( 'listType' ) }, item );
-				} else {
-					writer.setAttributes( attributes, item );
-				}
+				writer.setAttributes( attributes, item );
 			}
 		}
 
@@ -328,7 +327,8 @@ export function reconvertItemsOnDataChange(
 export function listItemDowncastConverter(
 	attributeNames: Array<string>,
 	strategies: Array<DowncastStrategy>,
-	model: Model
+	model: Model,
+	{ dataPipeline }: { dataPipeline?: boolean } = {}
 ): GetCallback<DowncastAttributeEvent<ListElement>> {
 	const consumer = createAttributesConsumer( attributeNames );
 
@@ -349,12 +349,34 @@ export function listItemDowncastConverter(
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model )!;
+		const previousSibling = viewElement.previousSibling;
+
+		if ( previousSibling && previousSibling.is( 'element', 'input' ) ) {
+			writer.remove( previousSibling );
+		}
 
 		// Unwrap element from current list wrappers.
 		unwrapListItemBlock( viewElement, writer );
 
+		let viewRange = writer.createRangeOn( viewElement );
+
+		if ( isFirstBlockOfListItem( listItem ) && listItem.getAttribute( 'listType' ) == 'todo' ) {
+			const markerElement = writer.createEmptyElement( 'input', {
+				type: 'checkbox',
+				...( listItem.getAttribute( 'todoListChecked' ) ? { checked: 'checked' } : null ),
+				... ( dataPipeline ? { disabled: 'disabled' } : { tabindex: '-1', contenteditable: 'false' } )
+			} );
+
+			writer.insert( viewRange.start, markerElement );
+
+			viewRange = writer.createRange(
+				writer.createPositionBefore( markerElement ),
+				writer.createPositionAfter( viewElement )
+			);
+		}
+
 		// Then wrap them with the new list wrappers.
-		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategies, writer );
+		wrapListItemBlock( listItem, viewRange, strategies, writer );
 	};
 }
 
@@ -400,7 +422,9 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
-	return viewRange.getContainedElement();
+	// TODO trim the custom marker (empty element without mapping and model length = 0).
+	// return viewRange.getContainedElement();
+	return viewRange.end.nodeBefore as ViewElement | null;
 }
 
 // Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.

@@ -64,7 +64,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		editor.commands.add( 'todoList', new DocumentListCommand( editor, 'todo', 'paragraph' ) );
+		editor.commands.add( 'todoList', new DocumentListCommand( editor, 'todo' ) );
 
 		const checkTodoListCommand = new CheckTodoDocumentListCommand( editor );
 
@@ -106,26 +106,26 @@ export default class TodoDocumentListEditing extends Plugin {
 			) );
 		} );
 
-		editor.conversion.for( 'dataDowncast' ).elementToElement( {
-			model: {
-				name: 'paragraph',
-				attributes: 'todoListChecked'
-			},
-			view: todoItemViewCreator( { dataPipeline: true } ),
-			converterPriority: 'highest'
-		} );
+		// editor.conversion.for( 'dataDowncast' ).elementToElement( {
+		// 	model: {
+		// 		name: 'paragraph',
+		// 		attributes: 'todoListChecked'
+		// 	},
+		// 	view: todoItemViewCreator( { dataPipeline: true } ),
+		// 	converterPriority: 'highest'
+		// } );
 
-		editor.conversion.for( 'editingDowncast' ).elementToElement( {
-			model: {
-				name: 'paragraph',
-				attributes: 'todoListChecked'
-			},
-			view: todoItemViewCreator(),
-			converterPriority: 'highest'
-		} );
+		// editor.conversion.for( 'editingDowncast' ).elementToElement( {
+		// 	model: {
+		// 		name: 'paragraph',
+		// 		attributes: 'todoListChecked'
+		// 	},
+		// 	view: todoItemViewCreator(),
+		// 	converterPriority: 'highest'
+		// } );
 
-		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapModelToViewPosition( editor.editing.view ) );
-		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapModelToViewPosition( editor.editing.view ) );
+		// editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapModelToViewPosition( editor.editing.view ) );
+		// editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', mapModelToViewPosition( editor.editing.view ) );
 
 		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
@@ -167,18 +167,18 @@ export default class TodoDocumentListEditing extends Plugin {
 		} );
 
 		// Make sure that only paragraphs can be a to-do list item.
-		this.listenTo<DocumentListEditingPostFixerEvent>( documentListEditing, 'postFixer', ( evt, { listNodes, writer } ) => {
-			let applied = false;
-
-			for ( const { node } of listNodes ) {
-				if ( node.getAttribute( 'listType' ) == 'todo' && node.name != 'paragraph' ) {
-					removeListAttributes( node, writer );
-					applied = true;
-				}
-			}
-
-			evt.return = applied || evt.return;
-		} );
+		// this.listenTo<DocumentListEditingPostFixerEvent>( documentListEditing, 'postFixer', ( evt, { listNodes, writer } ) => {
+		// 	let applied = false;
+		//
+		// 	for ( const { node } of listNodes ) {
+		// 		if ( node.getAttribute( 'listType' ) == 'todo' && node.name != 'paragraph' ) {
+		// 			removeListAttributes( node, writer );
+		// 			applied = true;
+		// 		}
+		// 	}
+		//
+		// 	evt.return = applied || evt.return;
+		// } );
 
 		// Jump at the end of the previous node on left arrow key press, when selection is after the checkbox.
 		//
@@ -190,12 +190,12 @@ export default class TodoDocumentListEditing extends Plugin {
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
 		//
-		this.listenTo<ViewDocumentArrowKeyEvent>(
-			editor.editing.view.document,
-			'arrowKey',
-			jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ),
-			{ context: 'li' }
-		);
+		// this.listenTo<ViewDocumentArrowKeyEvent>(
+		// 	editor.editing.view.document,
+		// 	'arrowKey',
+		// 	jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ),
+		// 	{ context: 'li' }
+		// );
 
 		// Toggle check state of selected to-do list items on keystroke.
 		this.listenTo<ViewDocumentKeyDownEvent>( editor.editing.view.document, 'keydown', ( evt, data ) => {
@@ -212,7 +212,7 @@ export default class TodoDocumentListEditing extends Plugin {
 				return;
 			}
 
-			const viewElement = editor.editing.mapper.findMappedViewAncestor( editor.editing.view.createPositionBefore( data.target ) );
+			const viewElement = editor.editing.mapper.findMappedViewAncestor( editor.editing.view.createPositionAt( data.target.nextSibling!, 0 ) );
 			const modelElement = editor.editing.mapper.toModelElement( viewElement );
 
 			if ( modelElement && isListItemBlock( modelElement ) && modelElement.getAttribute( 'listType' ) == 'todo' ) {
@@ -220,6 +220,11 @@ export default class TodoDocumentListEditing extends Plugin {
 					selection: editor.model.createSelection( modelElement, 'end' )
 				} );
 			}
+		} );
+
+		editor.editing.mapper.registerViewToModelLength( 'input', viewElement => {
+			// TODO verify if this is a to-do list checkbox
+			return 0;
 		} );
 	}
 }
