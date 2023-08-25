@@ -7,6 +7,7 @@
  * @module utils/dom/getelementsintersectionrect
  */
 
+import global from './global';
 import Rect from './rect';
 
 /**
