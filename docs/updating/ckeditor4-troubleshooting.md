@@ -4,8 +4,8 @@
 
 category: ckeditor4-migration
 menu-title: Troubleshooting
-meta-title: CKEditor 4 migration - Troubleshooting
-meta-description: Overcoming possible obstacles during your migration to CKEditor&nbsp;5.
+meta-title: Migration from CKEditor 4 - Troubleshooting | CKEditor 5 Documentation
+meta-description: Overcoming possible obstacles during your migration to CKEditor 5.
 order: 50
 modified_at: 2023-03-21
 ---

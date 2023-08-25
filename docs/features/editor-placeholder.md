@@ -1,5 +1,6 @@
 ---
 category: features
+meta-title: Editor placeholder | CKEditor 5 Documentation
 ---
 
 {@snippet build-classic-source}

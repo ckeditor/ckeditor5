@@ -3,6 +3,7 @@ category: examples-builds-custom
 order: 70
 classes: main__content--no-toc
 toc: false
+meta-title: Bottom toolbar with button grouping example | CKEditor 5 Documentation
 menu-title: Bottom toolbar with button grouping
 modified_at: 2021-12-09
 ---

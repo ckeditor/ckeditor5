@@ -1,6 +1,7 @@
 ---
 menu-title: Inspector
 category: development-tools
+meta-title: CKEditor 5 inspector | CKEditor 5 Framework Documentation
 order: 1
 modified_at: 2022-08-16
 ---

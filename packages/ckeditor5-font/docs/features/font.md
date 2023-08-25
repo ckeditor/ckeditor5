@@ -1,5 +1,6 @@
 ---
 title: Font family, size, and color
+meta-title: Font family, size, and color | CKEditor 5 Documentation
 category: features
 ---
 

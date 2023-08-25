@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Source editing
+meta-title: Source editing | CKEditor 5 Documentation
 modified_at: 2021-06-28
 ---
 # Source editing

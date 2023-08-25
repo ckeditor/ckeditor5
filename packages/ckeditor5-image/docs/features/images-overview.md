@@ -1,8 +1,8 @@
 ---
 category: features-images
 menu-title: Basics
-meta-title: Images in CKEditor&nbsp;5
-meta-description: Find out all about images in CKEditor&nbsp;5.
+meta-title: Image features overview | CKEditor 5 Documentation
+meta-description: Find out all about images in CKEditor 5.
 order: 10
 modified_at: 2021-06-17
 ---

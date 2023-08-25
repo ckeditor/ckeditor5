@@ -5,8 +5,8 @@
 category: ckeditor4-migration
 order: 10
 modified_at: 2023-03-21
-meta-title: Migration from CKEditor 4
-meta-description: Learn how the migrate from CKEditor 4 to the latest CKEditor&nbsp;5 version without problems.
+meta-title: Migration from CKEditor 4 | CKEditor 5 Documentation
+meta-description: Learn how the migrate from CKEditor 4 to the latest CKEditor 5 version without problems.
 ---
 
 # Migration from CKEditor 4

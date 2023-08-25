@@ -1,5 +1,6 @@
 ---
 category: integrations
+meta-title: Compatibility with .NET | CKEditor 5 documentation
 order: 70
 menu-title: .NET
 ---

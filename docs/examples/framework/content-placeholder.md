@@ -2,6 +2,7 @@
 category: examples-framework
 order: 140
 toc: false
+meta-title: Content placeholder example | CKEditor 5 Documentation
 classes: main__content--no-toc
 modified_at: 2022-12-19
 ---

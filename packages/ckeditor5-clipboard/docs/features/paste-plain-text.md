@@ -1,5 +1,6 @@
 ---
 menu-title: Paste plain text
+meta-title: Paste plain text | CKEditor 5 Documentation
 category: features-pasting
 order: 30
 ---

@@ -1,10 +1,6 @@
 ---
-# Scope:
-# * Serve as a single point for the most common questions.
-# * Drive the user to other parts of documentation.
-# * Bring knowledge for topics not covered in other parts of the documentation.
-
 category: support
+meta-title: Reporting issues | CKEditor 5 Documentation
 order: 40
 ---
 

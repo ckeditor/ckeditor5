@@ -3,6 +3,7 @@
 # * Clarify copyright and license conditions.
 
 category: licensing
+meta-title: License and legal | CKEditor 5 Documentation
 order: 10
 ---
 

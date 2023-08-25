@@ -627,7 +627,7 @@
 					"order": 10
 				},
 				{
-					"name": "Creating abbreviation plugin",
+					"name": "Creating an advanced plugin",
 					"id": "abbreviation-plugin",
 					"slug": "abbreviation-plugin",
 					"order": 20

@@ -1,6 +1,7 @@
 ---
 category: widget-tutorials
 order: 10
+meta-title: Implementing a block widget tutorial | CKEditor 5 Documentation
 ---
 
 # Implementing a block widget

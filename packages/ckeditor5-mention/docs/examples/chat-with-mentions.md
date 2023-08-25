@@ -3,6 +3,7 @@ category: examples-framework
 order: 80
 classes: main__content--no-toc
 toc: false
+meta-title: Chat with mentions | CKEditor 5 Documentation
 ---
 
 # Chat with mentions

@@ -1,5 +1,6 @@
 ---
 menu-title: Plugins and HTML output
+meta-title: Plugins and HTML output | CKEditor 5 documentation
 category: plugins
 order: 20
 modified_at: 2021-12-03
