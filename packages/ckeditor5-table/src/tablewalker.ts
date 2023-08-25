@@ -472,7 +472,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 		const firstRow = this._table.getChild( 0 ) as Element;
 		const firstRowLength = this._getRowLength( firstRow );
 
-		for ( let i = this._startRow!; i >= 0; i-- ) {
+		for ( let i = this._startRow!; i > 0; i-- ) {
 			const row = this._table.getChild( this._startRow! ) as Element;
 
 			if ( firstRowLength === this._getRowLength( row ) ) {
