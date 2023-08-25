@@ -470,12 +470,12 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 */
 	private _jumpToNonSpannedRowClosestToStartRow(): void {
 		const firstRow = this._table.getChild( 0 ) as Element;
-		const firstRowLength = this._getRowLenght( firstRow );
+		const firstRowLength = this._getRowLength( firstRow );
 
 		for ( let i = this._startRow!; i >= 0; i-- ) {
 			const row = this._table.getChild( this._startRow! ) as Element;
 
-			if ( firstRowLength === this._getRowLenght( row ) ) {
+			if ( firstRowLength === this._getRowLength( row ) ) {
 				this._row = i;
 				this._rowIndex = i;
 				break;
@@ -488,7 +488,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	/**
 	 * Returns a number of columns in a row taking `colspan` into consideration.
 	 */
-	private _getRowLenght( row: Element ): number {
+	private _getRowLength( row: Element ): number {
 		return [ ...row.getChildren() ].reduce( ( cols, row ) => {
 			return cols + parseInt( row.getAttribute( 'colspan' ) as string || '1' );
 		}, 0 );
