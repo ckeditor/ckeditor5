@@ -546,16 +546,6 @@ export function getSelectedBlockObject( model: Model ): Element | null {
 	return null;
 }
 
-/**
- * Checks whether the given block can be replaced by a paragraph.
- *
- * @param block A block to be tested.
- * @param schema The schema of the document.
- */
-export function checkCanBeRenamed( block: Element, schema: Schema, elementName: string ): boolean {
-	return schema.checkChild( block.parent as Element, elementName ) && !schema.isObject( block );
-}
-
 // Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
 function mergeListItemIfNotLast(
 	block: ListElement,

@@ -171,35 +171,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
-		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
-			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
-
-			for ( const { node, previous } of listNodes ) {
-				// For the first list block there is nothing to compare with.
-				if ( !previous ) {
-					continue;
-				}
-
-				const nodeIndent = node.getAttribute( 'listIndent' );
-				const previousNodeIndent = previous.getAttribute( 'listIndent' );
-
-				let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
-
-				// Let's find previous node for the same indent.
-				// We're going to need that when we get back to previous indent.
-				if ( nodeIndent > previousNodeIndent ) {
-					previousNodesByIndent[ previousNodeIndent ] = previous;
-				}
-				// Restore the one for given indent.
-				else if ( nodeIndent < previousNodeIndent ) {
-					previousNodeInList = previousNodesByIndent[ nodeIndent ];
-					previousNodesByIndent.length = nodeIndent;
-				}
-				// Same indent.
-				else {
-					previousNodeInList = previous;
-				}
-
+		documentListEditing.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
+			for ( const { node, previousNodeInList } of listNodes ) {
 				// This is a first item of a nested list.
 				if ( !previousNodeInList ) {
 					continue;

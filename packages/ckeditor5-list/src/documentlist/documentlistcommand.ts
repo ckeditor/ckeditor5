@@ -19,8 +19,7 @@ import {
 	ListItemUid,
 	sortBlocks,
 	getSelectedBlockObject,
-	isListItemBlock,
-	checkCanBeRenamed
+	isListItemBlock
 } from './utils/model';
 
 /**
@@ -41,21 +40,15 @@ export default class DocumentListCommand extends Command {
 	public declare value: boolean;
 
 	/**
-	 * TODO
-	 */
-	private _requiredElementName?: string;
-
-	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param editor The editor instance.
 	 * @param type List type that will be handled by this command.
 	 */
-	constructor( editor: Editor, type: 'numbered' | 'bulleted' | 'todo', requiredElementName?: string ) {
+	constructor( editor: Editor, type: 'numbered' | 'bulleted' | 'todo' ) {
 		super( editor );
 
 		this.type = type;
-		this._requiredElementName = requiredElementName;
 	}
 
 	/**
@@ -82,10 +75,7 @@ export default class DocumentListCommand extends Command {
 		const selectedBlockObject = getSelectedBlockObject( model );
 
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => this._requiredElementName ?
-				checkCanBeRenamed( block, model.schema, this._requiredElementName ) :
-				model.schema.checkAttribute( block, 'listType' )
-			);
+			.filter( block => model.schema.checkAttribute( block, 'listType' ) );
 
 		// Whether we are turning off some items.
 		const turnOff = options.forceValue !== undefined ? !options.forceValue : this.value;
@@ -125,16 +115,6 @@ export default class DocumentListCommand extends Command {
 				const changedBlocks = [];
 
 				for ( const block of blocks ) {
-					// Rename block to a required element name if type of the list requires it.
-					if (
-						this._requiredElementName &&
-						!block.is( 'element', this._requiredElementName ) &&
-						checkCanBeRenamed( block, model.schema, this._requiredElementName )
-					) {
-						writer.rename( block, this._requiredElementName );
-						changedBlocks.push( block );
-					}
-
 					// Promote the given block to the list item.
 					if ( !block.hasAttribute( 'listType' ) ) {
 						writer.setAttributes( {
@@ -213,11 +193,7 @@ export default class DocumentListCommand extends Command {
 		}
 
 		for ( const block of blocks ) {
-			const isEnabled = this._requiredElementName ?
-				checkCanBeRenamed( block, model.schema, this._requiredElementName ) :
-				model.schema.checkAttribute( block, 'listType' );
-
-			if ( isEnabled ) {
+			if ( model.schema.checkAttribute( block, 'listType' ) ) {
 				return true;
 			}
 		}

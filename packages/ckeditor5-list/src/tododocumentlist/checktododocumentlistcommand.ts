@@ -7,12 +7,13 @@
  * @module list/tododocumentlist/checktododocumentlistcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
+import { Command } from 'ckeditor5/src/core';
 import type {
 	Element,
 	DocumentSelection,
 	Selection
 } from 'ckeditor5/src/engine';
+import { getAllListItemBlocks } from '../documentlist/utils/model';
 
 const attributeKey = 'todoListChecked';
 
@@ -87,12 +88,12 @@ export default class CheckTodoDocumentListCommand extends Command {
 		const elements: Array<Element> = [];
 
 		if ( schema.checkAttribute( startElement, attributeKey ) ) {
-			elements.push( startElement );
+			elements.push( ...getAllListItemBlocks( startElement ) );
 		}
 
 		for ( const item of selectionRange.getItems() as Iterable<Element> ) {
 			if ( schema.checkAttribute( item, attributeKey ) && !elements.includes( item ) ) {
-				elements.push( item );
+				elements.push( ...getAllListItemBlocks( item ) );
 			}
 		}
 

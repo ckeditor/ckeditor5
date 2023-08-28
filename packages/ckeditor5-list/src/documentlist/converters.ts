@@ -73,13 +73,21 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 			return;
 		}
 
+		const listItemId = ListItemUid.next();
+		const listIndent = getIndent( data.viewItem );
+		let listType = data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted';
+
 		// Preserve list type if was already set (for example by to-do list feature).
-		const firstItemListType = items[ 0 ].getAttribute( 'listType' );
+		const firstItemListType = items[ 0 ].getAttribute( 'listType' ) as string;
+
+		if ( firstItemListType ) {
+			listType = firstItemListType;
+		}
 
 		const attributes = {
-			listItemId: ListItemUid.next(),
-			listIndent: getIndent( data.viewItem ),
-			listType: firstItemListType || ( data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted' )
+			listItemId,
+			listIndent,
+			listType
 		};
 
 		for ( const item of items ) {
@@ -422,8 +430,6 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
-	// TODO trim the custom marker (empty element without mapping and model length = 0).
-	// return viewRange.getContainedElement();
 	return viewRange.end.nodeBefore as ViewElement | null;
 }
 
