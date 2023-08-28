@@ -179,6 +179,7 @@ export default class DocumentListCommand extends Command {
 	 */
 	private _checkEnabled(): boolean {
 		const model = this.editor.model;
+		const schema = model.schema;
 		const selection = model.document.selection;
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
@@ -193,7 +194,7 @@ export default class DocumentListCommand extends Command {
 		}
 
 		for ( const block of blocks ) {
-			if ( model.schema.checkAttribute( block, 'listType' ) ) {
+			if ( schema.checkAttribute( block, 'listType' ) ) {
 				return true;
 			}
 		}

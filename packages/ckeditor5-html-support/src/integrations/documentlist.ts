@@ -228,7 +228,7 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 /**
  * Returns HTML attribute name based on provided list type.
  */
-function getAttributeFromListType( listType: string ) {
+function getAttributeFromListType( listType: 'bulleted' | 'numbered' | 'todo' ) {
 	return listType === 'numbered' ?
 		'htmlOlAttributes' :
 		'htmlUlAttributes';
