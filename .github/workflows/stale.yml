@@ -14,10 +14,11 @@ jobs:
         with:
           repo-token: ${{ secrets.GH_BOT_TOKEN }}
           stale-issue-label: status:stale
-          stale-issue-message: "There has been no activity in this issue for the last five years. Now it is marked as stale and will be closed in 30 days. We know it may be valid, so if you're interested in the solution, leave a comment or reaction under the issue."
-          stale-pr-message: "There has been no activity in this PR for the last five years. Now it is marked as stale and will be closed in 30 days. We know it may be valid, so if you're interested in the contribution, leave a comment or reaction under the PR."
-          close-issue-message: "We have closed the issue because of the lack of activity for the last five years. We know it might be valid, so you can reopen a similar issue if needed."
-          close-pr-message: "We have closed the PR because of the lack of activity for the last five years. We know it might be valid, so you can reopen a similar PR if needed."
+          close-issue-label: resolution:expired
+          stale-issue-message: "There has been no activity on this issue for the last five years. We have marked it as stale and will close it in 30 days. We know it may be valid, so if you're interested in the solution, leave a comment or reaction under this issue."
+          stale-pr-message: "There has been no activity on this PR for the last five years. We have marked it as stale and will close it in 30 days. We know it may be valid, so if you're interested in the contribution, leave a comment or reaction under this PR."
+          close-issue-message: "We have closed the issue due to the lack of activity for the last five years. We know it may be valid, so you can reopen a similar issue."
+          close-pr-message: "We have closed the PR due to the lack of activity for the last five years. We know it may be valid, so you can reopen a similar PR."
           days-before-stale: 1825
           days-before-close: 30
           exempt-issue-labels: support, domain:accessibility
