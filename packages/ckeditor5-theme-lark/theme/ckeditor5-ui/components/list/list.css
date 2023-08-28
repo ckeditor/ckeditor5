@@ -77,6 +77,17 @@
 	}
 }
 
+.ck-list .ck-list__group {
+	padding-top: var(--ck-spacing-medium);
+	border-top: 1px solid var(--ck-color-base-border);
+
+	& > li:first-child > span {
+		font-size: 11px;
+		font-weight: bold;
+		padding: var(--ck-spacing-medium);
+	}
+}
+
 .ck.ck-list__separator {
 	height: 1px;
 	width: 100%;
