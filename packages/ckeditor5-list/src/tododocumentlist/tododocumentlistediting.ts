@@ -124,7 +124,7 @@ export default class TodoDocumentListEditing extends Plugin {
 					),
 					... ( dataPipeline ?
 						{ disabled: 'disabled' } :
-						{ tabindex: '-1', contenteditable: 'false' }
+						{ tabindex: '-1' }
 					)
 				} );
 			}

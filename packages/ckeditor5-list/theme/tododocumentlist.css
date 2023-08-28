@@ -80,7 +80,7 @@
 }
 
 /* RTL styles */
-[dir="rtl"] .todo-list li > input {
+[dir="rtl"] .todo-list > li > input {
 	left: 0;
 	margin-right: 0;
 	right: -25px;
@@ -91,7 +91,7 @@
  * To-do list should be interactive only during the editing
  * (https://github.com/ckeditor/ckeditor5/issues/2090).
  */
-.ck-editor__editable .todo-list .todo-list__label > input {
+.ck-editor__editable .todo-list > li > input {
 	cursor: pointer;
 
 	&:hover::before {
