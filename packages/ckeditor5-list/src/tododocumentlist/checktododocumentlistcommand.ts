@@ -7,12 +7,8 @@
  * @module list/tododocumentlist/checktododocumentlistcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type {
-	Element,
-	DocumentSelection,
-	Selection
-} from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine';
 import { getAllListItemBlocks } from '../documentlist/utils/model';
 
 const attributeKey = 'todoListChecked';
@@ -35,10 +31,23 @@ export default class CheckTodoDocumentListCommand extends Command {
 	declare public value: boolean;
 
 	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		// Refresh command before executing to be sure all values are up to date.
+		// It is needed when selection has changed before command execution, in the same change block.
+		this.on( 'execute', () => {
+			this.refresh();
+		}, { priority: 'highest' } );
+	}
+
+	/**
 	 * Updates the command's {@link #value} and {@link #isEnabled} properties based on the current selection.
 	 */
 	public override refresh(): void {
-		const selectedElements = this._getSelectedItems( this.editor.model.document.selection );
+		const selectedElements = this._getSelectedItems();
 
 		this.value = this._getValue( selectedElements );
 		this.isEnabled = !!selectedElements.length;
@@ -51,12 +60,9 @@ export default class CheckTodoDocumentListCommand extends Command {
 	 * the attribute. Otherwise, the command will remove the attribute. If not set, the command will look for its current
 	 * value to decide what it should do.
 	 */
-	public override execute( options: {
-		forceValue?: boolean;
-		selection?: Selection | DocumentSelection;
-	} = {} ): void {
+	public override execute( options: { forceValue?: boolean } = {} ): void {
 		this.editor.model.change( writer => {
-			const selectedElements = this._getSelectedItems( options.selection || this.editor.model.document.selection );
+			const selectedElements = this._getSelectedItems();
 			const value = ( options.forceValue === undefined ) ? !this._getValue( selectedElements ) : options.forceValue;
 
 			for ( const element of selectedElements ) {
@@ -79,11 +85,11 @@ export default class CheckTodoDocumentListCommand extends Command {
 	/**
 	 * Gets all to-do list items selected by the {@link module:engine/model/selection~Selection}.
 	 */
-	private _getSelectedItems( selection: Selection | DocumentSelection ) {
+	private _getSelectedItems() {
 		const model = this.editor.model;
 		const schema = model.schema;
 
-		const selectionRange = selection.getFirstRange()!;
+		const selectionRange = model.document.selection.getFirstRange()!;
 		const startElement = selectionRange.start.parent as Element;
 		const elements: Array<Element> = [];
 
@@ -91,7 +97,7 @@ export default class CheckTodoDocumentListCommand extends Command {
 			elements.push( ...getAllListItemBlocks( startElement ) );
 		}
 
-		for ( const item of selectionRange.getItems() as Iterable<Element> ) {
+		for ( const item of selectionRange.getItems( { shallow: true } ) as Iterable<Element> ) {
 			if ( schema.checkAttribute( item, attributeKey ) && !elements.includes( item ) ) {
 				elements.push( ...getAllListItemBlocks( item ) );
 			}

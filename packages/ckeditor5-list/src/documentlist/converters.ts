@@ -49,8 +49,8 @@ import { findAndAddListHeadToMap } from './utils/postfixers';
 import type {
 	default as DocumentListEditing,
 	DocumentListEditingCheckAttributesEvent,
-	DowncastStrategy,
-	ListItemAttributesMap
+	ListItemAttributesMap,
+	DowncastStrategy
 } from './documentlistediting';
 
 /**
@@ -357,10 +357,17 @@ export function listItemDowncastConverter(
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model )!;
-		const previousSibling = viewElement.previousSibling;
 
-		if ( previousSibling && previousSibling.is( 'element', 'input' ) ) {
+		// Remove custom item markers.
+		let previousSibling = viewElement.previousSibling;
+
+		while ( previousSibling ) {
+			if ( !previousSibling.is( 'element' ) || !previousSibling.getCustomProperty( 'listItemMarker' ) ) {
+				break;
+			}
+
 			writer.remove( previousSibling );
+			previousSibling = viewElement.previousSibling;
 		}
 
 		// Unwrap element from current list wrappers.
@@ -368,19 +375,30 @@ export function listItemDowncastConverter(
 
 		let viewRange = writer.createRangeOn( viewElement );
 
-		if ( isFirstBlockOfListItem( listItem ) && listItem.getAttribute( 'listType' ) == 'todo' ) {
-			const markerElement = writer.createEmptyElement( 'input', {
-				type: 'checkbox',
-				...( listItem.getAttribute( 'todoListChecked' ) ? { checked: 'checked' } : null ),
-				... ( dataPipeline ? { disabled: 'disabled' } : { tabindex: '-1', contenteditable: 'false' } )
-			} );
+		// Insert custom item markers.
+		if ( isFirstBlockOfListItem( listItem ) ) {
+			for ( const strategy of strategies ) {
+				if ( strategy.scope == 'itemMarker' && listItem.hasAttribute( strategy.attributeName ) ) {
+					const markerElement = strategy.createElement(
+						writer,
+						listItem.getAttribute( strategy.attributeName ),
+						listItem,
+						{ dataPipeline }
+					);
 
-			writer.insert( viewRange.start, markerElement );
+					if ( !markerElement ) {
+						continue;
+					}
 
-			viewRange = writer.createRange(
-				writer.createPositionBefore( markerElement ),
-				writer.createPositionAfter( viewElement )
-			);
+					writer.setCustomProperty( 'listItemMarker', true, markerElement );
+					writer.insert( viewRange.start, markerElement );
+
+					viewRange = writer.createRange(
+						writer.createPositionBefore( markerElement ),
+						writer.createPositionAfter( viewElement )
+					);
+				}
+			}
 		}
 
 		// Then wrap them with the new list wrappers.
@@ -465,7 +483,10 @@ function wrapListItemBlock(
 		const listViewElement = createListElement( writer, indent, currentListItem.getAttribute( 'listType' ) );
 
 		for ( const strategy of strategies ) {
-			if ( currentListItem.hasAttribute( strategy.attributeName ) ) {
+			if (
+				( strategy.scope == 'list' || strategy.scope == 'item' ) &&
+				currentListItem.hasAttribute( strategy.attributeName )
+			) {
 				strategy.setAttributeOnDowncast(
 					writer,
 					currentListItem.getAttribute( strategy.attributeName ),

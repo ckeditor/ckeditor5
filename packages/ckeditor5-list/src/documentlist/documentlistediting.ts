@@ -73,7 +73,7 @@ import '../../theme/list.css';
 /**
  * A list of base list model attributes.
  */
-const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId', 'todoListChecked' ];
+const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
 
 /**
  * Map of model attributes applicable to list blocks.
@@ -432,7 +432,6 @@ export default class DocumentListEditing extends Plugin {
 				);
 			} );
 
-
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'paragraph',
@@ -546,7 +545,7 @@ export default class DocumentListEditing extends Plugin {
 /**
  * The downcast strategy.
  */
-export interface DowncastStrategy {
+export interface AttributeDowncastStrategy {
 
 	/**
 	 * The scope of the downcast (whether it applies to LI or OL/UL).
@@ -563,6 +562,37 @@ export interface DowncastStrategy {
 	 */
 	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
 }
+
+/**
+ * TODO
+ */
+export interface ItemMarkerDowncastStrategy {
+
+	/**
+	 * The scope of the downcast.
+	 */
+	scope: 'itemMarker';
+
+	/**
+	 * The model attribute name.
+	 */
+	attributeName: string;
+
+	/**
+	 * TODO
+	 */
+	createElement(
+		writer: DowncastWriter,
+		value: unknown,
+		element: Element,
+		{ dataPipeline }: { dataPipeline?: boolean }
+	): ViewElement | null;
+}
+
+/**
+ * TODO
+ */
+export type DowncastStrategy = AttributeDowncastStrategy | ItemMarkerDowncastStrategy;
 
 /**
  * Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).

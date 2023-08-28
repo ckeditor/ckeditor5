@@ -62,9 +62,9 @@ export default class TodoDocumentListEditing extends Plugin {
 
 		editing.view.addObserver( InputChangeObserver );
 
-		model.schema.extend( 'paragraph', {
-			allowAttributes: 'todoListChecked'
-		} );
+		model.schema.extend( '$container', { allowAttributes: 'todoListChecked' } );
+		model.schema.extend( '$block', { allowAttributes: 'todoListChecked' } );
+		model.schema.extend( '$blockObject', { allowAttributes: 'todoListChecked' } );
 
 		model.schema.addAttributeCheck( ( context, attributeName ) => {
 			const item = context.last;
@@ -105,6 +105,37 @@ export default class TodoDocumentListEditing extends Plugin {
 				} else {
 					writer.removeClass( 'todo-list', element );
 				}
+			}
+		} );
+
+		documentListEditing.registerDowncastStrategy( {
+			attributeName: 'listType',
+			scope: 'itemMarker',
+			createElement( writer, value, element, { dataPipeline } ) {
+				if ( value != 'todo' ) {
+					return null;
+				}
+
+				return writer.createEmptyElement( 'input', {
+					type: 'checkbox',
+					...( element.getAttribute( 'todoListChecked' ) ?
+						{ checked: 'checked' } :
+						null
+					),
+					... ( dataPipeline ?
+						{ disabled: 'disabled' } :
+						{ tabindex: '-1', contenteditable: 'false' }
+					)
+				} );
+			}
+		} );
+
+		// Just mark the todoListChecked attribute as a list attribute that could trigger conversion.
+		documentListEditing.registerDowncastStrategy( {
+			attributeName: 'todoListChecked',
+			scope: 'itemMarker',
+			createElement() {
+				return null;
 			}
 		} );
 
@@ -175,14 +206,12 @@ export default class TodoDocumentListEditing extends Plugin {
 				return;
 			}
 
-			const viewPositionInNextSibling = editing.view.createPositionAt( viewTarget.nextSibling!, 0 );
-			const viewElement = editing.mapper.findMappedViewAncestor( viewPositionInNextSibling );
-			const modelElement = editing.mapper.toModelElement( viewElement );
+			const viewPositionAfter = editing.view.createPositionAfter( viewTarget );
+			const modelPositionAfter = editing.mapper.toModelPosition( viewPositionAfter );
+			const modelElement = modelPositionAfter.nodeAfter;
 
 			if ( modelElement && isListItemBlock( modelElement ) && modelElement.getAttribute( 'listType' ) == 'todo' ) {
-				editor.execute( 'checkTodoList', {
-					selection: model.createSelection( modelElement, 'end' )
-				} );
+				this._handleCheckmarkChange( modelElement );
 			}
 		} );
 
@@ -195,6 +224,26 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 
 			return editing.mapper.toModelElement( viewElement ) ? 1 : 0;
+		} );
+	}
+
+	/**
+	 * Handles the checkbox element change, moves the selection to the corresponding model item to make it possible
+	 * to toggle the `todoListChecked` attribute using the command, and restores the selection position.
+	 *
+	 * Some say it's a hack :) Moving the selection only for executing the command on a certain node and restoring it after,
+	 * is not a clear solution. We need to design an API for using commands beyond the selection range.
+	 * See https://github.com/ckeditor/ckeditor5/issues/1954.
+	 */
+	private _handleCheckmarkChange( listItem: Element ): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const previousSelectionRanges = Array.from( model.document.selection.getRanges() );
+
+		model.change( writer => {
+			writer.setSelection( listItem, 'end' );
+			editor.execute( 'checkTodoList' );
+			writer.setSelection( previousSelectionRanges );
 		} );
 	}
 }
