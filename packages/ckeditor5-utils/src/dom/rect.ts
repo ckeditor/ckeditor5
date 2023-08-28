@@ -12,6 +12,7 @@ import isWindow from './iswindow';
 import getBorderWidths from './getborderwidths';
 import isText from './istext';
 import getPositionedAncestor from './getpositionedancestor';
+import global from './global';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
