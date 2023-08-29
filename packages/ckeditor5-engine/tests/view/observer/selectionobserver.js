@@ -15,14 +15,13 @@ import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import createViewRoot from '../_utils/createroot';
-import DomConverter from '../../../src/view/domconverter';
 import { parse, stringify } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'SelectionObserver', () => {
-	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument, converter;
+	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
 
 	testUtils.createSinonSandbox();
 
@@ -32,8 +31,6 @@ describe( 'SelectionObserver', () => {
 		domRoot.innerHTML = '<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>';
 		domMain = domRoot.childNodes[ 0 ];
 		domDocument.body.appendChild( domRoot );
-		converter = new DomConverter( viewDocument );
-
 		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
@@ -175,6 +172,7 @@ describe( 'SelectionObserver', () => {
 
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domFoo ] );
+			const converter = view.domConverter;
 
 			const viewP = parse( '<p>foo</p>' );
 
@@ -215,6 +213,7 @@ describe( 'SelectionObserver', () => {
 		it( 'should do nothing in Firefox if the DOM selection is correct', done => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domFoo ] );
+			const converter = view.domConverter;
 
 			const viewP = parse( '<p>foo</p>' );
 
