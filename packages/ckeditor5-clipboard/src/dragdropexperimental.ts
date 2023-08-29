@@ -591,29 +591,25 @@ export default class DragDropExperimental extends Plugin {
 		// If this was not a widget we should check if we need to drag some text content.
 		else if ( !selection.isCollapsed || ( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
 			const blocks = Array.from( selection.getSelectedBlocks() );
+			const blockRange = getRangeExtendedToLargestFullySelectedParent( model, blocks );
 
 			if ( blocks.length > 1 ) {
-				this._draggedRange = LiveRange.fromRange(
-					getRangeExtendedToLargestFullySelectedParent( model, blocks )
-				);
+				this._draggedRange = LiveRange.fromRange( blockRange );
+				this._blockMode = true;
 
 				model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
-				this._blockMode = true;
 				// TODO block mode for dragging from outside editor? or inline? or both?
 			}
 
 			else if ( blocks.length == 1 ) {
 				const draggedRange = selection.getFirstRange()!;
-				const blockRange = model.createRange(
-					model.createPositionBefore( blocks[ 0 ] ),
-					model.createPositionAfter( blocks[ 0 ] )
-				);
-
 				const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
 					draggedRange.end.isTouching( blockRange.end );
 
 				this._draggedRange = LiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
 				this._blockMode = touchesBlockEdges;
+
+				model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
 			}
 		}
 	}
@@ -711,16 +707,30 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: Array<Node> ): Range {
 	const parent = elements[ 0 ].parent as Element | null;
 
+	let startPosition = model.createPositionBefore( elements[ 0 ] );
+	let endPosition = model.createPositionAfter( elements[ elements.length - 1 ] );
+
 	if (
-		parent &&																										// Parent exists
-		elements.every( element => element.parent === parent ) &&		// All elements have the same parent
-		parent.childCount === elements.length												// Parent has no other elements
+		parent &&																									// Parent exists
+		!model.schema.isLimit( parent ) && 												// Parent is not a limit element
+		elements.every( element => element.parent === parent )		// All elements have the same parent
 	) {
-		return getRangeExtendedToLargestFullySelectedParent( model, [ parent ] );
+		const parentRange = model.createRangeOn( parent );
+		const touchesStart = startPosition.isTouching( parentRange.start );
+		const touchesEnd = endPosition.isTouching( parentRange.end );
+
+		if ( touchesStart && touchesEnd ) {
+			return getRangeExtendedToLargestFullySelectedParent( model, [ parent ] );
+		}
+
+		if ( touchesStart ) {
+			startPosition = parentRange.start;
+		}
+
+		if ( touchesEnd ) {
+			endPosition = parentRange.end;
+		}
 	}
 
-	return model.createRange(
-		model.createPositionBefore( elements[ 0 ] ),
-		model.createPositionAfter( elements[ elements.length - 1 ] )
-	);
+	return model.createRange( startPosition, endPosition );
 }
