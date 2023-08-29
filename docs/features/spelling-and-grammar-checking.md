@@ -30,15 +30,9 @@ The WProofreader badge in the bottom-right corner shows you the total number of 
 
 You can access the WProofreader settings from the toolbar, too. Set the primary language, create a spelling dictionary, and tweak some additional proofreading settings.
 
-<info-box><!-- Consider deprecation time for this info box -->
-	The toolbar button has been introduced in version 2.x of WProofreader. Read more about configuring UI items in the {@link features/toolbar toolbar guide}. If you are still using version 1.x, the available settings and dialog options can be accessed through the bottom-right corner badge instead.
-</info-box>
-
 ## Additional feature information
 
 You can fine-tune WProofreader via the dedicated settings menu. Choose a primary language from a set of available ones. Create and manage additional custom dictionaries. Words can be added to the user dictionary directly from the suggestion card, too. If needed, you can easily disable the spell checker and enable it again with one click.
-
-After reading this guide, you may find additional interesting details and examples in the [Spell and grammar check in CKEditor&nbsp;5](https://ckeditor.com/blog/feature-of-the-month-spell-and-grammar-check-in-ckeditor-5/) blog post.
 
 ## Multi-language support
 
@@ -48,7 +42,7 @@ The {@link features/language text part language} feature lets the user set diffe
 
 ## Check types
 
-WProofreader checks texts for spelling, grammar, and punctuation mistakes. The auto detect feature facilitates the correction of multilingual texts. Users do not have to manually switch languages to proofread combo docs. Handy spelling autocorrect validates user texts on the fly. Autocomplete suggestions for English make the proofreading process fast and smooth. The predictive text can be accepted with a right <kbd>→</kbd> arrow key.
+WProofreader checks texts for spelling, grammar, and punctuation mistakes. The autodetect feature facilitates the correction of multilingual texts. Users do not have to manually switch languages to proofread combo docs. Handy spelling autocorrect validates user texts on the fly. Autocomplete suggestions for English make the proofreading process fast and smooth. The predictive text can be accepted with a right <kbd>→</kbd> arrow key.
 
 ## Supported languages and dictionaries
 
@@ -60,7 +54,7 @@ There are, however, more languages available from the WebSpellChecker site. Gram
 
 The AI-driven tools approach for English, German, and Spanish is a recent addition to the software. It offers a far better checking quality and generates proofreading suggestions based on the context of a sentence. It provides more suitable suggestions that address mistakes with 3 times the accuracy compared to a traditional mechanism.
 
-Here you can check the [full list of available languages](https://webspellchecker.com/additional-dictionaries/).
+Here you can check the [full list of supported languages](https://webspellchecker.com/supported-languages/).
 
 ### Specialized dictionaries
 
