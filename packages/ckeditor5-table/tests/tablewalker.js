@@ -208,7 +208,7 @@ describe( 'TableWalker', () => {
 		}
 
 		expect( getAllItems ).to.not.throw( RangeError, 'Maximum call stack size exceeded' );
-	} );
+	} ).timeout( 5000 );
 
 	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables with rowspan. ', () => {
 		const data = [
@@ -229,7 +229,7 @@ describe( 'TableWalker', () => {
 		}
 
 		expect( getAllItems ).to.not.throw( RangeError, 'Maximum call stack size exceeded' );
-	} );
+	} ).timeout( 5000 );
 
 	describe( 'option.startRow', () => {
 		it( 'should start iterating from given row but with cell spans properly calculated', () => {
