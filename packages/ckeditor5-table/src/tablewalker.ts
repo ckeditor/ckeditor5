@@ -484,11 +484,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 * Returns a number of columns in a row taking `colspan` into consideration.
 	 */
 	private _getRowLength( rowIndex: number ): number {
-		const row = this._table.getChild( rowIndex ) as Element | null;
-
-		if ( !row ) {
-			return 0;
-		}
+		const row = this._table.getChild( rowIndex ) as Element;
 
 		return [ ...row.getChildren() ].reduce( ( cols, row ) => {
 			return cols + parseInt( row.getAttribute( 'colspan' ) as string || '1' );
