@@ -8,10 +8,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { setData, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
+import TableWalker from '../src/tablewalker';
 import TableEditing from '../src/tableediting';
 import { modelTable } from './_utils/utils';
-
-import TableWalker from '../src/tablewalker';
 
 describe( 'TableWalker', () => {
 	let editor, model, doc, root;
@@ -196,8 +195,7 @@ describe( 'TableWalker', () => {
 	} );
 
 	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables. ', () => {
-		const rowsCount = 3000;
-		const data = Array( rowsCount ).fill( [ '1', 'Example content', '3' ] );
+		const data = Array( 3000 ).fill( [ '1', 'Example content', '3' ] );
 		const table = parse(
 			modelTable( data ),
 			model.schema
@@ -205,7 +203,28 @@ describe( 'TableWalker', () => {
 
 		function getAllItems() {
 			return Array.from(
-				new TableWalker( table, { row: rowsCount } )
+				new TableWalker( table, { row: 2999 } )
+			);
+		}
+
+		expect( getAllItems ).to.not.throw( RangeError, 'Maximum call stack size exceeded' );
+	} );
+
+	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables with rowspan. ', () => {
+		const data = [
+			...Array( 2000 ).fill( [ '1', 'Example content', '3' ] ),
+			[ '1', { contents: 'Cell with rowspan', rowspan: 1000 }, '3' ],
+			...Array( 999 ).fill( [ '1', '3' ] )
+		];
+
+		const table = parse(
+			modelTable( data ),
+			model.schema
+		);
+
+		function getAllItems() {
+			return Array.from(
+				new TableWalker( table, { row: 2999 } )
 			);
 		}
 

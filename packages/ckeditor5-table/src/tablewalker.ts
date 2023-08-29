@@ -139,9 +139,9 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	private _nextCellAtColumn: number;
 
 	/**
-	 * Indicates if rows before the start row were scanned for spans.
+	 * Indicates whether the iterator jumped to (or close to) the start row, ignoring rows that don't need to be traversed.
 	 */
-	private _updatedSpansBeforeStartRow = false;
+	private _jumpedToStartRow = false;
 
 	/**
 	 * Creates an instance of the table walker.
@@ -439,7 +439,7 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	private _canJumpToStartRow(): boolean {
 		return !!this._startRow &&
 			this._startRow > 0 &&
-			!this._updatedSpansBeforeStartRow;
+			!this._jumpedToStartRow;
 	}
 
 	/**
@@ -469,26 +469,27 @@ export default class TableWalker implements IterableIterator<TableSlot> {
 	 * spanning multiple rows or columns and update the `this._spannedCells` property.
 	 */
 	private _jumpToNonSpannedRowClosestToStartRow(): void {
-		const firstRow = this._table.getChild( 0 ) as Element;
-		const firstRowLength = this._getRowLength( firstRow );
+		const firstRowLength = this._getRowLength( 0 );
 
-		for ( let i = this._startRow!; i > 0; i-- ) {
-			const row = this._table.getChild( this._startRow! ) as Element;
-
-			if ( firstRowLength === this._getRowLength( row ) ) {
+		for ( let i = this._startRow!; !this._jumpedToStartRow; i-- ) {
+			if ( firstRowLength === this._getRowLength( i ) ) {
 				this._row = i;
 				this._rowIndex = i;
-				break;
+				this._jumpedToStartRow = true;
 			}
 		}
-
-		this._updatedSpansBeforeStartRow = true;
 	}
 
 	/**
 	 * Returns a number of columns in a row taking `colspan` into consideration.
 	 */
-	private _getRowLength( row: Element ): number {
+	private _getRowLength( rowIndex: number ): number {
+		const row = this._table.getChild( rowIndex ) as Element | null;
+
+		if ( !row ) {
+			return 0;
+		}
+
 		return [ ...row.getChildren() ].reduce( ( cols, row ) => {
 			return cols + parseInt( row.getAttribute( 'colspan' ) as string || '1' );
 		}, 0 );
