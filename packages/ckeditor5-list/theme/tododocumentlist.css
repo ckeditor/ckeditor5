@@ -10,7 +10,7 @@
 .ck-content .todo-list {
 	list-style: none;
 
-	& > li {
+	& li {
 		position: relative;
 		margin-bottom: 5px;
 
@@ -18,10 +18,16 @@
 			margin-top: 5px;
 		}
 
-		& > input {
+		& label {
+			pointer-events: none;
+		}
+
+		& input {
+			pointer-events: auto;
 			-webkit-appearance: none;
 			display: inline-block;
 			position: absolute;
+			/*position: relative;*/
 			width: var(--ck-todo-list-checkmark-size);
 			height: var(--ck-todo-list-checkmark-size);
 			vertical-align: middle;
@@ -76,11 +82,15 @@
 				}
 			}
 		}
+
+		& .todo-list__label__description {
+			vertical-align: middle;
+		}
 	}
 }
 
 /* RTL styles */
-[dir="rtl"] .todo-list > li > input {
+[dir="rtl"] .todo-list li input {
 	left: 0;
 	margin-right: 0;
 	right: -25px;
@@ -91,10 +101,17 @@
  * To-do list should be interactive only during the editing
  * (https://github.com/ckeditor/ckeditor5/issues/2090).
  */
-.ck-editor__editable .todo-list > li > input {
+.ck-editor__editable .todo-list li input {
 	cursor: pointer;
 
 	&:hover::before {
 		box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);
 	}
+}
+
+/*
+ * Workaround for Chrome and Safari glitch... TODO
+ */
+.ck-editor__editable .todo-list__label {
+	display: block;
 }

@@ -49,6 +49,7 @@ import { findAndAddListHeadToMap } from './utils/postfixers';
 import type {
 	default as DocumentListEditing,
 	DocumentListEditingCheckAttributesEvent,
+	DocumentListEditingCheckParagraphEvent,
 	ListItemAttributesMap,
 	DowncastStrategy
 } from './documentlistediting';
@@ -263,6 +264,15 @@ export function reconvertItemsOnDataChange(
 			return false;
 		}
 
+		const needsRefresh = documentListEditing.fire<DocumentListEditingCheckParagraphEvent>( 'checkParagraph', {
+			modelElement: item,
+			viewElement
+		} );
+
+		if ( needsRefresh ) {
+			return true;
+		}
+
 		const useBogus = shouldUseBogusParagraph( item, attributeNames, blocks );
 
 		if ( useBogus && viewElement.is( 'element', 'p' ) ) {
@@ -358,14 +368,26 @@ export function listItemDowncastConverter(
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model )!;
 
+		// Remove item wrapper.
+		if ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
+			writer.unwrap( writer.createRangeIn( viewElement.parent ), viewElement.parent );
+		}
+
 		// Remove custom item markers.
 		let previousSibling = viewElement.previousSibling;
 
 		while ( previousSibling ) {
-			if ( !previousSibling.is( 'element' ) || !previousSibling.getCustomProperty( 'listItemMarker' ) ) {
+			// Remove item wrapper if was only wrapping a marker.
+			if ( previousSibling.is( 'attributeElement' ) && previousSibling.getCustomProperty( 'listItemWrapper' ) ) {
+				writer.unwrap( writer.createRangeIn( previousSibling ), previousSibling );
+				previousSibling = viewElement.previousSibling;
+			}
+
+			if ( !previousSibling || !previousSibling.is( 'element' ) || !previousSibling.getCustomProperty( 'listItemMarker' ) ) {
 				break;
 			}
 
+			// Remove marker itself.
 			writer.remove( previousSibling );
 			previousSibling = viewElement.previousSibling;
 		}
@@ -397,6 +419,19 @@ export function listItemDowncastConverter(
 						writer.createPositionBefore( markerElement ),
 						writer.createPositionAfter( viewElement )
 					);
+
+					// TODO move to downcast strategy
+					const wrapper = writer.createAttributeElement( 'label', { class: 'todo-list__label' } );
+
+					writer.setCustomProperty( 'listItemWrapper', true, wrapper );
+
+					// TODO move to downcast strategy (part of this?)
+					if ( viewElement.is( 'element', 'span' ) && viewElement.hasClass( 'todo-list__label__description' ) ) {
+						viewRange = writer.wrap( viewRange, wrapper );
+					} else {
+						viewRange = writer.wrap( writer.createRangeOn( markerElement ), wrapper );
+						viewRange = writer.createRange( viewRange.start, writer.createPositionAfter( viewElement ) );
+					}
 				}
 			}
 		}

@@ -23,8 +23,11 @@ import {
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import { isListItemBlock } from '../documentlist/utils/model';
-import DocumentListEditing, { type DocumentListEditingPostFixerEvent } from '../documentlist/documentlistediting';
+import { isFirstBlockOfListItem, isListItemBlock } from '../documentlist/utils/model';
+import DocumentListEditing, {
+	type DocumentListEditingCheckParagraphEvent,
+	type DocumentListEditingPostFixerEvent
+} from '../documentlist/documentlistediting';
 import DocumentListCommand from '../documentlist/documentlistcommand';
 import CheckTodoDocumentListCommand from './checktododocumentlistcommand';
 import InputChangeObserver, { type ViewDocumentInputChangeEvent } from './inputchangeobserver';
@@ -94,6 +97,16 @@ export default class TodoDocumentListEditing extends Plugin {
 			) );
 		} );
 
+		editor.conversion.for( 'downcast' ).elementToElement( {
+			model: 'paragraph',
+			view: ( element, { writer } ) => {
+				if ( isFirstBlockOfListItem( element ) && element.getAttribute( 'listType' ) == 'todo' ) {
+					return writer.createContainerElement( 'span', { class: 'todo-list__label__description' } );
+				}
+			},
+			converterPriority: 'highest'
+		} );
+
 		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
 		documentListEditing.registerDowncastStrategy( {
@@ -116,7 +129,7 @@ export default class TodoDocumentListEditing extends Plugin {
 					return null;
 				}
 
-				return writer.createEmptyElement( 'input', {
+				const viewElement = writer.createEmptyElement( 'input', {
 					type: 'checkbox',
 					...( element.getAttribute( 'todoListChecked' ) ?
 						{ checked: 'checked' } :
@@ -127,6 +140,12 @@ export default class TodoDocumentListEditing extends Plugin {
 						{ tabindex: '-1' }
 					)
 				} );
+
+				if ( dataPipeline ) {
+					return viewElement;
+				}
+
+				return writer.createContainerElement( 'span', { contenteditable: 'false' }, viewElement );
 			}
 		} );
 
@@ -136,6 +155,16 @@ export default class TodoDocumentListEditing extends Plugin {
 			scope: 'itemMarker',
 			createElement() {
 				return null;
+			}
+		} );
+
+		documentListEditing.on<DocumentListEditingCheckParagraphEvent>( 'checkParagraph', ( evt, { modelElement, viewElement } ) => {
+			const hasViewClass = viewElement.hasClass( 'todo-list__label__description' );
+			const isModelTodoList = modelElement.getAttribute( 'listType' ) == 'todo';
+
+			if ( hasViewClass != isModelTodoList ) {
+				evt.return = true;
+				evt.stop();
 			}
 		} );
 

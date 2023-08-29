@@ -848,3 +848,24 @@ export type DocumentListEditingCheckAttributesEvent = {
 	} ];
 	return: boolean;
 };
+
+/**
+ * TODO
+ * Event fired on changes detected on the model list element to verify if the view representation of a list element
+ * is representing those attributes.
+ *
+ * It allows triggering a re-wrapping of a list item.
+ *
+ * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
+ *
+ * @internal
+ * @eventName ~DocumentListEditing#checkAttributes
+ */
+export type DocumentListEditingCheckParagraphEvent = {
+	name: 'checkParagraph';
+	args: [ {
+		viewElement: ViewElement & { id?: string };
+		modelElement: Element;
+	} ];
+	return: boolean;
+};
