@@ -196,6 +196,7 @@ workflows:
             branches:
               only:
                 - master
+                - ci/improve-community-pr-detection
       - cke5_validators
       - cke5_manual
       - release_prepare
