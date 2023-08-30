@@ -30,6 +30,15 @@ export default class ListItemGroupView extends View {
 	public readonly items: ViewCollection<ListItemView>;
 
 	/**
+	 * Controls whether the item view is visible. Visible by default, list items are hidden
+	 * using a CSS class.
+	 *
+	 * @observable
+	 * @default true
+	 */
+	declare public isVisible: boolean;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -37,6 +46,7 @@ export default class ListItemGroupView extends View {
 
 		const bind = this.bindTemplate;
 
+		this.set( 'isVisible', true );
 		this.items = this.createCollection<ListItemView>();
 
 		const groupLabelId = `ck-editor__label_${ uid() }`;
@@ -47,7 +57,8 @@ export default class ListItemGroupView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-list__group'
+					'ck-list__group',
+					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				]
 			},
 
