@@ -13,6 +13,7 @@ import IconView from '../icon/iconview';
 import type { TemplateDefinition } from '../template';
 import type ViewCollection from '../viewcollection';
 import type { default as Button, ButtonExecuteEvent } from './button';
+import ButtonLabelView from './buttonlabelview';
 
 import {
 	env,
@@ -52,7 +53,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	/**
 	 * Label of the button view. It is configurable using the {@link #label label attribute}.
 	 */
-	public readonly labelView: View;
+	public readonly labelView: ButtonLabelView;
 
 	/**
 	 * The icon view of the button. Will be added to {@link #children} when the
@@ -180,7 +181,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale?: Locale ) {
+	constructor( locale?: Locale, labelView = new ButtonLabelView() ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -208,7 +209,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		this.set( 'withKeystroke', false );
 
 		this.children = this.createCollection();
-		this.labelView = this._createLabelView();
+		this.labelView = this._setupLabelView( labelView );
 
 		this.iconView = new IconView();
 		this.iconView.extendTemplate( {
@@ -327,28 +328,8 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	/**
 	 * Creates a label view instance and binds it with button attributes.
 	 */
-	private _createLabelView() {
-		const labelView = new View();
-		const bind = this.bindTemplate;
-
-		labelView.setTemplate( {
-			tag: 'span',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-button__label'
-				],
-				style: bind.to( 'labelStyle' ),
-				id: this.ariaLabelledBy
-			},
-
-			children: [
-				{
-					text: bind.to( 'label' )
-				}
-			]
-		} );
+	private _setupLabelView( labelView: ButtonLabelView ) {
+		labelView.bind( 'label', 'style', 'id' ).to( this, 'label', 'labelStyle', 'ariaLabelledBy' );
 
 		return labelView;
 	}
