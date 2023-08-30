@@ -19,6 +19,7 @@ import {
 	type Model,
 	type Node,
 	type Range,
+	type Position,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
@@ -591,6 +592,11 @@ export default class DragDropExperimental extends Plugin {
 		// If this was not a widget we should check if we need to drag some text content.
 		else if ( !selection.isCollapsed || ( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
 			const blocks = Array.from( selection.getSelectedBlocks() );
+
+			if ( blocks.length === 0 ) {
+				return;
+			}
+
 			const blockRange = getRangeExtendedToLargestFullySelectedParent( model, blocks );
 
 			if ( blocks.length > 1 ) {
@@ -706,9 +712,8 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
  */
 function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: Array<Node> ): Range {
 	const parent = elements[ 0 ].parent as Element | null;
-
-	let startPosition = model.createPositionBefore( elements[ 0 ] );
-	let endPosition = model.createPositionAfter( elements[ elements.length - 1 ] );
+	const startPosition: Position = model.createPositionBefore( elements[ 0 ] );
+	const endPosition: Position = model.createPositionAfter( elements[ elements.length - 1 ] );
 
 	if (
 		parent &&																									// Parent exists
@@ -720,15 +725,8 @@ function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: A
 		const touchesEnd = endPosition.isTouching( parentRange.end );
 
 		if ( touchesStart && touchesEnd ) {
+			// Selection includes all elements in the parent
 			return getRangeExtendedToLargestFullySelectedParent( model, [ parent ] );
-		}
-
-		if ( touchesStart ) {
-			startPosition = parentRange.start;
-		}
-
-		if ( touchesEnd ) {
-			endPosition = parentRange.end;
 		}
 	}
 
