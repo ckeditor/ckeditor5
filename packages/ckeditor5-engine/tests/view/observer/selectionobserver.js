@@ -15,9 +15,8 @@ import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import createViewRoot from '../_utils/createroot';
-import { parse, stringify } from '../../../src/dev-utils/view';
+import { parse } from '../../../src/dev-utils/view';
 import { StylesProcessor } from '../../../src/view/stylesmap';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'SelectionObserver', () => {
@@ -162,81 +161,23 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	describe( 'Restricted objects handling in Gecko', () => {
-		beforeEach( () => {
-			testUtils.sinon.stub( env, 'isGecko' ).value( true );
+	it( 'should detect "restricted objects" in Firefox DOM ranges and prevent an error being thrown', () => {
+		testUtils.sinon.stub( env, 'isGecko' ).value( true );
+
+		changeDomSelection();
+		domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+		expect( view.hasDomSelection ).to.be.true;
+
+		const domFoo = domDocument.getSelection().anchorNode;
+
+		sinon.stub( domFoo, Symbol.toStringTag ).get( () => {
+			throw new Error( 'Permission denied to access property Symbol.toStringTag' );
 		} );
 
-		it( 'should detect "restricted objects" in Firefox DOM ranges and prevent an error being thrown', () => {
-			testUtils.sinon.stub( env, 'isGecko' ).value( true );
+		domDocument.dispatchEvent( new Event( 'selectionchange' ) );
 
-			const domFoo = document.createTextNode( 'foo' );
-			const domP = createElement( document, 'p', null, [ domFoo ] );
-			const converter = view.domConverter;
-
-			const viewP = parse( '<p>foo</p>' );
-
-			converter.bindElements( domP, viewP );
-
-			document.body.appendChild( domP );
-
-			const domRange = document.createRange();
-			domRange.setStart( domFoo, 1 );
-			domRange.setEnd( domFoo, 2 );
-
-			const domSelection = document.getSelection();
-			domSelection.removeAllRanges();
-			domSelection.addRange( domRange );
-
-			const viewSelection = converter.domSelectionToView( domSelection );
-
-			expect( viewSelection.rangeCount ).to.equal( 1 );
-			expect( stringify( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{o}o</p>' );
-
-			// Now we know that there should be a valid view range. So let's test if the DOM node throws an error.
-			sinon.stub( domFoo, Symbol.toStringTag ).get( () => {
-				throw new Error( 'Permission denied to access property Symbol.toStringTag' );
-			} );
-
-			let result = null;
-
-			expect( () => {
-				result = converter.domSelectionToView( domSelection );
-			} ).to.not.throw();
-
-			expect( result instanceof ViewSelection ).to.be.true;
-			expect( result.rangeCount ).to.equal( 0 );
-
-			domP.remove();
-		} );
-
-		it( 'should do nothing in Firefox if the DOM selection is correct', done => {
-			const domFoo = document.createTextNode( 'foo' );
-			const domP = createElement( document, 'p', null, [ domFoo ] );
-			const converter = view.domConverter;
-
-			const viewP = parse( '<p>foo</p>' );
-
-			converter.bindElements( domP, viewP );
-
-			document.body.appendChild( domP );
-
-			const domRange = document.createRange();
-			domRange.setStart( domFoo, 1 );
-			domRange.setEnd( domFoo, 2 );
-
-			const domSelection = document.getSelection();
-			domSelection.removeAllRanges();
-			domSelection.addRange( domRange );
-
-			expect( () => {
-				converter.domSelectionToView( domSelection );
-
-				setTimeout( done, 100 );
-			} ).to.not.throw();
-
-			domP.remove();
-		} );
+		expect( view.hasDomSelection ).to.be.false;
 	} );
 
 	it( 'should add only one #selectionChange listener to one document', done => {
@@ -547,7 +488,6 @@ describe( 'SelectionObserver', () => {
 			selectionObserver.listenTo( domMain, 'selectstart', selectStartChangedSpy, { priority: 'highest' } );
 
 			// The event was fired somewhere else in DOM.
-			domDocument.dispatchEvent( new Event( 'selectstart' ) );
 
 			expect( viewDocument.isSelecting ).to.be.false;
 			sinon.assert.notCalled( selectStartChangedSpy );
