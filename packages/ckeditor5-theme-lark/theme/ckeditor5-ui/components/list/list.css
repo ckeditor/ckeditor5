@@ -79,7 +79,11 @@
 
 .ck-list .ck-list__group {
 	padding-top: var(--ck-spacing-medium);
-	border-top: 1px solid var(--ck-color-base-border);
+
+	/* The group should have a border when it's not the first item. */
+	*:not(.ck-hidden) ~ & {
+		border-top: 1px solid var(--ck-color-base-border);
+	}
 
 	& > li:first-child > span {
 		font-size: 11px;
