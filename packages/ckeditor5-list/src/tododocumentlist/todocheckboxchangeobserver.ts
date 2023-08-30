@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/tododocumentlist/inputchangebserver
+ * @module list/tododocumentlist/todocheckboxchangeobserver
  */
 
 import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine';
@@ -15,7 +15,7 @@ import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine';
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
  */
-export default class InputChangeObserver extends DomEventObserver<'change'> {
+export default class TodoCheckboxChangeObserver extends DomEventObserver<'change'> {
 	/**
 	 * @inheritDoc
 	 */
@@ -25,7 +25,18 @@ export default class InputChangeObserver extends DomEventObserver<'change'> {
 	 * @inheritDoc
 	 */
 	public onDomEvent( domEvent: Event ): void {
-		this.fire( 'inputChange', domEvent );
+		if ( domEvent.target ) {
+			const viewTarget = this.view.domConverter.mapDomToView( domEvent.target as HTMLElement );
+
+			if (
+				viewTarget &&
+				viewTarget.is( 'element', 'input' ) &&
+				viewTarget.getAttribute( 'type' ) == 'checkbox' &&
+				viewTarget.findAncestor( { name: 'label', classes: 'todo-list__label' } )
+			) {
+				this.fire( 'todoCheckboxChange', domEvent );
+			}
+		}
 	}
 }
 
@@ -41,7 +52,7 @@ export default class InputChangeObserver extends DomEventObserver<'change'> {
  * @eventName module:engine/view/document~Document#inputchange
  * @param data The event data.
  */
-export type ViewDocumentInputChangeEvent = {
-	name: 'inputChange';
+export type ViewDocumentTodoCheckboxChangeEvent = {
+	name: 'todoCheckboxChange';
 	args: [ data: DomEventData<Event> ];
 };

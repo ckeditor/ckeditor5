@@ -11,8 +11,6 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 import type { Element } from 'ckeditor5/src/engine';
 import { getAllListItemBlocks } from '../documentlist/utils/model';
 
-const attributeKey = 'todoListChecked';
-
 /**
  * The check to-do command.
  *
@@ -67,9 +65,9 @@ export default class CheckTodoDocumentListCommand extends Command {
 
 			for ( const element of selectedElements ) {
 				if ( value ) {
-					writer.setAttribute( attributeKey, true, element );
+					writer.setAttribute( 'todoListChecked', true, element );
 				} else {
-					writer.removeAttribute( attributeKey, element );
+					writer.removeAttribute( 'todoListChecked', element );
 				}
 			}
 		} );
@@ -79,7 +77,7 @@ export default class CheckTodoDocumentListCommand extends Command {
 	 * TODO
 	 */
 	private _getValue( selectedElements: Array<Element> ): boolean {
-		return selectedElements.every( element => !!element.getAttribute( attributeKey ) );
+		return selectedElements.every( element => element.getAttribute( 'todoListChecked' ) );
 	}
 
 	/**
@@ -93,12 +91,12 @@ export default class CheckTodoDocumentListCommand extends Command {
 		const startElement = selectionRange.start.parent as Element;
 		const elements: Array<Element> = [];
 
-		if ( schema.checkAttribute( startElement, attributeKey ) ) {
+		if ( schema.checkAttribute( startElement, 'todoListChecked' ) ) {
 			elements.push( ...getAllListItemBlocks( startElement ) );
 		}
 
 		for ( const item of selectionRange.getItems( { shallow: true } ) as Iterable<Element> ) {
-			if ( schema.checkAttribute( item, attributeKey ) && !elements.includes( item ) ) {
+			if ( schema.checkAttribute( item, 'todoListChecked' ) && !elements.includes( item ) ) {
 				elements.push( ...getAllListItemBlocks( item ) );
 			}
 		}

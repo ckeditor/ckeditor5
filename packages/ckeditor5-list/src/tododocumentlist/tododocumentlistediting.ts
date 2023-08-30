@@ -30,7 +30,7 @@ import DocumentListEditing, {
 } from '../documentlist/documentlistediting';
 import DocumentListCommand from '../documentlist/documentlistcommand';
 import CheckTodoDocumentListCommand from './checktododocumentlistcommand';
-import InputChangeObserver, { type ViewDocumentInputChangeEvent } from './inputchangeobserver';
+import TodoCheckboxChangeObserver, { type ViewDocumentTodoCheckboxChangeEvent } from './todocheckboxchangeobserver';
 
 const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 
@@ -63,7 +63,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		editor.commands.add( 'todoList', new DocumentListCommand( editor, 'todo' ) );
 		editor.commands.add( 'checkTodoList', new CheckTodoDocumentListCommand( editor ) );
 
-		editing.view.addObserver( InputChangeObserver );
+		editing.view.addObserver( TodoCheckboxChangeObserver );
 
 		model.schema.extend( '$container', { allowAttributes: 'todoListChecked' } );
 		model.schema.extend( '$block', { allowAttributes: 'todoListChecked' } );
@@ -228,7 +228,7 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 		}, { priority: 'high' } );
 
-		this.listenTo<ViewDocumentInputChangeEvent>( editing.view.document, 'inputChange', ( evt, data ) => {
+		this.listenTo<ViewDocumentTodoCheckboxChangeEvent>( editing.view.document, 'todoCheckboxChange', ( evt, data ) => {
 			const viewTarget = data.target;
 
 			if ( !viewTarget || !viewTarget.is( 'element', 'input' ) ) {
