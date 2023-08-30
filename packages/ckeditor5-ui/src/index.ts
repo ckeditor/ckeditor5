@@ -17,6 +17,7 @@ export { default as BodyCollection } from './editorui/bodycollection';
 
 export { type ButtonExecuteEvent } from './button/button';
 export { default as ButtonView } from './button/buttonview';
+export { default as ButtonLabelView } from './button/buttonlabelview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 
 export * from './colorgrid/utils';
@@ -70,6 +71,11 @@ export { default as Model } from './model';
 export { default as BalloonPanelView } from './panel/balloon/balloonpanelview';
 export { default as ContextualBalloon } from './panel/balloon/contextualballoon';
 export { default as StickyPanelView } from './panel/sticky/stickypanelview';
+
+export { default as AutocompleteView } from './autocomplete/autocompleteview';
+export { default as SearchView, type SearchViewSearchEvent } from './search/searchview';
+export { default as SearchInfoView } from './search/searchinfoview';
+export { default as HighlightedTextView } from './highlightedtext/highlightedtextview';
 
 export { default as TooltipManager } from './tooltipmanager';
 export { default as Template, type TemplateDefinition } from './template';
