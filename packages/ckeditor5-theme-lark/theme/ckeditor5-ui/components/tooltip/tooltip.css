@@ -20,6 +20,12 @@
 		color: var(--ck-color-tooltip-text);
 	}
 
+	&.ck-tooltip_multi-line .ck-tooltip__text {
+		white-space: break-spaces;
+		display: inline-block;
+		padding: 4px 0;
+	}
+
 	/* Reset balloon panel styles */
 	box-shadow: none;
 

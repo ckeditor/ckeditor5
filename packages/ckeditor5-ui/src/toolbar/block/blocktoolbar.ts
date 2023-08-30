@@ -35,7 +35,15 @@ import type { ButtonExecuteEvent } from '../../button/button';
 import type { EditorUIUpdateEvent } from '../../editorui/editorui';
 
 const toPx = toUnit( 'px' );
-const { pilcrow } = icons;
+const { dragIndicator } = icons;
+
+const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
+	pilcrow: icons.pilcrow,
+	plus: icons.plus,
+	text: icons.text,
+	threeVerticalDots: icons.threeVerticalDots,
+	dragIndicator: icons.dragIndicator
+};
 
 /**
  * The block toolbar plugin.
@@ -257,9 +265,16 @@ export default class BlockToolbar extends Plugin {
 		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
 
+		const editBlockText = t( 'Click to edit block' );
+		const dragToMoveText = t( 'Drag to move' );
+
+		const iconFromConfig = this._blockToolbarConfig.icon;
+
+		const icon = NESTED_TOOLBAR_ICONS[ iconFromConfig! ] || iconFromConfig || dragIndicator;
+
 		buttonView.set( {
-			label: t( 'Edit block' ),
-			icon: pilcrow,
+			label: `${ editBlockText } \n${ dragToMoveText }`,
+			icon,
 			withText: false
 		} );
 
@@ -278,6 +293,8 @@ export default class BlockToolbar extends Plugin {
 
 		editor.ui.view.body.add( buttonView );
 		editor.ui.focusTracker.add( buttonView.element! );
+
+		buttonView.element!.dataset.ckeTooltipClass = 'ck-tooltip_multi-line';
 
 		return buttonView;
 	}
