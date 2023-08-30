@@ -8,7 +8,8 @@
 */
 
 import { getOptimalPosition, type PositioningFunction, type Locale } from '@ckeditor/ckeditor5-utils';
-import SearchView, { type SearchViewConfig, type SearchResultsView } from '../search/searchview';
+import SearchView, { type SearchViewConfig } from '../search/searchview';
+import type SearchResultsView from '../search/searchresultsview';
 
 import '../../theme/components/autocomplete/autocomplete.css';
 
