@@ -336,8 +336,7 @@
 			"ckeditor5.github.io"
 		],
 		"config": {
-			"trackingId": "UA-271067-19",
-			"cookieDomain": "ckeditor5.github.io"
+			"trackingId": "G-H2PK3PSE3F"
 		}
 	},
 	"og": {
@@ -627,7 +626,7 @@
 					"order": 10
 				},
 				{
-					"name": "Creating abbreviation plugin",
+					"name": "Creating an advanced plugin",
 					"id": "abbreviation-plugin",
 					"slug": "abbreviation-plugin",
 					"order": 20

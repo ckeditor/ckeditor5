@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Horizontal line
+meta-title: Horizontal line | CKEditor 5 Documentation
 ---
 
 # Horizontal line

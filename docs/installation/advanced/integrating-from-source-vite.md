@@ -1,5 +1,6 @@
 ---
 category: alternative-setups
+meta-title: Integrating CKEditor 5 from source using Vite | CKEditor 5 documentation
 order: 15
 modified_at: 2023-02-06
 ---

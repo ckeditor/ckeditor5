@@ -1,5 +1,6 @@
 ---
 menu-title: Styles
+meta-title: Styles | CKEditor 5 Documentation
 category: features
 modified_at: 2022-07-22
 ---

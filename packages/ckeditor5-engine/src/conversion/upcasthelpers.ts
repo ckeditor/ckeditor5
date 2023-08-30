@@ -206,7 +206,7 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * <div class="dark"><div>foo</div></div>    -->    <div dark="true"><div>foo</div></div>
 	 * ```
 	 *
-	 * Above, `class="dark"` attribute is added only to the `<div>` elements that has it. This is in contrary to
+	 * Above, `class="dark"` attribute is added only to the `<div>` elements that has it. This is in contrast to
 	 * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToAttribute} which sets attributes for
 	 * all the children in the model:
 	 *

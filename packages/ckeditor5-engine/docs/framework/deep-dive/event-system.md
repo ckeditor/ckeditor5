@@ -1,5 +1,6 @@
 ---
 category: framework-deep-dive
+meta-title: Event system | CKEditor 5 Framework Documentation
 ---
 # Event system
 

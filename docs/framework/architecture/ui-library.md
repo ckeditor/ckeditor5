@@ -1,5 +1,6 @@
 ---
 category: framework-architecture
+meta-title: UI library | CKEditor 5 Framework Documentation
 order: 40
 ---
 

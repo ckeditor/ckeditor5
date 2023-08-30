@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Image styles
-meta-title: Image style in CKEditor 5
+meta-title: Image styles | CKEditor 5 Documentation
 meta-description: Learn all about styling your images.
 order: 60
 modified_at: 2021-06-17

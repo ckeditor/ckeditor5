@@ -1,5 +1,6 @@
 ---
 category: getting-started
+meta-title: Extending features | CKEditor 5 documentation
 order: 90
 ---
 
@@ -15,15 +16,13 @@ In the {@link installation/getting-started/api-and-events previous guide} you ha
 The editor has a lot of ready-made features. However, there is always room for more! You can make use of the API exposed by the editor and its plugins and extend the editor using the {@link module:core/plugin~PluginInterface plugin interface} like this:
 
 ```js
+// It can be a function:
 function MyPlugin( editor ) {
 	// Plugin code.
 	// ...
 }
-```
 
-or
-
-```js
+// Or a class:
 class MyPlugin {
 	constructor( editor ) {
 		// Constructor code.
@@ -35,6 +34,16 @@ class MyPlugin {
 		// ...
 	}
 }
+
+// Added later to the plugins' list:
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	// If you're using builds, this is going to be extraPlugins property.
+	plugins: [
+		MyPlugin,
+		// Other plugins.
+		// ...
+	]
+} );
 ```
 
 This method allows writing simple, vanilla JS plugins that will be executed during the initialization of the editor, and don't need to interact with other plugin schemas or UI. To add a newly created plugin to an editor you need to use {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} property in configuration (or {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins` for predefined builds}).
@@ -43,37 +52,41 @@ This method allows writing simple, vanilla JS plugins that will be executed duri
 
 It is not possible to do everything with simple plugins as shown above.
 
-**What is possible:**
+**Simple plugins capabilities:**
 
-* Reacting to plugins' events.
-* Executing commands.
+* Reacting to main editor's events.
 * Overwriting editor's conversion mechanism.
 
-**What is not possible:**
+**Standard plugins capabilities:**
 
 * Adding new UI elements (e.g., a new button to a toolbar).
 * Creation of widgets or new commands.
+* Depending on other plugins' or commands' behaviors.
 
-Creating advanced plugins often involves using classes like `Plugin` or the UI package, and requires a build step.
+Creating more {@link framework/architecture/core-editor-architecture#plugins advanced plugins} often involves using classes like `Plugin` or the UI package, and requires a build step.
 
 </info-box>
 
-An example of a simple, dependency-free plugin that you may want to use this way is a {@link framework/deep-dive/upload-adapter custom upload adapter}.
+A focus listener could be an example of a simple, dependency-free plugin:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
-function MyUploadAdapterPlugin( editor ) {
-	editor.plugins.get( 'FileRepository' ).createUploadAdapter = function( loader ) {
-		// Custom upload adapter.
-		// ...
-	};
+function ReactOnFocusChange( editor ) {
+	// Add a listener on the focus change.
+	editor.editing.view.document.on(
+		'change:isFocused',
+		( evt, data, isFocused ) => {
+			if ( isFocused ) {
+				// Implement your logic what should happen
+				// when the editor is focused.
+			}
+		}
+	);
 }
 
-// Load the custom upload adapter as a plugin of the editor.
+// Load it as a plugin of the editor.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MyUploadAdapterPlugin ], /* Or extraPlugins in predefinded builds. */
+		plugins: [ ReactOnFocusChange ], /* Or extraPlugins in predefined builds. */
 		// More of the editor's configuration.
 		// ...
 	} )
@@ -85,6 +98,6 @@ ClassicEditor
 <info-box hint>
 **What's next?**
 
-Want to deepen your understanding of CKEditor 5? Dive into our {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-1 tutorial} to explore creating plugins hands-on.
+Want to deepen your understanding of CKEditor 5? Dive into our {@link tutorials/crash-course/editor tutorial} to explore creating plugins hands-on.
 
 </info-box>

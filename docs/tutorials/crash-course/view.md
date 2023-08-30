@@ -2,7 +2,7 @@
 category: crash-course
 order: 60
 menu-title: Editor UI
-meta-title: CKEditor 5 crash course - Editor UI
+meta-title: CKEditor 5 crash course - Editor UI | CKEditor 5 Documentation
 modified_at: 2023-08-16
 ---
 

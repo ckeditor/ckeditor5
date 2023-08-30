@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Media embed
+meta-title: Media embed | CKEditor 5 Documentation
 modified_at: 2021-10-08
 ---
 

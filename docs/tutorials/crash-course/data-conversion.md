@@ -2,7 +2,7 @@
 category: crash-course
 order: 40
 menu-title: Data conversion
-meta-title: CKEditor 5 crash course - Data conversion
+meta-title: CKEditor 5 crash course - Data conversion | CKEditor 5 Documentation
 modified_at: 2023-08-16
 ---
 

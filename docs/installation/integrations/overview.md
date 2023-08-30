@@ -1,5 +1,6 @@
 ---
 category: integrations
+meta-title: CKEditor 5 integrations overview | CKEditor 5 documentation
 order: 10
 menu-title: Overview
 ---

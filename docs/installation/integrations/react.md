@@ -1,5 +1,6 @@
 ---
 menu-title: React
+meta-title: React rich text editor component | CKEditor 5 documentation
 category: integrations
 order: 30
 ---
