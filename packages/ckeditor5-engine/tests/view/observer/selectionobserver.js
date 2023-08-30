@@ -488,6 +488,7 @@ describe( 'SelectionObserver', () => {
 			selectionObserver.listenTo( domMain, 'selectstart', selectStartChangedSpy, { priority: 'highest' } );
 
 			// The event was fired somewhere else in DOM.
+			domDocument.dispatchEvent( new Event( 'selectstart' ) );
 
 			expect( viewDocument.isSelecting ).to.be.false;
 			sinon.assert.notCalled( selectStartChangedSpy );
