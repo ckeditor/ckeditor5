@@ -17,6 +17,8 @@
 // To optimize the entire project run:
 // 	yarn clean-up-svg-icons packages/**/theme/icons
 
+// Just a comment in a JS file.
+
 'use strict';
 
 const chalk = require( 'chalk' );
