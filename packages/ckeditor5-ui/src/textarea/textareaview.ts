@@ -15,7 +15,7 @@ import '../../theme/components/input/input.css';
 import InputBase from '../input/inputbase';
 
 /**
- * The base input view class.
+ * The textarea view class.
  */
 export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	/**
@@ -57,7 +57,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
  * Fired when the user types in the textarea. Corresponds to the native
  * DOM `input` event.
  *
- * @eventName ~InputView#input
+ * @eventName ~TextareaView#input
  */
 export type TextareaInputEvent = {
 	name: 'input';

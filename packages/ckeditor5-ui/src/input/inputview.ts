@@ -15,7 +15,7 @@ import '../../theme/components/input/input.css';
 import InputBase from './inputbase';
 
 /**
- * The base input view class.
+ * The input view class.
  */
 export default class InputView extends InputBase {
 	/**
