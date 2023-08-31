@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/input/inputview
+ * @module ui/textarea/textareaview
  */
 
 import {
@@ -12,32 +12,22 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/input/input.css';
-import InputBase from './inputbase';
+import InputBase from '../input/inputbase';
 
 /**
  * The base input view class.
  */
-export default class InputView extends InputBase {
-	/**
-	 * Corresponds to the `inputmode` DOM attribute. Can be `text`, `numeric`, `decimal`, etc.
-	 *
-	 * @observable
-	 * @default 'text'
-	 */
-	declare public inputMode: string;
-
+export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
 		super( locale );
 
-		this.set( 'inputMode', 'text' );
-
 		const bind = this.bindTemplate;
 
 		this.setTemplate( {
-			tag: 'input',
+			tag: 'textarea',
 			attributes: {
 				class: [
 					'ck',
@@ -49,7 +39,6 @@ export default class InputView extends InputBase {
 				id: bind.to( 'id' ),
 				placeholder: bind.to( 'placeholder' ),
 				readonly: bind.to( 'isReadOnly' ),
-				inputmode: bind.to( 'inputMode' ),
 				'aria-invalid': bind.if( 'hasError', true ),
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
@@ -65,12 +54,12 @@ export default class InputView extends InputBase {
 }
 
 /**
- * Fired when the user types in the input. Corresponds to the native
+ * Fired when the user types in the textarea. Corresponds to the native
  * DOM `input` event.
  *
  * @eventName ~InputView#input
  */
-export type InputViewInputEvent = {
+export type TextareaInputEvent = {
 	name: 'input';
 	args: [ InputEvent ];
 };

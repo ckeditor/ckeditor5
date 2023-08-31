@@ -54,6 +54,8 @@ export { default as InputView } from './input/inputview';
 export { default as InputTextView } from './inputtext/inputtextview';
 export { default as InputNumberView } from './inputnumber/inputnumberview';
 
+export { default as TextareaView } from './textarea/textareaview';
+
 export { default as IframeView } from './iframe/iframeview';
 
 export { default as LabelView } from './label/labelview';
