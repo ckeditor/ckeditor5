@@ -334,9 +334,9 @@ BalloonEditor
 		}
 	} )
 	.then( editor => {
-		window.editorBalloon = editor;
+		window.editorBalloonCustomIcon = editor;
 
-		CKEditorInspector.attach( { balloon: editor } );
+		CKEditorInspector.attach( { balloonCustomIcon: editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );

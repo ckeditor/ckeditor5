@@ -22,6 +22,7 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import DragDropBlockToolbar from '@ckeditor/ckeditor5-clipboard/src/dragdropblocktoolbar';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -311,8 +312,55 @@ describe( 'BlockToolbar', () => {
 				} );
 			} );
 
+			it( 'should have simple label only for editing block', () => {
+				return ClassicTestEditor.create( element, {
+					plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote ],
+					blockToolbar: {
+						items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
+					}
+				} ).then( editor => {
+					const blockToolbar = editor.plugins.get( BlockToolbar );
+
+					expect( blockToolbar.buttonView.label ).to.be.equal( 'Edit block' );
+
+					element.remove();
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should have extended label when `DragDropBlockToolbar` is enabled ', () => {
+				return ClassicTestEditor.create( element, {
+					plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, DragDropBlockToolbar ],
+					blockToolbar: {
+						items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
+					}
+				} ).then( editor => {
+					const blockToolbar = editor.plugins.get( BlockToolbar );
+
+					expect( blockToolbar.buttonView.label ).to.be.equal( 'Click to edit block \nDrag to move' );
+
+					element.remove();
+
+					return editor.destroy();
+				} );
+			} );
+
 			it( 'should have custom tooltip CSS class', () => {
-				expect( blockToolbar.buttonView.element.dataset.ckeTooltipClass ).to.be.equal( 'ck-tooltip_multi-line' );
+				return ClassicTestEditor.create( element, {
+					plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, DragDropBlockToolbar ],
+					blockToolbar: {
+						items: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
+					}
+				} ).then( editor => {
+					const blockToolbar = editor.plugins.get( BlockToolbar );
+
+					expect( blockToolbar.buttonView.element.dataset.ckeTooltipClass ).to.be.equal( 'ck-tooltip_multi-line' );
+
+					element.remove();
+
+					return editor.destroy();
+				} );
 			} );
 
 			it( 'should be added to the editor ui.view.body collection', () => {
