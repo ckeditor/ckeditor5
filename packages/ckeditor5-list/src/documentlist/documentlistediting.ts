@@ -23,6 +23,7 @@ import type {
 	UpcastElementEvent,
 	ViewDocumentTabEvent,
 	ViewElement,
+	ViewAttributeElement,
 	Writer
 } from 'ckeditor5/src/engine';
 
@@ -583,10 +584,22 @@ export interface ItemMarkerDowncastStrategy {
 	 */
 	createElement(
 		writer: DowncastWriter,
-		value: unknown,
-		element: Element,
+		modelElement: Element,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewElement | null;
+
+	/**
+	 * TODO
+	 */
+	canWrapElement?( modelElement: Element ): boolean;
+
+	/**
+	 * TODO
+	 */
+	createWrapperElement?(
+		writer: DowncastWriter,
+		{ dataPipeline }: { dataPipeline?: boolean }
+	): ViewAttributeElement;
 }
 
 /**
@@ -859,12 +872,12 @@ export type DocumentListEditingCheckAttributesEvent = {
  * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
  *
  * @internal
- * @eventName ~DocumentListEditing#checkAttributes
+ * @eventName ~DocumentListEditing#checkElement
  */
-export type DocumentListEditingCheckParagraphEvent = {
-	name: 'checkParagraph';
+export type DocumentListEditingCheckElementEvent = {
+	name: 'checkElement';
 	args: [ {
-		viewElement: ViewElement & { id?: string };
+		viewElement: ViewElement;
 		modelElement: Element;
 	} ];
 	return: boolean;

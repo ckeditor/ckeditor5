@@ -25,7 +25,7 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import { isFirstBlockOfListItem, isListItemBlock } from '../documentlist/utils/model';
 import DocumentListEditing, {
-	type DocumentListEditingCheckParagraphEvent,
+	type DocumentListEditingCheckElementEvent,
 	type DocumentListEditingPostFixerEvent
 } from '../documentlist/documentlistediting';
 import DocumentListCommand from '../documentlist/documentlistcommand';
@@ -68,6 +68,8 @@ export default class TodoDocumentListEditing extends Plugin {
 		model.schema.extend( '$container', { allowAttributes: 'todoListChecked' } );
 		model.schema.extend( '$block', { allowAttributes: 'todoListChecked' } );
 		model.schema.extend( '$blockObject', { allowAttributes: 'todoListChecked' } );
+
+		// TODO fix arrow keys navigation
 
 		model.schema.addAttributeCheck( ( context, attributeName ) => {
 			const item = context.last;
@@ -122,16 +124,17 @@ export default class TodoDocumentListEditing extends Plugin {
 		} );
 
 		documentListEditing.registerDowncastStrategy( {
-			attributeName: 'listType',
+			attributeName: 'todoListChecked',
 			scope: 'itemMarker',
-			createElement( writer, value, element, { dataPipeline } ) {
-				if ( value != 'todo' ) {
+
+			createElement( writer, modelElement, { dataPipeline } ) {
+				if ( modelElement.getAttribute( 'listType' ) != 'todo' ) {
 					return null;
 				}
 
 				const viewElement = writer.createEmptyElement( 'input', {
 					type: 'checkbox',
-					...( element.getAttribute( 'todoListChecked' ) ?
+					...( modelElement.getAttribute( 'todoListChecked' ) ?
 						{ checked: 'checked' } :
 						null
 					),
@@ -146,23 +149,44 @@ export default class TodoDocumentListEditing extends Plugin {
 				}
 
 				return writer.createContainerElement( 'span', { contenteditable: 'false' }, viewElement );
+			},
+
+			canWrapElement( modelElement ) {
+				return isDescriptionBlock( modelElement );
+			},
+
+			createWrapperElement( writer ) {
+				return writer.createAttributeElement( 'label', { class: 'todo-list__label' } );
 			}
 		} );
 
-		// Just mark the todoListChecked attribute as a list attribute that could trigger conversion.
-		documentListEditing.registerDowncastStrategy( {
-			attributeName: 'todoListChecked',
-			scope: 'itemMarker',
-			createElement() {
-				return null;
-			}
-		} );
-
-		documentListEditing.on<DocumentListEditingCheckParagraphEvent>( 'checkParagraph', ( evt, { modelElement, viewElement } ) => {
+		documentListEditing.on<DocumentListEditingCheckElementEvent>( 'checkElement', ( evt, { modelElement, viewElement } ) => {
+			const isFirstTodoModelParagraphBlock = isDescriptionBlock( modelElement );
 			const hasViewClass = viewElement.hasClass( 'todo-list__label__description' );
-			const isModelTodoList = modelElement.getAttribute( 'listType' ) == 'todo';
 
-			if ( hasViewClass != isModelTodoList ) {
+			if ( hasViewClass != isFirstTodoModelParagraphBlock ) {
+				evt.return = true;
+				evt.stop();
+			}
+		} );
+
+		documentListEditing.on<DocumentListEditingCheckElementEvent>( 'checkElement', ( evt, { modelElement, viewElement } ) => {
+			const isFirstTodoModelItemBlock = modelElement.getAttribute( 'listType' ) == 'todo' && isFirstBlockOfListItem( modelElement );
+
+			let hasViewItemMarker = false;
+			const viewWalker = editor.editing.view.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } );
+
+			for ( const { item } of viewWalker ) {
+				if ( item.is( 'element' ) && editor.editing.mapper.toModelElement( item ) ) {
+					break;
+				}
+
+				if ( item.is( 'element', 'input' ) && item.getAttribute( 'type' ) == 'checkbox' ) {
+					hasViewItemMarker = true;
+				}
+			}
+
+			if ( hasViewItemMarker != isFirstTodoModelItemBlock ) {
 				evt.return = true;
 				evt.stop();
 			}
@@ -247,7 +271,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		editing.mapper.registerViewToModelLength( 'input', viewElement => {
 			if (
 				viewElement.getAttribute( 'type' ) == 'checkbox' &&
-				viewElement.parent!.name == 'li'
+				viewElement.findAncestor( { name: 'label', classes: 'todo-list__label' } )
 			) {
 				return 0;
 			}
@@ -345,4 +369,13 @@ function attributeUpcastConsumingConverter( matcherPattern: MatcherPattern ): Ge
 		match.name = false;
 		conversionApi.consumable.consume( data.viewItem, match );
 	};
+}
+
+/**
+ * TODO
+ */
+function isDescriptionBlock( modelElement: Element ): boolean {
+	return modelElement.is( 'element', 'paragraph' ) &&
+		modelElement.getAttribute( 'listType' ) == 'todo' &&
+		isFirstBlockOfListItem( modelElement );
 }
