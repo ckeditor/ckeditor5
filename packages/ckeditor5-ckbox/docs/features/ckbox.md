@@ -1,8 +1,8 @@
 ---
 category: features-file-management
 menu-title: CKBox
-meta-title: CKBox file manager in CKEditor&nbsp;5
-meta-description: Learn all about using the CKBox file manager and service with CKEditor&nbsp;5
+meta-title: CKBox file manager | CKEditor 5 Documentation
+meta-description: Learn all about using the CKBox file manager and service with CKEditor 5
 modified_at: 2022-06-20
 order: 10
 badges: [ premium ]
@@ -279,7 +279,7 @@ The {@link module:ckbox/ckbox~CKBox} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?

@@ -1,5 +1,6 @@
 ---
 category: getting-started
+meta-title: Customized installation | CKEditor 5 documentation
 order: 30
 modified_at: 2022-03-15
 ---
@@ -495,7 +496,7 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 {@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of CKEditor&nbsp;5 classic editor with bold and italic features.}
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 <info-box hint>

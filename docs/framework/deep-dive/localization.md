@@ -1,5 +1,6 @@
 ---
 category: framework-deep-dive-ui
+meta-title: Localization | CKEditor 5 Framework Documentation
 order: 70
 ---
 
@@ -115,7 +116,7 @@ editor.ui.componentFactory.add( 'smilingFaceEmoji', locale => {
 ```
 
 <info-box warning>
-	See {@link framework/creating-simple-plugin-timestamp how to create a complete plugin} to have a better understanding of creating CKEditor&nbsp;5 plugins.
+	See {@link tutorials/crash-course/editor how to create a complete plugin} to have a better understanding of creating CKEditor&nbsp;5 plugins.
 </info-box>
 
 ### Example: Localizing pending actions

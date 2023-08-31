@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Document title
+meta-title: Document title | CKEditor 5 Documentation
 ---
 
 # Document title
@@ -90,7 +91,7 @@ In the CKEditor&nbsp;5 data model the document title is represented as follows:
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Related features

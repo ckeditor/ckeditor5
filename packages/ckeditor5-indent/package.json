@@ -17,9 +17,11 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "39.0.1",
     "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
+    "@ckeditor/ckeditor5-list": "39.0.1",
     "@ckeditor/ckeditor5-editor-classic": "39.0.1",
     "@ckeditor/ckeditor5-engine": "39.0.1",
     "@ckeditor/ckeditor5-heading": "39.0.1",
+    "@ckeditor/ckeditor5-list": "39.0.1",
     "@ckeditor/ckeditor5-paragraph": "39.0.1",
     "@ckeditor/ckeditor5-theme-lark": "39.0.1",
     "@ckeditor/ckeditor5-ui": "39.0.1",

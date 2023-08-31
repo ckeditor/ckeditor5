@@ -1,5 +1,6 @@
 ---
 category: update-guides
+meta-title: Update to version 38.x | CKEditor 5 Documentation
 menu-title: Update to v38.x
 order: 86
 ---

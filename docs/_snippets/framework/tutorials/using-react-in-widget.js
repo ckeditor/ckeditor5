@@ -9,7 +9,7 @@ import Babel from 'babel-standalone';
 
 // Imports necessary to run a React application.
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 // The official <CKEditor> component for React.
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -149,7 +149,7 @@ class InsertProductPreviewCommand extends Command {
 Object.assign( window, {
 	Babel,
 	React,
-	ReactDOM,
+	createRoot,
 	CKEditor,
 	ClassicEditor,
 	Essentials,

@@ -2,6 +2,7 @@
 category: examples-framework
 order: 140
 toc: false
+meta-title: Content placeholder example | CKEditor 5 Documentation
 classes: main__content--no-toc
 modified_at: 2022-12-19
 ---
@@ -14,7 +15,7 @@ The editor presented below offers a custom plugin that lets you add predefined p
 
 ## Detailed guide
 
-If you would like to create such a feature on your own, take a look at the {@link framework/tutorials/implementing-an-inline-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided. 
+If you would like to create such a feature on your own, take a look at the {@link tutorials/widgets/implementing-an-inline-widget dedicated tutorial} which shows how to achieve this step by step with the source code provided. 
 
 ## Editor example configuration
 

@@ -2,6 +2,7 @@
 category: examples-framework
 order: 100
 toc: false
+meta-title: Custom UI with Bootstrap example | CKEditor 5 Documentation
 classes: main__content--no-toc
 ---
 

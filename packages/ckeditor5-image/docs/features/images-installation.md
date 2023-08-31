@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Installation
-meta-title: Installation and configuration of image features in CKEditor&nbsp;5
+meta-title: Installation and configuration of image features | CKEditor 5 Documentation
 meta-description: Learn how to install and configure various image-related CKEdiotr 5 plugins.
 order: 15
 modified_at: 2021-06-17

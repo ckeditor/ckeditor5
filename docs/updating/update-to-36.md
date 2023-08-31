@@ -1,5 +1,6 @@
 ---
 category: update-guides
+meta-title: Update to version 36.x | CKEditor 5 Documentation
 menu-title: Update to v36.x
 order: 88
 modified_at: 2022-12-14

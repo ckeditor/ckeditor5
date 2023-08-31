@@ -1,6 +1,7 @@
 ---
 title: Content minimap
 menu-title: Content minimap
+meta-title: Content minimap | CKEditor 5 Documentation
 category: features
 classes: main__content--no-toc
 toc: false
@@ -191,7 +192,7 @@ DecoupledEditor
 The minimap feature uses `<iframe>` internally. For a proper look and operation, it is essential for the content (clone) inside the `<iframe>` to have exactly the same styles as the main editor document. If the content of your editor inherits styles from parent containers, you may need to pass the class names of these containers in the feature configuration to maintain style parity. See the {@link module:minimap/minimapconfig~MinimapConfig#extraClasses detailed classes documentation} to learn more.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Related features
