@@ -5,14 +5,14 @@
 
 /* global Event */
 
-import InputView from '../../src/input/inputview';
+import TextareaView from '../../src/textarea/textareaview';
 
-describe( 'InputView', () => {
+describe( 'TextareaView', () => {
 	let view, ariaDescribedById;
 
 	beforeEach( () => {
 		ariaDescribedById = 'ck-error-1234567890';
-		view = new InputView();
+		view = new TextareaView();
 
 		view.render();
 	} );
@@ -23,15 +23,10 @@ describe( 'InputView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.tagName ).to.equal( 'INPUT' );
-			expect( view.element.type ).to.equal( 'text' );
+			expect( view.element.tagName ).to.equal( 'TEXTAREA' );
 			expect( view.element.getAttribute( 'type' ) ).to.be.null;
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input' ) ).to.be.true;
-		} );
-
-		it( 'should set the #inputMode observable property', () => {
-			expect( view.inputMode ).to.equal( 'text' );
 		} );
 	} );
 
@@ -66,7 +61,7 @@ describe( 'InputView', () => {
 
 			// See ckeditor5-ui/issues/335.
 			it( 'should set element value when value was defined before view#render', () => {
-				view = new InputView();
+				view = new TextareaView();
 
 				view.value = 'baz';
 
@@ -112,16 +107,6 @@ describe( 'InputView', () => {
 				view.isReadOnly = true;
 
 				expect( view.element.readOnly ).to.true;
-			} );
-		} );
-
-		describe( 'inputmode attribute', () => {
-			it( 'should react on view#inputMode', () => {
-				expect( view.element.getAttribute( 'inputmode' ) ).to.equal( 'text' );
-
-				view.inputMode = 'numeric';
-
-				expect( view.element.getAttribute( 'inputmode' ) ).to.equal( 'numeric' );
 			} );
 		} );
 
@@ -173,7 +158,7 @@ describe( 'InputView', () => {
 			} );
 		} );
 
-		describe( 'input event', () => {
+		describe( 'textarea event', () => {
 			it( 'triggers view#input', () => {
 				const spy = sinon.spy();
 
