@@ -73,6 +73,7 @@ export default class ResizeImageCommand extends Command {
 			model.change( writer => {
 				writer.setAttribute( 'resizedWidth', options.width, imageElement );
 				writer.removeAttribute( 'resizedHeight', imageElement );
+				imageUtils.loadImageAndSetSizeAttributes( imageElement );
 			} );
 		}
 	}

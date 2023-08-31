@@ -4,9 +4,13 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ResizeImageCommand from '../../src/imageresize/resizeimagecommand';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+/* eslint-disable no-undef */
 
 describe( 'ResizeImageCommand', () => {
 	let editor, model, command;
@@ -124,5 +128,66 @@ describe( 'ResizeImageCommand', () => {
 			expect( getData( model ) ).to.equal( '[<imageBlock resizedWidth="100%"></imageBlock>]' );
 			expect( model.document.getRoot().getChild( 0 ).hasAttribute( 'resizedHeight' ) ).to.be.false;
 		} );
+
+		describe( 'image width and height attributes', () => {
+			let editor, model, command, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+
+				document.body.appendChild( editorElement );
+
+				editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ ArticlePluginSet, ImageResizeEditing ],
+					image: {
+						toolbar: [ 'imageStyle:block' ]
+					}
+				} );
+
+				model = editor.model;
+				command = new ResizeImageCommand( editor );
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+				return editor.destroy();
+			} );
+
+			it( 'should set width and height when resizedWidth is set (and be undoable in single step)', async () => {
+				const initialData = '[<imageBlock src="/assets/sample.png"></imageBlock>]';
+
+				setData( model, initialData );
+
+				command.execute( { width: '100%' } );
+				await timeout( 100 );
+
+				expect( getData( model ) ).to.equal(
+					'[<imageBlock height="96" resizedWidth="100%" src="/assets/sample.png" width="96"></imageBlock>]'
+				);
+
+				editor.execute( 'undo' );
+
+				expect( getData( model ) ).to.equal( initialData );
+			} );
+
+			it( 'should set width and height when resizedWidth is removed (and be undoable in single step)', async () => {
+				const initialData = '[<imageBlock resizedWidth="50px" src="/assets/sample.png"></imageBlock>]';
+
+				setData( model, initialData );
+
+				command.execute( { width: null } );
+				await timeout( 100 );
+
+				expect( getData( model ) ).to.equal( '[<imageBlock height="96" src="/assets/sample.png" width="96"></imageBlock>]' );
+
+				editor.execute( 'undo' );
+
+				expect( getData( model ) ).to.equal( initialData );
+			} );
+		} );
 	} );
+
+	function timeout( ms ) {
+		return new Promise( res => setTimeout( res, ms ) );
+	}
 } );
