@@ -16,9 +16,9 @@ const minimist = require( 'minimist' );
 const IS_COMMUNITY_PR = require( './is-community-pr' );
 
 const {
-	CIRCLE_PULL_REQUEST,
 	CKE5_IS_NIGHTLY_BUILD,
-	CKE5_IS_EXTERNAL_BUILD
+	CKE5_IS_EXTERNAL_BUILD,
+	CIRCLE_BRANCH
 } = process.env;
 
 const shortFlowFilePatterns = [
@@ -57,16 +57,14 @@ function main() {
 		return process.exit( 1 );
 	}
 
-	// If processing a pull request build, find all changed files.
-	if ( CIRCLE_PULL_REQUEST ) {
-		const prId = CIRCLE_PULL_REQUEST.split( '/' ).pop();
+	const prNumber = getPullRequestNumber( CIRCLE_BRANCH, cwd );
 
-		changedFilesPaths = execSync( `gh pr view ${ prId } --json files --jq '.files.[].path'`, { cwd } ).toString();
+	// If processing a pull request build, find all changed files.
+	if ( prNumber ) {
+		changedFilesPaths = execSync( `gh pr view ${ prNumber } --json files --jq '.files.[].path'`, { cwd } ).toString();
 	} else {
 		// We target last commit content by default if we're not processing a pull request.
-		const diffTargets = 'HEAD HEAD~1';
-
-		changedFilesPaths = execSync( `git diff --name-only ${ diffTargets }`, { cwd } ).toString();
+		changedFilesPaths = execSync( 'git diff --name-only HEAD HEAD~1', { cwd } ).toString();
 	}
 
 	const files = changedFilesPaths.trim().split( '\n' );
@@ -74,6 +72,20 @@ function main() {
 	return process.exit(
 		doAllFilesMatchShortFlow( files ) ? 0 : 1
 	);
+}
+
+/**
+ * Returns the first opened pull request number for a given branch.
+ *
+ * @param {String} branch
+ * @param {String} cwd
+ * @returns {Number|null}
+ */
+function getPullRequestNumber( branch, cwd ) {
+	const prId = execSync( `gh pr view ${ branch } --json number --jq .number`, { cwd } ).toString();
+	const numberOrNaN = parseInt( prId );
+
+	return isNaN( numberOrNaN ) ? null : numberOrNaN;
 }
 
 /**
