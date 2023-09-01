@@ -10,7 +10,7 @@
 import View from '../view';
 import FocusCycler from '../focuscycler';
 
-import ListItemView from './listitemview';
+import type ListItemView from './listitemview';
 import ListItemGroupView from './listitemgroupview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import ViewCollection from '../viewcollection';
@@ -30,14 +30,16 @@ import '../../theme/components/list/list.css';
  */
 export default class ListView extends View<HTMLUListElement> implements DropdownPanelFocusable {
 	/**
-	 * TODO
+	 * The collection of focusable views in the list. It is used to determine accessible navigation
+	 * between the {@link module:ui/list/listitemview~ListItemView list items} and
+	 * {@link module:ui/list/listgroupview~ListGroupView list groups}.
 	 */
 	public readonly focusables: ViewCollection;
 
 	/**
 	 * Collection of the child list views.
 	 */
-	public readonly items: ViewCollection;
+	public readonly items: ViewCollection<ListItemView | ListItemGroupView>;
 
 	/**
 	 * Tracks information about DOM focus in the list.
@@ -55,6 +57,13 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	 * @observable
 	 */
 	declare public ariaLabel: string | undefined;
+
+	/**
+	 * (Optional) The ARIA property reflected by the `aria-ariaLabelledBy` DOM attribute used by assistive technologies.
+	 *
+	 * @observable
+	 */
+	declare public ariaLabelledBy?: string | undefined;
 
 	/**
 	 * The property reflected by the `role` DOM attribute to be used by assistive technologies.
@@ -95,6 +104,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 		} );
 
 		this.set( 'ariaLabel', undefined );
+		this.set( 'ariaLabelledBy', undefined );
 		this.set( 'role', undefined );
 
 		this.setTemplate( {
@@ -107,7 +117,8 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 					'ck-list'
 				],
 				role: bind.to( 'role' ),
-				'aria-label': bind.to( 'ariaLabel' )
+				'aria-label': bind.to( 'ariaLabel' ),
+				'aria-labelledby': bind.to( 'ariaLabelledBy' )
 			},
 
 			children: this.items
@@ -131,40 +142,36 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 
 		const registerGroupItems = ( group: ListItemGroupView ) => {
 			for ( const child of group.items ) {
-				registerItem( child );
+				registerItem( child as ListItemView );
 			}
 		};
 
 		// Items added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
-			if ( item instanceof ListItemView ) {
-				registerItem( item );
-			} else if ( item instanceof ListItemGroupView ) {
+			if ( item instanceof ListItemGroupView ) {
 				registerGroupItems( item );
+			} else {
+				registerItem( item );
 			}
 		}
 
 		this.items.on<CollectionAddEvent<ListItemView>>( 'add', ( evt, item ) => {
-			if ( item instanceof ListItemView ) {
-				registerItem( item );
-			}
-
 			if ( item instanceof ListItemGroupView ) {
 				registerGroupItems( item );
+			} else {
+				registerItem( item );
 			}
 		} );
 
 		this.items.on<CollectionRemoveEvent<ListItemView>>( 'remove', ( evt, item ) => {
-			if ( item instanceof ListItemView ) {
-				this.focusTracker.remove( item.element! );
-				this.focusables.remove( item );
-			}
-
 			if ( item instanceof ListItemGroupView ) {
 				for ( const child of item.items ) {
 					this.focusTracker.remove( child.element! );
 					this.focusables.remove( child );
 				}
+			} else {
+				this.focusTracker.remove( item.element! );
+				this.focusables.remove( item );
 			}
 		} );
 

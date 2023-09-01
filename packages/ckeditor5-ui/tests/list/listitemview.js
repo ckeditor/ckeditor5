@@ -54,5 +54,11 @@ describe( 'ListItemView', () => {
 			view.focus();
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should not throw if there is no child view', () => {
+			expect( () => {
+				view.focus();
+			} ).to.not.throw();
+		} );
 	} );
 } );

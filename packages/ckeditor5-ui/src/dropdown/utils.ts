@@ -525,19 +525,22 @@ function focusDropdownPanelOnOpen( dropdownView: DropdownView ) {
 }
 
 /**
- * TODO
+ * This helper populates a dropdown list with items and groups according to the
+ * collection of item definitions. A permanent binding is created in this process allowing
+ * dynamic management of the dropdown list content.
  *
- * @param items
+ * @param dropdownView
+ * @param listItems
  * @param definitions
  * @param locale
  */
 function bindViewCollectionItemsToDefinitions(
 	dropdownView: DropdownView,
-	items: ViewCollection,
+	listItems: ViewCollection,
 	definitions: Collection<ListDropdownItemDefinition>,
 	locale: Locale
 ) {
-	items.bindTo( definitions ).using( def => {
+	listItems.bindTo( definitions ).using( def => {
 		if ( def.type === 'separator' ) {
 			return new ListSeparatorView( locale );
 		} else if ( def.type === 'group' ) {
@@ -598,16 +601,19 @@ export type ListDropdownButtonDefinition = {
 	model: Model;
 };
 
+/**
+ * A definition of the group inside the list. A group can contain one or more list items (buttons).
+ */
 export type ListDropdownGroupDefinition = {
 	type: 'group';
 
 	/**
-	 * TODO
+	 * The visible label of the group.
 	 */
 	label: string;
 
 	/**
-	 * TODO
+	 * The collection of the child list items inside this group.
 	 */
 	items: Collection<ListDropdownButtonDefinition>;
 };

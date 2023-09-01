@@ -222,6 +222,18 @@ describe( 'ListView', () => {
 		} );
 	} );
 
+	describe( '#ariaLabelledBy', () => {
+		it( 'should be not set by default', () => {
+			expect( view.element.attributes[ 'aria-labelledby' ] ).to.be.undefined;
+		} );
+
+		it( 'should set aria-labelledby', () => {
+			view.ariaLabelledBy = 'foo';
+
+			expect( view.element.attributes[ 'aria-labelledby' ].value ).to.equal( 'foo' );
+		} );
+	} );
+
 	describe( '#role', () => {
 		it( 'should be not set by default', () => {
 			expect( view.element.attributes.role ).to.be.undefined;
