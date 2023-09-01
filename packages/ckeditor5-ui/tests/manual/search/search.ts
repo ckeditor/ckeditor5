@@ -11,18 +11,17 @@ import {
 	ListItemGroupView,
 	ListItemView,
 	ListView,
-	SearchInfoView,
 	SearchView,
 	ToolbarView,
-	type SearchViewSearchEvent
+	type FilteredView
 } from '../../../src';
 
 const locale = new Locale();
-const t = locale.t;
 
 function createSearchableList() {
-	class FilteredTestListView extends ListView {
-		public filter( query ): number {
+	class FilteredTestListView extends ListView implements FilteredView {
+		public filter( query ) {
+			let totalItemsCount = 0;
 			let visibleItemsCount = 0;
 
 			function updateListItemVisibility( listItemView: ListItemView ) {
@@ -33,6 +32,8 @@ function createSearchableList() {
 				if ( listItemView.isVisible ) {
 					visibleItemsCount++;
 				}
+
+				totalItemsCount++;
 			}
 
 			for ( const listItemOrGroupView of this.items ) {
@@ -49,7 +50,10 @@ function createSearchableList() {
 				}
 			}
 
-			return visibleItemsCount;
+			return {
+				resultsCount: visibleItemsCount,
+				totalItemsCount
+			};
 		}
 	}
 
@@ -91,16 +95,14 @@ function createSearchableList() {
 		filteredView: listView
 	} );
 
-	createSearchInfoView( searchView );
-
 	searchView.render();
 
 	document.querySelector( '.playground' )!.appendChild( searchView.element! );
 }
 
 function createSearchableToolbar() {
-	class FilteredTestToolbarView extends ToolbarView {
-		public filter( query ): number {
+	class FilteredTestToolbarView extends ToolbarView implements FilteredView {
+		public filter( query ) {
 			let visibleItemsCount = 0;
 
 			for ( const item of this.items ) {
@@ -113,7 +115,10 @@ function createSearchableToolbar() {
 				}
 			}
 
-			return visibleItemsCount;
+			return {
+				resultsCount: visibleItemsCount,
+				totalItemsCount: this.items.length
+			};
 		}
 	}
 
@@ -143,31 +148,9 @@ function createSearchableToolbar() {
 		filteredView: toolbarView
 	} );
 
-	createSearchInfoView( searchView );
-
 	searchView.render();
 
 	document.querySelector( '.playground' )!.appendChild( searchView.element! );
-}
-
-function createSearchInfoView( searchView: SearchView ) {
-	const infoView = new SearchInfoView();
-
-	searchView.resultsView.children.add( infoView, 0 );
-
-	searchView.on<SearchViewSearchEvent>( 'search', ( evt, { numberOfResults, query } ) => {
-		if ( !numberOfResults ) {
-			infoView.set( {
-				primaryText: t( 'Nothing found that matches "%0".', query ),
-				secondaryText: t( 'Please try a different phrase or check the spelling.' ),
-				isVisible: true
-			} );
-		} else {
-			infoView.set( {
-				isVisible: false
-			} );
-		}
-	} );
 }
 
 createSearchableList();

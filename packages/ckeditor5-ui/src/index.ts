@@ -77,6 +77,7 @@ export { default as StickyPanelView } from './panel/sticky/stickypanelview';
 export { default as AutocompleteView } from './autocomplete/autocompleteview';
 export { default as SearchView, type SearchViewSearchEvent } from './search/searchview';
 export { default as SearchInfoView } from './search/searchinfoview';
+export { default as FilteredView } from './search/filteredview';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview';
 
 export { default as TooltipManager } from './tooltipmanager';

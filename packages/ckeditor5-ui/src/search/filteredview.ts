@@ -18,5 +18,8 @@ export default interface FilteredView extends View, DropdownPanelFocusable {
 	/**
 	 * TODO
 	 */
-	filter( regExp: RegExp | null ): number;
+	filter( regExp: RegExp | null ): {
+		resultsCount: number;
+		totalItemsCount: number;
+	};
 }
