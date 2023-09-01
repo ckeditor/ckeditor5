@@ -39,7 +39,13 @@ import TodoCheckboxChangeObserver, { type ViewDocumentTodoCheckboxChangeEvent } 
 const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 
 /**
- * TODO
+ * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
+ *
+ * It registers the entire functionality of the {@link module:list/documentlist/documentlistediting~DocumentListEditing list editing plugin}
+ * and extends it with the commands:
+ *
+ * - `'todoList'`,
+ * - `'checkTodoList'`,
  */
 export default class TodoDocumentListEditing extends Plugin {
 	/**
@@ -63,6 +69,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const editing = editor.editing;
+		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
 		editor.commands.add( 'todoList', new DocumentListCommand( editor, 'todo' ) );
 		editor.commands.add( 'checkTodoList', new CheckTodoDocumentListCommand( editor ) );
@@ -85,18 +92,6 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 		} );
 
-		// TODO
-		editing.mapper.registerViewToModelLength( 'input', viewElement => {
-			if (
-				viewElement.getAttribute( 'type' ) == 'checkbox' &&
-				viewElement.findAncestor( { name: 'label', classes: 'todo-list__label' } )
-			) {
-				return 0;
-			}
-
-			return editing.mapper.toModelElement( viewElement ) ? 1 : 0;
-		} );
-
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			// Upcast of to-do list item is based on a checkbox at the beginning of a <li> to keep compatibility with markdown input.
 			dispatcher.on( 'element:input', todoItemInputConverter() );
@@ -116,14 +111,12 @@ export default class TodoDocumentListEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'paragraph',
 			view: ( element, { writer } ) => {
-				if ( isFirstBlockOfListItem( element ) && element.getAttribute( 'listType' ) == 'todo' ) {
+				if ( isDescriptionBlock( element ) ) {
 					return writer.createContainerElement( 'span', { class: 'todo-list__label__description' } );
 				}
 			},
 			converterPriority: 'highest'
 		} );
-
-		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
 		documentListEditing.registerDowncastStrategy( {
 			scope: 'list',
@@ -175,6 +168,21 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 		} );
 
+		// We need to register the model length callback for the view checkbox input because it has no mapped model element.
+		// The to-do list item checkbox does not use the UIElement because it would be trimmed by ViewRange#getTrimmed()
+		// and removing the default remove converter would not include checkbox in the range to remove.
+		editing.mapper.registerViewToModelLength( 'input', viewElement => {
+			if (
+				viewElement.getAttribute( 'type' ) == 'checkbox' &&
+				viewElement.findAncestor( { name: 'label', classes: 'todo-list__label' } )
+			) {
+				return 0;
+			}
+
+			return editing.mapper.toModelElement( viewElement ) ? 1 : 0;
+		} );
+
+		// Verifies if a to-do list block requires reconversion of a first item downcasted as an item description.
 		documentListEditing.on<DocumentListEditingCheckElementEvent>( 'checkElement', ( evt, { modelElement, viewElement } ) => {
 			const isFirstTodoModelParagraphBlock = isDescriptionBlock( modelElement );
 			const hasViewClass = viewElement.hasClass( 'todo-list__label__description' );
@@ -185,6 +193,8 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 		} );
 
+		// Verifies if a to-do list block requires reconversion of a checkbox element
+		// (for example there is a new paragraph inserted as a first block of a list item).
 		documentListEditing.on<DocumentListEditingCheckElementEvent>( 'checkElement', ( evt, { modelElement, viewElement } ) => {
 			const isFirstTodoModelItemBlock = modelElement.getAttribute( 'listType' ) == 'todo' && isFirstBlockOfListItem( modelElement );
 
@@ -207,7 +217,7 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 		} );
 
-		// Make sure that all blocks of the same list item have the same todoListChecked.
+		// Make sure that all blocks of the same list item have the same todoListChecked attribute.
 		documentListEditing.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
 			for ( const { node, previousNodeInList } of listNodes ) {
 				// This is a first item of a nested list.
@@ -267,6 +277,7 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 		}, { priority: 'high' } );
 
+		// Toggle check state of a to-do list item clicked on the checkbox.
 		this.listenTo<ViewDocumentTodoCheckboxChangeEvent>( editing.view.document, 'todoCheckboxChange', ( evt, data ) => {
 			const viewTarget = data.target;
 
@@ -323,7 +334,7 @@ export default class TodoDocumentListEditing extends Plugin {
 }
 
 /**
- * TODO
+ * Returns an upcast converter that detects a to-do list checkbox and marks the list item as a to-do list.
  */
 function todoItemInputConverter(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
@@ -352,7 +363,7 @@ function todoItemInputConverter(): GetCallback<UpcastElementEvent> {
 }
 
 /**
- * TODO
+ * Returns an upcast converter that consumes element matching the given matcher pattern.
  */
 function elementUpcastConsumingConverter( matcherPattern: MatcherPattern ): GetCallback<UpcastElementEvent> {
 	const matcher = new Matcher( matcherPattern );
@@ -373,7 +384,7 @@ function elementUpcastConsumingConverter( matcherPattern: MatcherPattern ): GetC
 }
 
 /**
- * TODO
+ * Returns an upcast converter that consumes attributes matching the given matcher pattern.
  */
 function attributeUpcastConsumingConverter( matcherPattern: MatcherPattern ): GetCallback<UpcastElementEvent> {
 	const matcher = new Matcher( matcherPattern );
@@ -393,7 +404,7 @@ function attributeUpcastConsumingConverter( matcherPattern: MatcherPattern ): Ge
 }
 
 /**
- * TODO
+ * Returns true if the given list item block should be converted as a description block of a to-do list item.
  */
 function isDescriptionBlock( modelElement: Element ): boolean {
 	return modelElement.is( 'element', 'paragraph' ) &&
@@ -402,12 +413,7 @@ function isDescriptionBlock( modelElement: Element ): boolean {
 }
 
 /**
- * TODO
- * Handles the left/right (LTR/RTL content) arrow key and moves the selection at the end of the previous block element
- * if the selection is just after the checkbox element. In other words, it jumps over the checkbox element when
- * moving the selection to the left/right (LTR/RTL).
- *
- * @returns Callback for 'keydown' events.
+ * Jump at the start of the next node on right arrow key press, when selection is before the checkbox.
  */
 function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): GetCallback<ViewDocumentArrowKeyEvent> {
 	return ( eventInfo, domEventData ) => {

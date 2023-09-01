@@ -14,10 +14,8 @@ import { getAllListItemBlocks } from '../documentlist/utils/model';
 /**
  * The check to-do command.
  *
- * TODO
- *
- * The command is registered by the {@link module:list/todolist/todolistediting~TodoListEditing} as
- * the `checkTodoList` editor command and it is also available via aliased `todoListCheck` name.
+ * The command is registered by the {@link module:list/tododocumentlist/tododocumentlistediting~TodoDocumentListEditing} as
+ * the `checkTodoList` editor command.
  */
 export default class CheckTodoDocumentListCommand extends Command {
 	/**
@@ -74,7 +72,7 @@ export default class CheckTodoDocumentListCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Returns a value for the command.
 	 */
 	private _getValue( selectedElements: Array<Element> ): boolean {
 		return selectedElements.every( element => element.getAttribute( 'todoListChecked' ) );

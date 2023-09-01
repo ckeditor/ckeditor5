@@ -544,7 +544,7 @@ export default class DocumentListEditing extends Plugin {
 }
 
 /**
- * The downcast strategy.
+ * The attribute to attribute downcast strategy for UL, OL, LI elements.
  */
 export interface AttributeDowncastStrategy {
 
@@ -565,7 +565,7 @@ export interface AttributeDowncastStrategy {
 }
 
 /**
- * TODO
+ * The custom marker downcast strategy.
  */
 export interface ItemMarkerDowncastStrategy {
 
@@ -580,7 +580,7 @@ export interface ItemMarkerDowncastStrategy {
 	attributeName: string;
 
 	/**
-	 * TODO
+	 * Creates a view element for a custom item marker.
 	 */
 	createElement(
 		writer: DowncastWriter,
@@ -589,21 +589,22 @@ export interface ItemMarkerDowncastStrategy {
 	): ViewElement | null;
 
 	/**
-	 * TODO
-	 */
-	canWrapElement?( modelElement: Element ): boolean;
-
-	/**
-	 * TODO
+	 * Creates an AttributeElement to be used for wrapping a first block of a list item.
 	 */
 	createWrapperElement?(
 		writer: DowncastWriter,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewAttributeElement;
+
+	/**
+	 * Should return true if the given list block can be wrapped with the wrapper created by `createWrapperElement()`
+	 * or only the marker element should be wrapped.
+	 */
+	canWrapElement?( modelElement: Element ): boolean;
 }
 
 /**
- * TODO
+ * The downcast strategy.
  */
 export type DowncastStrategy = AttributeDowncastStrategy | ItemMarkerDowncastStrategy;
 
@@ -863,13 +864,10 @@ export type DocumentListEditingCheckAttributesEvent = {
 };
 
 /**
- * TODO
- * Event fired on changes detected on the model list element to verify if the view representation of a list element
+ * Event fired on changes detected on the model list element to verify if the view representation of a list block element
  * is representing those attributes.
  *
- * It allows triggering a re-wrapping of a list item.
- *
- * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
+ * It allows triggering a reconversion of a list item block.
  *
  * @internal
  * @eventName ~DocumentListEditing#checkElement

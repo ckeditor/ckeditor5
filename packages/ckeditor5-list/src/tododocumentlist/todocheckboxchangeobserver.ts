@@ -10,7 +10,7 @@
 import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine';
 
 /**
- * TODO
+ * Observes all to-do list checkboxes state changes.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
@@ -41,15 +41,16 @@ export default class TodoCheckboxChangeObserver extends DomEventObserver<'change
 }
 
 /**
- * Fired when the TODO
+ * Fired when the to-do list checkbox is toggled.
  *
- * Introduced by TODO
+ * Introduced by {@link module:list/tododocumentlist/todocheckboxchangeobserver~TodoCheckboxChangeObserver}.
  *
- * Note that this event is not available by default. To make it available, TODO
+ * Note that this event is not available by default. To make it available,
+ * {@link module:list/tododocumentlist/todocheckboxchangeobserver~TodoCheckboxChangeObserver}
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
- * @see module:list/tododocumentlist/inputchangebserver~InputChangeObserver
- * @eventName module:engine/view/document~Document#inputchange
+ * @see module:list/tododocumentlist/todocheckboxchangeobserver~TodoCheckboxChangeObserver
+ * @eventName module:engine/view/document~Document#todoCheckboxChange
  * @param data The event data.
  */
 export type ViewDocumentTodoCheckboxChangeEvent = {

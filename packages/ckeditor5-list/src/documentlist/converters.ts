@@ -432,15 +432,13 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 }
 
 /**
- * TODO
+ * Removes a custom marker elements and item wrappers related to that marker.
  */
 function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: DowncastWriter, mapper: Mapper ): void {
 	// Remove item wrapper.
 	while ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
 		viewWriter.unwrap( viewWriter.createRangeIn( viewElement.parent ), viewElement.parent );
 	}
-
-	// TODO how to handle this is RTL?
 
 	// Remove custom item markers.
 	const viewWalker = viewWriter.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } );
@@ -463,7 +461,7 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: Downc
 }
 
 /**
- * TODO
+ * Inserts a custom marker elements and wraps first block of a list item if marker requires it.
  */
 function insertCustomMarkerElements(
 	listItem: Element,
@@ -490,8 +488,6 @@ function insertCustomMarkerElements(
 		if ( !markerElement ) {
 			continue;
 		}
-
-		// TODO how to handle this is RTL?
 
 		writer.setCustomProperty( 'listItemMarker', true, markerElement );
 		writer.insert( viewRange.start, markerElement );
@@ -527,7 +523,9 @@ function insertCustomMarkerElements(
 	return viewRange;
 }
 
-// Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
+/**
+ * Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
+ */
 function unwrapListItemBlock( viewElement: ViewElement, viewWriter: DowncastWriter ) {
 	let attributeElement: ViewElement | ViewDocumentFragment = viewElement.parent!;
 
@@ -540,7 +538,9 @@ function unwrapListItemBlock( viewElement: ViewElement, viewWriter: DowncastWrit
 	}
 }
 
-// Wraps the given list item with appropriate attribute elements for ul, ol, and li.
+/**
+ * Wraps the given list item with appropriate attribute elements for ul, ol, and li.
+ */
 function wrapListItemBlock(
 	listItem: ListElement,
 	viewRange: ViewRange,
