@@ -17,24 +17,6 @@ commands:
       - run:
           name: Install the latest Chrome
           command: yarn ckeditor5-dev-ci-install-latest-chrome
-      - run:
-          name: Install GitHub CLI
-          command: |
-            #!/bin/bash
-
-            # Install the package.
-            sudo apt update
-            sudo apt install gh
-            
-            # The "GITHUB_TOKEN" is defined in "Environment Variables".
-            if [[ -v GITHUB_TOKEN ]];
-            then
-              # Authenticate & configure.
-              gh auth setup-git
-              gh auth status
-              gh config set prompt disabled
-              gh --version
-            fi
 
   install_ssh_keys_command:
     description: "Install SSH keys"
