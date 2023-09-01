@@ -440,6 +440,8 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: Downc
 		viewWriter.unwrap( viewWriter.createRangeIn( viewElement.parent ), viewElement.parent );
 	}
 
+	// TODO how to handle this is RTL?
+
 	// Remove custom item markers.
 	const viewWalker = viewWriter.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } );
 	const markersToRemove = [];
@@ -488,6 +490,8 @@ function insertCustomMarkerElements(
 		if ( !markerElement ) {
 			continue;
 		}
+
+		// TODO how to handle this is RTL?
 
 		writer.setCustomProperty( 'listItemMarker', true, markerElement );
 		writer.insert( viewRange.start, markerElement );

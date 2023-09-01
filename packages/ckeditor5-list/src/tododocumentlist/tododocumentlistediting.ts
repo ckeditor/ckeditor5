@@ -10,15 +10,19 @@
 import {
 	Matcher,
 	type UpcastElementEvent,
+	type Model,
 	type Element,
 	type MatcherPattern,
-	type ViewDocumentKeyDownEvent
+	type ViewDocumentKeyDownEvent,
+	type ViewDocumentArrowKeyEvent
 } from 'ckeditor5/src/engine';
 
 import {
 	getCode,
 	parseKeystroke,
-	type GetCallback
+	getLocalizedArrowKeyCodeDirection,
+	type GetCallback,
+	type Locale
 } from 'ckeditor5/src/utils';
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -69,8 +73,6 @@ export default class TodoDocumentListEditing extends Plugin {
 		model.schema.extend( '$block', { allowAttributes: 'todoListChecked' } );
 		model.schema.extend( '$blockObject', { allowAttributes: 'todoListChecked' } );
 
-		// TODO fix arrow keys navigation
-
 		model.schema.addAttributeCheck( ( context, attributeName ) => {
 			const item = context.last;
 
@@ -81,6 +83,18 @@ export default class TodoDocumentListEditing extends Plugin {
 			if ( !item.getAttribute( 'listItemId' ) || item.getAttribute( 'listType' ) != 'todo' ) {
 				return false;
 			}
+		} );
+
+		// TODO
+		editing.mapper.registerViewToModelLength( 'input', viewElement => {
+			if (
+				viewElement.getAttribute( 'type' ) == 'checkbox' &&
+				viewElement.findAncestor( { name: 'label', classes: 'todo-list__label' } )
+			) {
+				return 0;
+			}
+
+			return editing.mapper.toModelElement( viewElement ) ? 1 : 0;
 		} );
 
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
@@ -112,8 +126,9 @@ export default class TodoDocumentListEditing extends Plugin {
 		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
 		documentListEditing.registerDowncastStrategy( {
-			attributeName: 'listType',
 			scope: 'list',
+			attributeName: 'listType',
+
 			setAttributeOnDowncast( writer, value, element ) {
 				if ( value == 'todo' ) {
 					writer.addClass( 'todo-list', element );
@@ -124,8 +139,8 @@ export default class TodoDocumentListEditing extends Plugin {
 		} );
 
 		documentListEditing.registerDowncastStrategy( {
-			attributeName: 'todoListChecked',
 			scope: 'itemMarker',
+			attributeName: 'todoListChecked',
 
 			createElement( writer, modelElement, { dataPipeline } ) {
 				if ( modelElement.getAttribute( 'listType' ) != 'todo' ) {
@@ -268,16 +283,22 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 		} );
 
-		editing.mapper.registerViewToModelLength( 'input', viewElement => {
-			if (
-				viewElement.getAttribute( 'type' ) == 'checkbox' &&
-				viewElement.findAncestor( { name: 'label', classes: 'todo-list__label' } )
-			) {
-				return 0;
-			}
-
-			return editing.mapper.toModelElement( viewElement ) ? 1 : 0;
-		} );
+		// Jump at the start of the next node on right arrow key press, when selection is before the checkbox.
+		//
+		// <blockquote><p>Foo{}</p></blockquote>
+		// <ul><li><checkbox/>Bar</li></ul>
+		//
+		// press: `->`
+		//
+		// <blockquote><p>Foo</p></blockquote>
+		// <ul><li><checkbox/>{}Bar</li></ul>
+		//
+		this.listenTo<ViewDocumentArrowKeyEvent>(
+			editing.view.document,
+			'arrowKey',
+			jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ),
+			{ context: '$text' }
+		);
 	}
 
 	/**
@@ -378,4 +399,52 @@ function isDescriptionBlock( modelElement: Element ): boolean {
 	return modelElement.is( 'element', 'paragraph' ) &&
 		modelElement.getAttribute( 'listType' ) == 'todo' &&
 		isFirstBlockOfListItem( modelElement );
+}
+
+/**
+ * TODO
+ * Handles the left/right (LTR/RTL content) arrow key and moves the selection at the end of the previous block element
+ * if the selection is just after the checkbox element. In other words, it jumps over the checkbox element when
+ * moving the selection to the left/right (LTR/RTL).
+ *
+ * @returns Callback for 'keydown' events.
+ */
+function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): GetCallback<ViewDocumentArrowKeyEvent> {
+	return ( eventInfo, domEventData ) => {
+		const direction = getLocalizedArrowKeyCodeDirection( domEventData.keyCode, locale.contentLanguageDirection );
+
+		if ( direction != 'right' ) {
+			return;
+		}
+
+		const schema = model.schema;
+		const selection = model.document.selection;
+
+		if ( !selection.isCollapsed ) {
+			return;
+		}
+
+		const position = selection.getFirstPosition()!;
+		const parent = position.parent as Element;
+
+		if ( !position.isAtEnd ) {
+			return;
+		}
+
+		const newRange = schema.getNearestSelectionRange( model.createPositionAfter( parent ), 'forward' );
+
+		if ( !newRange ) {
+			return;
+		}
+
+		const newRangeParent = newRange.start.parent;
+
+		if ( isListItemBlock( newRangeParent ) && newRangeParent.getAttribute( 'listType' ) == 'todo' ) {
+			model.change( writer => writer.setSelection( newRange ) );
+
+			domEventData.preventDefault();
+			domEventData.stopPropagation();
+			eventInfo.stop();
+		}
+	};
 }
