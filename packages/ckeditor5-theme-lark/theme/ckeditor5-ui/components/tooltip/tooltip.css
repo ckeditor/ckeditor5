@@ -10,6 +10,7 @@
 	--ck-balloon-arrow-offset: 0px;
 	--ck-balloon-arrow-half-width: 4px;
 	--ck-balloon-arrow-height: 4px;
+	--ck-tooltip-text-padding: 4px;
 	--ck-color-panel-background: var(--ck-color-tooltip-background);
 
 	padding: 0 var(--ck-spacing-medium);
@@ -23,7 +24,7 @@
 	&.ck-tooltip_multi-line .ck-tooltip__text {
 		white-space: break-spaces;
 		display: inline-block;
-		padding: 4px 0;
+		padding: var(--ck-tooltip-text-padding) 0;
 	}
 
 	/* Reset balloon panel styles */
