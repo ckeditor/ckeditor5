@@ -12,8 +12,9 @@ import View from '../view';
 import SearchFieldView from './searchfieldview';
 import SearchInfoView from './searchinfoview';
 import SearchResultsView from './searchresultsview';
+import type LabeledFieldView from '../labeledfield/labeledfieldview';
+import type InputView from '../input/inputview';
 import type FilteredView from './filteredview';
-import { createLabeledInputText } from '../labeledfield/utils';
 import { escapeRegExp } from 'lodash-es';
 import FocusCycler from '../focuscycler';
 
@@ -82,13 +83,13 @@ export default class SearchView extends View {
 	constructor( locale: Locale, config: SearchViewConfig ) {
 		super( locale );
 
+		this._config = config;
+
 		this.filteredView = config.filteredView;
 		this.searchFieldView = this._createSearchFieldView( locale, config.searchFieldLabel );
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.resultsView = new SearchResultsView( locale );
-
-		this._config = config;
 
 		if ( !config.infoView ) {
 			this.infoView = new SearchInfoView();
@@ -196,7 +197,7 @@ export default class SearchView extends View {
 	 * @param label TODO
 	 */
 	private _createSearchFieldView( locale: Locale, label: string ): SearchFieldView {
-		const searchFieldView = new SearchFieldView( locale, createLabeledInputText, label );
+		const searchFieldView = new SearchFieldView( locale, this._config.searchFieldInputCreator, label );
 
 		this.listenTo( searchFieldView.fieldView, 'input', () => {
 			this.search( searchFieldView.fieldView.element!.value );
@@ -254,6 +255,7 @@ export default class SearchView extends View {
 export type SearchViewConfig = {
 	filteredView: FilteredView;
 	searchFieldLabel: string;
+	searchFieldInputCreator?: ConstructorParameters<typeof LabeledFieldView<InputView>>[ 1 ];
 	class?: string;
 	infoView?: View;
 	infoViewTextConfig?: {
