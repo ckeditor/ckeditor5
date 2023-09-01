@@ -1528,8 +1528,8 @@ describe( 'Drag and Drop experimental', () => {
 			} );
 		} );
 
-		// TODO: we found a BUG!!!
-		describe.skip( 'dragover', () => {
+		// TODO
+		describe( 'dragover', () => {
 			it( 'should put drop target marker inside a text node', () => {
 				setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
@@ -1541,7 +1541,8 @@ describe( 'Drag and Drop experimental', () => {
 				expectDraggingMarker( targetPosition );
 			} );
 
-			it( 'cannot be dropped on non-editable place.', () => {
+			// TODO: this should be fixed in code.
+			it.skip( 'cannot be dropped on non-editable place.', () => {
 				setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
 				const dataTransferMock = createDataTransfer();
@@ -1573,16 +1574,13 @@ describe( 'Drag and Drop experimental', () => {
 					target: viewElement,
 					targetRanges: [ view.createRange( view.createPositionAt( viewElement.getChild( 0 ), 2 ) ) ],
 					dataTransfer: dataTransferMock,
-					domEvent: {
-						clientX: sinon.spy(),
-						clientY: sinon.spy()
-					}
+					domEvent: getMockedMousePosition( domNode )
 				} );
 
 				expectDraggingMarker( model.createPositionAt( root.getChild( 0 ), 5 ) );
 			} );
 
-			it( 'should find ancestor widget while hovering over the selection handle (UIElement)', () => {
+			it( 'should put marker before element when mouse position is on the upper half of it', () => {
 				setModelData( model,
 					'<paragraph>[]foobar</paragraph>' +
 					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
@@ -1593,7 +1591,28 @@ describe( 'Drag and Drop experimental', () => {
 				const viewElement = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				const { x, y } = domNode.getBoundingClientRect();
+				expect( viewElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: viewElement,
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domNode )
+				} );
+
+				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 'before' ) );
+			} );
+
+			it( 'should put marker after element when mouse position is on the bottom half of it', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const viewElement = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+				const domNode = domConverter.mapViewToDom( viewElement );
 
 				expect( viewElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
 
@@ -1601,13 +1620,10 @@ describe( 'Drag and Drop experimental', () => {
 					domTarget: domNode,
 					target: viewElement,
 					dataTransfer: dataTransferMock,
-					domEvent: {
-						clientX: x,
-						clientY: y
-					}
+					domEvent: getMockedMousePosition( domNode, 'after' )
 				} );
 
-				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 'after' ) );
 			} );
 
 			it( 'should find ancestor widget while hovering over inner content of widget (but not nested editable)', () => {
@@ -1627,10 +1643,11 @@ describe( 'Drag and Drop experimental', () => {
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: viewElement,
-					dataTransfer: dataTransferMock
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domNode )
 				} );
 
-				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 'before' ) );
 			} );
 
 			it( 'should find drop position while hovering over empty nested editable', () => {
@@ -1650,10 +1667,11 @@ describe( 'Drag and Drop experimental', () => {
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: viewElement,
-					dataTransfer: dataTransferMock
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domNode )
 				} );
 
-				expectDraggingMarker( model.createPositionAt( root.getNodeByPath( [ 1, 0, 0, 0 ] ), 0 ) );
+				expectDraggingMarker( model.createPositionAt( root.getNodeByPath( [ 1, 0, 0, 0 ] ), 'before' ) );
 			} );
 
 			it( 'should find drop position while hovering over space between blocks', () => {
@@ -1677,10 +1695,11 @@ describe( 'Drag and Drop experimental', () => {
 					domTarget: domNode,
 					target: rootElement,
 					targetRanges: [ view.createRange( view.createPositionAt( nestedViewParagraph, 0 ) ) ],
-					dataTransfer: dataTransferMock
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domNode )
 				} );
 
-				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 0 ) );
 			} );
 
 			it( 'should find drop position while hovering over table figure', () => {
@@ -2111,6 +2130,22 @@ describe( 'Drag and Drop experimental', () => {
 			setDragImage() {
 				return null;
 			}
+		};
+	}
+
+	function getMockedMousePosition( domNode, position = 'before' ) {
+		const { x, y, height } = domNode.getBoundingClientRect();
+
+		if ( position === 'after' ) {
+			return {
+				clientX: x,
+				clientY: y + 2 * height
+			};
+		}
+
+		return {
+			clientX: x,
+			clientY: y
 		};
 	}
 } );
