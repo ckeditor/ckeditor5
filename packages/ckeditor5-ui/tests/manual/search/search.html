@@ -2,16 +2,23 @@
 
 <style>
 	.ck.playground {
-		border: 2px dashed #000;
-		padding: 20px;
 		display: flex;
 		align-items: flex-start;
 	}
 
-	.ck.ck-search {
+	.ck.playground > div {
 		border: 1px dashed red;
 		padding: 10px;
-		width: 400px;
+		max-width: 500px;
+		margin: 10px;
+		flex-grow: 1;
+		flex-shrink: 1;
+	}
+
+	.ck.playground > div > h2 {
+		font-size: 16px;
+		font-weight: bold;
+		margin-bottom: 20px;
 	}
 
 	.ck.ck-search + * {

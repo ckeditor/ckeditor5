@@ -13,7 +13,8 @@ import {
 	ListView,
 	SearchView,
 	ToolbarView,
-	type FilteredView
+	type FilteredView,
+	createLabeledInputNumber
 } from '../../../src';
 
 const locale = new Locale();
@@ -95,9 +96,7 @@ function createSearchableList() {
 		filteredView: listView
 	} );
 
-	searchView.render();
-
-	document.querySelector( '.playground' )!.appendChild( searchView.element! );
+	addToPlayground( 'Filtering a list with grouped items', searchView );
 }
 
 function createSearchableToolbar() {
@@ -148,10 +147,63 @@ function createSearchableToolbar() {
 		filteredView: toolbarView
 	} );
 
-	searchView.render();
+	addToPlayground( 'Filtering a toolbar', searchView );
+}
 
-	document.querySelector( '.playground' )!.appendChild( searchView.element! );
+function createSearchWithCustomInput() {
+	class FilteredTestToolbarView extends ToolbarView implements FilteredView {
+		public filter( query ) {
+			let visibleItemsCount = 0;
+
+			for ( const item of this.items ) {
+				const buttonView = ( item as ButtonView );
+
+				buttonView.isVisible = query ? !!buttonView.label!.match( query ) : true;
+
+				if ( buttonView.isVisible ) {
+					visibleItemsCount++;
+				}
+			}
+
+			return {
+				resultsCount: visibleItemsCount,
+				totalItemsCount: this.items.length
+			};
+		}
+	}
+
+	const toolbarView = new FilteredTestToolbarView( locale );
+
+	Array.from( Array( 30 ).keys() )
+		.forEach( item => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.withText = true;
+			buttonView.label = String( item );
+			toolbarView.items.add( buttonView );
+		} );
+
+	const searchView = new SearchView( locale, {
+		searchFieldLabel: 'Search toolbar buttons',
+		filteredView: toolbarView,
+		searchFieldInputCreator: createLabeledInputNumber
+	} );
+
+	addToPlayground( 'Custom input (number)', searchView );
+}
+
+function addToPlayground( name, view ) {
+	view.render();
+
+	const container = document.createElement( 'div' );
+	const heading = document.createElement( 'h2' );
+	heading.textContent = name;
+
+	container.appendChild( heading );
+	container.appendChild( view.element! );
+	document.querySelector( '.playground' )!.appendChild( container );
 }
 
 createSearchableList();
 createSearchableToolbar();
+createSearchWithCustomInput();

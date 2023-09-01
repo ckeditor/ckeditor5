@@ -10,6 +10,7 @@
 import ButtonView from '../button/buttonview';
 import IconView from '../icon/iconview';
 import LabeledFieldView from '../labeledfield/labeledfieldview';
+import { createLabeledInputText } from '../labeledfield/utils';
 import type InputView from '../input/inputview';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -37,7 +38,7 @@ export default class SearchFieldView extends LabeledFieldView<InputView> {
 	 */
 	constructor(
 		locale: Locale,
-		viewCreator: ConstructorParameters<typeof LabeledFieldView<InputView>>[ 1 ],
+		viewCreator = createLabeledInputText,
 		label: string
 	) {
 		super( locale, viewCreator );
