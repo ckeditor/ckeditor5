@@ -1688,18 +1688,19 @@ describe( 'Drag and Drop experimental', () => {
 
 				const nestedModelParagraph = root.getNodeByPath( [ 1, 0, 0, 0 ] );
 				const nestedViewParagraph = mapper.toViewElement( nestedModelParagraph );
+				const nestedParagraphDomNode = domConverter.mapViewToDom( nestedViewParagraph );
 
 				expect( viewElement.is( 'rootElement' ) ).to.be.true;
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: rootElement,
-					targetRanges: [ view.createRange( view.createPositionAt( nestedViewParagraph, 0 ) ) ],
+					targetRanges: [ view.createRangeOn( nestedModelParagraph ) ],
 					dataTransfer: dataTransferMock,
-					domEvent: getMockedMousePosition( domNode )
+					domEvent: getMockedMousePosition( nestedParagraphDomNode )
 				} );
 
-				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 0 ) );
+				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 'before' ) );
 			} );
 
 			it( 'should find drop position while hovering over table figure', () => {
@@ -1721,33 +1722,11 @@ describe( 'Drag and Drop experimental', () => {
 					domTarget: domNode,
 					target: viewElement,
 					targetRanges: [ view.createRange( view.createPositionAt( rootElement.getChild( 1 ), 1 ) ) ],
-					dataTransfer: dataTransferMock
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domNode )
 				} );
 
-				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
-			} );
-
-			it( 'should find drop position while hovering over table with target range inside figure', () => {
-				setModelData( model,
-					'<paragraph>[]foobar</paragraph>' +
-					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
-				);
-
-				const dataTransferMock = createDataTransfer();
-
-				const rootElement = viewDocument.getRoot();
-				const modelElement = root.getNodeByPath( [ 1, 0, 0 ] );
-				const viewElement = mapper.toViewElement( modelElement );
-				const domNode = domConverter.mapViewToDom( viewElement );
-
-				viewDocument.fire( 'dragging', {
-					domTarget: domNode,
-					target: viewElement,
-					targetRanges: [ view.createRange( view.createPositionAt( rootElement.getChild( 1 ), 1 ) ) ],
-					dataTransfer: dataTransferMock
-				} );
-
-				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+				expectDraggingMarker( model.createPositionAt( root.getNodeByPath( [ 1, 0, 0, 0 ] ), 'before' ) );
 			} );
 
 			it( 'should find drop position while hovering over table with target range inside tr', () => {
@@ -1787,16 +1766,21 @@ describe( 'Drag and Drop experimental', () => {
 				const viewElement = rootElement;
 				const domNode = domConverter.mapViewToDom( viewElement );
 
+				const firstParagraphModelElement = root.getChild( 1 );
+				const firstParagraphViewElement = mapper.toViewElement( firstParagraphModelElement );
+				const firstParagraphDomNode = domConverter.mapViewToDom( firstParagraphViewElement );
+
 				expect( viewElement.is( 'rootElement' ) ).to.be.true;
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: rootElement,
-					targetRanges: [ view.createRange( view.createPositionAt( rootElement.getChild( 1 ), 0 ) ) ],
-					dataTransfer: dataTransferMock
+					targetRanges: [ view.createRangeOn( firstParagraphModelElement ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( firstParagraphDomNode )
 				} );
 
-				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 0 ) );
+				expectDraggingMarker( model.createPositionAt( firstParagraphModelElement, 'before' ) );
 			} );
 
 			it( 'should find drop position while hovering over a widget without content (not Firefox)', () => {
