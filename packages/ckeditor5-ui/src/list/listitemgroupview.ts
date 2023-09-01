@@ -8,26 +8,26 @@
  */
 
 import View from '../view';
-
-import type { FocusableView } from '../focuscycler';
-import type ViewCollection from '../viewcollection';
+import ListView from './listview';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
-import type ListItemView from './listitemview';
 
 /**
- * TODO
+ * The list item group view class.
  */
 export default class ListItemGroupView extends View {
 	/**
-	 * TODO
+	 * The visible label of the group.
+	 *
+	 * @observable
+	 * @default ''
 	 */
 	declare public label: string;
 
 	/**
-	 * Collection of the child views inside of the {@link #element}.
+	 * Collection of the child list items inside this group.
 	 */
-	public readonly items: ViewCollection<ListItemView>;
+	public readonly items: ListView[ 'items' ];
 
 	/**
 	 * Controls whether the item view is visible. Visible by default, list items are hidden
@@ -45,16 +45,30 @@ export default class ListItemGroupView extends View {
 		super( locale );
 
 		const bind = this.bindTemplate;
-
-		this.set( 'isVisible', true );
-		this.items = this.createCollection<ListItemView>();
-
 		const groupLabelId = `ck-editor__label_${ uid() }`;
+		const nestedList = new ListView( locale );
+
+		this.set( {
+			label: '',
+			isVisible: true
+		} );
+
+		nestedList.set( {
+			role: 'group',
+			ariaLabelledBy: groupLabelId
+		} );
+
+		// Disable focus tracking and accessible navigation in the child list.
+		nestedList.focusTracker.destroy();
+		nestedList.keystrokes.destroy();
+
+		this.items = nestedList.items;
 
 		this.setTemplate( {
 			tag: 'li',
 
 			attributes: {
+				role: 'presentation',
 				class: [
 					'ck',
 					'ck-list__group',
@@ -64,28 +78,15 @@ export default class ListItemGroupView extends View {
 
 			children: [
 				{
-					tag: 'li',
+					tag: 'span',
 					attributes: {
-						role: 'presentation',
 						id: groupLabelId
 					},
 					children: [
-						{
-							tag: 'span',
-							children: [
-								{ text: bind.to( 'label' ) }
-							]
-						},
-						{
-							tag: 'ul',
-							attributes: {
-								role: 'group',
-								'aria-labelledby': groupLabelId
-							},
-							children: this.items
-						}
+						{ text: bind.to( 'label' ) }
 					]
-				}
+				},
+				nestedList
 			]
 		} );
 	}
@@ -94,6 +95,8 @@ export default class ListItemGroupView extends View {
 	 * Focuses the list item.
 	 */
 	public focus(): void {
-		( this.items.first as FocusableView ).focus();
+		if ( this.items.first ) {
+			this.items.first.focus();
+		}
 	}
 }
