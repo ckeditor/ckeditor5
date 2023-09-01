@@ -372,72 +372,16 @@ export function listItemDowncastConverter(
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model )!;
 
-		// Remove item wrapper.
-		if ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
-			writer.unwrap( writer.createRangeIn( viewElement.parent ), viewElement.parent );
-		}
-
-		// Remove custom item markers.
-		const viewWalker = writer.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } );
-		const markersToRemove = [];
-
-		for ( const { item } of viewWalker ) {
-			if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
-				break;
-			}
-
-			if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
-				markersToRemove.push( item );
-			}
-		}
-
-		for ( const marker of markersToRemove ) {
-			writer.remove( marker );
-		}
+		// Remove custom item marker.
+		removeCustomMarkerElements( viewElement, writer, mapper );
 
 		// Unwrap element from current list wrappers.
 		unwrapListItemBlock( viewElement, writer );
 
-		let viewRange = writer.createRangeOn( viewElement );
+		// Insert custom item marker.
+		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, { dataPipeline } );
 
-		// Insert custom item markers.
-		if ( isFirstBlockOfListItem( listItem ) ) {
-			for ( const strategy of strategies ) {
-				if ( strategy.scope == 'itemMarker' ) {
-					const markerElement = strategy.createElement( writer, listItem, { dataPipeline } );
-
-					if ( !markerElement ) {
-						continue;
-					}
-
-					writer.setCustomProperty( 'listItemMarker', true, markerElement );
-					writer.insert( viewRange.start, markerElement );
-
-					viewRange = writer.createRange(
-						writer.createPositionBefore( markerElement ),
-						writer.createPositionAfter( viewElement )
-					);
-
-					if ( !strategy.createWrapperElement || !strategy.canWrapElement ) {
-						continue;
-					}
-
-					// TODO make this nicer
-					const wrapper = strategy.createWrapperElement( writer, { dataPipeline } );
-
-					writer.setCustomProperty( 'listItemWrapper', true, wrapper );
-
-					if ( strategy.canWrapElement( listItem ) ) {
-						viewRange = writer.wrap( viewRange, wrapper );
-					} else {
-						viewRange = writer.wrap( writer.createRangeOn( markerElement ), wrapper );
-						viewRange = writer.createRange( viewRange.start, writer.createPositionAfter( viewElement ) );
-					}
-				}
-			}
-		}
-
-		// Then wrap them with the new list wrappers.
+		// Then wrap them with the new list wrappers (UL, OL, LI).
 		wrapListItemBlock( listItem, viewRange, strategies, writer );
 	};
 }
@@ -485,6 +429,98 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
 	return viewRange.end.nodeBefore as ViewElement | null;
+}
+
+/**
+ * TODO
+ */
+function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: DowncastWriter, mapper: Mapper ): void {
+	// Remove item wrapper.
+	while ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
+		viewWriter.unwrap( viewWriter.createRangeIn( viewElement.parent ), viewElement.parent );
+	}
+
+	// Remove custom item markers.
+	const viewWalker = viewWriter.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } );
+	const markersToRemove = [];
+
+	for ( const { item } of viewWalker ) {
+		// Walk only over the non-mapped elements between list item blocks.
+		if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
+			break;
+		}
+
+		if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
+			markersToRemove.push( item );
+		}
+	}
+
+	for ( const marker of markersToRemove ) {
+		viewWriter.remove( marker );
+	}
+}
+
+/**
+ * TODO
+ */
+function insertCustomMarkerElements(
+	listItem: Element,
+	viewElement: ViewElement,
+	strategies: Array<DowncastStrategy>,
+	writer: DowncastWriter,
+	{ dataPipeline }: { dataPipeline?: boolean }
+): ViewRange {
+	let viewRange = writer.createRangeOn( viewElement );
+
+	// Marker can be inserted only before the first block of a list item.
+	if ( !isFirstBlockOfListItem( listItem ) ) {
+		return viewRange;
+	}
+
+	for ( const strategy of strategies ) {
+		if ( strategy.scope != 'itemMarker' ) {
+			continue;
+		}
+
+		// Create the custom marker element and inject it before the first block of the list item.
+		const markerElement = strategy.createElement( writer, listItem, { dataPipeline } );
+
+		if ( !markerElement ) {
+			continue;
+		}
+
+		writer.setCustomProperty( 'listItemMarker', true, markerElement );
+		writer.insert( viewRange.start, markerElement );
+
+		viewRange = writer.createRange(
+			writer.createPositionBefore( markerElement ),
+			writer.createPositionAfter( viewElement )
+		);
+
+		// Wrap the marker and optionally the first block with an attribute element (label for to-do lists).
+		if ( !strategy.createWrapperElement || !strategy.canWrapElement ) {
+			continue;
+		}
+
+		const wrapper = strategy.createWrapperElement( writer, { dataPipeline } );
+
+		writer.setCustomProperty( 'listItemWrapper', true, wrapper );
+
+		// The whole block can be wrapped...
+		if ( strategy.canWrapElement( listItem ) ) {
+			viewRange = writer.wrap( viewRange, wrapper );
+		} else {
+			// ... or only the marker element (if the block is downcasted to heading or block widget).
+			viewRange = writer.wrap( writer.createRangeOn( markerElement ), wrapper );
+
+			viewRange = writer.createRange(
+				viewRange.start,
+				writer.createPositionAfter( viewElement )
+			);
+		}
+	}
+
+	return viewRange;
 }
 
 // Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
