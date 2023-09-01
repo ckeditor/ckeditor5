@@ -6,13 +6,18 @@
 /* global document */
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
-import { ButtonView, ListItemView, ListView, AutocompleteView, SearchInfoView, type SearchViewSearchEvent } from '../../../src';
+import {
+	ButtonView,
+	ListItemView,
+	ListView,
+	AutocompleteView,
+	type FilteredView
+} from '../../../src';
 
 const locale = new Locale();
-const t = locale.t;
 
-class FilteredTestListView extends ListView {
-	public filter( query ): number {
+class FilteredTestListView extends ListView implements FilteredView {
+	public filter( query ) {
 		let visibleItems = 0;
 
 		for ( const item of this.items ) {
@@ -26,7 +31,10 @@ class FilteredTestListView extends ListView {
 			}
 		}
 
-		return visibleItems;
+		return {
+			resultsCount: visibleItems,
+			totalItemsCount: this.items.length
+		};
 	}
 }
 
@@ -51,23 +59,6 @@ const listView = new FilteredTestListView();
 const view = new AutocompleteView( locale, {
 	searchFieldLabel: 'Search field label',
 	filteredView: listView
-} );
-
-const infoView = new SearchInfoView();
-
-view.resultsView.children.add( infoView, 0 );
-
-view.on<SearchViewSearchEvent>( 'search', ( evt, { numberOfResults, query } ) => {
-	if ( !numberOfResults ) {
-		infoView.set( {
-			primaryText: t( 'Nothing found that matches "%0".', query ),
-			isVisible: true
-		} );
-	} else {
-		infoView.set( {
-			isVisible: false
-		} );
-	}
 } );
 
 view.render();

@@ -10,6 +10,7 @@
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 import View from '../view';
 import SearchFieldView from './searchfieldview';
+import SearchInfoView from './searchinfoview';
 import SearchResultsView from './searchresultsview';
 import type FilteredView from './filteredview';
 import { createLabeledInputText } from '../labeledfield/utils';
@@ -51,6 +52,11 @@ export default class SearchView extends View {
 	/**
 	 * TODO
 	 */
+	public infoView: View;
+
+	/**
+	 * TODO
+	 */
 	public searchFieldView: SearchFieldView;
 
 	/**
@@ -60,6 +66,11 @@ export default class SearchView extends View {
 	 * @internal
 	 */
 	private _focusCycler: FocusCycler;
+
+	/**
+	 * TODO
+	 */
+	private _config: SearchViewConfig;
 
 	/**
 	 * Creates an instance of the {@link module:ui/search/searchview~SearchView} class.
@@ -76,6 +87,22 @@ export default class SearchView extends View {
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.resultsView = new SearchResultsView( locale );
+
+		this._config = config;
+
+		if ( !config.infoView ) {
+			this.infoView = new SearchInfoView();
+			this.resultsView.children.add( this.infoView );
+			this._enableDefaultInfoViewBehavior();
+
+			this.on( 'render', () => {
+				// Initial search that determines if there are any searchable items
+				// and displays the corresponding info text.
+				this.search( '' );
+			} );
+		} else {
+			this.infoView = config.infoView;
+		}
 
 		this.resultsView.children.add( this.filteredView );
 
@@ -156,9 +183,9 @@ export default class SearchView extends View {
 	 */
 	public search( query: string ): void {
 		const regExp = query ? new RegExp( escapeRegExp( query ), 'ig' ) : null;
-		const numberOfResults = this.filteredView.filter( regExp );
+		const filteringResults = this.filteredView.filter( regExp );
 
-		this.fire( 'search', { query, numberOfResults } );
+		this.fire( 'search', { query, ...filteringResults } );
 	}
 
 	/**
@@ -179,6 +206,46 @@ export default class SearchView extends View {
 
 		return searchFieldView;
 	}
+
+	/**
+	 * TODO
+	 */
+	private _enableDefaultInfoViewBehavior(): void {
+		const t = this.locale!.t;
+		const infoView = this.infoView as SearchInfoView;
+
+		this.on<SearchViewSearchEvent>( 'search', ( evt, data ) => {
+			if ( !data.resultsCount ) {
+				const infoViewTextConfig = this._config.infoViewTextConfig;
+				let primaryText, secondaryText;
+
+				if ( data.totalItemsCount ) {
+					primaryText = infoViewTextConfig?.notFound?.primary || t( 'No results found' );
+					secondaryText = infoViewTextConfig?.notFound?.secondary || '';
+				} else {
+					primaryText = infoViewTextConfig?.noSearchableItems?.primary || t( 'No searchable items' );
+					secondaryText = infoViewTextConfig?.noSearchableItems?.secondary || '';
+				}
+
+				infoView.set( {
+					primaryText: normalizeInfoText( primaryText, data ),
+					secondaryText: normalizeInfoText( secondaryText, data ),
+					isVisible: true
+				} );
+			} else {
+				infoView.set( {
+					isVisible: false
+				} );
+			}
+		} );
+
+		function normalizeInfoText(
+			text: SearchViewDefaultInfoText,
+			{ query, resultsCount, totalItemsCount }: SearchViewSearchEvent[ 'args' ][ 0 ]
+		) {
+			return typeof text === 'function' ? text( query, resultsCount, totalItemsCount ) : text;
+		}
+	}
 }
 
 /**
@@ -188,7 +255,23 @@ export type SearchViewConfig = {
 	filteredView: FilteredView;
 	searchFieldLabel: string;
 	class?: string;
+	infoView?: View;
+	infoViewTextConfig?: {
+		notFound?: {
+			primary: SearchViewDefaultInfoText;
+			secondary?: SearchViewDefaultInfoText;
+		};
+		noSearchableItems?: {
+			primary: SearchViewDefaultInfoText;
+			secondary?: SearchViewDefaultInfoText;
+		};
+	};
 };
+
+/**
+ * TODO
+ */
+export type SearchViewDefaultInfoText = string | ( ( query: string, resultsCount: number, totalItemsCount: number ) => string );
 
 /**
  * TODO
@@ -199,6 +282,7 @@ export type SearchViewSearchEvent = {
 	name: 'search';
 	args: [ {
 		query: string;
-		numberOfResults: number;
+		resultsCount: number;
+		totalItemsCount: number;
 	} ];
 };

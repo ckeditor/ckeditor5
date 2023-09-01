@@ -7,7 +7,7 @@
  * @module ui/autocomplete/autocompleteview
 */
 
-import { getOptimalPosition, type PositioningFunction, type Locale } from '@ckeditor/ckeditor5-utils';
+import { getOptimalPosition, type PositioningFunction, type Locale, global } from '@ckeditor/ckeditor5-utils';
 import SearchView, { type SearchViewConfig } from '../search/searchview';
 import type SearchResultsView from '../search/searchresultsview';
 
@@ -17,6 +17,12 @@ import '../../theme/components/autocomplete/autocomplete.css';
  * TODO
  */
 export default class AutocompleteView extends SearchView {
+	/**
+	 * TODO
+	 *
+	 * @param locale
+	 * @param config
+	 */
 	constructor( locale: Locale, config: SearchViewConfig ) {
 		super( locale, config );
 
@@ -30,13 +36,13 @@ export default class AutocompleteView extends SearchView {
 		const bindResultsView = resultsView.bindTemplate;
 
 		resultsView.set( 'isVisible', false );
-		resultsView.set( 'position', 's' );
+		resultsView.set( '_position', 's' );
 
 		resultsView.extendTemplate( {
 			attributes: {
 				class: [
 					bindResultsView.if( 'isVisible', 'ck-hidden', value => !value ),
-					bindResultsView.to( 'position', value => `ck-search__results_${ value }` )
+					bindResultsView.to( '_position', value => `ck-search__results_${ value }` )
 				]
 			}
 		} );
@@ -44,43 +50,57 @@ export default class AutocompleteView extends SearchView {
 		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 			resultsView.isVisible = isFocused;
 
-			resultsView.position = AutocompleteView._getOptimalPosition( {
-				element: this.resultsView.element!,
-				target: this.searchFieldView.element!,
-				fitInViewport: true,
-				positions: AutocompleteView._resultsPositions
-			} ).name as AutocompleteResultsView[ 'position' ];
+			this._updateResultsViewPosition();
 
 			if ( !isFocused ) {
 				this.searchFieldView.reset();
 			}
 		} );
-	}
 
-	/**
-	 * A function used to calculate the optimal position for the dropdown panel.
-	 */
-	private static _getOptimalPosition = getOptimalPosition;
+		// TODO: This needs to be debounced down the road.
+		this.listenTo( global.document, 'scroll', () => {
+			if ( resultsView.isVisible ) {
+				this._updateResultsViewPosition();
+			}
+		} );
+	}
 
 	/**
 	 * TODO
 	 */
-	private static _resultsPositions: Array<PositioningFunction> = [
-		fieldRect => {
+	private _updateResultsViewPosition() {
+		( this.resultsView as AutocompleteResultsView )._position = AutocompleteView._getOptimalPosition( {
+			element: this.resultsView.element!,
+			target: this.searchFieldView.element!,
+			fitInViewport: true,
+			positions: AutocompleteView.defaultResultsPositions
+		} ).name as string;
+	}
+
+	/**
+	 * TODO
+	 */
+	public static defaultResultsPositions: Array<PositioningFunction> = [
+		( fieldRect => {
 			return {
 				top: fieldRect.bottom,
 				left: fieldRect.left,
 				name: 's'
 			};
-		},
-		( fieldRect, resultsRect ) => {
+		} ) as PositioningFunction,
+		( ( fieldRect, resultsRect ) => {
 			return {
 				top: fieldRect.top - resultsRect.height,
 				left: fieldRect.left,
 				name: 'n'
 			};
-		}
+		} ) as PositioningFunction
 	];
+
+	/**
+	 * A function used to calculate the optimal position for the dropdown panel.
+	 */
+	private static _getOptimalPosition = getOptimalPosition;
 }
 
 /**
@@ -95,6 +115,8 @@ interface AutocompleteResultsView extends SearchResultsView {
 
 	/**
 	 * TODO
+	 *
+	 * @internal
 	 */
-	position: 's' | 'n';
+	_position: string;
 }

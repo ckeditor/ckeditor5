@@ -36,9 +36,7 @@ export default class HighlightedTextView extends View {
 			attributes: {
 				class: [ 'ck', 'ck-highlighted-text' ]
 			},
-			children: [
-				text
-			]
+			children: text
 		} );
 	}
 
