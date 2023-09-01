@@ -2080,11 +2080,11 @@ describe( 'Drag and Drop experimental', () => {
 	// -----------------------------------
 
 	function expectDraggingMarker( targetPositionOrRange ) {
-		// expect( model.markers.has( 'drop-target' ) ).to.be.true;
+		expect( model.markers.has( 'drop-target' ) ).to.be.true;
 
 		if ( targetPositionOrRange.is( 'position' ) ) {
-			// expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).to.be.true;
-			// expect( model.markers.get( 'drop-target' ).getRange().start.isEqual( targetPositionOrRange ) ).to.be.true;
+			expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).to.be.true;
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual( targetPositionOrRange ) ).to.be.true;
 		} else {
 			expect( model.markers.get( 'drop-target' ).getRange().isEqual( targetPositionOrRange ) ).to.be.true;
 		}
