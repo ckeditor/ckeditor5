@@ -1616,11 +1616,13 @@ describe( 'Drag and Drop experimental', () => {
 
 				expect( viewElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
 
+				const widgetUIHeight = 25;
+
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: viewElement,
 					dataTransfer: dataTransferMock,
-					domEvent: getMockedMousePosition( domNode, 'after' )
+					domEvent: getMockedMousePosition( domNode, 'after', widgetUIHeight )
 				} );
 
 				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 'after' ) );
@@ -1729,7 +1731,7 @@ describe( 'Drag and Drop experimental', () => {
 				expectDraggingMarker( model.createPositionAt( root.getNodeByPath( [ 1, 0, 0, 0 ] ), 'before' ) );
 			} );
 
-			it( 'should find drop position while hovering over table with target range inside tr', () => {
+			it( 'should find drop position while hovering over table with target position inside after paragraph', () => {
 				setModelData( model,
 					'<paragraph>[]foobar</paragraph>' +
 					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
@@ -1741,17 +1743,18 @@ describe( 'Drag and Drop experimental', () => {
 				const viewElement = mapper.toViewElement( modelElement );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				const tableRow = root.getNodeByPath( [ 1, 0 ] );
+				const tableRow = root.getNodeByPath( [ 1, 0, 0, 0 ] );
 				const tableRowView = mapper.toViewElement( tableRow );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: viewElement,
-					targetRanges: [ view.createRange( view.createPositionAt( tableRowView, 0 ) ) ],
-					dataTransfer: dataTransferMock
+					targetRanges: [ view.createRange( view.createPositionAt( tableRowView, 'after' ) ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domNode, 'after' )
 				} );
 
-				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+				expectDraggingMarker( model.createPositionAt( root.getNodeByPath( [ 1, 0, 0, 0 ] ), 'after' ) );
 			} );
 
 			it( 'should find drop position while hovering over space between blocks but the following element is not an object', () => {
@@ -1799,19 +1802,24 @@ describe( 'Drag and Drop experimental', () => {
 				const rootElement = viewDocument.getRoot();
 				const domNode = domConverter.mapViewToDom( rootElement );
 
+				const modelElement = root.getNodeByPath( [ 1 ] );
+				const viewWidget = mapper.toViewElement( modelElement );
+				const domWidget = domConverter.mapViewToDom( viewWidget );
+
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: rootElement,
-					targetRanges: [ view.createRange( view.createPositionAt( rootElement, 2 ) ) ],
-					dataTransfer: dataTransferMock
+					targetRanges: [ view.createRange( view.createPositionAt( viewWidget, 'after' ) ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domWidget, 'after' )
 				} );
 
-				expectDraggingMarker( model.createRangeOn( root.getChild( 1 ) ) );
+				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 'after' ) );
 
 				env.isGecko = originalEnvGecko;
 			} );
 
-			it( 'should find drop position while hovering over a widget without content (in Firefox)', () => {
+			it( 'should find drop position while hovering after widget without content (in Firefox)', () => {
 				const originalEnvGecko = env.isGecko;
 
 				env.isGecko = true;
@@ -1824,17 +1832,23 @@ describe( 'Drag and Drop experimental', () => {
 
 				const dataTransferMock = createDataTransfer();
 
-				const rootElement = viewDocument.getRoot();
-				const domNode = domConverter.mapViewToDom( rootElement );
+				const modelWidget = root.getNodeByPath( [ 1, 0 ] );
+				const viewWidget = mapper.toViewElement( modelWidget );
+				const domWidget = domConverter.mapViewToDom( viewWidget );
+
+				const modelQuote = root.getNodeByPath( [ 1 ] );
+				const viewQuote = mapper.toViewElement( modelQuote );
+				const domQuote = domConverter.mapViewToDom( viewQuote );
 
 				viewDocument.fire( 'dragging', {
-					domTarget: domNode,
-					target: rootElement,
-					targetRanges: [ view.createRange( view.createPositionAt( rootElement.getChild( 1 ), 0 ) ) ],
-					dataTransfer: dataTransferMock
+					domTarget: domQuote,
+					target: viewQuote,
+					targetRanges: [ view.createRange( view.createPositionAt( viewWidget, 'after' ) ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domWidget, 'after' )
 				} );
 
-				expectDraggingMarker( model.createRangeOn( root.getNodeByPath( [ 1, 0 ] ) ) );
+				expectDraggingMarker( model.createPositionAt( modelWidget, 'after' ) );
 
 				env.isGecko = originalEnvGecko;
 			} );
@@ -2117,19 +2131,19 @@ describe( 'Drag and Drop experimental', () => {
 		};
 	}
 
-	function getMockedMousePosition( domNode, position = 'before' ) {
+	function getMockedMousePosition( domNode, position = 'before', extraOffset = 0 ) {
 		const { x, y, height } = domNode.getBoundingClientRect();
 
 		if ( position === 'after' ) {
 			return {
 				clientX: x,
-				clientY: y + 2 * height
+				clientY: y + height + extraOffset
 			};
 		}
 
 		return {
 			clientX: x,
-			clientY: y
+			clientY: y + extraOffset
 		};
 	}
 } );
