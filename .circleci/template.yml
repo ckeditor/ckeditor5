@@ -17,31 +17,13 @@ commands:
       - run:
           name: Install the latest Chrome
           command: yarn ckeditor5-dev-ci-install-latest-chrome
-      - run:
-          name: Install GitHub CLI
-          command: |
-            #!/bin/bash
-
-            # Install the package.
-            sudo apt update
-            sudo apt install gh
-            
-            # The "GITHUB_TOKEN" is defined in "Environment Variables".
-            if [[ -v GITHUB_TOKEN ]];
-            then
-              # Authenticate & configure.
-              gh auth setup-git
-              gh auth status
-              gh config set prompt disabled
-              gh --version
-            fi
 
   install_ssh_keys_command:
     description: "Install SSH keys"
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "2a:97:94:d9:ae:a0:8d:bd:c2:2a:2d:cf:8d:d1:94:bd"
+            - "a0:41:a2:56:c8:7d:3f:29:41:d1:87:92:fd:50:2b:6b"
 
   bootstrap_repository_command:
     description: "Bootstrap the CKEditor 5 project"
@@ -57,6 +39,22 @@ commands:
       - run:
           name: Checkout code (single branch)
           command: git clone --single-branch --depth 10 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
+
+  # In the PRs that comes from forked repositories, we do not share secret variables.
+  # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
+  # This command breaks given job if environment variables are not available.
+  community_verification_command:
+    description: "Check if a build was trigger by a community member"
+    steps:
+      - run:
+          name: 👤 Verify if the build was triggered by community - Check if the build should continue
+          command: |
+            #!/bin/bash
+            
+            if [[ -z ${COVERALLS_REPO_TOKEN} ]];
+            then
+              circleci-agent step halt
+            fi
 
 jobs:
   cke5_manual:
@@ -106,14 +104,10 @@ jobs:
   cke5_coverage:
     machine: true
     steps:
+      - community_verification_command
       - checkout_command
       - bootstrap_repository_command
       - prepare_environment_command
-      - run:
-          # In the PRs that comes from forked repositories, we do not share secret variables.
-          # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
-          name: 👤 Verify if the build was triggered by community - Check if the build should continue
-          command: node scripts/ci/is-community-pr.js --exit && circleci-agent step halt || echo "" > /dev/null
       - attach_workspace:
           at: .out
       - run:
@@ -132,13 +126,9 @@ jobs:
   cke5_trigger_uber_ci:
     machine: true
     steps:
+      - community_verification_command
       - checkout_command
       - bootstrap_repository_command
-      - run:
-          # In the PRs that comes from forked repositories, we do not share secret variables.
-          # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
-          name: 👤 Verify if the build was triggered by community - Check if the build should continue
-          command: node scripts/ci/is-community-pr.js --exit && circleci-agent step halt || echo "" > /dev/null
       - run:
           name: Trigger the Uber CI
           command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1
@@ -161,13 +151,9 @@ jobs:
         type: string
         default: "false"
     steps:
+      - community_verification_command
       - checkout_command
       - bootstrap_repository_command
-      - run:
-          # In the PRs that comes from forked repositories, we do not share secret variables.
-          # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
-          name: 👤 Verify if the build was triggered by community - Check if the build should continue
-          command: node scripts/ci/is-community-pr.js --exit && circleci-agent step halt || echo "" > /dev/null
       - run:
           environment:
             CKE5_SLACK_NOTIFY_HIDE_AUTHOR: << parameters.hideAuthor >>
