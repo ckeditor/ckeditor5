@@ -102,20 +102,6 @@ const persistToWorkspace = fileName => ( {
 			} );
 	}
 
-	Object.keys( config.jobs )
-		.filter( jobName => {
-			if ( jobName === 'release_prepare' ) {
-				return true;
-			}
-
-			if ( jobName.includes( 'tests' ) || jobName.includes( 'coverage' ) || jobName.includes( 'manual' ) ) {
-				return true;
-			}
-
-			return false;
-		} )
-		.forEach( jobName => injectShortFlowDetection( config, jobName ) );
-
 	await fs.writeFile(
 		upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
 		yaml.dump( config, { lineWidth: -1 } )
@@ -168,28 +154,6 @@ function replaceShortCheckout( config, jobName ) {
 
 		return item;
 	} );
-}
-
-/**
- * @param {CircleCIConfiguration} config
- * @param {String} jobName
- */
-function injectShortFlowDetection( config, jobName ) {
-	const job = config.jobs[ jobName ];
-	job.environment = job.environment || {};
-
-	const { steps, environment } = job;
-	const jobIndex = steps[ 0 ] === 'community_verification_command' ? 4 : 3;
-
-	steps.splice( jobIndex, 0, {
-		run: {
-			name: '⭐ Short flow breakpoint - Check if the build should continue',
-			// This command should not impact on the error code.
-			command: 'node scripts/ci/should-run-short-flow.js && circleci-agent step halt || echo ""'
-		}
-	} );
-
-	environment.CKE5_IS_NIGHTLY_BUILD = '<< pipeline.parameters.isNightly >>';
 }
 
 /**
