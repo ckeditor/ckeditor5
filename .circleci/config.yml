@@ -30,7 +30,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "2a:97:94:d9:ae:a0:8d:bd:c2:2a:2d:cf:8d:d1:94:bd"
+            - "a0:41:a2:56:c8:7d:3f:29:41:d1:87:92:fd:50:2b:6b"
 
 jobs:
   generate_configuration:
