@@ -19,7 +19,6 @@ import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { FontSize } from '@ckeditor/ckeditor5-font';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
 import Documentlist from '../../src/documentlist';
@@ -44,9 +43,9 @@ ClassicEditor
 			Documentlist,
 			TodoDocumentlist,
 			SourceEditing,
-			GeneralHtmlSupport,
 			Alignment
 		],
+		language: 'ar',
 		toolbar: [
 			'heading',
 			'|',
@@ -62,9 +61,6 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
-		},
-		htmlSupport: {
-			allow: [ { name: /.*/, attributes: true, classes: true, styles: true } ]
 		}
 	} )
 	.then( editor => {
