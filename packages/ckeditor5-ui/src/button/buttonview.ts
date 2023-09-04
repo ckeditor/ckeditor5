@@ -13,6 +13,7 @@ import IconView from '../icon/iconview';
 import type { TemplateDefinition } from '../template';
 import type ViewCollection from '../viewcollection';
 import type { default as Button, ButtonExecuteEvent } from './button';
+import type ButtonLabel from './buttonlabel';
 import ButtonLabelView from './buttonlabelview';
 
 import {
@@ -51,9 +52,12 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	public readonly children: ViewCollection;
 
 	/**
-	 * Label of the button view. It is configurable using the {@link #label label attribute}.
+	 * Label of the button view. Its text is configurable using the {@link #label label attribute}.
+	 *
+	 * If not configured otherwise in the `constructor()`, by default the label is an instance
+	 * of {@link module:ui/button/buttonlabelview~ButtonLabelView}.
 	 */
-	public readonly labelView: ButtonLabelView;
+	public readonly labelView: ButtonLabel;
 
 	/**
 	 * The icon view of the button. Will be added to {@link #children} when the
@@ -179,9 +183,13 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	private _focusDelayed: DelayedFunc<() => void> | null = null;
 
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the button view class.
+	 *
+	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param labelView The instance of the button's label. If not provided, an instance of
+	 * {@link module:ui/button/buttonlabelview~ButtonLabelView} is used.
 	 */
-	constructor( locale?: Locale, labelView = new ButtonLabelView() ) {
+	constructor( locale?: Locale, labelView: ButtonLabel = new ButtonLabelView() ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -326,10 +334,10 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	}
 
 	/**
-	 * Creates a label view instance and binds it with button attributes.
+	 * Binds the label view instance it with button attributes.
 	 */
 	private _setupLabelView( labelView: ButtonLabelView ) {
-		labelView.bind( 'label', 'style', 'id' ).to( this, 'label', 'labelStyle', 'ariaLabelledBy' );
+		labelView.bind( 'text', 'style', 'id' ).to( this, 'label', 'labelStyle', 'ariaLabelledBy' );
 
 		return labelView;
 	}
