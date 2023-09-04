@@ -7,8 +7,6 @@
  * @module clipboard/dragdroptarget
  */
 
-/* istanbul ignore file -- @preserve */
-
 import {
 	Plugin,
 	type Editor

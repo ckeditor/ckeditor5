@@ -1743,13 +1743,13 @@ describe( 'Drag and Drop experimental', () => {
 				const viewElement = mapper.toViewElement( modelElement );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				const tableRow = root.getNodeByPath( [ 1, 0, 0, 0 ] );
-				const tableRowView = mapper.toViewElement( tableRow );
+				const paragraphModel = root.getNodeByPath( [ 1, 0, 0, 0 ] );
+				const paragraphView = mapper.toViewElement( paragraphModel );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: viewElement,
-					targetRanges: [ view.createRange( view.createPositionAt( tableRowView, 'after' ) ) ],
+					targetRanges: [ view.createRange( view.createPositionAt( paragraphView, 'after' ) ) ],
 					dataTransfer: dataTransferMock,
 					domEvent: getMockedMousePosition( domNode, 'after' )
 				} );
@@ -1786,7 +1786,7 @@ describe( 'Drag and Drop experimental', () => {
 				expectDraggingMarker( model.createPositionAt( firstParagraphModelElement, 'before' ) );
 			} );
 
-			it( 'should find drop position while hovering over a widget without content (not Firefox)', () => {
+			it( 'should find drop position while hovering after widget without content (not Firefox)', () => {
 				const originalEnvGecko = env.isGecko;
 
 				env.isGecko = false;
@@ -1908,6 +1908,169 @@ describe( 'Drag and Drop experimental', () => {
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
 				expect( data.targetRanges.length ).to.equal( 1 );
 				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'DragDropTarget', () => {
+			it( 'should reconvert drop target on scroll event', done => {
+				setModelData( model,
+					'<paragraph>[]foo</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const viewElement = rootElement;
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				const firstParagraphModelElement = root.getChild( 1 );
+				const firstParagraphViewElement = mapper.toViewElement( firstParagraphModelElement );
+				const firstParagraphDomNode = domConverter.mapViewToDom( firstParagraphViewElement );
+
+				const spy = sinon.spy( editor.editing, 'reconvertMarker' );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: rootElement,
+					targetRanges: [ view.createRange( view.createPositionAt( firstParagraphViewElement, 'after' ) ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( firstParagraphDomNode )
+				} );
+
+				const scrollEvent = new Event( 'scroll' );
+
+				document.body.dispatchEvent( scrollEvent );
+
+				setTimeout( () => {
+					expect( spy.withArgs( 'drop-target' ).calledOnce ).to.be.true;
+					done();
+				} );
+			} );
+
+			it( 'should hide drop target if range is collapsed', () => {
+				setModelData( model,
+					'<paragraph>[]foo</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+				const firstParagraphModelElement = root.getChild( 1 );
+
+				const range = model.createRangeOn( firstParagraphModelElement );
+
+				model.change( writer => {
+					writer.addMarker( 'drop-target', {
+						range,
+						usingOperation: false
+					} );
+				} );
+
+				expect( document.querySelector( '.ck-clipboard-drop-target-line.ck-hidden' ) ).not.to.be.null;
+			} );
+
+			it( 'should hide drop target if target is not in editing root', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<paragraph>[]bar</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const viewElement = rootElement;
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				const firstParagraphModelElement = root.getChild( 0 );
+				const firstParagraphViewElement = mapper.toViewElement( firstParagraphModelElement );
+				const firstParagraphDomNode = domConverter.mapViewToDom( firstParagraphViewElement );
+
+				sinon.stub( document.body, 'getBoundingClientRect' ).returns( {
+					top: 0,
+					bottom: 0
+				} );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: rootElement,
+					targetRanges: [ view.createRange( view.createPositionAt( firstParagraphViewElement, 'after' ) ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( firstParagraphDomNode )
+				} );
+
+				expect( document.querySelector( '.ck-clipboard-drop-target-line.ck-hidden' ) ).not.to.be.null;
+			} );
+
+			it( 'should find drop position for $text element when hovering widget', () => {
+				setModelData( model,
+					'<paragraph>[]foo<$text bold="true">bar</$text>baz</paragraph>' +
+					'<horizontalLine></horizontalLine>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const viewParagraph = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
+				const domParagraph = domConverter.mapViewToDom( viewParagraph );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domParagraph,
+					target: viewParagraph,
+					targetRanges: [ view.createRange( view.createPositionAt( viewDocument.getRoot().getChild( 1 ), 0 ) ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domParagraph )
+				} );
+
+				expectDraggingMarker( model.createPositionAt( root.getChild( 1 ), 'before' ) );
+			} );
+
+			it( 'should find drop position for inline element', () => {
+				setModelData( model,
+					'<paragraph>foo <softBreak></softBreak> bar</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const viewSoftBreak = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
+				const domSoftBreak = domConverter.mapViewToDom( viewSoftBreak );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domSoftBreak,
+					target: viewSoftBreak,
+					targetRanges: [ view.createRange( view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 2 ), 2 ) ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( domSoftBreak )
+				} );
+
+				expectDraggingMarker( model.createPositionAt( root.getChild( 0 ), 5 ) );
+			} );
+
+			it( 'should through a warn in case when something went wrong', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				const rootElement = viewDocument.getRoot();
+				const viewElement = rootElement;
+				const domNode = domConverter.mapViewToDom( viewElement );
+
+				const nestedModelParagraph = root.getNodeByPath( [ 1, 0, 0, 0 ] );
+				const nestedViewParagraph = mapper.toViewElement( nestedModelParagraph );
+				const nestedParagraphDomNode = domConverter.mapViewToDom( nestedViewParagraph );
+
+				sinon.stub( model.schema, 'checkChild' ).returns( null );
+				const spy = sinon.spy( console, 'warn' );
+
+				viewDocument.fire( 'dragging', {
+					domTarget: domNode,
+					target: rootElement,
+					targetRanges: [ view.createRangeOn( nestedModelParagraph ) ],
+					dataTransfer: dataTransferMock,
+					domEvent: getMockedMousePosition( nestedParagraphDomNode )
+				} );
+
+				expect( spy.withArgs( 'none:', '$root' ).calledOnce ).to.be.true;
 			} );
 		} );
 	} );
