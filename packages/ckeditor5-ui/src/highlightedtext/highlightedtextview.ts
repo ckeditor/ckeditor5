@@ -13,40 +13,60 @@ import { escape } from 'lodash-es';
 import '../../theme/components/highlightedtext/highlightedtext.css';
 
 /**
- * TODO
+ * A class representing a view that displays a text which subset can be highlighted using the
+ * {@link #highlightText} method.
  */
 export default class HighlightedTextView extends View {
 	/**
-	 * TODO
+	 * The text that can be highlighted using the {@link #highlightText} method.
+	 *
+	 * **Note:** When this property changes, the previous highlighting is removed.
 	 */
-	private _text: string;
+	declare public text: string | undefined;
 
 	/**
-	 * TODO
-	 *
-	 * @param text
+	 * @inheritDoc
 	 */
-	constructor( text: string ) {
+	constructor() {
 		super();
 
-		this._text = text;
+		this.set( 'text', undefined );
 
 		this.setTemplate( {
 			tag: 'span',
 			attributes: {
 				class: [ 'ck', 'ck-highlighted-text' ]
-			},
-			children: text
+			}
+		} );
+
+		this.on( 'render', () => {
+			// Classic setTemplate binding for #text will not work because highlightText() replaces the
+			// pre-rendered DOM text node new a new one (and <mark> elements).
+			this.on( 'change:text', () => {
+				this._updateInnerHTML( this.text );
+			} );
+
+			this._updateInnerHTML( this.text );
 		} );
 	}
 
 	/**
-	 * TODO
+	 * Highlights view's {@link #text} according to the specified RegExp. If the passed RegExp is `null`, the
+	 * highlighting is removed
 	 *
 	 * @param regExp
 	 */
 	public highlightText( regExp: RegExp | null ): void {
-		this.element!.innerHTML = markText( this._text, regExp );
+		this._updateInnerHTML( markText( this.text || '', regExp ) );
+	}
+
+	/**
+	 * Updates element's innerHTML with the passed content.
+	 *
+	 * @param newText
+	 */
+	private _updateInnerHTML( newInnerHTML: string | undefined ) {
+		this.element!.innerHTML = newInnerHTML || '';
 	}
 }
 
