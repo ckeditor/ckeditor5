@@ -8,7 +8,8 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element, Model } from 'ckeditor5/src/engine';
+import type { Element } from 'ckeditor5/src/engine';
+import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
 import { first } from 'ckeditor5/src/utils';
 
 import type { IndentBehavior } from './indentcommandbehavior/indentbehavior';
@@ -50,13 +51,12 @@ export default class IndentBlockCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		// Check whether any of the position's ancestors is a list item.
 		const editor = this.editor;
 		const model = editor.model;
 
 		const block = first( model.document.selection.getSelectedBlocks() );
 
-		if ( !block || !model.schema.checkAttribute( block, 'blockIndent' ) ) {
+		if ( !block || !this._isIndentationChangeAllowed( block ) ) {
 			this.isEnabled = false;
 
 			return;
@@ -71,7 +71,7 @@ export default class IndentBlockCommand extends Command {
 	public override execute(): void {
 		const model = this.editor.model;
 
-		const blocksToChange = getBlocksToChange( model );
+		const blocksToChange = this._getBlocksToChange();
 
 		model.change( writer => {
 			for ( const block of blocksToChange ) {
@@ -87,15 +87,42 @@ export default class IndentBlockCommand extends Command {
 			}
 		} );
 	}
-}
 
-/**
- * Returns blocks from selection that should have blockIndent selection set.
- */
-function getBlocksToChange( model: Model ): Array<Element> {
-	const selection = model.document.selection;
-	const schema = model.schema;
-	const blocksInSelection = Array.from( selection.getSelectedBlocks() );
+	/**
+	 * Returns blocks from selection that should have blockIndent selection set.
+	 */
+	private _getBlocksToChange(): Array<Element> {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+		const blocksInSelection = Array.from( selection.getSelectedBlocks() );
 
-	return blocksInSelection.filter( block => schema.checkAttribute( block, 'blockIndent' ) );
+		return blocksInSelection.filter( block => this._isIndentationChangeAllowed( block ) );
+	}
+
+	/**
+	 * Returns false if indentation cannot be applied, i.e.:
+	 * - for blocks disallowed by schema declaration
+	 * - for blocks in Document Lists (disallowed forward indentation only). See https://github.com/ckeditor/ckeditor5/issues/14155.
+	 * Otherwise returns true.
+	 */
+	private _isIndentationChangeAllowed( element: Element ): boolean {
+		const editor = this.editor;
+
+		if ( !editor.model.schema.checkAttribute( element, 'blockIndent' ) ) {
+			return false;
+		}
+
+		if ( !editor.plugins.has( 'DocumentListUtils' ) ) {
+			return true;
+		}
+
+		// Only forward indentation is disallowed in list items. This allows the user to outdent blocks that are already indented.
+		if ( !this._indentBehavior.isForward ) {
+			return true;
+		}
+
+		const documentListUtils: DocumentListUtils = editor.plugins.get( 'DocumentListUtils' );
+
+		return !documentListUtils.isListItemBlock( element );
+	}
 }
