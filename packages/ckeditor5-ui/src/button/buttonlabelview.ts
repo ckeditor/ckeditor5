@@ -8,36 +8,38 @@
  */
 
 import View from '../view';
+import type ButtonLabel from './buttonlabel';
 
 /**
- * TODO
+ * A default implementation of the button view's label. It comes with a dynamic text support
+ * via {@link module:ui/button/buttonlabelview~ButtonLabelView#text} property.
  */
-export default class ButtonLabelView extends View {
+export default class ButtonLabelView extends View implements ButtonLabel {
 	/**
-	 * TODO
-	 */
-	declare public style: string | undefined;
-
-	/**
-	 * TODO
-	 */
-	declare public label: string | undefined;
-
-	/**
-	 * TODO
+	 * @inheritDoc
 	 */
 	declare public id: string | undefined;
 
 	/**
-	 * TODO
+	 * @inheritDoc
+	 */
+	declare public style: string | undefined;
+
+	/**
+	 * @inheritDoc
+	 */
+	declare public text: string | undefined;
+
+	/**
+	 * @inheritDoc
 	 */
 	constructor() {
 		super();
 
 		this.set( {
-			style: null,
-			label: null,
-			id: null
+			style: undefined,
+			text: undefined,
+			id: undefined
 		} );
 
 		const bind = this.bindTemplate;
@@ -56,7 +58,7 @@ export default class ButtonLabelView extends View {
 
 			children: [
 				{
-					text: bind.to( 'label' )
+					text: bind.to( 'text' )
 				}
 			]
 		} );
