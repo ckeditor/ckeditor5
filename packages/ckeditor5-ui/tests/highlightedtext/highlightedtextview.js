@@ -84,5 +84,13 @@ describe( 'TemplateListButtonView', () => {
 
 			expect( view.element.innerHTML ).to.equal( 'New text' );
 		} );
+
+		it( 'should work if there is no text in the view', () => {
+			view.text = '';
+
+			view.highlightText( new RegExp( /text/, 'ig' ) );
+
+			expect( view.element.innerHTML ).to.equal( '' );
+		} );
 	} );
 } );
