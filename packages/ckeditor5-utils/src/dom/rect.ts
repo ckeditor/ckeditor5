@@ -265,11 +265,6 @@ export default class Rect {
 		let parent = source.parentNode || source.commonAncestorContainer;
 		let absolutelyPositionedChildElement;
 
-		// const parentRectInit = new Rect( parent as HTMLElement );
-		// const childRectInit = new Rect( child as HTMLElement );
-
-		// console.log( `parentRect: ${ JSON.stringify( parentRectInit ) }, childRect: ${ JSON.stringify( childRectInit ) }` );
-
 		// Check the ancestors all the way up to the <body>.
 		while ( parent && !isBody( parent ) ) {
 			const isParentOverflowVisible = getElementOverflow( parent as HTMLElement ) === 'visible';
@@ -278,14 +273,17 @@ export default class Rect {
 				absolutelyPositionedChildElement = child;
 			}
 
+			const parentElementPosition = getElementPosition( parent as HTMLElement );
+
 			// The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
 			// Otherwise there's no chance of visual clipping and the parent can be skipped
 			// https://github.com/ckeditor/ckeditor5/issues/14107.
 			if (
-				( isParentOverflowVisible && !absolutelyPositionedChildElement ) ||
-				( absolutelyPositionedChildElement && getElementPosition( parent as HTMLElement ) === 'relative' &&
-					isParentOverflowVisible ) ||
-				( absolutelyPositionedChildElement && getElementPosition( parent as HTMLElement ) !== 'relative' )
+				isParentOverflowVisible ||
+				absolutelyPositionedChildElement && (
+					( parentElementPosition === 'relative' && isParentOverflowVisible ) ||
+					parentElementPosition !== 'relative'
+				)
 			) {
 				child = parent;
 				parent = parent.parentNode;
@@ -343,9 +341,7 @@ export default class Rect {
 	}
 
 	/**
-	 * TODO
-	 *
-	 * @returns
+	 * Calculates absolute `Rect` coordinates.
 	 */
 	public toAbsoluteRect(): Rect {
 		const { scrollX, scrollY } = global.window;
@@ -531,7 +527,7 @@ function isDomElement( value: any ): value is Element {
  * Returns the value of the `position` style of an `HTMLElement`.
  */
 function getElementPosition( element: HTMLElement ): string {
-	return element.ownerDocument.defaultView!.getComputedStyle( element ).position;
+	return element.ownerDocument ? element.ownerDocument.defaultView!.getComputedStyle( element ).position : 'static';
 }
 
 /**
