@@ -21,7 +21,22 @@ import FocusCycler from '../focuscycler';
 import '../../theme/components/search/search.css';
 
 /**
- * TODO: A search component.
+ * A search component that allows filtering of an arbitrary view based on a search query
+ * specified by the user.
+ *
+ *```ts
+ * // This view must specify the `filter()` and `focus()` methods.
+ * const filteredView = ...;
+ *
+ * const searchView = new SearchView( locale, {
+ * 	searchFieldLabel: 'Search list items',
+ * 	filteredView
+ * } );
+ *
+ * view.render();
+ *
+ * document.body.append( view.element );
+ * ```
  *
  * @extends module:ui/view~View
  */
@@ -34,42 +49,43 @@ export default class SearchView extends View {
 	public focusTracker: FocusTracker;
 
 	/**
-	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 * An instance of the keystroke handler managing user interaction and accessibility.
 	 *
 	 * @readonly
 	 */
 	public keystrokes: KeystrokeHandler;
 
 	/**
-	 * TODO
+	 * A view hosting the {@link #filteredView} passed in the configuration and the {@link #infoView}.
 	 */
 	public resultsView: SearchResultsView;
 
 	/**
-	 * TODO
+	 * The view that is filtered by the search query.
 	 */
 	public filteredView: FilteredView;
 
 	/**
-	 * TODO
+	 * The view that displays the information about the search results.
 	 */
-	public infoView: View;
+	public infoView: View | undefined;
 
 	/**
-	 * TODO
+	 * The view that allows the user to enter the search query.
 	 */
 	public searchFieldView: SearchFieldView;
 
 	/**
-	 * Helps cycling over {@link #children} in the view.
+	 * Provides the focus management (keyboard navigation) between {@link #searchFieldView} and {@link #filteredView}.
 	 *
 	 * @readonly
-	 * @internal
 	 */
 	private _focusCycler: FocusCycler;
 
 	/**
-	 * TODO
+	 * The cached configuration object.
+	 *
+	 * @internal
 	 */
 	private _config: SearchViewConfig;
 
@@ -77,8 +93,7 @@ export default class SearchView extends View {
 	 * Creates an instance of the {@link module:ui/search/searchview~SearchView} class.
 	 *
 	 * @param locale The localization services instance.
-	 * @param commands The object of all grouped commands.
-	 * @param label TODO
+	 * @param config Configuration of the view.
 	 */
 	constructor( locale: Locale, config: SearchViewConfig ) {
 		super( locale );
@@ -93,7 +108,6 @@ export default class SearchView extends View {
 
 		if ( !config.infoView ) {
 			this.infoView = new SearchInfoView();
-			this.resultsView.children.add( this.infoView );
 			this._enableDefaultInfoViewBehavior();
 
 			this.on( 'render', () => {
@@ -105,7 +119,7 @@ export default class SearchView extends View {
 			this.infoView = config.infoView;
 		}
 
-		this.resultsView.children.add( this.filteredView );
+		this.resultsView.children.addMany( [ this.infoView, this.filteredView ] );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this.createCollection( [ this.searchFieldView, this.filteredView ] ),
@@ -177,7 +191,7 @@ export default class SearchView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Searches the {@link #filteredView} for the given query.
 	 *
 	 * @internal
 	 * @param query The search query string.
@@ -190,11 +204,10 @@ export default class SearchView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Creates a search field view based on configured creator..
 	 *
-	 * @internal
 	 * @param locale The localization services instance.
-	 * @param label TODO
+	 * @param label The label of the search field.
 	 */
 	private _createSearchFieldView( locale: Locale, label: string ): SearchFieldView {
 		const searchFieldView = new SearchFieldView( locale, this._config.searchFieldInputCreator, label );
@@ -209,7 +222,8 @@ export default class SearchView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Initializes the default {@link #infoView} behavior with default text labels when no custom info view
+	 * was specified in the view config.
 	 */
 	private _enableDefaultInfoViewBehavior(): void {
 		const t = this.locale!.t;
@@ -250,14 +264,45 @@ export default class SearchView extends View {
 }
 
 /**
- * TODO
+ * The configuration of the {@link module:ui/search/searchview~SearchView} class.
  */
 export type SearchViewConfig = {
+
+	/**
+	 * The view that is filtered by the search query.
+	 */
 	filteredView: FilteredView;
+
+	/**
+	 * The human-readable label of the search field.
+	 */
 	searchFieldLabel: string;
+
+	/**
+	 * The function that creates the search field input view. By default, a plain
+	 * {@link module:ui/inputtext/inputtextview~InputTextView} is used for this purpose.
+	 */
 	searchFieldInputCreator?: ConstructorParameters<typeof LabeledFieldView<InputView>>[ 1 ];
+
+	/**
+	 * The custom CSS class name to be added to the search view element.
+	 */
 	class?: string;
+
+	/**
+	 * The view that displays the information about the search results. If not specified,
+	 * {@link module:ui/search/searchinfoview~SearchInfoView} is used.
+	 */
 	infoView?: View;
+
+	/**
+	 * The configuration of text labels displayed in the {@link #infoView} in different states
+	 * of the search component.
+	 *
+	 * **Note**: This configuration is only used when the {@link #infoView} is **not** specified.
+	 * In other cases, please use the {@link module:ui/search/searchview~SearchViewSearchEvent} to bring about
+	 * your own info text logic.
+	 */
 	infoViewTextConfig?: {
 		notFound?: {
 			primary: SearchViewDefaultInfoText;
@@ -271,12 +316,13 @@ export type SearchViewConfig = {
 };
 
 /**
- * TODO
+ * Describes value of a {@link module:ui/search/searchview~SearchViewConfig#infoViewTextConfig info text configuration}.
+ * A string or a function that returns a string with the information about the search results.
  */
 export type SearchViewDefaultInfoText = string | ( ( query: string, resultsCount: number, totalItemsCount: number ) => string );
 
 /**
- * TODO
+ * An event fired when the search query changes fired by {@link module:ui/search/searchview~SearchView#search}.
  *
  * @eventName ~SearchView#search
  */
