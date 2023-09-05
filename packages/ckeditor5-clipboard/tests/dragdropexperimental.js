@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, Event */
 
 import ClipboardPipeline from '../src/clipboardpipeline';
 import DragDropExperimental from '../src/dragdropexperimental';
@@ -326,7 +326,6 @@ describe( 'Drag and Drop experimental', () => {
 			env.isGecko = originalEnvGecko;
 		} );
 
-		// TODO
 		it( 'should move text to other place in the same editor (over some widget)', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph><horizontalLine></horizontalLine>' );
 
@@ -494,7 +493,6 @@ describe( 'Drag and Drop experimental', () => {
 			expect( getViewData( view ) ).to.equal( '<p>fooabc{}bar</p>' );
 		} );
 
-		// TODO
 		it( 'should not remove dragged range if insert into drop target was not allowed', () => {
 			editor.model.schema.register( 'caption', {
 				allowIn: '$root',
@@ -827,7 +825,6 @@ describe( 'Drag and Drop experimental', () => {
 				expect( dataTransferMock.effectAllowed ).to.equal( 'copy' );
 			} );
 
-			// TODO
 			it( 'should start dragging by grabbing the widget selection handle', () => {
 				setModelData( model,
 					'<paragraph>[]foobar</paragraph>' +
@@ -942,7 +939,6 @@ describe( 'Drag and Drop experimental', () => {
 				);
 			} );
 
-			// TODO
 			it( 'should start dragging by grabbing the widget element directly', () => {
 				setModelData( model,
 					'<paragraph>[]foobar</paragraph>' +
@@ -1186,7 +1182,6 @@ describe( 'Drag and Drop experimental', () => {
 				expect( dataTransferMock.getData( 'text/html' ) ).to.be.undefined;
 			} );
 
-			// TODO
 			it( 'should drag parent paragraph if entire content is selected', () => {
 				setModelData( model,
 					'<paragraph>foobar</paragraph>' +
@@ -1251,7 +1246,6 @@ describe( 'Drag and Drop experimental', () => {
 				);
 			} );
 
-			// TODO
 			it( 'should not drag parent paragraph when only portion of content is selected', () => {
 				setModelData( model,
 					'<paragraph>foobar</paragraph>' +
@@ -1378,40 +1372,24 @@ describe( 'Drag and Drop experimental', () => {
 				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
 			} );
 
-			it( 'should do nothing on mouseup on android', () => {
-				env.isAndroid = true;
-
+			it( 'can drag multiple elements', () => {
 				setModelData( model,
-					'<paragraph>[]foobar</paragraph>' +
+					'<blockQuote>' +
+						'[<paragraph>foo</paragraph>' +
+						'<paragraph>bar</paragraph>]' +
+						'<paragraph>baz</paragraph>' +
+					'</blockQuote>' +
 					'<horizontalLine></horizontalLine>'
 				);
 
-				const clock = sinon.useFakeTimers();
-				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
-				const viewElement = widgetViewElement.getChild( 0 );
-				const domNode = domConverter.mapViewToDom( viewElement );
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
 
-				expect( viewElement.is( 'element', 'hr' ) ).to.be.true;
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, '<p>foo</p><p>bar</p>' );
 
-				const eventData = {
-					domTarget: domNode,
-					target: viewElement,
-					domEvent: {},
-					preventDefault() {}
-				};
-
-				viewDocument.fire( 'mousedown', {
-					...eventData
-				} );
-
-				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
-
-				viewDocument.fire( 'mouseup' );
-				clock.tick( 50 );
-
-				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
-
-				env.isAndroid = false;
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
 			} );
 
 			it( 'should remove "draggable" attribute from editable element', () => {
@@ -1440,6 +1418,29 @@ describe( 'Drag and Drop experimental', () => {
 				clock.tick( 50 );
 
 				expect( editableElement.hasAttribute( 'draggable' ) ).to.be.false;
+			} );
+
+			it( 'should only show one preview element', () => {
+				setModelData( model,
+					'<blockQuote>' +
+						'[<paragraph>foo</paragraph>' +
+						'<paragraph>bar</paragraph>]' +
+						'<paragraph>baz</paragraph>' +
+					'</blockQuote>' +
+					'<horizontalLine></horizontalLine>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+
+				fireDragStart( dataTransferMock );
+				fireDragStart( dataTransferMock );
+
+				const numberOfCkContentElements = Object
+					.keys( document.getElementsByClassName( 'ck-content' ) )
+					.length;
+
+				// There should be two elements with the `.ck-content` class - editor and drag-and-drop preview.
+				expect( numberOfCkContentElements ).to.be.eq( 2 );
 			} );
 		} );
 
@@ -1528,7 +1529,6 @@ describe( 'Drag and Drop experimental', () => {
 			} );
 		} );
 
-		// TODO
 		describe( 'dragover', () => {
 			it( 'should put drop target marker inside a text node', () => {
 				setModelData( model, '<paragraph>[]foobar</paragraph>' );
@@ -1854,6 +1854,36 @@ describe( 'Drag and Drop experimental', () => {
 			} );
 		} );
 
+		describe( 'dragend', () => {
+			it( 'should reset block dragging when dropped outside the editable', () => {
+				setModelData( model,
+					'<paragraph>foobar</paragraph>' +
+					'[<horizontalLine></horizontalLine>]'
+				);
+
+				const plugin = editor.plugins.get( 'DragDropExperimental' );
+				const modelElement = model.document.getRoot().getNodeByPath( [ 1 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+
+				// Fire the 'dragstart' event to change the '_blockMode to true
+				viewDocument.fire( 'dragstart', {
+					domTarget: domConverter.mapViewToDom( viewElement ),
+					target: viewElement,
+					domEvent: {},
+					dataTransfer: createDataTransfer( {} ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				// Fire the 'dragend' event on the document
+				document.dispatchEvent( new Event( 'dragend' ) );
+
+				// Check if the blockMode changes to 'false'
+				expect( plugin._blockMode ).to.be.false;
+				expect( model.markers.has( 'drop-target' ) ).to.be.false;
+			} );
+		} );
+
 		describe( 'drop', () => {
 			// TODO: to be discussed.
 			it.skip( 'should update targetRanges', () => {
@@ -2004,6 +2034,68 @@ describe( 'Drag and Drop experimental', () => {
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;
 			} );
+		} );
+	} );
+
+	describe( 'integration with paragraph-only editor', () => {
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				useInlineRoot: true,
+				plugins: [ DragDropExperimental, PastePlainText, Paragraph, Bold ]
+			} );
+
+			model = editor.model;
+			root = model.document.getRoot();
+			mapper = editor.editing.mapper;
+			view = editor.editing.view;
+			viewDocument = view.document;
+			domConverter = view.domConverter;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+			await editorElement.remove();
+		} );
+
+		it( 'handles paste', () => {
+			setModelData( model,
+				'foo[]'
+			);
+
+			editor.editing.view.document.fire( 'paste', {
+				dataTransfer: createDataTransfer( { 'text/html': '<strong>bar</strong>' } ),
+				stopPropagation() {},
+				preventDefault() {}
+			} );
+
+			expect( getModelData( model ) ).to.be.eq( 'foo<$text bold="true">bar[]</$text>' );
+		} );
+
+		it( 'stops `clipboardInput` event', () => {
+			setModelData( model,
+				'foo[]'
+			);
+
+			const spyClipboardInput = sinon.spy();
+			const rootElement = viewDocument.getRoot();
+			const domNode = domConverter.mapViewToDom( rootElement );
+
+			viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+			viewDocument.fire( 'clipboardInput', {
+				domTarget: domNode,
+				target: rootElement,
+				method: 'drop',
+				dataTransfer: createDataTransfer(),
+				domEvent: getMockedMousePosition( domNode ),
+				stopPropagation: () => {},
+				preventDefault: () => {}
+			} );
+
+			expect( spyClipboardInput.called ).to.be.false;
 		} );
 	} );
 
