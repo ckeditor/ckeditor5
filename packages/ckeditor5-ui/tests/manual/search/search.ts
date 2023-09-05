@@ -44,7 +44,7 @@ function createSearchableList() {
 					const groupView = listItemOrGroupView as ListItemGroupView;
 
 					for ( const item of groupView.items ) {
-						updateListItemVisibility( item );
+						updateListItemVisibility( item as ListItemView );
 					}
 
 					groupView.isVisible = !!groupView.items.filter( listItemView => listItemView.isVisible ).length;

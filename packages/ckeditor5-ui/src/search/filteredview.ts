@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
+import type { FocusableView } from '../focuscycler';
 import type View from '../view';
 
 /**
@@ -13,7 +13,7 @@ import type View from '../view';
 /**
  * TODO
  */
-export default interface FilteredView extends View, DropdownPanelFocusable {
+export default interface FilteredView extends View, FocusableView {
 
 	/**
 	 * TODO
