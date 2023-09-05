@@ -32,7 +32,6 @@ export default class Mention extends Plugin {
 	 * // { id: '@joe', userId: '1234', uid: '7a7bc7...', _text: '@John Doe' }
 	 * ```
 	 *
-	 * @param viewElement
 	 * @param data Additional data to be stored in the mention attribute.
 	 */
 	public toMentionAttribute<MentionData extends Record<string, unknown>>(
@@ -50,9 +49,6 @@ export default class Mention extends Plugin {
 	 * // it will return:
 	 * // { id: '@joe', uid: '7a7bc7...', _text: '@John Doe' }
 	 * ```
-	 *
-	 * @param viewElement
-	 * @param data Additional data to be stored in the mention attribute.
 	 */
 	public toMentionAttribute( viewElement: Element ): MentionAttribute | undefined;
 
