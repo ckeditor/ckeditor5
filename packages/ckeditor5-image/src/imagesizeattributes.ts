@@ -63,7 +63,7 @@ export default class ImageSizeAttributes extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.attributeToAttribute( {
 				view: {
-					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					name: viewElementName,
 					styles: {
 						width: /.+/
 					}
@@ -96,7 +96,7 @@ export default class ImageSizeAttributes extends Plugin {
 			} )
 			.attributeToAttribute( {
 				view: {
-					name: imageType === 'imageBlock' ? 'figure' : 'img',
+					name: viewElementName,
 					styles: {
 						height: /.+/
 					}
