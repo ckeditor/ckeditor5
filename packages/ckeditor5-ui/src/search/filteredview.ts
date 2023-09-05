@@ -11,12 +11,12 @@ import type View from '../view';
  */
 
 /**
- * TODO
+ * A view that can be filtered by a {@link module:ui/search/searchview~SearchView}.
  */
 export default interface FilteredView extends View, FocusableView {
 
 	/**
-	 * TODO
+	 * Filters the view by the given regular expression.
 	 */
 	filter( regExp: RegExp | null ): {
 		resultsCount: number;
