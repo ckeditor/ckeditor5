@@ -85,7 +85,7 @@ export default class MentionEditing extends Plugin {
  */
 export function _addMentionAttributes(
 	baseMentionData: { id: string; _text: string },
-	data?: object
+	data?: Record<string, unknown>
 ): MentionAttribute {
 	return Object.assign( { uid: uid() }, baseMentionData, data || {} );
 }
@@ -100,7 +100,7 @@ export function _addMentionAttributes(
  */
 export function _toMentionAttribute(
 	viewElementOrMention: Element,
-	data?: object
+	data?: Record<string, unknown>
 ): MentionAttribute | undefined {
 	const dataMention = viewElementOrMention.getAttribute( 'data-mention' ) as string;
 

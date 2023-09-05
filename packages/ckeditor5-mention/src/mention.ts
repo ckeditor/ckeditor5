@@ -35,7 +35,7 @@ export default class Mention extends Plugin {
 	 * @param viewElement
 	 * @param data Additional data to be stored in the mention attribute.
 	 */
-	public toMentionAttribute<MentionData extends object>(
+	public toMentionAttribute<MentionData extends Record<string, unknown>>(
 		viewElement: Element,
 		data: MentionData
 	): ( MentionAttribute & MentionData ) | undefined;
@@ -56,7 +56,7 @@ export default class Mention extends Plugin {
 	 */
 	public toMentionAttribute( viewElement: Element ): MentionAttribute | undefined;
 
-	public toMentionAttribute( viewElement: Element, data?: object ): MentionAttribute | undefined {
+	public toMentionAttribute( viewElement: Element, data?: Record<string, unknown> ): MentionAttribute | undefined {
 		return _toMentionAttribute( viewElement, data );
 	}
 
