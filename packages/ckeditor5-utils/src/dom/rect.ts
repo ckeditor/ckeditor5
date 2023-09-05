@@ -278,6 +278,36 @@ export default class Rect {
 			// The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
 			// Otherwise there's no chance of visual clipping and the parent can be skipped
 			// https://github.com/ckeditor/ckeditor5/issues/14107.
+			//
+			// condition: isParentOverflowVisible
+			// 		+---------------------------+
+			//		| #parent					|
+			//		| (overflow: visible)		|
+			//		|				+-----------+---------------+
+			//		|				| child						|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
+			//
+			// condition: absolutelyPositionedChildElement && parentElementPosition === 'relative' && isParentOverflowVisible
+			// 		+---------------------------+
+			//		| parent					|
+			//		| (position: relative;)		|
+			//		| (overflow: visible;)		|
+			//		|				+-----------+---------------+
+			//		|				| child  					|
+			//		|				| (position: absolute;)		|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
+			//
+			// condition: absolutelyPositionedChildElement && parentElementPosition !== 'relative'
+			// 		+---------------------------+
+			//		| parent					|
+			//		| (position: static;)		|
+			//		|				+-----------+---------------+
+			//		|				| child  					|
+			//		|				| (position: absolute;)		|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
 			if (
 				isParentOverflowVisible ||
 				absolutelyPositionedChildElement && (
