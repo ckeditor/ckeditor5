@@ -2,6 +2,7 @@
  * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+/*
 
 :root {
 	--ck-todo-list-checkmark-size: 16px;
@@ -27,15 +28,15 @@
 			-webkit-appearance: none;
 			display: inline-block;
 			position: absolute;
-			/*position: relative;*/
+			!*position: relative;*!
 			width: var(--ck-todo-list-checkmark-size);
 			height: var(--ck-todo-list-checkmark-size);
 			vertical-align: middle;
 
-			/* Needed on iOS */
+			!* Needed on iOS *!
 			border: 0;
 
-			/* LTR styles */
+			!* LTR styles *!
 			left: -25px;
 			margin-right: -15px;
 			right: 0;
@@ -60,7 +61,7 @@
 				pointer-events: none;
 				content: '';
 
-				/* Calculate tick position, size and border-width proportional to the checkmark size. */
+				!* Calculate tick position, size and border-width proportional to the checkmark size. *!
 				left: calc(var(--ck-todo-list-checkmark-size) / 3);
 				top: calc(var(--ck-todo-list-checkmark-size) / 5.3);
 				width: calc(var(--ck-todo-list-checkmark-size) / 5.3);
@@ -89,7 +90,7 @@
 	}
 }
 
-/* RTL styles */
+!* RTL styles *!
 [dir="rtl"] .todo-list li input {
 	left: 0;
 	margin-right: 0;
@@ -97,10 +98,10 @@
 	margin-left: -15px;
 }
 
-/*
+!*
  * To-do list should be interactive only during the editing
  * (https://github.com/ckeditor/ckeditor5/issues/2090).
- */
+ *!
 .ck-editor__editable .todo-list li input {
 	cursor: pointer;
 
@@ -109,9 +110,10 @@
 	}
 }
 
-/*
+!*
  * Workaround for Chrome and Safari glitch... TODO
- */
+ *!
 .ck-editor__editable .todo-list__label {
 	display: block;
 }
+*/
