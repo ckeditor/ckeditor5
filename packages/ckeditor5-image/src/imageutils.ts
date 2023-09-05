@@ -27,7 +27,7 @@ import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/wid
 import { determineImageTypeForInsertionAtSelection } from './image/utils';
 import { DomEmitterMixin, type DomEmitter, global } from 'ckeditor5/src/utils';
 
-const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /(image|image-inline)/;
+const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /^(image|image-inline)$/;
 
 /**
  * A set of helpers related to images.
