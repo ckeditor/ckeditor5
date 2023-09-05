@@ -147,7 +147,6 @@ export default class DragDropTarget extends Plugin {
 		blockMode: boolean
 	): Range | null {
 		const targetRange = findDropTargetRange( this.editor, targetViewElement, targetViewRanges, clientX, clientY, blockMode );
-
 		// The dragging markers must be removed after searching for the target range because sometimes
 		// the target lands on the marker itself.
 		this.removeDropMarker();

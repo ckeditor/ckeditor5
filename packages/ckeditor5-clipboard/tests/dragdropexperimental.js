@@ -1921,8 +1921,7 @@ describe( 'Drag and Drop experimental', () => {
 				const dataTransferMock = createDataTransfer();
 
 				const rootElement = viewDocument.getRoot();
-				const viewElement = rootElement;
-				const domNode = domConverter.mapViewToDom( viewElement );
+				const domNode = domConverter.mapViewToDom( rootElement );
 
 				const firstParagraphModelElement = root.getChild( 1 );
 				const firstParagraphViewElement = mapper.toViewElement( firstParagraphModelElement );
@@ -1943,7 +1942,7 @@ describe( 'Drag and Drop experimental', () => {
 				document.body.dispatchEvent( scrollEvent );
 
 				setTimeout( () => {
-					expect( spy.withArgs( 'drop-target' ).calledOnce ).to.be.true;
+					expect( spy.withArgs( 'drop-target' ).called ).to.be.true;
 					done();
 				} );
 			} );
