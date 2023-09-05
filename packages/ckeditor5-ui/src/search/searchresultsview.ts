@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
 import View from '../view';
 import type ViewCollection from '../viewcollection';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
- * TODO
+ * A sub-component of {@link module:ui/search/searchview~SearchView}. It hosts the filtered and the information views.
  */
 export default class SearchResultsView extends View {
 	/**
@@ -19,10 +19,7 @@ export default class SearchResultsView extends View {
 	public children: ViewCollection;
 
 	/**
-	 * TODO
-	 *
-	 * @param locale
-	 * @param filteredView
+	 * @inheritDoc
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
