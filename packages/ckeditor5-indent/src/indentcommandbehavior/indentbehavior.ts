@@ -13,6 +13,11 @@
 export interface IndentBehavior {
 
 	/**
+	 * The direction of indentation.
+	 */
+	isForward: boolean;
+
+	/**
 	 * Checks if the command should be enabled.
 	 */
 	checkEnabled: ( indentAttributeValue: string ) => boolean;

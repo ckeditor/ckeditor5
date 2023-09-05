@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Bulgarian (https://app.transifex.com/ckeditor/teams/11143/bg/)\n"
 "Language: bg\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Horizontal line"
 msgid "Horizontal line"
