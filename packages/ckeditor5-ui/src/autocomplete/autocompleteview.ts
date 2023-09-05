@@ -14,14 +14,13 @@ import type SearchResultsView from '../search/searchresultsview';
 import '../../theme/components/autocomplete/autocomplete.css';
 
 /**
- * TODO
+ * The autocomplete component's view class. It extends the {@link module:ui/search/searchview~SearchView} class
+ * with a floating {@link #resultsView} that shows up when the user starts typing and hides when they blur
+ * the component.
  */
 export default class AutocompleteView extends SearchView {
 	/**
-	 * TODO
-	 *
-	 * @param locale
-	 * @param config
+	 * @inheritDoc
 	 */
 	constructor( locale: Locale, config: SearchViewConfig ) {
 		super( locale, config );
@@ -50,9 +49,9 @@ export default class AutocompleteView extends SearchView {
 		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 			resultsView.isVisible = isFocused;
 
-			this._updateResultsViewPosition();
-
-			if ( !isFocused ) {
+			if ( isFocused ) {
+				this._updateResultsViewPosition();
+			} else {
 				this.searchFieldView.reset();
 			}
 		} );
@@ -66,7 +65,7 @@ export default class AutocompleteView extends SearchView {
 	}
 
 	/**
-	 * TODO
+	 * Updates the position of the results view on demand.
 	 */
 	private _updateResultsViewPosition() {
 		( this.resultsView as AutocompleteResultsView )._position = AutocompleteView._getOptimalPosition( {
@@ -78,7 +77,9 @@ export default class AutocompleteView extends SearchView {
 	}
 
 	/**
-	 * TODO
+	 * Positions for the autocomplete results view. Two positions are defined by default:
+	 * * `s` - below the search field,
+	 * * `n` - above the search field.
 	 */
 	public static defaultResultsPositions: Array<PositioningFunction> = [
 		( fieldRect => {
@@ -104,17 +105,19 @@ export default class AutocompleteView extends SearchView {
 }
 
 /**
- * TODO
+ * An interface describing additional properties of the floating search results view used by the autocomplete plugin.
  */
 interface AutocompleteResultsView extends SearchResultsView {
 
 	/**
-	 * TODO
+	 * Controls the visibility of the results view.
+	 *
+	 * @observable
 	 */
 	isVisible: boolean;
 
 	/**
-	 * TODO
+	 * Controls the position (CSS class suffix) of the results view.
 	 *
 	 * @internal
 	 */
