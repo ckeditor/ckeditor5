@@ -502,7 +502,7 @@ function insertCustomMarkerElements(
 			continue;
 		}
 
-		const wrapper = strategy.createWrapperElement( writer, { dataPipeline } );
+		const wrapper = strategy.createWrapperElement( writer, listItem, { dataPipeline } );
 
 		writer.setCustomProperty( 'listItemWrapper', true, wrapper );
 

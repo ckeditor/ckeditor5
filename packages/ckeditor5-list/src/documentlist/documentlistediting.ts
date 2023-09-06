@@ -593,6 +593,7 @@ export interface ItemMarkerDowncastStrategy {
 	 */
 	createWrapperElement?(
 		writer: DowncastWriter,
+		modelElement: Element,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewAttributeElement;
 

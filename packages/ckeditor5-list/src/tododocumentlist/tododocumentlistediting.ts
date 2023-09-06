@@ -163,8 +163,16 @@ export default class TodoDocumentListEditing extends Plugin {
 				return isDescriptionBlock( modelElement );
 			},
 
-			createWrapperElement( writer ) {
-				return writer.createAttributeElement( 'label', { class: 'todo-list__label' } );
+			createWrapperElement( writer, modelElement ) {
+				const classes = [ 'todo-list__label' ];
+
+				if ( !isDescriptionBlock( modelElement ) ) {
+					classes.push( 'todo-list__label_without-description' );
+				}
+
+				return writer.createAttributeElement( 'label', {
+					class: classes.join( ' ' )
+				} );
 			}
 		} );
 

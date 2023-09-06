@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
 :root {
 	--ck-todo-list-checkmark-size: 16px;
 }
@@ -12,7 +14,7 @@
 
 	-webkit-appearance: none;
 	display: inline-block;
-	position: absolute;
+	position: relative;
 	width: var(--ck-todo-list-checkmark-size);
 	height: var(--ck-todo-list-checkmark-size);
 	vertical-align: middle;
@@ -21,10 +23,20 @@
 	border: 0;
 
 	/* LTR styles */
-	left: -25px;
-	margin-right: -15px;
-	right: 0;
-	margin-left: 0;
+	@mixin ck-dir ltr {
+		left: -25px;
+		margin-right: -15px;
+		right: 0;
+		margin-left: 0;
+	}
+
+	/* RTL styles */
+	@mixin ck-dir rtl {
+		left: 0;
+		margin-right: 0;
+		right: -25px;
+		margin-left: -15px;
+	}
 
 	&::before {
 		display: block;
@@ -69,33 +81,13 @@
 }
 
 /*
- * Document Lists - editing view has an additional span around checkbox.
- */
-.ck-editor__editable .todo-list .todo-list__label > span[contenteditable=false] > input {
-	@mixin todo-list-checkbox;
-}
-
-/*
- * Workaround for Chrome and Safari glitch... TODO
- */
-.ck-editor__editable .todo-list__label:has( > span[contenteditable=false] ) {
-	display: block;
-}
-
-/* TODO does not work in Firefox */
-.ck-editor__editable li:has( .todo-list__label + .todo-list__label__description ) {
-	& input[type=checkbox] {
-		position: relative;
-	}
-}
-
-/*
  * TODO
  */
 .ck-content .todo-list {
 	list-style: none;
 
 	& li {
+		position: relative;
 		margin-bottom: 5px;
 
 		& .todo-list {
@@ -105,7 +97,6 @@
 
 	& .todo-list__label {
 		pointer-events: none;
-		position: relative;
 
 		& > input {
 			@mixin todo-list-checkbox;
@@ -115,34 +106,46 @@
 			vertical-align: middle;
 		}
 
-		/* TODO does not work in Firefox */
-		&:has( .todo-list__label__description ) {
-			& input[type=checkbox] {
-				position: relative;
-			}
+		&.todo-list__label_without-description input[type=checkbox] {
+			position: absolute;
 		}
 	}
 }
 
-/* RTL styles */
-[dir="rtl"] .todo-list .todo-list__label > input {
-	left: 0;
-	margin-right: 0;
-	right: -25px;
-	margin-left: -15px;
-}
-
 /*
- * To-do list should be interactive only during the editing
- * (https://github.com/ckeditor/ckeditor5/issues/2090).
+ *
  */
-.ck-editor__editable .todo-list .todo-list__label > input,
-.ck-editor__editable .todo-list .todo-list__label > span[contenteditable=false] > input {
-	cursor: pointer;
+.ck-editor__editable.ck-content .todo-list .todo-list__label {
+	/*
+	 * To-do list should be interactive only during the editing
+	 * (https://github.com/ckeditor/ckeditor5/issues/2090).
+	 */
+	& > input,
+	& > span[contenteditable=false] > input {
+		cursor: pointer;
 
-	&:hover::before {
-		box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);
+		&:hover::before {
+			box-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);
+		}
+	}
+
+	/*
+	 * Document Lists - editing view has an additional span around checkbox.
+	 */
+	& > span[contenteditable=false] > input {
+		@mixin todo-list-checkbox;
+	}
+
+	&.todo-list__label_without-description {
+		& input[type=checkbox] {
+			position: absolute;
+		}
 	}
 }
 
-.ck-content { line-height: 5em }
+/*
+ * Workaround for Chrome and Safari glitch... TODO
+ */
+.ck-editor__editable .todo-list__label:has( > span[contenteditable=false] ) {
+	display: block;
+}
