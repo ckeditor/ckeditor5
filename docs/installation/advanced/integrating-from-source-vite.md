@@ -148,7 +148,7 @@ This module will export an editor creator class which has all the plugins and co
 ```js
 // main.js
 
-import ClassicEditor from './ckeditor';
+import ClassicEditor from './src/ckeditor';
 
 ClassicEditor
 	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
@@ -216,7 +216,7 @@ Then, you can use the configured editor. Replace the content of `main.ts` with t
 ```ts
 // main.ts
 
-import ClassicEditor from './ckeditor';
+import ClassicEditor from './src/ckeditor';
 
 ClassicEditor
     // Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
