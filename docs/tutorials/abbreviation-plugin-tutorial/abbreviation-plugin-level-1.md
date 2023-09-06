@@ -63,7 +63,7 @@ Now take look at `index.html`. We added the `<abbr>` element - it will not work 
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – Abbreviation plugin</title>
+		<title>CKEditor 5 Framework – Abbreviation plugin</title>
 	</head>
 	<body>
 		<div id="editor">

@@ -115,7 +115,7 @@ Add an `index.html` page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – Implementing a simple widget</title>
+		<title>CKEditor 5 Framework – Implementing a simple widget</title>
 	</head>
 	<body>
 		<div id="editor">

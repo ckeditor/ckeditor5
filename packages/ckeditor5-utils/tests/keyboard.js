@@ -85,14 +85,62 @@ describe( 'Keyboard', () => {
 
 	describe( 'parseKeystroke', () => {
 		const initialEnvMac = env.isMac;
+		const initialEnviOS = env.isiOS;
 
 		afterEach( () => {
 			env.isMac = initialEnvMac;
+			env.isiOS = initialEnviOS;
 		} );
 
 		describe( 'on Macintosh', () => {
 			beforeEach( () => {
 				env.isMac = true;
+				env.isiOS = false;
+			} );
+
+			it( 'parses string', () => {
+				expect( parseKeystroke( 'ctrl+a' ) ).to.equal( 0x880000 + 65 );
+			} );
+
+			it( 'parses string without modifier', () => {
+				expect( parseKeystroke( '[' ) ).to.equal( 91 );
+			} );
+
+			it( 'allows spacing', () => {
+				expect( parseKeystroke( 'ctrl +   a' ) ).to.equal( 0x880000 + 65 );
+			} );
+
+			it( 'is case-insensitive', () => {
+				expect( parseKeystroke( 'Ctrl+A' ) ).to.equal( 0x880000 + 65 );
+			} );
+
+			it( 'works with an array', () => {
+				expect( parseKeystroke( [ 'ctrl', 'a' ] ) ).to.equal( 0x880000 + 65 );
+			} );
+
+			it( 'works with an array which contains numbers', () => {
+				expect( parseKeystroke( [ 'shift', 33 ] ) ).to.equal( 0x220000 + 33 );
+			} );
+
+			it( 'works with two modifiers', () => {
+				expect( parseKeystroke( 'ctrl+shift+a' ) ).to.equal( 0x880000 + 0x220000 + 65 );
+			} );
+
+			it( 'supports forced modifier', () => {
+				expect( parseKeystroke( 'ctrl!+a' ) ).to.equal( 0x110000 + 65 );
+			} );
+
+			it( 'throws on unknown name', () => {
+				expectToThrowCKEditorError( () => {
+					parseKeystroke( 'foo' );
+				}, 'keyboard-unknown-key', null );
+			} );
+		} );
+
+		describe( 'on iOS', () => {
+			beforeEach( () => {
+				env.isiOS = true;
+				env.isMac = false;
 			} );
 
 			it( 'parses string', () => {
@@ -181,14 +229,64 @@ describe( 'Keyboard', () => {
 
 	describe( 'getEnvKeystrokeText', () => {
 		const initialEnvMac = env.isMac;
+		const initialEnviOS = env.isiOS;
 
 		afterEach( () => {
 			env.isMac = initialEnvMac;
+			env.isiOS = initialEnviOS;
 		} );
 
 		describe( 'on Macintosh', () => {
 			beforeEach( () => {
 				env.isMac = true;
+				env.isiOS = false;
+			} );
+
+			it( 'replaces CTRL with ⌘', () => {
+				expect( getEnvKeystrokeText( 'CTRL' ) ).to.equal( '⌘' );
+				expect( getEnvKeystrokeText( 'CTRL+A' ) ).to.equal( '⌘A' );
+				expect( getEnvKeystrokeText( 'ctrl+A' ) ).to.equal( '⌘A' );
+			} );
+
+			it( 'replaces CTRL! with ⌃', () => {
+				expect( getEnvKeystrokeText( 'CTRL!' ) ).to.equal( '⌃' );
+				expect( getEnvKeystrokeText( 'CTRL!+A' ) ).to.equal( '⌃A' );
+				expect( getEnvKeystrokeText( 'ctrl!+A' ) ).to.equal( '⌃A' );
+			} );
+
+			it( 'replaces SHIFT with ⇧', () => {
+				expect( getEnvKeystrokeText( 'SHIFT' ) ).to.equal( '⇧' );
+				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( '⇧A' );
+				expect( getEnvKeystrokeText( 'shift+A' ) ).to.equal( '⇧A' );
+			} );
+
+			it( 'replaces ALT with ⌥', () => {
+				expect( getEnvKeystrokeText( 'ALT' ) ).to.equal( '⌥' );
+				expect( getEnvKeystrokeText( 'ALT+A' ) ).to.equal( '⌥A' );
+				expect( getEnvKeystrokeText( 'alt+A' ) ).to.equal( '⌥A' );
+			} );
+
+			it( 'work for multiple modifiers', () => {
+				expect( getEnvKeystrokeText( 'CTRL+SHIFT+X' ) ).to.equal( '⌘⇧X' );
+				expect( getEnvKeystrokeText( 'ALT+SHIFT+X' ) ).to.equal( '⌥⇧X' );
+			} );
+
+			it( 'normalizes value', () => {
+				expect( getEnvKeystrokeText( 'ESC' ) ).to.equal( 'Esc' );
+				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( 'Tab' );
+				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
+				expect( getEnvKeystrokeText( 'a' ) ).to.equal( 'A' );
+				expect( getEnvKeystrokeText( 'CTRL+a' ) ).to.equal( '⌘A' );
+				expect( getEnvKeystrokeText( 'ctrl+b' ) ).to.equal( '⌘B' );
+				expect( getEnvKeystrokeText( 'CTRL+[' ) ).to.equal( '⌘[' );
+				expect( getEnvKeystrokeText( 'CTRL+]' ) ).to.equal( '⌘]' );
+			} );
+		} );
+
+		describe( 'on iOS', () => {
+			beforeEach( () => {
+				env.isiOS = true;
+				env.isMac = false;
 			} );
 
 			it( 'replaces CTRL with ⌘', () => {
