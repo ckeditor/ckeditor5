@@ -198,6 +198,7 @@ workflows:
             branches:
               only:
                 - master
+                - stable
 
   nightly:
     when: << pipeline.parameters.isNightly >>
