@@ -85,7 +85,7 @@ export default class SearchFieldView extends LabeledFieldView<InputView> {
 
 /**
  * An event fired when the field is reset using the
- * {@link ui/search/searchfieldview~SearchFieldView#clearButtonView}.
+ * {@link module:ui/search/searchfieldview~SearchFieldView#clearButtonView}.
  *
  * @eventName ~SearchFieldView#reset
  */

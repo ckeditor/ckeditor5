@@ -316,7 +316,7 @@ export type SearchViewConfig = {
 };
 
 /**
- * Describes value of a {@link module:ui/search/searchview~SearchViewConfig#infoViewTextConfig info text configuration}.
+ * Describes value of a info text configuration in {@link module:ui/search/searchview~SearchViewConfig}.
  * A string or a function that returns a string with the information about the search results.
  */
 export type SearchViewDefaultInfoText = string | ( ( query: string, resultsCount: number, totalItemsCount: number ) => string );
