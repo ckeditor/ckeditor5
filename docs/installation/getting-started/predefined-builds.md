@@ -159,7 +159,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Classic editor</title>
+	<title>CKEditor 5 – Classic editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
@@ -229,7 +229,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 - Inline editor</title>
+	<title>CKEditor 5 - Inline editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
 </head>
 <body>
@@ -297,7 +297,7 @@ Full example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Balloon editor</title>
+	<title>CKEditor 5 – Balloon editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
 </head>
 <body>
@@ -367,7 +367,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Balloon block editor</title>
+	<title>CKEditor 5 – Balloon block editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
 </head>
 <body>
@@ -438,7 +438,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Document editor</title>
+	<title>CKEditor 5 – Document editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 </head>
 <body>
@@ -554,7 +554,7 @@ Full code example:
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – multi-root editor build – development sample</title>
+	<title>CKEditor 5 – multi-root editor build – development sample</title>
 	<style>
 		body {
 			max-width: 800px;
