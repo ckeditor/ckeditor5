@@ -273,7 +273,7 @@ export default class Rect {
 				absolutelyPositionedChildElement = child;
 			}
 
-			const parentElementPosition = getElementPosition( parent as HTMLElement );
+			const parentElementPosition = getElementPosition( parent );
 
 			// The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
 			// Otherwise there's no chance of visual clipping and the parent can be skipped
@@ -556,8 +556,10 @@ function isDomElement( value: any ): value is Element {
 /**
  * Returns the value of the `position` style of an `HTMLElement`.
  */
-function getElementPosition( element: HTMLElement ): string {
-	return element.ownerDocument ? element.ownerDocument.defaultView!.getComputedStyle( element ).position : 'static';
+function getElementPosition( element: HTMLElement | Node ): string {
+	console.log( element instanceof HTMLElement );
+	console.log( element.constructor.name );
+	return element instanceof HTMLElement ? element.ownerDocument.defaultView!.getComputedStyle( element ).position : 'static';
 }
 
 /**

@@ -178,11 +178,7 @@ export function getOptimalPosition( {
 }
 
 /**
- * Returns intersection of visible source `Rect` with Viewport `Rect`.
- *
- * @param source
- * @param viewportRect
- * @returns intersection of visible source `Rect` with Viewport `Rect`. In case when source `Rect` is not visible
+ * Returns intersection of visible source `Rect` with Viewport `Rect`. In case when source `Rect` is not visible
  * or there is no intersection between source `Rect` and Viewport `Rect`, `null` will be returned.
  */
 function getVisibleViewportIntersectionRect( source: RectSource, viewportRect: Rect ): Rect | null {
