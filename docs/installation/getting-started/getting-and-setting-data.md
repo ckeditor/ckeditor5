@@ -4,9 +4,10 @@ meta-title: Getting and setting data | CKEditor 5 documentation
 order: 70
 ---
 
-{@snippet installation/getting-and-setting-data/build-autosave-source}
 
 # Getting and setting data
+
+{@snippet installation/getting-and-setting-data/build-autosave-source}
 
 <info-box hint>
 **Quick recap**
@@ -107,36 +108,34 @@ In your HTTP server, you can now read the editor data from the `content` variabl
 ```
 
 <info-box>
-	Please note that the replaced `<textarea>` element is updated automatically by CKEditor straight before the submission. If you need to access the `<textarea>` value programmatically with JavaScript (e.g. in the `onsubmit` handler to validate the entered data), there is a chance that the `<textarea>` element would still store the original data. In order to update the value of the replaced `<textarea>`, use the {@link module:editor-classic/classiceditor~ClassicEditor#updateSourceElement `editor.updateSourceElement()`} method.
+Please note that the replaced `<textarea>` element is updated automatically by CKEditor straight before the submission. If you need to access the `<textarea>` value programmatically with JavaScript (e.g. in the `onsubmit` handler to validate the entered data), there is a chance that the `<textarea>` element would still store the original data. In order to update the value of the replaced `<textarea>`, use the {@link module:editor-classic/classiceditor~ClassicEditor#updateSourceElement `editor.updateSourceElement()`} method.
 
-	If you need to get the actual data from CKEditor at any moment using JavaScript, use the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method as described in the next section.
+If you need to get the actual data from CKEditor at any moment using JavaScript, use the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method as described in the next section.
 </info-box>
 
-<info-box>
-	When you print the data from the database to a `<textarea>` element in an HTML page, you need to encode it correctly. For instance, if you use PHP then a minimal solution would look like this:
+When you print the data from the database to a `<textarea>` element in an HTML page, you need to encode it correctly. For instance, if you use PHP then a minimal solution would look like this:
 
-	```php
-	<?php
-		$data = str_replace( '&', '&amp;', $data );
-	?>
+```php
+<?php
+	$data = str_replace( '&', '&amp;', $data );
+?>
 
-	<textarea name="content" id="editor"><?= $data ?></textarea>
-	```
+<textarea name="content" id="editor"><?= $data ?></textarea>
+```
 
-	Thanks to that, the `<textarea>` will be printed out like this:
+Thanks to that, the `<textarea>` will be printed out like this:
 
-	```html
-	<textarea>&lt;p>This is some sample content.&lt;/p></textarea>
-	```
+```html
+<textarea>&lt;p>This is some sample content.&lt;/p></textarea>
+```
 
-	Instead of being printed like this:
+Instead of being printed like this:
 
-	```html
-	<textarea><p>This is some sample content.</p></textarea>
-	```
+```html
+<textarea><p>This is some sample content.</p></textarea>
+```
 
-	While simple content like that mentioned above does not itself require to be encoded, encoding the data will prevent losing text like "&lt;" or "&lt;img&gt;".
-</info-box>
+While simple content like that mentioned above does not itself require to be encoded, encoding the data will prevent losing text like "&lt;" or "&lt;img&gt;".
 
 ## Updating the source element
 
