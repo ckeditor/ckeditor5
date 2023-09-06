@@ -32,7 +32,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	/**
 	 * The collection of focusable views in the list. It is used to determine accessible navigation
 	 * between the {@link module:ui/list/listitemview~ListItemView list items} and
-	 * {@link module:ui/list/listgroupview~ListGroupView list groups}.
+	 * {@link module:ui/list/listitemgroupview~ListItemGroupView list groups}.
 	 */
 	public readonly focusables: ViewCollection;
 
