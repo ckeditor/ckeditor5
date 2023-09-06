@@ -31,7 +31,7 @@ An overview of the project's directory structure:
 │  └─ **/*.js              # All tests should be saved here.
 ├─ theme
 │  ├─ icons
-│  │  ├─ ckeditor.svg      # The CKEditor&nbsp;5 icon displayed in the toolbar.
+│  │  ├─ ckeditor.svg      # The CKEditor 5 icon displayed in the toolbar.
 │  │  └─ **/*.svg          # All icon files should be saved here.
 │  └─ **/*.css             # All CSS files should be saved here.
 │

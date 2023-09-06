@@ -217,7 +217,7 @@ Finally, it is time to create an HTML page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – Quick start</title>
+		<title>CKEditor 5 Framework – Quick start</title>
 	</head>
 	<body>
 		<div id="editor">
