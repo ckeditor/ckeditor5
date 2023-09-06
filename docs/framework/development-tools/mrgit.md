@@ -8,7 +8,7 @@ modified_at: 2022-08-16
 
 # Mr. Git
 
-[Mr. Git](https://github.com/cksource/mrgit) is a multi-repo manager for git. In CKEditor 5, it can be used for easy development and testing of various CKEditor&nbsp;5-related repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
+[Mr. Git](https://github.com/cksource/mrgit) is a multi-repo manager for Git. In CKEditor 5, it can be used for easy development and testing of various CKEditor&nbsp;5-related repositories, such as [ckeditor5-dev](https://github.com/ckeditor/ckeditor5-dev) or [ckeditor5-linters-config](https://github.com/ckeditor/ckeditor5-linters-config).
 
 ## Setup
 

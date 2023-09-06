@@ -59,7 +59,7 @@ A full webpage with embedded CKEditor&nbsp;5 from the above example would look l
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Classic editor</title>
+	<title>CKEditor 5 – Classic editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
