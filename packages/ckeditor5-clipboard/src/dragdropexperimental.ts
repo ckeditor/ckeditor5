@@ -584,23 +584,19 @@ export default class DragDropExperimental extends Plugin {
 
 				widgetToolbarRepository.forceDisabled( 'dragDrop' );
 			}
+
+			return;
 		}
 
 		// If this was not a widget we should check if we need to drag some text content.
-		else if ( !selection.isCollapsed || ( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
+		if ( !selection.isCollapsed || ( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
 			const blocks = Array.from( selection.getSelectedBlocks() );
-
-			if ( blocks.length === 0 ) {
-				return;
-			}
 
 			const blockRange = getRangeExtendedToLargestFullySelectedParent( model, blocks );
 
 			if ( blocks.length > 1 ) {
 				this._draggedRange = LiveRange.fromRange( blockRange );
 				this._blockMode = true;
-
-				model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
 				// TODO block mode for dragging from outside editor? or inline? or both?
 			}
 
@@ -611,9 +607,9 @@ export default class DragDropExperimental extends Plugin {
 
 				this._draggedRange = LiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
 				this._blockMode = touchesBlockEdges;
-
-				model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
 			}
+
+			model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
 		}
 	}
 
@@ -713,9 +709,9 @@ function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: A
 	const endPosition: Position = model.createPositionAfter( elements[ elements.length - 1 ] );
 
 	if (
-		parent &&																									// Parent exists
-		!model.schema.isLimit( parent ) && 												// Parent is not a limit element
-		elements.every( element => element.parent === parent )		// All elements have the same parent
+		parent &&
+		!model.schema.isLimit( parent ) &&
+		elements.every( element => element.parent === parent )
 	) {
 		const parentRange = model.createRangeOn( parent );
 		const touchesStart = startPosition.isTouching( parentRange.start );

@@ -1392,6 +1392,26 @@ describe( 'Drag and Drop experimental', () => {
 				expectDraggingMarker( positionAfterHr );
 			} );
 
+			it( 'extends range to parent when all of its elements are selected', () => {
+				setModelData( model,
+					'<blockQuote>' +
+						'[<paragraph>foo</paragraph>' +
+						'<paragraph>bar</paragraph>' +
+						'<paragraph>baz</paragraph>]' +
+					'</blockQuote>' +
+					'<horizontalLine></horizontalLine>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, '<blockquote><p>foo</p><p>bar</p><p>baz</p></blockquote>' );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+
 			it( 'should remove "draggable" attribute from editable element', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
