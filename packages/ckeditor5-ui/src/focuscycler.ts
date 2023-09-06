@@ -288,7 +288,12 @@ export default class FocusCycler {
 	}
 }
 
-export type FocusableView = View & { focus(): void };
+/**
+ * A {@link module:ui/view~View} that can be focused, meaning it has a `focus()` method.
+ */
+export interface FocusableView extends View {
+	focus(): void;
+}
 
 export interface FocusCyclerActions {
 	focusFirst?: ArrayOrItem<string>;
