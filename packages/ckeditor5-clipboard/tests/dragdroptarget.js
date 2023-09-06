@@ -297,7 +297,7 @@ describe( 'Drag and Drop target', () => {
 			const nestedParagraphDomNode = domConverter.mapViewToDom( nestedViewParagraph );
 
 			sinon.stub( model.schema, 'checkChild' ).returns( null );
-			const spy = sinon.spy( console, 'warn' );
+			const spy = sinon.stub( console, 'warn' );
 
 			const { clientX, clientY } = getMockedMousePosition( { domNode: nestedParagraphDomNode } );
 
