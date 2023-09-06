@@ -332,31 +332,30 @@ const editors = [
 	}
 ];
 
-for ( const editorObj of editors ) {
-	insertEditorStructure( editorObj );
+async function initEditors() {
+	await Promise.all( editors.map( async editorObj => {
+		insertEditorStructure( editorObj );
 
-	( async function initTest() {
 		const domElement = document.querySelector( `#${ editorObj.id }` );
 
-		await ClassicEditor
-			.create( domElement, { ...editorObj.config, initialData: editorObj.data } )
-			.then( editor => {
-				window[ editorObj.id ] = editor;
+		const editor = await ClassicEditor.create( domElement, { ...editorObj.config, initialData: editorObj.data } );
 
-				editor.model.document.on( 'change:data', () => {
-					updateLogsAndData( domElement, editor );
-				} );
+		window[ editorObj.id ] = editor;
 
-				logInitialData( domElement, editorObj );
-				updateLogsAndData( domElement, editor );
+		editor.model.document.on( 'change:data', () => {
+			updateLogsAndData( domElement, editor );
+		} );
 
-				CKEditorInspector.attach( { [ editorObj.id ]: editor } );
-			} )
-			.catch( err => {
-				console.error( err.stack );
-			} );
-	}() );
+		logInitialData( domElement, editorObj );
+		updateLogsAndData( domElement, editor );
+	} ) );
+
+	CKEditorInspector.attach( Object.fromEntries( editors.map( editorObj => [ editorObj.id, window[ editorObj.id ] ] ) ) );
 }
+
+initEditors().catch( err => {
+	console.error( err.stack );
+} );
 
 function insertEditorStructure( editorObj ) {
 	const colorClass = editorObj.id.startsWith( 'inline' ) ? 'inlineColor' : 'blockColor';
