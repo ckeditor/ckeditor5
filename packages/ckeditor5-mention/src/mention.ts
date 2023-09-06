@@ -22,7 +22,7 @@ import '../theme/mention.css';
  */
 export default class Mention extends Plugin {
 	/**
-	 * Creates a mention attribute value from the provided view element and optional data.
+	 * Creates a mention attribute value from the provided view element and additional data.
 	 *
 	 * ```ts
 	 * editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
@@ -40,7 +40,7 @@ export default class Mention extends Plugin {
 	): ( MentionAttribute & MentionData ) | undefined;
 
 	/**
-	 * Creates a mention attribute value from the provided view element and optional data.
+	 * Creates a mention attribute value from the provided view element.
 	 *
 	 * ```ts
 	 * editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement );
