@@ -211,8 +211,7 @@ ClassicEditor
 				'|', 'placeholder',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				'|', 'bulletedList', 'numberedList'
 			]
 		},
 		placeholderConfig: {
