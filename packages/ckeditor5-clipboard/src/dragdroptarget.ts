@@ -395,8 +395,6 @@ function findDropTargetRange(
 		modelElement = modelElement.parent as Element;
 	}
 
-	console.warn( 'none:', targetModelElement.name );
-
 	return null;
 }
 

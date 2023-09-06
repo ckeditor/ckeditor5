@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console, Event, setTimeout */
+/* globals document, Event, setTimeout */
 
 import DragDropExperimental from '../src/dragdropexperimental';
 import DragDropTarget from '../src/dragdroptarget';
@@ -297,11 +297,10 @@ describe( 'Drag and Drop target', () => {
 			const nestedParagraphDomNode = domConverter.mapViewToDom( nestedViewParagraph );
 
 			sinon.stub( model.schema, 'checkChild' ).returns( null );
-			const spy = sinon.stub( console, 'warn' );
 
 			const { clientX, clientY } = getMockedMousePosition( { domNode: nestedParagraphDomNode } );
 
-			dragDropTarget.getFinalDropRange(
+			const targetPosition = dragDropTarget.getFinalDropRange(
 				rootElement,
 				[ view.createRangeOn( nestedModelParagraph ) ],
 				clientX,
@@ -309,7 +308,7 @@ describe( 'Drag and Drop target', () => {
 				true
 			);
 
-			expect( spy.withArgs( 'none:', '$root' ).calledOnce ).to.be.true;
+			expect( targetPosition ).to.be.null;
 		} );
 
 		it( 'should return drop position for $text element when hovering widget', () => {
