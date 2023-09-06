@@ -7,7 +7,7 @@ We are happy to announce the release of CKEditor 5 v39.0.2.
 
 ### Release highlights
 
-This is a patch release that resolves nearly 20 important issues. Check out the list below for more information.
+This is a patch release that resolves over 10 important issues. Check out the list below for more information.
 
 ### Bug fixes
 
