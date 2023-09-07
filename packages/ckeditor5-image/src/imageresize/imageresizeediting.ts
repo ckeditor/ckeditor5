@@ -140,8 +140,8 @@ export default class ImageResizeEditing extends Plugin {
 
 				if ( data.attributeNewValue !== null ) {
 					const viewWriter = conversionApi.writer;
-					const figure = conversionApi.mapper.toViewElement( data.item );
-					const target = imageType === 'imageInline' ? imageUtils.findViewImgElement( figure ) : figure;
+					const viewImg = conversionApi.mapper.toViewElement( data.item );
+					const target = imageType === 'imageInline' ? imageUtils.findViewImgElement( viewImg ) : viewImg;
 
 					viewWriter.setStyle( 'height', data.attributeNewValue, target );
 				}
