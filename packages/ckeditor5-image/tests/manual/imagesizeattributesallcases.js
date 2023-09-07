@@ -10,67 +10,14 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import ImageResize from '../../src/imageresize';
 import ImageSizeAttributes from '../../src/imagesizeattributes';
-import ImageUpload from '../../src/imageupload';
 import PictureEditing from '../../src/pictureediting';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-
-const commonConfig = {
-	plugins: [
-		ArticlePluginSet,
-		ImageResize,
-		Code,
-		ImageSizeAttributes,
-		Indent,
-		IndentBlock,
-		CloudServices,
-		PictureEditing,
-		PasteFromOffice
-	],
-	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
-		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
-	image: {
-		toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'toggleImageCaption', 'resizeImage' ]
-	},
-	table: {
-		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
-		tableToolbar: [ 'bold', 'italic' ]
-	},
-	cloudServices: CS_CONFIG
-};
-
-const configPx = {
-	plugins: [
-		ArticlePluginSet,
-		ImageResize,
-		Code,
-		ImageSizeAttributes,
-		ImageUpload,
-		Indent,
-		IndentBlock,
-		CloudServices,
-		EasyImage,
-		PictureEditing,
-		PasteFromOffice
-	],
-	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
-		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
-	image: {
-		resizeUnit: 'px',
-		toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'toggleImageCaption', 'resizeImage' ]
-	},
-	table: {
-		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
-		tableToolbar: [ 'bold', 'italic' ]
-	},
-	cloudServices: CS_CONFIG
-};
+const commonConfig = getConfig();
+const configPx = getConfig( true );
 
 const editors = [
 	{
@@ -331,6 +278,36 @@ const editors = [
 				'</picture></figure>'
 	}
 ];
+
+function getConfig( resizeUnitInPx = false ) {
+	const config = {
+		plugins: [
+			ArticlePluginSet,
+			ImageResize,
+			Code,
+			ImageSizeAttributes,
+			Indent,
+			IndentBlock,
+			PictureEditing,
+			PasteFromOffice
+		],
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
+			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'toggleImageCaption', 'resizeImage' ]
+		},
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+			tableToolbar: [ 'bold', 'italic' ]
+		}
+	};
+
+	if ( resizeUnitInPx ) {
+		config.image.resizeUnit = 'px';
+	}
+
+	return config;
+}
 
 async function initEditors() {
 	await Promise.all( editors.map( async editorObj => {
