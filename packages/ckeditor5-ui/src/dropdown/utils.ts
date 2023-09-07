@@ -458,7 +458,6 @@ function closeDropdownOnExecute( dropdownView: DropdownView ) {
  */
 function closeDropdownOnBlur( dropdownView: DropdownView ) {
 	dropdownView.focusTracker.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, name, isFocused ) => {
-		console.log( dropdownView.isOpen, isFocused );
 		if ( dropdownView.isOpen && !isFocused ) {
 			dropdownView.isOpen = false;
 		}
