@@ -159,7 +159,7 @@ export default class ImageUtils extends Plugin {
 		this.editor.model.change( writer => {
 			const img = new global.window.Image();
 
-			this._domEmitter.listenTo( img, 'load', ( evt, data ) => {
+			this._domEmitter.listenTo( img, 'load', () => {
 				if ( !imageElement.getAttribute( 'width' ) && !imageElement.getAttribute( 'height' ) ) {
 					this.editor.model.enqueueChange( writer.batch, writer => {
 						writer.setAttribute( 'width', img.naturalWidth, imageElement );
