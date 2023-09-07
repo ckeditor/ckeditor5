@@ -82,26 +82,26 @@ describe( 'Indent MultiCommand integrations', () => {
 
 		describe( 'indent command', () => {
 			describe( 'collapsed selection', () => {
-				it( 'should execute the indentBlock command if cannot indent a list item (start of a list)', () => {
+				it( 'no command should be executed when cannot indent a list item (start of a list)', () => {
 					runTest( {
 						input: [
 							'* A[]'
 						],
 						expected: [
-							'* <paragraph blockIndent="40px">A[]</paragraph>'
+							'* <paragraph>A[]</paragraph>'
 						],
 						commandName: 'indent',
 						executedCommands: {
 							outdentList: 0,
 							indentList: 0,
 							outdentBlock: 0,
-							indentBlock: 1
+							indentBlock: 0
 						},
 						changedBlocks: [ ]
 					} );
 				} );
 
-				it( 'should execute the indentBlock command if cannot indent list item a (nested list item)', () => {
+				it( 'no command should be executed when cannot indent list item a (nested list item)', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -109,20 +109,20 @@ describe( 'Indent MultiCommand integrations', () => {
 						],
 						expected: [
 							'* A',
-							'  * <paragraph blockIndent="40px">B[]</paragraph>'
+							'  * <paragraph>B[]</paragraph>'
 						],
 						commandName: 'indent',
 						executedCommands: {
 							outdentList: 0,
 							indentList: 0,
 							outdentBlock: 0,
-							indentBlock: 1
+							indentBlock: 0
 						},
 						changedBlocks: [ ]
 					} );
 				} );
 
-				it( 'should execute the indentBlock command if cannot indent a list item (start of a different list)', () => {
+				it( 'no command should be executed when cannot indent a list item (start of a different list)', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -130,20 +130,20 @@ describe( 'Indent MultiCommand integrations', () => {
 						],
 						expected: [
 							'* A',
-							'# <paragraph blockIndent="40px">B[]</paragraph>'
+							'# <paragraph>B[]</paragraph>'
 						],
 						commandName: 'indent',
 						executedCommands: {
 							outdentList: 0,
 							indentList: 0,
 							outdentBlock: 0,
-							indentBlock: 1
+							indentBlock: 0
 						},
 						changedBlocks: [ ]
 					} );
 				} );
 
-				it( 'should execute the indentBlock command if a list item can\'t be indented (list item after block)', () => {
+				it( 'no command should be executed when a list item can\'t be indented (list item after block)', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -153,14 +153,14 @@ describe( 'Indent MultiCommand integrations', () => {
 						expected: [
 							'* A',
 							'  B',
-							'  * <paragraph blockIndent="40px">C[]</paragraph>'
+							'  * <paragraph>C[]</paragraph>'
 						],
 						commandName: 'indent',
 						executedCommands: {
 							outdentList: 0,
 							indentList: 0,
 							outdentBlock: 0,
-							indentBlock: 1
+							indentBlock: 0
 						},
 						changedBlocks: [ ]
 					} );
@@ -431,7 +431,7 @@ describe( 'Indent MultiCommand integrations', () => {
 					} );
 				} );
 
-				it( 'should execute the indentBlock command when all selected items cannot be indented (start of a list)', () => {
+				it( 'no command should be executed when all selected items cannot be indented (start of a list)', () => {
 					runTest( {
 						input: [
 							'* [A',
@@ -439,22 +439,22 @@ describe( 'Indent MultiCommand integrations', () => {
 							'  C]'
 						],
 						expected: [
-							'* <paragraph blockIndent="40px">[A</paragraph>',
-							'  <paragraph blockIndent="40px">B</paragraph>',
-							'  <paragraph blockIndent="40px">C]</paragraph>'
+							'* <paragraph>[A</paragraph>',
+							'  <paragraph>B</paragraph>',
+							'  <paragraph>C]</paragraph>'
 						],
 						commandName: 'indent',
 						executedCommands: {
 							outdentList: 0,
 							indentList: 0,
 							outdentBlock: 0,
-							indentBlock: 1
+							indentBlock: 0
 						},
 						changedBlocks: [ ]
 					} );
 				} );
 
-				it( 'should execute the indentBlock command if any of selected blocks can\'t be indented', () => {
+				it( 'no command should be executed when any of selected blocks can\'t be indented', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -464,15 +464,15 @@ describe( 'Indent MultiCommand integrations', () => {
 						],
 						expected: [
 							'* A',
-							'  * <paragraph blockIndent="40px">[B</paragraph>',
-							'    <paragraph blockIndent="40px">C]</paragraph>'
+							'  * <paragraph>[B</paragraph>',
+							'    <paragraph>C]</paragraph>'
 						],
 						commandName: 'indent',
 						executedCommands: {
 							outdentList: 0,
 							indentList: 0,
 							outdentBlock: 0,
-							indentBlock: 1
+							indentBlock: 0
 						},
 						changedBlocks: [ ]
 					} );
@@ -1271,9 +1271,9 @@ describe( 'Indent MultiCommand integrations', () => {
 						'* ba]r'
 					],
 					expected: [
-						'* <paragraph blockIndent="40px">f[oo</paragraph>',
+						'* <paragraph>f[oo</paragraph>',
 						'  <codeBlock language="language-plaintext">foo</codeBlock>',
-						'* <paragraph blockIndent="40px">ba]r</paragraph>'
+						'* <paragraph>ba]r</paragraph>'
 					],
 					commandName: 'indent',
 					executedCommands: {

@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { Element, Position } from '@ckeditor/ckeditor5-engine';
+import type { Element, Position, Writer } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
@@ -50,7 +50,7 @@ export default class InsertParagraphCommand extends Command {
 		const model = this.editor.model;
 		const attributes = options.attributes;
 
-		let position = options.position;
+		let position: Position | null = options.position;
 
 		// Don't execute command if position is in non-editable place.
 		if ( !model.canEditAt( position ) ) {
@@ -58,27 +58,57 @@ export default class InsertParagraphCommand extends Command {
 		}
 
 		model.change( writer => {
+			position = this._findPositionToInsertParagraph( position!, writer );
+
+			if ( !position ) {
+				return;
+			}
+
 			const paragraph = writer.createElement( 'paragraph' );
 
 			if ( attributes ) {
 				model.schema.setAllowedAttributes( paragraph, attributes, writer );
 			}
 
-			if ( !model.schema.checkChild( position.parent as Element, paragraph ) ) {
-				const allowedParent = model.schema.findAllowedParent( position, paragraph );
-
-				// It could be there's no ancestor limit that would allow paragraph.
-				// In theory, "paragraph" could be disallowed even in the "$root".
-				if ( !allowedParent ) {
-					return;
-				}
-
-				position = writer.split( position, allowedParent ).position;
-			}
-
 			model.insertContent( paragraph, position );
-
 			writer.setSelection( paragraph, 'in' );
 		} );
+	}
+
+	/**
+	 * Returns the best position to insert a new paragraph.
+	 */
+	private _findPositionToInsertParagraph( position: Position, writer: Writer ): Position | null {
+		const model = this.editor.model;
+
+		if ( model.schema.checkChild( position, 'paragraph' ) ) {
+			return position;
+		}
+
+		const allowedParent = model.schema.findAllowedParent( position, 'paragraph' );
+
+		// It could be there's no ancestor limit that would allow paragraph.
+		// In theory, "paragraph" could be disallowed even in the "$root".
+		if ( !allowedParent ) {
+			return null;
+		}
+
+		const positionParent = position.parent as Element;
+		const isTextAllowed = model.schema.checkChild( positionParent, '$text' );
+
+		// At empty $block or at the end of $block.
+		// <paragraph>[]</paragraph> ---> <paragraph></paragraph><paragraph>[]</paragraph>
+		// <paragraph>foo[]</paragraph> ---> <paragraph>foo</paragraph><paragraph>[]</paragraph>
+		if ( positionParent.isEmpty || isTextAllowed && position.isAtEnd ) {
+			return model.createPositionAfter( positionParent );
+		}
+
+		// At the start of $block with text.
+		// <paragraph>[]foo</paragraph> ---> <paragraph>[]</paragraph><paragraph>foo</paragraph>
+		if ( !positionParent.isEmpty && isTextAllowed && position.isAtStart ) {
+			return model.createPositionBefore( positionParent );
+		}
+
+		return writer.split( position, allowedParent ).position;
 	}
 }

@@ -1,17 +1,18 @@
 ---
 category: framework-contributing
+meta-title: Git commit message convention | CKEditor 5 Framework Documentation
 order: 50
 modified_at: 2021-09-07
 ---
 
 # Git commit message convention
 
-Every commit made *directly* to the `master` branch must follow the convention below. Based on commits in the `master` branch CKEditor 5 release tools will generate changelog entries for the current release.
+Every commit made *directly* to the `master` branch must follow the convention below. Based on commits in the `master` branch CKEditor&nbsp;5 release tools will generate changelog entries for the current release.
 
 <info-box>
-	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). In case of ticket branches, **only merge commits are analyzed**.
+	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). In the case of ticket branches, **only merge commits are analyzed**.
 
-	Therefore, this guide is mainly targeted at core team members. However, it may help you understand how to write a suggested commit message when creating a pull request for CKEditor 5.
+	Therefore, this guide is mainly targeted at core team members. However, it may help you understand how to write a suggested commit message when creating a pull request for CKEditor&nbsp;5.
 </info-box>
 
 ## Convention

@@ -1,12 +1,13 @@
 ---
 category: framework-architecture
+meta-title: UI Components | CKEditor 5 Framework Documentation
 order: 50
 modified_at: 2023-03-06
 ---
 
 # UI components
 
-The CKEditor 5 framework provides several UI components that can be helpful when developing a new user interface. All UI classes come with the `set()` method, which sets the properties of the components, such as labels, icons, placeholders, etc.
+The CKEditor&nbsp;5 framework provides several UI components that can be helpful when developing a new user interface. All UI classes come with the `set()` method, which sets the properties of the components, such as labels, icons, placeholders, etc.
 
 <info-box>
     This article lists all available components and their variants. If you want to understand the implementation details check {@link framework/architecture/ui-library the UI library guide}.
@@ -76,7 +77,7 @@ Two positions describe the placement of the ballon. The first one describes the 
 
 {@snippet framework/ui/ui-button}
 
-There are two basic buttons in CKEditor 5 UI library: a standard button and a switch. You can instantiate the standard button with the `ButtonView` class. By modifying the passed config, you can get different button variants and states.
+There are two basic buttons in CKEditor&nbsp;5 UI library: a standard button and a switch. You can instantiate the standard button with the `ButtonView` class. By modifying the passed config, you can get different button variants and states.
 
 ### Action
 
@@ -473,7 +474,7 @@ document.getElementById( 'dropdown-disabled' ).append( disabledDropdown.element 
 
 {@snippet framework/ui/ui-icons}
 
-The CKEditor 5 library has a collection of icons representing different editor functionalities. Icons are SVG files and follow the style of the surrounding text. You can instantiate an icon with the `IconView` class. The `content` property stores the SVG source of the icon.
+The CKEditor&nbsp;5 library has a collection of icons representing different editor functionalities. Icons are SVG files and follow the style of the surrounding text. You can instantiate an icon with the `IconView` class. The `content` property stores the SVG source of the icon.
 
 ```js
 import { IconView } from '@ckeditor/ckeditor5-ui';
@@ -487,7 +488,7 @@ icon.render();
 document.getElementById( 'icon-bold' ).append( icon.element );
 ```
 
-CKEditor 5 features use different icons. You can find them in their respective packages. Here's a list of all available icons.
+CKEditor&nbsp;5 features use different icons. You can find them in their respective packages. Here's a list of all available icons.
 
 ```js
 import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
@@ -596,7 +597,7 @@ import loupe from '@ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace
 
 {@snippet framework/ui/ui-input}
 
-There are also inputs in the CKEditor 5 UI library. There are a few use cases to put inputs inside a main toolbar, but you also can add them to balloon panels.
+There are also inputs in the CKEditor&nbsp;5 UI library. There are a few use cases to put inputs inside a main toolbar, but you also can add them to balloon panels.
 
 ### Text
 

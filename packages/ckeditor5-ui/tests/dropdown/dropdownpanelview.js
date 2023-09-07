@@ -38,6 +38,7 @@ describe( 'DropdownPanelView', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-reset' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-dropdown__panel' ) ).to.be.true;
+			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
 		describe( 'template bindings', () => {

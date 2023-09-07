@@ -46,7 +46,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Features
 
-* Implemented the `SimpleUploadAdapter` plugin which enables file uploads in CKEditor 5 using configurable `XMLHttpRequests` to a server. Closes [ckeditor/ckeditor5#1791](https://github.com/ckeditor/ckeditor5/issues/1791). ([441c597](https://github.com/ckeditor/ckeditor5-upload/commit/441c597))
+* Implemented the `SimpleUploadAdapter` plugin which enables file uploads in CKEditor&nbsp;5 using configurable `XMLHttpRequests` to a server. Closes [ckeditor/ckeditor5#1791](https://github.com/ckeditor/ckeditor5/issues/1791). ([441c597](https://github.com/ckeditor/ckeditor5-upload/commit/441c597))
 
   ```js
   import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter'
@@ -147,7 +147,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)

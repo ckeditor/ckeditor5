@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Albanian (https://app.transifex.com/ckeditor/teams/11143/sq/)\n"
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
@@ -26,11 +27,11 @@ msgstr "Kolona e kokës"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Shto kolonë majtas"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Shto kolonë djathtas"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
@@ -98,15 +99,15 @@ msgstr "Bashko kutizat"
 
 msgctxt "The label used by assistive technologies describing a table toolbar attached to a table widget."
 msgid "Table toolbar"
-msgstr ""
+msgstr "Kokështrirja e tabelës"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table."
 msgid "Table properties"
-msgstr ""
+msgstr "Karakteristikat e tabelës"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table cell."
 msgid "Cell properties"
-msgstr ""
+msgstr "Karakteristikat e qelisë"
 
 msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
 msgid "Border"
@@ -114,23 +115,23 @@ msgstr ""
 
 msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
 msgid "Style"
-msgstr ""
+msgstr "Stili"
 
 msgctxt "The label for the input that allows configuring the width of a table or a table cell or the width of a border."
 msgid "Width"
-msgstr ""
+msgstr "Gjerësia"
 
 msgctxt "The label for the input that allows configuring the height of a table or a table cell."
 msgid "Height"
-msgstr ""
+msgstr "Lartësia"
 
 msgctxt "The label for the input that allows configuring the border color of a table or a table cell."
 msgid "Color"
-msgstr ""
+msgstr "Ngjyra"
 
 msgctxt "The label for the input that allows configuring the background color of a table or a table cell."
 msgid "Background"
-msgstr ""
+msgstr "Prapavija"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
@@ -138,31 +139,31 @@ msgstr ""
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensionet"
 
 msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
 msgid "Table cell text alignment"
-msgstr ""
+msgstr "Rradhitja e tekstit të qelisë së tabelës"
 
 msgctxt "The label for the toolbar that allows configuring the alignment of a table."
 msgid "Alignment"
-msgstr ""
+msgstr "Radhitja"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
-msgstr ""
+msgstr "Kokështrirja e rradhitjes së tekstit horizontalisht"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
 msgid "Vertical text alignment toolbar"
-msgstr ""
+msgstr "Kokështrirja e rradhitjes së tekstit vertikalisht"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
 msgid "Table alignment toolbar"
-msgstr ""
+msgstr "Kokështrirja e radhitjes së tabelës"
 
 msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
 msgid "None"
-msgstr ""
+msgstr "Asnjë"
 
 msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
 msgid "Solid"
@@ -170,7 +171,7 @@ msgstr ""
 
 msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
 msgid "Dotted"
-msgstr ""
+msgstr "Me pika"
 
 msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
 msgid "Dashed"
@@ -178,7 +179,7 @@ msgstr ""
 
 msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
 msgid "Double"
-msgstr ""
+msgstr "Me dy vija"
 
 msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
 msgid "Groove"
@@ -198,15 +199,15 @@ msgstr ""
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
 msgid "Align cell text to the left"
-msgstr ""
+msgstr "Radhit tekstin e qelisë majtas"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
 msgid "Align cell text to the center"
-msgstr ""
+msgstr "Radhite tekstin në mes"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
 msgid "Align cell text to the right"
-msgstr ""
+msgstr "Radhit tekstin e qelisë në të djathtë"
 
 msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
 msgid "Justify cell text"
@@ -214,19 +215,19 @@ msgstr ""
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
 msgid "Align cell text to the top"
-msgstr ""
+msgstr "Radhit tekstin e qelisë sipër"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
 msgid "Align cell text to the middle"
-msgstr ""
+msgstr "Radhit tekstin e qelisë në mes"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
-msgstr ""
+msgstr "Radhite tesktin e qelisë në fund"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
 msgid "Align table to the left"
-msgstr ""
+msgstr "Radhit tabelën majtas"
 
 msgctxt "The label used by assistive technologies describing a button that centers the table."
 msgid "Center table"
@@ -234,11 +235,11 @@ msgstr ""
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
 msgid "Align table to the right"
-msgstr ""
+msgstr "Radhit tabelën në të djathtë"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
-msgstr ""
+msgstr "Kodi është i pavlefshëm. Provo\"#FF0000\" ose \"rgb(255,0,0)\" ose \"red\"."
 
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."

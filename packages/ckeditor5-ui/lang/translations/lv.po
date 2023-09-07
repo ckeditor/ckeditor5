@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Latvian (https://app.transifex.com/ckeditor/teams/11143/lv/)\n"
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -114,4 +115,8 @@ msgstr "Redaktora konteksta rīkjosla"
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "HEX Krāsu kods"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "Apstiprināt"

@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Galician (https://app.transifex.com/ckeditor/teams/11143/gl/)\n"
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
@@ -30,4 +31,4 @@ msgstr "Inserir parágrafo após o bloque"
 
 msgctxt "Information to be read by screen reader about shortcuts to type around a widget"
 msgid "Press Enter to type after or press Shift + Enter to type before the widget"
-msgstr ""
+msgstr "Prema Intro para escribir após ou prema Maiús + Intro para escribir antes do trebello"

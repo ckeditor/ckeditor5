@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Hindi (https://app.transifex.com/ckeditor/teams/11143/hi/)\n"
 "Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -114,4 +115,8 @@ msgstr "एडीटर कॉन्टेक्स्टूअल टूलब�
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "HEX"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "स्वीकार करें"

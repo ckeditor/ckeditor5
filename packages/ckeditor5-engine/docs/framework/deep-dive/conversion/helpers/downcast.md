@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive-conversion-helpers
 menu-title: Downcast helpers
+meta-title: Downcast helpers | CKEditor 5 Framework Documentation
 order: 20
 since: 33.0.0
 modified_at: 2022-03-02
@@ -149,7 +150,7 @@ editor.conversion
 Note that in this example we create two elements, which is not possible by using the previously mentioned `elementToElement()` helper.
 
 <info-box>
-	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor&nbsp;5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ### Handling model element’s children
@@ -175,7 +176,7 @@ editor.conversion
 ```
 
 <info-box>
-	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor&nbsp;5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ## Attribute to element conversion helper
@@ -197,7 +198,7 @@ editor.conversion
 	} );
 ```
 
-A model text node `"CKEditor 5"` with a `bold` attribute will become a `<strong>"CKEditor 5"</strong>` in the view.
+A model text node `"CKEditor&nbsp;5"` with a `bold` attribute will become a `<strong>"CKEditor&nbsp;5"</strong>` in the view.
 
 ### Using view element definition
 

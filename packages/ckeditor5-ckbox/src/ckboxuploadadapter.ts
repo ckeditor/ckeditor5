@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals AbortController, FormData, URL, Image, XMLHttpRequest, window */
+/* globals AbortController, FormData, URL, XMLHttpRequest, window */
 
 /**
  * @module ckbox/ckboxuploadadapter
@@ -22,7 +22,7 @@ import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/cke
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
-import { getImageUrls } from './utils';
+import { getImageUrls, getWorkspaceId } from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -115,11 +115,6 @@ class Adapter implements UploadAdapter {
 	public serviceOrigin: string;
 
 	/**
-	 * The base URL from where all assets are served.
-	 */
-	public assetsOrigin: string;
-
-	/**
 	 * Creates a new adapter instance.
 	 */
 	constructor( loader: FileLoader, token: InitializedToken, editor: Editor ) {
@@ -129,7 +124,29 @@ class Adapter implements UploadAdapter {
 		this.controller = new AbortController();
 
 		this.serviceOrigin = editor.config.get( 'ckbox.serviceOrigin' )!;
-		this.assetsOrigin = editor.config.get( 'ckbox.assetsOrigin' )!;
+	}
+
+	/**
+	 * The ID of workspace to use.
+	 */
+	public getWorkspaceId(): string {
+		const t = this.editor.t;
+		const cannotAccessDefaultWorkspaceError = t( 'Cannot access default workspace.' );
+		const defaultWorkspaceId = this.editor.config.get( 'ckbox.defaultUploadWorkspaceId' );
+		const workspaceId = getWorkspaceId( this.token, defaultWorkspaceId );
+
+		if ( workspaceId == null ) {
+			/**
+			 * The user is not authorized to access the workspace defined in  the`ckbox.defaultUploadWorkspaceId` configuration.
+			 *
+			 * @error ckbox-access-default-workspace-error
+			 */
+			logError( 'ckbox-access-default-workspace-error' );
+
+			throw cannotAccessDefaultWorkspaceError;
+		}
+
+		return workspaceId;
 	}
 
 	/**
@@ -143,6 +160,7 @@ class Adapter implements UploadAdapter {
 
 		categoryUrl.searchParams.set( 'limit', ITEMS_PER_REQUEST.toString() );
 		categoryUrl.searchParams.set( 'offset', offset.toString() );
+		categoryUrl.searchParams.set( 'workspaceId', this.getWorkspaceId() );
 
 		return this._sendHttpRequest( { url: categoryUrl } )
 			.then( async data => {
@@ -189,7 +207,7 @@ class Adapter implements UploadAdapter {
 		// If a user specifies the plugin configuration, find the first category that accepts the uploaded file.
 		if ( defaultCategories ) {
 			const userCategory = Object.keys( defaultCategories ).find( category => {
-				return defaultCategories[ category ].includes( extension );
+				return defaultCategories[ category ].find( e => e.toLowerCase() == extension );
 			} );
 
 			// If found, return its ID if the category exists on the server side.
@@ -205,7 +223,7 @@ class Adapter implements UploadAdapter {
 		}
 
 		// Otherwise, find the first category that accepts the uploaded file and returns its ID.
-		const category = allCategories.find( category => category.extensions.includes( extension ) );
+		const category = allCategories.find( category => category.extensions.find( e => e.toLowerCase() == extension ) );
 
 		if ( !category ) {
 			return null;
@@ -232,6 +250,8 @@ class Adapter implements UploadAdapter {
 		const uploadUrl = new URL( 'assets', this.serviceOrigin );
 		const formData = new FormData();
 
+		uploadUrl.searchParams.set( 'workspaceId', this.getWorkspaceId() );
+
 		formData.append( 'categoryId', category );
 		formData.append( 'file', file );
 
@@ -250,15 +270,7 @@ class Adapter implements UploadAdapter {
 
 		return this._sendHttpRequest( requestConfig )
 			.then( async data => {
-				const width = await this._getImageWidth();
-				const extension = getFileExtension( file.name );
-				const imageUrls = getImageUrls( {
-					token: this.token,
-					id: data.id,
-					origin: this.assetsOrigin,
-					width,
-					extension
-				} );
+				const imageUrls = getImageUrls( data.imageUrls );
 
 				return {
 					ckboxImageId: data.id,
@@ -349,24 +361,6 @@ class Adapter implements UploadAdapter {
 			xhr.send( data );
 		} );
 	}
-
-	/**
-	 * Resolves a promise with a number representing the width of a given image file.
-	 */
-	private _getImageWidth(): Promise<number> {
-		return new Promise( resolve => {
-			const image = new Image();
-
-			image.onload = () => {
-				// Let the browser know that it should not keep the reference any longer to avoid memory leeks.
-				URL.revokeObjectURL( image.src );
-
-				resolve( image.width );
-			};
-
-			image.src = this.loader.data!;
-		} );
-	}
 }
 
 export interface AvailableCategory {
@@ -382,5 +376,5 @@ function getFileExtension( value: string ) {
 	const extensionRegExp = /\.(?<ext>[^.]+)$/;
 	const match = value.match( extensionRegExp );
 
-	return match!.groups!.ext;
+	return match!.groups!.ext.toLowerCase();
 }

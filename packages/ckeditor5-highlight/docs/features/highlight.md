@@ -1,5 +1,6 @@
 ---
 category: features
+meta-title: Highlight | CKEditor 5 Documentation
 ---
 
 # Highlight
@@ -201,7 +202,7 @@ ClassicEditor
 
 ## Related features
 
-CKEditor 5 has more features that can help you style your content:
+CKEditor&nbsp;5 has more features that can help you style your content:
 * {@link features/style Styles} &ndash; Apply pre-configured styles like highlight or spoiler to existing content elements.
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
@@ -253,7 +254,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

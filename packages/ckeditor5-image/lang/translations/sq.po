@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Albanian (https://app.transifex.com/ckeditor/teams/11143/sq/)\n"
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label for the image widget."
 msgid "image widget"
@@ -74,7 +75,7 @@ msgstr "Ngarkimi dështoi"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
-msgstr ""
+msgstr "Kokështrirja e fotos"
 
 msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
 msgid "Resize image"

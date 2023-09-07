@@ -70,6 +70,135 @@ describe( 'InsertParagraphCommand', () => {
 			);
 		} );
 
+		it( 'should insert paragraph when position is at the end of line', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getFirstPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the end of line with an inline widget', () => {
+			schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+			setData( model, '<paragraph><inlineWidget></inlineWidget>[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getFirstPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph><inlineWidget></inlineWidget></paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the start of line', () => {
+			setData( model, '<paragraph>[]foo</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>' +
+				'<paragraph>foo</paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph when position is at the start of line with an inline widget', () => {
+			schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+			setData( model, '<paragraph>[]<inlineWidget></inlineWidget></paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[]</paragraph>' +
+				'<paragraph><inlineWidget></inlineWidget></paragraph>'
+			);
+		} );
+
+		it( 'should insert paragraph bellow when paragraph is empty', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph></paragraph>' +
+				'<paragraph>[]</paragraph>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/14714.
+		it( 'should insert paragraph bellow the block widget (inside container)', () => {
+			schema.register( 'blockContainer', { inheritAllFrom: '$container' } );
+			schema.register( 'blockWidget', { inheritAllFrom: '$blockObject', allowIn: 'allowP' } );
+
+			setData( model,
+				'<blockContainer>' +
+					'[<blockWidget></blockWidget>]' +
+				'</blockContainer>'
+			);
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<blockContainer>' +
+					'<blockWidget></blockWidget>' +
+					'<paragraph>[]</paragraph>' +
+				'</blockContainer>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/14714.
+		it( 'should insert paragraph bellow the block widget (inside table cell)', () => {
+			schema.register( 'table', { inheritAllFrom: '$blockObject' } );
+			schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			schema.register( 'tableCell', {
+				allowContentOf: '$container',
+				allowIn: 'tableRow',
+				isLimit: true,
+				isSelectable: true
+			} );
+
+			schema.register( 'blockWidget', { inheritAllFrom: '$blockObject' } );
+
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'[<blockWidget></blockWidget>]' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			command.execute( {
+				position: model.document.selection.getLastPosition()
+			} );
+
+			expect( getData( model ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<blockWidget></blockWidget>' +
+							'<paragraph>[]</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
 		it( 'should do nothing if the paragraph is not allowed at the provided position', () => {
 			// Create a situation where "paragraph" is disallowed even in the "root".
 			schema.addChildCheck( ( context, childDefinition ) => {

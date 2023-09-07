@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Hungarian (https://app.transifex.com/ckeditor/teams/11143/hu/)\n"
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"

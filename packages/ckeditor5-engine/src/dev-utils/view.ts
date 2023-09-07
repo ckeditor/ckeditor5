@@ -991,7 +991,7 @@ class ViewStringify {
 			} else if ( attribute === 'style' ) {
 				attributeValue = [ ...element.getStyleNames() ]
 					.sort()
-					.map( style => `${ style }:${ element.getStyle( style ) }` )
+					.map( style => `${ style }:${ element.getStyle( style )!.replace( /"/g, '&quot;' ) }` )
 					.join( ';' );
 			} else {
 				attributeValue = element.getAttribute( attribute );

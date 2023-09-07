@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Norwegian Bokmål (https://app.transifex.com/ckeditor/teams/11143/nb/)\n"
 "Language: nb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
@@ -54,8 +55,4 @@ msgstr ""
 
 msgctxt "Title of a color picker section containing the colors currently used in the document."
 msgid "Document colors"
-msgstr ""
-
-msgctxt "Label of the button closing the color picker dropdown and confirming the changes done."
-msgid "Accept"
 msgstr ""

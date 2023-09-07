@@ -2,6 +2,7 @@
 category: features-html
 order: 30
 modified_at: 2021-10-25
+meta-title: HTML comments element | CKEditor 5 Documentation
 ---
 
 # HTML comment element
@@ -57,11 +58,11 @@ HTML comment feature does not require any configuration.
 
 The main issue with the HTML comments feature is that comments can be easily repositioned or lost in various cases [#10118](https://github.com/ckeditor/ckeditor5/issues/10118), [#10119](https://github.com/ckeditor/ckeditor5/issues/10119). Also copying and pasting (or dragging and dropping) elements containing HTML comments within the editor does not work as expected [#10127](https://github.com/ckeditor/ckeditor5/issues/10127).
 
-We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
+We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5/issues/).
 
 ## Related features
 
-CKEditor 5 has other features related to HTML editing you may want to check:
+CKEditor&nbsp;5 has other features related to HTML editing you may want to check:
 
 * {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over the content editing.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.

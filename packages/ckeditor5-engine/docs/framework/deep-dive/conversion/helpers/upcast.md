@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive-conversion-helpers
 menu-title: Upcast helpers
+meta-title: Upcast helpers | CKEditor 5 Framework Documentation
 order: 30
 since: 33.0.0
 modified_at: 2022-03-02
@@ -137,7 +138,7 @@ editor.conversion
 	} );
 ```
 
-In the example above, the view `<strong>CKEditor 5</strong>` will become the `CKEditor 5` model text node with a `bold` attribute set to `true`.
+In the example above, the view `<strong>CKEditor&nbsp;5</strong>` will become the `CKEditor&nbsp;5` model text node with a `bold` attribute set to `true`.
 
 ### Converting attribute in a specific view element
 

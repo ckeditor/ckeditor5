@@ -18,7 +18,8 @@ function CustomHeading( editor ) {
 }
 
 DecoupledEditor.create( document.querySelector( '#mini-inspector-heading' ), {
-	plugins: [ Essentials, CustomHeading ]
+	plugins: [ Essentials, CustomHeading ],
+	toolbar: []
 } )
 	.then( editor => {
 		window.editor = editor;

@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Albanian (https://app.transifex.com/ckeditor/teams/11143/sq/)\n"
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
@@ -30,7 +31,7 @@ msgstr "Nyja e URL-së"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "Foto e nyjes"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
@@ -46,8 +47,8 @@ msgstr "Kjo nyje nuk ka URL"
 
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
-msgstr ""
+msgstr "Hape në një fletë të re"
 
 msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
 msgid "Downloadable"
-msgstr ""
+msgstr "E shkarkueshme"

@@ -1,23 +1,24 @@
 ---
 category: update-guides
+meta-title: Update to version 35.x | CKEditor 5 Documentation
 menu-title: Update to v35.x
 order: 89
 modified_at: 2022-10-05
 ---
 
-# Update to CKEditor 5 v35.x
+# Update to CKEditor&nbsp;5 v35.x
 
 <info-box>
-	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-## Update to CKEditor 5 v35.2.0
+## Update to CKEditor&nbsp;5 v35.2.0
 
-For the entire list of changes introduced in version 35.2.0, see the [release notes for CKEditor 5 v35.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.2.0).
+For the entire list of changes introduced in version 35.2.0, see the [release notes for CKEditor&nbsp;5 v35.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.2.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.2.0.
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.2.0.
 
 ### Introducing external comments
 
@@ -90,11 +91,11 @@ Among other changes, a few icons have been moved around the project. Please obse
 
 The rest of the import path remained unchanged (`/theme/icons/`).
 
-## Update to CKEditor 5 v35.1.0
+## Update to CKEditor&nbsp;5 v35.1.0
 
-For the entire list of changes introduced in version 35.1.0, see the [release notes for CKEditor 5 v35.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.1.0).
+For the entire list of changes introduced in version 35.1.0, see the [release notes for CKEditor&nbsp;5 v35.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.1.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.1.0.
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.1.0.
 
 ### Changes to API providing the accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
 
@@ -255,15 +256,15 @@ The static properties of `BalloonPanelView` have been renamed.
 
 The `BalloonPanelView.arrowVerticalOffset` static property is now `arrowHeightOffset` and `BalloonPanelView.arrowHorizontalOffset` is now `arrowSideOffset`.
 
-## Update to CKEditor 5 v35.0.0
+## Update to CKEditor&nbsp;5 v35.0.0
 
-For the entire list of changes introduced in version 35.0.0, see the [release notes for CKEditor 5 v35.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.0.0).
+For the entire list of changes introduced in version 35.0.0, see the [release notes for CKEditor&nbsp;5 v35.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v35.0.0.
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.0.0.
 
 ### The source element is not updated automatically after the editor destroy
 
-The last version of CKEditor 5 changes the default behavior of the source element after the editor is destroyed (when `editor.destroy()` is called). So far, the source element was updated with the output coming from `editor.getData()`. Now, the source element becomes empty after the editor is destroyed and it is not updated anymore.
+The last version of CKEditor&nbsp;5 changes the default behavior of the source element after the editor is destroyed (when `editor.destroy()` is called). So far, the source element was updated with the output coming from `editor.getData()`. Now, the source element becomes empty after the editor is destroyed and it is not updated anymore.
 
 However, this behavior is configurable and could be enabled with the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option:
 
@@ -308,7 +309,7 @@ dropdownView.on( 'execute', () => {
 
 ### There is now a TypeScript code on GitHub (and how it affects your build)
 
-Starting from v35.0.0, the first of CKEditor 5 packages (namely: `@ckeditor/ckeditor5-utils`) is developed in TypeScript. This is the first step of [our migration to TypeScript](https://github.com/ckeditor/ckeditor5/issues/11704).
+Starting from v35.0.0, the first of CKEditor&nbsp;5 packages (namely: `@ckeditor/ckeditor5-utils`) is developed in TypeScript. This is the first step of [our migration to TypeScript](https://github.com/ckeditor/ckeditor5/issues/11704).
 
 #### Whom does it affect?
 
@@ -316,6 +317,6 @@ It affects you **only if** you use the [source code directly from git repository
 
 #### How does it affect you?
 
-For instance, if you happen to have a custom CKEditor 5 build that, for some reason, installs its dependencies from the git repository, you will need to update your webpack config to support the TypeScript code.
+For instance, if you happen to have a custom CKEditor&nbsp;5 build that, for some reason, installs its dependencies from the git repository, you will need to update your webpack config to support the TypeScript code.
 
 You can find the inspiration on how to change your configuration in [this commit](https://github.com/ckeditor/ckeditor5/commit/1dd4075983d97c61b1f668add764525c7fcf2a2d) (this one makes the discussed change in our builds).

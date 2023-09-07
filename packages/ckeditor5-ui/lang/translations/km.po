@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Khmer (https://app.transifex.com/ckeditor/teams/11143/km/)\n"
 "Language: km\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -114,4 +115,8 @@ msgstr ""
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
+msgstr ""
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
 msgstr ""

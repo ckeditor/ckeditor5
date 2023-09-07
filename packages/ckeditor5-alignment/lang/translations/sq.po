@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Albanian (https://app.transifex.com/ckeditor/teams/11143/sq/)\n"
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for aligning the text to the left."
 msgid "Align left"
@@ -38,4 +39,4 @@ msgstr "Radhitja e tekstit"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr ""
+msgstr "Shiriti i rradhitjes së tekstit"

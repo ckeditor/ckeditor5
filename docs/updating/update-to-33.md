@@ -1,27 +1,28 @@
 ---
 category: update-guides
+meta-title: Update to version 33.x | CKEditor 5 Documentation
 menu-title: Update to v33.x
 order: 91
 modified_at: 2022-02-01
 ---
 
-# Update to CKEditor 5 v33.0.0
+# Update to CKEditor&nbsp;5 v33.0.0
 
 <info-box>
-	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-For the entire list of changes introduced in version 33.0.0, see the [release notes for CKEditor 5 v33.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v33.0.0).
+For the entire list of changes introduced in version 33.0.0, see the [release notes for CKEditor&nbsp;5 v33.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v33.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v33.0.0.
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v33.0.0.
 
 ## Important changes
 
 ### New import paths in the `ckeditor5-list` package
 
-Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/plugins/installing-plugins imports individual plugins} to integrate or build CKEditor 5, you should update the paths accordingly:
+Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/plugins/installing-plugins imports individual plugins} to integrate or build CKEditor&nbsp;5, you should update the paths accordingly:
 
 ```js
 // ❌ Old import paths:
@@ -41,11 +42,11 @@ import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/l
 	Please note that **import paths for top-level plugins such as {@link module:list/list~List}, {@link module:list/listproperties~ListProperties}, {@link module:list/todolist~TodoList}, etc. remain the same**. If you are not sure which import path you should use, you can always [browse the GitHub source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list/src) that corresponds to the contents of the package on npm.
 </info-box>
 
-### Additional dependencies in CKEditor 5 collaboration features
+### Additional dependencies in CKEditor&nbsp;5 collaboration features
 
 The {@link installation/advanced/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
 
-From now on, additional plugins will be required when the following CKEditor 5 collaboration features are added to the editor:
+From now on, additional plugins will be required when the following CKEditor&nbsp;5 collaboration features are added to the editor:
 
 * **{@link module:track-changes/trackchanges~TrackChanges}** will also require adding {@link module:comments/comments~Comments} to the list of the editor plugins:
 
@@ -203,7 +204,7 @@ editor.conversion.for( 'downcast' ).add( dispatcher => {
 } );
 ```
 
-Also, please keep in mind that starting with CKEditor 5 v33.0.0, all model items [must be consumed](#mandatory-consumption-of-all-model-items-in-the-downcast-conversion-pipeline) by your custom converters to prevent further errors.
+Also, please keep in mind that starting with CKEditor&nbsp;5 v33.0.0, all model items [must be consumed](#mandatory-consumption-of-all-model-items-in-the-downcast-conversion-pipeline) by your custom converters to prevent further errors.
 
 ### The `Differ#refreshItem()` method is now obsolete
 
@@ -219,7 +220,7 @@ editor.editing.reconvertItem( ... );
 
 ### Comments editor configuration is now required
 
-Since the cross-package dependencies inside the project were removed, the configuration for the comments editor became required. Keep in mind that the editor used in the comments section is also a CKEditor 5 instance and is configured the same way as the regular editor.
+Since the cross-package dependencies inside the project were removed, the configuration for the comments editor became required. Keep in mind that the editor used in the comments section is also a CKEditor&nbsp;5 instance and is configured the same way as the regular editor.
 
 After the update, you should configure the comments editor using the `config.comments.editorConfig` option:
 

@@ -1,18 +1,19 @@
 ---
 category: framework-architecture
 menu-title: Introduction
+meta-title: Introduction to CKEditor 5 architecture | CKEditor 5 Framework Documentation
 order: 10
 toc: false
 feedback-widget: false
 ---
 
-# Introduction to CKEditor 5 architecture
+# Introduction to CKEditor&nbsp;5 architecture
 
-This guide introduces the main pillars of the CKEditor 5 architecture. It is assumed that you have read the {@link framework/index Framework's overview} and saw some code in the {@link framework/quick-start Quick start} guide. This should help you go through the next steps.
+This guide introduces the main pillars of the CKEditor&nbsp;5 architecture. It is assumed that you have read the {@link framework/index Framework's overview} and saw some code in the {@link framework/quick-start Quick start} guide. This should help you go through the next steps.
 
 ## Main components
 
-CKEditor 5 Framework comes with its 3 main pillars:
+CKEditor&nbsp;5 Framework comes with its 3 main pillars:
 
 * **{@link framework/architecture/core-editor-architecture Core editor architecture}**
 
@@ -26,4 +27,4 @@ CKEditor 5 Framework comes with its 3 main pillars:
 
 * **{@link framework/architecture/ui-library UI library}**
 
-	The standard UI library is implemented by the {@link api/ui `@ckeditor/ckeditor5-ui`} package. It contains a simple MVC implementation whose main goal is to best fit the CKEditor 5 needs. Furthermore, it introduces basic UI components to be used by editor features.
+	The standard UI library is implemented by the {@link api/ui `@ckeditor/ckeditor5-ui`} package. It contains a simple MVC implementation whose main goal is to best fit the CKEditor&nbsp;5 needs. Furthermore, it introduces basic UI components to be used by editor features.

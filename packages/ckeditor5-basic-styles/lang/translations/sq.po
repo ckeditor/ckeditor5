@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Albanian (https://app.transifex.com/ckeditor/teams/11143/sq/)\n"
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
@@ -38,8 +39,8 @@ msgstr "Vi në mes"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "Abonohu"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "Mbishkrim"

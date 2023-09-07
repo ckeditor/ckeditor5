@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Albanian (https://app.transifex.com/ckeditor/teams/11143/sq/)\n"
 "Language: sq\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
@@ -22,7 +23,7 @@ msgstr "Anulo"
 
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
-msgstr ""
+msgstr "Largo ngjyrën"
 
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"

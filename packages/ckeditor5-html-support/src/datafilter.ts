@@ -15,7 +15,8 @@ import {
 	type UpcastConversionApi,
 	type ViewElement,
 	type MatchResult,
-	type ViewConsumable
+	type ViewConsumable,
+	type MatcherObjectPattern
 } from 'ckeditor5/src/engine';
 
 import {
@@ -33,6 +34,7 @@ import {
 
 	viewToAttributeInlineConverter,
 	attributeToViewInlineConverter,
+	emptyInlineModelElementToViewConverter,
 
 	viewToModelBlockAttributeConverter,
 	modelToViewBlockAttributeConverter
@@ -53,8 +55,6 @@ import {
 import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
 
 import '../theme/datafilter.css';
-
-type MatcherPatternWithName = MatcherPattern & { name?: string };
 
 /**
  * Allows to validate elements and element attributes registered by {@link module:html-support/dataschema~DataSchema}.
@@ -172,8 +172,8 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @param config Configuration of elements that should have their attributes accepted in the editor.
 	 */
-	public loadAllowedConfig( config: Array<MatcherPattern> ): void {
-		for ( const pattern of config as Array<MatcherPatternWithName> ) {
+	public loadAllowedConfig( config: Array<MatcherObjectPattern> ): void {
+		for ( const pattern of config ) {
 			// MatcherPattern allows omitting `name` to widen the search of elements.
 			// Let's keep it consistent and match every element if a `name` has not been provided.
 			const elementName = pattern.name || /[\s\S]+/;
@@ -192,8 +192,8 @@ export default class DataFilter extends Plugin {
 	 *
 	 * @param config Configuration of elements that should have their attributes rejected from the editor.
 	 */
-	public loadDisallowedConfig( config: Array<MatcherPattern> ): void {
-		for ( const pattern of config as Array<MatcherPatternWithName> ) {
+	public loadDisallowedConfig( config: Array<MatcherObjectPattern> ): void {
+		for ( const pattern of config ) {
 			// MatcherPattern allows omitting `name` to widen the search of elements.
 			// Let's keep it consistent and match every element if a `name` has not been provided.
 			const elementName = pattern.name || /[\s\S]+/;
@@ -205,6 +205,19 @@ export default class DataFilter extends Plugin {
 			} else {
 				rules.forEach( pattern => this.disallowAttributes( pattern ) );
 			}
+		}
+	}
+
+	/**
+	 * Load a configuration of one or many elements, where when empty should be allowed.
+	 *
+	 * **Note**: It modifies DataSchema so must be loaded before registering filtering rules.
+	 *
+	 * @param config Configuration of elements that should be preserved even if empty.
+	 */
+	public loadAllowedEmptyElementsConfig( config: Array<string> ): void {
+		for ( const elementName of config ) {
+			this.allowEmptyElement( elementName );
 		}
 	}
 
@@ -238,6 +251,24 @@ export default class DataFilter extends Plugin {
 	public disallowElement( viewName: string | RegExp ): void {
 		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, false ) ) {
 			this._disallowedElements.add( definition.view! );
+		}
+	}
+
+	/**
+	 * Allow the given empty element in the editor context.
+	 *
+	 * This method will only allow elements described by the {@link module:html-support/dataschema~DataSchema} used
+	 * to create data filter.
+	 *
+	 * **Note**: It modifies DataSchema so must be called before registering filtering rules.
+	 *
+	 * @param viewName String or regular expression matching view name.
+	 */
+	public allowEmptyElement( viewName: string ): void {
+		for ( const definition of this._dataSchema.getDefinitionsForView( viewName, true ) ) {
+			if ( definition.isInline ) {
+				this._dataSchema.extendInlineElement( { ...definition, allowEmpty: true } );
+			}
 		}
 	}
 
@@ -668,6 +699,45 @@ export default class DataFilter extends Plugin {
 			model: attributeKey,
 			view: attributeToViewInlineConverter( definition )
 		} );
+
+		if ( !definition.allowEmpty ) {
+			return;
+		}
+
+		schema.setAttributeProperties( attributeKey, { copyFromObject: false } );
+
+		if ( !schema.isRegistered( 'htmlEmptyElement' ) ) {
+			schema.register( 'htmlEmptyElement', {
+				inheritAllFrom: '$inlineObject'
+			} );
+		}
+
+		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => {
+			// Element must be empty and have any attribute.
+			if (
+				element.name == definition.view &&
+				element.isEmpty &&
+				Array.from( element.getAttributeKeys() ).length
+			) {
+				return {
+					name: true
+				};
+			}
+
+			return null;
+		} );
+
+		conversion.for( 'editingDowncast' )
+			.elementToElement( {
+				model: 'htmlEmptyElement',
+				view: emptyInlineModelElementToViewConverter( definition, true )
+			} );
+
+		conversion.for( 'dataDowncast' )
+			.elementToElement( {
+				model: 'htmlEmptyElement',
+				view: emptyInlineModelElementToViewConverter( definition )
+			} );
 	}
 }
 
@@ -836,11 +906,12 @@ function iterableToObject( iterable: Set<string>, getValue: ( s: string ) => any
  * @param pattern Pattern to split.
  * @param attributeName Name of the attribute to split (e.g. 'attributes', 'classes', 'styles').
  */
-function splitPattern( pattern: MatcherPatternWithName, attributeName: 'attributes' | 'classes' | 'styles' ): Array<MatcherPattern> {
+function splitPattern( pattern: MatcherObjectPattern, attributeName: 'attributes' | 'classes' | 'styles' ): Array<MatcherObjectPattern> {
 	const { name } = pattern;
-	const attributeValue = ( pattern as any )[ attributeName ];
+	const attributeValue = pattern[ attributeName ];
+
 	if ( isPlainObject( attributeValue ) ) {
-		return Object.entries( attributeValue ).map(
+		return Object.entries( attributeValue as Record<string, unknown> ).map(
 			( [ key, value ] ) => ( {
 				name,
 				[ attributeName ]: {
@@ -865,19 +936,21 @@ function splitPattern( pattern: MatcherPatternWithName, attributeName: 'attribut
  * Rules are matched in conjunction (AND operation), but we want to have a match if *any* of the rules is matched (OR operation).
  * By splitting the rules we force the latter effect.
  */
-function splitRules( rules: MatcherPatternWithName ): Array<MatcherPattern> {
-	const { name, attributes, classes, styles } = rules as any;
-	const splittedRules = [];
+function splitRules( rules: MatcherObjectPattern ): Array<MatcherObjectPattern> {
+	const { name, attributes, classes, styles } = rules;
+	const splitRules = [];
 
 	if ( attributes ) {
-		splittedRules.push( ...splitPattern( { name, attributes }, 'attributes' ) );
-	}
-	if ( classes ) {
-		splittedRules.push( ...splitPattern( { name, classes }, 'classes' ) );
-	}
-	if ( styles ) {
-		splittedRules.push( ...splitPattern( { name, styles }, 'styles' ) );
+		splitRules.push( ...splitPattern( { name, attributes }, 'attributes' ) );
 	}
 
-	return splittedRules;
+	if ( classes ) {
+		splitRules.push( ...splitPattern( { name, classes }, 'classes' ) );
+	}
+
+	if ( styles ) {
+		splitRules.push( ...splitPattern( { name, styles }, 'styles' ) );
+	}
+
+	return splitRules;
 }

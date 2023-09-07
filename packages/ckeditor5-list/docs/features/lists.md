@@ -1,5 +1,6 @@
 ---
 menu-title: Ordered and unordered lists
+meta-title: Ordered and unordered lists | CKEditor 5 Documentation
 category: features-lists
 order: 10
 modified_at: 2022-05-12
@@ -8,6 +9,11 @@ modified_at: 2022-05-12
 # Ordered and unordered lists
 
 The list feature lets you create ordered (numbered) and unordered (bulleted) lists. You can use ordered lists where the order of the items matters (as in instructions) and unordered lists where it is not that important (as in a list of ingredients).
+
+<info-box warning>
+	The regular lists feature will be replaced with the new {@link features/document-lists document lists} in the upcoming releases and will be sunset at the beginning of 2024. Consider migrating if you need that functionality. If you wish to switch to the document lists feature, you need to {@link features/document-lists#installation install it} first.
+	See [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) for more details.
+</info-box>
 
 {@snippet features/lists-source}
 
@@ -26,11 +32,11 @@ You can also use Markdown code recognized by the {@link features/autoformat auto
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-After reading this guide, check out the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post where you will find more information about lists with examples.
+After reading this guide, check out the [Lists in CKEditor&nbsp;5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post where you will find more information about lists with examples.
 
 ## List properties
 
-In addition to the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
+In addition to the basic functionality of creating the ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
@@ -84,23 +90,17 @@ Refer to the {@link features/indent#indenting-lists Indenting lists} section of 
 
 ## Installation
 
-<info-box info>
-	There are currently two plugins providing lists support for CKEditor 5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
+There are currently two plugins providing lists support for CKEditor&nbsp;5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
 
+<info-box>
 	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-
-	If you wish to switch to the document list feature, you need to {@link features/document-lists#installation install it} first.
 </info-box>
 
 ### List feature
 
-<info-box info>
-	The base list feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined editor builds}. The installation instructions are for developers interested in building their own, custom editor.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-list
 ```
 
@@ -119,10 +119,6 @@ ClassicEditor
 ```
 
 #### List properties
-
-<info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
-</info-box>
 
 To enable the list properties feature, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
@@ -150,8 +146,6 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-
-
 
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.

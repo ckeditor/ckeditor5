@@ -7,7 +7,7 @@ Changes for the past releases are available below.
 
 ## [19.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v18.0.0...v19.0.0) (2020-04-29)
 
-We are happy to announce the release of CKEditor 5 v19.0.0.
+We are happy to announce the release of CKEditor&nbsp;5 v19.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v19.0.0) to find out about all the new features, improvements and possible breaking changes.
 
@@ -63,7 +63,7 @@ Major releases (dependencies of those packages have breaking changes):
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v17.0.0...v18.0.0) (2020-03-19)
 
-We are happy to announce the release of CKEditor 5 v18.0.0.
+We are happy to announce the release of CKEditor&nbsp;5 v18.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v18.0.0) to find out about all the new features, improvements and possible breaking changes.
 
@@ -120,7 +120,7 @@ Major releases (dependencies of those packages have breaking changes):
 
 ## [17.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v16.0.0...v17.0.0) (2020-02-19)
 
-We are happy to announce the release of CKEditor 5 v17.0.0.
+We are happy to announce the release of CKEditor&nbsp;5 v17.0.0.
 
 Refer to the [main changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v17.0.0) to find out about all the new features, improvements and possible breaking changes.
 
@@ -173,7 +173,7 @@ Major releases (dependencies of those packages have breaking changes):
 
 ## [16.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v15.0.0...v16.0.0) (2019-12-04)
 
-We are happy to announce the release of CKEditor 5 v16.0.0. This release introduces one of the most community-requested features: [code blocks](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html). We included a new [restricted editing](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) plugin, too.
+We are happy to announce the release of CKEditor&nbsp;5 v16.0.0. This release introduces one of the most community-requested features: [code blocks](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html). We included a new [restricted editing](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) plugin, too.
 
 We also did some changes in the default UI colors to improve accessibility. In addition to that, as always, the release contains many [more improvements and bug fixes](https://github.com/ckeditor/ckeditor5/issues?q=is%3Aissue+milestone%3A%22iteration+28%22+is%3Aclosed+-label%3Atype%3Adocs+-label%3Atype%3Atask+-label%3Apackage%3Arestricted-editing+-label%3Apackage%3Acode-block+-label%3Atype%3Afeature).
 
@@ -224,7 +224,7 @@ Major releases (dependencies of those packages have breaking changes):
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v12.4.0...v15.0.0) (2019-10-23)
 
-We are happy to announce the release of CKEditor 5 v15.0.0. This editor version introduces support for inserting [horizontal lines](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html), [page breaks](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) and [SVG images](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageupload-ImageUploadConfig.html#member-types) into the WYSIWYG editor. It also allows you to define the [document title section](https://ckeditor.com/docs/ckeditor5/latest/features/title.html) thanks to the new title plugin. The editor toolbar is now responsive which improves the UX, especially for mobile devices.
+We are happy to announce the release of CKEditor&nbsp;5 v15.0.0. This editor version introduces support for inserting [horizontal lines](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html), [page breaks](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) and [SVG images](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageupload-ImageUploadConfig.html#member-types) into the WYSIWYG editor. It also allows you to define the [document title section](https://ckeditor.com/docs/ckeditor5/latest/features/title.html) thanks to the new title plugin. The editor toolbar is now responsive which improves the UX, especially for mobile devices.
 
 Regarding the build itself, we added the [list indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html#indenting-lists) button to the build's default setup. See [ckeditor/ckeditor5#1844](https://github.com/ckeditor/ckeditor5/issues/1844). ([5dc1e87](https://github.com/ckeditor/ckeditor5-build-classic/commit/5dc1e87))
 
@@ -322,7 +322,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.3.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v12.3.0...v12.3.1) (2019-07-10)
 
-We are happy to report the release of CKEditor 5 v12.3.0 (and v12.3.1 with a small fix). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
+We are happy to report the release of CKEditor&nbsp;5 v12.3.0 (and v12.3.1 with a small fix). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
 
 ### Dependencies
 
@@ -360,7 +360,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.3.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v12.2.0...v12.3.0) (2019-07-04)
 
-We are happy to report the release of CKEditor 5 v12.3.0. This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
+We are happy to report the release of CKEditor&nbsp;5 v12.3.0. This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
 
 ### Dependencies
 
@@ -404,7 +404,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.2.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v12.1.0...v12.2.0) (2019-06-05)
 
-We are happy to report the release of CKEditor 5 v12.2.0. This is a minor release with many bug fixes and a new UI feature which allows to navigating between multiple balloons.
+We are happy to report the release of CKEditor&nbsp;5 v12.2.0. This is a minor release with many bug fixes and a new UI feature which allows to navigating between multiple balloons.
 
 **Note:** The `config.table.toolbar` property that had been deprecated last year has now been completely removed. Use [`config.table.contentToolbar`](https://ckeditor.com/docs/ckeditor5/latest/api/module_table_table-TableConfig.html#member-contentToolbar) instead.
 
@@ -450,7 +450,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.1.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v12.0.0...v12.1.0) (2019-04-10)
 
-We are happy to report the release of CKEditor 5 v12.1.0. This release introduces 3 new features ([mentions](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html), [font color and background color](https://ckeditor.com/docs/ckeditor5/latest/features/font.html) and [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html)).
+We are happy to report the release of CKEditor&nbsp;5 v12.1.0. This release introduces 3 new features ([mentions](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html), [font color and background color](https://ckeditor.com/docs/ckeditor5/latest/features/font.html) and [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html)).
 
 Check out the linked guides for information how to install and configure those features in your editor.
 
@@ -493,7 +493,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v11.2.0...v12.0.0) (2019-02-28)
 
-We are happy to report the release of CKEditor 5 v12.0.0. This release introduces a new editor (called "[Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-block-editor.html)"), the [editor content placeholder](https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html) and support for inline widgets (watch [this PR](https://github.com/ckeditor/ckeditor5/pull/1587) for updates). In addition to that we enabled media embeds and images in tables and resolved the issue where `editor.getData()` returned `<p>&nbsp;</p>` for empty content (now it returns an empty string in this case).
+We are happy to report the release of CKEditor&nbsp;5 v12.0.0. This release introduces a new editor (called "[Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-block-editor.html)"), the [editor content placeholder](https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html) and support for inline widgets (watch [this PR](https://github.com/ckeditor/ckeditor5/pull/1587) for updates). In addition to that we enabled media embeds and images in tables and resolved the issue where `editor.getData()` returned `<p>&nbsp;</p>` for empty content (now it returns an empty string in this case).
 
 Besides new features, this release contains many improvements to stability, [performance](https://github.com/ckeditor/ckeditor5-utils/issues/269) and API. The last group of changes contain many breaking ones. Make sure to read the [main package's changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v12.0.0).
 
@@ -537,7 +537,7 @@ Major releases (contain breaking changes):
 
 ## [11.2.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v11.1.1...v11.2.0) (2018-12-05)
 
-We are happy to report the release of CKEditor 5 v11.2.0. This editor version brings the long-awaited [support for paste from Office](https://ckeditor.com/docs/ckeditor5/latest/features/paste-from-word.html) (e.g. from Microsoft Word), [integration with CKFinder file manager](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html), improved [image upload documentation](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html), improved [editor UI on mobile devices](https://github.com/ckeditor/ckeditor5/issues/416#issuecomment-430246472), as well as many smaller features and improvements.
+We are happy to report the release of CKEditor&nbsp;5 v11.2.0. This editor version brings the long-awaited [support for paste from Office](https://ckeditor.com/docs/ckeditor5/latest/features/paste-from-word.html) (e.g. from Microsoft Word), [integration with CKFinder file manager](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html), improved [image upload documentation](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html), improved [editor UI on mobile devices](https://github.com/ckeditor/ckeditor5/issues/416#issuecomment-430246472), as well as many smaller features and improvements.
 
 Blog post is coming soon...
 
@@ -591,7 +591,7 @@ This releases fixes the README of this package on npm.
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v11.0.1...v11.1.0) (2018-10-08)
 
-This is a minor release. Besides updating all used CKEditor 5 packages to their latest versions it brings two new features: the [Table](https://ckeditor.com/docs/ckeditor5/latest/features/table.html) and [Media embed](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html) features which are now enabled in this build by default.
+This is a minor release. Besides updating all used CKEditor&nbsp;5 packages to their latest versions it brings two new features: the [Table](https://ckeditor.com/docs/ckeditor5/latest/features/table.html) and [Media embed](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html) features which are now enabled in this build by default.
 
 Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v11.1.0-released/
 
@@ -649,7 +649,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 This is a major releases that introduces many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4`, simplified structure of the build repository). Additionally, the `ClassicEditor#element` property was renamed to `ClassicEditor#sourceElement` and the `ClassicEditor#updateElement()` method was renamed to `ClassicEditor#updateSourceElement()`.
 
-If you maintain a [custom build of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/custom-builds.html) or [integrate CKEditor 5 from source](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source-webpack.html), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
+If you maintain a [custom build of CKEditor&nbsp;5](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/custom-builds.html) or [integrate CKEditor&nbsp;5 from source](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source-webpack.html), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
 
 Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v11.0.0-released/
 
@@ -697,7 +697,7 @@ Patch releases (bug fixes, internal changes):
 
 If you maintain a custom build, we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136). Closes [ckeditor/ckeditor5#1038](https://github.com/ckeditor/ckeditor5/issues/1038).
 
-* CKEditor 5 environment was updated to use `webpack@4`. `webpack@4` introduced major changes in its configuration and plugin system. CKEditor 5 tools and build configuration were updated to work with `webpack@4` and will not work with `webpack@3`.
+* CKEditor&nbsp;5 environment was updated to use `webpack@4`. `webpack@4` introduced major changes in its configuration and plugin system. CKEditor&nbsp;5 tools and build configuration were updated to work with `webpack@4` and will not work with `webpack@3`.
 * The structure of the build repository was changed. The `build-config.js` file was removed and the build configuration is now kept only in the `src/ckeditor.js` file.
 
 
@@ -789,7 +789,7 @@ Major releases (contain breaking changes):
 
 ### BREAKING CHANGES
 
-* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+* The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-build-classic/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2018-04-19)

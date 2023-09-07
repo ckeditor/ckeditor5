@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive-conversion
 menu-title: Model to view (downcast)
+meta-title: Downcast conversion - model to view | CKEditor 5 Framework Documentation
 order: 20
 since: 33.0.0
 modified_at: 2022-03-02
@@ -47,7 +48,7 @@ The above converter will handle the conversion of every `<paragraph>` model elem
 
 ## Downcast pipelines
 
-The CKEditor 5 engine uses two different views: the **data view** and the **editing view**.
+The CKEditor&nbsp;5 engine uses two different views: the **data view** and the **editing view**.
 
 The **data view** is used when generating the editor output. This process is controlled by the data pipeline.
 
@@ -198,7 +199,7 @@ The above converter will convert all `<myElement>` model elements to `<div class
 </info-box>
 
 <info-box>
-	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor&nbsp;5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ## Further reading

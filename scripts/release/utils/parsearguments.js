@@ -16,7 +16,9 @@ const minimist = require( 'minimist' );
 module.exports = function parseArguments( cliArguments ) {
 	const config = {
 		boolean: [
-			'nightly'
+			'nightly',
+			'verbose',
+			'compile-only'
 		],
 
 		number: [
@@ -33,9 +35,11 @@ module.exports = function parseArguments( cliArguments ) {
 		default: {
 			nightly: false,
 			concurrency: require( 'os' ).cpus().length / 2,
+			'compile-only': false,
 			packages: null,
 			branch: 'release',
-			'npm-tag': 'staging'
+			'npm-tag': 'staging',
+			verbose: false
 		}
 	};
 
@@ -48,6 +52,13 @@ module.exports = function parseArguments( cliArguments ) {
 	options.npmTag = options[ 'npm-tag' ];
 	delete options[ 'npm-tag' ];
 
+	options.compileOnly = options[ 'compile-only' ];
+	delete options[ 'compile-only' ];
+
+	if ( options.nightly ) {
+		options.npmTag = 'nightly';
+	}
+
 	return options;
 };
 
@@ -56,13 +67,17 @@ module.exports = function parseArguments( cliArguments ) {
  *
  * @property {Boolean} nightly
  *
+ * @property {Boolean} [compileOnly=false]
+ *
  * @property {Number} concurrency
  *
  * @property {String} [from]
  *
  * @property {String} [branch='release']
  *
- * @property {String} [npmTag='staging']
+ * @property {String} [npmTag='staging'|'nightly']
  *
  * @property {Array.<String>|null} packages
+ *
+ * @property {Boolean} [verbose=false]
  */

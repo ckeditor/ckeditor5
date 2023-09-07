@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Galician (https://app.transifex.com/ckeditor/teams/11143/gl/)\n"
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
@@ -106,12 +107,16 @@ msgstr "Púrpura"
 
 msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
 msgid "Editor block content toolbar"
-msgstr ""
+msgstr "Barra de ferramentas de contido do bloque do editor"
 
 msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
 msgid "Editor contextual toolbar"
-msgstr ""
+msgstr "Barra de ferramentas contextual do editor"
 
 msgctxt "Label of an input field for typing colors in the HEX color format."
 msgid "HEX"
-msgstr ""
+msgstr "HEX"
+
+msgctxt "Label of the button closing the color picker and confirming the changes done in the color selector component."
+msgid "Accept"
+msgstr "Aceptar"

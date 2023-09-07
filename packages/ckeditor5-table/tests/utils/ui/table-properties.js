@@ -101,6 +101,8 @@ describe( 'table utils', () => {
 				expect( colorFieldValidator( '#FFF' ) ).to.be.true;
 				expect( colorFieldValidator( '#FFAA11' ) ).to.be.true;
 				expect( colorFieldValidator( 'rgb(255,123,100)' ) ).to.be.true;
+				expect( colorFieldValidator( 'RGB(255,123,100)' ) ).to.be.true;
+				expect( colorFieldValidator( 'RED' ) ).to.be.true;
 				expect( colorFieldValidator( 'red' ) ).to.be.true;
 			} );
 
@@ -438,7 +440,10 @@ describe( 'table utils', () => {
 			beforeEach( () => {
 				creator = getLabeledColorInputCreator( {
 					colorConfig,
-					columns: 3
+					columns: 3,
+					colorPickerConfig: {
+						format: 'hex'
+					}
 				} );
 
 				labeledField = new LabeledFieldView( { t: () => {} }, creator );
@@ -510,6 +515,14 @@ describe( 'table utils', () => {
 
 				labeledField.fieldView.isFocused = false;
 				expect( labeledField.isFocused ).to.be.false;
+			} );
+
+			it( 'should have proper format in color picker', () => {
+				const panelView = labeledField.fieldView.dropdownView.panelView;
+				const colorPicker = panelView.children.get( 0 ).colorPickerFragmentView.colorPickerView;
+
+				colorPicker.color = 'hsl(180, 75%, 60%)';
+				expect( colorPicker.color ).to.equal( '#4CE6E6' );
 			} );
 		} );
 	} );
