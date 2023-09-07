@@ -240,7 +240,7 @@ export default class ImageUploadEditing extends Plugin {
 			this.editor.model.change( writer => {
 				writer.setAttribute( 'src', urls.default, imageElement );
 				this._parseAndSetSrcsetAttributeOnImage( urls, imageElement, writer );
-				imageUtils.loadImageAndSetSizeAttributes( imageElement );
+				imageUtils.setImageNaturalSizeAttributes( imageElement );
 			} );
 		}, { priority: 'low' } );
 	}

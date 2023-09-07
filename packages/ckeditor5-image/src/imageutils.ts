@@ -130,7 +130,7 @@ export default class ImageUtils extends Plugin {
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
-				this.loadImageAndSetSizeAttributes( imageElement );
+				this.setImageNaturalSizeAttributes( imageElement );
 
 				return imageElement;
 			}
@@ -140,12 +140,12 @@ export default class ImageUtils extends Plugin {
 	}
 
 	/**
-	 * Loads image file based on `src`, reads original image sizes and sets them as `width` and `height`.
+	 * Reads original image sizes and sets them as `width` and `height`.
 	 *
 	 * The `src` attribute may not be available if the user is using an upload adapter. In such a case,
 	 * this method is called again after the upload process is complete and the `src` attribute is available.
 	 */
-	public loadImageAndSetSizeAttributes( imageElement: Element ): void {
+	public setImageNaturalSizeAttributes( imageElement: Element ): void {
 		const src = imageElement.getAttribute( 'src' ) as string;
 
 		if ( !src ) {
