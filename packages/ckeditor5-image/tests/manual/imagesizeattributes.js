@@ -44,10 +44,11 @@ const commonConfig = {
 	cloudServices: CS_CONFIG
 };
 
-( async function initTest() {
-	window.editor = await ClassicEditor
-		.create( document.querySelector( '#editor-width-height-attributes' ), commonConfig )
-		.catch( err => {
-			console.error( err.stack );
-		} );
-}() );
+ClassicEditor
+	.create( document.querySelector( '#editor-width-height-attributes' ), commonConfig )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
