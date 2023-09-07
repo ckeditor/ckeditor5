@@ -13,7 +13,7 @@ import ImageUtils from './imageutils';
 import { type ImageLoadedEvent } from './image/imageloadobserver';
 
 /**
- * This plugin enables `width` and `size` attributes in inline and block image elements.
+ * This plugin enables `width` and `height` attributes in inline and block image elements.
  */
 export default class ImageSizeAttributes extends Plugin {
 	/**
