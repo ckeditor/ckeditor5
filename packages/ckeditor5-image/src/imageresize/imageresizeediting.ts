@@ -119,18 +119,18 @@ export default class ImageResizeEditing extends Plugin {
 			} )
 		);
 
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
-			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-					return;
+		editor.conversion.for( 'dataDowncast' ).attributeToAttribute( {
+			model: {
+				name: imageType,
+				key: 'resizedHeight'
+			},
+			view: modelAttributeValue => ( {
+				key: 'style',
+				value: {
+					'height': modelAttributeValue
 				}
-
-				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item );
-
-				viewWriter.setStyle( 'height', data.attributeNewValue, viewElement );
 			} )
-		);
+		} );
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
 			dispatcher.on( `attribute:resizedHeight:${ imageType }`, ( evt, data, conversionApi ) => {
