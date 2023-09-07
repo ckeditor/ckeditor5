@@ -10,7 +10,6 @@ order: 90
 **Quick recap**
 
 In the {@link installation/getting-started/api-and-events previous guide} you have explored events and API. This article shows how to extend and create features in the editor.
-
 </info-box>
 
 The editor has a lot of ready-made features. However, there is always room for more! You can make use of the API exposed by the editor and its plugins and extend the editor using the {@link module:core/plugin~PluginInterface plugin interface} like this:
