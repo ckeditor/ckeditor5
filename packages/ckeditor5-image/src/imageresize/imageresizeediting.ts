@@ -11,6 +11,7 @@ import type { ViewElement } from 'ckeditor5/src/engine';
 import { type Editor, Plugin } from 'ckeditor5/src/core';
 import ImageUtils from '../imageutils';
 import ResizeImageCommand from './resizeimagecommand';
+import { widthAndHeightStylesAreBothSet } from '../image/utils';
 
 /**
  * The image resize editing feature.
@@ -161,7 +162,11 @@ export default class ImageResizeEditing extends Plugin {
 				model: {
 					key: 'resizedWidth',
 					value: ( viewElement: ViewElement ) => {
-						return this._getStyleIfWidthAndHeightStylesSet( viewElement, 'width' );
+						if ( widthAndHeightStylesAreBothSet( this.editor, viewElement ) ) {
+							return null;
+						}
+
+						return viewElement.getStyle( 'width' );
 					}
 				}
 			} );
@@ -177,28 +182,13 @@ export default class ImageResizeEditing extends Plugin {
 				model: {
 					key: 'resizedHeight',
 					value: ( viewElement: ViewElement ) => {
-						return this._getStyleIfWidthAndHeightStylesSet( viewElement, 'height' );
+						if ( widthAndHeightStylesAreBothSet( this.editor, viewElement ) ) {
+							return null;
+						}
+
+						return viewElement.getStyle( 'height' );
 					}
 				}
 			} );
-	}
-
-	/**
-	 * Returns style (width or height) from the view element, if both styles (width and height) are set.
-	 */
-	private _getStyleIfWidthAndHeightStylesSet( viewElement: ViewElement, style: string ): string | null {
-		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
-
-		const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
-		const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
-
-		// If both image styles: width & height are set, they will override the image width & height attributes in the
-		// browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
-		// That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
-		if ( widthStyle && heightStyle ) {
-			return null;
-		}
-
-		return viewElement.getStyle( style )!;
 	}
 }

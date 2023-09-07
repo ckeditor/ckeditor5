@@ -135,3 +135,18 @@ export function determineImageTypeForInsertionAtSelection(
 	// Otherwise insert an inline image.
 	return 'imageInline';
 }
+
+/**
+ * Returns true if both styles (width and height) are set.
+ *
+ * If both image styles: width & height are set, they will override the image width & height attributes in the
+ * browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
+ * That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
+ */
+export function widthAndHeightStylesAreBothSet( editor: Editor,	viewElement: ViewElement ): boolean {
+	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+	const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+	const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+	return !!( widthStyle && heightStyle );
+}
