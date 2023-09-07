@@ -161,17 +161,7 @@ export default class ImageResizeEditing extends Plugin {
 				model: {
 					key: 'resizedWidth',
 					value: ( viewElement: ViewElement ) => {
-						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
-						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
-
-						// If both image styles: width & height are set, they will override the image width & height attributes in the
-						// browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
-						// That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
-						if ( widthStyle && heightStyle ) {
-							return null;
-						}
-
-						return viewElement.getStyle( 'width' );
+						return this._getStyleIfWidthAndHeightStylesSet( viewElement, 'width' );
 					}
 				}
 			} );
@@ -187,19 +177,28 @@ export default class ImageResizeEditing extends Plugin {
 				model: {
 					key: 'resizedHeight',
 					value: ( viewElement: ViewElement ) => {
-						const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
-						const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
-
-						// If both image styles: width & height are set, they will override the image width & height attributes in the
-						// browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
-						// That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
-						if ( widthStyle && heightStyle ) {
-							return null;
-						}
-
-						return viewElement.getStyle( 'height' );
+						return this._getStyleIfWidthAndHeightStylesSet( viewElement, 'height' );
 					}
 				}
 			} );
+	}
+
+	/**
+	 * Returns style (width or height) from the view element, if both styles (width and height) are set.
+	 */
+	private _getStyleIfWidthAndHeightStylesSet( viewElement: ViewElement, style: string ): string | null {
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
+
+		const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+		const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+
+		// If both image styles: width & height are set, they will override the image width & height attributes in the
+		// browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
+		// That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
+		if ( widthStyle && heightStyle ) {
+			return null;
+		}
+
+		return viewElement.getStyle( style )!;
 	}
 }
