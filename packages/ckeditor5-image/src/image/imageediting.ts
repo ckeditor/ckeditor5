@@ -57,14 +57,9 @@ export default class ImageEditing extends Plugin {
 			.attributeToAttribute( {
 				view: {
 					name: 'img',
-					attributes: {
-						srcset: /.+/
-					}
+					key: 'srcset'
 				},
-				model: {
-					key: 'srcset',
-					value: ( viewImage: ViewElement ) => viewImage.getAttribute( 'srcset' )
-				}
+				model: 'srcset'
 			} );
 
 		const insertImageCommand = new InsertImageCommand( editor );
