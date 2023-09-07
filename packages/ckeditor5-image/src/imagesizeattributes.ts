@@ -71,7 +71,7 @@ export default class ImageSizeAttributes extends Plugin {
 				model: {
 					key: 'width',
 					value: ( viewElement: ViewElement ) => {
-						if ( widthAndHeightStylesAreBothSet( this.editor, viewElement ) ) {
+						if ( widthAndHeightStylesAreBothSet( viewElement ) ) {
 							return getSizeValueIfInPx( viewElement.getStyle( 'width' ) );
 						}
 
@@ -96,7 +96,7 @@ export default class ImageSizeAttributes extends Plugin {
 				model: {
 					key: 'height',
 					value: ( viewElement: ViewElement ) => {
-						if ( widthAndHeightStylesAreBothSet( this.editor, viewElement ) ) {
+						if ( widthAndHeightStylesAreBothSet( viewElement ) ) {
 							return getSizeValueIfInPx( viewElement.getStyle( 'height' ) );
 						}
 

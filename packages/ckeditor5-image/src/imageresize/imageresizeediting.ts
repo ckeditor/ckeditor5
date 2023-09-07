@@ -162,7 +162,7 @@ export default class ImageResizeEditing extends Plugin {
 				model: {
 					key: 'resizedWidth',
 					value: ( viewElement: ViewElement ) => {
-						if ( widthAndHeightStylesAreBothSet( this.editor, viewElement ) ) {
+						if ( widthAndHeightStylesAreBothSet( viewElement ) ) {
 							return null;
 						}
 
@@ -182,7 +182,7 @@ export default class ImageResizeEditing extends Plugin {
 				model: {
 					key: 'resizedHeight',
 					value: ( viewElement: ViewElement ) => {
-						if ( widthAndHeightStylesAreBothSet( this.editor, viewElement ) ) {
+						if ( widthAndHeightStylesAreBothSet( viewElement ) ) {
 							return null;
 						}
 

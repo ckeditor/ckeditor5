@@ -154,8 +154,7 @@ export function getSizeValueIfInPx( size: string | undefined ): number | null {
  * browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
  * That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
  */
-export function widthAndHeightStylesAreBothSet( editor: Editor,	viewElement: ViewElement ): boolean {
-	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+export function widthAndHeightStylesAreBothSet( viewElement: ViewElement ): boolean {
 	const widthStyle = getSizeValueIfInPx( viewElement.getStyle( 'width' ) );
 	const heightStyle = getSizeValueIfInPx( viewElement.getStyle( 'height' ) );
 
