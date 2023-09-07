@@ -124,7 +124,10 @@ export default class ImageSizeAttributes extends Plugin {
 		} );
 
 		function attachDowncastConverter(
-			dispatcher: DowncastDispatcher, modelAttributeName: string, viewAttributeName: string, setRatioForInlineImage: boolean
+			dispatcher: DowncastDispatcher,
+			modelAttributeName: string,
+			viewAttributeName: string,
+			setRatioForInlineImage: boolean
 		) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ modelAttributeName }:${ imageType }`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
