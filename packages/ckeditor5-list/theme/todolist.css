@@ -10,8 +10,6 @@
 }
 
 @define-mixin todo-list-checkbox {
-	pointer-events: auto;
-
 	-webkit-appearance: none;
 	display: inline-block;
 	position: relative;
@@ -96,8 +94,6 @@
 	}
 
 	& .todo-list__label {
-		pointer-events: none;
-
 		& > input {
 			@mixin todo-list-checkbox;
 		}
@@ -141,11 +137,4 @@
 			position: absolute;
 		}
 	}
-}
-
-/*
- * Workaround for Chrome and Safari glitch... TODO
- */
-.ck-editor__editable .todo-list__label:has( > span[contenteditable=false] ) {
-	display: block;
 }

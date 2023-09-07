@@ -32,7 +32,7 @@ export default class TodoCheckboxChangeObserver extends DomEventObserver<'change
 				viewTarget &&
 				viewTarget.is( 'element', 'input' ) &&
 				viewTarget.getAttribute( 'type' ) == 'checkbox' &&
-				viewTarget.findAncestor( { name: 'label', classes: 'todo-list__label' } )
+				viewTarget.findAncestor( { classes: 'todo-list__label' } )
 			) {
 				this.fire( 'todoCheckboxChange', domEvent );
 			}

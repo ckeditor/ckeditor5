@@ -163,14 +163,14 @@ export default class TodoDocumentListEditing extends Plugin {
 				return isDescriptionBlock( modelElement );
 			},
 
-			createWrapperElement( writer, modelElement ) {
+			createWrapperElement( writer, modelElement, { dataPipeline } ) {
 				const classes = [ 'todo-list__label' ];
 
 				if ( !isDescriptionBlock( modelElement ) ) {
 					classes.push( 'todo-list__label_without-description' );
 				}
 
-				return writer.createAttributeElement( 'label', {
+				return writer.createAttributeElement( dataPipeline ? 'label' : 'span', {
 					class: classes.join( ' ' )
 				} );
 			}
@@ -182,7 +182,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		editing.mapper.registerViewToModelLength( 'input', viewElement => {
 			if (
 				viewElement.getAttribute( 'type' ) == 'checkbox' &&
-				viewElement.findAncestor( { name: 'label', classes: 'todo-list__label' } )
+				viewElement.findAncestor( { classes: 'todo-list__label' } )
 			) {
 				return 0;
 			}

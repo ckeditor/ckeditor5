@@ -12,7 +12,7 @@ import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Link } from '@ckeditor/ckeditor5-link';
+import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
@@ -21,6 +21,11 @@ import { Indent } from '@ckeditor/ckeditor5-indent';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Image, ImageResize, ImageInsert } from '@ckeditor/ckeditor5-image';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import Documentlist from '../../src/documentlist';
 import TodoDocumentlist from '../../src/tododocumentlist';
@@ -45,17 +50,26 @@ ClassicEditor
 			TodoDocumentlist,
 			SourceEditing,
 			GeneralHtmlSupport,
-			Alignment
+			Alignment,
+			Image,
+			CloudServices,
+			EasyImage,
+			ImageResize,
+			ImageInsert,
+			LinkImage
 		],
 		toolbar: [
 			'heading',
 			'|',
 			'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent',
 			'|',
-			'bold', 'link', 'insertTable', 'fontSize', 'alignment',
+			'bold', 'link', 'fontSize', 'alignment',
+			'|',
+			'insertTable', 'insertImage',
 			'|',
 			'undo', 'redo', '|', 'sourceEditing'
 		],
+		cloudServices: CS_CONFIG,
 		table: {
 			contentToolbar: [
 				'tableColumn',
