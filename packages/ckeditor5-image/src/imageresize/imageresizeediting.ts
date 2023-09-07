@@ -138,12 +138,14 @@ export default class ImageResizeEditing extends Plugin {
 					return;
 				}
 
-				if ( data.attributeNewValue !== null ) {
-					const viewWriter = conversionApi.writer;
-					const viewImg = conversionApi.mapper.toViewElement( data.item );
-					const target = imageType === 'imageInline' ? imageUtils.findViewImgElement( viewImg ) : viewImg;
+				const viewWriter = conversionApi.writer;
+				const viewImg = conversionApi.mapper.toViewElement( data.item );
+				const target = imageType === 'imageInline' ? imageUtils.findViewImgElement( viewImg ) : viewImg;
 
+				if ( data.attributeNewValue !== null ) {
 					viewWriter.setStyle( 'height', data.attributeNewValue, target );
+				} else {
+					viewWriter.removeStyle( 'height', target );
 				}
 			} )
 		);

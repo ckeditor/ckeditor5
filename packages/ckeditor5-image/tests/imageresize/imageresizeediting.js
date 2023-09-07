@@ -216,6 +216,23 @@ describe( 'ImageResizeEditing', () => {
 					);
 				} );
 
+				it( 'removes `height` style in view if `resizedHeight` is removed from model', () => {
+					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+
+					const imageModel = editor.model.document.getRoot().getChild( 0 );
+
+					editor.model.change( writer => {
+						writer.removeAttribute( 'resizedHeight', imageModel );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
+							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+						'</figure>'
+					);
+				} );
+
 				it( 'doesn\'t downcast consumed tokens', () => {
 					editor.conversion.for( 'editingDowncast' ).add( dispatcher =>
 						dispatcher.on( 'attribute:resizedHeight:imageBlock', ( evt, data, conversionApi ) => {
@@ -404,6 +421,24 @@ describe( 'ImageResizeEditing', () => {
 					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p><span class="ck-widget image-inline" contenteditable="false">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }" style="height:50%"></img>` +
+						'</span></p>'
+					);
+				} );
+
+				it( 'removes `height` style in view if `resizedHeight` is removed from model', () => {
+					setData( editor.model,
+						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageInline></paragraph>`
+					);
+
+					const imageModel = editor.model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+					editor.model.change( writer => {
+						writer.removeAttribute( 'resizedHeight', imageModel );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p><span class="ck-widget image-inline" contenteditable="false">' +
+							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
 						'</span></p>'
 					);
 				} );
