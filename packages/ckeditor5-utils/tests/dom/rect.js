@@ -278,6 +278,18 @@ describe( 'Rect', () => {
 			expect( insersect ).to.not.equal( rect );
 		} );
 
+		it( 'should pass the original Rect source on for further processing', () => {
+			const elementA = document.createElement( 'div' );
+			const elementB = document.createElement( 'div' );
+			const rectA = new Rect( elementA );
+			const rectB = new Rect( elementB );
+			const insersect = rectA.getIntersection( rectB );
+
+			expect( rectA._source ).to.equal( elementA );
+			expect( rectB._source ).to.equal( elementB );
+			expect( insersect._source ).to.equal( elementA );
+		} );
+
 		it( 'should calculate the geometry (#1)', () => {
 			const rectA = new Rect( {
 				top: 0,
