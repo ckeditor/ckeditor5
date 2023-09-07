@@ -161,6 +161,8 @@ export default class ImageUtils extends Plugin {
 
 			this._domEmitter.listenTo( img, 'load', () => {
 				if ( !imageElement.getAttribute( 'width' ) && !imageElement.getAttribute( 'height' ) ) {
+					// We use writer.batch to be able to undo (in a single step) width and height setting
+					// along with any change that triggered this action (e.g. image resize or image style change).
 					this.editor.model.enqueueChange( writer.batch, writer => {
 						writer.setAttribute( 'width', img.naturalWidth, imageElement );
 						writer.setAttribute( 'height', img.naturalHeight, imageElement );
