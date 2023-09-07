@@ -12,7 +12,6 @@ import type { Range } from 'ckeditor5/src/engine';
 import { CKEditorError, toMap } from 'ckeditor5/src/utils';
 
 import { _addMentionAttributes } from './mentionediting';
-import type { MentionAttribute } from './mention';
 
 /**
  * The mention command.
@@ -84,7 +83,12 @@ export default class MentionCommand extends Command {
 	 * Note that the replaced range might be shorter than the inserted text with the mention attribute.
 	 * @fires execute
 	 */
-	public override execute( options: { mention: string | MentionAttribute; marker: string; text?: string; range?: Range } ): void {
+	public override execute( options: {
+		mention: string | { id: string; [ key: string ]: unknown };
+		marker: string;
+		text?: string;
+		range?: Range;
+	} ): void {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
