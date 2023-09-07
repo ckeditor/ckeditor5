@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console */
-
 import DomConverter from '../../../src/view/domconverter';
 import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
@@ -13,7 +11,6 @@ import ViewContainerElement from '../../../src/view/containerelement';
 import DowncastWriter from '../../../src/view/downcastwriter';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 import ViewPosition from '../../../src/view/position';
 import ViewRange from '../../../src/view/range';
@@ -90,7 +87,7 @@ describe( 'DomConverter', () => {
 		// https://github.com/ckeditor/ckeditor5-engine/issues/951
 		// https://github.com/ckeditor/ckeditor5-engine/issues/957
 		it( 'should actively prevent scrolling', () => {
-			const scrollToSpy = testUtils.sinon.stub( global.window, 'scrollTo' );
+			const scrollToSpy = testUtils.sinon.stub( window, 'scrollTo' );
 			const editableScrollLeftSpy = sinon.spy();
 			const editableScrollTopSpy = sinon.spy();
 			const parentScrollLeftSpy = sinon.spy();
@@ -120,7 +117,7 @@ describe( 'DomConverter', () => {
 				}
 			} );
 
-			Object.defineProperties( global.document.documentElement, {
+			Object.defineProperties( document.documentElement, {
 				scrollLeft: {
 					get: () => 60,
 					set: documentElementScrollLeftSpy
@@ -131,8 +128,8 @@ describe( 'DomConverter', () => {
 				}
 			} );
 
-			testUtils.sinon.stub( global.window, 'scrollX' ).get( () => 10 );
-			testUtils.sinon.stub( global.window, 'scrollY' ).get( () => 100 );
+			testUtils.sinon.stub( window, 'scrollX' ).get( () => 10 );
+			testUtils.sinon.stub( window, 'scrollY' ).get( () => 100 );
 
 			converter.focus( viewEditable );
 			sinon.assert.calledWithExactly( scrollToSpy, 10, 100 );

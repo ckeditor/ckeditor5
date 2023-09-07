@@ -7,8 +7,6 @@
  * @module utils/dom/resizeobserver
  */
 
-import global from './global';
-
 /**
  * A helper class which instances allow performing custom actions when native DOM elements are resized.
  *
@@ -39,7 +37,7 @@ export default class ResizeObserver {
 	/**
 	 * The single native observer instance shared across all {@link module:utils/dom/resizeobserver~ResizeObserver} instances.
 	 */
-	private static _observerInstance: InstanceType<typeof global.window.ResizeObserver> | null = null;
+	private static _observerInstance: InstanceType<typeof window.ResizeObserver> | null = null;
 
 	/**
 	 * A mapping of native DOM elements and their callbacks shared across all
@@ -142,7 +140,7 @@ export default class ResizeObserver {
 	 * Creates the single native observer shared across all `ResizeObserver` instances.
 	 */
 	private static _createObserver(): void {
-		ResizeObserver._observerInstance = new global.window.ResizeObserver( entries => {
+		ResizeObserver._observerInstance = new window.ResizeObserver( entries => {
 			for ( const entry of entries ) {
 				const callbacks = ResizeObserver._getElementCallbacks( entry.target );
 

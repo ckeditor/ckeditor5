@@ -9,14 +9,13 @@ import MediaEmbedEditing from '../src/mediaembedediting';
 import MediaEmbedUI from '../src/mediaembedui';
 import AutoMediaEmbed from '../src/automediaembed';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'MediaEmbed', () => {
 	let editorElement, editor;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {

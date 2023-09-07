@@ -7,8 +7,6 @@
  * @module utils/dom/findclosestscrollableancestor
  */
 
-import global from './global';
-
 /**
  * Returns the closest scrollable ancestor of a DOM element.
  *
@@ -22,7 +20,7 @@ export default function findClosestScrollableAncestor( domElement: HTMLElement )
 	}
 
 	while ( element.tagName != 'BODY' ) {
-		const overflow = element.style.overflowY || global.window.getComputedStyle( element ).overflowY;
+		const overflow = element.style.overflowY || window.getComputedStyle( element ).overflowY;
 
 		if ( overflow === 'auto' || overflow === 'scroll' ) {
 			break;

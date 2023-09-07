@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-
 import InputObserver from '../../../src/view/observer/inputobserver';
 import DataTransfer from '../../../src/view/datatransfer';
 import Range from '../../../src/view/range';
@@ -23,11 +21,11 @@ describe( 'InputObserver', () => {
 	beforeEach( () => {
 		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
-		domEditable = global.document.createElement( 'div' );
+		domEditable = document.createElement( 'div' );
 		viewRoot = createViewRoot( viewDocument );
 
 		view.attachDomRoot( domEditable );
-		global.document.body.appendChild( domEditable );
+		document.body.appendChild( domEditable );
 
 		// <p>foo</p>
 		view.change( writer => {
@@ -101,8 +99,8 @@ describe( 'InputObserver', () => {
 			} );
 
 			it( 'should provide editing view ranges corresponding to DOM ranges passed along with the DOM event', () => {
-				const domRange1 = global.document.createRange();
-				const domRange2 = global.document.createRange();
+				const domRange1 = document.createRange();
+				const domRange2 = document.createRange();
 
 				// [<p>foo</p>]
 				domRange1.selectNodeContents( domEditable );
@@ -134,7 +132,7 @@ describe( 'InputObserver', () => {
 			} );
 
 			it( 'should provide fixed editing view ranges corresponding to DOM ranges passed along with the DOM event', () => {
-				const domRange = global.document.createRange();
+				const domRange = document.createRange();
 
 				// [<div contenteditable="true">
 				// <p>fo]o</p>
@@ -158,7 +156,7 @@ describe( 'InputObserver', () => {
 			} );
 
 			it( 'should provide a range encompassing the selected object when selection is fake', () => {
-				const domRange = global.document.createRange();
+				const domRange = document.createRange();
 
 				sinon.stub( viewDocument.selection, 'isFake' ).get( () => true );
 				sinon.stub( viewDocument.selection, 'getRanges' ).returns( [ 'fakeRange1', 'fakeRange2' ] );
@@ -271,7 +269,7 @@ describe( 'InputObserver', () => {
 	it( 'should fire insertParagraph if newline character is at the end of data on Android', () => {
 		testUtils.sinon.stub( env, 'isAndroid' ).value( true );
 
-		const domRange = global.document.createRange();
+		const domRange = document.createRange();
 
 		domRange.selectNodeContents( domEditable.firstChild.firstChild );
 
@@ -290,7 +288,7 @@ describe( 'InputObserver', () => {
 
 	describe( 'should split single insertText with new-line characters into separate events', () => {
 		it( 'single new-line surrounded by text', () => {
-			const domRange = global.document.createRange();
+			const domRange = document.createRange();
 
 			domRange.setStart( domEditable.firstChild.firstChild, 0 );
 			domRange.setEnd( domEditable.firstChild.firstChild, 0 );
@@ -335,7 +333,7 @@ describe( 'InputObserver', () => {
 		} );
 
 		it( 'new-line after a text', () => {
-			const domRange = global.document.createRange();
+			const domRange = document.createRange();
 
 			domRange.setStart( domEditable.firstChild.firstChild, 0 );
 			domRange.setEnd( domEditable.firstChild.firstChild, 0 );
@@ -364,7 +362,7 @@ describe( 'InputObserver', () => {
 		} );
 
 		it( 'double new-line surrounded by text', () => {
-			const domRange = global.document.createRange();
+			const domRange = document.createRange();
 
 			domRange.setStart( domEditable.firstChild.firstChild, 0 );
 			domRange.setEnd( domEditable.firstChild.firstChild, 0 );
@@ -397,7 +395,7 @@ describe( 'InputObserver', () => {
 		} );
 
 		it( 'tripple new-line surrounded by text', () => {
-			const domRange = global.document.createRange();
+			const domRange = document.createRange();
 
 			domRange.setStart( domEditable.firstChild.firstChild, 0 );
 			domRange.setEnd( domEditable.firstChild.firstChild, 0 );

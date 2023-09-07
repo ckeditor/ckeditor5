@@ -3,22 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import MediaEmbed from '../src/mediaembed';
 import MediaEmbedUI from '../src/mediaembedui';
 import MediaFormView from '../src/ui/mediaformview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import mediaIcon from '../theme/icons/media.svg';
 
 describe( 'MediaEmbedUI', () => {
 	let editorElement, editor, dropdown, button, form;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -39,7 +36,7 @@ describe( 'MediaEmbedUI', () => {
 				button = dropdown.buttonView;
 
 				dropdown.render();
-				global.document.body.appendChild( dropdown.element );
+				document.body.appendChild( dropdown.element );
 
 				dropdown.isOpen = true;
 				dropdown.isOpen = false;
@@ -282,6 +279,6 @@ describe( 'MediaEmbedUI', () => {
 
 function wait( time ) {
 	return new Promise( res => {
-		global.window.setTimeout( res, time );
+		window.setTimeout( res, time );
 	} );
 }

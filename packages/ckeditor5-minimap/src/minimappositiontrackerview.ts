@@ -8,7 +8,7 @@
  */
 
 import { View } from 'ckeditor5/src/ui';
-import { toUnit, global, type Locale } from 'ckeditor5/src/utils';
+import { toUnit, type Locale } from 'ckeditor5/src/utils';
 import type { MinimapDragEvent } from './minimapview';
 
 const toPx = toUnit( 'px' );
@@ -86,7 +86,7 @@ export default class MinimapPositionTrackerView extends View {
 	public override render(): void {
 		super.render();
 
-		this.listenTo( global.document, 'mousemove', ( evt, data ) => {
+		this.listenTo( document, 'mousemove', ( evt, data ) => {
 			if ( !this._isDragging ) {
 				return;
 			}
@@ -94,7 +94,7 @@ export default class MinimapPositionTrackerView extends View {
 			this.fire<MinimapDragEvent>( 'drag', data.movementY );
 		}, { useCapture: true } );
 
-		this.listenTo( global.document, 'mouseup', () => {
+		this.listenTo( document, 'mouseup', () => {
 			this._isDragging = false;
 		}, { useCapture: true } );
 	}

@@ -12,7 +12,6 @@ import { LiveRange, LivePosition } from 'ckeditor5/src/engine';
 import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { Delete } from 'ckeditor5/src/typing';
 import { Undo, type UndoCommand } from 'ckeditor5/src/undo';
-import { global } from 'ckeditor5/src/utils';
 
 import MediaEmbedEditing from './mediaembedediting';
 import { insertMedia } from './utils';
@@ -92,7 +91,7 @@ export default class AutoMediaEmbed extends Plugin {
 		const undoCommand: UndoCommand = editor.commands.get( 'undo' )!;
 		undoCommand.on( 'execute', () => {
 			if ( this._timeoutId ) {
-				global.window.clearTimeout( this._timeoutId );
+				window.clearTimeout( this._timeoutId );
 				this._positionToInsert!.detach();
 
 				this._timeoutId = null;
@@ -152,7 +151,7 @@ export default class AutoMediaEmbed extends Plugin {
 		this._positionToInsert = LivePosition.fromPosition( leftPosition );
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
-		this._timeoutId = global.window.setTimeout( () => {
+		this._timeoutId = window.setTimeout( () => {
 			editor.model.change( writer => {
 				this._timeoutId = null;
 

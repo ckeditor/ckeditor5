@@ -15,7 +15,6 @@ import {
 	DomEmitterMixin,
 	ResizeObserver,
 	first,
-	global,
 	isVisible,
 	type EventInfo,
 	type PositioningFunction
@@ -181,13 +180,13 @@ export default class TooltipManager extends DomEmitterMixin() {
 
 		this._pinTooltipDebounced = debounce( this._pinTooltip, 600 );
 
-		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
+		this.listenTo( document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+		this.listenTo( document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
-		this.listenTo( global.document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-		this.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
+		this.listenTo( document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
+		this.listenTo( document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
 
-		this.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
+		this.listenTo( document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
 
 		// Because this class is a singleton, its only instance is shared across all editors and connects them through the reference.
 		// This causes issues with the ContextWatchdog. When an error is thrown in one editor, the watchdog traverses the references

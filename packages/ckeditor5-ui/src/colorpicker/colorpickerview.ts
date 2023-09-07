@@ -9,7 +9,7 @@
 
 import { convertColor, convertToHex, type ColorPickerViewConfig } from './utils';
 
-import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
+import { type Locale, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 import View from '../view';
 import type InputTextView from '../inputtext/inputtextview';
@@ -151,7 +151,7 @@ export default class ColorPickerView extends View {
 	public override render(): void {
 		super.render();
 
-		this.picker = global.document.createElement( 'hex-color-picker' );
+		this.picker = document.createElement( 'hex-color-picker' );
 		this.picker.setAttribute( 'class', 'hex-color-picker' );
 		this.picker.setAttribute( 'tabindex', '-1' );
 

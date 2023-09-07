@@ -31,7 +31,6 @@ import {
 import {
 	env,
 	uid,
-	global,
 	createElement,
 	DomEmitterMixin,
 	delay,
@@ -314,7 +313,7 @@ export default class DragDropExperimental extends Plugin {
 		}, { priority: 'low' } );
 
 		// Reset block dragging mode even if dropped outside the editable.
-		this._domEmitter.listenTo( global.document, 'dragend', () => {
+		this._domEmitter.listenTo( document, 'dragend', () => {
 			this._blockMode = false;
 		}, { useCapture: true } );
 
@@ -627,19 +626,19 @@ export default class DragDropExperimental extends Plugin {
 		const view = this.editor.editing.view;
 		const editable = view.document.selection.editableElement!;
 		const domEditable = view.domConverter.mapViewToDom( editable )!;
-		const computedStyle = global.window.getComputedStyle( domEditable );
+		const computedStyle = window.getComputedStyle( domEditable );
 
 		if ( !this._previewContainer ) {
-			this._previewContainer = createElement( global.document, 'div', {
+			this._previewContainer = createElement( document, 'div', {
 				style: 'position: fixed; left: -999999px;'
 			} );
 
-			global.document.body.appendChild( this._previewContainer );
+			document.body.appendChild( this._previewContainer );
 		} else {
 			this._previewContainer.removeChild( this._previewContainer.firstElementChild! );
 		}
 
-		const preview = createElement( global.document, 'div' );
+		const preview = createElement( document, 'div' );
 
 		preview.className = 'ck ck-content';
 		preview.style.width = computedStyle.width;

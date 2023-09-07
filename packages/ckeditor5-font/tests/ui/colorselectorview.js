@@ -3,12 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { ColorSelectorView } from '@ckeditor/ckeditor5-ui';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import TestColorPlugin from '../_utils/testcolorplugin';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -109,7 +106,7 @@ describe( 'ColorSelectorView', () => {
 					dropdown = editor.ui.componentFactory.create( 'testColor' );
 
 					dropdown.render();
-					global.document.body.appendChild( dropdown.element );
+					document.body.appendChild( dropdown.element );
 				} );
 		} );
 

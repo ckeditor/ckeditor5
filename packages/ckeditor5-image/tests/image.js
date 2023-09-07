@@ -11,17 +11,16 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from '../src/imagetextalternative';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Image', () => {
-	let editorElement, model, view, editor, document, viewDocument;
+	let editorElement, model, view, editor, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {
@@ -30,7 +29,6 @@ describe( 'Image', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				document = model.document;
 				view = editor.editing.view;
 				viewDocument = editor.editing.view.document;
 			} );
@@ -122,7 +120,7 @@ describe( 'Image', () => {
 				);
 
 				model.change( writer => {
-					const secondImage = document.getRoot().getChild( 1 );
+					const secondImage = model.document.getRoot().getChild( 1 );
 					writer.setSelection( writer.createRangeOn( secondImage ) );
 				} );
 
@@ -194,7 +192,7 @@ describe( 'Image', () => {
 				);
 
 				model.change( writer => {
-					const secondImage = document.getRoot().getChild( 0 ).getChild( 1 );
+					const secondImage = model.document.getRoot().getChild( 0 ).getChild( 1 );
 					writer.setSelection( writer.createRangeOn( secondImage ) );
 				} );
 

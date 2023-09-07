@@ -7,7 +7,6 @@
  * @module utils/dom/position
  */
 
-import global from './global';
 import Rect, { type RectSource } from './rect';
 import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
@@ -135,7 +134,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 function getConstrainedViewportRect( viewportOffsetConfig: Options[ 'viewportOffsetConfig' ] ): Rect {
 	viewportOffsetConfig = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffsetConfig );
 
-	const viewportRect = new Rect( global.window );
+	const viewportRect = new Rect( window );
 
 	viewportRect.top += viewportOffsetConfig.top!;
 	viewportRect.height -= viewportOffsetConfig.top!;
@@ -234,7 +233,7 @@ function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementA
  * This function converts Rect to `position: absolute` coordinates.
  */
 function getRectForAbsolutePositioning( rect: Rect ): Rect {
-	const { scrollX, scrollY } = global.window;
+	const { scrollX, scrollY } = window;
 
 	return rect.clone().moveBy( scrollX, scrollY );
 }

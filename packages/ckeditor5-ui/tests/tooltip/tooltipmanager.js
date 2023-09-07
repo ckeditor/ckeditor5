@@ -3,15 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, MouseEvent, Event */
-
 import EditorUI from '../../src/editorui/editorui';
 import View from '../../src/view';
 import BalloonPanelView from '../../src/panel/balloon/balloonpanelview';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -959,6 +956,6 @@ function getUtils() {
 
 function wait( time ) {
 	return new Promise( res => {
-		global.window.setTimeout( res, time );
+		window.setTimeout( res, time );
 	} );
 }

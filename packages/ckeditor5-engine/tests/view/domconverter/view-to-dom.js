@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text, console */
-
 import ViewText from '../../../src/view/text';
 import ViewElement from '../../../src/view/element';
 import ViewUIElement from '../../../src/view/uielement';
@@ -23,7 +21,6 @@ import { setData as setModelData } from '../../../src/dev-utils/model';
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
@@ -533,7 +530,7 @@ describe( 'DomConverter', () => {
 			} );
 
 			describe( 'DOM elements with included script ', () => {
-				const svgBase64 = 'data:image/svg+xml;base64,' + global.window.btoa( `<svg xmlns="http://www.w3.org/2000/svg">
+				const svgBase64 = 'data:image/svg+xml;base64,' + window.btoa( `<svg xmlns="http://www.w3.org/2000/svg">
 							<image href="x" onerror="alert(1)" />
 							</svg>` );
 
@@ -590,7 +587,7 @@ describe( 'DomConverter', () => {
 						}
 					} );
 
-					alertStub = testUtils.sinon.stub( global.window, 'alert' );
+					alertStub = testUtils.sinon.stub( window, 'alert' );
 				} );
 
 				afterEach( () => {

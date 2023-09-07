@@ -13,7 +13,6 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	env,
-	global,
 	DomEmitterMixin,
 	type ObservableChangeEvent,
 	type DomEmitter
@@ -72,9 +71,9 @@ export default class DragDropBlockToolbar extends Plugin {
 			element.setAttribute( 'draggable', 'true' );
 
 			this._domEmitter.listenTo( element, 'dragstart', ( evt, data ) => this._handleBlockDragStart( data ) );
-			this._domEmitter.listenTo( global.document, 'dragover', ( evt, data ) => this._handleBlockDragging( data ) );
-			this._domEmitter.listenTo( global.document, 'drop', ( evt, data ) => this._handleBlockDragging( data ) );
-			this._domEmitter.listenTo( global.document, 'dragend', () => this._handleBlockDragEnd(), { useCapture: true } );
+			this._domEmitter.listenTo( document, 'dragover', ( evt, data ) => this._handleBlockDragging( data ) );
+			this._domEmitter.listenTo( document, 'drop', ( evt, data ) => this._handleBlockDragging( data ) );
+			this._domEmitter.listenTo( document, 'dragend', () => this._handleBlockDragEnd(), { useCapture: true } );
 		}
 	}
 

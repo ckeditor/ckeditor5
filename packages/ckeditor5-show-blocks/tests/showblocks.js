@@ -7,7 +7,6 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import { global } from '@ckeditor/ckeditor5-utils';
 
 import ShowBlocks from '../src/showblocks';
 import ShowBlocksEditing from '../src/showblocksediting';
@@ -22,8 +21,8 @@ describe( 'ShowBlocks', () => {
 		let domElement, editor;
 
 		beforeEach( async () => {
-			domElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( domElement );
+			domElement = document.createElement( 'div' );
+			document.body.appendChild( domElement );
 
 			editor = await ClassicEditor.create( domElement, {
 				plugins: [

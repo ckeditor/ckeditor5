@@ -3,11 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import global from '../../src/dom/global';
 import ResizeObserver from '../../src/dom/resizeobserver';
 
 describe( 'ResizeObserver()', () => {
@@ -43,7 +40,7 @@ describe( 'ResizeObserver()', () => {
 		it( 'should use the native implementation if available', () => {
 			const spy = sinon.spy();
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( () => {
+			testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( () => {
 				return {
 					observe: spy,
 					unobserve: sinon.spy()
@@ -61,7 +58,7 @@ describe( 'ResizeObserver()', () => {
 			const elementA = document.createElement( 'div' );
 			const elementB = document.createElement( 'div' );
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( () => {
+			testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( () => {
 				return {
 					observe() {},
 					unobserve() {}
@@ -71,7 +68,7 @@ describe( 'ResizeObserver()', () => {
 			const observerA = new ResizeObserver( elementA, () => {} );
 			const observerB = new ResizeObserver( elementB, () => {} );
 
-			sinon.assert.calledOnce( global.window.ResizeObserver );
+			sinon.assert.calledOnce( window.ResizeObserver );
 
 			observerA.destroy();
 			observerB.destroy();
@@ -81,7 +78,7 @@ describe( 'ResizeObserver()', () => {
 			const callbackA = sinon.spy();
 			let resizeCallback;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( callback => {
 				resizeCallback = callback;
 
 				return {
@@ -107,7 +104,7 @@ describe( 'ResizeObserver()', () => {
 			const callbackB = sinon.spy();
 			let resizeCallback;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( callback => {
 				resizeCallback = callback;
 
 				return {
@@ -137,7 +134,7 @@ describe( 'ResizeObserver()', () => {
 			const callbackB = sinon.spy();
 			let resizeCallback;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( callback => {
 				resizeCallback = callback;
 
 				return {
@@ -186,7 +183,7 @@ describe( 'ResizeObserver()', () => {
 			const callbackA = sinon.spy();
 			let resizeCallback;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( callback => {
 				resizeCallback = callback;
 
 				return {

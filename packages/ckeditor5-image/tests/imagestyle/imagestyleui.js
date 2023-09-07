@@ -3,11 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import utils from '../../src/imagestyle/utils';
 import ImageToolbar from '../../src/imagetoolbar';
@@ -37,8 +34,8 @@ describe( 'ImageStyleUI', () => {
 	} ];
 
 	beforeEach( async () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor
 			.create( editorElement, {
@@ -161,8 +158,8 @@ describe( 'ImageStyleUI', () => {
 		} );
 
 		it( 'should not add buttons to image toolbar if configuration is present', async () => {
-			const customEditorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( customEditorElement );
+			const customEditorElement = document.createElement( 'div' );
+			document.body.appendChild( customEditorElement );
 
 			const customEditor = await ClassicTestEditor
 				.create( customEditorElement, {
@@ -180,8 +177,8 @@ describe( 'ImageStyleUI', () => {
 		} );
 
 		it( 'should translate buttons if taken from default styles', async () => {
-			const customEditorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( customEditorElement );
+			const customEditorElement = document.createElement( 'div' );
+			document.body.appendChild( customEditorElement );
 
 			class TranslationMock extends Plugin {
 				init() { sinon.stub( this.editor, 't' ).returns( 'Default title' ); }
@@ -204,8 +201,8 @@ describe( 'ImageStyleUI', () => {
 		} );
 
 		it( 'should pass through the defined title if the translation is missing', async () => {
-			const customEditorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( customEditorElement );
+			const customEditorElement = document.createElement( 'div' );
+			document.body.appendChild( customEditorElement );
 
 			const customEditor = await ClassicTestEditor.create( customEditorElement, {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
@@ -235,7 +232,7 @@ describe( 'ImageStyleUI', () => {
 				const view = factory.create( dropdown.name );
 
 				view.render();
-				global.document.body.appendChild( view.element );
+				document.body.appendChild( view.element );
 
 				// Make sure that toolbar view is not created before first dropdown open.
 				expect( view.toolbarView ).to.be.undefined;
@@ -304,8 +301,8 @@ describe( 'ImageStyleUI', () => {
 		} );
 
 		it( 'should translate the drop-down title if taken from default styles', async () => {
-			const customEditorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( customEditorElement );
+			const customEditorElement = document.createElement( 'div' );
+			document.body.appendChild( customEditorElement );
 
 			class TranslationMock extends Plugin {
 				init() { sinon.stub( this.editor, 't' ).returns( 'Default title' ); }
@@ -328,8 +325,8 @@ describe( 'ImageStyleUI', () => {
 		} );
 
 		it( 'should pass through the defined title if the translation is missing', async () => {
-			const customEditorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( customEditorElement );
+			const customEditorElement = document.createElement( 'div' );
+			document.body.appendChild( customEditorElement );
 
 			const customEditor = await ClassicTestEditor.create( customEditorElement, {
 				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageStyleEditing, ImageStyleUI ],
@@ -350,8 +347,8 @@ describe( 'ImageStyleUI', () => {
 		it( 'should warn and filter out the items that are not defined as the styles while creating a toolbar', async () => {
 			sinon.stub( console, 'warn' );
 
-			const customEditorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( customEditorElement );
+			const customEditorElement = document.createElement( 'div' );
+			document.body.appendChild( customEditorElement );
 
 			const dropdown = {
 				name: 'imageStyle:test',
@@ -391,8 +388,8 @@ describe( 'ImageStyleUI', () => {
 		it( 'should warn and filter out the items that are not supported by the loaded plugins while creating a toolbar', async () => {
 			sinon.stub( console, 'warn' );
 
-			const customEditorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( customEditorElement );
+			const customEditorElement = document.createElement( 'div' );
+			document.body.appendChild( customEditorElement );
 
 			const dropdown = {
 				name: 'imageStyle:Bar',

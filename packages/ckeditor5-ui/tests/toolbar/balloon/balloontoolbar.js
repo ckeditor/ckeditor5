@@ -17,7 +17,6 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -30,8 +29,6 @@ import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 const toPx = toUnit( 'px' );
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
-/* global document, window, Event */
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
@@ -48,7 +45,7 @@ describe( 'BalloonToolbar', () => {
 		// in DOM, the following DOM mock will have no effect.
 		ResizeObserver._observerInstance = null;
 
-		testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+		testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( callback => {
 			resizeCallback = callback;
 
 			return {
@@ -94,7 +91,7 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	after( () => {
-		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
+		// Clean up after the ResizeObserver stub in beforeEach(). Even though the window.ResizeObserver
 		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native
 		// observer. Resetting it will allow fresh start for any other test using ResizeObserver.
 		ResizeObserver._observerInstance = null;
@@ -482,7 +479,7 @@ describe( 'BalloonToolbar', () => {
 
 			setData( model, '<paragraph>b[ar]</paragraph>' );
 
-			expect( global.document.body.contains( viewElement ) ).to.be.true;
+			expect( document.body.contains( viewElement ) ).to.be.true;
 			viewElement.style.width = '400px';
 
 			resizeCallback( [ {
@@ -559,7 +556,7 @@ describe( 'BalloonToolbar', () => {
 
 				balloonToolbar.hide();
 
-				testUtils.sinon.stub( global.window.visualViewport, 'scale' ).get( () => 0.5 );
+				testUtils.sinon.stub( window.visualViewport, 'scale' ).get( () => 0.5 );
 				testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
 				testUtils.sinon.stub( env, 'isiOS' ).get( () => true );
 				balloonToolbar.show();

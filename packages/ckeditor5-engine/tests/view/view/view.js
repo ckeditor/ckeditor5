@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, console, setTimeout, FocusEvent */
-
 import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
 import KeyObserver from '../../../src/view/observer/keyobserver';
@@ -25,7 +23,6 @@ import ViewSelection from '../../../src/view/selection';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import createViewRoot from '../_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -397,12 +394,12 @@ describe( 'view', () => {
 				scrollLeft: 100, scrollTop: 100
 			} );
 
-			testUtils.sinon.stub( global.window, 'innerWidth' ).value( 1000 );
-			testUtils.sinon.stub( global.window, 'innerHeight' ).value( 500 );
-			testUtils.sinon.stub( global.window, 'scrollX' ).value( 100 );
-			testUtils.sinon.stub( global.window, 'scrollY' ).value( 100 );
-			testUtils.sinon.stub( global.window, 'scrollTo' );
-			testUtils.sinon.stub( global.window, 'getComputedStyle' ).returns( {
+			testUtils.sinon.stub( window, 'innerWidth' ).value( 1000 );
+			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
+			testUtils.sinon.stub( window, 'scrollX' ).value( 100 );
+			testUtils.sinon.stub( window, 'scrollY' ).value( 100 );
+			testUtils.sinon.stub( window, 'scrollTo' );
+			testUtils.sinon.stub( window, 'getComputedStyle' ).returns( {
 				borderTopWidth: '0px',
 				borderRightWidth: '0px',
 				borderBottomWidth: '0px',
@@ -411,7 +408,7 @@ describe( 'view', () => {
 			} );
 
 			// Assuming 20px v- and h-scrollbars here.
-			testUtils.sinon.stub( global.window.document, 'documentElement' ).value( {
+			testUtils.sinon.stub( window.document, 'documentElement' ).value( {
 				clientWidth: 980,
 				clientHeight: 480
 			} );
@@ -426,7 +423,7 @@ describe( 'view', () => {
 
 			view.scrollToTheSelection();
 			assertScrollPosition( domRootAncestor, { scrollTop: 100, scrollLeft: 100 } );
-			sinon.assert.notCalled( global.window.scrollTo );
+			sinon.assert.notCalled( window.scrollTo );
 		} );
 
 		it( 'should scroll to the first range in the selection (default offsets)', () => {
@@ -435,7 +432,7 @@ describe( 'view', () => {
 			view.scrollToTheSelection();
 
 			assertScrollPosition( domRootAncestor, { scrollTop: -120, scrollLeft: 220 } );
-			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -120 );
+			sinon.assert.calledWithExactly( window.scrollTo, 100, -120 );
 		} );
 
 		it( 'should support configurable viewport offset', () => {
@@ -446,7 +443,7 @@ describe( 'view', () => {
 			} );
 
 			assertScrollPosition( domRootAncestor, { scrollTop: -120, scrollLeft: 220 } );
-			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -150 );
+			sinon.assert.calledWithExactly( window.scrollTo, 100, -150 );
 		} );
 
 		it( 'should support configurable ancestors offset', () => {
@@ -457,7 +454,7 @@ describe( 'view', () => {
 			} );
 
 			assertScrollPosition( domRootAncestor, { scrollTop: -150, scrollLeft: 250 } );
-			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -120 );
+			sinon.assert.calledWithExactly( window.scrollTo, 100, -120 );
 		} );
 
 		it( 'should support scrolling to the top of the viewport', () => {
@@ -470,7 +467,7 @@ describe( 'view', () => {
 			} );
 
 			assertScrollPosition( domRootAncestor, { scrollTop: 650, scrollLeft: 250 } );
-			sinon.assert.calledWithExactly( global.window.scrollTo, 100, 670 );
+			sinon.assert.calledWithExactly( window.scrollTo, 100, 670 );
 		} );
 
 		it( 'should support force-scrolling to the top of the viewport despite the selection being visible', () => {
@@ -484,7 +481,7 @@ describe( 'view', () => {
 			} );
 
 			assertScrollPosition( domRootAncestor, { scrollTop: 75, scrollLeft: 100 } );
-			sinon.assert.calledWithExactly( global.window.scrollTo, 100, 95 );
+			sinon.assert.calledWithExactly( window.scrollTo, 100, 95 );
 		} );
 
 		it( 'should not call scrollTo when selection is null', () => {
@@ -494,7 +491,7 @@ describe( 'view', () => {
 
 			view.scrollToTheSelection();
 
-			sinon.assert.notCalled( global.window.scrollTo );
+			sinon.assert.notCalled( window.scrollTo );
 		} );
 
 		it( 'should fire the #scrollToTheSelection event', () => {
@@ -521,7 +518,7 @@ describe( 'view', () => {
 			} );
 
 			assertScrollPosition( domRootAncestor, { scrollTop: -120, scrollLeft: 220 } );
-			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -120 );
+			sinon.assert.calledWithExactly( window.scrollTo, 100, -120 );
 		} );
 
 		it( 'should allow dynamic injection of options through the #scrollToTheSelection event', () => {
@@ -556,7 +553,7 @@ describe( 'view', () => {
 			} );
 
 			assertScrollPosition( domRootAncestor, { scrollTop: -120, scrollLeft: 220 } );
-			sinon.assert.calledWithExactly( global.window.scrollTo, 100, -130 );
+			sinon.assert.calledWithExactly( window.scrollTo, 100, -130 );
 		} );
 
 		it( 'should pass the original method arguments along the #scrollToTheSelection event', () => {
@@ -606,7 +603,7 @@ describe( 'view', () => {
 		} );
 
 		function stubSelectionRangeGeometry( geometry ) {
-			const domRange = global.document.createRange();
+			const domRange = document.createRange();
 			domRange.setStart( domRoot, 0 );
 			domRange.setEnd( domRoot, 0 );
 

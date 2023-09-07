@@ -7,7 +7,6 @@ import env, {
 	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink, getUserAgent
 } from '../src/env';
 
-import global from '../src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 function toLowerCase( str ) {
@@ -179,7 +178,7 @@ describe( 'Env', () => {
 
 		it( 'returns true for Safari UA string ("Request Desktop Website")', () => {
 			// This is how you tell Safari@Mac from Safari@iOS.
-			testUtils.sinon.stub( global.window.navigator, 'maxTouchPoints' ).get( () => 3 );
+			testUtils.sinon.stub( window.navigator, 'maxTouchPoints' ).get( () => 3 );
 
 			expect( isiOS( toLowerCase(
 				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
@@ -289,19 +288,19 @@ describe( 'Env', () => {
 
 	describe( 'getUserAgent()', () => {
 		it( 'should return user agent in lower case', () => {
-			sinon.stub( global.window.navigator, 'userAgent' ).value( 'CKBrowser' );
+			sinon.stub( window.navigator, 'userAgent' ).value( 'CKBrowser' );
 
 			expect( getUserAgent() ).to.equal( 'ckbrowser' );
 		} );
 
 		it( 'should return empty string if navigator API is unavailable', () => {
-			sinon.stub( global.window, 'navigator' ).value( undefined );
+			sinon.stub( window, 'navigator' ).value( undefined );
 
 			expect( getUserAgent() ).to.equal( '' );
 		} );
 
 		it( 'should not throw an error if navigator API is unavailable', () => {
-			sinon.stub( global.window, 'navigator' ).value( undefined );
+			sinon.stub( window, 'navigator' ).value( undefined );
 
 			expect( () => {
 				getUserAgent();

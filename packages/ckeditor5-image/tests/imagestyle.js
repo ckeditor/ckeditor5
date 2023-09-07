@@ -8,14 +8,13 @@ import Image from '../src/image';
 import ImageStyle from '../src/imagestyle';
 import ImageStyleEditing from '../src/imagestyle/imagestyleediting';
 import ImageStyleUI from '../src/imagestyle/imagestyleui';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'ImageStyle', () => {
 	let editor, editorElement;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {

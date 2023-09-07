@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
@@ -17,8 +16,8 @@ describe( 'ShowBlocksCommand', () => {
 	let editor, domElement, command;
 
 	beforeEach( async () => {
-		domElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( domElement );
+		domElement = document.createElement( 'div' );
+		document.body.appendChild( domElement );
 
 		editor = await ClassicTestEditor.create( domElement, {
 			plugins: [
@@ -83,10 +82,10 @@ describe( 'ShowBlocksCommand', () => {
 			let multirootEditor, domHeaderElement, domMainElement, multirootCommand;
 
 			beforeEach( async () => {
-				domHeaderElement = global.document.createElement( 'div', { id: 'header' } );
-				domMainElement = global.document.createElement( 'div', { id: 'main' } );
-				global.document.body.appendChild( domHeaderElement );
-				global.document.body.appendChild( domMainElement );
+				domHeaderElement = document.createElement( 'div', { id: 'header' } );
+				domMainElement = document.createElement( 'div', { id: 'main' } );
+				document.body.appendChild( domHeaderElement );
+				document.body.appendChild( domMainElement );
 
 				multirootEditor = await MultiRootEditor
 					.create(

@@ -7,8 +7,6 @@
  * @module utils/dom/isvalidattributename
  */
 
-import global from './global';
-
 /**
  * Checks if the given attribute name is valid in terms of HTML.
  *
@@ -16,7 +14,7 @@ import global from './global';
  */
 export default function isValidAttributeName( name: string ): boolean {
 	try {
-		global.document.createAttribute( name );
+		document.createAttribute( name );
 	} catch ( error ) {
 		return false;
 	}

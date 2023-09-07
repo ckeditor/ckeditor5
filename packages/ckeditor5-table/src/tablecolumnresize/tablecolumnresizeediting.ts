@@ -10,7 +10,6 @@
 import { throttle, isEqual } from 'lodash-es';
 
 import {
-	global,
 	DomEmitterMixin,
 	type EventInfo,
 	type DomEmitter,
@@ -458,8 +457,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		editingView.addObserver( MouseEventsObserver );
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 
-		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
-		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+		this._domEmitter.listenTo( window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
+		this._domEmitter.listenTo( window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 	}
 
 	/**

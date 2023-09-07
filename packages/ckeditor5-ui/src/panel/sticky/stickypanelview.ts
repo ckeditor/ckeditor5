@@ -17,7 +17,6 @@ import {
 	type ObservableChangeEvent,
 	getElementsIntersectionRect,
 	getScrollableAncestors,
-	global,
 	toUnit,
 	Rect
 } from '@ckeditor/ckeditor5-utils';
@@ -234,7 +233,7 @@ export default class StickyPanelView extends View {
 		this.checkIfShouldBeSticky();
 
 		// Update sticky state of the panel as the window and ancestors are being scrolled.
-		this.listenTo( global.document, 'scroll', ( evt, data ) => {
+		this.listenTo( document, 'scroll', ( evt, data ) => {
 			this.checkIfShouldBeSticky( data.target as HTMLElement | Document );
 		}, { useCapture: true } );
 
@@ -348,7 +347,7 @@ export default class StickyPanelView extends View {
 		this._isStickyToTheBottomOfLimiter = false;
 		this._stickyTopOffset = topOffset;
 		this._stickyBottomOffset = null;
-		this._marginLeft = toPx( -global.window.scrollX );
+		this._marginLeft = toPx( -window.scrollX );
 	}
 
 	/**
@@ -362,7 +361,7 @@ export default class StickyPanelView extends View {
 		this._isStickyToTheBottomOfLimiter = true;
 		this._stickyTopOffset = null;
 		this._stickyBottomOffset = stickyBottomOffset;
-		this._marginLeft = toPx( -global.window.scrollX );
+		this._marginLeft = toPx( -window.scrollX );
 	}
 
 	/**

@@ -3,12 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import TableToolbar from '../src/tabletoolbar';
 import Table from '../src/table';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -27,8 +24,8 @@ describe( 'TableToolbar', () => {
 		let editor, model, doc, widgetToolbarRepository, toolbar, balloon, editorElement;
 
 		beforeEach( () => {
-			editorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( editorElement );
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
 
 			return ClassicTestEditor
 				.create( editorElement, {
@@ -61,8 +58,8 @@ describe( 'TableToolbar', () => {
 		} );
 
 		it( 'should not initialize if there is no configuration', () => {
-			const editorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( editorElement );
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
 
 			return ClassicTestEditor.create( editorElement, {
 				plugins: [ TableToolbar ]
@@ -277,8 +274,8 @@ describe( 'TableToolbar', () => {
 
 		describe( 'toolbar', () => {
 			it( 'should not initialize if there is no configuration', () => {
-				const editorElement = global.document.createElement( 'div' );
-				global.document.body.appendChild( editorElement );
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
 
 				return ClassicTestEditor.create( editorElement, {
 					plugins: [ TableToolbar ]

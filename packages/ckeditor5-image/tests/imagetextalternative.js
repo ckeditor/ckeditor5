@@ -8,14 +8,13 @@ import Image from '../src/image';
 import ImageTextAlternative from '../src/imagetextalternative';
 import ImageTextAlternativeEditing from '../src/imagetextalternative/imagetextalternativeediting';
 import ImageTextAlternativeUI from '../src/imagetextalternative/imagetextalternativeui';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'ImageTextAlternative', () => {
 	let editor, plugin, editorElement;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {

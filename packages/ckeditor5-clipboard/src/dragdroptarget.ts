@@ -24,7 +24,6 @@ import {
 } from '@ckeditor/ckeditor5-engine';
 
 import {
-	global,
 	Rect,
 	DomEmitterMixin,
 	delay,
@@ -273,7 +272,7 @@ export default class DragDropTarget extends Plugin {
 
 		const domScrollableRect = this._getScrollableRect( viewElementParent );
 
-		const { scrollX, scrollY } = global.window;
+		const { scrollX, scrollY } = window;
 		const rectBefore = domElementBefore ? new Rect( domElementBefore ) : null;
 		const rectAfter = domElementAfter ? new Rect( domElementAfter ) : null;
 		const rectParent = new Rect( domElementParent ).excludeScrollbarsAndBorders();
@@ -281,7 +280,7 @@ export default class DragDropTarget extends Plugin {
 		const above = rectBefore ? rectBefore.bottom : rectParent.top;
 		const below = rectAfter ? rectAfter.top : rectParent.bottom;
 
-		const parentStyle = global.window.getComputedStyle( domElementParent );
+		const parentStyle = window.getComputedStyle( domElementParent );
 		const top = ( above <= below ? ( above + below ) / 2 : below );
 
 		if ( domScrollableRect.top < top && top < domScrollableRect.bottom ) {
@@ -413,7 +412,7 @@ function isFloatingElement( editor: Editor, modelElement: Element ): boolean {
 	const viewElement = mapper.toViewElement( modelElement )!;
 	const domElement = domConverter.mapViewToDom( viewElement )!;
 
-	return global.window.getComputedStyle( domElement ).float != 'none';
+	return window.getComputedStyle( domElement ).float != 'none';
 }
 
 /**
@@ -479,7 +478,7 @@ function findScrollableElement( domNode: HTMLElement ): HTMLElement {
 	do {
 		domElement = domElement.parentElement!;
 
-		const overflow = global.window.getComputedStyle( domElement ).overflowY;
+		const overflow = window.getComputedStyle( domElement ).overflowY;
 
 		if ( overflow == 'auto' || overflow == 'scroll' ) {
 			break;

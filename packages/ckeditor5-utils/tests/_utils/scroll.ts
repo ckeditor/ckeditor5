@@ -4,7 +4,6 @@
  */
 
 import isRange from '../../src/dom/isrange';
-import global from '../../src/dom/global';
 
 declare global {
 	interface Window {
@@ -75,6 +74,6 @@ export function stubGeometry(
  * A helper that asserts HTML element's scroll* properties.
  */
 export function assertScrollPosition( element: HTMLElement, expected: { scrollTop: number; scrollLeft: number } ): void {
-	global.window.expect( element.scrollTop ).to.equal( expected.scrollTop, 'scrollTop' );
-	global.window.expect( element.scrollLeft ).to.equal( expected.scrollLeft, 'scrollLeft' );
+	window.expect( element.scrollTop ).to.equal( expected.scrollTop, 'scrollTop' );
+	window.expect( element.scrollLeft ).to.equal( expected.scrollLeft, 'scrollLeft' );
 }

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, console */
-
 import ToolbarView from '../../src/toolbar/toolbarview';
 import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -13,7 +11,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../../src/focuscycler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ViewCollection from '../../src/viewcollection';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import View from '../../src/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
@@ -42,7 +39,7 @@ describe( 'ToolbarView', () => {
 	after( () => {
 		clearTranslations();
 
-		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
+		// Clean up after the ResizeObserver stub in beforeEach(). Even though the window.ResizeObserver
 		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native
 		// observer. Resetting it will allow fresh start for any other test using ResizeObserver.
 		ResizeObserver._observerInstance = null;
@@ -1080,7 +1077,7 @@ describe( 'ToolbarView', () => {
 			// in DOM, the following DOM mock will have no effect.
 			ResizeObserver._observerInstance = null;
 
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
+			testUtils.sinon.stub( window, 'ResizeObserver' ).callsFake( callback => {
 				resizeCallback = callback;
 
 				return {

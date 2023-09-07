@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, window */
-
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Mention from '../../src/mention';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
@@ -14,7 +10,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Font from '@ckeditor/ckeditor5-font/src/font';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Underline, Font, Mention ],
 		toolbar: [
 			'heading',

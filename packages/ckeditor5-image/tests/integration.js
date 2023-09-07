@@ -7,7 +7,6 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Image from '../src/image';
 import ImageToolbar from '../src/imagetoolbar';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -21,8 +20,8 @@ describe( 'ImageToolbar integration', () => {
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
-			editorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( editorElement );
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
 
 			return ClassicTestEditor
 				.create( editorElement, {
@@ -37,7 +36,7 @@ describe( 'ImageToolbar integration', () => {
 					balloonToolbar = newEditor.plugins.get( 'BalloonToolbar' );
 					const button = new View();
 
-					button.element = global.document.createElement( 'div' );
+					button.element = document.createElement( 'div' );
 
 					// There must be at least one toolbar items which is not disabled to show it.
 					// https://github.com/ckeditor/ckeditor5-ui/issues/269

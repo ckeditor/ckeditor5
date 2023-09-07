@@ -12,7 +12,6 @@ import type ViewCollection from '../../viewcollection';
 
 import {
 	getOptimalPosition,
-	global,
 	isRange,
 	toUnit,
 	type Locale,
@@ -27,7 +26,7 @@ import { isElement } from 'lodash-es';
 import '../../../theme/components/panel/balloonpanel.css';
 
 const toPx = toUnit( 'px' );
-const defaultLimiterElement = global.document.body;
+const defaultLimiterElement = document.body;
 
 /**
  * The balloon panel view class.
@@ -351,7 +350,7 @@ export default class BalloonPanelView extends View {
 		const limiterElement = options.limiter ? getDomElement( options.limiter ) : defaultLimiterElement;
 
 		// Then we need to listen on scroll event of eny element in the document.
-		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
+		this.listenTo( document, 'scroll', ( evt, domEvt ) => {
 			const scrollTarget = domEvt.target as Element;
 
 			// The position needs to be updated if the positioning target is within the scrolled element.
@@ -368,7 +367,7 @@ export default class BalloonPanelView extends View {
 		}, { useCapture: true } );
 
 		// We need to listen on window resize event and update position.
-		this.listenTo( global.window, 'resize', () => {
+		this.listenTo( window, 'resize', () => {
 			this.attachTo( options );
 		} );
 	}
@@ -377,8 +376,8 @@ export default class BalloonPanelView extends View {
 	 * Stops managing the pinned state of the panel. See {@link #pin}.
 	 */
 	private _stopPinning(): void {
-		this.stopListening( global.document, 'scroll' );
-		this.stopListening( global.window, 'resize' );
+		this.stopListening( document, 'scroll' );
+		this.stopListening( window, 'resize' );
 	}
 
 	/**

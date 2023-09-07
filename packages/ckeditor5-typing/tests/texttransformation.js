@@ -4,7 +4,6 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import Typing from '../src/typing';
 import TextTransformation from '../src/texttransformation';
@@ -19,8 +18,8 @@ describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 	} );
 
 	afterEach( () => {

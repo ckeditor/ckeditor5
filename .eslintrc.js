@@ -8,6 +8,9 @@
 'use strict';
 
 module.exports = {
+	env: {
+		browser: true
+	},
 	extends: 'ckeditor5',
 	ignorePatterns: [
 		// The CKEditor 5 core DLL build is created from JavaScript files.

@@ -12,14 +12,13 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Link from '../src/link';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'LinkImage integration', () => {
 	let editorElement, editor, model;
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 	} );
 
 	afterEach( () => {

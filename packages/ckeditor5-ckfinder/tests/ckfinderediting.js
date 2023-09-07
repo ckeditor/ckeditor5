@@ -9,7 +9,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import CKFinder from '../src/ckfinder';
 import CKFinderEditing from '../src/ckfinderediting';
@@ -25,8 +24,8 @@ describe( 'CKFinderEditing', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {

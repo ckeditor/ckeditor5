@@ -3,11 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
@@ -23,8 +20,8 @@ describe( 'CKFinderUI', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {

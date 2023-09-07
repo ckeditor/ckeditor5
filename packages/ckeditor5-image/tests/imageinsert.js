@@ -9,14 +9,12 @@ import ImageUpload from '../src/imageupload';
 import ImageInsertUI from '../src/imageinsert/imageinsertui';
 import ImageInsertViaUrl from '../src/imageinsertviaurl';
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-
 describe( 'ImageInsert', () => {
 	let editorElement, editor;
 
 	beforeEach( async () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ ImageInsert ]

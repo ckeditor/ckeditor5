@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, window */
-
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -25,7 +21,7 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
