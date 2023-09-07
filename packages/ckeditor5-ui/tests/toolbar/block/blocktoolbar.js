@@ -274,7 +274,7 @@ describe( 'BlockToolbar', () => {
 				expect( blockToolbar.buttonView.icon ).to.be.equal( dragIndicator );
 			} );
 
-			it( 'should set predefined SVG icon setted in config', () => {
+			it( 'should set predefined SVG icon provided in config', () => {
 				return ClassicTestEditor.create( element, {
 					plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote ],
 					blockToolbar: {
@@ -292,8 +292,8 @@ describe( 'BlockToolbar', () => {
 				} );
 			} );
 
-			it( 'should set string SVG icon setted in config', () => {
-				const icon = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">' +
+			it( 'should set string SVG icon provided in config', () => {
+				const icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">' +
 					'<path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>';
 				return ClassicTestEditor.create( element, {
 					plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote ],
