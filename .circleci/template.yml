@@ -40,9 +40,9 @@ commands:
           name: Checkout code (single branch)
           command: git clone --single-branch --depth 10 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
 
-  # In the PRs that comes from forked repositories, we do not share secret variables.
+  # In the PRs that come from forked repositories, we do not share secret variables.
   # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
-  # This command breaks given job if environment variables are not available.
+  # This command breaks the given job if environment variables are not available.
   community_verification_command:
     description: "Check if a build was trigger by a community member"
     steps:
@@ -198,6 +198,7 @@ workflows:
             branches:
               only:
                 - master
+                - stable
 
   nightly:
     when: << pipeline.parameters.isNightly >>
