@@ -108,14 +108,14 @@ export default class ImageResizeEditing extends Plugin {
 				}
 
 				const viewWriter = conversionApi.writer;
-				const figure = conversionApi.mapper.toViewElement( data.item );
+				const viewImg = conversionApi.mapper.toViewElement( data.item );
 
 				if ( data.attributeNewValue !== null ) {
-					viewWriter.setStyle( 'width', data.attributeNewValue, figure );
-					viewWriter.addClass( 'image_resized', figure );
+					viewWriter.setStyle( 'width', data.attributeNewValue, viewImg );
+					viewWriter.addClass( 'image_resized', viewImg );
 				} else {
-					viewWriter.removeStyle( 'width', figure );
-					viewWriter.removeClass( 'image_resized', figure );
+					viewWriter.removeStyle( 'width', viewImg );
+					viewWriter.removeClass( 'image_resized', viewImg );
 				}
 			} )
 		);
