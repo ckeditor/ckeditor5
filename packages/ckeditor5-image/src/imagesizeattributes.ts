@@ -113,14 +113,9 @@ export default class ImageSizeAttributes extends Plugin {
 			.attributeToAttribute( {
 				view: {
 					name: viewElementName,
-					attributes: {
-						height: /.+/
-					}
+					key: 'height'
 				},
-				model: {
-					key: 'height',
-					value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'height' )
-				}
+				model: 'height'
 			} );
 
 		// Dedicated converters to propagate attributes to the <img> element.
