@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine';
 import ImageUtils from './imageutils';
-import { widthAndHeightStylesAreBothSet } from './image/utils';
+import { widthAndHeightStylesAreBothSet, getSizeValueIfInPx } from './image/utils';
 
 /**
  * This plugin enables `width` and `height` attributes in inline and block image elements.
@@ -72,7 +72,7 @@ export default class ImageSizeAttributes extends Plugin {
 					key: 'width',
 					value: ( viewElement: ViewElement ) => {
 						if ( widthAndHeightStylesAreBothSet( this.editor, viewElement ) ) {
-							return imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
+							return getSizeValueIfInPx( viewElement.getStyle( 'width' ) );
 						}
 
 						return null;
@@ -97,7 +97,7 @@ export default class ImageSizeAttributes extends Plugin {
 					key: 'height',
 					value: ( viewElement: ViewElement ) => {
 						if ( widthAndHeightStylesAreBothSet( this.editor, viewElement ) ) {
-							return imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+							return getSizeValueIfInPx( viewElement.getStyle( 'height' ) );
 						}
 
 						return null;

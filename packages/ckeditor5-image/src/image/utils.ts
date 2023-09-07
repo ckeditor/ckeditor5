@@ -137,6 +137,17 @@ export function determineImageTypeForInsertionAtSelection(
 }
 
 /**
+ * Returns parsed value of the size, but only if it contains unit: px.
+ */
+export function getSizeValueIfInPx( size: string | undefined ): number | null {
+	if ( size && size.endsWith( 'px' ) ) {
+		return parseInt( size );
+	}
+
+	return null;
+}
+
+/**
  * Returns true if both styles (width and height) are set.
  *
  * If both image styles: width & height are set, they will override the image width & height attributes in the
@@ -145,8 +156,8 @@ export function determineImageTypeForInsertionAtSelection(
  */
 export function widthAndHeightStylesAreBothSet( editor: Editor,	viewElement: ViewElement ): boolean {
 	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
-	const widthStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'width' ) );
-	const heightStyle = imageUtils.getSizeInPx( viewElement.getStyle( 'height' ) );
+	const widthStyle = getSizeValueIfInPx( viewElement.getStyle( 'width' ) );
+	const heightStyle = getSizeValueIfInPx( viewElement.getStyle( 'height' ) );
 
 	return !!( widthStyle && heightStyle );
 }
