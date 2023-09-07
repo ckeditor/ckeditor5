@@ -85,14 +85,9 @@ export default class ImageSizeAttributes extends Plugin {
 			.attributeToAttribute( {
 				view: {
 					name: viewElementName,
-					attributes: {
-						width: /.+/
-					}
+					key: 'width'
 				},
-				model: {
-					key: 'width',
-					value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'width' )
-				}
+				model: 'width'
 			} )
 			.attributeToAttribute( {
 				view: {
