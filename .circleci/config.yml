@@ -6,7 +6,7 @@
 # This configuration aims to prepare a complete design and continue checking
 # the repository in a new workflow.
 #
-# To modify commands to execute on CI, review the following files:
+# To modify the commands to execute on CI, review the following files:
 # - scripts/ci/generate-circleci-configuration.js - the script that creates the `config-tests.yml` file used on the new workflow.
 # - .circleci/template.yml - the template filled with data to execute.
 #
@@ -30,7 +30,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "2a:97:94:d9:ae:a0:8d:bd:c2:2a:2d:cf:8d:d1:94:bd"
+            - "a0:41:a2:56:c8:7d:3f:29:41:d1:87:92:fd:50:2b:6b"
 
 jobs:
   generate_configuration:

@@ -146,7 +146,7 @@ And an `index.html` page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – Implementing a simple widget</title>
+		<title>CKEditor 5 Framework – Implementing a simple widget</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -444,7 +444,7 @@ Once you have converters, you can try to see the simple box in action. You have 
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – Implementing a simple widget</title>
+		<title>CKEditor 5 Framework – Implementing a simple widget</title>
 
 		<style>
 			.simple-box {

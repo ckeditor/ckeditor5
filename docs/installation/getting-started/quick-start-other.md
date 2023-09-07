@@ -50,7 +50,7 @@ The basic build comes with a predefined set of plugins grouped in a bar at the t
 
 {@img assets/img/online-builder-02-predefined-plugins.png 778 Predefined plugins. Feel free to remove unneeded ones.}
 
-Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs. Some of the plugins may not work well with others or require dependencies. Online builder will provide information in such cases.
+Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs. Some of the plugins may not work well with others or may require dependencies. Online builder will provide information in such cases.
 
 {@img assets/img/online-builder-03-plugin-choice.png 778 Predefined plugins. Some of the plugins to choose from.}
 
@@ -104,7 +104,7 @@ A build is a simple npm package (usually developed in a Git repository) with a p
 
 Some of the reasons for creating custom builds are:
 
-* Adding features not included in the existing builds, either from a third party or custom developed.
+* Adding features not included in the existing builds, either from a third party or custom-developed.
 * Removing unnecessary features present in a build.
 * Changing the {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create editor creator}.
 * Changing the {@link framework/theme-customization editor theme}.
@@ -285,7 +285,7 @@ You can validate whether your new build works by opening the `sample/index.html`
 
 This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds introduced in the previous path, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
-This is an advanced path that assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and check the result.
+This is an advanced path that assumes that you are familiar with npm and that your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and check the result.
 
 ### Setting up the environment
 
@@ -479,7 +479,7 @@ Finally, it is time to create an HTML page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Quick start guide</title>
+		<title>CKEditor 5 Quick start guide</title>
 	</head>
 	<body>
 		<div id="editor">

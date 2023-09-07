@@ -194,7 +194,7 @@ npm run build
 
 If you are integrating an editor from the source into your application, then this step should be handled by build scripts used in your project.
 
-## Adding a JavaScript plugin
+## Adding an unofficial JavaScript plugin
 
 The CKEditor&nbsp;5 is a TypeScript project, and all plugins provided by CKEditor&nbsp;5 also use TypeScript. However, there are ways to use JavaScript packages with the editor.
 
