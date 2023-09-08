@@ -75,9 +75,9 @@ describe( 'Drag and Drop experimental', () => {
 			domConverter = view.domConverter;
 		} );
 
-		afterEach( () => {
-			editor.destroy();
-			editorElement.remove();
+		afterEach( async () => {
+			await editorElement.remove();
+			await editor.destroy();
 		} );
 
 		it( 'should move text to other place in the same editor (not Firefox)', () => {
@@ -1932,9 +1932,9 @@ describe( 'Drag and Drop experimental', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
-			editorElement.remove();
+		afterEach( async () => {
+			await editor.destroy();
+			await editorElement.remove();
 		} );
 
 		describe( 'WidgetToolbarRepository#isEnabled', () => {
