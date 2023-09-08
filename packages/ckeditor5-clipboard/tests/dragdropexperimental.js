@@ -52,8 +52,8 @@ describe( 'Drag and Drop experimental', () => {
 
 		expect( plugin.isEnabled ).to.be.false;
 
-		await editor.destroy();
-		await editorElement.remove();
+		editor.destroy();
+		editorElement.remove();
 
 		env.isAndroid = false;
 	} );
@@ -75,9 +75,9 @@ describe( 'Drag and Drop experimental', () => {
 			domConverter = view.domConverter;
 		} );
 
-		afterEach( async () => {
-			await editor.destroy();
-			await editorElement.remove();
+		afterEach( () => {
+			editor.destroy();
+			editorElement.remove();
 		} );
 
 		it( 'should move text to other place in the same editor (not Firefox)', () => {
@@ -1440,7 +1440,7 @@ describe( 'Drag and Drop experimental', () => {
 					.length;
 
 				// There should be two elements with the `.ck-content` class - editor and drag-and-drop preview.
-				expect( numberOfCkContentElements ).to.be.eq( 2 );
+				expect( numberOfCkContentElements ).to.equal( 2 );
 			} );
 		} );
 
@@ -1933,9 +1933,8 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 
 		afterEach( () => {
+			editor.destroy();
 			editorElement.remove();
-
-			return editor.destroy();
 		} );
 
 		describe( 'WidgetToolbarRepository#isEnabled', () => {
@@ -2055,9 +2054,9 @@ describe( 'Drag and Drop experimental', () => {
 			domConverter = view.domConverter;
 		} );
 
-		afterEach( async () => {
-			await editor.destroy();
-			await editorElement.remove();
+		afterEach( () => {
+			editor.destroy();
+			editorElement.remove();
 		} );
 
 		it( 'handles paste', () => {
@@ -2071,7 +2070,7 @@ describe( 'Drag and Drop experimental', () => {
 				preventDefault() {}
 			} );
 
-			expect( getModelData( model ) ).to.be.eq( 'foo<$text bold="true">bar[]</$text>' );
+			expect( getModelData( model ) ).to.equal( 'foo<$text bold="true">bar[]</$text>' );
 		} );
 
 		it( 'stops `clipboardInput` event', () => {
