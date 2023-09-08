@@ -8,21 +8,21 @@
 */
 
 import { getOptimalPosition, type PositioningFunction, type Locale, global } from '@ckeditor/ckeditor5-utils';
-import SearchView, { type SearchViewConfig } from '../search/searchview';
+import SearchTextView, { type SearchTextViewConfig } from '../search/text/searchtextview';
 import type SearchResultsView from '../search/searchresultsview';
 
 import '../../theme/components/autocomplete/autocomplete.css';
 
 /**
- * The autocomplete component's view class. It extends the {@link module:ui/search/searchview~SearchView} class
+ * The autocomplete component's view class. It extends the {@link module:ui/search/text/searchtextview~SearchTextView} class
  * with a floating {@link #resultsView} that shows up when the user starts typing and hides when they blur
  * the component.
  */
-export default class AutocompleteView extends SearchView {
+export default class AutocompleteView extends SearchTextView {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, config: SearchViewConfig ) {
+	constructor( locale: Locale, config: SearchTextViewConfig ) {
 		super( locale, config );
 
 		this.extendTemplate( {

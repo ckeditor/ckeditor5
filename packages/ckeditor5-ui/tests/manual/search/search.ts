@@ -11,7 +11,7 @@ import {
 	ListItemGroupView,
 	ListItemView,
 	ListView,
-	SearchView,
+	SearchTextView,
 	ToolbarView,
 	type FilteredView,
 	createLabeledInputNumber
@@ -91,7 +91,7 @@ function createSearchableList() {
 	listView.items.add( getGroupView );
 	listView.items.add( hasGroupView );
 
-	const searchView = new SearchView( locale, {
+	const searchView = new SearchTextView( locale, {
 		searchFieldLabel: 'Search list items',
 		filteredView: listView
 	} );
@@ -142,7 +142,7 @@ function createSearchableToolbar() {
 		toolbarView.items.add( buttonView );
 	} );
 
-	const searchView = new SearchView( locale, {
+	const searchView = new SearchTextView( locale, {
 		searchFieldLabel: 'Search toolbar buttons',
 		filteredView: toolbarView
 	} );
@@ -183,7 +183,7 @@ function createSearchWithCustomInput() {
 			toolbarView.items.add( buttonView );
 		} );
 
-	const searchView = new SearchView( locale, {
+	const searchView = new SearchTextView( locale, {
 		searchFieldLabel: 'Search toolbar buttons',
 		filteredView: toolbarView,
 		searchFieldInputCreator: createLabeledInputNumber

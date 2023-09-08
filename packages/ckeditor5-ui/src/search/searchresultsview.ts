@@ -12,7 +12,7 @@ import type ViewCollection from '../viewcollection';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
- * A sub-component of {@link module:ui/search/searchview~SearchView}. It hosts the filtered and the information views.
+ * A sub-component of {@link module:ui/search/text/searchtextview~SearchTextView}. It hosts the filtered and the information views.
  */
 export default class SearchResultsView extends View {
 	/**

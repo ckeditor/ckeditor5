@@ -76,7 +76,7 @@ export { default as ContextualBalloon } from './panel/balloon/contextualballoon'
 export { default as StickyPanelView } from './panel/sticky/stickypanelview';
 
 export { default as AutocompleteView } from './autocomplete/autocompleteview';
-export { default as SearchView, type SearchViewSearchEvent } from './search/searchview';
+export { default as SearchTextView, type SearchTextViewSearchEvent } from './search/text/searchtextview';
 export { default as SearchInfoView } from './search/searchinfoview';
 export { default as FilteredView } from './search/filteredview';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview';
