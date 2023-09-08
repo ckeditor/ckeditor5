@@ -332,7 +332,10 @@ describe( 'StickyPanelView', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 					top: -80,
 					bottom: 60,
-					height: 140
+					height: 140,
+					width: 100,
+					left: 0,
+					right: 100
 				} );
 
 				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -352,7 +355,10 @@ describe( 'StickyPanelView', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 					top: -10,
 					bottom: 90,
-					height: 100
+					height: 100,
+					width: 100,
+					left: 0,
+					right: 100
 				} );
 
 				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -418,13 +424,19 @@ describe( 'StickyPanelView', () => {
 						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
 							top: 40,
 							bottom: 140,
-							height: 100
+							height: 100,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 							top: 20,
 							bottom: 200,
-							height: 180
+							height: 180,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -449,13 +461,19 @@ describe( 'StickyPanelView', () => {
 						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
 							top: 40,
 							bottom: 140,
-							height: 100
+							height: 100,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 							top: -80,
 							bottom: 60,
-							height: 140
+							height: 140,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -485,13 +503,19 @@ describe( 'StickyPanelView', () => {
 						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
 							top: 20,
 							bottom: 140,
-							height: 120
+							height: 120,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 							top: 20,
 							bottom: 200,
-							height: 180
+							height: 180,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -518,13 +542,19 @@ describe( 'StickyPanelView', () => {
 						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
 							top: 40,
 							bottom: 140,
-							height: 100
+							height: 100,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 							top: -80,
 							bottom: 60,
-							height: 140
+							height: 140,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -549,13 +579,19 @@ describe( 'StickyPanelView', () => {
 						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
 							top: 120,
 							bottom: 140,
-							height: 100
+							height: 100,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 							top: -80,
 							bottom: 60,
-							height: 140
+							height: 140,
+							width: 100,
+							left: 0,
+							right: 100
 						} );
 
 						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -606,19 +642,28 @@ describe( 'StickyPanelView', () => {
 					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
 						top: 10,
 						bottom: 160,
-						height: 150
+						height: 150,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
 						top: 20,
 						bottom: 140,
-						height: 120
+						height: 120,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 						top: 40,
 						bottom: 100,
-						height: 60
+						height: 60,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -643,19 +688,28 @@ describe( 'StickyPanelView', () => {
 					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
 						top: 50,
 						bottom: 160,
-						height: 150
+						height: 150,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
 						top: 20,
 						bottom: 140,
-						height: 120
+						height: 120,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 						top: 40,
 						bottom: 140,
-						height: 100
+						height: 100,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -680,19 +734,28 @@ describe( 'StickyPanelView', () => {
 					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
 						top: 50,
 						bottom: 160,
-						height: 150
+						height: 150,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
 						top: 20,
 						bottom: 140,
-						height: 120
+						height: 120,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 						top: 40,
 						bottom: 110,
-						height: 60
+						height: 60,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -717,19 +780,28 @@ describe( 'StickyPanelView', () => {
 					testUtils.sinon.stub( scrollableOuterParent, 'getBoundingClientRect' ).returns( {
 						top: 50,
 						bottom: 160,
-						height: 150
+						height: 150,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( scrollableInnerParent, 'getBoundingClientRect' ).returns( {
 						top: -20,
 						bottom: 50,
-						height: 70
+						height: 70,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 						top: 0,
 						bottom: 40,
-						height: 40
+						height: 40,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
 					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -755,7 +827,10 @@ describe( 'StickyPanelView', () => {
 				testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
 					top: -10,
 					bottom: 70,
-					height: 100
+					height: 100,
+					width: 100,
+					left: 0,
+					right: 100
 				} );
 
 				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
@@ -781,7 +856,9 @@ describe( 'StickyPanelView', () => {
 					top: -30,
 					bottom: 50,
 					left: 60,
-					height: 80
+					height: 80,
+					width: 100,
+					right: 160
 				} );
 
 				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
