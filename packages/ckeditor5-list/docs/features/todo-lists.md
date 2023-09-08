@@ -3,6 +3,7 @@ menu-title: To-do lists
 meta-title: To-do lists | CKEditor 5 Documentation
 category: features-lists
 order: 20
+modified_at: 2023-09-08
 ---
 
 # To-do lists
@@ -28,36 +29,6 @@ After reading this guide, you may find additional interesting details and exampl
 ## Keyboard support
 
 You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
-
-## Installation
-
-<info-box info>
-	The to-do list feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-list
-```
-
-Then add the `TodoList` plugin to your plugin list and the toolbar configuration:
-
-```js
-import { TodoList } from '@ckeditor/ckeditor5-list';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ TodoList, /* ... */ ],
-		toolbar: [ 'todoList', /* ... */ ],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
 
 ## HTML structure
 
