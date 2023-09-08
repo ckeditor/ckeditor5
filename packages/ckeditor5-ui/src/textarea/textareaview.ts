@@ -7,12 +7,10 @@
  * @module ui/textarea/textareaview
  */
 
-import {
-	type Locale
-} from '@ckeditor/ckeditor5-utils';
+import { type Locale } from '@ckeditor/ckeditor5-utils';
+import InputBase from '../input/inputbase';
 
 import '../../theme/components/input/input.css';
-import InputBase from '../input/inputbase';
 
 /**
  * The textarea view class.

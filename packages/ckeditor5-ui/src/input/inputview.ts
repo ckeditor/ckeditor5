@@ -7,12 +7,10 @@
  * @module ui/input/inputview
  */
 
-import {
-	type Locale
-} from '@ckeditor/ckeditor5-utils';
+import { type Locale } from '@ckeditor/ckeditor5-utils';
+import InputBase from './inputbase';
 
 import '../../theme/components/input/input.css';
-import InputBase from './inputbase';
 
 /**
  * The input view class.
