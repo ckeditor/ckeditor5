@@ -209,12 +209,10 @@
     "coverage/**",
     "external/**"
   ],
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "external/*",
-      "external/*/packages/*",
-      "."
-    ]
-  }
+  "workspaces": [
+    "packages/*",
+    "external/*",
+    "external/*/packages/*",
+    "."
+  ]
 }
