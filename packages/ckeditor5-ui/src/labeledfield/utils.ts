@@ -126,29 +126,29 @@ export function createLabeledInputNumber(
 /**
  * A helper for creating labeled textarea.
  *
- * It creates an instance of a {@link module:ui/textarea/textareaview~TextareaView input text} that is
+ * It creates an instance of a {@link module:ui/textarea/textareaview~TextareaView textarea} that is
  * logically related to a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView labeled view} in DOM.
  *
  * The helper does the following:
  *
- * * It sets input's `id` and `ariaDescribedById` attributes.
- * * It binds input's `isReadOnly` to the labeled view.
- * * It binds input's `hasError` to the labeled view.
- * * It enables a logic that cleans up the error when user starts typing in the input.
+ * * It sets textarea's `id` and `ariaDescribedById` attributes.
+ * * It binds textarea's `isReadOnly` to the labeled view.
+ * * It binds textarea's `hasError` to the labeled view.
+ * * It enables a logic that cleans up the error when user starts typing in the textarea.
  *
  * Usage:
  *
  * ```ts
- * const labeledInputView = new LabeledFieldView( locale, createLabeledTextarea );
- * console.log( labeledInputView.fieldView ); // A textarea instance.
+ * const labeledTextarea = new LabeledFieldView( locale, createLabeledTextarea );
+ * console.log( labeledTextarea.fieldView ); // A textarea instance.
  * ```
  *
  * @param labeledFieldView The instance of the labeled field view.
  * @param viewUid An UID string that allows DOM logical connection between the
- * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
+ * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the textarea.
  * @param statusUid An UID string that allows DOM logical connection between the
- * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
- * @returns The input text view instance.
+ * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the textarea.
+ * @returns The textarea view instance.
  */
 export function createLabeledTextarea(
 	labeledFieldView: LabeledFieldView,

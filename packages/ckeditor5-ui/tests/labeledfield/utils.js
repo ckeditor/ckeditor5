@@ -219,7 +219,7 @@ describe( 'LabeledFieldView utils', () => {
 			expect( labeledTextarea.fieldView.hasError ).to.be.false;
 		} );
 
-		it( 'should bind labeledTextarea#isEmpty to input\'s #isEmpty', () => {
+		it( 'should bind labeledTextarea#isEmpty to textarea\'s #isEmpty', () => {
 			labeledTextarea.fieldView.isEmpty = true;
 			expect( labeledTextarea.isEmpty ).to.be.true;
 
