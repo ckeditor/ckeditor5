@@ -195,8 +195,8 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	/**
 	 * Registers a list item view in the focus tracker.
 	 *
-	 * @param item
-	 * @param index
+	 * @param item The list item view to be registered.
+	 * @param index Index of the list item view in the {@link #items} collection. If not specified, the item will be added at the end.
 	 */
 	private _registerFocusableListItem( item: ListItemView, index?: number ) {
 		this.focusTracker.add( item.element! );
@@ -206,7 +206,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	/**
 	 * Removes a list item view from the focus tracker.
 	 *
-	 * @param item
+	 * @param item The list item view to be removed.
 	 */
 	private _deregisterFocusableListItem( item: ListItemView ) {
 		this.focusTracker.remove( item.element! );
@@ -217,8 +217,8 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	 * Gets a callback that will be called when the `items` collection of a {@link module:ui/list/listitemgroupview~ListItemGroupView}
 	 * change.
 	 *
-	 * @param groupView
-	 * @returns
+	 * @param groupView The group view for which the callback will be created.
+	 * @returns The callback function to be used for the items `change` event listener in a group.
 	 */
 	private _getOnGroupItemsChangeCallback( groupView: ListItemGroupView ): GetCallback<ListItemsChangeEvent> {
 		return ( evt, data ) => {
@@ -235,8 +235,8 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	/**
 	 * Registers a list item group view (and its children) in the focus tracker.
 	 *
-	 * @param groupView
-	 * @param groupIndex
+	 * @param groupView A group view to be registered.
+	 * @param groupIndex Index of the group view in the {@link #items} collection. If not specified, the group will be added at the end.
 	 */
 	private _registerFocusableItemsGroup( groupView: ListItemGroupView, groupIndex?: number ) {
 		Array.from( groupView.items ).forEach( ( child, childIndex ) => {
@@ -256,7 +256,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	/**
 	 * Removes a list item group view (and its children) from the focus tracker.
 	 *
-	 * @param groupView
+	 * @param groupView The group view to be removed.
 	 */
 	private _deregisterFocusableItemsGroup( groupView: ListItemGroupView ) {
 		for ( const child of groupView.items ) {
