@@ -36,29 +36,9 @@ export default class InputView extends InputBase {
 
 		const bind = this.bindTemplate;
 
-		this.setTemplate( {
-			tag: 'input',
+		this.extendTemplate( {
 			attributes: {
-				class: [
-					'ck',
-					'ck-input',
-					bind.if( 'isFocused', 'ck-input_focused' ),
-					bind.if( 'isEmpty', 'ck-input-text_empty' ),
-					bind.if( 'hasError', 'ck-error' )
-				],
-				id: bind.to( 'id' ),
-				placeholder: bind.to( 'placeholder' ),
-				readonly: bind.to( 'isReadOnly' ),
-				inputmode: bind.to( 'inputMode' ),
-				'aria-invalid': bind.if( 'hasError', true ),
-				'aria-describedby': bind.to( 'ariaDescribedById' )
-			},
-			on: {
-				input: bind.to( ( ...args ) => {
-					this.fire( 'input', ...args );
-					this._updateIsEmpty();
-				} ),
-				change: bind.to( this._updateIsEmpty.bind( this ) )
+				inputmode: bind.to( 'inputMode' )
 			}
 		} );
 	}

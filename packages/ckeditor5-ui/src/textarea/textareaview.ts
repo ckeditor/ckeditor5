@@ -19,47 +19,29 @@ import InputBase from '../input/inputbase';
  */
 export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	/**
+	 * Specifies the visible height of a text area, in lines.
+	 *
+	 * @observable
+	 * @default 1
+	 */
+	declare public rows: number;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
 		super( locale );
 
+		this.set( 'rows', 1 );
+
 		const bind = this.bindTemplate;
 
-		this.setTemplate( {
-			tag: 'textarea',
+		this.template!.tag = 'textarea';
+
+		this.extendTemplate( {
 			attributes: {
-				class: [
-					'ck',
-					'ck-input',
-					bind.if( 'isFocused', 'ck-input_focused' ),
-					bind.if( 'isEmpty', 'ck-input-text_empty' ),
-					bind.if( 'hasError', 'ck-error' )
-				],
-				id: bind.to( 'id' ),
-				placeholder: bind.to( 'placeholder' ),
-				readonly: bind.to( 'isReadOnly' ),
-				'aria-invalid': bind.if( 'hasError', true ),
-				'aria-describedby': bind.to( 'ariaDescribedById' )
-			},
-			on: {
-				input: bind.to( ( ...args ) => {
-					this.fire( 'input', ...args );
-					this._updateIsEmpty();
-				} ),
-				change: bind.to( this._updateIsEmpty.bind( this ) )
+				rows: bind.to( 'rows' )
 			}
 		} );
 	}
 }
-
-/**
- * Fired when the user types in the textarea. Corresponds to the native
- * DOM `input` event.
- *
- * @eventName ~TextareaView#input
- */
-export type TextareaInputEvent = {
-	name: 'input';
-	args: [ InputEvent ];
-};

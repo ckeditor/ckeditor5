@@ -7,8 +7,6 @@
  * @module ui/spinner/spinnerview
  */
 
-import { type Locale } from '@ckeditor/ckeditor5-utils';
-
 import View from '../view';
 
 import '../../theme/components/spinner/spinner.css';
@@ -28,8 +26,8 @@ export default class SpinnerView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale?: Locale ) {
-		super( locale );
+	constructor() {
+		super();
 
 		this.set( 'isVisible', false );
 
