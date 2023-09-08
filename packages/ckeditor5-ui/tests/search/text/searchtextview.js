@@ -109,7 +109,7 @@ describe( 'SearchTextView', () => {
 
 					// Mock the query input is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.searchFieldView.element;
+					view.focusTracker.focusedElement = view.queryView.element;
 
 					const spy = sinon.spy( filteredView, 'focus' );
 
@@ -131,7 +131,7 @@ describe( 'SearchTextView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = filteredView.element;
 
-					const spy = sinon.spy( view.searchFieldView, 'focus' );
+					const spy = sinon.spy( view.queryView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -163,11 +163,11 @@ describe( 'SearchTextView', () => {
 			} );
 		} );
 
-		describe( '#searchFieldView', () => {
+		describe( '#queryView', () => {
 			it( 'gets created as labeled text view if not configured otherwise', () => {
-				expect( view.searchFieldView ).to.be.instanceOf( LabeledFieldView );
-				expect( view.searchFieldView.fieldView ).to.be.instanceOf( InputTextView );
-				expect( view.searchFieldView.label ).to.equal( 'test label' );
+				expect( view.queryView ).to.be.instanceOf( LabeledFieldView );
+				expect( view.queryView.fieldView ).to.be.instanceOf( InputTextView );
+				expect( view.queryView.label ).to.equal( 'test label' );
 			} );
 
 			it( 'gets created by a custom view creator configured by the user', () => {
@@ -180,8 +180,8 @@ describe( 'SearchTextView', () => {
 
 				view.render();
 
-				expect( view.searchFieldView ).to.be.instanceOf( LabeledFieldView );
-				expect( view.searchFieldView.fieldView ).to.be.instanceOf( InputNumberView );
+				expect( view.queryView ).to.be.instanceOf( LabeledFieldView );
+				expect( view.queryView.fieldView ).to.be.instanceOf( InputNumberView );
 
 				view.destroy();
 			} );
@@ -189,7 +189,7 @@ describe( 'SearchTextView', () => {
 			it( 'shoud trigger #search() upon #input', () => {
 				const spy = sinon.spy( view, 'search' );
 
-				view.searchFieldView.fieldView.fire( 'input' );
+				view.queryView.fieldView.fire( 'input' );
 
 				sinon.assert.calledOnce( spy );
 			} );
@@ -197,7 +197,7 @@ describe( 'SearchTextView', () => {
 			it( 'should reset the entire view if fired #reset', () => {
 				const spy = sinon.spy( view, 'reset' );
 
-				view.searchFieldView.fire( 'reset' );
+				view.queryView.fire( 'reset' );
 
 				sinon.assert.calledOnce( spy );
 			} );
@@ -400,8 +400,8 @@ describe( 'SearchTextView', () => {
 	} );
 
 	describe( 'focus()', () => {
-		it( 'focuses the #searchFieldView', () => {
-			const spy = sinon.spy( view.searchFieldView, 'focus' );
+		it( 'focuses the #queryView', () => {
+			const spy = sinon.spy( view.queryView, 'focus' );
 
 			view.focus();
 
@@ -410,8 +410,8 @@ describe( 'SearchTextView', () => {
 	} );
 
 	describe( 'reset()', () => {
-		it( 'resets the #searchFieldView', () => {
-			const spy = sinon.spy( view.searchFieldView, 'reset' );
+		it( 'resets the #queryView', () => {
+			const spy = sinon.spy( view.queryView, 'reset' );
 
 			view.reset();
 

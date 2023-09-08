@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/search/text/searchtextfieldview
+ * @module ui/search/text/searchtextqueryview
  */
 
 import ButtonView from '../../button/buttonview';
@@ -22,7 +22,7 @@ import { icons } from '@ckeditor/ckeditor5-core';
  * @private
  * @extends module:ui/labeledfield/labeledfieldview~LabeledFieldView
  */
-export default class SearchTextFieldView extends LabeledFieldView<InputView> {
+export default class SearchTextQueryView extends LabeledFieldView<InputView> {
 	/**
 	 * The loupe icon displayed next to the {@link #fieldView}.
 	 */
@@ -61,7 +61,7 @@ export default class SearchTextFieldView extends LabeledFieldView<InputView> {
 		this.clearButtonView.on( 'execute', () => {
 			this.reset();
 			this.focus();
-			this.fire<SearchTextFieldViewResetEvent>( 'reset' );
+			this.fire<SearchTextQueryViewResetEvent>( 'reset' );
 		} );
 
 		this.clearButtonView.bind( 'isVisible' ).to( this.fieldView, 'isEmpty', isEmpty => !isEmpty );
@@ -85,11 +85,11 @@ export default class SearchTextFieldView extends LabeledFieldView<InputView> {
 
 /**
  * An event fired when the field is reset using the
- * {@link module:ui/search/text/searchtextfieldview~SearchTextFieldView#clearButtonView}.
+ * {@link module:ui/search/text/searchtextqueryview~SearchTextQueryView#clearButtonView}.
  *
- * @eventName ~SearchTextFieldView#reset
+ * @eventName ~SearchTextQueryView#reset
  */
-export type SearchTextFieldViewResetEvent = {
+export type SearchTextQueryViewResetEvent = {
 	name: 'reset';
 	args: [];
 };
