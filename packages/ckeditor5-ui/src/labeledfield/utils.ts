@@ -9,6 +9,7 @@
 
 import InputTextView from '../inputtext/inputtextview';
 import InputNumberView from '../inputnumber/inputnumberview';
+import TextareaView from '../textarea/textareaview';
 import { createDropdown } from '../dropdown/utils';
 
 import type LabeledFieldView from './labeledfieldview';
@@ -120,6 +121,59 @@ export function createLabeledInputNumber(
 	labeledFieldView.bind( 'isEmpty', 'isFocused', 'placeholder' ).to( inputView );
 
 	return inputView;
+}
+
+/**
+ * A helper for creating labeled textarea.
+ *
+ * It creates an instance of a {@link module:ui/textarea/textareaview~TextareaView textarea} that is
+ * logically related to a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView labeled view} in DOM.
+ *
+ * The helper does the following:
+ *
+ * * It sets textarea's `id` and `ariaDescribedById` attributes.
+ * * It binds textarea's `isReadOnly` to the labeled view.
+ * * It binds textarea's `hasError` to the labeled view.
+ * * It enables a logic that cleans up the error when user starts typing in the textarea.
+ *
+ * Usage:
+ *
+ * ```ts
+ * const labeledTextarea = new LabeledFieldView( locale, createLabeledTextarea );
+ * console.log( labeledTextarea.fieldView ); // A textarea instance.
+ * ```
+ *
+ * @param labeledFieldView The instance of the labeled field view.
+ * @param viewUid An UID string that allows DOM logical connection between the
+ * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the textarea.
+ * @param statusUid An UID string that allows DOM logical connection between the
+ * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the textarea.
+ * @returns The textarea view instance.
+ */
+export function createLabeledTextarea(
+	labeledFieldView: LabeledFieldView,
+	viewUid: string,
+	statusUid: string
+): TextareaView {
+	const textareaView = new TextareaView( labeledFieldView.locale );
+
+	textareaView.set( {
+		id: viewUid,
+		ariaDescribedById: statusUid
+	} );
+
+	textareaView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
+	textareaView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
+
+	textareaView.on<InputViewInputEvent>( 'input', () => {
+		// UX: Make the error text disappear and disable the error indicator as the user
+		// starts fixing the errors.
+		labeledFieldView.errorText = null;
+	} );
+
+	labeledFieldView.bind( 'isEmpty', 'isFocused', 'placeholder' ).to( textareaView );
+
+	return textareaView;
 }
 
 /**
