@@ -11,7 +11,7 @@ import type View from '../view';
  */
 
 /**
- * A view that can be filtered by a {@link module:ui/search/searchview~SearchView}.
+ * A view that can be filtered by a {@link module:ui/search/text/searchtextview~SearchTextView}.
  */
 export default interface FilteredView extends View, FocusableView {
 

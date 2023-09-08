@@ -13,15 +13,15 @@ import {
 	LabeledFieldView,
 	ListView,
 	SearchInfoView,
-	SearchView,
+	SearchTextView,
 	View,
 	createLabeledInputNumber
-} from '../../src';
+} from '../../../src';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'SearchView', () => {
+describe( 'SearchTextView', () => {
 	let view, filteredView;
 
 	testUtils.createSinonSandbox();
@@ -35,7 +35,7 @@ describe( 'SearchView', () => {
 			};
 		};
 
-		view = new SearchView( new Locale(), {
+		view = new SearchTextView( new Locale(), {
 			filteredView,
 			searchFieldLabel: 'test label'
 		} );
@@ -59,7 +59,7 @@ describe( 'SearchView', () => {
 		} );
 
 		it( 'supports extra CSS class in the config', () => {
-			const view = new SearchView( new Locale(), {
+			const view = new SearchTextView( new Locale(), {
 				filteredView,
 				searchFieldLabel: 'foo',
 				class: 'bar'
@@ -171,7 +171,7 @@ describe( 'SearchView', () => {
 			} );
 
 			it( 'gets created by a custom view creator configured by the user', () => {
-				const view = new SearchView( new Locale(), {
+				const view = new SearchTextView( new Locale(), {
 					filteredView,
 					searchFieldInputCreator: createLabeledInputNumber,
 					searchFieldLabel: 'foo',
@@ -214,7 +214,7 @@ describe( 'SearchView', () => {
 					};
 				};
 
-				view = new SearchView( new Locale(), {
+				view = new SearchTextView( new Locale(), {
 					filteredView,
 					searchFieldLabel: 'test label'
 				} );
@@ -242,7 +242,7 @@ describe( 'SearchView', () => {
 						};
 					};
 
-					const view = new SearchView( new Locale(), {
+					const view = new SearchTextView( new Locale(), {
 						filteredView,
 						searchFieldLabel: 'test label'
 					} );
@@ -265,7 +265,7 @@ describe( 'SearchView', () => {
 						};
 					};
 
-					const view = new SearchView( new Locale(), {
+					const view = new SearchTextView( new Locale(), {
 						filteredView,
 						searchFieldLabel: 'test label'
 					} );
@@ -287,7 +287,7 @@ describe( 'SearchView', () => {
 						};
 					};
 
-					const view = new SearchView( new Locale(), {
+					const view = new SearchTextView( new Locale(), {
 						filteredView,
 						searchFieldLabel: 'test label',
 						infoViewTextConfig: {
@@ -335,7 +335,7 @@ describe( 'SearchView', () => {
 					const dynamicLabelText = ( query, resultsCount, totalItemsCount ) =>
 						`"${ query }" ${ resultsCount } of ${ totalItemsCount }`;
 
-					const view = new SearchView( new Locale(), {
+					const view = new SearchTextView( new Locale(), {
 						filteredView,
 						searchFieldLabel: 'test label',
 						infoViewTextConfig: {
@@ -382,7 +382,7 @@ describe( 'SearchView', () => {
 					}
 				} );
 
-				const view = new SearchView( new Locale(), {
+				const view = new SearchTextView( new Locale(), {
 					filteredView,
 					searchFieldLabel: 'test label',
 					infoView: customInfoView

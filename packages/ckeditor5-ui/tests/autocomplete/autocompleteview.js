@@ -8,7 +8,7 @@
 import {
 	ListView,
 	AutocompleteView,
-	SearchView
+	SearchTextView
 } from '../../src';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -45,8 +45,8 @@ describe( 'AutocompleteView', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'extends SearchView', () => {
-			expect( view ).to.be.instanceOf( SearchView );
+		it( 'extends SearchTextView', () => {
+			expect( view ).to.be.instanceOf( SearchTextView );
 		} );
 
 		describe( '#resultsView', () => {

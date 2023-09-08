@@ -4,31 +4,31 @@
  */
 
 /**
- * @module ui/search/searchview
+ * @module ui/search/text/searchtextview
 */
 
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
-import View from '../view';
-import SearchFieldView from './searchfieldview';
-import SearchInfoView from './searchinfoview';
-import SearchResultsView from './searchresultsview';
-import type LabeledFieldView from '../labeledfield/labeledfieldview';
-import type InputView from '../input/inputview';
-import type FilteredView from './filteredview';
+import View from '../../view';
+import SearchTextFieldView from './searchtextfieldview';
+import SearchInfoView from '../searchinfoview';
+import SearchResultsView from '../searchresultsview';
+import type LabeledFieldView from '../../labeledfield/labeledfieldview';
+import type InputView from '../../input/inputview';
+import type FilteredView from '../filteredview';
 import { escapeRegExp } from 'lodash-es';
-import FocusCycler from '../focuscycler';
+import FocusCycler from '../../focuscycler';
 
-import '../../theme/components/search/search.css';
+import '../../../theme/components/search/search.css';
 
 /**
  * A search component that allows filtering of an arbitrary view based on a search query
- * specified by the user.
+ * specified by the user in a text field.
  *
  *```ts
  * // This view must specify the `filter()` and `focus()` methods.
  * const filteredView = ...;
  *
- * const searchView = new SearchView( locale, {
+ * const searchView = new SearchTextView( locale, {
  * 	searchFieldLabel: 'Search list items',
  * 	filteredView
  * } );
@@ -38,7 +38,7 @@ import '../../theme/components/search/search.css';
  * document.body.append( view.element );
  * ```
  */
-export default class SearchView extends View {
+export default class SearchTextView extends View {
 	/**
 	 * Tracks information about the DOM focus in the view.
 	 *
@@ -71,7 +71,7 @@ export default class SearchView extends View {
 	/**
 	 * The view that allows the user to enter the search query.
 	 */
-	public searchFieldView: SearchFieldView;
+	public searchFieldView: SearchTextFieldView;
 
 	/**
 	 * Provides the focus management (keyboard navigation) between {@link #searchFieldView} and {@link #filteredView}.
@@ -85,21 +85,21 @@ export default class SearchView extends View {
 	 *
 	 * @internal
 	 */
-	private _config: SearchViewConfig;
+	private _config: SearchTextViewConfig;
 
 	/**
-	 * Creates an instance of the {@link module:ui/search/searchview~SearchView} class.
+	 * Creates an instance of the {@link module:ui/search/text/searchtextview~SearchTextView} class.
 	 *
 	 * @param locale The localization services instance.
 	 * @param config Configuration of the view.
 	 */
-	constructor( locale: Locale, config: SearchViewConfig ) {
+	constructor( locale: Locale, config: SearchTextViewConfig ) {
 		super( locale );
 
 		this._config = config;
 
 		this.filteredView = config.filteredView;
-		this.searchFieldView = this._createSearchFieldView( locale, config.searchFieldLabel );
+		this.searchFieldView = this._createSearchTextFieldView( locale, config.searchFieldLabel );
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.resultsView = new SearchResultsView( locale );
@@ -207,8 +207,8 @@ export default class SearchView extends View {
 	 * @param locale The localization services instance.
 	 * @param label The label of the search field.
 	 */
-	private _createSearchFieldView( locale: Locale, label: string ): SearchFieldView {
-		const searchFieldView = new SearchFieldView( locale, this._config.searchFieldInputCreator, label );
+	private _createSearchTextFieldView( locale: Locale, label: string ): SearchTextFieldView {
+		const searchFieldView = new SearchTextFieldView( locale, this._config.searchFieldInputCreator, label );
 
 		this.listenTo( searchFieldView.fieldView, 'input', () => {
 			this.search( searchFieldView.fieldView.element!.value );
@@ -227,7 +227,7 @@ export default class SearchView extends View {
 		const t = this.locale!.t;
 		const infoView = this.infoView as SearchInfoView;
 
-		this.on<SearchViewSearchEvent>( 'search', ( evt, data ) => {
+		this.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
 			if ( !data.resultsCount ) {
 				const infoViewTextConfig = this._config.infoViewTextConfig;
 				let primaryText, secondaryText;
@@ -253,8 +253,8 @@ export default class SearchView extends View {
 		} );
 
 		function normalizeInfoText(
-			text: SearchViewDefaultInfoText,
-			{ query, resultsCount, totalItemsCount }: SearchViewSearchEvent[ 'args' ][ 0 ]
+			text: SearchTextViewDefaultInfoText,
+			{ query, resultsCount, totalItemsCount }: SearchTextViewSearchEvent[ 'args' ][ 0 ]
 		) {
 			return typeof text === 'function' ? text( query, resultsCount, totalItemsCount ) : text;
 		}
@@ -262,9 +262,9 @@ export default class SearchView extends View {
 }
 
 /**
- * The configuration of the {@link module:ui/search/searchview~SearchView} class.
+ * The configuration of the {@link module:ui/search/text/searchtextview~SearchTextView} class.
  */
-export type SearchViewConfig = {
+export type SearchTextViewConfig = {
 
 	/**
 	 * The view that is filtered by the search query.
@@ -298,33 +298,33 @@ export type SearchViewConfig = {
 	 * of the search component.
 	 *
 	 * **Note**: This configuration is only used when the {@link #infoView} is **not** specified.
-	 * In other cases, please use the {@link module:ui/search/searchview~SearchViewSearchEvent} to bring about
+	 * In other cases, please use the {@link module:ui/search/searchview~SearchTextViewSearchEvent} to bring about
 	 * your own info text logic.
 	 */
 	infoViewTextConfig?: {
 		notFound?: {
-			primary: SearchViewDefaultInfoText;
-			secondary?: SearchViewDefaultInfoText;
+			primary: SearchTextViewDefaultInfoText;
+			secondary?: SearchTextViewDefaultInfoText;
 		};
 		noSearchableItems?: {
-			primary: SearchViewDefaultInfoText;
-			secondary?: SearchViewDefaultInfoText;
+			primary: SearchTextViewDefaultInfoText;
+			secondary?: SearchTextViewDefaultInfoText;
 		};
 	};
 };
 
 /**
- * Describes value of a info text configuration in {@link module:ui/search/searchview~SearchViewConfig}.
+ * Describes value of a info text configuration in {@link module:ui/search/text/searchtextview~SearchTextViewConfig}.
  * A string or a function that returns a string with the information about the search results.
  */
-export type SearchViewDefaultInfoText = string | ( ( query: string, resultsCount: number, totalItemsCount: number ) => string );
+export type SearchTextViewDefaultInfoText = string | ( ( query: string, resultsCount: number, totalItemsCount: number ) => string );
 
 /**
- * An event fired when the search query changes fired by {@link module:ui/search/searchview~SearchView#search}.
+ * An event fired when the search query changes fired by {@link module:ui/search/text/searchtextview~SearchTextView#search}.
  *
- * @eventName ~SearchView#search
+ * @eventName ~SearchTextView#search
  */
-export type SearchViewSearchEvent = {
+export type SearchTextViewSearchEvent = {
 	name: 'search';
 	args: [ {
 		query: string;

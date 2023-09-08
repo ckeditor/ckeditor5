@@ -4,25 +4,25 @@
  */
 
 /**
- * @module ui/search/searchfieldview
+ * @module ui/search/text/searchtextfieldview
  */
 
-import ButtonView from '../button/buttonview';
-import IconView from '../icon/iconview';
-import LabeledFieldView from '../labeledfield/labeledfieldview';
-import { createLabeledInputText } from '../labeledfield/utils';
-import type InputView from '../input/inputview';
+import ButtonView from '../../button/buttonview';
+import IconView from '../../icon/iconview';
+import LabeledFieldView from '../../labeledfield/labeledfieldview';
+import { createLabeledInputText } from '../../labeledfield/utils';
+import type InputView from '../../input/inputview';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import { icons } from '@ckeditor/ckeditor5-core';
 
 /**
- * A search input field for the {@link module:ui/search/searchview~SearchView} component.
+ * A search input field for the {@link module:ui/search/text/searchtextview~SearchTextView} component.
  *
  * @private
  * @extends module:ui/labeledfield/labeledfieldview~LabeledFieldView
  */
-export default class SearchFieldView extends LabeledFieldView<InputView> {
+export default class SearchTextFieldView extends LabeledFieldView<InputView> {
 	/**
 	 * The loupe icon displayed next to the {@link #fieldView}.
 	 */
@@ -61,7 +61,7 @@ export default class SearchFieldView extends LabeledFieldView<InputView> {
 		this.clearButtonView.on( 'execute', () => {
 			this.reset();
 			this.focus();
-			this.fire<SearchFieldViewResetEvent>( 'reset' );
+			this.fire<SearchTextFieldViewResetEvent>( 'reset' );
 		} );
 
 		this.clearButtonView.bind( 'isVisible' ).to( this.fieldView, 'isEmpty', isEmpty => !isEmpty );
@@ -85,11 +85,11 @@ export default class SearchFieldView extends LabeledFieldView<InputView> {
 
 /**
  * An event fired when the field is reset using the
- * {@link module:ui/search/searchfieldview~SearchFieldView#clearButtonView}.
+ * {@link module:ui/search/text/searchtextfieldview~SearchTextFieldView#clearButtonView}.
  *
- * @eventName ~SearchFieldView#reset
+ * @eventName ~SearchTextFieldView#reset
  */
-export type SearchFieldViewResetEvent = {
+export type SearchTextFieldViewResetEvent = {
 	name: 'reset';
 	args: [];
 };

@@ -5,12 +5,12 @@
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, createLabeledInputText, IconView } from '@ckeditor/ckeditor5-ui';
-import SearchFieldView from '../../src/search/searchfieldview';
+import SearchTextFieldView from '../../../src/search/text/searchtextfieldview';
 import { icons } from '@ckeditor/ckeditor5-core';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'SearchFieldView', () => {
+describe( 'SearchTextFieldView', () => {
 	let locale, view;
 
 	testUtils.createSinonSandbox();
@@ -18,7 +18,7 @@ describe( 'SearchFieldView', () => {
 	beforeEach( () => {
 		locale = new Locale();
 
-		view = new SearchFieldView( locale, createLabeledInputText, 'Test' );
+		view = new SearchTextFieldView( locale, createLabeledInputText, 'Test' );
 		view.render();
 	} );
 
