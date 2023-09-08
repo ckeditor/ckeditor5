@@ -21,7 +21,7 @@ export default class ListItemView extends View {
 	/**
 	 * Collection of the child views inside of the list item {@link #element}.
 	 */
-	public readonly children: ViewCollection;
+	public readonly children: ViewCollection<FocusableView>;
 
 	/**
 	 * Controls whether the item view is visible. Visible by default, list items are hidden
@@ -64,6 +64,8 @@ export default class ListItemView extends View {
 	 * Focuses the list item.
 	 */
 	public focus(): void {
-		( this.children.first as FocusableView ).focus();
+		if ( this.children.first ) {
+			this.children.first.focus();
+		}
 	}
 }
