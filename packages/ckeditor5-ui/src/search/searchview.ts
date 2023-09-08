@@ -37,8 +37,6 @@ import '../../theme/components/search/search.css';
  *
  * document.body.append( view.element );
  * ```
- *
- * @extends module:ui/view~View
  */
 export default class SearchView extends View {
 	/**
