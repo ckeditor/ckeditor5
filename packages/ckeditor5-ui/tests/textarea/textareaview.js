@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import InputView from '../../src/input/inputview';
+import TextareaView from '../../src/textarea/textareaview';
 
-describe( 'InputView', () => {
+describe( 'TextareaView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new InputView();
+		view = new TextareaView();
 
 		view.render();
 	} );
@@ -20,15 +20,10 @@ describe( 'InputView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.tagName ).to.equal( 'INPUT' );
-			expect( view.element.type ).to.equal( 'text' );
+			expect( view.element.tagName ).to.equal( 'TEXTAREA' );
 			expect( view.element.getAttribute( 'type' ) ).to.be.null;
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input' ) ).to.be.true;
-		} );
-
-		it( 'should set the #inputMode observable property', () => {
-			expect( view.inputMode ).to.equal( 'text' );
 		} );
 	} );
 
@@ -38,13 +33,13 @@ describe( 'InputView', () => {
 			view.id = 'bar';
 		} );
 
-		describe( 'inputmode attribute', () => {
+		describe( 'rows attribute', () => {
 			it( 'should react on view#inputMode', () => {
-				expect( view.element.getAttribute( 'inputmode' ) ).to.equal( 'text' );
+				expect( view.element.getAttribute( 'rows' ) ).to.equal( '1' );
 
-				view.inputMode = 'numeric';
+				view.rows = 5;
 
-				expect( view.element.getAttribute( 'inputmode' ) ).to.equal( 'numeric' );
+				expect( view.element.getAttribute( 'rows' ) ).to.equal( '5' );
 			} );
 		} );
 	} );

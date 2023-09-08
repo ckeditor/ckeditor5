@@ -56,6 +56,8 @@ export { default as InputView } from './input/inputview';
 export { default as InputTextView } from './inputtext/inputtextview';
 export { default as InputNumberView } from './inputnumber/inputnumberview';
 
+export { default as TextareaView } from './textarea/textareaview';
+
 export { default as IframeView } from './iframe/iframeview';
 
 export { default as LabelView } from './label/labelview';
@@ -81,6 +83,8 @@ export { default as HighlightedTextView } from './highlightedtext/highlightedtex
 
 export { default as TooltipManager } from './tooltipmanager';
 export { default as Template, type TemplateDefinition } from './template';
+
+export { default as SpinnerView } from './spinner/spinnerview';
 
 export { default as ToolbarView } from './toolbar/toolbarview';
 export { default as ToolbarLineBreakView } from './toolbar/toolbarlinebreakview';
