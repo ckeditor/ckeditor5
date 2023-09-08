@@ -9,7 +9,7 @@
 
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 import View from '../../view';
-import SearchTextFieldView from './searchtextfieldview';
+import SearchTextQueryView from './searchtextqueryview';
 import SearchInfoView from '../searchinfoview';
 import SearchResultsView from '../searchresultsview';
 import type LabeledFieldView from '../../labeledfield/labeledfieldview';
@@ -71,10 +71,10 @@ export default class SearchTextView extends View {
 	/**
 	 * The view that allows the user to enter the search query.
 	 */
-	public searchFieldView: SearchTextFieldView;
+	public queryView: SearchTextQueryView;
 
 	/**
-	 * Provides the focus management (keyboard navigation) between {@link #searchFieldView} and {@link #filteredView}.
+	 * Provides the focus management (keyboard navigation) between {@link #queryView} and {@link #filteredView}.
 	 *
 	 * @readonly
 	 */
@@ -99,7 +99,7 @@ export default class SearchTextView extends View {
 		this._config = config;
 
 		this.filteredView = config.filteredView;
-		this.searchFieldView = this._createSearchTextFieldView( locale, config.searchFieldLabel );
+		this.queryView = this._createSearchTextQueryView( locale, config.searchFieldLabel );
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.resultsView = new SearchResultsView( locale );
@@ -120,7 +120,7 @@ export default class SearchTextView extends View {
 		this.resultsView.children.addMany( [ this.infoView, this.filteredView ] );
 
 		this._focusCycler = new FocusCycler( {
-			focusables: this.createCollection( [ this.searchFieldView, this.filteredView ] ),
+			focusables: this.createCollection( [ this.queryView, this.filteredView ] ),
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
@@ -144,7 +144,7 @@ export default class SearchTextView extends View {
 				tabindex: '-1'
 			},
 			children: [
-				this.searchFieldView,
+				this.queryView,
 				this.resultsView
 			]
 		} );
@@ -158,7 +158,7 @@ export default class SearchTextView extends View {
 
 		const stopPropagation = ( data: Event ) => data.stopPropagation();
 
-		this.focusTracker.add( this.searchFieldView.element as Element );
+		this.focusTracker.add( this.queryView.element as Element );
 		this.focusTracker.add( this.filteredView.element as Element );
 
 		// Start listening for the keystrokes coming from #element.
@@ -174,17 +174,17 @@ export default class SearchTextView extends View {
 	}
 
 	/**
-	 * Focuses the {@link #searchFieldView}.
+	 * Focuses the {@link #queryView}.
 	 */
 	public focus(): void {
-		this.searchFieldView.focus();
+		this.queryView.focus();
 	}
 
 	/**
 	 * Resets the component to its initial state.
 	 */
 	public reset(): void {
-		this.searchFieldView.reset();
+		this.queryView.reset();
 		this.search( '' );
 	}
 
@@ -207,16 +207,16 @@ export default class SearchTextView extends View {
 	 * @param locale The localization services instance.
 	 * @param label The label of the search field.
 	 */
-	private _createSearchTextFieldView( locale: Locale, label: string ): SearchTextFieldView {
-		const searchFieldView = new SearchTextFieldView( locale, this._config.searchFieldInputCreator, label );
+	private _createSearchTextQueryView( locale: Locale, label: string ): SearchTextQueryView {
+		const queryView = new SearchTextQueryView( locale, this._config.searchFieldInputCreator, label );
 
-		this.listenTo( searchFieldView.fieldView, 'input', () => {
-			this.search( searchFieldView.fieldView.element!.value );
+		this.listenTo( queryView.fieldView, 'input', () => {
+			this.search( queryView.fieldView.element!.value );
 		} );
 
-		searchFieldView.on( 'reset', () => this.reset() );
+		queryView.on( 'reset', () => this.reset() );
 
-		return searchFieldView;
+		return queryView;
 	}
 
 	/**

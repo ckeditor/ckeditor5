@@ -76,7 +76,7 @@ describe( 'AutocompleteView', () => {
 				sinon.assert.calledOnce( getOptimalPositionSpy );
 				sinon.assert.calledOnceWithExactly( getOptimalPositionSpy, {
 					element: view.resultsView.element,
-					target: view.searchFieldView.element,
+					target: view.queryView.element,
 					fitInViewport: true,
 					positions: AutocompleteView.defaultResultsPositions
 				} );
@@ -138,7 +138,7 @@ describe( 'AutocompleteView', () => {
 			} );
 
 			it( 'resets the view when blurred', () => {
-				const resetSpy = sinon.spy( view.searchFieldView, 'reset' );
+				const resetSpy = sinon.spy( view.queryView, 'reset' );
 
 				view.focusTracker.isFocused = true;
 				view.focusTracker.isFocused = false;

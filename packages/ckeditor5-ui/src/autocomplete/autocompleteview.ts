@@ -52,7 +52,7 @@ export default class AutocompleteView extends SearchTextView {
 			if ( isFocused ) {
 				this._updateResultsViewPosition();
 			} else {
-				this.searchFieldView.reset();
+				this.queryView.reset();
 			}
 		} );
 
@@ -70,7 +70,7 @@ export default class AutocompleteView extends SearchTextView {
 	private _updateResultsViewPosition() {
 		( this.resultsView as AutocompleteResultsView )._position = AutocompleteView._getOptimalPosition( {
 			element: this.resultsView.element!,
-			target: this.searchFieldView.element!,
+			target: this.queryView.element!,
 			fitInViewport: true,
 			positions: AutocompleteView.defaultResultsPositions
 		} ).name as string;
