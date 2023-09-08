@@ -4,8 +4,8 @@
  */
 
 /**
- * @module TODO
-*/
+ * @module ui/highlightedtext/highlightedtextview
+ */
 
 import View from '../view';
 import { escape } from 'lodash-es';
