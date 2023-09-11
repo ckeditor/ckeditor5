@@ -338,7 +338,7 @@ describe( 'BlockToolbar', () => {
 				} ).then( editor => {
 					const blockToolbar = editor.plugins.get( BlockToolbar );
 
-					expect( blockToolbar.buttonView.label ).to.be.equal( 'Click to edit block \nDrag to move' );
+					expect( blockToolbar.buttonView.label ).to.be.equal( 'Click to edit block\nDrag to move' );
 
 					element.remove();
 
