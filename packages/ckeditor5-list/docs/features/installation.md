@@ -5,7 +5,7 @@ order: 40
 modified_at: 2023-09-08
 ---
 
-# Installation
+# Installation VERIFY
 
 <info-box info>
 	There are currently two plugins providing list support for CKEditor&nbsp;5: the regular {@link features/lists lists feature} and the {@link features/legacy-lists legacy lists feature}. Refer to that guide for legacy lists installation information.

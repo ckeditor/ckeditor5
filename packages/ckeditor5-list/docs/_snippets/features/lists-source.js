@@ -5,7 +5,7 @@
 
 /* globals window */
 
-import { ListProperties, DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
+import { ListProperties, DocumentList, DocumentListProperties, TodoList } from '@ckeditor/ckeditor5-list';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
@@ -17,6 +17,7 @@ ClassicEditor.builtinPlugins.push( PictureEditing, ImageResize, AutoImage, LinkI
 
 window.ClassicEditor = ClassicEditor;
 window.ListProperties = ListProperties;
+window.TodoList = TodoList;
 window.DocumentList = DocumentList;
 window.DocumentListProperties = DocumentListProperties;
 window.ImageResize = ImageResize;

@@ -8,6 +8,21 @@ modified_at: 2023-09-08
 
 # Legacy lists plugin
 
+The main difference between the regular and legacy lists, is that the legacy lists plugin does not support block elements inside list items.
+
+{@snippet features/lists-source}
+
+
+## Demo <!-- UPDATE -->
+
+Use the editor below to see the list feature in action. You can use toolbar buttons to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}. Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg To-do list} to add a list to the editor content.
+
+{@snippet features/lists-basic}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</info-box>
+
 ## Ordered and unordered lists
 
 <info-box info>
@@ -15,18 +30,6 @@ modified_at: 2023-09-08
 </info-box>
 
 The list feature lets you create ordered (numbered) and unordered (bulleted) lists. You can use ordered lists where the order of the items matters (as in instructions) and unordered lists where it is not that important (as in a list of ingredients).
-
-{@snippet features/lists-source}
-
-### Demo
-
-Use the editor below to see the list feature in action. You can use toolbar buttons to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
-
-{@snippet features/lists-basic}
-
-<info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
 
 After reading this guide, check out the [Lists in CKEditor&nbsp;5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post where you will find more information about lists with examples.
 
@@ -37,16 +40,6 @@ Legacy lists offer additional formatting tools, just like regular lists. The lis
 ## To-do lists
 
 The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of {@link features/lists bulleted and numbered lists}, so you can nest a to-do list together with any combination of other lists.
-
-### Demo
-
-Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg To-do list} to add a list to the editor content.
-
-{@snippet features/todo-list}<!-- Needs a redo -->
-
-<info-box info>
-	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
 
 ### Additional feature information
 
@@ -111,13 +104,13 @@ From the technical point of view, to-do lists are built on top of the {@link mod
 
 Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
 
-## Installation
+## Installation <!-- UPDATE WITH TO-DOs -->
 
 <info-box>
 	The legacy lists feature is not enabled in any of the {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
-### List feature
+### List feature 
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
@@ -175,13 +168,6 @@ ClassicEditor
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
-
-## Related features
-
-These features provide similar functionality:
-* {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
 ## Common API
 
