@@ -179,6 +179,7 @@
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"features/table.html": "features/tables/tables.html",
 		"features/todo-lists.html": "features/lists/todo-lists.html",
+		"features/lists/document-lists.html": "features/lists/lists.html",
 		"features/toolbar.html": "features/toolbar/toolbar.html",
 		"features/video.html": "features/media-embed.html",
 		"features/video-upload.html": "features/media-embed.html",

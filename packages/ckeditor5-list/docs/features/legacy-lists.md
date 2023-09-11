@@ -42,53 +42,7 @@ After reading this guide, check out the [Lists in CKEditor&nbsp;5](https://ckedi
 
 ## List properties
 
-In addition to the basic functionality of creating the ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
-
-<info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
-
-	The {@link module:list/documentlistproperties~DocumentListProperties document list properties feature} is not available in any builds by default.
-
-	See the [installation](#list-properties-2) section to learn how to enable these in your editor.
-</info-box>
-
-#### List styles
-
-The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
-
-##### Demo
-
-In the editor below, use the ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} or unordered list dropdown {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} to choose the desired marker type for each list.
-
-{@snippet features/lists-style}
-
-#### List start index
-
-The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &mdash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
-
-When this feature is {@link module:list/listconfig~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
-
-##### Demo
-
-In the editor below, notice how the ordering continues in the second list. For continuous numbering of spaceships, go to the first item of the last list. Then use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index.
-
-{@snippet features/lists-index}
-
-#### Reversed list
-
-The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is especially useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
-
-When this feature is {@link module:list/listconfig~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click.
-
-##### Demo
-
-Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether the numbering order should be reversed.
-
-{@snippet features/lists-reversed}
-
-<info-box info>
-	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Full-featured editor} and {@link examples/builds/document-editor Document editor} examples.
-</info-box>
+Legacy lists offer additional formatting tools, just like regular lists. The list style feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
 ## To-do lists
 

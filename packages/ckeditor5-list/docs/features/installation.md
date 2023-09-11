@@ -105,3 +105,5 @@ ClassicEditor
 </info-box>
 
 ## Simple lists
+
+Add info.
