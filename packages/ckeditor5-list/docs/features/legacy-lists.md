@@ -15,7 +15,7 @@ The main difference between the regular and legacy lists, is that the legacy lis
 
 ## Demo <!-- UPDATE -->
 
-Use the editor below to see the list feature in action. You can use toolbar buttons to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}. Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg To-do list} to add a list to the editor content.
+Use the editor below to see the list feature in action. You can use toolbar buttons to insert ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} and add add a to-do list {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg To-do list} to the editor content.
 
 {@snippet features/lists-basic}
 

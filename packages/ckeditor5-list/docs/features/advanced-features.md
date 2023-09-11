@@ -12,6 +12,8 @@ modified_at: 2023-09-08
 
 ## Block lists
 
+## Adjacent lists
+
 ## List indentation
 
 Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
