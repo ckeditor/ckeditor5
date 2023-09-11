@@ -50,7 +50,7 @@ commands:
           name: 👤 Verify if the build was triggered by community - Check if the build should continue
           command: |
             #!/bin/bash
-            
+
             if [[ -z ${COVERALLS_REPO_TOKEN} ]];
             then
               circleci-agent step halt
@@ -168,8 +168,16 @@ workflows:
   main:
     unless: << pipeline.parameters.isNightly >>
     jobs:
-      - cke5_tests_framework
-      - cke5_tests_features
+      - cke5_tests_framework:
+          filters:
+            branches:
+              ignore:
+                - stable
+      - cke5_tests_features:
+          filters:
+            branches:
+              ignore:
+                - stable
       - cke5_coverage:
           requires:
             - cke5_tests_framework
@@ -178,9 +186,19 @@ workflows:
             branches:
               only:
                 - master
+              ignore:
+                - stable
       - cke5_validators
-      - cke5_manual
-      - release_prepare
+      - cke5_manual:
+          filters:
+            branches:
+              ignore:
+                - stable
+      - release_prepare:
+          filters:
+            branches:
+              ignore:
+                - stable
       - cke5_trigger_uber_ci:
           requires:
             - cke5_tests_framework
@@ -193,6 +211,8 @@ workflows:
             branches:
               only:
                 - master
+              ignore:
+                - stable
       - notify_ci_failure:
           filters:
             branches:
