@@ -153,7 +153,7 @@ export default class BlockToolbar extends Plugin {
 		const editBlockLabel = t( 'Edit block' );
 
 		const isDragDropBlockToolbarPluginLoaded = editor.plugins.has( 'DragDropBlockToolbar' );
-		const label = isDragDropBlockToolbarPluginLoaded ? `${ editBlockText } \n${ dragToMoveText }` : editBlockLabel;
+		const label = isDragDropBlockToolbarPluginLoaded ? `${ editBlockText }\n${ dragToMoveText }` : editBlockLabel;
 
 		this.buttonView.label = label;
 
