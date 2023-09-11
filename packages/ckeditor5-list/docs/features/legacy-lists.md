@@ -6,12 +6,12 @@ order: 50
 modified_at: 2023-09-08
 ---
 
-# Legacy lists plugin - Ordered and unordered lists
+# Legacy lists plugin
+
+## Ordered and unordered lists
 
 <info-box info>
-	There are currently two plugins providing list support for CKEditor&nbsp;5: the regular {@link features/lists lists feature} and the {@link features/legacy-lists legacy lists feature}.
-
-	The legacy list feature is not enabled by default in any of the {@link installation/getting-started/predefined-builds predefined builds}.
+	There are currently two plugins providing list support for CKEditor&nbsp;5: the regular {@link features/lists lists feature} and this {@link features/lists legacy lists feature}.
 </info-box>
 
 The list feature lets you create ordered (numbered) and unordered (bulleted) lists. You can use ordered lists where the order of the items matters (as in instructions) and unordered lists where it is not that important (as in a list of ingredients).
@@ -23,7 +23,7 @@ The list feature lets you create ordered (numbered) and unordered (bulleted) lis
 
 {@snippet features/lists-source}
 
-## Demo
+### Demo
 
 Use the editor below to see the list feature in action. You can use toolbar buttons to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
 
@@ -52,35 +52,35 @@ In addition to the basic functionality of creating the ordered and unordered lis
 	See the [installation](#list-properties-2) section to learn how to enable these in your editor.
 </info-box>
 
-### List styles
+#### List styles
 
 The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
-#### Demo
+##### Demo
 
 In the editor below, use the ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} or unordered list dropdown {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} to choose the desired marker type for each list.
 
 {@snippet features/lists-style}
 
-### List start index
+#### List start index
 
 The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &mdash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
 
 When this feature is {@link module:list/listconfig~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
 
-#### Demo
+##### Demo
 
 In the editor below, notice how the ordering continues in the second list. For continuous numbering of spaceships, go to the first item of the last list. Then use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index.
 
 {@snippet features/lists-index}
 
-### Reversed list
+#### Reversed list
 
 The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is especially useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
 
 When this feature is {@link module:list/listconfig~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click.
 
-#### Demo
+##### Demo
 
 Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether the numbering order should be reversed.
 
@@ -90,16 +90,87 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-list/t
 	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Full-featured editor} and {@link examples/builds/document-editor Document editor} examples.
 </info-box>
 
-## List indentation
+## To-do lists
+
+The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of {@link features/lists bulleted and numbered lists}, so you can nest a to-do list together with any combination of other lists.
+
+### Demo
+
+Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg To-do list} to add a list to the editor content.
+
+{@snippet features/todo-list}<!-- Needs a redo -->
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</info-box>
+
+### Additional feature information
+
+You can add to-do lists using a dedicated toolbar button. Thanks to the integration with the {@link features/autoformat autoformatting feature}, they can also be added with Markdown code. Simply start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item, respectively.
+
+After reading this guide, you may find additional interesting details and examples in the [Lists in CKEditor&nbsp;5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post.
+
+### Keyboard support
+
+You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
+
+### HTML structure
+
+When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getData `editor.getData()`}, a to-do list will be represented as the following HTML:
+
+```html
+<ul class="todo-list">
+	<li>
+		<label class="todo-list__label">
+			<input type="checkbox" disabled [checked] />
+			<span class="todo-list__label__description">Foo</span>
+		</label>
+	</li>
+</ul>
+```
+
+For nested lists:
+
+```html
+<ul class="todo-list">
+	<li>
+		<label class="todo-list__label">
+			<input type="checkbox" disabled [checked] />
+			<span class="todo-list__label__description">Foo</span>
+		</label>
+		<ul class="todo-list">
+			<li>
+				<label class="todo-list__label">
+					<input type="checkbox" disabled [checked] />
+					<span class="todo-list__label__description">Bar</span>
+				</label>
+			</li>
+		</ul>
+	</li>
+</ul>
+```
+
+#### Model representation
+
+From the technical point of view, to-do lists are built on top of the {@link module:list/list~List list feature}. In the CKEditor&nbsp;5 data model they are represented as a special `listType`, with an optional `todoListChecked` attribute:
+
+```html
+<listItem listType="todo">Foo</listItem>
+```
+
+```html
+<listItem listType="todo" todoListChecked="true">Bar</listItem>
+```
+
+
+### List indentation
 
 Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
 
 ## Installation
 
-There are currently two plugins providing lists support for CKEditor&nbsp;5: this regular **lists feature** and the new {@link features/lists document lists feature}, based on a different approach.
-
 <info-box>
-	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+	The legacy lists feature is not enabled in any of the {@link installation/getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ### List feature

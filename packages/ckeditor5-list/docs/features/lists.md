@@ -1,5 +1,5 @@
 ---
-menu-title: Lists
+menu-title: Ordered and unordered lists
 meta-title: Lists | CKEditor 5 Documentation
 category: features-lists
 order: 10
@@ -8,20 +8,13 @@ modified_at: 2023-09-08
 
 {@snippet features/lists-source}
 
-# Lists
+# Ordered and unordered lists
 
 <info-box info>
-	There are currently two plugins providing list support for CKEditor&nbsp;5: the regular {@link features/lists lists feature} and the {@link features/legacy-lists legacy lists feature}.
-
-	The list feature is enabled by default in all builds.
+	There are currently two plugins providing list support for CKEditor&nbsp;5: this regular {@link features/lists lists feature} and the {@link features/legacy-lists legacy lists feature}.
 </info-box>
 
-The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
-
-<info-box warning>
-	The document lists feature will become the default list feature for CKEditor&nbsp;5 in the upcoming releases and will replace the {@link features/lists current one}. This plugin will then be withdrawn at the beginning of 2024.
-	See [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) for more details.
-</info-box>
+The list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
 
 ## Demo
 
