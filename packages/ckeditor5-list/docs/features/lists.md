@@ -32,14 +32,13 @@ Use the demo below to add block elements like tables, images, or nested lists. N
 In addition to the basic functionality of creating the ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
-
 	UPDATE THIS
 
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
 
 	The {@link module:list/documentlistproperties~DocumentListProperties document list properties feature} is not available in any builds by default.
 
-	See the [installation](#list-properties-2) section to learn how to enable these in your editor.
+	See the {@link features/installation#list-properties list properties} installation section to learn how to enable these in your editor.
 </info-box>
 
 #### List styles
@@ -65,32 +64,6 @@ When this feature is {@link module:list/listconfig~ListPropertiesConfig#reversed
 <!-- <info-box info>
 	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Feature-rich editor} and {@link examples/builds/document-editor Document editor} examples.
 </info-box> -->
-
-## List indentation
-
-Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
-
-## List merging
-
-By default, two lists of the same type (ordered and unordered) that are next to each other are merged together. This is done so that lists that visually appear to be one continuous list actually are, even if the user has accidentally created several of them.
-
-Unfortunately, in some cases this can be undesirable behavior. For example, two adjacent numbered lists, each with two items, will merge into a single list with the numbers 1 through 4.
-
-To prevent this behavior, enable the `AdjacentListsSupport` plugin.
-
-```js
-import AdjacentListsSupport from '@ckeditor/ckeditor5-list/src/documentlist/adjacentlistssupport.js';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			AdjacentListsSupport,
-			/* Other plugins */
-		],
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
 
 ## Related features
 
