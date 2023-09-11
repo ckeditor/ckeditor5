@@ -18,7 +18,12 @@ The list feature lets you create ordered and unordered lists. The unique thing a
 
 ## Demo
 
-Use the demo below to add block elements like tables, images, or nested lists. Notice that the document retains the ordering and list styles. Use the toolbar buttons to insert new ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
+Test various lists in the demo below. Use the toolbar buttons to insert new ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}. You can also add block elements like tables, images, or nested lists. Notice that the document retains the ordering and list styles.
+
+You can also use Markdown code recognized by the {@link features/autoformat autoformatting feature}:
+
+* Start a line with `*` or `-` followed by a space for a bulleted list.
+* Start a line with `1.` or `1)` followed by a space for a numbered list.
 
 {@snippet features/lists-document}
 
