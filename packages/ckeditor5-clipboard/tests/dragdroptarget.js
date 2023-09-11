@@ -46,7 +46,7 @@ describe( 'Drag and Drop target', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		await editorElement.remove();
+		editorElement.remove();
 	} );
 
 	describe( 'getFinalDropRange', () => {
