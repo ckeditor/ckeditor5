@@ -123,6 +123,16 @@ BalloonEditor.create(document.querySelector( '#editor' ), {
 	.catch( /* ... */ );
 ```
 
+## Styling the drag and drop
+
+The drag and drop target line color is managed by CSS variable (`--ck-clipboard-drop-target-color`). You can use the following snippet to change the color of the line:
+
+```css
+:root {
+	--ck-clipboard-drop-target-color: green;
+}
+```
+
 ## Related features
 
 * CKEditor&nbsp;5 supports dropping images from the file system thanks to the {@link features/image-upload image upload} feature.
