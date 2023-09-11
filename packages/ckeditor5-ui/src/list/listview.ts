@@ -10,7 +10,7 @@
 import View from '../view';
 import FocusCycler from '../focuscycler';
 
-import ListItemView from './listitemview';
+import type ListItemView from './listitemview';
 import ListItemGroupView from './listitemgroupview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import ViewCollection from '../viewcollection';
@@ -18,9 +18,9 @@ import ViewCollection from '../viewcollection';
 import {
 	FocusTracker,
 	KeystrokeHandler,
-	type CollectionAddEvent,
-	type CollectionRemoveEvent,
-	type Locale
+	type Locale,
+	type GetCallback,
+	type CollectionChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/list/list.css';
@@ -30,14 +30,16 @@ import '../../theme/components/list/list.css';
  */
 export default class ListView extends View<HTMLUListElement> implements DropdownPanelFocusable {
 	/**
-	 * TODO
+	 * The collection of focusable views in the list. It is used to determine accessible navigation
+	 * between the {@link module:ui/list/listitemview~ListItemView list items} and
+	 * {@link module:ui/list/listitemgroupview~ListItemGroupView list groups}.
 	 */
 	public readonly focusables: ViewCollection;
 
 	/**
 	 * Collection of the child list views.
 	 */
-	public readonly items: ViewCollection;
+	public readonly items: ViewCollection<ListItemView | ListItemGroupView>;
 
 	/**
 	 * Tracks information about DOM focus in the list.
@@ -57,6 +59,13 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	declare public ariaLabel: string | undefined;
 
 	/**
+	 * (Optional) The ARIA property reflected by the `aria-ariaLabelledBy` DOM attribute used by assistive technologies.
+	 *
+	 * @observable
+	 */
+	declare public ariaLabelledBy?: string | undefined;
+
+	/**
 	 * The property reflected by the `role` DOM attribute to be used by assistive technologies.
 	 *
 	 * @observable
@@ -67,6 +76,12 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	 * Helps cycling over focusable {@link #items} in the list.
 	 */
 	private readonly _focusCycler: FocusCycler;
+
+	/**
+	 * A cached map of {@link module:ui/list/listitemgroupview~ListItemGroupView} to `change` event listeners for their `items`.
+	 * Used for accessibility and keyboard navigation purposes.
+	 */
+	private readonly _listItemGroupToChangeListeners: WeakMap<ListItemGroupView, GetCallback<ListItemsChangeEvent>> = new WeakMap();
 
 	/**
 	 * @inheritDoc
@@ -95,6 +110,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 		} );
 
 		this.set( 'ariaLabel', undefined );
+		this.set( 'ariaLabelledBy', undefined );
 		this.set( 'role', undefined );
 
 		this.setTemplate( {
@@ -107,7 +123,8 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 					'ck-list'
 				],
 				role: bind.to( 'role' ),
-				'aria-label': bind.to( 'ariaLabel' )
+				'aria-label': bind.to( 'ariaLabel' ),
+				'aria-labelledby': bind.to( 'ariaLabelledBy' )
 			},
 
 			children: this.items
@@ -120,50 +137,29 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	public override render(): void {
 		super.render();
 
-		const registerItem = ( item: ListItemView ) => {
-			if ( this.focusables.has( item ) ) {
-				return;
-			}
-
-			this.focusTracker.add( item.element! );
-			this.focusables.add( item );
-		};
-
-		const registerGroupItems = ( group: ListItemGroupView ) => {
-			for ( const child of group.items ) {
-				registerItem( child );
-			}
-		};
-
 		// Items added before rendering should be known to the #focusTracker.
 		for ( const item of this.items ) {
-			if ( item instanceof ListItemView ) {
-				registerItem( item );
-			} else if ( item instanceof ListItemGroupView ) {
-				registerGroupItems( item );
+			if ( item instanceof ListItemGroupView ) {
+				this._registerFocusableItemsGroup( item );
+			} else {
+				this._registerFocusableListItem( item );
 			}
 		}
 
-		this.items.on<CollectionAddEvent<ListItemView>>( 'add', ( evt, item ) => {
-			if ( item instanceof ListItemView ) {
-				registerItem( item );
+		this.items.on<ListItemsChangeEvent>( 'change', ( evt, data ) => {
+			for ( const removed of data.removed ) {
+				if ( removed instanceof ListItemGroupView ) {
+					this._deregisterFocusableItemsGroup( removed );
+				} else {
+					this._deregisterFocusableListItem( removed );
+				}
 			}
 
-			if ( item instanceof ListItemGroupView ) {
-				registerGroupItems( item );
-			}
-		} );
-
-		this.items.on<CollectionRemoveEvent<ListItemView>>( 'remove', ( evt, item ) => {
-			if ( item instanceof ListItemView ) {
-				this.focusTracker.remove( item.element! );
-				this.focusables.remove( item );
-			}
-
-			if ( item instanceof ListItemGroupView ) {
-				for ( const child of item.items ) {
-					this.focusTracker.remove( child.element! );
-					this.focusables.remove( child );
+			for ( const added of Array.from( data.added ).reverse() ) {
+				if ( added instanceof ListItemGroupView ) {
+					this._registerFocusableItemsGroup( added, data.index );
+				} else {
+					this._registerFocusableListItem( added, data.index );
 				}
 			}
 		} );
@@ -195,4 +191,82 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	public focusLast(): void {
 		this._focusCycler.focusLast();
 	}
+
+	/**
+	 * Registers a list item view in the focus tracker.
+	 *
+	 * @param item The list item view to be registered.
+	 * @param index Index of the list item view in the {@link #items} collection. If not specified, the item will be added at the end.
+	 */
+	private _registerFocusableListItem( item: ListItemView, index?: number ) {
+		this.focusTracker.add( item.element! );
+		this.focusables.add( item, index );
+	}
+
+	/**
+	 * Removes a list item view from the focus tracker.
+	 *
+	 * @param item The list item view to be removed.
+	 */
+	private _deregisterFocusableListItem( item: ListItemView ) {
+		this.focusTracker.remove( item.element! );
+		this.focusables.remove( item );
+	}
+
+	/**
+	 * Gets a callback that will be called when the `items` collection of a {@link module:ui/list/listitemgroupview~ListItemGroupView}
+	 * change.
+	 *
+	 * @param groupView The group view for which the callback will be created.
+	 * @returns The callback function to be used for the items `change` event listener in a group.
+	 */
+	private _getOnGroupItemsChangeCallback( groupView: ListItemGroupView ): GetCallback<ListItemsChangeEvent> {
+		return ( evt, data ) => {
+			for ( const removed of data.removed ) {
+				this._deregisterFocusableListItem( removed );
+			}
+
+			for ( const added of Array.from( data.added ).reverse() ) {
+				this._registerFocusableListItem( added, this.items.getIndex( groupView ) + data.index );
+			}
+		};
+	}
+
+	/**
+	 * Registers a list item group view (and its children) in the focus tracker.
+	 *
+	 * @param groupView A group view to be registered.
+	 * @param groupIndex Index of the group view in the {@link #items} collection. If not specified, the group will be added at the end.
+	 */
+	private _registerFocusableItemsGroup( groupView: ListItemGroupView, groupIndex?: number ) {
+		Array.from( groupView.items ).forEach( ( child, childIndex ) => {
+			const registeredChildIndex = typeof groupIndex !== 'undefined' ? groupIndex + childIndex : undefined;
+
+			this._registerFocusableListItem( child as ListItemView, registeredChildIndex );
+		} );
+
+		const groupItemsChangeCallback = this._getOnGroupItemsChangeCallback( groupView );
+
+		// Cache the reference to the callback in case the group is removed (see _deregisterFocusableItemsGroup()).
+		this._listItemGroupToChangeListeners.set( groupView, groupItemsChangeCallback );
+
+		groupView.items.on<ListItemsChangeEvent>( 'change', groupItemsChangeCallback );
+	}
+
+	/**
+	 * Removes a list item group view (and its children) from the focus tracker.
+	 *
+	 * @param groupView The group view to be removed.
+	 */
+	private _deregisterFocusableItemsGroup( groupView: ListItemGroupView ) {
+		for ( const child of groupView.items ) {
+			this._deregisterFocusableListItem( child as ListItemView );
+		}
+
+		groupView.items.off( 'change', this._listItemGroupToChangeListeners.get( groupView )! );
+		this._listItemGroupToChangeListeners.delete( groupView );
+	}
 }
+
+// There's no support for nested groups yet.
+type ListItemsChangeEvent = CollectionChangeEvent<ListItemView>;

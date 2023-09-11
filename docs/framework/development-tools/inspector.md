@@ -38,7 +38,7 @@ or as a plain `<script>` tag in the HTML of your application:
 
 If you do not wish to import the inspector, you can create a bookmarklet in your browser instead that will allow you to open it on any page without interference with its source code.
 
-**Important note: this method will not work if the page has Content Security Policy enabled.**
+**Important note: this method will not work if the page has the Content Security Policy enabled.**
 
 To create such a bookmarklet, paste the following code as the URL of a new bookmark in the browser of your choice:
 

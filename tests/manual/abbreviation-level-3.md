@@ -134,7 +134,7 @@ And an `index.html` page. We will add here the `<abbr>` element - it won't work 
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – abbreviation plugin</title>
+		<title>CKEditor 5 Framework – abbreviation plugin</title>
 	</head>
 	<body>
 		<div id="editor">
