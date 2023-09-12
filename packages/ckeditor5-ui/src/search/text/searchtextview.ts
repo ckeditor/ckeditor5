@@ -12,11 +12,14 @@ import View from '../../view';
 import SearchTextQueryView from './searchtextqueryview';
 import SearchInfoView from '../searchinfoview';
 import SearchResultsView from '../searchresultsview';
-import type LabeledFieldView from '../../labeledfield/labeledfieldview';
-import type InputView from '../../input/inputview';
-import type FilteredView from '../filteredview';
-import { escapeRegExp } from 'lodash-es';
 import FocusCycler from '../../focuscycler';
+import { escapeRegExp } from 'lodash-es';
+import { createLabeledInputText } from '../../labeledfield/utils';
+import type { LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview';
+import type FilteredView from '../filteredview';
+import type ViewCollection from '../../viewcollection';
+import type InputBase from '../../input/inputbase';
+import type InputTextView from '../../inputtext/inputtextview';
 
 import '../../../theme/components/search/search.css';
 
@@ -38,7 +41,9 @@ import '../../../theme/components/search/search.css';
  * document.body.append( view.element );
  * ```
  */
-export default class SearchTextView extends View {
+export default class SearchTextView<
+	TQueryFieldView extends InputBase<HTMLInputElement | HTMLTextAreaElement> = InputTextView
+> extends View {
 	/**
 	 * Tracks information about the DOM focus in the view.
 	 *
@@ -71,7 +76,17 @@ export default class SearchTextView extends View {
 	/**
 	 * The view that allows the user to enter the search query.
 	 */
-	public queryView: SearchTextQueryView;
+	public queryView: SearchTextQueryView<TQueryFieldView>;
+
+	/**
+	 * A collection of views that are children of the search view.
+	 */
+	public children: ViewCollection;
+
+	/**
+	 * TODO
+	 */
+	declare public isEnabled: boolean;
 
 	/**
 	 * Provides the focus management (keyboard navigation) between {@link #queryView} and {@link #filteredView}.
@@ -85,7 +100,7 @@ export default class SearchTextView extends View {
 	 *
 	 * @internal
 	 */
-	private _config: SearchTextViewConfig;
+	protected _config: SearchTextViewConfig<TQueryFieldView>;
 
 	/**
 	 * Creates an instance of the {@link module:ui/search/text/searchtextview~SearchTextView} class.
@@ -93,16 +108,19 @@ export default class SearchTextView extends View {
 	 * @param locale The localization services instance.
 	 * @param config Configuration of the view.
 	 */
-	constructor( locale: Locale, config: SearchTextViewConfig ) {
+	constructor( locale: Locale, config: SearchTextViewConfig<TQueryFieldView> ) {
 		super( locale );
 
 		this._config = config;
+
+		this.set( 'isEnabled', true );
 
 		this.filteredView = config.filteredView;
 		this.queryView = this._createSearchTextQueryView( locale, config.searchFieldLabel );
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.resultsView = new SearchResultsView( locale );
+		this.children = this.createCollection();
 
 		if ( !config.infoView ) {
 			this.infoView = new SearchInfoView();
@@ -143,10 +161,7 @@ export default class SearchTextView extends View {
 
 				tabindex: '-1'
 			},
-			children: [
-				this.queryView,
-				this.resultsView
-			]
+			children: this.children
 		} );
 	}
 
@@ -155,6 +170,8 @@ export default class SearchTextView extends View {
 	 */
 	public override render(): void {
 		super.render();
+
+		this.children.addMany( [ this.queryView, this.resultsView ] );
 
 		const stopPropagation = ( data: Event ) => data.stopPropagation();
 
@@ -198,7 +215,7 @@ export default class SearchTextView extends View {
 		const regExp = query ? new RegExp( escapeRegExp( query ), 'ig' ) : null;
 		const filteringResults = this.filteredView.filter( regExp );
 
-		this.fire( 'search', { query, ...filteringResults } );
+		this.fire<SearchTextViewSearchEvent>( 'search', { query, ...filteringResults } );
 	}
 
 	/**
@@ -207,14 +224,19 @@ export default class SearchTextView extends View {
 	 * @param locale The localization services instance.
 	 * @param label The label of the search field.
 	 */
-	private _createSearchTextQueryView( locale: Locale, label: string ): SearchTextQueryView {
-		const queryView = new SearchTextQueryView( locale, this._config.searchFieldInputCreator, label );
+	private _createSearchTextQueryView( locale: Locale, label: string ): SearchTextQueryView<TQueryFieldView> {
+		const queryFieldCreator = this._config.searchFieldInputCreator;
+		const queryView = new SearchTextQueryView<TQueryFieldView>(
+			locale, label, queryFieldCreator || createLabeledInputText as any
+		);
 
 		this.listenTo( queryView.fieldView, 'input', () => {
 			this.search( queryView.fieldView.element!.value );
 		} );
 
 		queryView.on( 'reset', () => this.reset() );
+
+		queryView.bind( 'isEnabled' ).to( this );
 
 		return queryView;
 	}
@@ -264,7 +286,9 @@ export default class SearchTextView extends View {
 /**
  * The configuration of the {@link module:ui/search/text/searchtextview~SearchTextView} class.
  */
-export type SearchTextViewConfig = {
+export interface SearchTextViewConfig<
+	TConfigSearchField extends InputBase<HTMLInputElement | HTMLTextAreaElement>
+> {
 
 	/**
 	 * The view that is filtered by the search query.
@@ -280,7 +304,7 @@ export type SearchTextViewConfig = {
 	 * The function that creates the search field input view. By default, a plain
 	 * {@link module:ui/inputtext/inputtextview~InputTextView} is used for this purpose.
 	 */
-	searchFieldInputCreator?: ConstructorParameters<typeof LabeledFieldView<InputView>>[ 1 ];
+	searchFieldInputCreator?: LabeledFieldViewCreator<TConfigSearchField>;
 
 	/**
 	 * The custom CSS class name to be added to the search view element.
@@ -311,7 +335,7 @@ export type SearchTextViewConfig = {
 			secondary?: SearchTextViewDefaultInfoText;
 		};
 	};
-};
+}
 
 /**
  * Describes value of a info text configuration in {@link module:ui/search/text/searchtextview~SearchTextViewConfig}.

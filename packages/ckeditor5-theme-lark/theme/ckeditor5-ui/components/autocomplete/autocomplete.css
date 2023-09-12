@@ -15,6 +15,7 @@
 		overflow-y: auto;
 		background: var(--ck-color-base-background);
 		border: 1px solid var(--ck-color-dropdown-panel-border);
+		min-width: auto;
 
 		&.ck-search__results_n {
 			border-bottom-left-radius: 0;
