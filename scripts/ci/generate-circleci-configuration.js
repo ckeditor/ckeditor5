@@ -30,6 +30,7 @@ const NON_FULL_COVERAGE_PACKAGES = [
 
 const bootstrapCommands = () => ( [
 	'checkout_command',
+	'halt_if_short_flow',
 	'bootstrap_repository_command',
 	'prepare_environment_command'
 ] );
