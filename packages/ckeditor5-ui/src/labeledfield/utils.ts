@@ -12,9 +12,9 @@ import InputNumberView from '../inputnumber/inputnumberview';
 import TextareaView from '../textarea/textareaview';
 import { createDropdown } from '../dropdown/utils';
 
-import type LabeledFieldView from './labeledfieldview';
 import type DropdownView from '../dropdown/dropdownview';
 import type { InputViewInputEvent } from '../input/inputview';
+import type { LabeledFieldViewCreator } from './labeledfieldview';
 
 /**
  * A helper for creating labeled inputs.
@@ -43,11 +43,7 @@ import type { InputViewInputEvent } from '../input/inputview';
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
  * @returns The input text view instance.
  */
-export function createLabeledInputText(
-	labeledFieldView: LabeledFieldView,
-	viewUid: string,
-	statusUid: string
-): InputTextView {
+const createLabeledInputText: LabeledFieldViewCreator<InputTextView> = ( labeledFieldView, viewUid, statusUid ) => {
 	const inputView = new InputTextView( labeledFieldView.locale );
 
 	inputView.set( {
@@ -67,7 +63,7 @@ export function createLabeledInputText(
 	labeledFieldView.bind( 'isEmpty', 'isFocused', 'placeholder' ).to( inputView );
 
 	return inputView;
-}
+};
 
 /**
  * A helper for creating labeled number inputs.
@@ -96,11 +92,7 @@ export function createLabeledInputText(
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
  * @returns The input number view instance.
  */
-export function createLabeledInputNumber(
-	labeledFieldView: LabeledFieldView,
-	viewUid: string,
-	statusUid: string
-): InputNumberView {
+const createLabeledInputNumber: LabeledFieldViewCreator<InputNumberView> = ( labeledFieldView, viewUid, statusUid ) => {
 	const inputView = new InputNumberView( labeledFieldView.locale );
 
 	inputView.set( {
@@ -121,7 +113,7 @@ export function createLabeledInputNumber(
 	labeledFieldView.bind( 'isEmpty', 'isFocused', 'placeholder' ).to( inputView );
 
 	return inputView;
-}
+};
 
 /**
  * A helper for creating labeled textarea.
@@ -150,11 +142,7 @@ export function createLabeledInputNumber(
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the textarea.
  * @returns The textarea view instance.
  */
-export function createLabeledTextarea(
-	labeledFieldView: LabeledFieldView,
-	viewUid: string,
-	statusUid: string
-): TextareaView {
+const createLabeledTextarea: LabeledFieldViewCreator<TextareaView> = ( labeledFieldView, viewUid, statusUid ) => {
 	const textareaView = new TextareaView( labeledFieldView.locale );
 
 	textareaView.set( {
@@ -174,7 +162,7 @@ export function createLabeledTextarea(
 	labeledFieldView.bind( 'isEmpty', 'isFocused', 'placeholder' ).to( textareaView );
 
 	return textareaView;
-}
+};
 
 /**
  * A helper for creating labeled dropdowns.
@@ -201,11 +189,7 @@ export function createLabeledTextarea(
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view status} and the dropdown.
  * @returns The dropdown view instance.
  */
-export function createLabeledDropdown(
-	labeledFieldView: LabeledFieldView,
-	viewUid: string,
-	statusUid: string
-): DropdownView {
+const createLabeledDropdown: LabeledFieldViewCreator<DropdownView> = ( labeledFieldView, viewUid, statusUid ) => {
 	const dropdownView = createDropdown( labeledFieldView.locale );
 
 	dropdownView.set( {
@@ -216,4 +200,11 @@ export function createLabeledDropdown(
 	dropdownView.bind( 'isEnabled' ).to( labeledFieldView );
 
 	return dropdownView;
-}
+};
+
+export {
+	createLabeledInputNumber,
+	createLabeledInputText,
+	createLabeledTextarea,
+	createLabeledDropdown
+};

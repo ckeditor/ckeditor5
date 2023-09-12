@@ -179,10 +179,7 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 	 * * an UID string that connects the {@link #labelView label} and the labeled field view in DOM,
 	 * * an UID string that connects the {@link #statusView status} and the labeled field view in DOM.
 	 */
-	constructor(
-		locale: Locale | undefined,
-		viewCreator: ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => TFieldView
-	) {
+	constructor( locale: Locale | undefined, viewCreator: LabeledFieldViewCreator<TFieldView> ) {
 		super( locale );
 
 		const viewUid = `ck-labeled-field-view-${ uid() }`;
@@ -295,3 +292,9 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 		this.fieldView.focus();
 	}
 }
+
+/**
+ * TODO
+ */
+export type LabeledFieldViewCreator<TFieldView extends FocusableView> =
+	( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => TFieldView;

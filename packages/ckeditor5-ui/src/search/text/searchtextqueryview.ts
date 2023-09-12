@@ -9,9 +9,8 @@
 
 import ButtonView from '../../button/buttonview';
 import IconView from '../../icon/iconview';
-import LabeledFieldView from '../../labeledfield/labeledfieldview';
-import { createLabeledInputText } from '../../labeledfield/utils';
-import type InputView from '../../input/inputview';
+import LabeledFieldView, { type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview';
+import type InputBase from '../../input/inputbase';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import { icons } from '@ckeditor/ckeditor5-core';
@@ -22,7 +21,9 @@ import { icons } from '@ckeditor/ckeditor5-core';
  * @private
  * @extends module:ui/labeledfield/labeledfieldview~LabeledFieldView
  */
-export default class SearchTextQueryView extends LabeledFieldView<InputView> {
+export default class SearchTextQueryView<
+	TQueryFieldView extends InputBase<HTMLInputElement | HTMLTextAreaElement>
+> extends LabeledFieldView<TQueryFieldView> {
 	/**
 	 * The loupe icon displayed next to the {@link #fieldView}.
 	 */
@@ -38,8 +39,8 @@ export default class SearchTextQueryView extends LabeledFieldView<InputView> {
 	 */
 	constructor(
 		locale: Locale,
-		viewCreator = createLabeledInputText,
-		label: string
+		label: string,
+		viewCreator: LabeledFieldViewCreator<TQueryFieldView>
 	) {
 		super( locale, viewCreator );
 
