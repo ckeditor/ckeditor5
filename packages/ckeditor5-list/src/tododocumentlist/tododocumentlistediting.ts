@@ -13,8 +13,11 @@ import {
 	type Model,
 	type Element,
 	type MatcherPattern,
+	type ViewElement,
 	type ViewDocumentKeyDownEvent,
-	type ViewDocumentArrowKeyEvent
+	type ViewDocumentArrowKeyEvent,
+	type MapperViewToModelPositionEvent,
+	type ViewDocumentFragment
 } from 'ckeditor5/src/engine';
 
 import {
@@ -302,7 +305,7 @@ export default class TodoDocumentListEditing extends Plugin {
 			}
 		} );
 
-		// Jump at the start of the next node on right arrow key press, when selection is before the checkbox.
+		// Jump at the start/end of the next node on right arrow key press, when selection is before the checkbox.
 		//
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
@@ -318,6 +321,36 @@ export default class TodoDocumentListEditing extends Plugin {
 			jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ),
 			{ context: '$text' }
 		);
+
+		// Map view positions inside the checkbox and wrappers to the position in the first block of the list item.
+		this.listenTo<MapperViewToModelPositionEvent>( editing.mapper, 'viewToModelPosition', ( evt, data ) => {
+			if ( !data.modelPosition ) {
+				return;
+			}
+
+			if ( data.viewPosition.offset > 0 ) {
+				return;
+			}
+
+			const viewParent = data.viewPosition.parent as ViewElement;
+
+			const isInListItem = viewParent.is( 'attributeElement', 'li' );
+			const isInListLabel = isLabelElement( viewParent );
+
+			const isInInputWrapper = viewParent.is( 'element', 'span' ) &&
+				viewParent.getAttribute( 'contenteditable' ) == 'false' &&
+				isLabelElement( viewParent.parent );
+
+			if ( !isInListItem && !isInListLabel && !isInInputWrapper ) {
+				return;
+			}
+
+			const nodeAfter = data.modelPosition.nodeAfter;
+
+			if ( nodeAfter && nodeAfter.getAttribute( 'listType' ) == 'todo' ) {
+				data.modelPosition = model.createPositionAt( nodeAfter, 0 );
+			}
+		}, { priority: 'low' } );
 	}
 
 	/**
@@ -421,15 +454,11 @@ function isDescriptionBlock( modelElement: Element ): boolean {
 }
 
 /**
- * Jump at the start of the next node on right arrow key press, when selection is before the checkbox.
+ * Jump at the start and end of a to-do list item.
  */
 function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): GetCallback<ViewDocumentArrowKeyEvent> {
 	return ( eventInfo, domEventData ) => {
 		const direction = getLocalizedArrowKeyCodeDirection( domEventData.keyCode, locale.contentLanguageDirection );
-
-		if ( direction != 'right' ) {
-			return;
-		}
 
 		const schema = model.schema;
 		const selection = model.document.selection;
@@ -441,19 +470,32 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 		const position = selection.getFirstPosition()!;
 		const parent = position.parent as Element;
 
-		if ( !position.isAtEnd ) {
-			return;
+		// Right arrow before a to-do list item.
+		if ( direction == 'right' && position.isAtEnd ) {
+			const newRange = schema.getNearestSelectionRange( model.createPositionAfter( parent ), 'forward' );
+
+			if ( !newRange ) {
+				return;
+			}
+
+			const newRangeParent = newRange.start.parent;
+
+			if ( newRangeParent && isListItemBlock( newRangeParent ) && newRangeParent.getAttribute( 'listType' ) == 'todo' ) {
+				model.change( writer => writer.setSelection( newRange ) );
+
+				domEventData.preventDefault();
+				domEventData.stopPropagation();
+				eventInfo.stop();
+			}
 		}
+		// Left arrow at the beginning of a to-do list item.
+		else if ( direction == 'left' && position.isAtStart && isListItemBlock( parent ) && parent.getAttribute( 'listType' ) == 'todo' ) {
+			const newRange = schema.getNearestSelectionRange( model.createPositionBefore( parent ), 'backward' );
 
-		const newRange = schema.getNearestSelectionRange( model.createPositionAfter( parent ), 'forward' );
+			if ( !newRange ) {
+				return;
+			}
 
-		if ( !newRange ) {
-			return;
-		}
-
-		const newRangeParent = newRange.start.parent;
-
-		if ( isListItemBlock( newRangeParent ) && newRangeParent.getAttribute( 'listType' ) == 'todo' ) {
 			model.change( writer => writer.setSelection( newRange ) );
 
 			domEventData.preventDefault();
@@ -461,4 +503,11 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 			eventInfo.stop();
 		}
 	};
+}
+
+/**
+ * Returns true if the given element is a label element of a to-do list item.
+ */
+function isLabelElement( viewElement: ViewElement | ViewDocumentFragment | null ): boolean {
+	return !!viewElement && viewElement.is( 'attributeElement' ) && viewElement.hasClass( 'todo-list__label' );
 }
