@@ -41,6 +41,7 @@ export default function normalizeToolbarConfig(
 	items: Array<ToolbarConfigItem>;
 	removeItems: Array<string>;
 	shouldNotGroupWhenFull?: boolean;
+	icon?: string;
 } {
 	if ( Array.isArray( config ) ) {
 		return {
