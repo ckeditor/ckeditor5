@@ -51,8 +51,6 @@ export { default as DomEmitterMixin, type DomEmitter } from './dom/emittermixin'
 export { default as findClosestScrollableAncestor } from './dom/findclosestscrollableancestor';
 export { default as global } from './dom/global';
 export { default as getAncestors } from './dom/getancestors';
-export { default as getElementsIntersectionRect } from './dom/getelementsintersectionrect';
-export { default as getScrollableAncestors } from './dom/getscrollableancestors';
 export { default as getDataFromElement } from './dom/getdatafromelement';
 export { default as isText } from './dom/istext';
 export { default as Rect, type RectSource } from './dom/rect';

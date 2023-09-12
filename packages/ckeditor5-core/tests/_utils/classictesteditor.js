@@ -33,8 +33,22 @@ export default class ClassicTestEditor extends DataApiMixin( ElementApiMixin( Ed
 			this.sourceElement = sourceElementOrData;
 		}
 
+		// Editor in paragraph-only mode
+		const isInline = config && config.useInlineRoot;
+
+		if ( isInline ) {
+			this.model.schema.register( '$inlineRoot', {
+				isLimit: true,
+				isInline: true
+			} );
+
+			this.model.schema.extend( '$text', {
+				allowIn: '$inlineRoot'
+			} );
+		}
+
 		// Create the ("main") root element of the model tree.
-		this.model.document.createRoot();
+		this.model.document.createRoot( isInline ? '$inlineRoot' : '$root' );
 
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 
