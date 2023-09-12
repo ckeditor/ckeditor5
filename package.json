@@ -130,7 +130,6 @@
     "minimatch": "^5.1.0",
     "minimist": "^1.2.5",
     "mkdirp": "^1.0.4",
-    "node-fetch": "^2.6.7",
     "nyc": "^15.0.1",
     "postcss-loader": "^4.3.0",
     "react": "^18.2.0",
@@ -149,7 +148,7 @@
     "webpack": "^5.58.1"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
