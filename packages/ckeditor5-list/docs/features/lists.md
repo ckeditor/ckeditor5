@@ -33,7 +33,7 @@ You can also use Markdown code recognized by the {@link features/autoformat auto
 
 
 ## List properties
-<!-- CONSIDER RESTORING MULTIPLE DEMOS -->
+
 In addition to the basic functionality of creating the ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
@@ -50,7 +50,9 @@ In addition to the basic functionality of creating the ordered and unordered lis
 
 The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
-In the demo above, use the ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} or unordered list dropdown {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} to choose the desired marker type for each list.
+In the demo below, use the ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} or unordered list dropdown {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} to choose the desired marker type for each list.
+
+{@snippet features/lists-style}
 
 #### List start index
 
@@ -58,7 +60,9 @@ The list start index feature allows the user to choose the starting point of an 
 
 When this feature is {@link module:list/listconfig~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
 
- Add a second ordered list in the demo above to test this feature. Then use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index.
+Add a second ordered list in the demo below to test this feature. Then use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown input field to set the start index.
+
+{@snippet features/lists-index}
 
 #### Reversed list
 
@@ -66,9 +70,11 @@ The reversed list feature lets the user reverse the numbering order of a list, c
 
 When this feature is {@link module:list/listconfig~ListPropertiesConfig#reversed enabled}, an additional dropdown switch is available in the ordered list toolbar button. Thanks to it,  the user may easily reverse the order of a list with a single click. Click anywhere in the ordered list in the demo above and use the ordered list {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} dropdown switch to choose whether the numbering order should be reversed.
 
-<!-- <info-box info>
+{@snippet features/lists-reversed}
+
+<info-box info>
 	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Feature-rich editor} and {@link examples/builds/document-editor Document editor} examples.
-</info-box> -->
+</info-box>
 
 ## Related features
 
