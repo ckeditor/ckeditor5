@@ -100,10 +100,7 @@ export default class SearchTextQueryView<
 	 * Resets the search field to its default state.
 	 */
 	public reset(): void {
-		// This addresses a bug in input value handling. The one-way binding between fieldView#value->fieldView.element#value
-		// does clear the value of the DOM element if fieldView#value was not previously set but the user typed in the input.
-		// (fieldView#value is '', text was typed in the input, resetting fieldView#value '' does not trigger #change in observable)
-		this.fieldView.value = this.fieldView.element!.value = '';
+		this.fieldView.reset();
 
 		if ( this._viewConfig.showResetButton ) {
 			this.clearButtonView!.isVisible = false;
