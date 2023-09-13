@@ -14,7 +14,7 @@ import {
 	SearchTextView,
 	ToolbarView,
 	type FilteredView,
-	createLabeledInputNumber
+	createLabeledTextarea
 } from '../../../src';
 
 const locale = new Locale();
@@ -68,8 +68,7 @@ function createSearchableList() {
 	[
 		'getAttribute()', 'getAttributeNames()', 'getAttributeNode()', 'getAttributeNodeNS()', 'getAttributeNS()',
 		'getBoundingClientRect()', 'getClientRects()', 'getElementsByClassName()', 'getElementsByTagName()', 'getElementsByTagNameNS()',
-		'hasAttribute()', 'hasAttributeNS()', 'hasAttributes()', 'hasPointerCapture()', 'insertAdjacentElement()', 'insertAdjacentHTML()',
-		'insertAdjacentText()', 'matches()', 'prepend()', 'querySelector()', 'querySelectorAll()', 'releasePointerCapture()', 'remove()',
+		'hasAttribute()', 'hasAttributeNS()', 'hasAttributes()', 'hasPointerCapture()', 'releasePointerCapture()', 'remove()',
 		'removeAttribute()', 'removeAttributeNode()', 'removeAttributeNS()'
 	].forEach( item => {
 		const listItemView = new ListItemView();
@@ -92,7 +91,9 @@ function createSearchableList() {
 	listView.items.add( hasGroupView );
 
 	const searchView = new SearchTextView( locale, {
-		searchFieldLabel: 'Search list items',
+		queryView: {
+			label: 'Search list items'
+		},
 		filteredView: listView
 	} );
 
@@ -127,11 +128,7 @@ function createSearchableToolbar() {
 		'AddEventListenerOptions', 'AesCbcParams', 'AesCtrParams', 'AesDerivedKeyParams', 'AesGcmParams', 'AesKeyAlgorithm',
 		'AesKeyGenParams', 'Algorithm', 'AnalyserOptions', 'AnimationEventInit', 'AnimationPlaybackEventInit', 'AssignedNodesOptions',
 		'AudioBufferOptions', 'AudioBufferSourceOptions', 'AudioConfiguration', 'AudioContextOptions', 'AudioNodeOptions',
-		'AudioProcessingEventInit', 'AudioTimestamp', 'AudioWorkletNodeOptions', 'AuthenticationExtensionsClientInputs',
-		'AuthenticationExtensionsClientOutputs', 'AuthenticatorSelectionCriteria', 'AvcEncoderConfig', 'BiquadFilterOptions',
-		'BlobEventInit', 'BlobPropertyBag', 'CSSMatrixComponentOptions', 'CSSNumericType', 'CSSStyleSheetInit', 'CacheQueryOptions',
-		'CanvasRenderingContext2DSettings', 'KeyboardEventInit', 'Keyframe', 'KeyframeAnimationOptions', 'KeyframeEffectOptions',
-		'LockInfo', 'MediaStreamTrackEventInit', 'MediaTrackCapabilities', 'MediaTrackConstraintSet', 'MediaTrackConstraints',
+		'AudioProcessingEventInit', 'AudioTimestamp', 'MediaTrackConstraints',
 		'MediaTrackSettings', 'MediaTrackSupportedConstraints', 'MessageEventInit', 'MouseEventInit', 'MultiCacheQueryOptions',
 		'MutationObserverInit', 'NavigationPreloadState'
 	].forEach( item => {
@@ -143,7 +140,9 @@ function createSearchableToolbar() {
 	} );
 
 	const searchView = new SearchTextView( locale, {
-		searchFieldLabel: 'Search toolbar buttons',
+		queryView: {
+			label: 'Search toolbar buttons'
+		},
 		filteredView: toolbarView
 	} );
 
@@ -184,12 +183,14 @@ function createSearchWithCustomInput() {
 		} );
 
 	const searchView = new SearchTextView( locale, {
-		searchFieldLabel: 'Search toolbar buttons',
-		filteredView: toolbarView,
-		searchFieldInputCreator: createLabeledInputNumber
+		queryView: {
+			label: 'Search toolbar buttons',
+			creator: createLabeledTextarea
+		},
+		filteredView: toolbarView
 	} );
 
-	addToPlayground( 'Custom input (number)', searchView );
+	addToPlayground( 'Custom input (textarea)', searchView );
 }
 
 function addToPlayground( name, view ) {

@@ -57,7 +57,11 @@ const listView = new FilteredTestListView();
 } );
 
 const view = new AutocompleteView( locale, {
-	searchFieldLabel: 'Search field label',
+	queryView: {
+		label: 'Search field label',
+		showIcon: false,
+		showResetButton: false
+	},
 	filteredView: listView
 } );
 

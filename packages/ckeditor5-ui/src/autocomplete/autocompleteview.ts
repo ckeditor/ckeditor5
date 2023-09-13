@@ -58,11 +58,10 @@ export default class AutocompleteView<
 		} );
 
 		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
-			resultsView.isVisible = this._shouldShowResults;
+			this._updateResultsVisibility();
 
 			if ( isFocused ) {
 				this._updateResultsViewPosition();
-
 				// Reset the scroll position of the results view whenever the autocomplete reopens.
 				this.resultsView.element!.scrollTop = 0;
 			} else if ( config.resetOnBlur ) {
@@ -70,24 +69,24 @@ export default class AutocompleteView<
 			}
 		} );
 
+		this.on( 'search', () => {
+			this._updateResultsVisibility();
+			this._updateResultsViewPosition();
+		} );
+
+		this.keystrokes.set( 'esc', ( evt, cancel ) => {
+			resultsView.isVisible = false;
+			cancel();
+		} );
+
 		// TODO: This needs to be debounced down the road.
 		this.listenTo( global.document, 'scroll', () => {
-			if ( resultsView.isVisible ) {
-				this._updateResultsViewPosition();
-			}
+			this._updateResultsViewPosition();
 		} );
 
 		this.on( 'change:isEnabled', () => {
-			if ( !this._shouldShowResults ) {
-				resultsView.isVisible = false;
-			}
+			this._updateResultsVisibility();
 		} );
-
-		this.on( 'search', () => {
-			if ( !this._shouldShowResults ) {
-				resultsView.isVisible = false;
-			}
-		}, { priority: 'low' } );
 	}
 
 	/**
@@ -96,7 +95,11 @@ export default class AutocompleteView<
 	private _updateResultsViewPosition() {
 		const resultsView = ( this.resultsView as AutocompleteResultsView );
 
-		resultsView._width = new Rect( this.queryView.element! ).width;
+		if ( !resultsView.isVisible ) {
+			return;
+		}
+
+		resultsView._width = new Rect( this.queryView.fieldView.element! ).width;
 
 		resultsView._position = AutocompleteView._getOptimalPosition( {
 			element: this.resultsView.element!,
@@ -109,18 +112,13 @@ export default class AutocompleteView<
 	/**
 	 * TODO
 	 */
-	private get _queryLength(): number {
-		return this.queryView.fieldView.element!.value.length;
-	}
-
-	/**
-	 * TODO
-	 */
-	private get _shouldShowResults(): boolean {
+	private _updateResultsVisibility() {
+		const resultsView = ( this.resultsView as AutocompleteResultsView );
 		const config = this._config as AutocompleteViewConfig<TQueryFieldView>;
 		const queryMinChars = typeof config.queryMinChars === 'undefined' ? 0 : config.queryMinChars;
+		const queryLength = this.queryView.fieldView.element!.value.length;
 
-		return this.focusTracker.isFocused && this.isEnabled && this._queryLength >= queryMinChars;
+		resultsView.isVisible = this.focusTracker.isFocused && this.isEnabled && queryLength >= queryMinChars;
 	}
 
 	/**

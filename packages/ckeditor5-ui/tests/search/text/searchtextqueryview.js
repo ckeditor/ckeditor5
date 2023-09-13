@@ -43,7 +43,7 @@ describe( 'SearchTextQueryView', () => {
 				expect( clearButtonView ).to.be.instanceOf( ButtonView );
 				expect( clearButtonView.isVisible ).to.be.false;
 				expect( clearButtonView.tooltip ).to.be.true;
-				expect( clearButtonView.class ).to.equal( 'ck-search__clear-search' );
+				expect( clearButtonView.class ).to.equal( 'ck-search__reset' );
 				expect( clearButtonView.label ).to.equal( 'Clear' );
 				expect( clearButtonView.icon ).to.equal( icons.cancel );
 			} );

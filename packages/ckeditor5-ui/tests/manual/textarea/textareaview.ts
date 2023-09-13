@@ -29,14 +29,56 @@ function createPlainTextareaWithFixedRows() {
 	addToPlayground( '3 rows, fixed', textareaView );
 }
 
+function createPlainTextareaWithSingleRow() {
+	const textareaView = new TextareaView();
+
+	textareaView.minRows = 1;
+	textareaView.maxRows = 1;
+
+	addToPlayground( '1 row, fixed', textareaView );
+}
+
+function createPlainTextareaWithVerticalResizeOnly() {
+	const textareaView = new TextareaView();
+
+	textareaView.resize = 'vertical';
+
+	addToPlayground( 'Default rows, manual v-resize only', textareaView );
+}
+
+function createPlainTextareaWithNoResize() {
+	const textareaView = new TextareaView();
+
+	textareaView.resize = 'none';
+
+	addToPlayground( 'Default rows, no manual resize', textareaView );
+}
+
+function createPlainTextareaWithFixedSizeAndNoResize() {
+	const textareaView = new TextareaView();
+
+	textareaView.minRows = textareaView.maxRows = 3;
+	textareaView.resize = 'none';
+
+	addToPlayground( '3 fixed rows, no manual resize', textareaView );
+}
+
 function addToPlayground( name, view ) {
 	view.render();
 
 	const setLargeTextButton = new ButtonView();
+	const clearButton = new ButtonView();
 
+	view.value = 'Hello world!';
 	setLargeTextButton.label = 'Set large text';
 	setLargeTextButton.withText = true;
 	setLargeTextButton.render();
+	setLargeTextButton.class = 'ck-button-save';
+
+	clearButton.label = 'Clear';
+	clearButton.withText = true;
+	clearButton.render();
+	clearButton.class = 'ck-button-cancel';
 
 	setLargeTextButton.on( 'execute', () => {
 		view.value = '';
@@ -48,6 +90,10 @@ function addToPlayground( name, view ) {
 			' up and you’re left with your improvising skills. You learn to adapt as you go.';
 	} );
 
+	clearButton.on( 'execute', () => {
+		view.reset();
+	} );
+
 	const container = document.createElement( 'div' );
 	const heading = document.createElement( 'h2' );
 	heading.textContent = name;
@@ -55,9 +101,14 @@ function addToPlayground( name, view ) {
 	container.appendChild( heading );
 	container.appendChild( view.element! );
 	container.appendChild( setLargeTextButton.element! );
+	container.appendChild( clearButton.element! );
 	document.querySelector( '.playground' )!.appendChild( container );
 }
 
 createPlainTextarea();
 createPlainTextareaWithMoreRows();
 createPlainTextareaWithFixedRows();
+createPlainTextareaWithSingleRow();
+createPlainTextareaWithVerticalResizeOnly();
+createPlainTextareaWithNoResize();
+createPlainTextareaWithFixedSizeAndNoResize();
