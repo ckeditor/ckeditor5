@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals window, document, Event */
 
 import ClipboardPipeline from '../src/clipboardpipeline';
 import DragDropExperimental from '../src/dragdropexperimental';
@@ -20,6 +20,7 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -1420,7 +1421,7 @@ describe( 'Drag and Drop experimental', () => {
 				expect( editableElement.hasAttribute( 'draggable' ) ).to.be.false;
 			} );
 
-			it( 'should only show one preview element', () => {
+			it( 'should only show one preview element when you drag element outside the editing root', () => {
 				setModelData( model,
 					'<blockQuote>' +
 						'[<paragraph>foo</paragraph>' +
@@ -1430,10 +1431,13 @@ describe( 'Drag and Drop experimental', () => {
 					'<horizontalLine></horizontalLine>'
 				);
 
+				const pilcrow = document.createElement( 'div' );
+				pilcrow.setAttribute( 'class', 'pilcrow' );
+
 				const dataTransferMock = createDataTransfer();
 
-				fireDragStart( dataTransferMock );
-				fireDragStart( dataTransferMock );
+				fireDragStart( dataTransferMock, () => {}, pilcrow );
+				fireDragStart( dataTransferMock, () => {}, pilcrow );
 
 				const numberOfCkContentElements = Object
 					.keys( document.getElementsByClassName( 'ck-content' ) )
@@ -1913,7 +1917,7 @@ describe( 'Drag and Drop experimental', () => {
 	} );
 
 	describe( 'integration with the WidgetToolbarRepository plugin', () => {
-		let editor, widgetToolbarRepository, editorElement, viewDocument;
+		let editor, widgetToolbarRepository, editorElement, viewDocument, root, mapper, domConverter;
 
 		beforeEach( () => {
 			editorElement = document.createElement( 'div' );
@@ -1927,6 +1931,9 @@ describe( 'Drag and Drop experimental', () => {
 					editor = newEditor;
 					viewDocument = editor.editing.view.document;
 					widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+					root = editor.model.document.getRoot();
+					mapper = editor.editing.mapper;
+					domConverter = editor.editing.view.domConverter;
 
 					editor.setData( '<p></p>' );
 				} );
@@ -1945,17 +1952,87 @@ describe( 'Drag and Drop experimental', () => {
 			it( 'is enabled when starts dragging the text node', () => {
 				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+				const dataTransfer = createDataTransfer( {} );
+
 				viewDocument.fire( 'dragstart', {
+					dataTransfer,
 					preventDefault: sinon.spy(),
-					dataTransfer: createDataTransfer( {} ),
-					stopPropagation: sinon.spy()
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;
 			} );
 
+			it( 'should show preview with custom implementation', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+				const clientX = 10;
+
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domEvent: {
+						clientX
+					}
+				} );
+
+				const editable = editor.editing.view.document.selection.editableElement;
+				const domEditable = editor.editing.view.domConverter.mapViewToDom( editable );
+				const computedStyle = window.getComputedStyle( domEditable );
+				const paddingLeftString = computedStyle.paddingLeft;
+				const paddingLeft = parseInt( paddingLeftString.slice( 0, paddingLeftString.length - 2 ) );
+
+				const domRect = new Rect( domEditable );
+
+				sinon.assert.calledWith( spy, sinon.match( {
+					style: {
+						'padding-left': `${ domRect.left - clientX + paddingLeft }px`
+					},
+					className: 'ck ck-content',
+					firstChild: sinon.match( {
+						tagName: 'P',
+						innerHTML: 'Foo.'
+					} )
+				} ), 0, 0 );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should show preview with browser implementation', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+
+				const modelElement = root.getNodeByPath( [ 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domElement = domConverter.mapViewToDom( viewElement );
+
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( domElement ),
+					domTarget: domElement
+				} );
+
+				sinon.assert.notCalled( spy );
+			} );
+
 			it( 'is disabled when plugin is disabled', () => {
 				setModelData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
+
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
 
 				const plugin = editor.plugins.get( 'DragDropExperimental' );
 				plugin.isEnabled = false;
@@ -1964,7 +2041,8 @@ describe( 'Drag and Drop experimental', () => {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 1 ),
 					dataTransfer: createDataTransfer( {} ),
-					stopPropagation: sinon.spy()
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -1973,11 +2051,16 @@ describe( 'Drag and Drop experimental', () => {
 			it( 'is disabled when starts dragging the widget', () => {
 				setModelData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+
 				viewDocument.fire( 'dragstart', {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 1 ),
 					dataTransfer: createDataTransfer( {} ),
-					stopPropagation: sinon.spy()
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -1988,11 +2071,16 @@ describe( 'Drag and Drop experimental', () => {
 
 				const dataTransfer = createDataTransfer( {} );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+
 				viewDocument.fire( 'dragstart', {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 0 ),
 					dataTransfer,
-					stopPropagation: sinon.spy()
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -2017,11 +2105,16 @@ describe( 'Drag and Drop experimental', () => {
 
 				const dataTransfer = createDataTransfer( {} );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+
 				viewDocument.fire( 'dragstart', {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 0 ),
 					dataTransfer,
-					stopPropagation() {}
+					stopPropagation() {},
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -2098,8 +2191,8 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 	} );
 
-	function fireDragStart( dataTransferMock, preventDefault = () => {} ) {
-		const eventData = prepareEventData( model.document.selection.getLastPosition() );
+	function fireDragStart( dataTransferMock, preventDefault = () => {}, domTarget ) {
+		const eventData = prepareEventData( model.document.selection.getLastPosition(), domTarget );
 
 		viewDocument.fire( 'mousedown', {
 			...eventData
@@ -2113,8 +2206,6 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 	}
 
-	// -----------------------------------
-
 	function fireDragging( dataTransferMock, modelPositionOrRange ) {
 		viewDocument.fire( 'dragging', {
 			...prepareEventData( modelPositionOrRange ),
@@ -2124,8 +2215,6 @@ describe( 'Drag and Drop experimental', () => {
 			preventDefault: () => {}
 		} );
 	}
-
-	// -----------------------------------
 
 	function fireDrop( dataTransferMock, modelPosition ) {
 		viewDocument.fire( 'clipboardInput', {
@@ -2145,7 +2234,7 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 	}
 
-	function prepareEventData( modelPositionOrRange ) {
+	function prepareEventData( modelPositionOrRange, domTarget ) {
 		let domNode, viewElement, viewRange;
 
 		if ( modelPositionOrRange.is( 'position' ) ) {
@@ -2154,13 +2243,17 @@ describe( 'Drag and Drop experimental', () => {
 			viewRange = view.createRange( viewPosition );
 			viewElement = mapper.findMappedViewAncestor( viewPosition );
 
-			domNode = viewPosition.parent.is( '$text' ) ?
-				domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode :
-				domConverter.mapViewToDom( viewElement );
+			if ( !domTarget ) {
+				domNode = viewPosition.parent.is( '$text' ) ?
+					domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode :
+					domConverter.mapViewToDom( viewElement );
+			} else {
+				domNode = domTarget;
+			}
 		} else {
 			viewRange = mapper.toViewRange( modelPositionOrRange );
 			viewElement = viewRange.getContainedElement();
-			domNode = domConverter.mapViewToDom( viewElement );
+			domNode = !domTarget ? domConverter.mapViewToDom( viewElement ) : domTarget;
 		}
 
 		return {
@@ -2185,8 +2278,6 @@ describe( 'Drag and Drop experimental', () => {
 		}
 	}
 
-	// -----------------------------------
-
 	function expectDraggingMarker( targetPositionOrRange ) {
 		expect( model.markers.has( 'drop-target' ) ).to.be.true;
 
@@ -2197,8 +2288,6 @@ describe( 'Drag and Drop experimental', () => {
 			expect( model.markers.get( 'drop-target' ).getRange().isEqual( targetPositionOrRange ) ).to.be.true;
 		}
 	}
-
-	// -----------------------------------
 
 	function expectFinalized() {
 		expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
