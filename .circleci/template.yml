@@ -13,11 +13,12 @@ commands:
   halt_if_short_flow:
     steps:
       - run:
-          name: Check Commit Message
+          name: ⭐ Short flow breakpoint - Check if the build should continue
           command: |
             COMMIT_MESSAGE=$(git log -n 1 --pretty=format:%s ${CIRCLE_SHA1})
-            if [[ "$COMMIT_MESSAGE" == *"[short-flow]"* ]]; then
-              echo "Skipping, because the commit message contains '[short-flow]'."
+            
+            if [[ "$COMMIT_MESSAGE" == *"[short flow]" ]]; then
+              echo "Skipping, because the commit message contains '[short flow]'."
               circleci step halt
             fi
 
@@ -141,7 +142,6 @@ jobs:
     steps:
       - community_verification_command
       - checkout_command
-      - halt_if_short_flow
       - bootstrap_repository_command
       - run:
           name: Trigger the Uber CI
@@ -226,8 +226,6 @@ workflows:
             branches:
               only:
                 - master
-              ignore:
-                - stable
       - notify_ci_failure:
           filters:
             branches:
