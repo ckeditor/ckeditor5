@@ -88,9 +88,9 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	/**
 	 * TODO
 	 */
-	public reset(): void {
-		this.value = this.element!.value = '';
-		this._updateIsEmpty();
+	public override reset(): void {
+		super.reset();
+
 		this._autoGrow();
 	}
 
