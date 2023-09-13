@@ -81,7 +81,7 @@ command.on( 'change:value', ( event, propName, newValue, oldValue ) => {
 } );
 
 command.on( 'change:isEnabled', ( event, propName, newValue, oldValue ) => {
-	button.isOn = newValue;
+	button.isEnabled = newValue;
 } );
 ```
 

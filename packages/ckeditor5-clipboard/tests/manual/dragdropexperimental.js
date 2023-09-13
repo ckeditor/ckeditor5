@@ -303,3 +303,41 @@ BalloonEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+BalloonEditor
+	.create( document.querySelector( '#editor-balloon-custom-icon' ), {
+		plugins: [
+			Essentials, List, Paragraph, Heading,
+			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
+			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
+			CloudServices, ImageUpload, EasyImage, DragDropBlockToolbar, DragDropExperimental
+		],
+		cloudServices: CS_CONFIG,
+		blockToolbar: {
+			items: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList',
+				'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph', 'heading1', 'heading2',
+				'heading3', 'bulletedList', 'numberedList', 'insertTable', 'uploadImage' ],
+			icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">' +
+			'<path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>'
+		},
+		image: {
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'resizeImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editorBalloonCustomIcon = editor;
+
+		CKEditorInspector.attach( { balloonCustomIcon: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

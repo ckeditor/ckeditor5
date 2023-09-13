@@ -30,6 +30,7 @@ const NON_FULL_COVERAGE_PACKAGES = [
 
 const bootstrapCommands = () => ( [
 	'checkout_command',
+	'halt_if_short_flow',
 	'bootstrap_repository_command',
 	'prepare_environment_command'
 ] );
@@ -73,7 +74,9 @@ const persistToWorkspace = fileName => ( {
 			...generateTestSteps( frameworkPackages, {
 				checkCoverage: true,
 				coverageFile: '.out/combined_framework.info'
-			} )
+			} ),
+			'community_verification_command',
+			persistToWorkspace( 'combined_framework.info' )
 		]
 	};
 
@@ -85,7 +88,9 @@ const persistToWorkspace = fileName => ( {
 			...generateTestSteps( featurePackages, {
 				checkCoverage: true,
 				coverageFile: '.out/combined_features.info'
-			} )
+			} ),
+			'community_verification_command',
+			persistToWorkspace( 'combined_features.info' )
 		]
 	};
 
@@ -96,27 +101,7 @@ const persistToWorkspace = fileName => ( {
 			.forEach( jobName => {
 				replaceShortCheckout( config, jobName );
 			} );
-	} else {
-		// We aim to send the coverage report only from builds triggered by the CKEditor team.
-		// For the community PRs we do not share secret variables.
-		// Hence, some of the scripts will not. See: https://github.com/ckeditor/ckeditor5/issues/7745.
-		config.jobs.cke5_tests_framework.steps.push( persistToWorkspace( 'combined_framework.info' ) );
-		config.jobs.cke5_tests_features.steps.push( persistToWorkspace( 'combined_features.info' ) );
 	}
-
-	Object.keys( config.jobs )
-		.filter( jobName => {
-			if ( jobName === 'release_prepare' ) {
-				return true;
-			}
-
-			if ( jobName.includes( 'tests' ) || jobName.includes( 'coverage' ) || jobName.includes( 'manual' ) ) {
-				return true;
-			}
-
-			return false;
-		} )
-		.forEach( jobName => injectShortFlowDetection( config, jobName ) );
 
 	await fs.writeFile(
 		upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
@@ -163,34 +148,13 @@ function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
 function replaceShortCheckout( config, jobName ) {
 	const job = config.jobs[ jobName ];
 
-	job.steps = job.steps.map( ( item, index ) => {
-		if ( index === 0 ) {
+	job.steps = job.steps.map( item => {
+		if ( item === 'checkout_command' ) {
 			return 'checkout';
 		}
 
 		return item;
 	} );
-}
-
-/**
- * @param {CircleCIConfiguration} config
- * @param {String} jobName
- */
-function injectShortFlowDetection( config, jobName ) {
-	const job = config.jobs[ jobName ];
-	job.environment = job.environment || {};
-
-	const { steps, environment } = job;
-
-	steps.splice( 3, 0, {
-		run: {
-			name: '⭐ Short flow breakpoint - Check if the build should continue',
-			// This command should not impact on the error code.
-			command: 'node scripts/ci/should-run-short-flow.js && circleci-agent step halt || echo ""'
-		}
-	} );
-
-	environment.CKE5_IS_NIGHTLY_BUILD = '<< pipeline.parameters.isNightly >>';
 }
 
 /**

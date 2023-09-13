@@ -123,7 +123,7 @@ Finally, when webpack finishes compiling your super build, you can change the `s
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – super build</title>
+	<title>CKEditor 5 – super build</title>
 	<style>
 		body {
 			max-width: 800px;

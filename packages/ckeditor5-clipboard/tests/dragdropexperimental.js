@@ -53,7 +53,7 @@ describe( 'Drag and Drop experimental', () => {
 		expect( plugin.isEnabled ).to.be.false;
 
 		await editor.destroy();
-		await editorElement.remove();
+		editorElement.remove();
 
 		env.isAndroid = false;
 	} );
@@ -77,7 +77,7 @@ describe( 'Drag and Drop experimental', () => {
 
 		afterEach( async () => {
 			await editor.destroy();
-			await editorElement.remove();
+			editorElement.remove();
 		} );
 
 		it( 'should move text to other place in the same editor (not Firefox)', () => {
@@ -1460,7 +1460,7 @@ describe( 'Drag and Drop experimental', () => {
 					.length;
 
 				// There should be two elements with the `.ck-content` class - editor and drag-and-drop preview.
-				expect( numberOfCkContentElements ).to.be.eq( 2 );
+				expect( numberOfCkContentElements ).to.equal( 2 );
 			} );
 		} );
 
@@ -1763,13 +1763,13 @@ describe( 'Drag and Drop experimental', () => {
 				const viewElement = mapper.toViewElement( modelElement );
 				const domNode = domConverter.mapViewToDom( viewElement );
 
-				const tableRow = root.getNodeByPath( [ 1, 0, 0, 0 ] );
-				const tableRowView = mapper.toViewElement( tableRow );
+				const paragraphModel = root.getNodeByPath( [ 1, 0, 0, 0 ] );
+				const paragraphView = mapper.toViewElement( paragraphModel );
 
 				viewDocument.fire( 'dragging', {
 					domTarget: domNode,
 					target: viewElement,
-					targetRanges: [ view.createRange( view.createPositionAt( tableRowView, 'after' ) ) ],
+					targetRanges: [ view.createRange( view.createPositionAt( paragraphView, 'after' ) ) ],
 					dataTransfer: dataTransferMock,
 					domEvent: getMockedMousePosition( domNode, 'after' )
 				} );
@@ -1806,7 +1806,7 @@ describe( 'Drag and Drop experimental', () => {
 				expectDraggingMarker( model.createPositionAt( firstParagraphModelElement, 'before' ) );
 			} );
 
-			it( 'should find drop position while hovering over a widget without content (not Firefox)', () => {
+			it( 'should find drop position while hovering after widget without content (not Firefox)', () => {
 				const originalEnvGecko = env.isGecko;
 
 				env.isGecko = false;
@@ -1952,10 +1952,9 @@ describe( 'Drag and Drop experimental', () => {
 				} );
 		} );
 
-		afterEach( () => {
+		afterEach( async () => {
+			await editor.destroy();
 			editorElement.remove();
-
-			return editor.destroy();
 		} );
 
 		describe( 'WidgetToolbarRepository#isEnabled', () => {
@@ -2077,7 +2076,7 @@ describe( 'Drag and Drop experimental', () => {
 
 		afterEach( async () => {
 			await editor.destroy();
-			await editorElement.remove();
+			editorElement.remove();
 		} );
 
 		it( 'handles paste', () => {
@@ -2091,7 +2090,7 @@ describe( 'Drag and Drop experimental', () => {
 				preventDefault() {}
 			} );
 
-			expect( getModelData( model ) ).to.be.eq( 'foo<$text bold="true">bar[]</$text>' );
+			expect( getModelData( model ) ).to.equal( 'foo<$text bold="true">bar[]</$text>' );
 		} );
 
 		it( 'stops `clipboardInput` event', () => {
