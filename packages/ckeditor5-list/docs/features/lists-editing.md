@@ -12,7 +12,7 @@ modified_at: 2023-09-13
 
 ## Simple lists
 
-## List merging
+## Adjacent lists merging
 
 By default, two lists of the same type (ordered and unordered) that are next to each other are merged together. This is done so that lists that visually appear to be one continuous list actually are, even if the user has accidentally created several of them.
 
@@ -34,6 +34,15 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-## List indentation
+## Indenting lists
 
-Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
+Besides controlling {@link features/indent text block indentation}, the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} buttons allow for indenting list items (nesting them).
+
+This mechanism is completely transparent to the user. From the code perspective, the buttons are implemented by the {@link module:indent/indent~Indent} plugin, but neither these buttons nor the respective commands implement any functionality by default.
+
+The target behavior comes from two other plugins:
+
+* {@link module:indent/indentblock~IndentBlock} &ndash; The indent block feature controls the indentation of elements such as paragraphs and headings.
+* {@link module:list/list~List} &ndash; The list feature implements the indentation (nesting) of lists.
+
+This means that if you want to allow indenting lists only, you can do that by loading just the `Indent` and `List` plugins.<!-- If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock`, and `List`). -->
