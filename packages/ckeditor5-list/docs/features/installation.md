@@ -2,10 +2,9 @@ menu-title: Installation
 meta-title: Lists intallation | CKEditor 5 Documentation
 category: features-lists
 order: 40
-modified_at: 2023-09-08
 ---
 
-# Installation VERIFY
+# Installation
 
 <info-box info>
 	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
