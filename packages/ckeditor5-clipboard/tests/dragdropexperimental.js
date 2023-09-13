@@ -19,6 +19,8 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -64,7 +66,8 @@ describe( 'Drag and Drop experimental', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ DragDropExperimental, PastePlainText, Paragraph, Table, HorizontalLine, ShiftEnter, BlockQuote, Bold ]
+				plugins: [ DragDropExperimental, PastePlainText, Paragraph, Table, Image, ImageResize,
+					HorizontalLine, ShiftEnter, BlockQuote, Bold ]
 			} );
 
 			model = editor.model;
@@ -995,6 +998,114 @@ describe( 'Drag and Drop experimental', () => {
 					'<paragraph>foobar</paragraph>' +
 					'[<horizontalLine></horizontalLine>]'
 				);
+			} );
+
+			it( 'should start dragging by grabbing the image element and show shrink preview', () => {
+				testUtils.sinon.stub( editor.editing.view.getDomRoot(), 'getBoundingClientRect' ).returns( {
+					top: 0,
+					left: 0,
+					right: 500,
+					width: 500,
+					bottom: 100,
+					height: 100
+				} );
+
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'[<imageBlock src="/assets/sample.png" width="100%"></imageBlock>]' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+				const spyClipboardOutput = sinon.spy();
+				const spyClipboardInput = sinon.spy();
+
+				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
+				const domNode = domConverter.mapViewToDom( widgetViewElement );
+
+				const eventData = {
+					domTarget: domNode,
+					target: widgetViewElement,
+					domEvent: {}
+				};
+
+				viewDocument.fire( 'mousedown', {
+					...eventData
+				} );
+
+				viewDocument.fire( 'dragstart', {
+					...eventData,
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+					'<figure class="image image_resized" style="width:100%;">' +
+						'<img src="/assets/sample.png"></figure>' );
+
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+
+				expect( spyClipboardOutput.called ).to.be.true;
+
+				fireDragEnd( dataTransferMock );
+				expectFinalized();
+			} );
+
+			it( 'should start dragging by grabbing the image element and show original size preview', () => {
+				testUtils.sinon.stub( editor.editing.view.getDomRoot(), 'getBoundingClientRect' ).returns( {
+					top: 0,
+					left: 0,
+					right: 500,
+					width: 500,
+					bottom: 100,
+					height: 100
+				} );
+
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'[<imageBlock src="/assets/sample.png" width="100px"></imageBlock>]' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				const dataTransferMock = createDataTransfer();
+				const spyClipboardOutput = sinon.spy();
+				const spyClipboardInput = sinon.spy();
+
+				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+				viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
+				const domNode = domConverter.mapViewToDom( widgetViewElement );
+
+				const eventData = {
+					domTarget: domNode,
+					target: widgetViewElement,
+					domEvent: {}
+				};
+
+				viewDocument.fire( 'mousedown', {
+					...eventData
+				} );
+
+				viewDocument.fire( 'dragstart', {
+					...eventData,
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+					'<figure class="image image_resized" style="width:100px;">' +
+						'<img src="/assets/sample.png"></figure>' );
+
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+
+				expect( spyClipboardOutput.called ).to.be.true;
+
+				fireDragEnd( dataTransferMock );
+				expectFinalized();
 			} );
 
 			it( 'should start dragging the selected text fragment', () => {

@@ -33,6 +33,7 @@ import {
 	createElement,
 	DomEmitterMixin,
 	delay,
+	Rect,
 	type DelayedFunc,
 	type ObservableChangeEvent,
 	type DomEmitter
@@ -55,6 +56,8 @@ import ClipboardObserver, {
 import DragDropTarget from './dragdroptarget';
 
 import '../theme/clipboard.css';
+
+const CONDITIONAL_WIDTH_ELEMENTS = [ 'imageInline', 'imageBlock' ];
 
 // Drag and drop events overview:
 //
@@ -639,14 +642,44 @@ export default class DragDropExperimental extends Plugin {
 		const preview = createElement( global.document, 'div' );
 
 		preview.className = 'ck ck-content';
-		preview.style.width = computedStyle.width;
-
 		preview.innerHTML = dataTransfer.getData( 'text/html' );
+
+		if ( this._draggableElement && CONDITIONAL_WIDTH_ELEMENTS.includes( this._draggableElement.name ) ) {
+			const resizedImageInPreview: HTMLElement | null = preview.querySelector( '.image_resized' );
+
+			if ( resizedImageInPreview ) {
+				resizedImageInPreview.style.width = '100%';
+			}
+
+			const draggableElementRect = new Rect( view.domConverter.viewRangeToDom( view.document.selection.getFirstRange()! ) );
+			const editableRect = new Rect( this.editor.ui.view.editable.element! );
+
+			preview.style.maxWidth = calculateImagePreviewWidth( draggableElementRect, editableRect ) + 'px';
+		} else {
+			preview.style.width = computedStyle.width;
+		}
+
 		dataTransfer.setDragImage( preview, 0, 0 );
 		// TODO set x to make dragged widget stick to the mouse cursor
 
 		this._previewContainer.appendChild( preview );
 	}
+}
+
+/**
+ * Calculates the image preview width during dragging (image preview cannot be bigger than 50% of editor area
+ * while user drags the image by clicking on it).
+ */
+
+function calculateImagePreviewWidth( draggableElementRect: Rect, editableRect: Rect ): number {
+	const editableWidth = editableRect.width;
+	const draggableElementWidth = draggableElementRect.width;
+
+	if ( draggableElementWidth <= editableWidth / 2 ) {
+		return draggableElementWidth;
+	}
+
+	return editableWidth / 2;
 }
 
 /**
