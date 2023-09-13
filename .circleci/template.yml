@@ -15,7 +15,15 @@ commands:
       - run:
           name: ⭐ Short flow breakpoint - Check if the build should continue
           command: |
+            #!/bin/bash
+
             COMMIT_MESSAGE=$(git log -n 1 --pretty=format:%s ${CIRCLE_SHA1})
+            IS_NIGHTLY=<< pipeline.parameters.isNightly >>
+
+            if [[ "$IS_NIGHTLY" == "true" ]]; then
+              echo "Running full flow due to nightly build, despite detecting '[short flow]'."
+              exit 0
+            fi
             
             if [[ "$COMMIT_MESSAGE" == *"[short flow]" ]]; then
               echo "Skipping, because the commit message contains '[short flow]'."
