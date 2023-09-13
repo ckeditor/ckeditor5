@@ -14,9 +14,11 @@ const { glob } = require( 'glob' );
 /**
  * Checks whether provided package name is the CKEditor 5 dependency.
  *
+ * @param {Object} [options={}]
+ * @param {Array.<String>} [options.skipPackages=[]] Name of packages which won't be touched.
  * @returns {Promise.<Function>}
  */
-module.exports = async function isCKEditor5PackageFactory() {
+module.exports = async function isCKEditor5PackageFactory( { skipPackages = [] } = {} ) {
 	const pathToCKEditor5 = upath.resolve( __dirname, '../../..' );
 
 	const allPathsToPackageJson = await glob( [
@@ -35,5 +37,11 @@ module.exports = async function isCKEditor5PackageFactory() {
 
 	const allPackageNames = allPackageJson.map( packageJson => packageJson.name );
 
-	return packageName => allPackageNames.includes( packageName );
+	return packageName => {
+		if ( skipPackages.includes( packageName ) ) {
+			return false;
+		}
+
+		return allPackageNames.includes( packageName );
+	};
 };
