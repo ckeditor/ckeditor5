@@ -8,8 +8,6 @@ modified_at: 2023-09-08
 # Installation VERIFY
 
 <info-box info>
-	There are currently two plugins providing list support for CKEditor&nbsp;5: the regular {@link features/lists lists feature} and the {@link features/legacy-lists legacy lists feature}. Refer to that guide for legacy lists installation information.
-
 	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 

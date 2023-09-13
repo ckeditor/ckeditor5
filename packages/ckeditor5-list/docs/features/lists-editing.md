@@ -1,22 +1,16 @@
 ---
-menu-title: Advanced lists features
-meta-title: Advanced lists features | CKEditor 5 Documentation
+menu-title: Lists editing bahavior
+meta-title: Lists editing bahavior | CKEditor 5 Documentation
 category: features-lists
 order: 30
-modified_at: 2023-09-08
+modified_at: 2023-09-13
 ---
 
-# Advanced lists features
-
-## Simple lists
+# Lists editing bahavior
 
 ## Block lists
 
-## Adjacent lists
-
-## List indentation
-
-Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
+## Simple lists
 
 ## List merging
 
@@ -39,3 +33,7 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+## List indentation
+
+Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.

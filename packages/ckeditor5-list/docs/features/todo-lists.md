@@ -3,7 +3,6 @@ menu-title: To-do lists
 meta-title: To-do lists | CKEditor 5 Documentation
 category: features-lists
 order: 20
-modified_at: 2023-09-08
 ---
 
 # To-do lists
@@ -27,54 +26,6 @@ You can add to-do lists using a dedicated toolbar button. Thanks to the integrat
 ## Keyboard support
 
 You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
-
-## HTML structure
-
-When you call {@link module:core/editor/utils/dataapimixin~DataApi#function-getData `editor.getData()`}, a to-do list will be represented as the following HTML:
-
-```html
-<ul class="todo-list">
-	<li>
-		<label class="todo-list__label">
-			<input type="checkbox" disabled [checked] />
-			<span class="todo-list__label__description">Foo</span>
-		</label>
-	</li>
-</ul>
-```
-
-For nested lists:
-
-```html
-<ul class="todo-list">
-	<li>
-		<label class="todo-list__label">
-			<input type="checkbox" disabled [checked] />
-			<span class="todo-list__label__description">Foo</span>
-		</label>
-		<ul class="todo-list">
-			<li>
-				<label class="todo-list__label">
-					<input type="checkbox" disabled [checked] />
-					<span class="todo-list__label__description">Bar</span>
-				</label>
-			</li>
-		</ul>
-	</li>
-</ul>
-```
-
-### Model representation
-
-From the technical point of view, to-do lists are built on top of the {@link module:list/list~List list feature}. In the CKEditor&nbsp;5 data model they are represented as a special `listType`, with an optional `todoListChecked` attribute:
-
-```html
-<listItem listType="todo">Foo</listItem>
-```
-
-```html
-<listItem listType="todo" todoListChecked="true">Bar</listItem>
-```
 
 ## Related features
 

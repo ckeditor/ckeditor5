@@ -83,6 +83,11 @@ Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 an
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
 		<tr>
+			<td>Check/uncheck a to-do list item</td>
+			<td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Enter</kbd></td>
+		</tr>
+		<tr>
 			<td>Move out of link or inline code style</td>
 			<td colspan="2"><kbd>←</kbd> <kbd>←</kbd> / <kbd>→</kbd> <kbd>→</kbd></td>
 		</tr>
