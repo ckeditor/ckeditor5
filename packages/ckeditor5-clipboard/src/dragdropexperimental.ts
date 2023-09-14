@@ -33,10 +33,10 @@ import {
 	createElement,
 	DomEmitterMixin,
 	delay,
+	Rect,
 	type DelayedFunc,
 	type ObservableChangeEvent,
-	type DomEmitter,
-	Rect
+	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
 import ClipboardPipeline, {
@@ -650,7 +650,7 @@ export default class DragDropExperimental extends Plugin {
 
 		const domRect = new Rect( domEditable );
 
-		// If domTarget is inside editable root, browser display preview by own.
+		// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
 		if ( domEditable.contains( domTarget ) ) {
 			return;
 		}

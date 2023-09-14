@@ -2250,7 +2250,7 @@ describe( 'Drag and Drop experimental', () => {
 		} else {
 			viewRange = mapper.toViewRange( modelPositionOrRange );
 			viewElement = viewRange.getContainedElement();
-			domNode = !domTarget ? domConverter.mapViewToDom( viewElement ) : domTarget;
+			domNode = domTarget || domConverter.mapViewToDom( viewElement );
 		}
 
 		return {
