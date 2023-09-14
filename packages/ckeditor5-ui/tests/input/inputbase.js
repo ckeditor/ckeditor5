@@ -89,6 +89,18 @@ describe( 'InputBase', () => {
 		} );
 	} );
 
+	describe( 'reset()', () => {
+		it( 'should reset the #value and the DOM element\'s value too', () => {
+			view.value = 'foo';
+
+			view.reset();
+
+			expect( view.value ).to.equal( '' );
+			expect( view.element.value ).to.equal( '' );
+			expect( view.element.classList.contains( 'ck-input-text_empty' ) ).to.be.true;
+		} );
+	} );
+
 	describe( 'DOM bindings', () => {
 		beforeEach( () => {
 			view.value = 'foo';

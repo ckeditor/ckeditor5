@@ -178,7 +178,7 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 	}
 
 	/**
-	 * TODO
+	 * Resets the value of the input
 	 */
 	public reset(): void {
 		this.value = this.element!.value = '';
