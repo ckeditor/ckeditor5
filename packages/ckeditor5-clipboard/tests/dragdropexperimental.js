@@ -1447,7 +1447,7 @@ describe( 'Drag and Drop experimental', () => {
 				expect( numberOfCkContentElements ).to.equal( 2 );
 			} );
 
-			it( 'should show preview with custom implementation', () => {
+			it( 'should show preview with custom implementation if drag element outside the editing root', () => {
 				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
 
 				const dataTransfer = createDataTransfer( {} );
@@ -1485,7 +1485,7 @@ describe( 'Drag and Drop experimental', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'should show preview with browser implementation', () => {
+			it( 'should show preview with browser implementation if drag element inside the editing root', () => {
 				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
 
 				const dataTransfer = createDataTransfer( {} );
