@@ -7,13 +7,24 @@
  * @module ui/textarea/textareaview
  */
 
-import { Rect, type Locale, toUnit, getBorderWidths, CKEditorError, global } from '@ckeditor/ckeditor5-utils';
+import { Rect, type Locale, toUnit, getBorderWidths, global } from '@ckeditor/ckeditor5-utils';
 import InputBase from '../input/inputbase';
 
 import '../../theme/components/input/input.css';
 
 /**
  * The textarea view class.
+ *
+ * ```ts
+ * const textareaView = new TextareaView();
+ *
+ * textareaView.minRows = 2;
+ * textareaView.maxRows = 10;
+ *
+ * textareaView.render();
+ *
+ * document.body.append( textareaView.element );
+ * ```
  */
 export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	/**
@@ -33,7 +44,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	declare public maxRows: number;
 
 	/**
-	 * TODO
+	 * Specifies the value of HTML attribute that indicates whether the user can resize the element.
 	 *
 	 * @observable
 	 * @default 'both'
@@ -41,7 +52,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	declare public resize: 'both' | 'horizontal' | 'vertical' | 'none';
 
 	/**
-	 * TODO
+	 * An internal property that stores the current height of the textarea. Used for the DOM binding.
 	 *
 	 * @observable
 	 * @default null
@@ -71,6 +82,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 		this.extendTemplate( {
 			attributes: {
+				class: [ 'ck-textarea' ],
 				style: {
 					height: bind.to( '_height', height => height ? toPx( height ) : null ),
 					resize: bind.to( 'resize' )
@@ -81,7 +93,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	}
 
 	/**
-	 * TODO
+	 * @inheritDoc
 	 */
 	public override render(): void {
 		super.render();
@@ -97,7 +109,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	}
 
 	/**
-	 * TODO
+	 * @inheritDoc
 	 */
 	public override reset(): void {
 		super.reset();
@@ -106,7 +118,9 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	}
 
 	/**
-	 * TODO
+	 * Updates the {@link #height} of the view depending on {@link #minRows}, {@link #maxRows}, and the current content size.
+	 *
+	 * **Note**: This method overrides manual resize done by the user using a handle. It's a known bug.
 	 */
 	private _updateAutoGrowHeight( shouldScroll?: boolean ): void {
 		const viewElement = this.element!;
@@ -128,6 +142,8 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		// This min-height is relevant only when there's one line of text. Other than that, we can rely on line-height.
 		const minHeight = numberOfLines === 1 ? singleLineAreaDefaultHeight : this.minRows * lineHeight + verticalPaddings + verticalBorder;
 
+		// The size of textarea is controlled by height style instead of rows attribute because event though it is
+		// a more complex solution, it is immune to the layout textarea has been rendered in (gird, flex).
 		this._height = Math.min(
 			Math.max(
 				Math.max( numberOfLines, this.minRows ) * lineHeight + verticalPaddings + verticalBorder,
@@ -145,7 +161,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	}
 
 	/**
-	 * TODO
+	 * Validates the {@link #minRows} and {@link #maxRows} properties and warns in the console if the configuration is incorrect.
 	 */
 	private _validateMinMaxRows() {
 		if ( this.minRows > this.maxRows ) {
@@ -153,8 +169,9 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 			 * The minimum number of rows is greater than the maximum number of rows.
 			 *
 			 * @error ui-textarea-view-min-rows-greater-than-max-rows
+			 * @param textareaView The misconfigured textarea view instance.
 			 */
-			throw new CKEditorError( 'ui-textarea-view-min-rows-greater-than-max-rows', [ this ] );
+			console.warn( 'ui-textarea-view-min-rows-greater-than-max-rows', { textareaView: this } );
 		}
 	}
 }
@@ -162,13 +179,9 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 function getTextareaElementClone( element: HTMLTextAreaElement, value: string ): HTMLTextAreaElement {
 	const clone = element.cloneNode() as HTMLTextAreaElement;
 
-	element.parentNode!.insertBefore( clone, element );
-
 	clone.style.position = 'absolute';
 	clone.style.top = '-99999px';
 	clone.style.left = '-99999px';
-	// clone.style.bottom = '10px';
-	// clone.style.left = '10px';
 	clone.style.height = 'auto';
 	clone.style.overflow = 'hidden';
 	clone.style.width = element.ownerDocument.defaultView!.getComputedStyle( element ).width;

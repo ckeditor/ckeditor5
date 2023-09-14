@@ -3,19 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global console, document */
+
+import { global } from '@ckeditor/ckeditor5-utils';
 import TextareaView from '../../src/textarea/textareaview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'TextareaView', () => {
-	let view;
+	let wrapper, view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new TextareaView();
+		// The reset wrapper is needed for proper line height calculation.
+		wrapper = document.createElement( 'div' );
+		wrapper.classList.add( 'ck', 'ck-reset_all' );
 
+		view = new TextareaView();
 		view.render();
+		wrapper.appendChild( view.element );
+		document.body.appendChild( wrapper );
 	} );
 
 	afterEach( () => {
 		view.destroy();
+		wrapper.remove();
 	} );
 
 	describe( 'constructor()', () => {
@@ -24,6 +36,121 @@ describe( 'TextareaView', () => {
 			expect( view.element.getAttribute( 'type' ) ).to.be.null;
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-textarea' ) ).to.be.true;
+		} );
+
+		it( 'should have default resize attribute value', () => {
+			expect( view.element.style.resize ).to.equal( 'both' );
+		} );
+
+		it( 'should warn if #minHeight is greater than #maxHeight', () => {
+			const warnSpy = testUtils.sinon.stub( console, 'warn' );
+
+			view.minRows = 2;
+			view.maxRows = 3;
+			sinon.assert.notCalled( warnSpy );
+
+			view.minRows = view.maxRows;
+			sinon.assert.notCalled( warnSpy );
+
+			view.minRows = 4;
+			sinon.assert.calledOnceWithMatch( warnSpy, 'ui-textarea-view-min-rows-greater-than-max-rows' );
+
+			view.maxRows = 5;
+			sinon.assert.calledOnceWithMatch( warnSpy, 'ui-textarea-view-min-rows-greater-than-max-rows' );
+		} );
+	} );
+
+	describe( 'reset()', () => {
+		it( 'should reset the #value of the view', () => {
+			view.value = 'foo';
+
+			view.reset();
+
+			expect( view.value ).to.equal( '' );
+		} );
+
+		it( 'should reset the value of the DOM #element', () => {
+			view.element.value = 'foo';
+
+			view.reset();
+
+			expect( view.element.value ).to.equal( '' );
+		} );
+
+		it( 'should update the size of the view', () => {
+			// TODO
+		} );
+	} );
+
+	describe( 'render()', () => {
+		it( 'should resize the view on the #input event and scroll to the end', async () => {
+			const initialHeight = view.element.style.height;
+			const initialScrollTop = view.element.scrollTop;
+
+			view.element.value = '1\n2\n3\n4\n5\n6';
+
+			expect( view.element.style.height ).to.equal( initialHeight );
+			expect( view.element.scrollTop ).to.equal( initialScrollTop );
+
+			view.fire( 'input' );
+
+			expect( view.element.style.height ).to.not.equal( initialHeight );
+			expect( view.element.scrollTop ).to.not.equal( initialScrollTop );
+		} );
+
+		it( 'should resize the view on the #value change using requestAnimationFrame to let the browser update the UI', async () => {
+			const initialHeight = view.element.style.height;
+
+			view.value = 'foo\nbar\nbaz\nqux';
+
+			expect( view.element.style.height ).to.equal( initialHeight );
+
+			await requestAnimationFrame();
+			expect( view.element.style.height ).to.not.equal( initialHeight );
+		} );
+
+		describe( 'dynamic resizing', () => {
+			it( 'should respect #minRows and #maxRows', async () => {
+				// One row, it's less than default #minRows.
+				view.value = '1';
+				await requestAnimationFrame();
+				const oneRowHeight = parseFloat( view.element.style.height );
+
+				// Two rows (default).
+				view.value = '1\n2';
+				await requestAnimationFrame();
+				const twoRowsHeight = parseFloat( view.element.style.height );
+				expect( twoRowsHeight ).to.equal( oneRowHeight );
+
+				// Three rows (more then default #minRows), resize again.
+				view.value = '1\n2\n3';
+				await requestAnimationFrame();
+				const threeRowsHeight = parseFloat( view.element.style.height );
+				expect( threeRowsHeight ).to.be.greaterThan( twoRowsHeight );
+
+				// Four rows.
+				view.value = '1\n2\n3\n4';
+				await requestAnimationFrame();
+				const fourRowsHeight = parseFloat( view.element.style.height );
+				expect( fourRowsHeight ).to.be.greaterThan( threeRowsHeight );
+
+				// Five rows (default #maxRows), this will be the max height.
+				view.value = '1\n2\n3\n4\n5';
+				await requestAnimationFrame();
+				const maxHeight = parseFloat( view.element.style.height );
+				expect( maxHeight ).to.be.greaterThan( fourRowsHeight );
+
+				// Six rows (more than #maxRows), the view is no longer growing.
+				view.value = '1\n2\n3\n4\n5\n6';
+				await requestAnimationFrame();
+				expect( parseFloat( view.element.style.height ) ).to.equal( maxHeight );
+
+				// Going back to #minRows
+				view.value = '1';
+				await requestAnimationFrame();
+				expect( parseFloat( view.element.style.height ) ).to.equal( twoRowsHeight );
+			} );
 		} );
 	} );
 
@@ -34,13 +161,29 @@ describe( 'TextareaView', () => {
 		} );
 
 		describe( 'rows attribute', () => {
-			it( 'should react on view#inputMode', () => {
-				expect( view.element.getAttribute( 'rows' ) ).to.equal( '1' );
+			it( 'should react on view#minRows', () => {
+				expect( view.element.getAttribute( 'rows' ) ).to.equal( '2' );
 
-				view.rows = 5;
+				view.minRows = 5;
 
 				expect( view.element.getAttribute( 'rows' ) ).to.equal( '5' );
 			} );
 		} );
+
+		describe( 'resize attribute', () => {
+			it( 'should react on view#reisze', () => {
+				expect( view.element.style.resize ).to.equal( 'both' );
+
+				view.resize = 'vertical';
+
+				expect( view.element.style.resize ).to.equal( 'vertical' );
+			} );
+		} );
 	} );
+
+	function requestAnimationFrame() {
+		return new Promise( res => {
+			global.window.requestAnimationFrame( res );
+		} );
+	}
 } );
