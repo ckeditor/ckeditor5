@@ -193,6 +193,30 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
+	it( 'should insert multiple image files when are pasted (inline image type)', () => {
+		const files = [ createNativeFileMock(), createNativeFileMock() ];
+		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const targetRange = model.createRange(
+			model.createPositionAt( doc.getRoot().getChild( 0 ), 3 ),
+			model.createPositionAt( doc.getRoot().getChild( 0 ), 3 )
+		);
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
+		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
+
+		expect( getModelData( model ) ).to.equal(
+			'<paragraph>' +
+				`foo<imageInline uploadId="${ id1 }" uploadStatus="reading"></imageInline>` +
+				`[<imageInline uploadId="${ id2 }" uploadStatus="reading"></imageInline>]` +
+			'</paragraph>'
+		);
+	} );
+
 	it( 'should insert multiple image files when are pasted', () => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
 		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
