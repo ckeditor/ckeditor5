@@ -298,14 +298,6 @@ describe( 'ButtonView', () => {
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
 			} );
 
-			it( '-checked reacts on #isOn', () => {
-				view.isOn = true;
-				expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
-
-				view.isOn = false;
-				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
-			} );
-
 			it( '-label reacts on #ariaLabel', () => {
 				view.ariaLabel = undefined;
 				expect( view.element.hasAttribute( 'aria-label' ) ).to.be.false;
