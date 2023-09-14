@@ -7,7 +7,7 @@
  * @module ui/textarea/textareaview
  */
 
-import { Rect, type Locale, toUnit, getBorderWidths } from '@ckeditor/ckeditor5-utils';
+import { Rect, type Locale, toUnit, getBorderWidths, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import InputBase from '../input/inputbase';
 
 import '../../theme/components/input/input.css';
@@ -61,6 +61,9 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		this.set( 'maxRows', 5 );
 		this.set( '_height', null );
 		this.set( 'resize', 'both' );
+
+		this.on( 'change:minRows', this._validateMinMaxRows.bind( this ) );
+		this.on( 'change:maxRows', this._validateMinMaxRows.bind( this ) );
 
 		const bind = this.bindTemplate;
 
@@ -132,6 +135,20 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 		singleLineContentClone.remove();
 		fullTextValueClone.remove();
+	}
+
+	/**
+	 * TODO
+	 */
+	private _validateMinMaxRows() {
+		if ( this.minRows > this.maxRows ) {
+			/**
+			 * The minimum number of rows is greater than the maximum number of rows.
+			 *
+			 * @error ui-textarea-view-min-rows-greater-than-max-rows
+			 */
+			throw new CKEditorError( 'ui-textarea-view-min-rows-greater-than-max-rows', [ this ] );
+		}
 	}
 }
 
