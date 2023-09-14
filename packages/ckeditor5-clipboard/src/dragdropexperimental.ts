@@ -655,7 +655,7 @@ export default class DragDropExperimental extends Plugin {
 			return;
 		}
 
-		const domEditablePaddingLeft = parseInt( computedStyle.paddingLeft.slice( 0, computedStyle.paddingLeft.length - 2 ) );
+		const domEditablePaddingLeft = parseFloat( computedStyle.paddingLeft );
 		const preview = createElement( global.document, 'div' );
 
 		preview.className = 'ck ck-content';

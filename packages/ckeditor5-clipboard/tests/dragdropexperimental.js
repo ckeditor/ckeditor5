@@ -1446,6 +1446,66 @@ describe( 'Drag and Drop experimental', () => {
 				// There should be two elements with the `.ck-content` class - editor and drag-and-drop preview.
 				expect( numberOfCkContentElements ).to.equal( 2 );
 			} );
+
+			it( 'should show preview with custom implementation', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+				const clientX = 10;
+
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domEvent: {
+						clientX
+					}
+				} );
+
+				const editable = editor.editing.view.document.selection.editableElement;
+				const domEditable = editor.editing.view.domConverter.mapViewToDom( editable );
+				const computedStyle = window.getComputedStyle( domEditable );
+				const paddingLeftString = computedStyle.paddingLeft;
+				const paddingLeft = parseFloat( paddingLeftString );
+
+				const domRect = new Rect( domEditable );
+
+				sinon.assert.calledWith( spy, sinon.match( {
+					style: {
+						'padding-left': `${ domRect.left - clientX + paddingLeft }px`
+					},
+					className: 'ck ck-content',
+					firstChild: sinon.match( {
+						tagName: 'P',
+						innerHTML: 'Foo.'
+					} )
+				} ), 0, 0 );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should show preview with browser implementation', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+
+				const modelElement = root.getNodeByPath( [ 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domElement = domConverter.mapViewToDom( viewElement );
+
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( domElement ),
+					domTarget: domElement
+				} );
+
+				sinon.assert.notCalled( spy );
+			} );
 		} );
 
 		describe( 'dragenter', () => {
@@ -1917,7 +1977,7 @@ describe( 'Drag and Drop experimental', () => {
 	} );
 
 	describe( 'integration with the WidgetToolbarRepository plugin', () => {
-		let editor, widgetToolbarRepository, editorElement, viewDocument, root, mapper, domConverter;
+		let editor, widgetToolbarRepository, editorElement, viewDocument;
 
 		beforeEach( () => {
 			editorElement = document.createElement( 'div' );
@@ -1931,9 +1991,6 @@ describe( 'Drag and Drop experimental', () => {
 					editor = newEditor;
 					viewDocument = editor.editing.view.document;
 					widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					root = editor.model.document.getRoot();
-					mapper = editor.editing.mapper;
-					domConverter = editor.editing.view.domConverter;
 
 					editor.setData( '<p></p>' );
 				} );
@@ -1965,66 +2022,6 @@ describe( 'Drag and Drop experimental', () => {
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;
-			} );
-
-			it( 'should show preview with custom implementation', () => {
-				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
-
-				const dataTransfer = createDataTransfer( {} );
-
-				const spy = sinon.spy( dataTransfer, 'setDragImage' );
-				const clientX = 10;
-
-				viewDocument.fire( 'dragstart', {
-					dataTransfer,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
-					domEvent: {
-						clientX
-					}
-				} );
-
-				const editable = editor.editing.view.document.selection.editableElement;
-				const domEditable = editor.editing.view.domConverter.mapViewToDom( editable );
-				const computedStyle = window.getComputedStyle( domEditable );
-				const paddingLeftString = computedStyle.paddingLeft;
-				const paddingLeft = parseInt( paddingLeftString.slice( 0, paddingLeftString.length - 2 ) );
-
-				const domRect = new Rect( domEditable );
-
-				sinon.assert.calledWith( spy, sinon.match( {
-					style: {
-						'padding-left': `${ domRect.left - clientX + paddingLeft }px`
-					},
-					className: 'ck ck-content',
-					firstChild: sinon.match( {
-						tagName: 'P',
-						innerHTML: 'Foo.'
-					} )
-				} ), 0, 0 );
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'should show preview with browser implementation', () => {
-				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
-
-				const dataTransfer = createDataTransfer( {} );
-
-				const spy = sinon.spy( dataTransfer, 'setDragImage' );
-
-				const modelElement = root.getNodeByPath( [ 0 ] );
-				const viewElement = mapper.toViewElement( modelElement );
-				const domElement = domConverter.mapViewToDom( viewElement );
-
-				viewDocument.fire( 'dragstart', {
-					dataTransfer,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy(),
-					domEvent: getMockedMousePosition( domElement ),
-					domTarget: domElement
-				} );
-
-				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'is disabled when plugin is disabled', () => {
