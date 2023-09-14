@@ -116,6 +116,8 @@ export default class ImageStyleCommand extends Command {
 			} else {
 				writer.setAttribute( 'imageStyle', requestedStyle, imageElement );
 			}
+
+			imageUtils.setImageNaturalSizeAttributes( imageElement );
 		} );
 	}
 

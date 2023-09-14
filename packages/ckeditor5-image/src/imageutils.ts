@@ -19,16 +19,25 @@ import type {
 	ViewDocumentFragment,
 	DowncastWriter,
 	Model,
-	Position
+	Position,
+	ViewContainerElement
 } from 'ckeditor5/src/engine';
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget';
 import { determineImageTypeForInsertionAtSelection } from './image/utils';
+import { DomEmitterMixin, type DomEmitter, global } from 'ckeditor5/src/utils';
+
+const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /^(image|image-inline)$/;
 
 /**
  * A set of helpers related to images.
  */
 export default class ImageUtils extends Plugin {
+	/**
+	 * DOM Emitter.
+	 */
+	private _domEmitter: DomEmitter = new ( DomEmitterMixin() )();
+
 	/**
 	 * @inheritDoc
 	 */
@@ -121,10 +130,49 @@ export default class ImageUtils extends Plugin {
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
+				this.setImageNaturalSizeAttributes( imageElement );
+
 				return imageElement;
 			}
 
 			return null;
+		} );
+	}
+
+	/**
+	 * Reads original image sizes and sets them as `width` and `height`.
+	 *
+	 * The `src` attribute may not be available if the user is using an upload adapter. In such a case,
+	 * this method is called again after the upload process is complete and the `src` attribute is available.
+	 */
+	public setImageNaturalSizeAttributes( imageElement: Element ): void {
+		const src = imageElement.getAttribute( 'src' ) as string;
+
+		if ( !src ) {
+			return;
+		}
+
+		if ( imageElement.getAttribute( 'width' ) || imageElement.getAttribute( 'height' ) ) {
+			return;
+		}
+
+		this.editor.model.change( writer => {
+			const img = new global.window.Image();
+
+			this._domEmitter.listenTo( img, 'load', () => {
+				if ( !imageElement.getAttribute( 'width' ) && !imageElement.getAttribute( 'height' ) ) {
+					// We use writer.batch to be able to undo (in a single step) width and height setting
+					// along with any change that triggered this action (e.g. image resize or image style change).
+					this.editor.model.enqueueChange( writer.batch, writer => {
+						writer.setAttribute( 'width', img.naturalWidth, imageElement );
+						writer.setAttribute( 'height', img.naturalHeight, imageElement );
+					} );
+				}
+
+				this._domEmitter.stopListening( img, 'load' );
+			} );
+
+			img.src = src;
 		} );
 	}
 
@@ -164,6 +212,13 @@ export default class ImageUtils extends Plugin {
 		const selectedElement = selection.getSelectedElement();
 
 		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition()!.findAncestor( 'imageBlock' );
+	}
+
+	/**
+	 * Returns an image widget editing view based on the passed image view.
+	 */
+	public getImageWidgetFromImageView( imageView: ViewElement ): ViewContainerElement | null {
+		return imageView.findAncestor( { classes: IMAGE_WIDGETS_CLASSES_MATCH_REGEXP } ) as ( ViewContainerElement | null );
 	}
 
 	/**
@@ -238,6 +293,15 @@ export default class ImageUtils extends Plugin {
 				return item as ViewElement;
 			}
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		this._domEmitter.stopListening();
+
+		return super.destroy();
 	}
 }
 

@@ -9,7 +9,15 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 
-import { UpcastWriter, type Element, type Item, type Writer, type DataTransfer, type ViewElement } from 'ckeditor5/src/engine';
+import {
+	UpcastWriter,
+	type Element,
+	type Item,
+	type Writer,
+	type DataTransfer,
+	type ViewElement,
+	type NodeAttributes
+} from 'ckeditor5/src/engine';
 
 import { Notification } from 'ckeditor5/src/ui';
 import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard';
@@ -225,12 +233,14 @@ export default class ImageUploadEditing extends Plugin {
 		} );
 
 		// Set the default handler for feeding the image element with `src` and `srcset` attributes.
+		// Also set the natural `width` and `height` attributes (if not already set).
 		this.on<ImageUploadCompleteEvent>( 'uploadComplete', ( evt, { imageElement, data } ) => {
 			const urls = data.urls ? data.urls as Record<string, unknown> : data;
 
 			this.editor.model.change( writer => {
 				writer.setAttribute( 'src', urls.default, imageElement );
 				this._parseAndSetSrcsetAttributeOnImage( urls, imageElement, writer );
+				imageUtils.setImageNaturalSizeAttributes( imageElement );
 			} );
 		}, { priority: 'low' } );
 	}
@@ -396,10 +406,15 @@ export default class ImageUploadEditing extends Plugin {
 			.join( ', ' );
 
 		if ( srcsetAttribute != '' ) {
-			writer.setAttribute( 'srcset', {
-				data: srcsetAttribute,
-				width: maxWidth
-			}, image );
+			const attributes: NodeAttributes = {
+				srcset: srcsetAttribute
+			};
+
+			if ( !image.hasAttribute( 'width' ) && !image.hasAttribute( 'height' ) ) {
+				attributes.width = maxWidth;
+			}
+
+			writer.setAttributes( attributes, image );
 		}
 	}
 }
