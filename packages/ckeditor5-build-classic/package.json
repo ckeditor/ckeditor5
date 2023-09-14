@@ -37,6 +37,7 @@
     "@ckeditor/ckeditor5-find-and-replace": "^36.0.1",
     "@ckeditor/ckeditor5-font": "^36.0.1",
     "@ckeditor/ckeditor5-html-support": "^36.0.1",
+    "@ckeditor/ckeditor5-image": "^39.0.2",
     "@ckeditor/ckeditor5-indent": "^36.0.1",
     "@ckeditor/ckeditor5-link": "^36.0.1",
     "@ckeditor/ckeditor5-list": "^36.0.1",
