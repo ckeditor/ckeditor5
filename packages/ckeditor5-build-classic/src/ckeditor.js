@@ -39,6 +39,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { icons } from '@ckeditor/ckeditor5-core';
+import Image from '@ckeditor/ckeditor5-image';
 
 /* globals $ */
 
@@ -157,7 +158,8 @@ ClassicEditor.builtinPlugins = [
 	Link,
 	Paragraph,
 	ParagraphButtonUI,
-	PasteFromOffice
+	PasteFromOffice,
+	Image
 ];
 
 // Editor configuration.
@@ -186,7 +188,8 @@ ClassicEditor.defaultConfig = {
 			'alignment', '-',
 			'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
 			'link', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-			'specialCharacters', 'insertTable', '|'
+			'specialCharacters', 'insertTable', '|',
+			'image', '|'
 		],
 		shouldNotGroupWhenFull: true
 	},
