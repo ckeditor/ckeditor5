@@ -714,7 +714,6 @@ function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: A
 		parent.is( 'element' ) &&
 		!model.schema.isLimit( parent )
 	) {
-		console.log( 1 );
 		const parentRange = model.createRangeOn( parent );
 		const touchesStart = startPosition.isTouching( parentRange.start );
 		const touchesEnd = endPosition.isTouching( parentRange.end );
