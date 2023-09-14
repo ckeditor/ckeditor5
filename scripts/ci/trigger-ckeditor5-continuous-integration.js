@@ -8,6 +8,7 @@
 /* eslint-env node */
 
 const minimist = require( 'minimist' );
+const fetch = require( 'node-fetch' );
 
 const {
 	CKE5_CIRCLE_TOKEN,
