@@ -20,7 +20,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	 * Specifies the visible height of a text area, in lines.
 	 *
 	 * @observable
-	 * @default 1
+	 * @default 2
 	 */
 	declare public minRows: number;
 
@@ -36,17 +36,18 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	 * TODO
 	 *
 	 * @observable
-	 * @default null
-	 */
-	declare public height: number | null;
+	 * @default 'both'
+	*/
+	declare public resize: 'both' | 'horizontal' | 'vertical' | 'none';
 
 	/**
 	 * TODO
 	 *
 	 * @observable
-	 * @default 'both'
+	 * @default null
+	 * @internal
 	 */
-	declare public resize: 'both' | 'horizontal' | 'vertical' | 'none';
+	declare public _height: number | null;
 
 	/**
 	 * @inheritDoc
@@ -56,9 +57,9 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 		const toPx = toUnit( 'px' );
 
-		this.set( 'minRows', 1 );
+		this.set( 'minRows', 2 );
 		this.set( 'maxRows', 5 );
-		this.set( 'height', null );
+		this.set( '_height', null );
 		this.set( 'resize', 'both' );
 
 		const bind = this.bindTemplate;
@@ -68,7 +69,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		this.extendTemplate( {
 			attributes: {
 				style: {
-					height: bind.to( 'height', height => height ? toPx( height ) : null ),
+					height: bind.to( '_height', height => height ? toPx( height ) : null ),
 					resize: bind.to( 'resize' )
 				},
 				rows: bind.to( 'minRows' )
@@ -117,7 +118,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		// This min-height is relevant only when there's one line of text. Other than that, we can rely on line-height.
 		const minHeight = numberOfLines === 1 ? singleLineAreaDefaultHeight : this.minRows * lineHeight + verticalPaddings + verticalBorder;
 
-		this.height = Math.min(
+		this._height = Math.min(
 			Math.max(
 				Math.max( numberOfLines, this.minRows ) * lineHeight + verticalPaddings + verticalBorder,
 				minHeight
