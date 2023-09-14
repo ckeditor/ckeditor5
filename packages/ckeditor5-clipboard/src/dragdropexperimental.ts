@@ -15,7 +15,6 @@ import {
 	type DataTransfer,
 	type Element,
 	type Model,
-	type Node,
 	type Range,
 	type Position,
 	type ViewDocumentMouseDownEvent,
@@ -703,22 +702,25 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
  * Because all elements inside the `blockQuote` are selected, the range includes the `blockQuote` too.
  * If only first and second paragraphs would be selected, the range would not include it.
  */
-function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: Array<Node> ): Range {
-	const parent = elements[ 0 ].parent as Element | null;
-	const startPosition: Position = model.createPositionBefore( elements[ 0 ] );
-	const endPosition: Position = model.createPositionAfter( elements[ elements.length - 1 ] );
+function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: Array<Element> ): Range {
+	const firstElement = elements[ 0 ];
+	const lastElement = elements[ elements.length - 1 ];
+	const parent = firstElement.getCommonAncestor( lastElement );
+	const startPosition: Position = model.createPositionBefore( firstElement );
+	const endPosition: Position = model.createPositionAfter( lastElement );
 
 	if (
 		parent &&
-		!model.schema.isLimit( parent ) &&
-		elements.every( element => element.parent === parent )
+		parent.is( 'element' ) &&
+		!model.schema.isLimit( parent )
 	) {
+		console.log( 1 );
 		const parentRange = model.createRangeOn( parent );
 		const touchesStart = startPosition.isTouching( parentRange.start );
 		const touchesEnd = endPosition.isTouching( parentRange.end );
 
 		if ( touchesStart && touchesEnd ) {
-			// Selection includes all elements in the parent
+			// Selection includes all elements in the parent.
 			return getRangeExtendedToLargestFullySelectedParent( model, [ parent ] );
 		}
 	}

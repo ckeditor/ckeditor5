@@ -1392,26 +1392,6 @@ describe( 'Drag and Drop experimental', () => {
 				expectDraggingMarker( positionAfterHr );
 			} );
 
-			it( 'extends range to parent when all of its elements are selected', () => {
-				setModelData( model,
-					'<blockQuote>' +
-						'[<paragraph>foo</paragraph>' +
-						'<paragraph>bar</paragraph>' +
-						'<paragraph>baz</paragraph>]' +
-					'</blockQuote>' +
-					'<horizontalLine></horizontalLine>'
-				);
-
-				const dataTransferMock = createDataTransfer();
-				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
-
-				fireDragStart( dataTransferMock );
-				expectDragStarted( dataTransferMock, '<blockquote><p>foo</p><p>bar</p><p>baz</p></blockquote>' );
-
-				fireDragging( dataTransferMock, positionAfterHr );
-				expectDraggingMarker( positionAfterHr );
-			} );
-
 			it( 'should remove "draggable" attribute from editable element', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
@@ -1930,6 +1910,132 @@ describe( 'Drag and Drop experimental', () => {
 				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
 			} );
 		} );
+
+		describe( 'extending selection range when all parent elements are selected', () => {
+			it( 'extends flat selection', () => {
+				setModelData( model, trim`
+					<blockQuote>
+						<paragraph>[one</paragraph>
+						<paragraph>two</paragraph>
+						<paragraph>three]</paragraph>
+					</blockQuote>
+					<horizontalLine></horizontalLine>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, trim`
+					<blockquote>
+						<p>one</p>
+						<p>two</p>
+						<p>three</p>
+					</blockquote>
+				` );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+
+			it( 'extends nested selection', () => {
+				setModelData( model, trim`
+					<blockQuote>
+						<paragraph>[one</paragraph>
+						<blockQuote>
+							<paragraph>two</paragraph>
+							<paragraph>three</paragraph>
+							<paragraph>four</paragraph>
+						</blockQuote>
+						<paragraph>five]</paragraph>
+					</blockQuote>
+					<horizontalLine></horizontalLine>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, trim`
+					<blockquote>
+						<p>one</p>
+						<blockquote>
+							<p>two</p>
+							<p>three</p>
+							<p>four</p>
+						</blockquote>
+						<p>five</p>
+					</blockquote>
+				` );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+
+			it( 'extends selection when it starts at different level than it ends', () => {
+				setModelData( model, trim`
+					<blockQuote>
+						<blockQuote>
+							<paragraph>[one</paragraph>
+							<paragraph>two</paragraph>
+							<paragraph>three</paragraph>
+						</blockQuote>
+						<paragraph>four]</paragraph>
+					</blockQuote>
+					<horizontalLine></horizontalLine>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, trim`
+					<blockquote>
+						<blockquote>
+							<p>one</p>
+							<p>two</p>
+							<p>three</p>
+						</blockquote>
+						<p>four</p>
+					</blockquote>
+				` );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+
+			it( 'extends selection when it ends at different level than it starts', () => {
+				setModelData( model, trim`
+					<blockQuote>
+						<paragraph>[one</paragraph>
+						<blockQuote>
+							<paragraph>two</paragraph>
+							<paragraph>three</paragraph>
+							<paragraph>four]</paragraph>
+						</blockQuote>
+					</blockQuote>
+					<horizontalLine></horizontalLine>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, trim`
+					<blockquote>
+						<p>one</p>
+						<blockquote>
+							<p>two</p>
+							<p>three</p>
+							<p>four</p>
+						</blockquote>
+					</blockquote>
+				` );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+		} );
 	} );
 
 	describe( 'integration with the WidgetToolbarRepository plugin', () => {
@@ -2256,5 +2362,9 @@ describe( 'Drag and Drop experimental', () => {
 			clientX: x,
 			clientY: y + extraOffset
 		};
+	}
+
+	function trim( strings ) {
+		return strings.join( '' ).replace( /\s/g, '' );
 	}
 } );
