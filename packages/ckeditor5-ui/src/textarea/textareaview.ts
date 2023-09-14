@@ -7,7 +7,7 @@
  * @module ui/textarea/textareaview
  */
 
-import { Rect, type Locale, toUnit, getBorderWidths, CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { Rect, type Locale, toUnit, getBorderWidths, CKEditorError, global } from '@ckeditor/ckeditor5-utils';
 import InputBase from '../input/inputbase';
 
 import '../../theme/components/input/input.css';
@@ -78,14 +78,21 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 				rows: bind.to( 'minRows' )
 			}
 		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	public override render(): void {
+		super.render();
 
 		this.on( 'input', () => {
-			this._autoGrow( true );
+			this._updateAutoGrowHeight( true );
 		} );
 
 		this.on( 'change:value', () => {
 			// The content needs to be updated by the browser after the value is changed. It takes a few ms.
-			setTimeout( () => this._autoGrow(), 50 );
+			global.window.requestAnimationFrame( () => this._updateAutoGrowHeight() );
 		} );
 	}
 
@@ -95,16 +102,16 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	public override reset(): void {
 		super.reset();
 
-		this._autoGrow();
+		this._updateAutoGrowHeight();
 	}
 
 	/**
 	 * TODO
 	 */
-	private _autoGrow( shouldScroll?: boolean ): void {
+	private _updateAutoGrowHeight( shouldScroll?: boolean ): void {
 		const viewElement = this.element!;
-		const singleLineContentClone = getElementClone( viewElement, '1' );
-		const fullTextValueClone = getElementClone( viewElement, viewElement.value );
+		const singleLineContentClone = getTextareaElementClone( viewElement, '1' );
+		const fullTextValueClone = getTextareaElementClone( viewElement, viewElement.value );
 		const singleLineContentStyles = singleLineContentClone.ownerDocument.defaultView!.getComputedStyle( singleLineContentClone );
 
 		const verticalPaddings = parseFloat( singleLineContentStyles.paddingTop ) + parseFloat( singleLineContentStyles.paddingBottom );
@@ -152,7 +159,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	}
 }
 
-function getElementClone( element: HTMLTextAreaElement, value: string ): HTMLTextAreaElement {
+function getTextareaElementClone( element: HTMLTextAreaElement, value: string ): HTMLTextAreaElement {
 	const clone = element.cloneNode() as HTMLTextAreaElement;
 
 	element.parentNode!.insertBefore( clone, element );
