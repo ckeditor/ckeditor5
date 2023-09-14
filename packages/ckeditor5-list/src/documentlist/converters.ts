@@ -185,7 +185,7 @@ export function reconvertItemsOnDataChange(
 						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
-						if ( doesItemBlockRequiresRefresh( item ) ) {
+						if ( doesItemBlockRequiresRefresh( item as Element ) ) {
 							itemsToRefresh.push( item );
 						}
 					} else {
@@ -253,11 +253,7 @@ export function reconvertItemsOnDataChange(
 		return itemsToRefresh;
 	}
 
-	function doesItemBlockRequiresRefresh( item: Node, blocks?: Array<Node> ) {
-		if ( !item.is( 'element' ) ) {
-			return false;
-		}
-
+	function doesItemBlockRequiresRefresh( item: Element, blocks?: Array<Node> ) {
 		const viewElement = editing.mapper.toViewElement( item );
 
 		if ( !viewElement ) {

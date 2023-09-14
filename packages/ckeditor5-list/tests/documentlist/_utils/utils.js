@@ -116,10 +116,10 @@ export function setupTestHelpers( editor ) {
 			test.test( input, output, actionCallback );
 		},
 
-		changeType( input, output ) {
+		changeType( input, output, newTypeFunc = type => type == 'numbered' ? 'bulleted' : 'numbered' ) {
 			const actionCallback = selection => {
 				const element = selection.getFirstPosition().nodeAfter;
-				const newType = element.getAttribute( 'listType' ) == 'numbered' ? 'bulleted' : 'numbered';
+				const newType = newTypeFunc( element.getAttribute( 'listType' ) );
 
 				model.change( writer => {
 					const itemsToChange = Array.from( selection.getSelectedBlocks() );
