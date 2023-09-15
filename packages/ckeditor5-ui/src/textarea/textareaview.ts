@@ -118,7 +118,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	}
 
 	/**
-	 * Updates the {@link #height} of the view depending on {@link #minRows}, {@link #maxRows}, and the current content size.
+	 * Updates the {@link #_height} of the view depending on {@link #minRows}, {@link #maxRows}, and the current content size.
 	 *
 	 * **Note**: This method overrides manual resize done by the user using a handle. It's a known bug.
 	 */

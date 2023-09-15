@@ -110,7 +110,7 @@ export default class SearchTextQueryView<
 
 /**
  * An event fired when the field is reset using the
- * {@link module:ui/search/text/searchtextqueryview~SearchTextQueryView#clearButtonView}.
+ * {@link module:ui/search/text/searchtextqueryview~SearchTextQueryView#resetButtonView}.
  *
  * @eventName ~SearchTextQueryView#reset
  */
