@@ -36,6 +36,7 @@ import {
 	createElement,
 	DomEmitterMixin,
 	delay,
+	Rect,
 	type DelayedFunc,
 	type ObservableChangeEvent,
 	type DomEmitter
@@ -296,7 +297,10 @@ export default class DragDropExperimental extends Plugin {
 				method: 'dragstart'
 			} );
 
-			this._updatePreview( data.dataTransfer );
+			const { dataTransfer, domTarget, domEvent } = data;
+			const { clientX } = domEvent;
+
+			this._updatePreview( { dataTransfer, domTarget, clientX } );
 
 			data.stopPropagation();
 
@@ -621,7 +625,15 @@ export default class DragDropExperimental extends Plugin {
 	/**
 	 * Updates the dragged preview image.
 	 */
-	private _updatePreview( dataTransfer: DataTransfer ): void {
+	private _updatePreview( {
+		dataTransfer,
+		domTarget,
+		clientX
+	}: {
+		dataTransfer: DataTransfer;
+		domTarget: HTMLElement;
+		clientX: number;
+	} ): void {
 		const view = this.editor.editing.view;
 		const editable = view.document.selection.editableElement!;
 		const domEditable = view.domConverter.mapViewToDom( editable )!;
@@ -633,18 +645,27 @@ export default class DragDropExperimental extends Plugin {
 			} );
 
 			global.document.body.appendChild( this._previewContainer );
-		} else {
-			this._previewContainer.removeChild( this._previewContainer.firstElementChild! );
+		} else if ( this._previewContainer.firstElementChild ) {
+			this._previewContainer.removeChild( this._previewContainer.firstElementChild );
 		}
 
+		const domRect = new Rect( domEditable );
+
+		// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
+		if ( domEditable.contains( domTarget ) ) {
+			return;
+		}
+
+		const domEditablePaddingLeft = parseFloat( computedStyle.paddingLeft );
 		const preview = createElement( global.document, 'div' );
 
 		preview.className = 'ck ck-content';
 		preview.style.width = computedStyle.width;
+		preview.style.paddingLeft = `${ domRect.left - clientX + domEditablePaddingLeft }px`;
 
 		preview.innerHTML = dataTransfer.getData( 'text/html' );
+
 		dataTransfer.setDragImage( preview, 0, 0 );
-		// TODO set x to make dragged widget stick to the mouse cursor
 
 		this._previewContainer.appendChild( preview );
 	}
