@@ -601,7 +601,7 @@ export default class DragDropExperimental extends Plugin {
 			return;
 		}
 
-		const blockRange = getRangeExtendedToLargestFullySelectedParent( model, blocks );
+		const blockRange = getRangeIncludingFullySelectedParents( model, blocks );
 
 		if ( blocks.length > 1 ) {
 			this._draggedRange = LiveRange.fromRange( blockRange );
@@ -693,9 +693,8 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 }
 
 /**
- * Recursively checks if all provided elements have the same parent and if that parent doesn't have
- * any other children. If that's the case, it returns range including this parent. Otherwise,
- * it returns only the range from first to last element.
+ * Recursively checks if common parent of provided elements doesn't have any other children. If that's the case,
+ * it returns range including this parent. Otherwise, it returns only the range from first to last element.
  *
  * Example:
  *
@@ -705,10 +704,10 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
  *   <paragraph>Test 3]</paragraph>
  * <blockQuote>
  *
- * Because all elements inside the `blockQuote` are selected, the range includes the `blockQuote` too.
+ * Because all elements inside the `blockQuote` are selected, the range is extended to include the `blockQuote` too.
  * If only first and second paragraphs would be selected, the range would not include it.
  */
-function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: Array<Element> ): Range {
+function getRangeIncludingFullySelectedParents( model: Model, elements: Array<Element> ): Range {
 	const firstElement = elements[ 0 ];
 	const lastElement = elements[ elements.length - 1 ];
 	const parent = firstElement.getCommonAncestor( lastElement );
@@ -726,7 +725,7 @@ function getRangeExtendedToLargestFullySelectedParent( model: Model, elements: A
 
 		if ( touchesStart && touchesEnd ) {
 			// Selection includes all elements in the parent.
-			return getRangeExtendedToLargestFullySelectedParent( model, [ parent ] );
+			return getRangeIncludingFullySelectedParents( model, [ parent ] );
 		}
 	}
 
