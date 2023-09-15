@@ -156,6 +156,9 @@ jobs:
           command: |
             #!/bin/bash
 
+            # Do not fail if the Node script ends with non-zero exit code.
+            set +e
+
             node scripts/ci/is-ckeditor5-ready-to-release.js
             EXIT_CODE=$( echo $? )
 
