@@ -15,6 +15,7 @@ import {
 import {
 	type Element,
 	type Range,
+	type LiveRange,
 	type ViewElement,
 	type ViewRange,
 	type DowncastWriter,
@@ -122,16 +123,23 @@ export default class DragDropTarget extends Plugin {
 		targetViewRanges: Array<ViewRange> | null,
 		clientX: number,
 		clientY: number,
-		blockMode: boolean
+		blockMode: boolean,
+		draggedRange: LiveRange | null
 	): void {
 		this.removeDropMarkerDelayed.cancel();
 
 		const targetRange = findDropTargetRange( this.editor, targetViewElement, targetViewRanges, clientX, clientY, blockMode );
 
-		/* istanbul ignore else -- @preserve */
-		if ( targetRange ) {
-			this._updateDropMarkerThrottled( targetRange );
+		/* istanbul ignore next -- @preserve */
+		if ( !targetRange ) {
+			return;
 		}
+
+		if ( draggedRange && !canDropOnRange( this.editor, targetViewElement, targetRange, draggedRange ) ) {
+			return;
+		}
+
+		this._updateDropMarkerThrottled( targetRange );
 	}
 
 	/**
@@ -482,4 +490,31 @@ function findScrollableElement( domNode: HTMLElement ): HTMLElement {
 	} while ( domElement.tagName != 'BODY' );
 
 	return domElement;
+}
+
+/**
+ * Checks if `draggedRange` can be dropped into the `targetRange`.
+ */
+function canDropOnRange(
+	editor: Editor,
+	targetViewElement: ViewElement,
+	targetRange: Range,
+	draggedRange: LiveRange
+): boolean {
+	if ( draggedRange.containsRange( targetRange ) ) {
+		return false; // Don't drop inside the element being dragged
+	}
+
+	const targetModelElement = editor.editing.mapper.toModelElement( targetViewElement );
+	const draggedModelElement = draggedRange.getContainedElement();
+
+	if (
+		targetModelElement &&
+		draggedModelElement &&
+		!editor.model.schema.checkChild( targetModelElement, draggedModelElement )
+	) {
+		return false; // Don't drop if schema doesn't allow it
+	}
+
+	return true;
 }

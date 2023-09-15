@@ -16,9 +16,11 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+
+import { LiveRange } from '@ckeditor/ckeditor5-engine';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Drag and Drop target', () => {
@@ -31,7 +33,18 @@ describe( 'Drag and Drop target', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ DragDropExperimental, PastePlainText, Paragraph, Table, HorizontalLine, ShiftEnter, BlockQuote, Bold ]
+			plugins: [
+				DragDropExperimental,
+				PastePlainText,
+				Paragraph,
+				Table,
+				HorizontalLine,
+				ShiftEnter,
+				BlockQuote,
+				Bold,
+				Image,
+				ImageCaption
+			]
 		} );
 
 		model = editor.model;
@@ -567,6 +580,61 @@ describe( 'Drag and Drop target', () => {
 				expect( spy.withArgs( 'drop-target' ).called ).to.be.true;
 				done();
 			} );
+		} );
+
+		it( 'should not drop target marker inside the element being dragged', () => {
+			setModelData( model,
+				'<blockQuote>' +
+					'<paragraph>one</paragraph>' +
+					'<paragraph>two</paragraph>' +
+					'<paragraph>three</paragraph>' +
+				'</blockQuote>'
+			);
+
+			const modelElement = root.getNodeByPath( [ 0, 1 ] );
+			const viewElement = mapper.toViewElement( modelElement );
+			const domNode = domConverter.mapViewToDom( viewElement );
+			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+
+			// Simulate dragging blockquote into the first paragraph inside it
+			dragDropTarget.updateDropMarker(
+				viewElement,
+				null,
+				clientX,
+				clientY,
+				false,
+				LiveRange.fromRange( model.createRangeOn( root.getChild( 0 ) ) )
+			);
+
+			expect( model.markers.get( 'drop-target' ) ).to.be.null;
+		} );
+
+		it( 'should not drop target marker in places where dropping is not allowed', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'[<imageInline src=""></imageInline>]' +
+				'</paragraph>' +
+				'<imageBlock src="">' +
+					'<caption></caption>' +
+				'</imageBlock>'
+			);
+
+			const modelElement = root.getNodeByPath( [ 1, 0 ] );
+			const viewElement = mapper.toViewElement( modelElement );
+			const domNode = domConverter.mapViewToDom( viewElement );
+			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+
+			// Simulate dragging inline image into block image caption
+			dragDropTarget.updateDropMarker(
+				viewElement,
+				null,
+				clientX,
+				clientY,
+				false,
+				LiveRange.fromRange( model.createRangeOn( root.getNodeByPath( [ 0, 0 ] ) ) )
+			);
+
+			expect( model.markers.get( 'drop-target' ) ).to.be.null;
 		} );
 	} );
 
