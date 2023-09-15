@@ -371,7 +371,7 @@ export default class Rect {
 	}
 
 	/**
-	 * Calculates absolute `Rect` coordinates.
+	 * Recalculates screen coordinates to coordinates relative to the positioned ancestor offset.
 	 */
 	public toAbsoluteRect(): Rect {
 		const { scrollX, scrollY } = global.window;
