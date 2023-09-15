@@ -79,7 +79,20 @@ describe( 'TextareaView', () => {
 		} );
 
 		it( 'should update the size of the view', () => {
-			// TODO
+			view.element.value = '1';
+			view.fire( 'input' );
+
+			const initialHeight = view.element.style.height;
+			const initialScrollTop = view.element.scrollTop;
+
+			view.element.value = '1\n2\n3\n4\n5\n6';
+			view.fire( 'input' );
+			expect( view.element.style.height ).to.not.equal( initialHeight );
+			expect( view.element.scrollTop ).to.not.equal( initialScrollTop );
+
+			view.reset();
+			expect( view.element.style.height ).to.equal( initialHeight );
+			expect( view.element.scrollTop ).to.equal( initialScrollTop );
 		} );
 	} );
 
