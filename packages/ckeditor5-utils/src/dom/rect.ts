@@ -235,7 +235,7 @@ export default class Rect {
 	}
 
 	/**
-	 * Returns a new rect, a part of the original rect, which is actually visible to the user,
+	 * Returns a new rect, a part of the original rect, which is actually visible to the user and is relative to the,`body`,
 	 * e.g. an original rect cropped by parent element rects which have `overflow` set in CSS
 	 * other than `"visible"`.
 	 *
