@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -17,7 +18,7 @@ describe( 'CheckTodoListCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, TodoDocumentListEditing ]
+				plugins: [ Paragraph, HeadingEditing, TodoDocumentListEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -33,8 +34,14 @@ describe( 'CheckTodoListCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
-		it( 'should be enabled when selection is inside to-do list item', () => {
+		it( 'should be enabled when collapsed selection is inside to-do list item', () => {
 			setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo">f[]oo</paragraph>' );
+
+			expect( command.isEnabled ).to.equal( true );
+		} );
+
+		it( 'should be enabled when non-collapsed selection is inside to-do list item', () => {
+			setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo">f[o]o</paragraph>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
@@ -65,17 +72,76 @@ describe( 'CheckTodoListCommand', () => {
 
 			expect( command.isEnabled ).to.equal( false );
 		} );
+
+		it( 'should be enabled when a to-do list item is selected together with other list items', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="todo">b]az</paragraph>'
+			);
+
+			expect( command.isEnabled ).to.equal( true );
+		} );
+
+		it( 'should be enabled when a to-do list item is selected together with other list items in nested list', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="bulleted">bar</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a02" listType="todo">b]az</paragraph>'
+			);
+
+			expect( command.isEnabled ).to.equal( true );
+		} );
+
+		it( 'should be enabled when selection is in paragraph in list item', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">b[]ar</paragraph>'
+			);
+
+			expect( command.isEnabled ).to.equal( true );
+		} );
+
+		it( 'should be enabled when selection is in heading as a first child of list item', () => {
+			setModelData( model,
+				'<heading1 listIndent="0" listItemId="a00" listType="todo">f[]oo</heading1>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>'
+			);
+
+			expect( command.isEnabled ).to.equal( true );
+		} );
+
+		it( 'should be enabled when selection is in heading as a second child of list item', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+				'<heading1 listIndent="0" listItemId="a00" listType="todo">f[]oo</heading1>'
+			);
+
+			expect( command.isEnabled ).to.equal( true );
+		} );
 	} );
 
 	describe( 'value', () => {
-		it( 'should be false when selection is in not checked element', () => {
+		it( 'should be false when collapsed selection is in not checked element', () => {
 			setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo">f[]oo</paragraph>' );
 
 			expect( command.value ).to.equal( false );
 		} );
 
-		it( 'should be true when selection is in checked element', () => {
+		it( 'should be false when non-collapsed selection is in not checked element', () => {
+			setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo">f[o]o</paragraph>' );
+
+			expect( command.value ).to.equal( false );
+		} );
+
+		it( 'should be true when collapsed selection is in checked element', () => {
 			setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">f[]oo</paragraph>' );
+
+			expect( command.value ).to.equal( true );
+		} );
+
+		it( 'should be true when non-collapsed selection is in checked element', () => {
+			setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">f[o]o</paragraph>' );
 
 			expect( command.value ).to.equal( true );
 		} );
@@ -95,6 +161,53 @@ describe( 'CheckTodoListCommand', () => {
 				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">f[oo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="todo" todoListChecked="true">bar</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">b]az</paragraph>'
+			);
+
+			expect( command.value ).to.equal( true );
+		} );
+
+		it( 'should be true when a checked to-do list items are selected together with other list items', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">fo[o</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">b]az</paragraph>'
+			);
+
+			expect( command.value ).to.equal( true );
+		} );
+
+		it( 'should be true when a to-do list item is selected together with other list items in nested list', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">fo[o</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="bulleted">bar</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a02" listType="todo" todoListChecked="true">b]az</paragraph>'
+			);
+
+			expect( command.value ).to.equal( true );
+		} );
+
+		it( 'should be true when selection is in paragraph', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">b[]ar</paragraph>'
+			);
+
+			expect( command.value ).to.equal( true );
+		} );
+
+		it( 'should be true when selection is in heading as a first child of checkked list item', () => {
+			setModelData( model,
+				'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">f[]oo</heading1>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>'
+			);
+
+			expect( command.value ).to.equal( true );
+		} );
+
+		it( 'should be true when selection is in heading as a second child of checkked list item', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+				'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">f[]oo</heading1>'
 			);
 
 			expect( command.value ).to.equal( true );
@@ -191,6 +304,35 @@ describe( 'CheckTodoListCommand', () => {
 				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a01" listType="todo">bar</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">b[]az</paragraph>'
+			);
+		} );
+
+		it( 'should toggle state items when selection is in heading as a first child of list item', () => {
+			testCommandToggle(
+				'<heading1 listIndent="0" listItemId="a00" listType="todo">f[]oo</heading1>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>',
+				'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">f[]oo</heading1>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>'
+			);
+		} );
+
+		it( 'should toggle state items when selection is in heading as a second child of list item', () => {
+			testCommandToggle(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+				'<heading1 listIndent="0" listItemId="a00" listType="todo">f[]oo</heading1>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+				'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">f[]oo</heading1>'
+			);
+		} );
+
+		it( 'should toggle state items when selection is in heading as a second child of nested list item', () => {
+			testCommandToggle(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<heading1 listIndent="0" listItemId="a00" listType="todo">b[]az</heading1>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="todo">bar</paragraph>' +
+				'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">b[]az</heading1>'
 			);
 		} );
 
