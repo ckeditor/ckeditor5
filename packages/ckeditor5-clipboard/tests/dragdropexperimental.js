@@ -19,6 +19,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -64,7 +65,18 @@ describe( 'Drag and Drop experimental', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ DragDropExperimental, PastePlainText, Paragraph, Table, HorizontalLine, ShiftEnter, BlockQuote, Bold ]
+				plugins: [
+					DragDropExperimental,
+					PastePlainText,
+					Paragraph,
+					Table,
+					HorizontalLine,
+					ShiftEnter,
+					BlockQuote,
+					Bold,
+					Image,
+					ImageCaption
+				]
 			} );
 
 			model = editor.model;
@@ -494,10 +506,8 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 
 		it( 'should not remove dragged range if insert into drop target was not allowed', () => {
-			editor.model.schema.register( 'caption', {
-				allowIn: '$root',
-				allowContentOf: '$block',
-				isObject: true
+			editor.model.schema.extend( 'caption', {
+				allowIn: '$root'
 			} );
 
 			editor.conversion.elementToElement( {
@@ -1244,6 +1254,44 @@ describe( 'Drag and Drop experimental', () => {
 					'<paragraph>foobar</paragraph><paragraph><softBreak></softBreak> []</paragraph>' +
 					'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
 				);
+			} );
+
+			it( 'should start dragging text from caption to paragraph', () => {
+				setModelData( model, trim`
+					<imageBlock src="">
+						<caption>[World]</caption>
+					</imageBlock>
+					<paragraph>Hello</paragraph>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const viewElement = viewDocument.getRoot().getChild( 1 );
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				viewDocument.fire( 'dragstart', {
+					domTarget: domConverter.mapViewToDom( viewElement ),
+					target: viewElement,
+					domEvent: {},
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'World' );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+
+				fireDrop(
+					dataTransferMock,
+					model.createPositionAt( root.getChild( 1 ), 5 )
+				);
+
+				expect( getModelData( model ) ).to.equal( trim`
+					<imageBlock src="">
+						<caption></caption>
+					</imageBlock>
+					<paragraph>HelloWorld[]</paragraph>
+				` );
 			} );
 
 			it( 'should not drag parent paragraph when only portion of content is selected', () => {
@@ -2365,6 +2413,9 @@ describe( 'Drag and Drop experimental', () => {
 	}
 
 	function trim( strings ) {
-		return strings.join( '' ).replace( /\s/g, '' );
+		return strings
+			.join( '' )
+			.trim()
+			.replace( />\s+</g, '><' );
 	}
 } );

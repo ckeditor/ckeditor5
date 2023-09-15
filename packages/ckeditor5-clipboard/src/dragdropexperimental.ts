@@ -588,28 +588,34 @@ export default class DragDropExperimental extends Plugin {
 		}
 
 		// If this was not a widget we should check if we need to drag some text content.
-		if ( !selection.isCollapsed || ( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
-			const blocks = Array.from( selection.getSelectedBlocks() );
+		if ( selection.isCollapsed && !( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
+			return;
+		}
 
-			const blockRange = getRangeExtendedToLargestFullySelectedParent( model, blocks );
+		const blocks = Array.from( selection.getSelectedBlocks() );
+		const draggedRange = selection.getFirstRange()!;
 
-			if ( blocks.length > 1 ) {
-				this._draggedRange = LiveRange.fromRange( blockRange );
-				this._blockMode = true;
-				// TODO block mode for dragging from outside editor? or inline? or both?
-			}
+		if ( blocks.length == 0 ) {
+			this._draggedRange = LiveRange.fromRange( draggedRange );
 
-			else if ( blocks.length == 1 ) {
-				const draggedRange = selection.getFirstRange()!;
-				const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
+			return;
+		}
+
+		const blockRange = getRangeExtendedToLargestFullySelectedParent( model, blocks );
+
+		if ( blocks.length > 1 ) {
+			this._draggedRange = LiveRange.fromRange( blockRange );
+			this._blockMode = true;
+			// TODO block mode for dragging from outside editor? or inline? or both?
+		} else if ( blocks.length == 1 ) {
+			const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
 					draggedRange.end.isTouching( blockRange.end );
 
-				this._draggedRange = LiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
-				this._blockMode = touchesBlockEdges;
-			}
-
-			model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
+			this._draggedRange = LiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
+			this._blockMode = touchesBlockEdges;
 		}
+
+		model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
 	}
 
 	/**
