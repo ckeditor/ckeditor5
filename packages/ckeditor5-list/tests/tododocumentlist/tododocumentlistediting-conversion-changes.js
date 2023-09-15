@@ -7,6 +7,8 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -16,7 +18,6 @@ import TodoDocumentListEditing from '../../src/tododocumentlist/tododocumentlist
 import { setupTestHelpers } from '../documentlist/_utils/utils';
 
 import stubUid from '../documentlist/_utils/uid';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'TodoDocumentListEditing - conversion - changes', () => {
 	let editor, model, test, modelRoot;
@@ -25,7 +26,7 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ Paragraph, TodoDocumentListEditing, BlockQuoteEditing, TableEditing, HeadingEditing, UndoEditing ]
+			plugins: [ Paragraph, TodoDocumentListEditing, BlockQuoteEditing, TableEditing, CodeBlockEditing, HeadingEditing, UndoEditing ]
 		} );
 
 		model = editor.model;
@@ -672,6 +673,155 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
 					'<p>p</p>' +
+					'<ol>' +
+						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'</ol>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+			} );
+
+			it( 'change middle list item', () => {
+				test.changeType(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
+
+					'<p>p</p>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>' +
+					'<ol>' +
+						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'</ol>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+			} );
+
+			it( 'change last list item', () => {
+				test.changeType(
+					'<paragraph>p</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>]',
+
+					'<p>p</p>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>' +
+					'<ol>' +
+						'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'</ol>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+			} );
+
+			it( 'change only list item', () => {
+				test.changeType(
+					'<paragraph>p</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>]' +
+					'<paragraph>p</paragraph>',
+
+					'<p>p</p>' +
+					'<ol>' +
+						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'</ol>' +
+					'<p>p</p>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+			} );
+
+			it( 'change element into to-do list at the edge of two different lists (after to-do list)', () => {
+				test.changeType(
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>',
+
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>' +
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+					'</ul>',
+
+					'todo'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+			} );
+
+			it( 'change element into to-do list at the edge of two different lists (before to-do list)', () => {
+				test.changeType(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="todo">d</paragraph>',
+
 					'<ul>' +
 						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 					'</ul>' +
@@ -688,168 +838,194 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 								'<span class="todo-list__label__description">c</span>' +
 							'</span>' +
 						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">d</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>',
-					() => 'bulleted'
+
+					'todo'
 				);
 
 				expect( test.reconvertSpy.callCount ).to.equal( 1 );
 				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
-			it.skip( 'change middle list item', () => {
-				test.changeType(
-					'<paragraph>p</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
-
-					'<p>p</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'</ul>' +
-					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-					'</ol>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-					'</ul>'
-				);
-
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
-			} );
-
-			it.skip( 'change last list item', () => {
-				test.changeType(
-					'<paragraph>p</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>]',
-
-					'<p>p</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-					'</ul>' +
-					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-					'</ol>'
-				);
-
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
-			} );
-
-			it.skip( 'change only list item', () => {
-				test.changeType(
-					'<paragraph>p</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>]' +
-					'<paragraph>p</paragraph>',
-
-					'<p>p</p>' +
-					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'</ol>' +
-					'<p>p</p>'
-				);
-
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
-			} );
-
-			it.skip( 'change element at the edge of two different lists #1', () => {
+			it( 'change element into other list at the edge of two different lists (after to-do list)', () => {
 				test.changeType(
 					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
+					'[<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>]' +
 					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
-					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
-					'</ol>'
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+					'</ul>',
+
+					'bulleted'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 			} );
 
-			it.skip( 'change element at the edge of two different lists #2', () => {
+			it( 'change element into other list at the edge of two different lists (before to-do list)', () => {
 				test.changeType(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
 					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>' +
 					'<paragraph listIndent="0" listItemId="d" listType="todo">d</paragraph>',
 
-					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-					'</ol>' +
 					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
-					'</ul>'
+						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'</ul>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">d</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>',
+
+					'bulleted'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
-			it.skip( 'change multiple elements - to other type', () => {
+			it( 'change multiple elements - to other type', () => {
 				test.changeType(
 					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
 					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>]' +
 					'<paragraph listIndent="0" listItemId="d" listType="todo">d</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 					'</ol>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">d</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 			} );
 
-			it.skip( 'change multiple elements - to same type', () => {
+			it( 'change multiple elements - to same type', () => {
 				test.changeType(
-					'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
 					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="d" listType="numbered">d</paragraph>',
+					'<paragraph listIndent="0" listItemId="d" listType="todo">d</paragraph>',
 
-					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
-					'</ol>'
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">d</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>',
+
+					'todo'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 			} );
 
-			it.skip( 'change of the first block of a list item', () => {
+			it( 'change of the first block of a list item (from todo)', () => {
 				test.changeType(
 					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
 					'[<paragraph listIndent="0" listItemId="b" listType="todo">b1</paragraph>]' +
 					'<paragraph listIndent="0" listItemId="b" listType="todo">b2</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
 					'</ol>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b2</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -858,23 +1034,100 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 			} );
 
-			it.skip( 'change of the last block of a list item', () => {
+			it( 'change of the first block of a list item (into todo)', () => {
+				test.changeType(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+					'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'</ul>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b1</span>' +
+							'</span>' +
+						'</li>' +
+
+					'</ul>' +
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'</ul>',
+
+					'todo'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+			} );
+
+			it( 'change of the last block of a list item (from todo)', () => {
 				test.changeType(
 					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="todo">b1</paragraph>' +
 					'[<paragraph listIndent="0" listItemId="b" listType="todo">b2</paragraph>]' +
 					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b1</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
 					'</ol>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+			} );
+
+			it( 'change of the last block of a list item (into todo)', () => {
+				test.changeType(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
+					'</ul>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b2</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>' +
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'</ul>',
+
+					'todo'
 				);
 
 				expect( test.reconvertSpy.callCount ).to.equal( 2 );
@@ -882,7 +1135,7 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 			} );
 
-			it.skip( 'change of the middle block of a list item', () => {
+			it( 'change of the middle block of a list item (from todo)', () => {
 				test.changeType(
 					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="todo">b1</paragraph>' +
@@ -890,17 +1143,70 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 					'<paragraph listIndent="0" listItemId="b" listType="todo">b3</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b1</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
 					'</ol>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">b3</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b3</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+			} );
+
+			it( 'change of the middle block of a list item (into todo)', () => {
+				test.changeType(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b3</paragraph>' +
+					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
+					'</ul>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b2</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>' +
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">b3</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'</ul>',
+
+					'todo'
 				);
 
 				expect( test.reconvertSpy.callCount ).to.equal( 3 );
@@ -909,244 +1215,465 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 				expect( test.reconvertSpy.thirdCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
 			} );
 
-			it.skip( 'change outer list type with nested blockquote', () => {
+			it( 'change outer list type with nested blockquote (from todo)', () => {
 				test.changeType(
 					'[<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>]' +
 					'<blockQuote listIndent="1" listItemId="b" listType="todo">' +
-					'<paragraph listIndent="0" listItemId="c" listType="todo">b</paragraph>' +
-					'<paragraph listIndent="1" listItemId="d" listType="todo">c</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="todo">b</paragraph>' +
+						'<paragraph listIndent="1" listItemId="d" listType="todo">c</paragraph>' +
 					'</blockQuote>',
 
 					'<ol>' +
-					'<li>' +
-					'<span class="ck-list-bogus-paragraph">a</span>' +
-					'<ul>' +
-					'<li>' +
-					'<blockquote>' +
-					'<ul>' +
-					'<li>' +
-					'<span class="ck-list-bogus-paragraph">b</span>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'</blockquote>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">a</span>' +
+							'<ul class="todo-list">' +
+								'<li>' +
+									'<span class="todo-list__label todo-list__label_without-description">' +
+										'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+									'</span>' +
+									'<blockquote>' +
+										'<ul class="todo-list">' +
+											'<li>' +
+												'<span class="todo-list__label">' +
+													'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+													'<span class="todo-list__label__description">b</span>' +
+												'</span>' +
+												'<ul class="todo-list">' +
+													'<li>' +
+														'<span class="todo-list__label">' +
+															'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input>' +
+															'</span>' +
+															'<span class="todo-list__label__description">c</span>' +
+														'</span>' +
+													'</li>' +
+												'</ul>' +
+											'</li>' +
+										'</ul>' +
+									'</blockquote>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
-			it.skip( 'change outer list type with nested code block', () => {
+			it( 'change outer list type with nested blockquote (into todo)', () => {
+				test.changeType(
+					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+					'<blockQuote listIndent="1" listItemId="b" listType="bulleted">' +
+					'<paragraph listIndent="0" listItemId="c" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">c</paragraph>' +
+					'</blockQuote>',
+
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+							'<ul>' +
+								'<li>' +
+									'<blockquote>' +
+										'<ul>' +
+											'<li>' +
+												'<span class="ck-list-bogus-paragraph">b</span>' +
+												'<ul>' +
+													'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+												'</ul>' +
+											'</li>' +
+										'</ul>' +
+									'</blockquote>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>',
+
+					'todo'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+			} );
+
+			it( 'change outer list type with nested code block (from todo)', () => {
 				test.changeType(
 					'[<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>]' +
 					'<codeBlock language="plaintext" listIndent="1" listItemId="b" listType="bulleted">' +
-					'abc' +
+						'abc' +
 					'</codeBlock>',
 
 					'<ol>' +
-					'<li>' +
-					'<span class="ck-list-bogus-paragraph">a</span>' +
-					'<ul>' +
-					'<li>' +
-					'<pre data-language="Plain text" spellcheck="false">' +
-					'<code class="language-plaintext">abc</code>' +
-					'</pre>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">a</span>' +
+							'<ul>' +
+								'<li>' +
+									'<pre data-language="Plain text" spellcheck="false">' +
+										'<code class="language-plaintext">abc</code>' +
+									'</pre>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
 					'</ol>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+			} );
+
+			it( 'change outer list type with nested code block (into todo)', () => {
+				test.changeType(
+					'[<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>]' +
+					'<codeBlock language="plaintext" listIndent="1" listItemId="b" listType="bulleted">' +
+						'abc' +
+					'</codeBlock>',
+
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+							'<ul>' +
+								'<li>' +
+									'<pre data-language="Plain text" spellcheck="false">' +
+										'<code class="language-plaintext">abc</code>' +
+									'</pre>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>',
+
+					'todo'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 		} );
 
-		describe.skip( 'rename list item element', () => {
+		describe( 'rename list item element', () => {
 			it( 'rename first list item', () => {
 				test.renameElement(
-					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+					'[<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>',
 
-					'<ul>' +
-					'<li><h2>a</h2></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label todo-list__label_without-description">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+							'</span>' +
+							'<h2>a</h2>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'rename middle list item', () => {
 				test.renameElement(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><h2>b</h2></li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label todo-list__label_without-description">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+							'</span>' +
+							'<h2>b</h2>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename last list item', () => {
 				test.renameElement(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><h2>b</h2></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label todo-list__label_without-description">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+							'</span>' +
+							'<h2>b</h2>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename first list item to paragraph', () => {
 				test.renameElement(
-					'[<heading1 listIndent="0" listItemId="a" listType="bulleted">a</heading1>]' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+					'[<heading1 listIndent="0" listItemId="a" listType="todo">a</heading1>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
 			} );
 
 			it( 'rename middle list item to paragraph', () => {
 				test.renameElement(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<heading1 listIndent="0" listItemId="b" listType="bulleted">b</heading1>]' +
-					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<heading1 listIndent="0" listItemId="b" listType="todo">b</heading1>]' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename last list item to paragraph', () => {
 				test.renameElement(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<heading1 listIndent="0" listItemId="b" listType="bulleted">b</heading1>]',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<heading1 listIndent="0" listItemId="b" listType="todo">b</heading1>]',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename first block of list item', () => {
 				test.renameElement(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>' +
-					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b1</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li>' +
-					'<h2>b1</h2>' +
-					'<p>b2</p>' +
-					'</li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label todo-list__label_without-description">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+							'</span>' +
+							'<h2>b1</h2>' +
+							'<p>b2</p>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename last block of list item', () => {
 				test.renameElement(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b1</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b2</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li>' +
-					'<p>b1</p>' +
-					'<h2>b2</h2>' +
-					'</li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b1</span>' +
+							'</span>' +
+							'<h2>b2</h2>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename first block of list item to paragraph', () => {
 				test.renameElement(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<heading1 listIndent="0" listItemId="b" listType="bulleted">b1</heading1>]' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>' +
-					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<heading1 listIndent="0" listItemId="b" listType="todo">b1</heading1>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li>' +
-					'<p>b1</p>' +
-					'<p>b2</p>' +
-					'</li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b1</span>' +
+							'</span>' +
+							'<p>b2</p>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'rename last block of list item to paragraph', () => {
 				test.renameElement(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>' +
-					'[<heading1 listIndent="0" listItemId="b" listType="bulleted">b2</heading1>]' +
-					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b1</paragraph>' +
+					'[<heading1 listIndent="0" listItemId="b" listType="todo">b2</heading1>]' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li>' +
-					'<p>b1</p>' +
-					'<p>b2</p>' +
-					'</li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b1</span>' +
+							'</span>' +
+							'<p>b2</p>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 		} );
 
-		describe.skip( 'remove list item attributes', () => {
+		describe( 'remove list item attributes', () => {
 			it( 'first list item', () => {
 				test.removeListAttributes(
-					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+					'[<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>',
 
 					'<p>a</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1156,16 +1683,26 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 
 			it( 'middle list item', () => {
 				test.removeListAttributes(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<p>b</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1175,11 +1712,16 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 
 			it( 'last list item', () => {
 				test.removeListAttributes(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<p>b</p>'
 				);
@@ -1191,7 +1733,7 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			it( 'only list item', () => {
 				test.removeListAttributes(
 					'<paragraph>p</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">x</paragraph>]' +
+					'[<paragraph listIndent="0" listItemId="a" listType="todo">x</paragraph>]' +
 					'<paragraph>p</paragraph>',
 
 					'<p>p</p>' +
@@ -1205,76 +1747,106 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 
 			it( 'on non paragraph', () => {
 				test.removeListAttributes(
-					'[<heading1 listIndent="0" listItemId="a" listType="bulleted">a</heading1>]' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+					'[<heading1 listIndent="0" listItemId="a" listType="todo">a</heading1>]' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>',
 
 					'<h2>a</h2>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
-				);
-
-				expect( test.reconvertSpy.callCount ).to.equal( 0 );
-			} );
-
-			it( 'first block of list item', () => {
-				test.removeListAttributes(
-					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a1</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a2</paragraph>',
-
-					'<p>a1</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a2</span></li>' +
-					'</ul>'
-				);
-
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
-			} );
-
-			it( 'last block of list item', () => {
-				test.removeListAttributes(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a1</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a2</paragraph>]',
-
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a1</span></li>' +
-					'</ul>' +
-					'<p>a2</p>'
 				);
 
 				expect( test.reconvertSpy.callCount ).to.equal( 1 );
 				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
 			} );
 
-			it( 'middle block of list item', () => {
+			it( 'first block of list item', () => {
 				test.removeListAttributes(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a1</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a2</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a3</paragraph>',
+					'[<paragraph listIndent="0" listItemId="a" listType="todo">a1</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a2</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a1</span></li>' +
-					'</ul>' +
-					'<p>a2</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a3</span></li>' +
+					'<p>a1</p>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a2</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
 				expect( test.reconvertSpy.callCount ).to.equal( 2 );
 				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+			} );
+
+			it( 'last block of list item', () => {
+				test.removeListAttributes(
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a1</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="a" listType="todo">a2</paragraph>]',
+
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a1</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>' +
+					'<p>a2</p>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 0 );
+			} );
+
+			it( 'middle block of list item', () => {
+				test.removeListAttributes(
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a1</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="a" listType="todo">a2</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a3</paragraph>',
+
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a1</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>' +
+					'<p>a2</p>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a3</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 			} );
 		} );
 
-		describe.skip( 'set list item attributes', () => {
+		describe( 'set list item attributes', () => {
 			it( 'only paragraph', () => {
-				test.setListAttributes( 0,
+				test.setListAttributes( 'todo',
 					'[<paragraph>a</paragraph>]',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1283,14 +1855,19 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			} );
 
 			it( 'on paragraph between paragraphs', () => {
-				test.setListAttributes( 0,
+				test.setListAttributes( 'todo',
 					'<paragraph>x</paragraph>' +
 					'[<paragraph>a</paragraph>]' +
 					'<paragraph>x</paragraph>',
 
 					'<p>x</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<p>x</p>'
 				);
@@ -1300,13 +1877,23 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			} );
 
 			it( 'on element before list of same type', () => {
-				test.setListAttributes( 0,
+				test.setListAttributes( 'todo',
 					'[<paragraph>x</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">x</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1315,13 +1902,23 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			} );
 
 			it( 'on element after list of same type', () => {
-				test.setListAttributes( 0,
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				test.setListAttributes( 'todo',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
 					'[<paragraph>x</paragraph>]',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">x</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1330,15 +1927,20 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			} );
 
 			it( 'on element before list of different type', () => {
-				test.setListAttributes( 0,
+				test.setListAttributes( 'todo',
 					'[<paragraph>x</paragraph>]' +
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">x</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 					'</ol>'
 				);
 
@@ -1347,15 +1949,20 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			} );
 
 			it( 'on element after list of different type', () => {
-				test.setListAttributes( 0,
+				test.setListAttributes( 'todo',
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>' +
 					'[<paragraph>x</paragraph>]',
 
 					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 					'</ol>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">x</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1364,15 +1971,30 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			} );
 
 			it( 'on element between lists of same type', () => {
-				test.setListAttributes( 0,
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				test.setListAttributes( 'todo',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
 					'[<paragraph>x</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>',
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">x</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1381,36 +2003,53 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			} );
 
 			it( 'before list item with the same id', () => {
-				test.setListAttributes( 0,
+				test.setListAttributes( 'todo',
 					'[<paragraph>x</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="x" listType="bulleted">a</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+					'<paragraph listIndent="0" listItemId="x" listType="todo">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>',
 
-					'<ul>' +
-					'<li>' +
-					'<p>x</p>' +
-					'<p>a</p>' +
-					'</li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">x</span>' +
+							'</span>' +
+							'<p>a</p>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				expect( test.reconvertSpy.callCount ).to.equal( 2 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 
 			it( 'after list item with the same id', () => {
-				test.setListAttributes( 0,
-					'<paragraph listIndent="0" listItemId="x" listType="bulleted">a</paragraph>' +
+				test.setListAttributes( 'todo',
+					'<paragraph listIndent="0" listItemId="x" listType="todo">a</paragraph>' +
 					'[<paragraph>x</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>',
 
-					'<ul>' +
-					'<li>' +
-					'<p>a</p>' +
-					'<p>x</p>' +
-					'</li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+							'<p>x</p>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1419,21 +2058,36 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			} );
 		} );
 
-		describe.skip( 'move', () => {
+		describe( 'move', () => {
 			it( 'list item inside same list', () => {
 				test.move(
 					'<paragraph>p</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="d" listType="bulleted">c</paragraph>',
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="d" listType="todo">c</paragraph>',
 
 					4, // Move after last item.
 
 					'<p>p</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1443,19 +2097,29 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			it( 'out list item from list', () => {
 				test.move(
 					'<paragraph>p</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
 					'<paragraph>p</paragraph>',
 
 					4, // Move after second paragraph.
 
 					'<p>p</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<p>p</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1465,15 +2129,20 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			it( 'the only list item', () => {
 				test.move(
 					'<paragraph>p</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+					'[<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>]' +
 					'<paragraph>p</paragraph>',
 
 					3, // Move after second paragraph.
 
 					'<p>p</p>' +
 					'<p>p</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1482,22 +2151,42 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 
 			it( 'list item between two lists of same type', () => {
 				test.move(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
 					'<paragraph>p</paragraph>' +
-					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>' +
-					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>',
+					'<paragraph listIndent="0" listItemId="c" listType="todo">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="todo">d</paragraph>',
 
 					4, // Move between list item "c" and list item "d'.
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<p>p</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-					'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">c</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">d</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 
@@ -1506,26 +2195,36 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 
 			it( 'list item between two lists of different type', () => {
 				test.move(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>]' +
 					'<paragraph>p</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="numbered">c</paragraph>' +
 					'<paragraph listIndent="0" listItemId="d" listType="numbered">d</paragraph>',
 
 					4, // Move between list item "c" and list item "d'.
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<p>p</p>' +
 					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 					'</ol>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<ol>' +
-					'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 					'</ol>'
 				);
 
@@ -1534,18 +2233,28 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 
 			it( 'element between list items', () => {
 				test.move(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="todo">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="todo">b</paragraph>' +
 					'[<paragraph>p</paragraph>]',
 
 					1, // Move between list item "a" and list item "b'.
 
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">a</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>' +
 					'<p>p</p>' +
-					'<ul>' +
-					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">b</span>' +
+							'</span>' +
+						'</li>' +
 					'</ul>'
 				);
 

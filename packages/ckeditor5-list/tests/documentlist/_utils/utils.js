@@ -116,10 +116,10 @@ export function setupTestHelpers( editor ) {
 			test.test( input, output, actionCallback );
 		},
 
-		changeType( input, output, newTypeFunc = type => type == 'numbered' ? 'bulleted' : 'numbered' ) {
+		changeType( input, output, type ) {
 			const actionCallback = selection => {
 				const element = selection.getFirstPosition().nodeAfter;
-				const newType = newTypeFunc( element.getAttribute( 'listType' ) );
+				const newType = type || ( element.getAttribute( 'listType' ) == 'numbered' ? 'bulleted' : 'numbered' );
 
 				model.change( writer => {
 					const itemsToChange = Array.from( selection.getSelectedBlocks() );
@@ -159,12 +159,15 @@ export function setupTestHelpers( editor ) {
 			test.test( input, output, actionCallback, testUndo );
 		},
 
-		setListAttributes( newIndent, input, output ) {
+		setListAttributes( newIndentOrType, input, output ) {
+			const newIndent = typeof newIndentOrType == 'number' ? newIndentOrType : 0;
+			const newType = typeof newIndentOrType == 'string' ? newIndentOrType : 'bulleted';
+
 			const actionCallback = selection => {
 				const element = selection.getFirstPosition().nodeAfter;
 
 				model.change( writer => {
-					writer.setAttributes( { listType: 'bulleted', listIndent: newIndent, listItemId: 'x' }, element );
+					writer.setAttributes( { listType: newType, listIndent: newIndent, listItemId: 'x' }, element );
 				} );
 			};
 
