@@ -235,7 +235,7 @@ export default class Rect {
 	}
 
 	/**
-	 * Returns a new rect, a part of the original rect, which is actually visible to the user,
+	 * Returns a new rect, a part of the original rect, which is actually visible to the user and is relative to the,`body`,
 	 * e.g. an original rect cropped by parent element rects which have `overflow` set in CSS
 	 * other than `"visible"`.
 	 *
@@ -371,7 +371,7 @@ export default class Rect {
 	}
 
 	/**
-	 * Calculates absolute `Rect` coordinates.
+	 * Recalculates screen coordinates to coordinates relative to the positioned ancestor offset.
 	 */
 	public toAbsoluteRect(): Rect {
 		const { scrollX, scrollY } = global.window;
@@ -576,7 +576,7 @@ function getElementOverflow( element: HTMLElement | Range ): string {
  * (and scrollable) ancestors.
  */
 function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementAncestor: HTMLElement ): void {
-	const ancestorPosition = new Rect( positionedElementAncestor ).toAbsoluteRect();
+	const ancestorPosition = new Rect( positionedElementAncestor );
 	const ancestorBorderWidths = getBorderWidths( positionedElementAncestor );
 
 	let moveX = 0;
