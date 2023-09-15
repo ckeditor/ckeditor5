@@ -249,6 +249,27 @@ describe( 'Widget - integration', () => {
 		expect( getModelData( model ) ).to.equal( '<widget><nested>foo</nested><nested>[bar]</nested></widget>' );
 	} );
 
+	it( 'should select entire paragraph when triple click', () => {
+		setModelData( model, '<paragraph>[]foo bar</paragraph>' );
+
+		const viewRoot = viewDocument.getRoot();
+		const paragraph = viewRoot.getChild( 0 );
+		const preventDefault = sinon.spy();
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( paragraph ),
+			preventDefault,
+			detail: 3
+		} );
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		sinon.assert.called( preventDefault );
+
+		expect( getViewData( view ) ).to.equal( '<p>{foo bar}</p>' );
+
+		expect( getModelData( model ) ).to.equal( '<paragraph>[foo bar]</paragraph>' );
+	} );
+
 	it( 'should select the entire nested editable if quadra clicked', () => {
 		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
 
