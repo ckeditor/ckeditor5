@@ -28,6 +28,8 @@ export default class AutocompleteView<
 	constructor( locale: Locale, config: AutocompleteViewConfig<TQueryFieldView> ) {
 		super( locale, config );
 
+		this._config = config;
+
 		const toPx = toUnit( 'px' );
 
 		this.extendTemplate( {
@@ -42,8 +44,6 @@ export default class AutocompleteView<
 		resultsView.set( 'isVisible', false );
 		resultsView.set( '_position', 's' );
 		resultsView.set( '_width', 0 );
-
-		this._config = config;
 
 		resultsView.extendTemplate( {
 			attributes: {
@@ -110,7 +110,7 @@ export default class AutocompleteView<
 	}
 
 	/**
-	 * TODO
+	 * Updates the visibility of the results view on demand.
 	 */
 	private _updateResultsVisibility() {
 		const resultsView = ( this.resultsView as AutocompleteResultsView );
@@ -169,7 +169,7 @@ export interface AutocompleteResultsView extends SearchResultsView {
 	_position: string;
 
 	/**
-	 * TODO
+	 * The observable property determining the CSS width of the results view.
 	 *
 	 * @internal
 	 */
@@ -187,6 +187,8 @@ export interface AutocompleteViewConfig<
 
 	/**
 	 * Minimum number of characters that need to be typed before the search is performed.
+	 *
+	 * @default 0
 	 */
 	queryMinChars?: number;
 }

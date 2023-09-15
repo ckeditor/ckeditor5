@@ -12,7 +12,7 @@ import {
 } from '../../src';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { Rect, global } from '@ckeditor/ckeditor5-utils';
+import { Rect, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'AutocompleteView', () => {
 	let view, filteredView;
@@ -96,6 +96,99 @@ describe( 'AutocompleteView', () => {
 				expect( view.resultsView._position ).to.equal( 's' );
 			} );
 
+			it( 'should hide the results view upon pressing esc', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.esc,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view.resultsView.isVisible = true;
+
+				view.keystrokes.press( keyEvtData );
+
+				expect( view.resultsView.isVisible ).to.be.false;
+			} );
+
+			it( 'should hide the results upon disabling the view', () => {
+				view.resultsView.isVisible = true;
+
+				view.isEnabled = false;
+
+				expect( view.resultsView.isVisible ).to.be.false;
+			} );
+
+			it( 'should not display the results upon searching if the query is shorter than configured #queryMinChars', () => {
+				const view = new AutocompleteView( new Locale(), {
+					filteredView,
+					queryMinChars: 3,
+					queryView: {
+						label: 'test label'
+					}
+				} );
+
+				view.render();
+				document.body.appendChild( view.element );
+				view.focusTracker.isFocused = true;
+
+				expect( view.resultsView.isVisible ).to.be.false;
+
+				view.queryView.fieldView.value = 'a';
+				view.fire( 'search', { query: 'a', resultsCount: 1, totalItemsCount: 5 } );
+				expect( view.resultsView.isVisible ).to.be.false;
+
+				view.queryView.fieldView.value = 'ab';
+				view.fire( 'search', { query: 'ab', resultsCount: 1, totalItemsCount: 5 } );
+				expect( view.resultsView.isVisible ).to.be.false;
+
+				view.queryView.fieldView.value = 'abc';
+				view.fire( 'search', { query: 'abc', resultsCount: 1, totalItemsCount: 5 } );
+				expect( view.resultsView.isVisible ).to.be.true;
+
+				view.destroy();
+				view.element.remove();
+			} );
+
+			it( 'should update view position, width, and visibility upon #search event', () => {
+				const view = new AutocompleteView( new Locale(), {
+					filteredView,
+					queryMinChars: 3,
+					queryView: {
+						label: 'test label'
+					}
+				} );
+
+				view.render();
+				document.body.appendChild( view.element );
+				expect( view.resultsView.isVisible ).to.be.false;
+
+				view.queryView.fieldView.value = 'abc';
+				view.focusTracker.isFocused = true;
+				expect( view.resultsView.isVisible ).to.be.true;
+
+				testUtils.sinon.stub( AutocompleteView, '_getOptimalPosition' ).returns( { name: 'foo' } );
+				testUtils.sinon.stub( view.queryView.fieldView.element, 'getBoundingClientRect' ).returns( { width: '1234' } );
+
+				// Query too short.
+				view.queryView.fieldView.value = 'a';
+				view.fire( 'search', { query: 'a', resultsCount: 1, totalItemsCount: 5 } );
+
+				expect( view.resultsView.isVisible ).to.be.false;
+				expect( view.resultsView.element.classList.contains( 'ck-search__results_foo' ) ).to.be.false;
+				expect( view.resultsView.element.style.width ).to.not.equal( '1234px' );
+
+				// Query long enough.
+				view.queryView.fieldView.value = 'abcd';
+				view.fire( 'search', { query: 'abcd', resultsCount: 1, totalItemsCount: 5 } );
+
+				expect( view.resultsView.isVisible ).to.be.true;
+				expect( view.resultsView.element.classList.contains( 'ck-search__results_foo' ) ).to.be.true;
+				expect( view.resultsView.element.style.width ).to.equal( '1234px' );
+
+				view.destroy();
+				view.element.remove();
+			} );
+
 			describe( '#defaultResultsPositions', () => {
 				it( 'should be able to position results above the search field (north)', () => {
 					const northPositioningFunction = AutocompleteView.defaultResultsPositions[ 0 ];
@@ -139,13 +232,38 @@ describe( 'AutocompleteView', () => {
 				expect( view.resultsView._position ).to.equal( 's' );
 			} );
 
-			it( 'resets the view when blurred', () => {
-				const resetSpy = sinon.spy( view.queryView, 'reset' );
+			describe( 'reset on blur', () => {
+				it( 'resets the view when blurred if configured to do so', () => {
+					const view = new AutocompleteView( new Locale(), {
+						filteredView,
+						resetOnBlur: true,
+						queryView: {
+							label: 'test label'
+						}
+					} );
 
-				view.focusTracker.isFocused = true;
-				view.focusTracker.isFocused = false;
+					view.render();
+					document.body.appendChild( view.element );
 
-				sinon.assert.calledOnce( resetSpy );
+					const resetSpy = sinon.spy( view.queryView, 'reset' );
+
+					view.focusTracker.isFocused = true;
+					view.focusTracker.isFocused = false;
+
+					sinon.assert.calledOnce( resetSpy );
+
+					view.destroy();
+					view.element.remove();
+				} );
+
+				it( 'does not reset the view when blurred if not configured', () => {
+					const resetSpy = sinon.spy( view.queryView, 'reset' );
+
+					view.focusTracker.isFocused = true;
+					view.focusTracker.isFocused = false;
+
+					sinon.assert.notCalled( resetSpy );
+				} );
 			} );
 		} );
 	} );
