@@ -367,6 +367,41 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 					expect( command.value ).to.equal( defaultInline.name );
 				} );
+
+				it( 'should set width and height when imageStyle is set (and be undoable in single step)', async () => {
+					const initialData = '<paragraph>[<imageInline src="/assets/sample.png"></imageInline>]</paragraph>';
+
+					setData( model, initialData );
+					command.execute( { value: anyImage.name } );
+					await timeout( 100 );
+
+					expect( getData( model ) ).to.equal(
+						`<paragraph>[<imageInline height="96" imageStyle="${ anyImage.name }" ` +
+							'src="/assets/sample.png" width="96"></imageInline>]</paragraph>'
+					);
+
+					editor.execute( 'undo' );
+
+					expect( getData( model ) )
+						.to.equal( initialData );
+				} );
+
+				it( 'should set width and height when imageStyle is removed (and be undoable in single step)', async () => {
+					const initialData =
+						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="/assets/sample.png"></imageInline>]</paragraph>`;
+
+					setData( model, initialData );
+					command.execute( { value: defaultInline.name } );
+					await timeout( 100 );
+
+					expect( getData( model ) )
+						.to.equal( '<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]</paragraph>' );
+
+					editor.execute( 'undo' );
+
+					expect( getData( model ) )
+						.to.equal( initialData );
+				} );
 			} );
 
 			describe( 'when a block image is selected', () => {
@@ -435,6 +470,10 @@ describe( 'ImageStyleCommand', () => {
 					.to.equal( `<imageBlock imageStyle="${ anyImage.name }"><caption>Fo[o]</caption></imageBlock>` );
 			} );
 		} );
+
+		function timeout( ms ) {
+			return new Promise( res => setTimeout( res, ms ) );
+		}
 	} );
 
 	describe( 'shouldConvertImageType()', () => {

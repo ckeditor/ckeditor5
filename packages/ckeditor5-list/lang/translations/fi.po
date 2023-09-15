@@ -119,7 +119,7 @@ msgstr "Alkaa"
 
 msgctxt "The error message displayed when the numbered list start index input value is invalid."
 msgid "Start index must be greater than 0."
-msgstr "Aloitusindeksi ei saa olla suurempi kuin 0."
+msgstr "Aloitusindeksin pitää olla suurempi kuin 0."
 
 msgctxt "The label of the switch button that reverses the order of the numbered list."
 msgid "Reversed order"

@@ -7,8 +7,6 @@
  * @module clipboard/dragdropexperimental
  */
 
-/* istanbul ignore file -- @preserve */
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -383,7 +381,6 @@ export default class DragDropExperimental extends Plugin {
 			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
 			const targetRange = dragDropTarget.getFinalDropRange( data.target, data.targetRanges, clientX, clientY, this._blockMode );
 
-			/* istanbul ignore if -- @preserve */
 			if ( !targetRange ) {
 				this._finalizeDragging( false );
 				evt.stop();
