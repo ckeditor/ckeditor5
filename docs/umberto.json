@@ -76,7 +76,6 @@
 		"builds/guides/development/installing-plugins.html": "installation/plugins/installing-plugins.html",
 		"builds/guides/development/plugins.html": "installation/plugins/plugins.html",
 		"builds/guides/faq.html": "tutorials/index.html",
-		"support/faq.html": "tutorials/index.html",
 		"builds/guides/integration/advanced-setup.html": "installation/getting-started/quick-start-other.html",
 		"builds/guides/integration/advanced-setup.html#creating-super-builds": "installation/advanced/using-two-editors.html#creating-super-builds",
 		"builds/guides/integration/basic-api.html": "installation/getting-started/editor-lifecycle.html",
