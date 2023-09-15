@@ -14,6 +14,7 @@ import SearchInfoView from '../searchinfoview';
 import SearchResultsView from '../searchresultsview';
 import FocusCycler from '../../focuscycler';
 import { escapeRegExp } from 'lodash-es';
+
 import type FilteredView from '../filteredview';
 import type ViewCollection from '../../viewcollection';
 import type InputBase from '../../input/inputbase';
@@ -77,24 +78,32 @@ export default class SearchTextView<
 	public queryView: SearchTextQueryView<TQueryFieldView>;
 
 	/**
-	 * A collection of views that are children of the search view.
-	 */
-	public children: ViewCollection;
-
-	/**
-	 * TODO
+	 * Controls whether the component is in read-only mode.
+	 *
+	 * @default true
 	 */
 	declare public isEnabled: boolean;
 
 	/**
-	 * TODO
+	 * The number of results found for the current search query. Updated upon the {@link #search} event.
+	 *
+	 * @default 0
 	 */
 	declare public resultsCount: number;
 
 	/**
-	 * TODO
+	 * The number of the items that can be searched in the {@link #filteredView}. Updated upon the {@link #search} event.
+	 *
+	 * @default 0
 	 */
 	declare public totalItemsCount: number;
+
+	/**
+	 * The collection of children of the view.
+	 *
+	 * @readonly
+	 */
+	declare public readonly children: ViewCollection;
 
 	/**
 	 * Provides the focus management (keyboard navigation) between {@link #queryView} and {@link #filteredView}.
@@ -121,14 +130,14 @@ export default class SearchTextView<
 
 		this._config = config;
 
-		this.set( 'isEnabled', true );
-
 		this.filteredView = config.filteredView;
 		this.queryView = this._createSearchTextQueryView();
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.resultsView = new SearchResultsView( locale );
 		this.children = this.createCollection();
+
+		this.set( 'isEnabled', true );
 		this.set( 'resultsCount', 0 );
 		this.set( 'totalItemsCount', 0 );
 
@@ -186,7 +195,10 @@ export default class SearchTextView<
 	public override render(): void {
 		super.render();
 
-		this.children.addMany( [ this.queryView, this.resultsView ] );
+		this.children.addMany( [
+			this.queryView,
+			this.resultsView
+		] );
 
 		const stopPropagation = ( data: Event ) => data.stopPropagation();
 
@@ -300,7 +312,7 @@ export default class SearchTextView<
 export interface SearchTextViewConfig<TConfigSearchField extends InputBase<HTMLInputElement | HTMLTextAreaElement>> {
 
 	/**
-	 * TODO
+	 * The configuration of the view's query field.
 	 */
 	queryView: SearchTextQueryViewConfig<TConfigSearchField>;
 
@@ -310,7 +322,7 @@ export interface SearchTextViewConfig<TConfigSearchField extends InputBase<HTMLI
 	filteredView: FilteredView;
 
 	/**
-	 * TODO
+	 * The view that displays the information about the search results.
 	 */
 	infoView?: {
 
@@ -344,7 +356,6 @@ export interface SearchTextViewConfig<TConfigSearchField extends InputBase<HTMLI
 	 * The custom CSS class name to be added to the search view element.
 	 */
 	class?: string;
-
 }
 
 /**

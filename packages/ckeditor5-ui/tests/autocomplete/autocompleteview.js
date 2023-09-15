@@ -30,7 +30,9 @@ describe( 'AutocompleteView', () => {
 
 		view = new AutocompleteView( new Locale(), {
 			filteredView,
-			searchFieldLabel: 'test label'
+			queryView: {
+				label: 'test label'
+			}
 		} );
 
 		view.render();

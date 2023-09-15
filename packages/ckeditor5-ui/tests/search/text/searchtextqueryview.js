@@ -18,7 +18,11 @@ describe( 'SearchTextQueryView', () => {
 	beforeEach( () => {
 		locale = new Locale();
 
-		view = new SearchTextQueryView( locale, createLabeledInputText, 'Test' );
+		view = new SearchTextQueryView( locale, {
+			creator: createLabeledInputText,
+			label: 'Test'
+		} );
+
 		view.render();
 	} );
 
@@ -35,23 +39,23 @@ describe( 'SearchTextQueryView', () => {
 			expect( view.label ).to.equal( 'Test' );
 		} );
 
-		describe( 'clear value button', () => {
-			it( 'should be created', () => {
-				const clearButtonView = view.fieldWrapperChildren.last;
+		describe( 'reset value button', () => {
+			it( 'should be created by default', () => {
+				const resetButtonView = view.fieldWrapperChildren.last;
 
-				expect( clearButtonView ).to.equal( view.clearButtonView );
-				expect( clearButtonView ).to.be.instanceOf( ButtonView );
-				expect( clearButtonView.isVisible ).to.be.false;
-				expect( clearButtonView.tooltip ).to.be.true;
-				expect( clearButtonView.class ).to.equal( 'ck-search__reset' );
-				expect( clearButtonView.label ).to.equal( 'Clear' );
-				expect( clearButtonView.icon ).to.equal( icons.cancel );
+				expect( resetButtonView ).to.equal( view.resetButtonView );
+				expect( resetButtonView ).to.be.instanceOf( ButtonView );
+				expect( resetButtonView.isVisible ).to.be.false;
+				expect( resetButtonView.tooltip ).to.be.true;
+				expect( resetButtonView.class ).to.equal( 'ck-search__reset' );
+				expect( resetButtonView.label ).to.equal( 'Clear' );
+				expect( resetButtonView.icon ).to.equal( icons.cancel );
 			} );
 
 			it( 'should reset the search field value upon #execute', () => {
 				const resetSpy = testUtils.sinon.spy( view, 'reset' );
 
-				view.clearButtonView.fire( 'execute' );
+				view.resetButtonView.fire( 'execute' );
 
 				sinon.assert.calledOnce( resetSpy );
 			} );
@@ -59,17 +63,17 @@ describe( 'SearchTextQueryView', () => {
 			it( 'should focus the field view upon #execute', () => {
 				const focusSpy = testUtils.sinon.spy( view, 'focus' );
 
-				view.clearButtonView.fire( 'execute' );
+				view.resetButtonView.fire( 'execute' );
 
 				sinon.assert.calledOnce( focusSpy );
 			} );
 
 			it( 'should get hidden upon #execute', () => {
-				view.clearButtonView.isVisible = true;
+				view.resetButtonView.isVisible = true;
 
-				view.clearButtonView.fire( 'execute' );
+				view.resetButtonView.fire( 'execute' );
 
-				expect( view.clearButtonView.isVisible ).to.be.false;
+				expect( view.resetButtonView.isVisible ).to.be.false;
 			} );
 
 			it( 'should fire the #reset event upon #execute', () => {
@@ -77,18 +81,47 @@ describe( 'SearchTextQueryView', () => {
 
 				view.on( 'reset', spy );
 
-				view.clearButtonView.fire( 'execute' );
+				view.resetButtonView.fire( 'execute' );
 
 				sinon.assert.calledOnce( spy );
 			} );
+
+			it( 'should be possible to hide using view\'s configuration', () => {
+				const view = new SearchTextQueryView( locale, {
+					creator: createLabeledInputText,
+					label: 'Test',
+					showResetButton: false
+				} );
+
+				expect( view.resetButtonView ).to.be.undefined;
+				expect( view.fieldWrapperChildren.last ).to.equal( view.labelView );
+
+				view.destroy();
+			} );
 		} );
 
-		it( 'should have the loupe icon', () => {
-			const loupeIconView = view.fieldWrapperChildren.first;
+		describe( 'icon', () => {
+			it( 'should be added to the view by default', () => {
+				const iconView = view.fieldWrapperChildren.first;
 
-			expect( loupeIconView ).to.equal( view.loupeIconView );
-			expect( loupeIconView ).to.be.instanceOf( IconView );
-			expect( loupeIconView.content ).to.equal( icons.loupe );
+				expect( view.iconView ).to.equal( iconView );
+				expect( iconView ).to.equal( view.iconView );
+				expect( iconView ).to.be.instanceOf( IconView );
+				expect( iconView.content ).to.equal( icons.loupe );
+			} );
+
+			it( 'should be possible to hide using view\'s configuration', () => {
+				const view = new SearchTextQueryView( locale, {
+					creator: createLabeledInputText,
+					label: 'Test',
+					showIcon: false
+				} );
+
+				expect( view.iconView ).to.be.undefined;
+				expect( view.fieldWrapperChildren.first ).to.equal( view.fieldView );
+
+				view.destroy();
+			} );
 		} );
 
 		describe( '#input event', () => {
@@ -96,12 +129,12 @@ describe( 'SearchTextQueryView', () => {
 				view.fieldView.value = 'foo';
 				view.fieldView.fire( 'input' );
 
-				expect( view.clearButtonView.isVisible ).to.be.true;
+				expect( view.resetButtonView.isVisible ).to.be.true;
 
 				view.fieldView.value = '';
 				view.fieldView.fire( 'input' );
 
-				expect( view.clearButtonView.isVisible ).to.be.false;
+				expect( view.resetButtonView.isVisible ).to.be.false;
 			} );
 		} );
 	} );

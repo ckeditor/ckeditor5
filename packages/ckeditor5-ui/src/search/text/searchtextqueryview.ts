@@ -28,17 +28,17 @@ export default class SearchTextQueryView<
 	/**
 	 * The loupe icon displayed next to the {@link #fieldView}.
 	 */
-	public loupeIconView?: IconView;
+	public iconView?: IconView;
 
 	/**
 	 * The button that clears and focuses the {@link #fieldView}.
 	 */
-	public clearButtonView?: ButtonView;
+	public resetButtonView?: ButtonView;
 
 	/**
-	 * TODO
+	 * A reference to the view configuration.
 	 */
-	private _viewConfig: SearchTextQueryViewConfig<TQueryFieldView>;
+	private readonly _viewConfig: SearchTextQueryViewConfig<TQueryFieldView>;
 
 	/**
 	 * @inheritDoc
@@ -57,9 +57,9 @@ export default class SearchTextQueryView<
 		this._viewConfig = viewConfig;
 
 		if ( this._viewConfig.showIcon ) {
-			this.loupeIconView = new IconView();
-			this.loupeIconView.content = icons.loupe;
-			this.fieldWrapperChildren.add( this.loupeIconView, 0 );
+			this.iconView = new IconView();
+			this.iconView.content = icons.loupe;
+			this.fieldWrapperChildren.add( this.iconView, 0 );
 
 			this.extendTemplate( {
 				attributes: {
@@ -69,8 +69,8 @@ export default class SearchTextQueryView<
 		}
 
 		if ( this._viewConfig.showResetButton ) {
-			this.clearButtonView = new ButtonView( locale );
-			this.clearButtonView.set( {
+			this.resetButtonView = new ButtonView( locale );
+			this.resetButtonView.set( {
 				label: t( 'Clear' ),
 				icon: icons.cancel,
 				class: 'ck-search__reset',
@@ -78,15 +78,15 @@ export default class SearchTextQueryView<
 				tooltip: true
 			} );
 
-			this.clearButtonView.on( 'execute', () => {
+			this.resetButtonView.on( 'execute', () => {
 				this.reset();
 				this.focus();
 				this.fire<SearchTextQueryViewResetEvent>( 'reset' );
 			} );
 
-			this.clearButtonView.bind( 'isVisible' ).to( this.fieldView, 'isEmpty', isEmpty => !isEmpty );
+			this.resetButtonView.bind( 'isVisible' ).to( this.fieldView, 'isEmpty', isEmpty => !isEmpty );
 
-			this.fieldWrapperChildren.add( this.clearButtonView );
+			this.fieldWrapperChildren.add( this.resetButtonView );
 
 			this.extendTemplate( {
 				attributes: {
@@ -103,7 +103,7 @@ export default class SearchTextQueryView<
 		this.fieldView.reset();
 
 		if ( this._viewConfig.showResetButton ) {
-			this.clearButtonView!.isVisible = false;
+			this.resetButtonView!.isVisible = false;
 		}
 	}
 }
@@ -120,7 +120,7 @@ export type SearchTextQueryViewResetEvent = {
 };
 
 /**
- * TODO
+ * The configuration of the {@link module:ui/search/text/searchtextqueryview~SearchTextQueryView} view.
  */
 export interface SearchTextQueryViewConfig<TConfigSearchField extends InputBase<HTMLInputElement | HTMLTextAreaElement>> {
 
@@ -130,12 +130,16 @@ export interface SearchTextQueryViewConfig<TConfigSearchField extends InputBase<
 	label: string;
 
 	/**
-	 * TODO
+	 * Determines whether the button that resets the search should be visible.
+	 *
+	 * @default true
 	 */
 	showResetButton?: boolean;
 
 	/**
-	 * TODO
+	 * Determines whether the loupe icon should be visible.
+	 *
+	 * @default true
 	 */
 	showIcon?: boolean;
 
