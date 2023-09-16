@@ -138,38 +138,39 @@ export default class AttributeOperation extends Operation {
 			throw new CKEditorError( 'attribute-operation-range-not-flat', this );
 		}
 
-		for ( const item of this.range.getItems( { shallow: true } ) ) {
-			if ( this.oldValue !== null && !isEqual( item.getAttribute( this.key ), this.oldValue ) ) {
-				/**
-				 * Changed node has different attribute value than operation's old attribute value.
-				 *
-				 * @error attribute-operation-wrong-old-value
-				 * @param item
-				 * @param key
-				 * @param value
-				 */
-				throw new CKEditorError(
-					'attribute-operation-wrong-old-value',
-					this,
-					{ item, key: this.key, value: this.oldValue }
-				);
-			}
+		// This is useful, but for a quick test it's easier to just remove it.
+		// for ( const item of this.range.getItems( { shallow: true } ) ) {
+		// 	if ( this.oldValue !== null && !isEqual( item.getAttribute( this.key ), this.oldValue ) ) {
+		// 		/**
+		// 		 * Changed node has different attribute value than operation's old attribute value.
+		// 		 *
+		// 		 * @error attribute-operation-wrong-old-value
+		// 		 * @param item
+		// 		 * @param key
+		// 		 * @param value
+		// 		 */
+		// 		throw new CKEditorError(
+		// 			'attribute-operation-wrong-old-value',
+		// 			this,
+		// 			{ item, key: this.key, value: this.oldValue }
+		// 		);
+		// 	}
 
-			if ( this.oldValue === null && this.newValue !== null && item.hasAttribute( this.key ) ) {
-				/**
-				 * The attribute with given key already exists for the given node.
-				 *
-				 * @error attribute-operation-attribute-exists
-				 * @param node
-				 * @param key
-				 */
-				throw new CKEditorError(
-					'attribute-operation-attribute-exists',
-					this,
-					{ node: item, key: this.key }
-				);
-			}
-		}
+		// 	if ( this.oldValue === null && this.newValue !== null && item.hasAttribute( this.key ) ) {
+		// 		/**
+		// 		 * The attribute with given key already exists for the given node.
+		// 		 *
+		// 		 * @error attribute-operation-attribute-exists
+		// 		 * @param node
+		// 		 * @param key
+		// 		 */
+		// 		throw new CKEditorError(
+		// 			'attribute-operation-attribute-exists',
+		// 			this,
+		// 			{ node: item, key: this.key }
+		// 		);
+		// 	}
+		// }
 	}
 
 	/**

@@ -235,7 +235,9 @@ export default function EmitterMixin( base?: Constructor ): unknown {
 					// failed if callbacks were added to the queue before currently processed callback.
 					// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
 					// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
-					callbacks = Array.from( callbacks );
+					// NOTE: slice() is e.g. 13x faster than Array.from.
+					// See https://www.measurethat.net/Benchmarks/Show/2285/5/js-array-copy-speed-comparison#latest_results_block
+					callbacks = callbacks.slice();
 
 					for ( let i = 0; i < callbacks.length; i++ ) {
 						callbacks[ i ].callback.apply( this, callbackArgs );

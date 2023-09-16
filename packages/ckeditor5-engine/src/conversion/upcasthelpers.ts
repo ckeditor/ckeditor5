@@ -10,6 +10,10 @@ import type { default as UpcastDispatcher, UpcastElementEvent, UpcastConversionA
 import type ModelElement from '../model/element';
 import type ModelRange from '../model/range';
 import type ModelPosition from '../model/position';
+import type ModelDocumentFragment from '../model/documentfragment';
+import type ModelItem from '../model/item';
+import ModelTextProxy from '../model/textproxy';
+
 import type { ViewDocumentFragment, ViewElement, ViewText } from '../index';
 import type Mapper from './mapper';
 import type Model from '../model/model';
@@ -1152,7 +1156,7 @@ function setAttributeOn(
 	let result = false;
 
 	// Set attribute on each item in range according to Schema.
-	for ( const node of Array.from( modelRange.getItems( { shallow } ) ) ) {
+	for ( const node of getItemsFromFlatRange( modelRange, shallow ) ) {
 		// Skip if not allowed.
 		if ( !conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
 			continue;
@@ -1208,6 +1212,43 @@ function normalizeDataToMarkerConfig(
 		view: `${ config.view }-${ type }`,
 		model: elementCreatorFunction
 	};
+}
+
+function getItemsFromFlatRange( range: ModelRange, shallow = false ): Array<ModelItem> {
+	if ( !range.isFlat ) {
+		throw new Error( 'Expected a flat range.' );
+	}
+
+	const parent = range.start.parent;
+	const index = parent.offsetToIndex( range.start.offset );
+	const endIndex = parent.offsetToIndex( range.end.offset );
+
+	return getItems( parent, index, endIndex, shallow );
+}
+
+function getItems(
+	parent: ModelElement | ModelDocumentFragment,
+	startIndex = 0,
+	endIndex = parent.childCount,
+	shallow = false
+): Array<ModelItem> {
+	const items = [];
+
+	for ( let index = startIndex; index < endIndex; index++ ) {
+		const child = parent.getChild( index )!;
+
+		if ( child.is( '$text' ) ) {
+			items.push( new ModelTextProxy( child, 0, child.data.length ) );
+		} else {
+			items.push( child );
+		}
+
+		if ( !shallow && child.is( 'element' ) ) {
+			items.push( ...getItems( child ) ); // TODO we had issues with this approach for super long arrays.
+		}
+	}
+
+	return items;
 }
 
 export type ElementCreatorFunction = (
