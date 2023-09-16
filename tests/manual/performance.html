@@ -1,0 +1,24 @@
+<head>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+	</style>
+
+	<meta http-equiv="Content-Security-Policy" content="">
+</head>
+
+<label>data size(s): <input type="text" id="data-sizes" value="1" value2="100, 200, 500, 1000, 2000, 3000" size="25"></label><br>
+<label>repeat: <input type="text" id="repeat-times" value="1" size="2"> x</label><br>
+<label>await time: <input type="text" id="await-time" value="100" size="5"> ms</label><br>
+<button id="start">Start</button>
+
+<hr>
+
+results:<br>
+<textarea id="result" cols="50" rows="5"></textarea>
+
+<hr>
+
+<div id="editor"></div>

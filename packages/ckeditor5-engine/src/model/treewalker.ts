@@ -91,6 +91,7 @@ export default class TreeWalker implements Iterable<TreeWalkerValue> {
 	 * @param options Object with configuration.
 	 */
 	constructor( options: TreeWalkerOptions ) {
+		window.yyy++;
 		if ( !options || ( !options.boundaries && !options.startPosition ) ) {
 			/**
 			 * Neither boundaries nor starting position of a `TreeWalker` have been defined.

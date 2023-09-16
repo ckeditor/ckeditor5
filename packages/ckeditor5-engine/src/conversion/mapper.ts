@@ -556,9 +556,9 @@ export default class Mapper extends EmitterMixin() {
 	 * @returns Length of the node in the tree model.
 	 */
 	public getModelLength( viewNode: ViewNode | ViewDocumentFragment ): number {
-		if ( this._viewToModelLengthCallbacks.get( ( viewNode as any ).name ) ) {
-			const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name )!;
+		const callback = this._viewToModelLengthCallbacks.get( ( viewNode as any ).name );
 
+		if ( callback ) {
 			return callback( viewNode as ViewElement );
 		} else if ( this._viewToModelMapping.has( viewNode as ViewElement ) ) {
 			return 1;

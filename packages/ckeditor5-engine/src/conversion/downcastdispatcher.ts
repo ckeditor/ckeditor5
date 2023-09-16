@@ -19,12 +19,14 @@ import type DocumentSelection from '../model/documentselection';
 import type DowncastWriter from '../view/downcastwriter';
 import type RootElement from '../model/rootelement';
 import type Element from '../model/element';
+import type DocumentFragment from '../model/documentfragment';
 import type Item from '../model/item';
 import type Mapper from './mapper';
 import type Position from '../model/position';
 import type Schema from '../model/schema';
 import type Selection from '../model/selection';
 import type ViewElement from '../view/element';
+import TextProxy from '../model/textproxy';
 
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
@@ -331,11 +333,12 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	): void {
 		if ( !options.doNotAddConsumables ) {
 			// Collect a list of things that can be consumed, consisting of nodes and their attributes.
-			this._addConsumablesForInsert( conversionApi.consumable, Array.from( range ) );
+			this._addConsumablesForInsertQuick( conversionApi.consumable, getItemsFromFlatRange( range ) );
 		}
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
+		const items = getItemsFromFlatRange( range, true );
+		for ( const data of items.map( itemToEventData ) ) {
 			this._testAndFire( 'insert', data, conversionApi );
 		}
 	}
@@ -521,6 +524,24 @@ export default class DowncastDispatcher extends EmitterMixin() {
 		for ( const value of walkerValues ) {
 			const item = value.item;
 
+			// Add consumable if it wasn't there yet.
+			if ( consumable.test( item, 'insert' ) === null ) {
+				consumable.add( item, 'insert' );
+
+				for ( const key of item.getAttributeKeys() ) {
+					consumable.add( item, 'attribute:' + key );
+				}
+			}
+		}
+
+		return consumable;
+	}
+
+	private _addConsumablesForInsertQuick(
+		consumable: Consumable,
+		items: Array<Item>
+	): Consumable {
+		for ( const item of items ) {
 			// Add consumable if it wasn't there yet.
 			if ( consumable.test( item, 'insert' ) === null ) {
 				consumable.add( item, 'insert' );
@@ -917,6 +938,47 @@ function walkerValueToEventData( value: TreeWalkerValue ) {
 		item,
 		range: itemRange
 	};
+}
+
+function itemToEventData( item: Item ) {
+	const itemRange = Range._createOn( item );
+
+	return {
+		item,
+		range: itemRange
+	};
+}
+
+function getItemsFromFlatRange( range: Range, shallow = false ): Array<Item> {
+	if ( !range.isFlat ) {
+		throw new Error( 'Expected a flat range.' );
+	}
+
+	const parent = range.start.parent;
+	const index = parent.offsetToIndex( range.start.offset );
+	const endIndex = parent.offsetToIndex( range.end.offset );
+
+	return getItems( parent, index, endIndex, shallow );
+}
+
+function getItems( parent: Element | DocumentFragment, startIndex = 0, endIndex = parent.childCount, shallow = false ): Array<Item> {
+	const items = [];
+
+	for ( let index = startIndex; index < endIndex; index++ ) {
+		const child = parent.getChild( index )!;
+
+		if ( child.is( '$text' ) ) {
+			items.push( new TextProxy( child, 0, child.data.length ) );
+		} else {
+			items.push( child );
+		}
+
+		if ( !shallow && child.is( 'element' ) ) {
+			items.push( ...getItems( child ) ); // TODO we had issues with this approach for super long arrays.
+		}
+	}
+
+	return items;
 }
 
 /**
