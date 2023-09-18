@@ -107,7 +107,9 @@ const tasks = new Listr( [
 
 ( async () => {
 	try {
-		if ( !cliArguments.nightly ) {
+		if ( process.env.CKE5_RELEASE_TOKEN ) {
+			githubToken = process.env.CKE5_RELEASE_TOKEN;
+		} else if ( !cliArguments.nightly ) {
 			githubToken = await provideToken();
 		}
 
