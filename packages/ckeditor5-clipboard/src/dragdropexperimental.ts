@@ -14,6 +14,9 @@ import {
 	MouseObserver,
 	type DataTransfer,
 	type Element,
+	type Model,
+	type Range,
+	type Position,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
@@ -33,6 +36,7 @@ import {
 	createElement,
 	DomEmitterMixin,
 	delay,
+	Rect,
 	type DelayedFunc,
 	type ObservableChangeEvent,
 	type DomEmitter
@@ -293,7 +297,10 @@ export default class DragDropExperimental extends Plugin {
 				method: 'dragstart'
 			} );
 
-			this._updatePreview( data.dataTransfer );
+			const { dataTransfer, domTarget, domEvent } = data;
+			const { clientX } = domEvent;
+
+			this._updatePreview( { dataTransfer, domTarget, clientX } );
 
 			data.stopPropagation();
 
@@ -580,47 +587,53 @@ export default class DragDropExperimental extends Plugin {
 
 				widgetToolbarRepository.forceDisabled( 'dragDrop' );
 			}
+
+			return;
 		}
 
 		// If this was not a widget we should check if we need to drag some text content.
-		else if ( !selection.isCollapsed || ( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
-			const blocks = Array.from( selection.getSelectedBlocks() );
-
-			if ( blocks.length > 1 ) {
-				this._draggedRange = LiveRange.fromRange( model.createRange(
-					model.createPositionBefore( blocks[ 0 ] ),
-					model.createPositionAfter( blocks[ blocks.length - 1 ] )
-				) );
-
-				model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
-				this._blockMode = true;
-				// TODO block mode for dragging from outside editor? or inline? or both?
-			}
-			else if ( blocks.length == 1 ) {
-				const draggedRange = selection.getFirstRange()!;
-				const blockRange = model.createRange(
-					model.createPositionBefore( blocks[ 0 ] ),
-					model.createPositionAfter( blocks[ 0 ] )
-				);
-
-				if (
-					draggedRange.start.isTouching( blockRange.start ) &&
-					draggedRange.end.isTouching( blockRange.end )
-				) {
-					this._draggedRange = LiveRange.fromRange( blockRange );
-					this._blockMode = true;
-				} else {
-					this._draggedRange = LiveRange.fromRange( selection.getFirstRange()! );
-					this._blockMode = false;
-				}
-			}
+		if ( selection.isCollapsed && !( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
+			return;
 		}
+
+		const blocks = Array.from( selection.getSelectedBlocks() );
+		const draggedRange = selection.getFirstRange()!;
+
+		if ( blocks.length == 0 ) {
+			this._draggedRange = LiveRange.fromRange( draggedRange );
+
+			return;
+		}
+
+		const blockRange = getRangeIncludingFullySelectedParents( model, blocks );
+
+		if ( blocks.length > 1 ) {
+			this._draggedRange = LiveRange.fromRange( blockRange );
+			this._blockMode = true;
+			// TODO block mode for dragging from outside editor? or inline? or both?
+		} else if ( blocks.length == 1 ) {
+			const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
+					draggedRange.end.isTouching( blockRange.end );
+
+			this._draggedRange = LiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
+			this._blockMode = touchesBlockEdges;
+		}
+
+		model.change( writer => writer.setSelection( this._draggedRange!.toRange() ) );
 	}
 
 	/**
 	 * Updates the dragged preview image.
 	 */
-	private _updatePreview( dataTransfer: DataTransfer ): void {
+	private _updatePreview( {
+		dataTransfer,
+		domTarget,
+		clientX
+	}: {
+		dataTransfer: DataTransfer;
+		domTarget: HTMLElement;
+		clientX: number;
+	} ): void {
 		const view = this.editor.editing.view;
 		const editable = view.document.selection.editableElement!;
 		const domEditable = view.domConverter.mapViewToDom( editable )!;
@@ -632,18 +645,27 @@ export default class DragDropExperimental extends Plugin {
 			} );
 
 			global.document.body.appendChild( this._previewContainer );
-		} else {
-			this._previewContainer.removeChild( this._previewContainer.firstElementChild! );
+		} else if ( this._previewContainer.firstElementChild ) {
+			this._previewContainer.removeChild( this._previewContainer.firstElementChild );
 		}
 
+		const domRect = new Rect( domEditable );
+
+		// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
+		if ( domEditable.contains( domTarget ) ) {
+			return;
+		}
+
+		const domEditablePaddingLeft = parseFloat( computedStyle.paddingLeft );
 		const preview = createElement( global.document, 'div' );
 
 		preview.className = 'ck ck-content';
 		preview.style.width = computedStyle.width;
+		preview.style.paddingLeft = `${ domRect.left - clientX + domEditablePaddingLeft }px`;
 
 		preview.innerHTML = dataTransfer.getData( 'text/html' );
+
 		dataTransfer.setDragImage( preview, 0, 0 );
-		// TODO set x to make dragged widget stick to the mouse cursor
 
 		this._previewContainer.appendChild( preview );
 	}
@@ -689,4 +711,44 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
 	}
 
 	return null;
+}
+
+/**
+ * Recursively checks if common parent of provided elements doesn't have any other children. If that's the case,
+ * it returns range including this parent. Otherwise, it returns only the range from first to last element.
+ *
+ * Example:
+ *
+ * <blockQuote>
+ *   <paragraph>[Test 1</paragraph>
+ *   <paragraph>Test 2</paragraph>
+ *   <paragraph>Test 3]</paragraph>
+ * <blockQuote>
+ *
+ * Because all elements inside the `blockQuote` are selected, the range is extended to include the `blockQuote` too.
+ * If only first and second paragraphs would be selected, the range would not include it.
+ */
+function getRangeIncludingFullySelectedParents( model: Model, elements: Array<Element> ): Range {
+	const firstElement = elements[ 0 ];
+	const lastElement = elements[ elements.length - 1 ];
+	const parent = firstElement.getCommonAncestor( lastElement );
+	const startPosition: Position = model.createPositionBefore( firstElement );
+	const endPosition: Position = model.createPositionAfter( lastElement );
+
+	if (
+		parent &&
+		parent.is( 'element' ) &&
+		!model.schema.isLimit( parent )
+	) {
+		const parentRange = model.createRangeOn( parent );
+		const touchesStart = startPosition.isTouching( parentRange.start );
+		const touchesEnd = endPosition.isTouching( parentRange.end );
+
+		if ( touchesStart && touchesEnd ) {
+			// Selection includes all elements in the parent.
+			return getRangeIncludingFullySelectedParents( model, [ parent ] );
+		}
+	}
+
+	return model.createRange( startPosition, endPosition );
 }

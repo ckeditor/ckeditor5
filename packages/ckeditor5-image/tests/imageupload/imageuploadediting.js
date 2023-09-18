@@ -487,6 +487,84 @@ describe( 'ImageUploadEditing', () => {
 		expect( loader.status ).to.equal( 'idle' );
 	} );
 
+	it( 'should set image width and height after server response', async () => {
+		const file = createNativeFileMock();
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png' } ) );
+		} );
+
+		await timeout( 100 );
+
+		expect( getModelData( model ) ).to.equal(
+			'<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]foo bar</paragraph>'
+		);
+	} );
+
+	it( 'should not modify image width if width was set before server response', async () => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img width="50" src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'image-800.png' } ) );
+		} );
+
+		await timeout( 100 );
+
+		expect( getModelData( model ) ).to.equal(
+			'[<imageBlock src="/assets/sample.png" srcset="image-800.png 800w" width="50"></imageBlock>]<paragraph>foo</paragraph>'
+		);
+	} );
+
+	it( 'should not modify image width if height was set before server response', async () => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img height="50" src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'image-800.png' } ) );
+		} );
+
+		await timeout( 100 );
+
+		expect( getModelData( model ) ).to.equal(
+			'[<imageBlock height="50" src="/assets/sample.png" srcset="image-800.png 800w"></imageBlock>]<paragraph>foo</paragraph>'
+		);
+	} );
+
 	it( 'should support adapter response with the normalized `urls` property', async () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
@@ -1482,4 +1560,8 @@ function base64ToBlob( base64Data ) {
 	}
 
 	return new Blob( byteArrays, { type } );
+}
+
+function timeout( ms ) {
+	return new Promise( res => setTimeout( res, ms ) );
 }

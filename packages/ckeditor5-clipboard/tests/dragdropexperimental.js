@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals window, document, Event */
 
 import ClipboardPipeline from '../src/clipboardpipeline';
 import DragDropExperimental from '../src/dragdropexperimental';
@@ -19,7 +19,9 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -64,7 +66,18 @@ describe( 'Drag and Drop experimental', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ DragDropExperimental, PastePlainText, Paragraph, Table, HorizontalLine, ShiftEnter, BlockQuote, Bold ]
+				plugins: [
+					DragDropExperimental,
+					PastePlainText,
+					Paragraph,
+					Table,
+					HorizontalLine,
+					ShiftEnter,
+					BlockQuote,
+					Bold,
+					Image,
+					ImageCaption
+				]
 			} );
 
 			model = editor.model;
@@ -494,10 +507,8 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 
 		it( 'should not remove dragged range if insert into drop target was not allowed', () => {
-			editor.model.schema.register( 'caption', {
-				allowIn: '$root',
-				allowContentOf: '$block',
-				isObject: true
+			editor.model.schema.extend( 'caption', {
+				allowIn: '$root'
 			} );
 
 			editor.conversion.elementToElement( {
@@ -1246,6 +1257,44 @@ describe( 'Drag and Drop experimental', () => {
 				);
 			} );
 
+			it( 'should start dragging text from caption to paragraph', () => {
+				setModelData( model, trim`
+					<imageBlock src="">
+						<caption>[World]</caption>
+					</imageBlock>
+					<paragraph>Hello</paragraph>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const viewElement = viewDocument.getRoot().getChild( 1 );
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				viewDocument.fire( 'dragstart', {
+					domTarget: domConverter.mapViewToDom( viewElement ),
+					target: viewElement,
+					domEvent: {},
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'World' );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+
+				fireDrop(
+					dataTransferMock,
+					model.createPositionAt( root.getChild( 1 ), 5 )
+				);
+
+				expect( getModelData( model ) ).to.equal( trim`
+					<imageBlock src="">
+						<caption></caption>
+					</imageBlock>
+					<paragraph>HelloWorld[]</paragraph>
+				` );
+			} );
+
 			it( 'should not drag parent paragraph when only portion of content is selected', () => {
 				setModelData( model,
 					'<paragraph>foobar</paragraph>' +
@@ -1420,7 +1469,7 @@ describe( 'Drag and Drop experimental', () => {
 				expect( editableElement.hasAttribute( 'draggable' ) ).to.be.false;
 			} );
 
-			it( 'should only show one preview element', () => {
+			it( 'should only show one preview element when you drag element outside the editing root', () => {
 				setModelData( model,
 					'<blockQuote>' +
 						'[<paragraph>foo</paragraph>' +
@@ -1430,10 +1479,13 @@ describe( 'Drag and Drop experimental', () => {
 					'<horizontalLine></horizontalLine>'
 				);
 
+				const pilcrow = document.createElement( 'div' );
+				pilcrow.setAttribute( 'class', 'pilcrow' );
+
 				const dataTransferMock = createDataTransfer();
 
-				fireDragStart( dataTransferMock );
-				fireDragStart( dataTransferMock );
+				fireDragStart( dataTransferMock, () => {}, pilcrow );
+				fireDragStart( dataTransferMock, () => {}, pilcrow );
 
 				const numberOfCkContentElements = Object
 					.keys( document.getElementsByClassName( 'ck-content' ) )
@@ -1441,6 +1493,66 @@ describe( 'Drag and Drop experimental', () => {
 
 				// There should be two elements with the `.ck-content` class - editor and drag-and-drop preview.
 				expect( numberOfCkContentElements ).to.equal( 2 );
+			} );
+
+			it( 'should show preview with custom implementation if drag element outside the editing root', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+				const clientX = 10;
+
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domEvent: {
+						clientX
+					}
+				} );
+
+				const editable = editor.editing.view.document.selection.editableElement;
+				const domEditable = editor.editing.view.domConverter.mapViewToDom( editable );
+				const computedStyle = window.getComputedStyle( domEditable );
+				const paddingLeftString = computedStyle.paddingLeft;
+				const paddingLeft = parseFloat( paddingLeftString );
+
+				const domRect = new Rect( domEditable );
+
+				sinon.assert.calledWith( spy, sinon.match( {
+					style: {
+						'padding-left': `${ domRect.left - clientX + paddingLeft }px`
+					},
+					className: 'ck ck-content',
+					firstChild: sinon.match( {
+						tagName: 'P',
+						innerHTML: 'Foo.'
+					} )
+				} ), 0, 0 );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should show preview with browser implementation if drag element inside the editing root', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+
+				const modelElement = root.getNodeByPath( [ 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domElement = domConverter.mapViewToDom( viewElement );
+
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( domElement ),
+					domTarget: domElement
+				} );
+
+				sinon.assert.notCalled( spy );
 			} );
 		} );
 
@@ -1910,6 +2022,132 @@ describe( 'Drag and Drop experimental', () => {
 				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
 			} );
 		} );
+
+		describe( 'extending selection range when all parent elements are selected', () => {
+			it( 'extends flat selection', () => {
+				setModelData( model, trim`
+					<blockQuote>
+						<paragraph>[one</paragraph>
+						<paragraph>two</paragraph>
+						<paragraph>three]</paragraph>
+					</blockQuote>
+					<horizontalLine></horizontalLine>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, trim`
+					<blockquote>
+						<p>one</p>
+						<p>two</p>
+						<p>three</p>
+					</blockquote>
+				` );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+
+			it( 'extends nested selection', () => {
+				setModelData( model, trim`
+					<blockQuote>
+						<paragraph>[one</paragraph>
+						<blockQuote>
+							<paragraph>two</paragraph>
+							<paragraph>three</paragraph>
+							<paragraph>four</paragraph>
+						</blockQuote>
+						<paragraph>five]</paragraph>
+					</blockQuote>
+					<horizontalLine></horizontalLine>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, trim`
+					<blockquote>
+						<p>one</p>
+						<blockquote>
+							<p>two</p>
+							<p>three</p>
+							<p>four</p>
+						</blockquote>
+						<p>five</p>
+					</blockquote>
+				` );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+
+			it( 'extends selection when it starts at different level than it ends', () => {
+				setModelData( model, trim`
+					<blockQuote>
+						<blockQuote>
+							<paragraph>[one</paragraph>
+							<paragraph>two</paragraph>
+							<paragraph>three</paragraph>
+						</blockQuote>
+						<paragraph>four]</paragraph>
+					</blockQuote>
+					<horizontalLine></horizontalLine>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, trim`
+					<blockquote>
+						<blockquote>
+							<p>one</p>
+							<p>two</p>
+							<p>three</p>
+						</blockquote>
+						<p>four</p>
+					</blockquote>
+				` );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+
+			it( 'extends selection when it ends at different level than it starts', () => {
+				setModelData( model, trim`
+					<blockQuote>
+						<paragraph>[one</paragraph>
+						<blockQuote>
+							<paragraph>two</paragraph>
+							<paragraph>three</paragraph>
+							<paragraph>four]</paragraph>
+						</blockQuote>
+					</blockQuote>
+					<horizontalLine></horizontalLine>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				fireDragStart( dataTransferMock );
+				expectDragStarted( dataTransferMock, trim`
+					<blockquote>
+						<p>one</p>
+						<blockquote>
+							<p>two</p>
+							<p>three</p>
+							<p>four</p>
+						</blockquote>
+					</blockquote>
+				` );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+			} );
+		} );
 	} );
 
 	describe( 'integration with the WidgetToolbarRepository plugin', () => {
@@ -1945,10 +2183,16 @@ describe( 'Drag and Drop experimental', () => {
 			it( 'is enabled when starts dragging the text node', () => {
 				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+				const dataTransfer = createDataTransfer( {} );
+
 				viewDocument.fire( 'dragstart', {
+					dataTransfer,
 					preventDefault: sinon.spy(),
-					dataTransfer: createDataTransfer( {} ),
-					stopPropagation: sinon.spy()
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.true;
@@ -1957,6 +2201,10 @@ describe( 'Drag and Drop experimental', () => {
 			it( 'is disabled when plugin is disabled', () => {
 				setModelData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+
 				const plugin = editor.plugins.get( 'DragDropExperimental' );
 				plugin.isEnabled = false;
 
@@ -1964,7 +2212,8 @@ describe( 'Drag and Drop experimental', () => {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 1 ),
 					dataTransfer: createDataTransfer( {} ),
-					stopPropagation: sinon.spy()
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -1973,11 +2222,16 @@ describe( 'Drag and Drop experimental', () => {
 			it( 'is disabled when starts dragging the widget', () => {
 				setModelData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+
 				viewDocument.fire( 'dragstart', {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 1 ),
 					dataTransfer: createDataTransfer( {} ),
-					stopPropagation: sinon.spy()
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -1988,11 +2242,16 @@ describe( 'Drag and Drop experimental', () => {
 
 				const dataTransfer = createDataTransfer( {} );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+
 				viewDocument.fire( 'dragstart', {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 0 ),
 					dataTransfer,
-					stopPropagation: sinon.spy()
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -2017,11 +2276,16 @@ describe( 'Drag and Drop experimental', () => {
 
 				const dataTransfer = createDataTransfer( {} );
 
+				const nodeModel = root.getNodeByPath( [ 0 ] );
+				const nodeView = mapper.toViewElement( nodeModel );
+				const nodeDOM = domConverter.mapViewToDom( nodeView );
+
 				viewDocument.fire( 'dragstart', {
 					preventDefault: sinon.spy(),
 					target: viewDocument.getRoot().getChild( 0 ),
 					dataTransfer,
-					stopPropagation() {}
+					stopPropagation() {},
+					domEvent: getMockedMousePosition( nodeDOM )
 				} );
 
 				expect( widgetToolbarRepository.isEnabled ).to.be.false;
@@ -2098,8 +2362,8 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 	} );
 
-	function fireDragStart( dataTransferMock, preventDefault = () => {} ) {
-		const eventData = prepareEventData( model.document.selection.getLastPosition() );
+	function fireDragStart( dataTransferMock, preventDefault = () => {}, domTarget ) {
+		const eventData = prepareEventData( model.document.selection.getLastPosition(), domTarget );
 
 		viewDocument.fire( 'mousedown', {
 			...eventData
@@ -2113,8 +2377,6 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 	}
 
-	// -----------------------------------
-
 	function fireDragging( dataTransferMock, modelPositionOrRange ) {
 		viewDocument.fire( 'dragging', {
 			...prepareEventData( modelPositionOrRange ),
@@ -2124,8 +2386,6 @@ describe( 'Drag and Drop experimental', () => {
 			preventDefault: () => {}
 		} );
 	}
-
-	// -----------------------------------
 
 	function fireDrop( dataTransferMock, modelPosition ) {
 		viewDocument.fire( 'clipboardInput', {
@@ -2145,7 +2405,7 @@ describe( 'Drag and Drop experimental', () => {
 		} );
 	}
 
-	function prepareEventData( modelPositionOrRange ) {
+	function prepareEventData( modelPositionOrRange, domTarget ) {
 		let domNode, viewElement, viewRange;
 
 		if ( modelPositionOrRange.is( 'position' ) ) {
@@ -2154,13 +2414,17 @@ describe( 'Drag and Drop experimental', () => {
 			viewRange = view.createRange( viewPosition );
 			viewElement = mapper.findMappedViewAncestor( viewPosition );
 
-			domNode = viewPosition.parent.is( '$text' ) ?
-				domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode :
-				domConverter.mapViewToDom( viewElement );
+			if ( !domTarget ) {
+				domNode = viewPosition.parent.is( '$text' ) ?
+					domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode :
+					domConverter.mapViewToDom( viewElement );
+			} else {
+				domNode = domTarget;
+			}
 		} else {
 			viewRange = mapper.toViewRange( modelPositionOrRange );
 			viewElement = viewRange.getContainedElement();
-			domNode = domConverter.mapViewToDom( viewElement );
+			domNode = domTarget || domConverter.mapViewToDom( viewElement );
 		}
 
 		return {
@@ -2185,8 +2449,6 @@ describe( 'Drag and Drop experimental', () => {
 		}
 	}
 
-	// -----------------------------------
-
 	function expectDraggingMarker( targetPositionOrRange ) {
 		expect( model.markers.has( 'drop-target' ) ).to.be.true;
 
@@ -2197,8 +2459,6 @@ describe( 'Drag and Drop experimental', () => {
 			expect( model.markers.get( 'drop-target' ).getRange().isEqual( targetPositionOrRange ) ).to.be.true;
 		}
 	}
-
-	// -----------------------------------
 
 	function expectFinalized() {
 		expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
@@ -2236,5 +2496,12 @@ describe( 'Drag and Drop experimental', () => {
 			clientX: x,
 			clientY: y + extraOffset
 		};
+	}
+
+	function trim( strings ) {
+		return strings
+			.join( '' )
+			.trim()
+			.replace( />\s+</g, '><' );
 	}
 } );
