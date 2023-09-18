@@ -51,7 +51,6 @@ function main() {
 			parameters: {
 				triggerRepositorySlug: repository,
 				triggerCommitHash: commit,
-				isExternal: true,
 				isRelease: branch === 'release'
 			}
 		} )
