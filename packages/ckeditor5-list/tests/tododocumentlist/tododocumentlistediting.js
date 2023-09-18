@@ -19,6 +19,7 @@ import DocumentListEditing from '../../src/documentlist/documentlistediting';
 import DocumentListCommand from '../../src/documentlist/documentlistcommand';
 import CheckTodoDocumentListCommand from '../../src/tododocumentlist/checktododocumentlistcommand';
 import TodoCheckboxChangeObserver from '../../src/tododocumentlist/todocheckboxchangeobserver';
+import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
 
 import stubUid from '../documentlist/_utils/uid';
 
@@ -245,6 +246,56 @@ describe( 'TodoDocumentListEditing', () => {
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
+			);
+		} );
+	} );
+
+	describe( 'upcast - list properties integration', () => {
+		let editor, model;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, TodoDocumentListEditing, DocumentListPropertiesEditing ],
+				list: {
+					properties: {
+						startIndex: true
+					}
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should not convert list style on to-do list', () => {
+			editor.setData(
+				'<ul style="list-style-type:circle;">' +
+					'<li><input type="checkbox">Foo</li>' +
+					'<li><input type="checkbox">Bar</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
+			);
+		} );
+
+		it( 'should not convert list start on to-do list', () => {
+			editor.setData(
+				'<ol start="2">' +
+					'<li><input type="checkbox">Foo</li>' +
+					'<li><input type="checkbox">Bar</li>' +
+				'</ol>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
 			);
 		} );
 	} );
