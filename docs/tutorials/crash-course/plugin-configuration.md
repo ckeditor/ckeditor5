@@ -35,7 +35,7 @@ editor.config.define( 'highlight', {
 } );
 ```
 
-The first parameter passed to the method is the name of the configuration object key, and the second is the default.
+The first parameter passed to the method is the name of the configuration object key, and the second is the default values.
 
 ### Loading configuration option
 
