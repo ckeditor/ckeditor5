@@ -30,7 +30,7 @@ You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter<
 ## Related features
 
 These features provide similar functionality:
-* {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered list with configurable markers.
+* {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered lists with configurable markers.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
 ## Contribute

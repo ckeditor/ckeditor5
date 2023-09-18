@@ -1,5 +1,5 @@
 menu-title: Installation
-meta-title: Lists intallation | CKEditor 5 Documentation
+meta-title: Lists installation | CKEditor 5 Documentation
 category: features-lists
 order: 40
 ---

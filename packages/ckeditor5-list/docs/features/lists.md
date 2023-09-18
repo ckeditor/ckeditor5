@@ -52,7 +52,7 @@ In the demo below, use the ordered {@icon @ckeditor/ckeditor5-list/theme/icons/n
 
 #### List start index
 
-The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &mdash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
+The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &mdash; see the [list styles section](#list-styles)), but in certain situations, it may be desired to start a list with some other digit or letter.
 
 When this feature is {@link module:list/listconfig~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
 
@@ -92,21 +92,21 @@ The {@link module:list/documentlist~DocumentList} plugin registers:
 
 The {@link module:list/documentlistproperties~DocumentListProperties} plugin registers:
 
-* The {@link module:list/documentlistproperties/documentliststylecommand~DocumentListStyleCommand `documentListStyle`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
+* The {@link module:list/documentlistproperties/documentliststylecommand~DocumentListStyleCommand `documentListStyle`} command that accepts the `type` of the list style to set. If not set, it uses the default marker (usually decimal).
     ```js
     editor.execute( 'documentListStyle', { type: 'lower-roman' } );
     ```
     The available types are:
 
-    * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
-    * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
-* The {@link module:list/documentlistproperties/documentliststartcommand~DocumentListStartCommand `documentListStart`} command which is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+    * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
+    * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
+* The {@link module:list/documentlistproperties/documentliststartcommand~DocumentListStartCommand `documentListStart`} command that is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
     editor.execute( 'documentListStart', { startIndex: 3 } );
     ```
 
-* The {@link module:list/documentlistproperties/documentlistreversedcommand~DocumentListReversedCommand `documentListReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
+* The {@link module:list/documentlistproperties/documentlistreversedcommand~DocumentListReversedCommand `documentListReversed`} command that is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
     editor.execute( 'documentListReversed', { reversed: true } );
