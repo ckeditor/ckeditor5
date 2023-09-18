@@ -1795,6 +1795,24 @@ describe( 'Drag and Drop', () => {
 				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
 			} );
 		} );
+
+		it( 'should not fire overrided clipboardInput event in drag and drop', done => {
+			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
+			const preventDefaultSpy = sinon.spy();
+
+			viewDocument.on( 'clipboardInput', ( evt, data ) => {
+				expect( preventDefaultSpy.calledOnce ).to.be.true;
+				expect( data.dataTransfer ).to.equal( dataTransferMock );
+				expect( data.method ).to.equal( 'paste' );
+
+				done();
+			} );
+
+			viewDocument.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+		} );
 	} );
 
 	describe( 'integration with the WidgetToolbarRepository plugin', () => {
