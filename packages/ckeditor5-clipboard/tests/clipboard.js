@@ -5,12 +5,12 @@
 
 import Clipboard from '../src/clipboard';
 import ClipboardPipeline from '../src/clipboardpipeline';
-import DragDrop from '../src/dragdrop';
+import DragDropExperimental from '../src/dragdropexperimental';
 import PastePlainText from '../src/pasteplaintext';
 
 describe( 'Clipboard Feature', () => {
 	it( 'requires ClipboardPipeline, DragDrop and PastePlainText', () => {
-		expect( Clipboard.requires ).to.deep.equal( [ ClipboardPipeline, DragDrop, PastePlainText ] );
+		expect( Clipboard.requires ).to.deep.equal( [ ClipboardPipeline, DragDropExperimental, PastePlainText ] );
 	} );
 
 	it( 'has proper name', () => {
