@@ -10,9 +10,9 @@ modified_at: 2023-08-16
 
 ## Configuration convention
 
-As we learned at the beginning of this tutorial, the editor accepts a configuration object that allows you to change its default behavior and appearance. The convention used in CKEditor is to have a unique object key for each plugin to avoid conflicts and to make it obvious what each part of the configuration does.
+As we learned at the beginning of this tutorial, the editor accepts a configuration object that allows you to change its default behavior and appearance. The convention used in CKEditor 5 is to have a unique object key for each plugin to avoid conflicts and to make it obvious what each part of the configuration does.
 
-For the purpose of this tutorial, we will add a single option to the `highlight` plugin to configure its keyboard shortcut. This configuration will be included in an optional `highlight` key:
+In this tutorial, we will add a single option to the `highlight` plugin to configure its keyboard shortcut. This configuration will be included in an optional `highlight` key:
 
 ```js
 const editor = await ClassicEditor.create( element, {
