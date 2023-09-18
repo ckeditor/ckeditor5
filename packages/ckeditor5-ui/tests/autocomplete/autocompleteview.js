@@ -60,6 +60,19 @@ describe( 'AutocompleteView', () => {
 				expect( view.resultsView.element.classList.contains( 'ck-hidden' ) ).to.be.false;
 			} );
 
+			it( 'should update the value and close results when the filtered view fired the execute event', () => {
+				const focusSpy = sinon.spy( view, 'focus' );
+
+				view.resultsView.isVisible = true;
+
+				view.filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				expect( view.resultsView.isVisible ).to.be.false;
+				sinon.assert.calledOnce( focusSpy );
+				expect( view.queryView.fieldView.value ).to.equal( 'foo bar baz' );
+				expect( view.queryView.fieldView.element.value ).to.equal( 'foo bar baz' );
+			} );
+
 			it( 'has a #_position property with a DOM binding', () => {
 				expect( view.resultsView._position ).to.equal( 's' );
 				expect( view.resultsView.element.classList.contains( 'ck-search__results_s' ) ).to.be.true;
