@@ -1796,7 +1796,7 @@ describe( 'Drag and Drop', () => {
 			} );
 		} );
 
-		it( 'should not fire overrided clipboardInput event in drag and drop', done => {
+		it( 'should not use overrided clipboardInput event in drag and drop', done => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
 			const preventDefaultSpy = sinon.spy();
 
