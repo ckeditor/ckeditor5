@@ -3335,6 +3335,60 @@ describe( 'TodoDocumentListEditing - conversion - changes', () => {
 			it( 'start of second list item block --> start of paragraph', () => {
 				testList( [ 2, 0 ], [ 1, 0, 1, 0, 0 ] );
 			} );
+
+			it( 'should not affect other input elements', () => {
+				model.schema.register( 'input', { inheritAllFrom: '$inlineObject' } );
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'input',
+					view: 'input',
+					converterPriority: 'low'
+				} );
+
+				setModelData( model, '<paragraph listItemId="a" listIndent="0" listType="todo">foo<input></input>bar</paragraph>' );
+
+				testList( [ 0, 7 ], [ 0, 0, 0, 1, 2, 3 ] );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">foo<input></input>bar</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should not affect other input UI elements', () => {
+				editor.conversion.for( 'downcast' ).markerToElement( {
+					model: 'input',
+					view: ( data, { writer } ) => writer.createUIElement( 'input' )
+				} );
+
+				setModelData( model, '<paragraph listItemId="a" listIndent="0" listType="todo">foo[]bar</paragraph>' );
+
+				model.change( writer => {
+					writer.addMarker( 'input', {
+						range: model.document.selection.getFirstRange(),
+						usingOperation: false,
+						affectsData: false
+					} );
+				} );
+
+				testList( [ 0, 6 ], [ 0, 0, 0, 1, 2, 3 ] );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<ul class="todo-list">' +
+						'<li>' +
+							'<span class="todo-list__label">' +
+								'<span contenteditable="false"><input tabindex="-1" type="checkbox"></input></span>' +
+								'<span class="todo-list__label__description">foo<input></input>bar</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
 		} );
 
 		function getViewPosition( root, path, view ) {
