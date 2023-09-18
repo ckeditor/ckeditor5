@@ -11,6 +11,7 @@ import { getOptimalPosition, type PositioningFunction, type Locale, global, toUn
 import SearchTextView, { type SearchTextViewConfig } from '../search/text/searchtextview';
 import type SearchResultsView from '../search/searchresultsview';
 import type InputBase from '../input/inputbase';
+import type { FilteredViewExecuteEvent } from '../search/filteredview';
 
 import '../../theme/components/autocomplete/autocomplete.css';
 
@@ -57,6 +58,8 @@ export default class AutocompleteView<
 			}
 		} );
 
+		// Update the visibility of the results view when the user focuses or blurs the component.
+		// This is also integration for the `resetOnBlur` configuration.
 		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 			this._updateResultsVisibility();
 
@@ -69,23 +72,40 @@ export default class AutocompleteView<
 			}
 		} );
 
+		// Update the visibility of the results view when the user types in the query field.
+		// This is an integration for `queryMinChars` configuration.
 		this.on( 'search', () => {
 			this._updateResultsVisibility();
 			this._updateResultsViewPosition();
 		} );
 
+		// Hide the results view when the user presses the ESC key.
 		this.keystrokes.set( 'esc', ( evt, cancel ) => {
 			resultsView.isVisible = false;
 			cancel();
 		} );
 
+		// Update the position of the results view when the user scrolls the page.
 		// TODO: This needs to be debounced down the road.
 		this.listenTo( global.document, 'scroll', () => {
 			this._updateResultsViewPosition();
 		} );
 
+		// Hide the results when the component becomes disabled.
 		this.on( 'change:isEnabled', () => {
 			this._updateResultsVisibility();
+		} );
+
+		// Update the value of the query field when the user selects a result.
+		this.filteredView.on<FilteredViewExecuteEvent>( 'execute', ( evt, { value } ) => {
+			// Focus the query view first to avoid losing the focus.
+			this.focus();
+
+			// Update the value of the query field.
+			this.queryView.fieldView.value = this.queryView.fieldView.element!.value = value;
+
+			// Finally, hide the results view. The focus has been moved earlier so this is safe.
+			resultsView.isVisible = false;
 		} );
 	}
 

@@ -11,7 +11,8 @@ import {
 	ListItemView,
 	ListView,
 	AutocompleteView,
-	type FilteredView
+	type FilteredView,
+	type FilteredViewExecuteEvent
 } from '../../../src';
 
 const locale = new Locale();
@@ -49,6 +50,12 @@ const listView = new FilteredTestListView();
 ].forEach( item => {
 	const listItemView = new ListItemView();
 	const buttonView = new ButtonView();
+
+	buttonView.on( 'execute', () => {
+		listView.fire<FilteredViewExecuteEvent>( 'execute', {
+			value: buttonView.label!
+		} );
+	} );
 
 	buttonView.withText = true;
 	buttonView.label = item;
