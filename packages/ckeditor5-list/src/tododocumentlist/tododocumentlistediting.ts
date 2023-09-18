@@ -324,28 +324,20 @@ export default class TodoDocumentListEditing extends Plugin {
 
 		// Map view positions inside the checkbox and wrappers to the position in the first block of the list item.
 		this.listenTo<MapperViewToModelPositionEvent>( editing.mapper, 'viewToModelPosition', ( evt, data ) => {
-			if ( !data.modelPosition ) {
-				return;
-			}
-
-			if ( data.viewPosition.offset > 0 ) {
-				return;
-			}
-
 			const viewParent = data.viewPosition.parent as ViewElement;
 
-			const isInListItem = viewParent.is( 'attributeElement', 'li' );
-			const isInListLabel = isLabelElement( viewParent );
+			const isStartOfListItem = viewParent.is( 'attributeElement', 'li' ) && data.viewPosition.offset == 0;
+			const isStartOfListLabel = isLabelElement( viewParent ) && data.viewPosition.offset <= 1;
 
 			const isInInputWrapper = viewParent.is( 'element', 'span' ) &&
 				viewParent.getAttribute( 'contenteditable' ) == 'false' &&
 				isLabelElement( viewParent.parent );
 
-			if ( !isInListItem && !isInListLabel && !isInInputWrapper ) {
+			if ( !isStartOfListItem && !isStartOfListLabel && !isInInputWrapper ) {
 				return;
 			}
 
-			const nodeAfter = data.modelPosition.nodeAfter;
+			const nodeAfter = data.modelPosition!.nodeAfter;
 
 			if ( nodeAfter && nodeAfter.getAttribute( 'listType' ) == 'todo' ) {
 				data.modelPosition = model.createPositionAt( nodeAfter, 0 );
