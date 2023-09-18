@@ -10,8 +10,11 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { env } from '@ckeditor/ckeditor5-utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import TodoDocumentListEditing from '../../src/tododocumentlist/tododocumentlistediting';
@@ -23,13 +26,18 @@ import DocumentListPropertiesEditing from '../../src/documentlistproperties/docu
 
 import stubUid from '../documentlist/_utils/uid';
 
+/* global document */
+
 describe( 'TodoDocumentListEditing', () => {
-	let editor, model, view;
+	let editor, model, view, editorElement;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ Paragraph, TodoDocumentListEditing, BlockQuoteEditing, TableEditing, HeadingEditing ]
 		} );
 
@@ -39,8 +47,10 @@ describe( 'TodoDocumentListEditing', () => {
 		stubUid();
 	} );
 
-	afterEach( () => {
-		return editor.destroy();
+	afterEach( async () => {
+		editorElement.remove();
+
+		await editor.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -652,6 +662,130 @@ describe( 'TodoDocumentListEditing', () => {
 		} );
 	} );
 
+	describe( 'postfixers', () => {
+		describe( '`todoListChecked` attribute should be the same in all blocks of a single list item', () => {
+			it( 'should add missing `todoListChecked` attribute to other blocks', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo">baz</heading1>',
+
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">baz</heading1>'
+				);
+			} );
+
+			it( 'should add missing `todoListChecked` attribute to other blocks excluding nested list items', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo">nested 1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo">nested 2</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo">baz</heading1>',
+
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo">nested 1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo">nested 2</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">baz</heading1>'
+				);
+			} );
+
+			it( 'should remove `todoListChecked` from other blocks', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">baz</heading1>',
+
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo">baz</heading1>'
+				);
+			} );
+
+			it( 'should remove `todoListChecked` from other blocks excluding nested list items', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">bar</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo" todoListChecked="true">nested 1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo" todoListChecked="true">nested 2</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">baz</heading1>',
+
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">bar</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo" todoListChecked="true">nested 1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="todo" todoListChecked="true">nested 2</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a00" listType="todo">baz</heading1>'
+				);
+			} );
+		} );
+
+		describe( '`todoListChecked` attribute should be applied only to todo list items', () => {
+			it( 'should remove `todoListChecked` from elements other than todo list items', () => {
+				testPostfixer(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted" todoListChecked="true">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="numbered" todoListChecked="true">baz</heading1>',
+
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="numbered">baz</heading1>'
+				);
+			} );
+
+			it( 'should remove `todoListChecked` attribute from list items that are converted from todo to bulleted type', () => {
+				setModelData( model,
+					'[<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">baz</heading1>]'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo" todoListChecked="true">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">baz</heading1>'
+				);
+
+				editor.execute( 'bulletedList' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">foo</paragraph>' +
+					'<heading1 listIndent="0" listItemId="a02" listType="bulleted">baz</heading1>'
+				);
+			} );
+		} );
+	} );
+
+	describe( 'user interaction events', () => {
+		it( 'should toggle check state of selected to-do list item on keystroke', () => {
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			const domEvtDataStub = {
+				keyCode: getCode( 'enter' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			if ( env.isMac ) {
+				domEvtDataStub.metaKey = true;
+			} else {
+				domEvtDataStub.ctrlKey = true;
+			}
+
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( command.execute );
+
+			view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledTwice( command.execute );
+		} );
+	} );
+
 	function testUpcast( input, output ) {
 		editor.setData( input );
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
@@ -665,5 +799,10 @@ describe( 'TodoDocumentListEditing', () => {
 	function testData( input, output ) {
 		setModelData( model, input );
 		expect( editor.getData() ).to.equalMarkup( output );
+	}
+
+	function testPostfixer( input, output ) {
+		setModelData( model, input );
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
 	}
 } );
