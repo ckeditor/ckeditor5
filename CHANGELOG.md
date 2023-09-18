@@ -1,11 +1,6 @@
 Changelog
 =========
 
-## [40.0.0](https://github.com/ckeditor/ckeditor5/compare/v39.0.1...v40.0.0) (2023-09-06)
-
-Internal note.
-
-
 ## [39.0.2](https://github.com/ckeditor/ckeditor5/compare/v39.0.1...v39.0.2) (2023-09-06)
 
 We are happy to announce the release of CKEditor 5 v39.0.2.

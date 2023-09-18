@@ -17,7 +17,7 @@ const latestPublishedVersion = execSync( 'npm view ckeditor5@latest version', { 
 const changelogVersion = releaseTools.getLastFromChangelog();
 
 if ( getVersionTag( changelogVersion ) !== 'latest' ) {
-	console.log( `Abortion due non-latest changelog version (${ changelogVersion }).` );
+	console.log( `Aborting due non-latest changelog version (${ changelogVersion }).` );
 	process.exit( 1 );
 }
 

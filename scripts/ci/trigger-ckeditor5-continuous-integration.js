@@ -52,7 +52,7 @@ function main() {
 				triggerRepositorySlug: repository,
 				triggerCommitHash: commit,
 				isExternal: true,
-				isRelease: branch === 'release' || branch === 'release-via-ci'
+				isRelease: branch === 'release'
 			}
 		} )
 	};
@@ -73,7 +73,7 @@ function main() {
  * @returns {Object} options
  * @returns {String} options.commit
  * @returns {String} options.repository
- * @returns {String} [options.branch=master]
+ * @returns {String} [options.branch='master']
  */
 function getOptions( argv ) {
 	return minimist( argv, {
