@@ -54,6 +54,7 @@ export { default as getAncestors } from './dom/getancestors';
 export { default as getElementsIntersectionRect } from './dom/getelementsintersectionrect';
 export { default as getScrollableAncestors } from './dom/getscrollableancestors';
 export { default as getDataFromElement } from './dom/getdatafromelement';
+export { default as getBorderWidths } from './dom/getborderwidths';
 export { default as isText } from './dom/istext';
 export { default as Rect, type RectSource } from './dom/rect';
 export { default as ResizeObserver } from './dom/resizeobserver';

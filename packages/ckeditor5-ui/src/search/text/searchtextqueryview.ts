@@ -9,9 +9,9 @@
 
 import ButtonView from '../../button/buttonview';
 import IconView from '../../icon/iconview';
-import LabeledFieldView from '../../labeledfield/labeledfieldview';
+import LabeledFieldView, { type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview';
 import { createLabeledInputText } from '../../labeledfield/utils';
-import type InputView from '../../input/inputview';
+import type InputBase from '../../input/inputbase';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import { icons } from '@ckeditor/ckeditor5-core';
@@ -22,70 +22,95 @@ import { icons } from '@ckeditor/ckeditor5-core';
  * @private
  * @extends module:ui/labeledfield/labeledfieldview~LabeledFieldView
  */
-export default class SearchTextQueryView extends LabeledFieldView<InputView> {
+export default class SearchTextQueryView<
+	TQueryFieldView extends InputBase<HTMLInputElement | HTMLTextAreaElement>
+> extends LabeledFieldView<TQueryFieldView> {
 	/**
 	 * The loupe icon displayed next to the {@link #fieldView}.
 	 */
-	public loupeIconView: IconView;
+	public iconView?: IconView;
 
 	/**
 	 * The button that clears and focuses the {@link #fieldView}.
 	 */
-	public clearButtonView: ButtonView;
+	public resetButtonView?: ButtonView;
+
+	/**
+	 * A reference to the view configuration.
+	 */
+	private readonly _viewConfig: SearchTextQueryViewConfig<TQueryFieldView>;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor(
-		locale: Locale,
-		viewCreator = createLabeledInputText,
-		label: string
-	) {
-		super( locale, viewCreator );
-
+	constructor( locale: Locale, config: SearchTextQueryViewConfig<TQueryFieldView> ) {
 		const t = locale.t;
+		const viewConfig = Object.assign( {}, {
+			showResetButton: true,
+			showIcon: true,
+			creator: createLabeledInputText
+		}, config );
 
-		this.label = label;
-		this.loupeIconView = new IconView();
-		this.loupeIconView.content = icons.loupe;
+		super( locale, viewConfig.creator as any );
 
-		this.clearButtonView = new ButtonView( locale );
-		this.clearButtonView.set( {
-			label: t( 'Clear' ),
-			icon: icons.cancel,
-			class: 'ck-search__clear-search',
-			isVisible: false,
-			tooltip: true
-		} );
+		this.label = config.label;
+		this._viewConfig = viewConfig;
 
-		this.clearButtonView.on( 'execute', () => {
-			this.reset();
-			this.focus();
-			this.fire<SearchTextQueryViewResetEvent>( 'reset' );
-		} );
+		if ( this._viewConfig.showIcon ) {
+			this.iconView = new IconView();
+			this.iconView.content = icons.loupe;
+			this.fieldWrapperChildren.add( this.iconView, 0 );
 
-		this.clearButtonView.bind( 'isVisible' ).to( this.fieldView, 'isEmpty', isEmpty => !isEmpty );
+			this.extendTemplate( {
+				attributes: {
+					class: 'ck-search__query_with-icon'
+				}
+			} );
+		}
 
-		this.fieldWrapperChildren.add( this.loupeIconView, 0 );
-		this.fieldWrapperChildren.add( this.clearButtonView );
+		if ( this._viewConfig.showResetButton ) {
+			this.resetButtonView = new ButtonView( locale );
+			this.resetButtonView.set( {
+				label: t( 'Clear' ),
+				icon: icons.cancel,
+				class: 'ck-search__reset',
+				isVisible: false,
+				tooltip: true
+			} );
+
+			this.resetButtonView.on( 'execute', () => {
+				this.reset();
+				this.focus();
+				this.fire<SearchTextQueryViewResetEvent>( 'reset' );
+			} );
+
+			this.resetButtonView.bind( 'isVisible' ).to( this.fieldView, 'isEmpty', isEmpty => !isEmpty );
+
+			this.fieldWrapperChildren.add( this.resetButtonView );
+
+			this.extendTemplate( {
+				attributes: {
+					class: 'ck-search__query_with-reset'
+				}
+			} );
+		}
 	}
 
 	/**
 	 * Resets the search field to its default state.
 	 */
 	public reset(): void {
-		// This addresses a bug in input value handling. The one-way binding between fieldView#value->fieldView.element#value
-		// does clear the value of the DOM element if fieldView#value was not previously set but the user typed in the input.
-		// (fieldView#value is '', text was typed in the input, resetting fieldView#value '' does not trigger #change in observable)
-		this.fieldView.value = this.fieldView.element!.value = '';
+		this.fieldView.reset();
 
-		this.clearButtonView.isVisible = false;
+		if ( this._viewConfig.showResetButton ) {
+			this.resetButtonView!.isVisible = false;
+		}
 	}
 }
 
 /**
  * An event fired when the field is reset using the
- * {@link module:ui/search/text/searchtextqueryview~SearchTextQueryView#clearButtonView}.
+ * {@link module:ui/search/text/searchtextqueryview~SearchTextQueryView#resetButtonView}.
  *
  * @eventName ~SearchTextQueryView#reset
  */
@@ -93,3 +118,34 @@ export type SearchTextQueryViewResetEvent = {
 	name: 'reset';
 	args: [];
 };
+
+/**
+ * The configuration of the {@link module:ui/search/text/searchtextqueryview~SearchTextQueryView} view.
+ */
+export interface SearchTextQueryViewConfig<TConfigSearchField extends InputBase<HTMLInputElement | HTMLTextAreaElement>> {
+
+	/**
+	 * The human-readable label of the search field.
+	 */
+	label: string;
+
+	/**
+	 * Determines whether the button that resets the search should be visible.
+	 *
+	 * @default true
+	 */
+	showResetButton?: boolean;
+
+	/**
+	 * Determines whether the loupe icon should be visible.
+	 *
+	 * @default true
+	 */
+	showIcon?: boolean;
+
+	/**
+	 * The function that creates the search field input view. By default, a plain
+	 * {@link module:ui/inputtext/inputtextview~InputTextView} is used for this purpose.
+	 */
+	creator?: LabeledFieldViewCreator<TConfigSearchField>;
+}

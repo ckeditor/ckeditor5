@@ -178,6 +178,14 @@ export default abstract class InputBase<TElement extends HTMLInputElement | HTML
 	}
 
 	/**
+	 * Resets the value of the input
+	 */
+	public reset(): void {
+		this.value = this.element!.value = '';
+		this._updateIsEmpty();
+	}
+
+	/**
 	 * Updates the {@link #isEmpty} property value on demand.
 	 */
 	protected _updateIsEmpty(): void {

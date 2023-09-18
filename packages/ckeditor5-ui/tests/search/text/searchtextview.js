@@ -15,6 +15,7 @@ import {
 	SearchInfoView,
 	SearchTextView,
 	View,
+	ViewCollection,
 	createLabeledInputNumber
 } from '../../../src';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
@@ -37,7 +38,9 @@ describe( 'SearchTextView', () => {
 
 		view = new SearchTextView( new Locale(), {
 			filteredView,
-			searchFieldLabel: 'test label'
+			queryView: {
+				label: 'test label'
+			}
 		} );
 
 		view.render();
@@ -61,7 +64,9 @@ describe( 'SearchTextView', () => {
 		it( 'supports extra CSS class in the config', () => {
 			const view = new SearchTextView( new Locale(), {
 				filteredView,
-				searchFieldLabel: 'foo',
+				queryView: {
+					label: 'foo'
+				},
 				class: 'bar'
 			} );
 
@@ -98,6 +103,293 @@ describe( 'SearchTextView', () => {
 			expect( view.resultsView.children.last ).to.equal( filteredView );
 		} );
 
+		it( 'sets #resultsCount', () => {
+			expect( view.resultsCount ).to.equal( 1 );
+		} );
+
+		it( 'sets #totalItemsCount', () => {
+			expect( view.totalItemsCount ).to.equal( 5 );
+		} );
+
+		it( 'should update #resultsCount and #totalItemsCount upon #search event', () => {
+			expect( view.resultsCount ).to.equal( 1 );
+			expect( view.totalItemsCount ).to.equal( 5 );
+
+			view.fire( 'search', { resultsCount: 5, totalItemsCount: 10 } );
+
+			expect( view.resultsCount ).to.equal( 5 );
+			expect( view.totalItemsCount ).to.equal( 10 );
+		} );
+
+		it( 'should have #children view collection', () => {
+			expect( view.children ).to.be.instanceOf( ViewCollection );
+		} );
+
+		describe( '#queryView', () => {
+			it( 'gets created as labeled text view if not configured otherwise', () => {
+				expect( view.queryView ).to.be.instanceOf( LabeledFieldView );
+				expect( view.queryView.fieldView ).to.be.instanceOf( InputTextView );
+				expect( view.queryView.label ).to.equal( 'test label' );
+			} );
+
+			it( 'gets created by a custom view creator configured by the user', () => {
+				const view = new SearchTextView( new Locale(), {
+					filteredView,
+					queryView: {
+						label: 'foo',
+						creator: createLabeledInputNumber
+					},
+					class: 'bar'
+				} );
+
+				view.render();
+
+				expect( view.queryView ).to.be.instanceOf( LabeledFieldView );
+				expect( view.queryView.fieldView ).to.be.instanceOf( InputNumberView );
+
+				view.destroy();
+			} );
+
+			it( 'shoud trigger #search() upon #input', () => {
+				const spy = sinon.spy( view, 'search' );
+
+				view.queryView.fieldView.fire( 'input' );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should reset the entire view if fired #reset', () => {
+				const spy = sinon.spy( view, 'reset' );
+
+				view.queryView.fire( 'reset' );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should be bound to #isEnabled', () => {
+				expect( view.queryView.isEnabled ).to.be.true;
+
+				view.isEnabled = false;
+
+				expect( view.queryView.isEnabled ).to.be.false;
+			} );
+		} );
+
+		describe( '#infoView', () => {
+			let view;
+
+			beforeEach( () => {
+				filteredView.filter = () => {
+					return {
+						resultsCount: 5,
+						totalItemsCount: 5
+					};
+				};
+
+				view = new SearchTextView( new Locale(), {
+					filteredView,
+					queryView: {
+						label: 'test label'
+					}
+				} );
+
+				view.render();
+				document.body.appendChild( view.element );
+			} );
+
+			afterEach( () => {
+				view.destroy();
+				view.element.remove();
+			} );
+
+			describe( 'if not specified', () => {
+				it( 'is an instance of SearchInfoView if not specified in the config', () => {
+					expect( view.infoView ).to.be.instanceOf( SearchInfoView );
+					expect( view.infoView.isVisible ).to.be.false;
+				} );
+
+				it( 'comes with a default behavior for no search results', () => {
+					filteredView.filter = () => {
+						return {
+							resultsCount: 0,
+							totalItemsCount: 5
+						};
+					};
+
+					const view = new SearchTextView( new Locale(), {
+						filteredView,
+						queryView: {
+							label: 'test label'
+						}
+					} );
+
+					view.render();
+					view.search( 'will not be found' );
+
+					expect( view.infoView.isVisible ).to.be.true;
+					expect( view.infoView.primaryText ).to.equal( 'No results found' );
+					expect( view.infoView.secondaryText ).to.equal( '' );
+
+					view.destroy();
+				} );
+
+				it( 'comes with a default behavior for no searchable items', () => {
+					filteredView.filter = () => {
+						return {
+							resultsCount: 0,
+							totalItemsCount: 0
+						};
+					};
+
+					const view = new SearchTextView( new Locale(), {
+						filteredView,
+						queryView: {
+							label: 'test label'
+						}
+					} );
+
+					view.render();
+
+					expect( view.infoView.isVisible ).to.be.true;
+					expect( view.infoView.primaryText ).to.equal( 'No searchable items' );
+					expect( view.infoView.secondaryText ).to.equal( '' );
+
+					view.destroy();
+				} );
+
+				it( 'allows customization of info texts', () => {
+					filteredView.filter = () => {
+						return {
+							resultsCount: 0,
+							totalItemsCount: 0
+						};
+					};
+
+					const view = new SearchTextView( new Locale(), {
+						filteredView,
+						queryView: {
+							label: 'test label'
+						},
+						infoView: {
+							text: {
+								notFound: {
+									primary: 'foo',
+									secondary: 'bar'
+								},
+								noSearchableItems: {
+									primary: 'baz',
+									secondary: 'qux'
+								}
+							}
+						}
+					} );
+
+					view.render();
+
+					expect( view.infoView.isVisible ).to.be.true;
+					expect( view.infoView.primaryText ).to.equal( 'baz' );
+					expect( view.infoView.secondaryText ).to.equal( 'qux' );
+
+					filteredView.filter = () => {
+						return {
+							resultsCount: 0,
+							totalItemsCount: 5
+						};
+					};
+
+					view.search( 'test' );
+
+					expect( view.infoView.isVisible ).to.be.true;
+					expect( view.infoView.primaryText ).to.equal( 'foo' );
+					expect( view.infoView.secondaryText ).to.equal( 'bar' );
+
+					view.destroy();
+				} );
+
+				it( 'allows info texts specified as functions', () => {
+					filteredView.filter = () => {
+						return {
+							resultsCount: 0,
+							totalItemsCount: 0
+						};
+					};
+
+					const dynamicLabelText = ( query, resultsCount, totalItemsCount ) =>
+						`"${ query }" ${ resultsCount } of ${ totalItemsCount }`;
+
+					const view = new SearchTextView( new Locale(), {
+						filteredView,
+						queryView: {
+							label: 'test label'
+						},
+						infoView: {
+							text: {
+								notFound: {
+									primary: dynamicLabelText,
+									secondary: dynamicLabelText
+								},
+								noSearchableItems: {
+									primary: dynamicLabelText,
+									secondary: dynamicLabelText
+								}
+							}
+						}
+					} );
+
+					view.render();
+
+					expect( view.infoView.isVisible ).to.be.true;
+					expect( view.infoView.primaryText ).to.equal( '"" 0 of 0' );
+					expect( view.infoView.secondaryText ).to.equal( '"" 0 of 0' );
+
+					filteredView.filter = () => {
+						return {
+							resultsCount: 0,
+							totalItemsCount: 5
+						};
+					};
+
+					view.search( 'test' );
+
+					expect( view.infoView.isVisible ).to.be.true;
+					expect( view.infoView.primaryText ).to.equal( '"test" 0 of 5' );
+					expect( view.infoView.secondaryText ).to.equal( '"test" 0 of 5' );
+
+					view.destroy();
+				} );
+			} );
+
+			it( 'accpets a view from the configuration', () => {
+				const customInfoView = new View();
+				customInfoView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						class: 'custom'
+					}
+				} );
+
+				const view = new SearchTextView( new Locale(), {
+					filteredView,
+					queryView: {
+						label: 'test label'
+					},
+					infoView: {
+						instance: customInfoView
+					}
+				} );
+
+				view.render();
+
+				expect( view.infoView ).to.equal( customInfoView );
+				expect( view.resultsView.children.first ).to.equal( customInfoView );
+				expect( view.resultsView.children.last ).to.equal( filteredView );
+
+				view.destroy();
+			} );
+		} );
+	} );
+
+	describe( 'render()', () => {
 		describe( 'focus tracking and cycling', () => {
 			describe( 'activates keyboard navigation', () => {
 				it( 'makes "tab" focus the next focusable item', () => {
@@ -163,239 +455,11 @@ describe( 'SearchTextView', () => {
 			} );
 		} );
 
-		describe( '#queryView', () => {
-			it( 'gets created as labeled text view if not configured otherwise', () => {
-				expect( view.queryView ).to.be.instanceOf( LabeledFieldView );
-				expect( view.queryView.fieldView ).to.be.instanceOf( InputTextView );
-				expect( view.queryView.label ).to.equal( 'test label' );
-			} );
+		it( 'should add #queryView and #resultsView to the #children view collection', () => {
+			expect( view.children.map( child => child ) ).to.deep.equal( [ view.queryView, view.resultsView ] );
 
-			it( 'gets created by a custom view creator configured by the user', () => {
-				const view = new SearchTextView( new Locale(), {
-					filteredView,
-					searchFieldInputCreator: createLabeledInputNumber,
-					searchFieldLabel: 'foo',
-					class: 'bar'
-				} );
-
-				view.render();
-
-				expect( view.queryView ).to.be.instanceOf( LabeledFieldView );
-				expect( view.queryView.fieldView ).to.be.instanceOf( InputNumberView );
-
-				view.destroy();
-			} );
-
-			it( 'shoud trigger #search() upon #input', () => {
-				const spy = sinon.spy( view, 'search' );
-
-				view.queryView.fieldView.fire( 'input' );
-
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'should reset the entire view if fired #reset', () => {
-				const spy = sinon.spy( view, 'reset' );
-
-				view.queryView.fire( 'reset' );
-
-				sinon.assert.calledOnce( spy );
-			} );
-		} );
-
-		describe( '#infoView', () => {
-			let view;
-
-			beforeEach( () => {
-				filteredView.filter = () => {
-					return {
-						resultsCount: 5,
-						totalItemsCount: 5
-					};
-				};
-
-				view = new SearchTextView( new Locale(), {
-					filteredView,
-					searchFieldLabel: 'test label'
-				} );
-
-				view.render();
-				document.body.appendChild( view.element );
-			} );
-
-			afterEach( () => {
-				view.destroy();
-				view.element.remove();
-			} );
-
-			describe( 'if not specified', () => {
-				it( 'is an instance of SearchInfoView if not specified in the config', () => {
-					expect( view.infoView ).to.be.instanceOf( SearchInfoView );
-					expect( view.infoView.isVisible ).to.be.false;
-				} );
-
-				it( 'comes with a default behavior for no search results', () => {
-					filteredView.filter = () => {
-						return {
-							resultsCount: 0,
-							totalItemsCount: 5
-						};
-					};
-
-					const view = new SearchTextView( new Locale(), {
-						filteredView,
-						searchFieldLabel: 'test label'
-					} );
-
-					view.render();
-					view.search( 'will not be found' );
-
-					expect( view.infoView.isVisible ).to.be.true;
-					expect( view.infoView.primaryText ).to.equal( 'No results found' );
-					expect( view.infoView.secondaryText ).to.equal( '' );
-
-					view.destroy();
-				} );
-
-				it( 'comes with a default behavior for no searchable items', () => {
-					filteredView.filter = () => {
-						return {
-							resultsCount: 0,
-							totalItemsCount: 0
-						};
-					};
-
-					const view = new SearchTextView( new Locale(), {
-						filteredView,
-						searchFieldLabel: 'test label'
-					} );
-
-					view.render();
-
-					expect( view.infoView.isVisible ).to.be.true;
-					expect( view.infoView.primaryText ).to.equal( 'No searchable items' );
-					expect( view.infoView.secondaryText ).to.equal( '' );
-
-					view.destroy();
-				} );
-
-				it( 'allows customization of info texts', () => {
-					filteredView.filter = () => {
-						return {
-							resultsCount: 0,
-							totalItemsCount: 0
-						};
-					};
-
-					const view = new SearchTextView( new Locale(), {
-						filteredView,
-						searchFieldLabel: 'test label',
-						infoViewTextConfig: {
-							notFound: {
-								primary: 'foo',
-								secondary: 'bar'
-							},
-							noSearchableItems: {
-								primary: 'baz',
-								secondary: 'qux'
-							}
-						}
-					} );
-
-					view.render();
-
-					expect( view.infoView.isVisible ).to.be.true;
-					expect( view.infoView.primaryText ).to.equal( 'baz' );
-					expect( view.infoView.secondaryText ).to.equal( 'qux' );
-
-					filteredView.filter = () => {
-						return {
-							resultsCount: 0,
-							totalItemsCount: 5
-						};
-					};
-
-					view.search( 'test' );
-
-					expect( view.infoView.isVisible ).to.be.true;
-					expect( view.infoView.primaryText ).to.equal( 'foo' );
-					expect( view.infoView.secondaryText ).to.equal( 'bar' );
-
-					view.destroy();
-				} );
-
-				it( 'allows info texts specified as functions', () => {
-					filteredView.filter = () => {
-						return {
-							resultsCount: 0,
-							totalItemsCount: 0
-						};
-					};
-
-					const dynamicLabelText = ( query, resultsCount, totalItemsCount ) =>
-						`"${ query }" ${ resultsCount } of ${ totalItemsCount }`;
-
-					const view = new SearchTextView( new Locale(), {
-						filteredView,
-						searchFieldLabel: 'test label',
-						infoViewTextConfig: {
-							notFound: {
-								primary: dynamicLabelText,
-								secondary: dynamicLabelText
-							},
-							noSearchableItems: {
-								primary: dynamicLabelText,
-								secondary: dynamicLabelText
-							}
-						}
-					} );
-
-					view.render();
-
-					expect( view.infoView.isVisible ).to.be.true;
-					expect( view.infoView.primaryText ).to.equal( '"" 0 of 0' );
-					expect( view.infoView.secondaryText ).to.equal( '"" 0 of 0' );
-
-					filteredView.filter = () => {
-						return {
-							resultsCount: 0,
-							totalItemsCount: 5
-						};
-					};
-
-					view.search( 'test' );
-
-					expect( view.infoView.isVisible ).to.be.true;
-					expect( view.infoView.primaryText ).to.equal( '"test" 0 of 5' );
-					expect( view.infoView.secondaryText ).to.equal( '"test" 0 of 5' );
-
-					view.destroy();
-				} );
-			} );
-
-			it( 'accpets a view from the configuration', () => {
-				const customInfoView = new View();
-				customInfoView.setTemplate( {
-					tag: 'div',
-					attributes: {
-						class: 'custom'
-					}
-				} );
-
-				const view = new SearchTextView( new Locale(), {
-					filteredView,
-					searchFieldLabel: 'test label',
-					infoView: customInfoView
-				} );
-
-				view.render();
-
-				expect( view.infoView ).to.equal( customInfoView );
-				expect( view.resultsView.children.first ).to.equal( customInfoView );
-				expect( view.resultsView.children.last ).to.equal( filteredView );
-
-				view.destroy();
-			} );
+			expect( view.element.firstChild ).to.equal( view.queryView.element );
+			expect( view.element.lastChild ).to.equal( view.resultsView.element );
 		} );
 	} );
 

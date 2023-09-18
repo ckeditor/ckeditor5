@@ -61,7 +61,7 @@ export { default as TextareaView } from './textarea/textareaview';
 export { default as IframeView } from './iframe/iframeview';
 
 export { default as LabelView } from './label/labelview';
-export { default as LabeledFieldView } from './labeledfield/labeledfieldview';
+export { type LabeledFieldViewCreator, default as LabeledFieldView } from './labeledfield/labeledfieldview';
 export * from './labeledfield/utils';
 
 export { default as ListItemGroupView } from './list/listitemgroupview';
@@ -75,8 +75,8 @@ export { default as BalloonPanelView } from './panel/balloon/balloonpanelview';
 export { default as ContextualBalloon } from './panel/balloon/contextualballoon';
 export { default as StickyPanelView } from './panel/sticky/stickypanelview';
 
-export { default as AutocompleteView } from './autocomplete/autocompleteview';
-export { default as SearchTextView, type SearchTextViewSearchEvent } from './search/text/searchtextview';
+export { default as AutocompleteView, type AutocompleteViewConfig, type AutocompleteResultsView } from './autocomplete/autocompleteview';
+export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchTextViewConfig } from './search/text/searchtextview';
 export { default as SearchInfoView } from './search/searchinfoview';
 export { default as FilteredView } from './search/filteredview';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview';
