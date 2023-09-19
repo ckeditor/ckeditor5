@@ -2,7 +2,7 @@
 category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
-order: 85
+order: 84
 modified_at: 2023-09-13
 ---
 
@@ -16,8 +16,16 @@ modified_at: 2023-09-13
 
 ## Update to CKEditor&nbsp;5 v40.0.0
 
-For the entire list of changes introduced in version 39.0.0, see the [release notes for CKEditor&nbsp;5 v40.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.0.0).
+For the entire list of changes introduced in version 40.0.0, see the [release notes for CKEditor&nbsp;5 v40.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.0.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.0.0.
 
-### New lists feasture
+### Changes to the image feature
+
+This release introduces changes connected with the image `width` and `height` attributes. These are now preserved while loading editor content. Images without their size specified will automatically gain natural image size on any interaction with the image within the editor. Due to this new behavior, the `width` and `height` attributes are now used to preserve the image's natural width and height and the model attribute name of a resized image is now changed to `resizedWidth`.
+
+Also, the `srcset` model attribute which provides parameters for responsive images, has been simplified. It is no longer an object `{ data: "...", width: "..." }`, but the value that was previously stored in the `data` part.
+
+Both of these are major breaking changes.
+
+### New lists feature
