@@ -47,14 +47,16 @@ import '../../theme/components/toolbar/toolbar.css';
 
 const { threeVerticalDots } = icons;
 
-const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
+export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = {
 	alignLeft: icons.alignLeft,
 	bold: icons.bold,
 	importExport: icons.importExport,
 	paragraph: icons.paragraph,
 	plus: icons.plus,
 	text: icons.text,
-	threeVerticalDots: icons.threeVerticalDots
+	threeVerticalDots: icons.threeVerticalDots,
+	pilcrow: icons.pilcrow,
+	dragIndicator: icons.dragIndicator
 };
 
 /**
