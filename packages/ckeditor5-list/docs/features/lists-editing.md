@@ -10,7 +10,15 @@ modified_at: 2023-09-13
 
 ## Block lists
 
+The current list feature lets any part of the content be part of a list. Content blocks and elements – such as blockquotes, tables, paragraphs, headings, and others – can be put inside a list item, ensuring the continuity of numbering and retaining indentation.
+
 ## Simple lists
+
+The simple list config option is a great solution for users who do not need to turn block elements into list items. When this setting is active, users can only insert text into list items and will not be able to nest content blocks &ndash; like paragraphs,  or tables &ndash; inside a list item. This would be handy for small editing areas and for content creation solutions that mostly need to work with less advanced documents. Turning off the block list will make editing easier with limited capabilities and also affect some fields like keyboard shortcuts.
+
+```
+Option snippet
+```
 
 ## Adjacent lists merging
 
