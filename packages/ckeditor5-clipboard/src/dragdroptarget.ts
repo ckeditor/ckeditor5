@@ -7,8 +7,6 @@
  * @module clipboard/dragdroptarget
  */
 
-/* istanbul ignore file -- @preserve */
-
 import {
 	Plugin,
 	type Editor
@@ -149,7 +147,6 @@ export default class DragDropTarget extends Plugin {
 		blockMode: boolean
 	): Range | null {
 		const targetRange = findDropTargetRange( this.editor, targetViewElement, targetViewRanges, clientX, clientY, blockMode );
-
 		// The dragging markers must be removed after searching for the target range because sometimes
 		// the target lands on the marker itself.
 		this.removeDropMarker();
@@ -398,8 +395,6 @@ function findDropTargetRange(
 		modelElement = modelElement.parent as Element;
 	}
 
-	console.warn( 'none:', targetModelElement.name );
-
 	return null;
 }
 
@@ -419,7 +414,7 @@ function isFloatingElement( editor: Editor, modelElement: Element ): boolean {
 /**
  * Returns target range relative to the given element.
  */
-function findDropTargetRangeForElement( editor: Editor, modelElement: Element, clientX: number, clientY: number ): Range | null {
+function findDropTargetRangeForElement( editor: Editor, modelElement: Element, clientX: number, clientY: number ): Range {
 	const model = editor.model;
 
 	return model.createRange(

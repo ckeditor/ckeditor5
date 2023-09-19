@@ -18,6 +18,7 @@ import {
 } from './converters';
 
 import ImageEditing from './imageediting';
+import ImageSizeAttributes from '../imagesizeattributes';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
@@ -41,7 +42,7 @@ export default class ImageBlockEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageEditing, ImageUtils, ClipboardPipeline ] as const;
+		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ClipboardPipeline ] as const;
 	}
 
 	/**

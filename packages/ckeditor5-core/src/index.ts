@@ -67,6 +67,7 @@ import pencil from './../theme/icons/pencil.svg';
 import pilcrow from './../theme/icons/pilcrow.svg';
 import quote from './../theme/icons/quote.svg';
 import threeVerticalDots from './../theme/icons/three-vertical-dots.svg';
+import dragIndicator from './../theme/icons/drag-indicator.svg';
 
 import bold from './../theme/icons/bold.svg';
 import paragraph from './../theme/icons/paragraph.svg';
@@ -113,7 +114,8 @@ export const icons = {
 	pencil,
 	pilcrow,
 	quote,
-	threeVerticalDots
+	threeVerticalDots,
+	dragIndicator
 };
 
 import './augmentation';

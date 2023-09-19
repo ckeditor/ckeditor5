@@ -192,7 +192,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const modelItem = editor.model.document.getRoot().getChild( 1 );
 
-				expect( modelItem.getAttribute( 'width' ), 'model width attribute' ).to.be.undefined;
+				expect( modelItem.getAttribute( 'resizedWidth' ), 'model width attribute' ).to.be.undefined;
 			} );
 		} );
 
@@ -283,7 +283,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'width' ) ).to.equal( '60px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '60px' );
 			} );
 		} );
 
@@ -367,7 +367,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'width' ) ).to.equal( '76px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '76px' );
 			} );
 
 			it( 'retains width after removing srcset', async () => {
@@ -384,7 +384,9 @@ describe( 'ImageResizeHandles', () => {
 					writer.removeAttribute( 'srcset', model );
 				} );
 
-				const expectedHtml = '<figure class="image image_resized" style="width:80px;"><img src="/assets/sample.png"></figure>';
+				const expectedHtml = '<figure class="image image_resized" style="width:80px;">' +
+					'<img src="/assets/sample.png" width="96">' +
+				'</figure>';
 				expect( editor.getData() ).to.equal( expectedHtml );
 			} );
 
@@ -650,7 +652,38 @@ describe( 'ImageResizeHandles', () => {
 
 				const modelItem = editor.model.document.getRoot().getChild( 1 ).getChild( 0 );
 
-				expect( modelItem.getAttribute( 'width' ), 'model width attribute' ).to.be.undefined;
+				expect( modelItem.getAttribute( 'resizedWidth' ), 'model width attribute' ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'height style', () => {
+			beforeEach( async () => {
+				editor = await createEditor();
+
+				await setModelAndWaitForImages( editor,
+					'<paragraph>[' +
+						`<imageInline resizedHeight="50px" imageStyle="side" src="${ IMAGE_SRC_FIXTURE }"></imageInline>` +
+					']</paragraph>'
+				);
+
+				widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+			} );
+
+			it( 'is removed after starting resizing', () => {
+				const resizerPosition = 'bottom-left';
+				const domParts = getWidgetDomParts( editor, widget, resizerPosition );
+				const initialPointerPosition = getHandleCenterPoint( domParts.widget, resizerPosition );
+				const viewImage = widget.getChild( 0 );
+
+				expect( viewImage.getStyle( 'height' ) ).to.equal( '50px' );
+
+				resizerMouseSimulator.down( editor, domParts.resizeHandle );
+
+				resizerMouseSimulator.move( editor, domParts.resizeHandle, null, initialPointerPosition );
+
+				expect( viewImage.getStyle( 'height' ) ).to.be.undefined;
+
+				resizerMouseSimulator.up( editor );
 			} );
 		} );
 
@@ -805,9 +838,12 @@ describe( 'ImageResizeHandles', () => {
 
 				await setModelAndWaitForImages( editor,
 					'<paragraph>' +
-					'[<imageInline ' +
-					`src="${ imageBaseUrl }" srcset="${ imageBaseUrl }?a 110w, ${ imageBaseUrl }?b 440w, ${ imageBaseUrl }?c 1025w" ` +
-					'sizes="100vw" width="96"></imageInline>]' +
+						'[<imageInline ' +
+							`src="${ imageBaseUrl }" ` +
+							`srcset="${ imageBaseUrl }?a 110w, ${ imageBaseUrl }?b 440w, ${ imageBaseUrl }?c 1025w" ` +
+							'sizes="100vw" ' +
+							'width="96">' +
+						'</imageInline>]' +
 					'</paragraph>'
 				);
 
@@ -825,7 +861,7 @@ describe( 'ImageResizeHandles', () => {
 					to: finalPointerPosition
 				} );
 
-				expect( model.getAttribute( 'width' ) ).to.equal( '76px' );
+				expect( model.getAttribute( 'resizedWidth' ) ).to.equal( '76px' );
 			} );
 
 			it( 'retains width after removing srcset', async () => {
@@ -842,7 +878,7 @@ describe( 'ImageResizeHandles', () => {
 					writer.removeAttribute( 'srcset', model );
 				} );
 
-				const expectedHtml = '<p><img class="image_resized" style="width:76px;" src="/assets/sample.png"></p>';
+				const expectedHtml = '<p><img class="image_resized" style="width:76px;" src="/assets/sample.png" width="96"></p>';
 				expect( editor.getData() ).to.equal( expectedHtml );
 			} );
 

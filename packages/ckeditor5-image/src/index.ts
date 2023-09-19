@@ -19,6 +19,7 @@ export { default as ImageResize } from './imageresize';
 export { default as ImageResizeButtons } from './imageresize/imageresizebuttons';
 export { default as ImageResizeEditing } from './imageresize/imageresizeediting';
 export { default as ImageResizeHandles } from './imageresize/imageresizehandles';
+export { default as ImageSizeAttributes } from './imagesizeattributes';
 export { default as ImageStyle } from './imagestyle';
 export { default as ImageStyleEditing } from './imagestyle/imagestyleediting';
 export { default as ImageStyleUI } from './imagestyle/imagestyleui';
