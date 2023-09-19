@@ -64,7 +64,7 @@ export default class AutocompleteView<
 			this._updateResultsVisibility();
 
 			if ( isFocused ) {
-				this._updateResultsViewPosition();
+				this._updateResultsViewWidthAndPosition();
 				// Reset the scroll position of the results view whenever the autocomplete reopens.
 				this.resultsView.element!.scrollTop = 0;
 			} else if ( config.resetOnBlur ) {
@@ -74,9 +74,10 @@ export default class AutocompleteView<
 
 		// Update the visibility of the results view when the user types in the query field.
 		// This is an integration for `queryMinChars` configuration.
+		// This is an integration for search results changing length and the #resultsView requiring to be repositioned.
 		this.on( 'search', () => {
 			this._updateResultsVisibility();
-			this._updateResultsViewPosition();
+			this._updateResultsViewWidthAndPosition();
 		} );
 
 		// Hide the results view when the user presses the ESC key.
@@ -88,7 +89,7 @@ export default class AutocompleteView<
 		// Update the position of the results view when the user scrolls the page.
 		// TODO: This needs to be debounced down the road.
 		this.listenTo( global.document, 'scroll', () => {
-			this._updateResultsViewPosition();
+			this._updateResultsViewWidthAndPosition();
 		} );
 
 		// Hide the results when the component becomes disabled.
@@ -101,18 +102,29 @@ export default class AutocompleteView<
 			// Focus the query view first to avoid losing the focus.
 			this.focus();
 
+			// Resetting the view will ensure that the #queryView will update its empty state correctly.
+			// This prevents bugs related to dynamic labels or auto-grow when re-setting the same value
+			// to #queryView.fieldView.value (which does not trigger empty state change) to an
+			// #queryView.fieldView.element that has been changed by the user.
+			this.reset();
+
 			// Update the value of the query field.
 			this.queryView.fieldView.value = this.queryView.fieldView.element!.value = value;
 
 			// Finally, hide the results view. The focus has been moved earlier so this is safe.
 			resultsView.isVisible = false;
 		} );
+
+		// Update the position and width of the results view when it becomes visible.
+		this.resultsView.on( 'change:isVisible', () => {
+			this._updateResultsViewWidthAndPosition();
+		} );
 	}
 
 	/**
 	 * Updates the position of the results view on demand.
 	 */
-	private _updateResultsViewPosition() {
+	private _updateResultsViewWidthAndPosition() {
 		const resultsView = ( this.resultsView as AutocompleteResultsView );
 
 		if ( !resultsView.isVisible ) {
