@@ -164,6 +164,22 @@ describe( 'TextareaView', () => {
 				await requestAnimationFrame();
 				expect( parseFloat( view.element.style.height ) ).to.equal( twoRowsHeight );
 			} );
+
+			it( 'should fire the #autoGrow event', () => {
+				const spy = sinon.spy();
+
+				view.on( 'autoGrow', spy );
+
+				view.element.value = '1\n2\n3\n4\n5\n6';
+
+				view.fire( 'input' );
+				sinon.assert.calledOnce( spy );
+
+				view.fire( 'input' );
+
+				// The event gets fired whether the view is changing dimensions or not.
+				sinon.assert.calledTwice( spy );
+			} );
 		} );
 	} );
 
