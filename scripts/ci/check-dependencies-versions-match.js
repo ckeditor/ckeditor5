@@ -33,7 +33,11 @@ const [ packageJsons, pathMappings ] = getPackageJsons( [
 	'external/ckeditor5-commercial/package.json'
 ] );
 
-main();
+main().catch( err => {
+	console.error( err );
+
+	process.exit( 1 );
+} );
 
 async function main() {
 	const isCkeditor5Package = await isCKEditor5PackageFactory();
@@ -56,36 +60,26 @@ function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappin
 	packageJsons
 		.filter( packageJson => packageJson.dependencies )
 		.forEach( packageJson => {
-			Object.entries( packageJson.dependencies )
-				.forEach( ( [ dependency, version ] ) => {
-					if ( !isCkeditor5Package( dependency ) ) {
-						return;
-					}
+			for ( const [ dependency, version ] of Object.entries( packageJson.dependencies ) ) {
+				if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
+					continue;
+				}
 
-					if ( version !== expectedDependencies[ dependency ] ) {
-						packageJson.dependencies[ dependency ] = expectedDependencies[ dependency ];
-					}
-				} );
+				packageJson.dependencies[ dependency ] = expectedDependencies[ dependency ];
+			}
 
-			Object.entries( packageJson.devDependencies )
-				.forEach( ( [ dependency, version ] ) => {
-					if ( !isCkeditor5Package( dependency ) ) {
-						return;
-					}
+			for ( const [ dependency, version ] of Object.entries( packageJson.devDependencies ) ) {
+				if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
+					continue;
+				}
 
-					if ( version !== expectedDependencies[ dependency ] ) {
-						packageJson.devDependencies[ dependency ] = expectedDependencies[ dependency ];
-					}
-				} );
+				packageJson.devDependencies[ dependency ] = expectedDependencies[ dependency ];
+			}
 
 			fs.writeJsonSync( pathMappings[ packageJson.name ], packageJson, { spaces: 2 } );
 		} );
 
 	console.log( chalk.green( '✅  All dependencies fixed!' ) );
-}
-
-function getDepsAndDevDeps( packageJson ) {
-	return { ...packageJson.dependencies, ...( packageJson.devDependencies || {} ) };
 }
 
 /**
@@ -98,13 +92,11 @@ function checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5
 		.filter( packageJson => packageJson.dependencies )
 		.flatMap( packageJson => Object.entries( getDepsAndDevDeps( packageJson ) )
 			.map( ( [ dependency, version ] ) => {
-				if ( !isCkeditor5Package( dependency ) ) {
+				if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
 					return '';
 				}
 
-				if ( version !== expectedDependencies[ dependency ] ) {
-					return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
-				}
+				return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
 			} )
 			.filter( Boolean )
 		);
@@ -138,19 +130,14 @@ function getExpectedDepsVersions( packageJsons, isCkeditor5Package ) {
 	return packageJsons
 		.map( packageJson => getDepsAndDevDeps( packageJson ) )
 		.filter( Boolean )
-		.map( dependencies => {
-			for ( const dependency of Object.keys( dependencies ) ) {
-				if ( !isCkeditor5Package( dependency ) ) {
-					delete dependencies[ dependency ];
-				}
-			}
-
-			return dependencies;
-		} )
 		.reduce( ( expectedDependencies, dependencies ) => {
-			Object.entries( dependencies ).forEach( ( [ dependency, version ] ) => {
+			for ( const [ dependency, version ] of Object.entries( dependencies ) ) {
+				if ( !isCkeditor5Package( dependency ) ) {
+					continue;
+				}
+
 				expectedDependencies[ dependency ] = getNewestVersion( dependency, version, expectedDependencies[ dependency ] );
-			} );
+			}
 
 			return expectedDependencies;
 		}, {} );
@@ -198,4 +185,12 @@ function getPackageJsons( directories ) {
 		.reduce( ( accum, packageJsonPath ) => ( { ...accum, [ require( packageJsonPath ).name ]: packageJsonPath } ), {} );
 
 	return [ packageJsons, nameToPathMappings ];
+}
+
+/**
+ * @param {Object.<String, String>} packageJson
+ * @returns {Object.<String, String>}
+ */
+function getDepsAndDevDeps( packageJson ) {
+	return { ...packageJson.dependencies, ...( packageJson.devDependencies || {} ) };
 }
