@@ -28,4 +28,8 @@ Also, the `srcset` model attribute which provides parameters for responsive imag
 
 Both of these are major breaking changes.
 
-### New lists feature
+### New default lists plugin coming
+
+The regular lists feature will be replaced with the new {@link features/document-lists document lists} in one of the upcoming releases and it will be sunset at the beginning of 2024. The change will be seamless for the users, but there are significant changes between these plugins. We will update the information about this process as it unfolds.
+
+See [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) for more details.
