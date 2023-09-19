@@ -158,6 +158,8 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 		singleLineContentClone.remove();
 		fullTextValueClone.remove();
+
+		this.fire<TextareaViewAutoGrowEvent>( 'autoGrow' );
 	}
 
 	/**
@@ -193,3 +195,13 @@ function getTextareaElementClone( element: HTMLTextAreaElement, value: string ):
 
 	return clone;
 }
+
+/**
+ * Fired when the textarea view is resized.
+ *
+ * @eventName ~TextareaView#autoGrow
+ */
+export type TextareaViewAutoGrowEvent = {
+	name: 'autoGrow';
+	args: [];
+};
