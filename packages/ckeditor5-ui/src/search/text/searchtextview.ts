@@ -106,6 +106,13 @@ export default class SearchTextView<
 	declare public readonly children: ViewCollection;
 
 	/**
+	 * The collection of focusable children of the view.
+	 *
+	 * @readonly
+	 */
+	declare public readonly focusableChildren: ViewCollection;
+
+	/**
 	 * Provides the focus management (keyboard navigation) between {@link #queryView} and {@link #filteredView}.
 	 *
 	 * @readonly
@@ -136,6 +143,7 @@ export default class SearchTextView<
 		this.keystrokes = new KeystrokeHandler();
 		this.resultsView = new SearchResultsView( locale );
 		this.children = this.createCollection();
+		this.focusableChildren = this.createCollection( [ this.queryView, this.filteredView ] );
 
 		this.set( 'isEnabled', true );
 		this.set( 'resultsCount', 0 );
@@ -157,7 +165,7 @@ export default class SearchTextView<
 		this.resultsView.children.addMany( [ this.infoView, this.filteredView ] );
 
 		this._focusCycler = new FocusCycler( {
-			focusables: this.createCollection( [ this.queryView, this.filteredView ] ),
+			focusables: this.focusableChildren,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
@@ -202,8 +210,9 @@ export default class SearchTextView<
 
 		const stopPropagation = ( data: Event ) => data.stopPropagation();
 
-		this.focusTracker.add( this.queryView.element as Element );
-		this.focusTracker.add( this.filteredView.element as Element );
+		for ( const focusableChild of this.focusableChildren ) {
+			this.focusTracker.add( focusableChild.element as Element );
+		}
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element as HTMLElement );
