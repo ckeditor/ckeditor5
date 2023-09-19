@@ -26,6 +26,7 @@ import type {
 	ImageCaptionUtils,
 	ImageInsertUI,
 	ImageResizeEditing,
+	ImageSizeAttributes,
 	ImageStyleEditing,
 	ImageStyleUI,
 	ImageTextAlternativeEditing,
@@ -76,6 +77,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ImageCaptionUtils.pluginName ]: ImageCaptionUtils;
 		[ ImageInsertUI.pluginName ]: ImageInsertUI;
 		[ ImageResizeEditing.pluginName ]: ImageResizeEditing;
+		[ ImageSizeAttributes.pluginName ]: ImageSizeAttributes;
 		[ ImageStyleEditing.pluginName ]: ImageStyleEditing;
 		[ ImageStyleUI.pluginName ]: ImageStyleUI;
 		[ ImageTextAlternativeEditing.pluginName ]: ImageTextAlternativeEditing;

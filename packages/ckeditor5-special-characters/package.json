@@ -17,7 +17,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-cloud-services": "39.0.2",
     "@ckeditor/ckeditor5-core": "39.0.2",
-    "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
     "@ckeditor/ckeditor5-easy-image": "39.0.2",
     "@ckeditor/ckeditor5-editor-classic": "39.0.2",
     "@ckeditor/ckeditor5-image": "39.0.2",
