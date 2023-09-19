@@ -87,16 +87,16 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": "39.0.2",
-    "@ckeditor/ckeditor5-dev-bump-year": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-ci": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-dependency-checker": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-docs": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-release-tools": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-transifex": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-translations": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
-    "@ckeditor/ckeditor5-dev-web-crawler": "^38.0.0",
+    "@ckeditor/ckeditor5-dev-bump-year": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-ci": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-dependency-checker": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-docs": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-release-tools": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-transifex": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-translations": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-web-crawler": "^39.0.0",
     "@ckeditor/ckeditor5-document-outline": "39.0.2",
     "@ckeditor/ckeditor5-export-pdf": "39.0.2",
     "@ckeditor/ckeditor5-export-word": "39.0.2",
@@ -149,7 +149,7 @@
     "webpack": "^5.58.1"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
