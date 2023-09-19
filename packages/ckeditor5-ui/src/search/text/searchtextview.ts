@@ -106,7 +106,7 @@ export default class SearchTextView<
 	declare public readonly children: ViewCollection;
 
 	/**
-	 * The collection of focusable children of the view.
+	 * The collection of focusable children of the view. Used by the focus management logic.
 	 *
 	 * @readonly
 	 */
