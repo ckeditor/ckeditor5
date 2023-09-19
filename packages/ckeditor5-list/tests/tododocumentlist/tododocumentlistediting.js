@@ -26,7 +26,7 @@ import DocumentListPropertiesEditing from '../../src/documentlistproperties/docu
 
 import stubUid from '../documentlist/_utils/uid';
 
-/* global document */
+/* global document, Event */
 
 describe( 'TodoDocumentListEditing', () => {
 	let editor, model, view, editorElement;
@@ -783,6 +783,179 @@ describe( 'TodoDocumentListEditing', () => {
 			view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledTwice( command.execute );
+		} );
+
+		it( 'should toggle check state of a to-do list item on clicking the checkbox', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			view.getDomRoot().querySelector( 'input' ).dispatchEvent( new Event( 'change', { 'bubbles': true } ) );
+
+			sinon.assert.calledOnce( command.execute );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
+		describe( 'arrow keys', () => {
+			it( 'should move collapsed selection at start of following todo list item on right arrow in todo list item', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
+				);
+			} );
+
+			it( 'should move collapsed selection at start of following todo list item on right arrow in paragraph', () => {
+				setModelData( model,
+					'<paragraph>foo[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph>foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
+				);
+			} );
+
+			it( 'should do nothing if selection is at end of the last todo list item and right arrow is pressed', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
+				sinon.assert.notCalled( eventData.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>'
+				);
+			} );
+
+			it( 'should not move non-collapsed selection at start of following todo list item on right arrow key in todo list item', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
+				sinon.assert.notCalled( eventData.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+			} );
+
+			it( 'should not move non-collapsed selection at start of following todo list item on right arrow key in paragraph', () => {
+				setModelData( model,
+					'<paragraph>fo[o]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowRight' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
+				sinon.assert.notCalled( eventData.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph>fo[o]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+			} );
+
+			it( 'should move a collapsed selection to the end of the preceding todo list item on left arrow', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowLeft' ),
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
+				);
+			} );
+
+			it( 'should do nothing if selection is at start of first element which is a todo list item and left arrow is pressed', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'
+				);
+
+				const eventData = {
+					keyCode: getCode( 'arrowLeft' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domTarget: view.getDomRoot()
+				};
+
+				view.document.fire( 'keydown', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
+				sinon.assert.notCalled( eventData.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'
+				);
+			} );
 		} );
 	} );
 
