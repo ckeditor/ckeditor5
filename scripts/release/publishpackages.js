@@ -44,7 +44,7 @@ const tasks = new Listr( [
 				npmTag: cliArguments.npmTag,
 				listrTask: task,
 				confirmationCallback: () => {
-					if ( cliArguments.nightly ) {
+					if ( cliArguments.ci ) {
 						return true;
 					}
 
@@ -85,6 +85,7 @@ const tasks = new Listr( [
 				version: latestVersion
 			} );
 		},
+		// Nightly releases are not stored in the repository.
 		skip: cliArguments.nightly
 	},
 	{
@@ -101,6 +102,7 @@ const tasks = new Listr( [
 		options: {
 			persistentOutput: true
 		},
+		// Nightly releases are not described in the changelog.
 		skip: cliArguments.nightly
 	}
 ], getListrOptions( cliArguments ) );
