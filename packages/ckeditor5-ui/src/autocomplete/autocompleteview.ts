@@ -64,7 +64,6 @@ export default class AutocompleteView<
 			this._updateResultsVisibility();
 
 			if ( isFocused ) {
-				this._updateResultsViewWidthAndPosition();
 				// Reset the scroll position of the results view whenever the autocomplete reopens.
 				this.resultsView.element!.scrollTop = 0;
 			} else if ( config.resetOnBlur ) {

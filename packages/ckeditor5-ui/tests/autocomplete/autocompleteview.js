@@ -228,6 +228,38 @@ describe( 'AutocompleteView', () => {
 			} );
 		} );
 
+		describe( '#execute event handling', () => {
+			it( 'should focus the view upon #execute', () => {
+				const focusSpy = sinon.spy( view, 'focus' );
+
+				filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				sinon.assert.calledOnce( focusSpy );
+			} );
+
+			it( 'should set the #value upon #execute', () => {
+				filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				expect( view.queryView.fieldView.value ).to.equal( 'foo bar baz' );
+			} );
+
+			it( 'should set the query view\'s DOM element value upon #execute', () => {
+				view.queryView.fieldView.element.value = 'abc';
+
+				filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				expect( view.queryView.fieldView.element.value ).to.equal( 'foo bar baz' );
+			} );
+
+			it( 'should hide the #resultsView', () => {
+				view.resultsView.isVisible = true;
+
+				filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				expect( view.resultsView.isVisible ).to.be.false;
+			} );
+		} );
+
 		describe( 'focus tracking behavior', () => {
 			it( 'displays autocomplete results upon focusing the view', () => {
 				expect( view.resultsView.isVisible ).to.be.false;
