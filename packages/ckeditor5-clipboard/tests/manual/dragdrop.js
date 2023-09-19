@@ -3,276 +3,341 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, CKEditorInspector */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
-import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Image, ImageCaption, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
+import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
+import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
+import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
+import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
+import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import Style from '@ckeditor/ckeditor5-style/src/style';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine';
-import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
+
+import { Clipboard, DragDropBlockToolbar, DragDropExperimental } from '../../src';
+
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-const contacts = [
-	{ name: 'Huckleberry Finn',			tel: '+48 1345 234 235', email: 'h.finn@example.com', avatar: 'hfin' },
-	{ name: 'D\'Artagnan',				tel: '+45 2345 234 235', email: 'dartagnan@example.com', avatar: 'dartagnan' },
-	{ name: 'Phileas Fogg',				tel: '+44 3345 234 235', email: 'p.fogg@example.com', avatar: 'pfog' },
-	{ name: 'Alice',					tel: '+20 4345 234 235', email: 'alice@example.com', avatar: 'alice' },
-	{ name: 'Little Red Riding Hood',	tel: '+45 2345 234 235', email: 'lrrh@example.com', avatar: 'lrrh' },
-	{ name: 'Winnetou',					tel: '+44 3345 234 235', email: 'winnetou@example.com', avatar: 'winetou' },
-	{ name: 'Edmond Dantès',			tel: '+20 4345 234 235', email: 'count@example.com', avatar: 'edantes' },
-	{ name: 'Robinson Crusoe',			tel: '+45 2345 234 235', email: 'r.crusoe@example.com', avatar: 'rcrusoe' }
-];
-
-class HCardEditing extends Plugin {
-	static get requires() {
-		return [ Widget ];
-	}
-
-	init() {
-		this._defineSchema();
-		this._defineConverters();
-		this._defineClipboardInputOutput();
-
-		this.editor.editing.mapper.on(
-			'viewToModelPosition',
-			viewToModelPositionOutsideModelElement( this.editor.model, viewElement => viewElement.hasClass( 'h-card' ) )
-		);
-	}
-
-	_defineSchema() {
-		this.editor.model.schema.register( 'h-card', {
-			allowWhere: '$text',
-			isInline: true,
-			isObject: true,
-			allowAttributes: [ 'email', 'name', 'tel' ]
-		} );
-	}
-
-	_defineConverters() {
-		const conversion = this.editor.conversion;
-
-		conversion.for( 'upcast' ).elementToElement( {
-			view: {
-				name: 'span',
-				classes: [ 'h-card' ]
-			},
-			model: ( viewElement, { writer } ) => {
-				return writer.createElement( 'h-card', getCardDataFromViewElement( viewElement ) );
-			}
-		} );
-
-		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'h-card',
-			view: ( modelItem, { writer: viewWriter } ) => toWidget( createCardView( modelItem, viewWriter ), viewWriter )
-		} );
-
-		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'h-card',
-			view: ( modelItem, { writer: viewWriter } ) => createCardView( modelItem, viewWriter )
-		} );
-
-		// Helper method for both downcast converters.
-		function createCardView( modelItem, viewWriter ) {
-			const email = modelItem.getAttribute( 'email' );
-			const name = modelItem.getAttribute( 'name' );
-			const tel = modelItem.getAttribute( 'tel' );
-
-			const cardView = viewWriter.createContainerElement( 'span', { class: 'h-card' } );
-			const linkView = viewWriter.createContainerElement( 'a', { href: `mailto:${ email }`, class: 'p-name u-email' } );
-			const phoneView = viewWriter.createContainerElement( 'span', { class: 'p-tel' } );
-
-			viewWriter.insert( viewWriter.createPositionAt( linkView, 0 ), viewWriter.createText( name ) );
-			viewWriter.insert( viewWriter.createPositionAt( phoneView, 0 ), viewWriter.createText( tel ) );
-
-			viewWriter.insert( viewWriter.createPositionAt( cardView, 0 ), linkView );
-			viewWriter.insert( viewWriter.createPositionAt( cardView, 'end' ), phoneView );
-
-			return cardView;
-		}
-	}
-
-	_defineClipboardInputOutput() {
-		const view = this.editor.editing.view;
-		const viewDocument = view.document;
-
-		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
-			const contactData = data.dataTransfer.getData( 'contact' );
-
-			// There is no contact data or the clipboard content was already processed by the listener on the higher priority
-			// (for example while pasting into code-block).
-			if ( !contactData || data.content ) {
-				return;
-			}
-
-			const contact = JSON.parse( contactData );
-			const writer = new UpcastWriter( viewDocument );
-			const fragment = writer.createDocumentFragment();
-
-			writer.appendChild(
-				writer.createElement( 'span', { class: 'h-card' }, [
-					writer.createElement( 'a', { href: `mailto:${ contact.email }`, class: 'p-name u-email' }, contact.name ),
-					writer.createElement( 'span', { class: 'p-tel' }, contact.tel )
-				] ),
-				fragment
-			);
-
-			data.content = fragment;
-		} );
-
-		this.listenTo( document, 'clipboardOutput', ( evt, data ) => {
-			if ( data.content.childCount != 1 ) {
-				return;
-			}
-
-			const viewElement = data.content.getChild( 0 );
-
-			if ( viewElement.is( 'element', 'span' ) && viewElement.hasClass( 'h-card' ) ) {
-				data.dataTransfer.setData( 'contact', JSON.stringify( getCardDataFromViewElement( viewElement ) ) );
-			}
-		} );
-	}
-}
-
-function getCardDataFromViewElement( viewElement ) {
-	const children = Array.from( viewElement.getChildren() );
-	const linkElement = children.find( element => element.is( 'element', 'a' ) && element.hasClass( 'p-name' ) );
-	const telElement = children.find( element => element.is( 'element', 'span' ) && element.hasClass( 'p-tel' ) );
-
-	return {
-		name: getText( linkElement ),
-		tel: getText( telElement ),
-		email: linkElement.getAttribute( 'href' ).replace( /^mailto:/i, '' )
-	};
-}
-
-function getText( viewElement ) {
-	return Array.from( viewElement.getChildren() )
-		.map( node => node.is( '$text' ) ? node.data : '' )
-		.join( '' );
-}
-
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor-classic' ), {
 		plugins: [
-			ArticlePluginSet, Code, RemoveFormat, CodeBlock, EasyImage, ImageResize, LinkImage,
-			AutoImage, AutoLink, TextTransformation, Alignment, PasteFromOffice, PageBreak,
-			HorizontalLine, ImageUpload, CloudServices, HCardEditing
+			Essentials, Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
+			DocumentList, Paragraph, Table, TableToolbar, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
+			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
+			CodeBlock, DocumentListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
+			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed,
+			AutoLink, Mention, TextTransformation, Alignment, IndentBlock, PageBreak, HorizontalLine,
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, DragDropExperimental
 		],
 		toolbar: [
-			'heading',
+			'heading', 'style',
 			'|',
-			'removeFormat', 'bold', 'italic', 'code', 'link',
+			'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
+			'|',
+			'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 			'|',
 			'bulletedList', 'numberedList',
 			'|',
-			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
+			'blockQuote', 'insertImage', 'insertTable', 'codeBlock',
 			'|',
-			'alignment',
+			'htmlEmbed',
+			'|',
+			'alignment', 'outdent', 'indent',
 			'|',
 			'pageBreak', 'horizontalLine',
 			'|',
-			'undo', 'redo'
+			'textPartLanguage',
+			'|',
+			'sourceEditing',
+			'|',
+			'undo', 'redo', 'findAndReplace'
 		],
 		cloudServices: CS_CONFIG,
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
-		},
-		image: {
-			toolbar: [
-				'imageTextAlternative', '|',
-				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|',
-				'resizeImage'
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
 			]
 		},
-		placeholder: 'Type the content here!'
+		image: {
+			styles: [
+				'alignCenter',
+				'alignLeft',
+				'alignRight'
+			],
+			resizeOptions: [
+				{
+					name: 'resizeImage:original',
+					label: 'Original size',
+					value: null
+				},
+				{
+					name: 'resizeImage:50',
+					label: '50%',
+					value: '50'
+				},
+				{
+					name: 'resizeImage:75',
+					label: '75%',
+					value: '75'
+				}
+			],
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'resizeImage'
+			],
+			insert: {
+				integrations: [
+					'insertImageViaUrl'
+				]
+			}
+		},
+		placeholder: 'Type the content here!',
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: [
+						'@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+						'@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+						'@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+						'@sugar', '@sweet', '@topping', '@wafer'
+					],
+					minimumCharacters: 1
+				}
+			]
+		},
+		link: {
+			decorators: {
+				isExternal: {
+					mode: 'manual',
+					label: 'Open in a new tab',
+					attributes: {
+						target: '_blank',
+						rel: 'noopener noreferrer'
+					}
+				},
+				isDownloadable: {
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'download'
+					}
+				},
+				isGallery: {
+					mode: 'manual',
+					label: 'Gallery link',
+					classes: 'gallery'
+				}
+			}
+		},
+		htmlEmbed: {
+			showPreviews: true,
+			sanitizeHtml: html => ( { html, hasChange: false } )
+		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		},
+		style: {
+			definitions: [
+				{
+					name: 'Article category',
+					element: 'h3',
+					classes: [ 'category' ]
+				},
+				{
+					name: 'Title',
+					element: 'h2',
+					classes: [ 'document-title' ]
+				},
+				{
+					name: 'Subtitle',
+					element: 'h3',
+					classes: [ 'document-subtitle' ]
+				},
+				{
+					name: 'Info box',
+					element: 'p',
+					classes: [ 'info-box' ]
+				},
+				{
+					name: 'Side quote',
+					element: 'blockquote',
+					classes: [ 'side-quote' ]
+				},
+				{
+					name: 'Marker',
+					element: 'span',
+					classes: [ 'marker' ]
+				},
+				{
+					name: 'Spoiler',
+					element: 'span',
+					classes: [ 'spoiler' ]
+				},
+				{
+					name: 'Code (dark)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-dark' ]
+				},
+				{
+					name: 'Code (bright)',
+					element: 'pre',
+					classes: [ 'fancy-code', 'fancy-code-bright' ]
+				}
+			]
+		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editorClassic = editor;
 
-		const button = document.getElementById( 'read-only' );
-		let isReadOnly = false;
-
-		button.addEventListener( 'click', () => {
-			isReadOnly = !isReadOnly;
-
-			if ( isReadOnly ) {
-				editor.enableReadOnlyMode( 'manual-test' );
-			} else {
-				editor.disableReadOnlyMode( 'manual-test' );
-			}
-
-			button.textContent = isReadOnly ?
-				'Turn off read-only mode' :
-				'Turn on read-only mode';
-
-			editor.editing.view.focus();
-		} );
+		CKEditorInspector.attach( { classic: editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
-const contactsContainer = document.querySelector( '#contactList' );
+const editorData = document.querySelector( '#editor-classic' ).innerHTML;
 
-contactsContainer.addEventListener( 'dragstart', event => {
-	const target = event.target.nodeType == 1 ? event.target : event.target.parentElement;
-	const draggable = target.closest( '[draggable]' );
+DecoupledEditor
+	.create( editorData, {
+		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, Clipboard, Table, DragDropExperimental ],
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'insertTable', 'undo', 'redo' ]
+	} )
+	.then( editor => {
+		document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
+		document.querySelector( '.editable-container' ).appendChild( editor.ui.view.editable.element );
 
-	event.dataTransfer.setData( 'text/plain', draggable.innerText );
-	event.dataTransfer.setData( 'text/html', draggable.innerText );
-	event.dataTransfer.setData( 'contact', JSON.stringify( contacts[ draggable.dataset.contact ] ) );
+		window.editorDecoupled = editor;
 
-	event.dataTransfer.setDragImage( draggable, 0, 0 );
-} );
+		CKEditorInspector.attach( { decoupled: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
-contacts.forEach( ( contact, id ) => {
-	const li = document.createElement( 'li' );
+BalloonEditor
+	.create( document.querySelector( '#editor-balloon' ), {
+		plugins: [
+			Essentials, List, Paragraph, Heading,
+			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
+			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
+			CloudServices, ImageUpload, EasyImage, DragDropBlockToolbar, DragDropExperimental
+		],
+		cloudServices: CS_CONFIG,
+		blockToolbar: [
+			'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph',
+			'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph', 'heading1', 'heading2', 'heading3',
+			'bulletedList', 'numberedList', 'insertTable', 'uploadImage'
+		],
+		image: {
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'resizeImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editorBalloon = editor;
 
-	li.innerHTML =
-		`<div class="contact h-card" data-contact="${ id }" draggable="true">` +
-			`<img src="assets/${ contact.avatar }.png" alt="avatar" class="u-photo" draggable="false" />` +
-			contact.name +
-		'</div>';
+		CKEditorInspector.attach( { balloon: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
-	contactsContainer.appendChild( li );
-} );
+BalloonEditor
+	.create( document.querySelector( '#editor-balloon-custom-icon' ), {
+		plugins: [
+			Essentials, List, Paragraph, Heading,
+			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
+			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
+			CloudServices, ImageUpload, EasyImage, DragDropBlockToolbar, DragDropExperimental
+		],
+		cloudServices: CS_CONFIG,
+		blockToolbar: {
+			items: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList',
+				'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph', 'heading1', 'heading2',
+				'heading3', 'bulletedList', 'numberedList', 'insertTable', 'uploadImage' ],
+			icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">' +
+			'<path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>'
+		},
+		image: {
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'resizeImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editorBalloonCustomIcon = editor;
 
-const dropArea = document.querySelector( '#drop-area' );
-
-dropArea.addEventListener( 'dragover', event => {
-	event.preventDefault();
-	event.dataTransfer.dropEffect = 'copy';
-	dropArea.classList.add( 'dragover' );
-} );
-
-dropArea.addEventListener( 'dragleave', () => {
-	dropArea.classList.remove( 'dragover' );
-} );
-
-dropArea.addEventListener( 'drop', event => {
-	const contact = event.dataTransfer.getData( 'contact' );
-
-	dropArea.innerText =
-		'-- text/plain --\n' + event.dataTransfer.getData( 'text/plain' ) + '\n\n' +
-		'-- text/html --\n' + event.dataTransfer.getData( 'text/html' ) + '\n\n' +
-		'-- contact --\n' + ( contact ? JSON.stringify( JSON.parse( contact ), 0, 2 ) : '' ) + '\n';
-	dropArea.classList.remove( 'dragover' );
-
-	event.preventDefault();
-} );
+		CKEditorInspector.attach( { balloonCustomIcon: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

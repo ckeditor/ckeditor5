@@ -10,7 +10,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import ClipboardPipeline from './clipboardpipeline';
-import DragDropExperimental from './dragdropexperimental';
+import DragDrop from './dragdrop';
 import PastePlainText from './pasteplaintext';
 
 /**
@@ -35,6 +35,6 @@ export default class Clipboard extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ClipboardPipeline, DragDropExperimental, PastePlainText ] as const;
+		return [ ClipboardPipeline, DragDrop, PastePlainText ] as const;
 	}
 }

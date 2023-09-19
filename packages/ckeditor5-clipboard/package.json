@@ -47,7 +47,6 @@
     "@ckeditor/ckeditor5-mention": "39.0.2",
     "@ckeditor/ckeditor5-page-break": "39.0.2",
     "@ckeditor/ckeditor5-paragraph": "39.0.2",
-    "@ckeditor/ckeditor5-paste-from-office": "39.0.2",
     "@ckeditor/ckeditor5-remove-format": "39.0.2",
     "@ckeditor/ckeditor5-source-editing": "39.0.2",
     "@ckeditor/ckeditor5-style": "39.0.2",

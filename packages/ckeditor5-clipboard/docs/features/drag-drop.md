@@ -79,14 +79,14 @@ Select a block or blocks, and drag them across the document. You can place block
 
 #### Installation
 
-To enable the block drag and drop in a classic editor, you need to add the {@link module:clipboard/dragdropexperimental~DragDropExperimental `DragDropExperimental`} module to your editor configuration:
+To enable the block drag and drop in a classic editor, you need to add the {@link module:clipboard/dragdrop~DragDrop `DragDrop`} module to your editor configuration:
 
 ```js
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Clipboard, DragDropExperimental } from '@ckeditor/ckeditor5-clipboard';
+import { Clipboard, DragDrop } from '@ckeditor/ckeditor5-clipboard';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Clipboard, DragDropExperimental, /* ... */ ],
+	plugins: [ Clipboard, DragDrop, /* ... */ ],
 })
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -100,12 +100,12 @@ In the balloon block editor, you can also drag content blocks using the drag han
 
 #### Installation
 
-To enable the block drag and drop in a balloon block editor, you need to add the {@link module:clipboard/dragdropexperimental~DragDropExperimental `DragDropExperimental`} and the {@link module:clipboard/dragdropblocktoolbar~DragDropBlockToolbar `DragDropBlockToolbar`} modules to your editor configuration::
+To enable the block drag and drop in a balloon block editor, you need to add the {@link module:clipboard/dragdrop~DragDrop `DragDrop`} and the {@link module:clipboard/dragdropblocktoolbar~DragDropBlockToolbar `DragDropBlockToolbar`} modules to your editor configuration::
 
 ```js
 import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import {
-	DragDropExperimental,
+	DragDrop,
 	DragDropBlockToolbar,
 } from '@ckeditor/ckeditor5-clipboard';
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
@@ -113,7 +113,7 @@ import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 BalloonEditor.create(document.querySelector( '#editor' ), {
 	plugins: [
 		Clipboard,
-		DragDropExperimental,
+		DragDrop,
 		DragDropBlockToolbar,
 		BlockToolbar,
 		/* ... */
