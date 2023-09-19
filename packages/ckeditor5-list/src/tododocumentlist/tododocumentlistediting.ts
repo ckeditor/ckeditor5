@@ -298,7 +298,7 @@ export default class TodoDocumentListEditing extends Plugin {
 
 			const viewPositionAfter = editing.view.createPositionAfter( viewTarget );
 			const modelPositionAfter = editing.mapper.toModelPosition( viewPositionAfter );
-			const modelElement = modelPositionAfter.nodeAfter;
+			const modelElement = modelPositionAfter.parent;
 
 			if ( modelElement && isListItemBlock( modelElement ) && modelElement.getAttribute( 'listType' ) == 'todo' ) {
 				this._handleCheckmarkChange( modelElement );
