@@ -375,13 +375,15 @@ function todoItemInputConverter(): GetCallback<UpcastElementEvent> {
 		const modelItem = modelCursor.parent as Element;
 		const viewItem = data.viewItem;
 
+		if ( !conversionApi.consumable.test( viewItem, { name: true } ) ) {
+			return;
+		}
+
 		if ( viewItem.getAttribute( 'type' ) != 'checkbox' || !modelCursor.isAtStart || !modelItem.hasAttribute( 'listType' ) ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( viewItem, { name: true } ) ) {
-			return;
-		}
+		conversionApi.consumable.consume( viewItem, { name: true } );
 
 		const writer = conversionApi.writer;
 
