@@ -109,6 +109,38 @@ describe( 'AutocompleteView', () => {
 				expect( view.resultsView._position ).to.equal( 's' );
 			} );
 
+			it( 'should use the first results position on document scroll if the optimal one couldn\'t be found', () => {
+				const getOptimalPositionSpy = sinon.spy( AutocompleteView, '_getOptimalPosition' );
+
+				sinon.stub( view.queryView.element, 'getBoundingClientRect' ).returns( {
+					top: -100,
+					right: -100,
+					bottom: -90,
+					left: -90,
+					width: 10,
+					height: 10
+				} );
+
+				// A default that will get overridden.
+				view.resultsView._position = 'n';
+
+				view.focusTracker.isFocused = true;
+				sinon.assert.calledOnce( getOptimalPositionSpy );
+				sinon.assert.calledOnceWithExactly( getOptimalPositionSpy, {
+					element: view.resultsView.element,
+					target: view.queryView.element,
+					fitInViewport: true,
+					positions: AutocompleteView.defaultResultsPositions
+				} );
+
+				global.document.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( getOptimalPositionSpy );
+
+				// First position in defaultResultsPositions.
+				expect( view.resultsView._position ).to.equal( 's' );
+			} );
+
 			it( 'should hide the results view upon pressing esc', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.esc,
