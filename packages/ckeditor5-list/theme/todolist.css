@@ -41,7 +41,7 @@
 		height: 100%;
 		border: 1px solid hsl(0, 0%, 20%);
 		border-radius: 2px;
-		transition: 250ms ease-in-out box-shadow, 250ms ease-in-out background, 250ms ease-in-out border;
+		transition: 250ms ease-in-out box-shadow;
 	}
 
 	&::after {
