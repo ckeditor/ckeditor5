@@ -117,7 +117,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'paragraph',
 			view: ( element, { writer } ) => {
-				if ( isDescriptionBlock( element ) ) {
+				if ( isDescriptionBlock( element, documentListEditing.getListAttributeNames() ) ) {
 					return writer.createContainerElement( 'span', { class: 'todo-list__label__description' } );
 				}
 			},
@@ -166,13 +166,13 @@ export default class TodoDocumentListEditing extends Plugin {
 			},
 
 			canWrapElement( modelElement ) {
-				return isDescriptionBlock( modelElement );
+				return isDescriptionBlock( modelElement, documentListEditing.getListAttributeNames() );
 			},
 
 			createWrapperElement( writer, modelElement, { dataPipeline } ) {
 				const classes = [ 'todo-list__label' ];
 
-				if ( !isDescriptionBlock( modelElement ) ) {
+				if ( !isDescriptionBlock( modelElement, documentListEditing.getListAttributeNames() ) ) {
 					classes.push( 'todo-list__label_without-description' );
 				}
 
@@ -198,7 +198,7 @@ export default class TodoDocumentListEditing extends Plugin {
 
 		// Verifies if a to-do list block requires reconversion of a first item downcasted as an item description.
 		documentListEditing.on<DocumentListEditingCheckElementEvent>( 'checkElement', ( evt, { modelElement, viewElement } ) => {
-			const isFirstTodoModelParagraphBlock = isDescriptionBlock( modelElement );
+			const isFirstTodoModelParagraphBlock = isDescriptionBlock( modelElement, documentListEditing.getListAttributeNames() );
 			const hasViewClass = viewElement.hasClass( 'todo-list__label__description' );
 
 			if ( hasViewClass != isFirstTodoModelParagraphBlock ) {
@@ -444,10 +444,29 @@ function attributeUpcastConsumingConverter( matcherPattern: MatcherPattern ): Ge
 /**
  * Returns true if the given list item block should be converted as a description block of a to-do list item.
  */
-function isDescriptionBlock( modelElement: Element ): boolean {
+function isDescriptionBlock( modelElement: Element, listAttributeNames: Array<string> ): boolean {
 	return modelElement.is( 'element', 'paragraph' ) &&
 		modelElement.getAttribute( 'listType' ) == 'todo' &&
-		isFirstBlockOfListItem( modelElement );
+		isFirstBlockOfListItem( modelElement ) &&
+		hasOnlyListAttributes( modelElement, listAttributeNames );
+}
+
+/**
+ * Returns true if only attributes from the given list are present on the model element.
+ */
+function hasOnlyListAttributes( modelElement: Element, attributeNames: Array<string> ): boolean {
+	for ( const attributeKey of modelElement.getAttributeKeys() ) {
+		// Ignore selection attributes stored on block elements.
+		if ( attributeKey.startsWith( 'selection:' ) ) {
+			continue;
+		}
+
+		if ( !attributeNames.includes( attributeKey ) ) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 /**
