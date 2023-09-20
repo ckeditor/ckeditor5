@@ -40,6 +40,12 @@ describe( 'CheckTodoListCommand', () => {
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
+		it( 'should be enabled when item is already checked', () => {
+			setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">f[]oo</paragraph>' );
+
+			expect( command.isEnabled ).to.equal( true );
+		} );
+
 		it( 'should be enabled when non-collapsed selection is inside to-do list item', () => {
 			setModelData( model, '<paragraph listIndent="0" listItemId="a00" listType="todo">f[o]o</paragraph>' );
 
