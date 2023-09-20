@@ -56,7 +56,7 @@ export { default as InputView } from './input/inputview';
 export { default as InputTextView } from './inputtext/inputtextview';
 export { default as InputNumberView } from './inputnumber/inputnumberview';
 
-export { default as TextareaView } from './textarea/textareaview';
+export { default as TextareaView, type TextareaViewAutoGrowEvent } from './textarea/textareaview';
 
 export { default as IframeView } from './iframe/iframeview';
 
@@ -78,7 +78,7 @@ export { default as StickyPanelView } from './panel/sticky/stickypanelview';
 export { default as AutocompleteView, type AutocompleteViewConfig, type AutocompleteResultsView } from './autocomplete/autocompleteview';
 export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchTextViewConfig } from './search/text/searchtextview';
 export { default as SearchInfoView } from './search/searchinfoview';
-export { default as FilteredView } from './search/filteredview';
+export { default as FilteredView, type FilteredViewExecuteEvent } from './search/filteredview';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview';
 
 export { default as TooltipManager } from './tooltipmanager';

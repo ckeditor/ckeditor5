@@ -11,6 +11,7 @@ import { getOptimalPosition, type PositioningFunction, type Locale, global, toUn
 import SearchTextView, { type SearchTextViewConfig } from '../search/text/searchtextview';
 import type SearchResultsView from '../search/searchresultsview';
 import type InputBase from '../input/inputbase';
+import type { FilteredViewExecuteEvent } from '../search/filteredview';
 
 import '../../theme/components/autocomplete/autocomplete.css';
 
@@ -57,11 +58,12 @@ export default class AutocompleteView<
 			}
 		} );
 
+		// Update the visibility of the results view when the user focuses or blurs the component.
+		// This is also integration for the `resetOnBlur` configuration.
 		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
 			this._updateResultsVisibility();
 
 			if ( isFocused ) {
-				this._updateResultsViewPosition();
 				// Reset the scroll position of the results view whenever the autocomplete reopens.
 				this.resultsView.element!.scrollTop = 0;
 			} else if ( config.resetOnBlur ) {
@@ -69,30 +71,59 @@ export default class AutocompleteView<
 			}
 		} );
 
+		// Update the visibility of the results view when the user types in the query field.
+		// This is an integration for `queryMinChars` configuration.
+		// This is an integration for search results changing length and the #resultsView requiring to be repositioned.
 		this.on( 'search', () => {
 			this._updateResultsVisibility();
-			this._updateResultsViewPosition();
+			this._updateResultsViewWidthAndPosition();
 		} );
 
+		// Hide the results view when the user presses the ESC key.
 		this.keystrokes.set( 'esc', ( evt, cancel ) => {
 			resultsView.isVisible = false;
 			cancel();
 		} );
 
+		// Update the position of the results view when the user scrolls the page.
 		// TODO: This needs to be debounced down the road.
 		this.listenTo( global.document, 'scroll', () => {
-			this._updateResultsViewPosition();
+			this._updateResultsViewWidthAndPosition();
 		} );
 
+		// Hide the results when the component becomes disabled.
 		this.on( 'change:isEnabled', () => {
 			this._updateResultsVisibility();
+		} );
+
+		// Update the value of the query field when the user selects a result.
+		this.filteredView.on<FilteredViewExecuteEvent>( 'execute', ( evt, { value } ) => {
+			// Focus the query view first to avoid losing the focus.
+			this.focus();
+
+			// Resetting the view will ensure that the #queryView will update its empty state correctly.
+			// This prevents bugs related to dynamic labels or auto-grow when re-setting the same value
+			// to #queryView.fieldView.value (which does not trigger empty state change) to an
+			// #queryView.fieldView.element that has been changed by the user.
+			this.reset();
+
+			// Update the value of the query field.
+			this.queryView.fieldView.value = this.queryView.fieldView.element!.value = value;
+
+			// Finally, hide the results view. The focus has been moved earlier so this is safe.
+			resultsView.isVisible = false;
+		} );
+
+		// Update the position and width of the results view when it becomes visible.
+		this.resultsView.on( 'change:isVisible', () => {
+			this._updateResultsViewWidthAndPosition();
 		} );
 	}
 
 	/**
 	 * Updates the position of the results view on demand.
 	 */
-	private _updateResultsViewPosition() {
+	private _updateResultsViewWidthAndPosition() {
 		const resultsView = ( this.resultsView as AutocompleteResultsView );
 
 		if ( !resultsView.isVisible ) {
@@ -101,12 +132,15 @@ export default class AutocompleteView<
 
 		resultsView._width = new Rect( this.queryView.fieldView.element! ).width;
 
-		resultsView._position = AutocompleteView._getOptimalPosition( {
+		const optimalResultsPosition = AutocompleteView._getOptimalPosition( {
 			element: this.resultsView.element!,
 			target: this.queryView.element!,
 			fitInViewport: true,
 			positions: AutocompleteView.defaultResultsPositions
-		} ).name as string;
+		} );
+
+		// _getOptimalPosition will return null if there is no optimal position found (e.g. target is off the viewport).
+		resultsView._position = optimalResultsPosition ? optimalResultsPosition.name as string : 's';
 	}
 
 	/**

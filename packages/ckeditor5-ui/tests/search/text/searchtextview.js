@@ -125,6 +125,10 @@ describe( 'SearchTextView', () => {
 			expect( view.children ).to.be.instanceOf( ViewCollection );
 		} );
 
+		it( 'should have #focusableChildren view collection', () => {
+			expect( view.focusableChildren ).to.be.instanceOf( ViewCollection );
+		} );
+
 		describe( '#queryView', () => {
 			it( 'gets created as labeled text view if not configured otherwise', () => {
 				expect( view.queryView ).to.be.instanceOf( LabeledFieldView );
@@ -391,6 +395,12 @@ describe( 'SearchTextView', () => {
 
 	describe( 'render()', () => {
 		describe( 'focus tracking and cycling', () => {
+			it( 'should add #queryView and #filteredView to the #focusableChildren collection', () => {
+				expect( view.focusableChildren.map( view => view ) ).to.have.ordered.members( [
+					view.queryView, view.filteredView
+				] );
+			} );
+
 			describe( 'activates keyboard navigation', () => {
 				it( 'makes "tab" focus the next focusable item', () => {
 					const keyEvtData = {
@@ -429,6 +439,39 @@ describe( 'SearchTextView', () => {
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
 					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'should allow adding extra views to the focus cycling logic', () => {
+					const anotherFocusableView = new View();
+
+					anotherFocusableView.setTemplate( {
+						tag: 'div',
+						attributes: {
+							tabindex: -1
+						}
+					} );
+
+					anotherFocusableView.focus = sinon.spy();
+
+					anotherFocusableView.render();
+
+					view.focusTracker.add( anotherFocusableView );
+					view.focusableChildren.add( anotherFocusableView );
+					view.element.appendChild( anotherFocusableView.element );
+
+					// Mock the query input is focused.
+					view.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.queryView.element;
+
+					const keyEvtData = {
+						keyCode: keyCodes.tab,
+						shiftKey: true,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( anotherFocusableView.focus );
 				} );
 			} );
 

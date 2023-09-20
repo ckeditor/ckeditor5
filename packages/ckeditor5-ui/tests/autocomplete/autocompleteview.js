@@ -60,6 +60,19 @@ describe( 'AutocompleteView', () => {
 				expect( view.resultsView.element.classList.contains( 'ck-hidden' ) ).to.be.false;
 			} );
 
+			it( 'should update the value and close results when the filtered view fired the execute event', () => {
+				const focusSpy = sinon.spy( view, 'focus' );
+
+				view.resultsView.isVisible = true;
+
+				view.filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				expect( view.resultsView.isVisible ).to.be.false;
+				sinon.assert.calledOnce( focusSpy );
+				expect( view.queryView.fieldView.value ).to.equal( 'foo bar baz' );
+				expect( view.queryView.fieldView.element.value ).to.equal( 'foo bar baz' );
+			} );
+
 			it( 'has a #_position property with a DOM binding', () => {
 				expect( view.resultsView._position ).to.equal( 's' );
 				expect( view.resultsView.element.classList.contains( 'ck-search__results_s' ) ).to.be.true;
@@ -93,6 +106,38 @@ describe( 'AutocompleteView', () => {
 				sinon.assert.calledTwice( getOptimalPositionSpy );
 
 				// Default when the are no obstacles
+				expect( view.resultsView._position ).to.equal( 's' );
+			} );
+
+			it( 'should use the first results position on document scroll if the optimal one couldn\'t be found', () => {
+				const getOptimalPositionSpy = sinon.spy( AutocompleteView, '_getOptimalPosition' );
+
+				sinon.stub( view.queryView.element, 'getBoundingClientRect' ).returns( {
+					top: -100,
+					right: -100,
+					bottom: -90,
+					left: -90,
+					width: 10,
+					height: 10
+				} );
+
+				// A default that will get overridden.
+				view.resultsView._position = 'n';
+
+				view.focusTracker.isFocused = true;
+				sinon.assert.calledOnce( getOptimalPositionSpy );
+				sinon.assert.calledOnceWithExactly( getOptimalPositionSpy, {
+					element: view.resultsView.element,
+					target: view.queryView.element,
+					fitInViewport: true,
+					positions: AutocompleteView.defaultResultsPositions
+				} );
+
+				global.document.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( getOptimalPositionSpy );
+
+				// First position in defaultResultsPositions.
 				expect( view.resultsView._position ).to.equal( 's' );
 			} );
 
@@ -212,6 +257,38 @@ describe( 'AutocompleteView', () => {
 						name: 'n'
 					} );
 				} );
+			} );
+		} );
+
+		describe( '#execute event handling', () => {
+			it( 'should focus the view upon #execute', () => {
+				const focusSpy = sinon.spy( view, 'focus' );
+
+				filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				sinon.assert.calledOnce( focusSpy );
+			} );
+
+			it( 'should set the #value upon #execute', () => {
+				filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				expect( view.queryView.fieldView.value ).to.equal( 'foo bar baz' );
+			} );
+
+			it( 'should set the query view\'s DOM element value upon #execute', () => {
+				view.queryView.fieldView.element.value = 'abc';
+
+				filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				expect( view.queryView.fieldView.element.value ).to.equal( 'foo bar baz' );
+			} );
+
+			it( 'should hide the #resultsView', () => {
+				view.resultsView.isVisible = true;
+
+				filteredView.fire( 'execute', { value: 'foo bar baz' } );
+
+				expect( view.resultsView.isVisible ).to.be.false;
 			} );
 		} );
 

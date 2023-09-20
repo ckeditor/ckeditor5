@@ -23,3 +23,13 @@ export default interface FilteredView extends View, FocusableView {
 		totalItemsCount: number;
 	};
 }
+
+/**
+ * Fired when the user selects an autocomplete option. The event data should contain the selected value.
+ *
+ * @eventName ~FilteredView#execute
+ */
+export interface FilteredViewExecuteEvent {
+	name: 'execute';
+	args: [ { value: string } ];
+}

@@ -158,6 +158,8 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 		singleLineContentClone.remove();
 		fullTextValueClone.remove();
+
+		this.fire<TextareaViewAutoGrowEvent>( 'autoGrow' );
 	}
 
 	/**
@@ -193,3 +195,16 @@ function getTextareaElementClone( element: HTMLTextAreaElement, value: string ):
 
 	return clone;
 }
+
+/**
+ * Fired when the logic of {@link module:ui/textarea/textareaview~TextareaView} checks whether
+ * the component should be resized upon user interaction.
+ *
+ * See {@link module:ui/textarea/textareaview~TextareaView#minRows}, {@link module:ui/textarea/textareaview~TextareaView#maxRows}.
+ *
+ * @eventName ~TextareaView#autoGrow
+ */
+export type TextareaViewAutoGrowEvent = {
+	name: 'autoGrow';
+	args: [];
+};
