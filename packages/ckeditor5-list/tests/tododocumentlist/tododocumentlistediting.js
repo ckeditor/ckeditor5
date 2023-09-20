@@ -11,6 +11,7 @@ import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -39,7 +40,7 @@ describe( 'TodoDocumentListEditing', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, TodoDocumentListEditing, BlockQuoteEditing, TableEditing, HeadingEditing ]
+			plugins: [ Paragraph, TodoDocumentListEditing, BlockQuoteEditing, TableEditing, HeadingEditing, AlignmentEditing ]
 		} );
 
 		model = editor.model;
@@ -604,6 +605,82 @@ describe( 'TodoDocumentListEditing', () => {
 				'</ul>'
 			);
 		} );
+
+		it( 'should not use description span if there is an alignment set on the paragraph', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			editor.execute( 'alignment', { value: 'right' } );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label todo-list__label_without-description">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+						'</span>' +
+						'<p style="text-align:right">' +
+							'foo' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			editor.execute( 'alignment', { value: 'left' } );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should use description span even if there is an selection attribute on block', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph>'
+			);
+
+			model.change( writer => writer.setSelectionAttribute( 'bold', true ) );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" selection:bold="true"></paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description"></span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
 	} );
 
 	describe( 'downcast - data', () => {
@@ -759,6 +836,21 @@ describe( 'TodoDocumentListEditing', () => {
 								'</tbody>' +
 							'</table>' +
 						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should convert a todo list item with alignment set', () => {
+			testData(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" alignment="right">foo</paragraph>',
+
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label todo-list__label_without-description">' +
+							'<input type="checkbox" disabled="disabled">' +
+						'</label>' +
+						'<p style="text-align:right;">foo</p>' +
 					'</li>' +
 				'</ul>'
 			);
