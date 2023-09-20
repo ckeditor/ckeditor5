@@ -132,12 +132,15 @@ export default class AutocompleteView<
 
 		resultsView._width = new Rect( this.queryView.fieldView.element! ).width;
 
-		resultsView._position = AutocompleteView._getOptimalPosition( {
+		const optimalResultsPosition = AutocompleteView._getOptimalPosition( {
 			element: this.resultsView.element!,
 			target: this.queryView.element!,
 			fitInViewport: true,
 			positions: AutocompleteView.defaultResultsPositions
-		} ).name as string;
+		} );
+
+		// _getOptimalPosition will return null if there is no optimal position found (e.g. target is off the viewport).
+		resultsView._position = optimalResultsPosition ? optimalResultsPosition.name as string : 's';
 	}
 
 	/**
