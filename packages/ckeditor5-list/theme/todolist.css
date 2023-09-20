@@ -75,7 +75,7 @@
 }
 
 /*
- * TODO
+ * To-do list content styles.
  */
 .ck-content .todo-list {
 	list-style: none;
@@ -105,7 +105,7 @@
 }
 
 /*
- *
+ * To-do list editing view styles.
  */
 .ck-editor__editable.ck-content .todo-list .todo-list__label {
 	/*
