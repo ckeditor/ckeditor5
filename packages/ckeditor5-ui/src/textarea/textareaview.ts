@@ -197,7 +197,10 @@ function getTextareaElementClone( element: HTMLTextAreaElement, value: string ):
 }
 
 /**
- * Fired when the textarea view is resized.
+ * Fired when the logic of {@link module:ui/textarea/textareaview~TextareaView} checks whether
+ * the component should be resized upon user interaction.
+ *
+ * See {@link module:ui/textarea/textareaview~TextareaView#minRows}, {@link module:ui/textarea/textareaview~TextareaView#maxRows}.
  *
  * @eventName ~TextareaView#autoGrow
  */
