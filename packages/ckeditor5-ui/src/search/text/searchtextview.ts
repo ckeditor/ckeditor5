@@ -143,7 +143,7 @@ export default class SearchTextView<
 		this.keystrokes = new KeystrokeHandler();
 		this.resultsView = new SearchResultsView( locale );
 		this.children = this.createCollection();
-		this.focusableChildren = this.createCollection( [ this.queryView, this.filteredView ] );
+		this.focusableChildren = this.createCollection( [ this.queryView, this.resultsView ] );
 
 		this.set( 'isEnabled', true );
 		this.set( 'resultsCount', 0 );

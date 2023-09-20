@@ -7,7 +7,7 @@ import { Locale } from '@ckeditor/ckeditor5-utils';
 import SearchResultsView from '../../src/search/searchresultsview';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { ButtonView, ViewCollection } from '../../src';
+import { ButtonView, View, ViewCollection } from '../../src';
 
 describe( 'SearchResultsView', () => {
 	let locale, view;
@@ -29,6 +29,7 @@ describe( 'SearchResultsView', () => {
 		it( 'creates and element from template with CSS classes', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-search__results' ) ).to.be.true;
+			expect( view.element.getAttribute( 'tabIndex' ) ).to.equal( '-1' );
 		} );
 
 		it( 'has a collection of #children', () => {
@@ -37,6 +38,25 @@ describe( 'SearchResultsView', () => {
 			view.children.add( new ButtonView() );
 
 			expect( view.element.firstChild ).to.equal( view.children.first.element );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'does nothing for empty panel', () => {
+			expect( () => view.focus() ).to.not.throw();
+		} );
+
+		it( 'focuses first focusable view in #children', () => {
+			const firstChild = new View();
+			const firstFocusableChild = new View();
+
+			firstFocusableChild.focus = sinon.spy();
+
+			view.children.addMany( [ firstChild, firstFocusableChild ] );
+
+			view.focus();
+
+			sinon.assert.calledOnce( firstFocusableChild.focus );
 		} );
 	} );
 } );
