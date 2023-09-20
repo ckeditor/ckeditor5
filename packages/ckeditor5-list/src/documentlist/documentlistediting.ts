@@ -67,6 +67,10 @@ import ListWalker, {
 	ListBlocksIterable
 } from './utils/listwalker';
 
+import type {
+	ViewDocumentClipboardOutputEvent
+} from 'ckeditor5/src/clipboard';
+
 import '../../theme/documentlist.css';
 import '../../theme/list.css';
 
@@ -476,6 +480,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupClipboardIntegration() {
 		const model = this.editor.model;
+		const viewDoc = this.editor.editing.view.document;
 
 		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
@@ -506,12 +511,17 @@ export default class DocumentListEditing extends Plugin {
 		//	                       │  * bar]             │ * bar             │
 		//	                       └─────────────────────┴───────────────────┘
 		//
-		// See https://github.com/ckeditor/ckeditor5/issues/11608.
-		this.listenTo<ModelGetSelectedContentEvent>( model, 'getSelectedContent', ( evt, [ selection ] ) => {
-			const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
+		// See https://github.com/ckeditor/ckeditor5/issues/11608, https://github.com/ckeditor/ckeditor5/issues/14969
+		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
+			if ( data.method != 'dragstart' ) {
+				const selection = model.document.selection;
+				const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
 
-			if ( isSingleListItemSelected ) {
-				model.change( writer => removeListAttributes( Array.from( evt.return!.getChildren() as any ), writer ) );
+				if ( isSingleListItemSelected ) {
+					const content = this.editor.data.toModel( data.content );
+
+					model.change( writer => removeListAttributes( Array.from( content.getChildren() as any ), writer ) );
+				}
 			}
 		} );
 	}

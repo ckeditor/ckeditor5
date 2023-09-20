@@ -341,3 +341,56 @@ BalloonEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-classic-lists' ), {
+		plugins: [
+			Essentials, Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
+			DocumentList, Paragraph, Table, TableToolbar, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
+			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
+			CodeBlock, DocumentListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
+			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed,
+			AutoLink, Mention, TextTransformation, Alignment, IndentBlock, PageBreak, HorizontalLine,
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, DragDropExperimental
+		],
+		toolbar: [
+			'heading', 'style',
+			'|',
+			'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',
+			'|',
+			'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+			'|',
+			'bulletedList', 'numberedList',
+			'|',
+			'blockQuote', 'insertImage', 'insertTable', 'codeBlock',
+			'|',
+			'htmlEmbed',
+			'|',
+			'alignment', 'outdent', 'indent',
+			'|',
+			'pageBreak', 'horizontalLine',
+			'|',
+			'textPartLanguage',
+			'|',
+			'sourceEditing',
+			'|',
+			'undo', 'redo', 'findAndReplace'
+		],
+		cloudServices: CS_CONFIG,
+		placeholder: 'Type the content here!',
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		}
+	} )
+	.then( editor => {
+		window.editorClassic = editor;
+
+		CKEditorInspector.attach( { classicLists: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
