@@ -27,7 +27,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'Drag and Drop experimental', () => {
+describe( 'Drag and Drop', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter;
 
 	testUtils.createSinonSandbox();
