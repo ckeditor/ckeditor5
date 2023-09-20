@@ -60,7 +60,6 @@ export function formatHtml( input: string ): string {
 		{ name: 'table', isVoid: false },
 		{ name: 'tbody', isVoid: false },
 		{ name: 'td', isVoid: false },
-		{ name: 'textarea', isVoid: false },
 		{ name: 'th', isVoid: false },
 		{ name: 'thead', isVoid: false },
 		{ name: 'tr', isVoid: false },
