@@ -44,7 +44,7 @@ import {
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
-	ImageUpload,
+	ImageUpload
 } from '@ckeditor/ckeditor5-image';
 
 /* globals $ */
@@ -169,7 +169,7 @@ ClassicEditor.builtinPlugins = [
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
-	ImageUpload,
+	ImageUpload
 ];
 
 // Editor configuration.
@@ -199,7 +199,7 @@ ClassicEditor.defaultConfig = {
 			'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
 			'link', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
 			'specialCharacters', 'insertTable', '|',
-			'imageUpload', '|'
+			'insertImage', '|'
 		],
 		shouldNotGroupWhenFull: true
 	},
