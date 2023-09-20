@@ -179,14 +179,15 @@ describe( 'TodoDocumentListEditing', () => {
 					'<li>' +
 						'<ul>' +
 							'<li>' +
-								'<input type="checkbox">foo</li>' +
-								'<ul><li><input type="checkbox">foo</li></ul>' +
-							'</ul>' +
+								'<input type="checkbox">foo' +
+								'<ul><li><input type="checkbox">bar</li></ul>' +
+							'</li>' +
+						'</ul>' +
 					'</li>' +
 				'</ul>',
 				'<paragraph listIndent="0" listItemId="a02" listType="bulleted"></paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="todo">foo</paragraph>' +
-				'<paragraph listIndent="2" listItemId="a01" listType="todo">foo</paragraph>'
+				'<paragraph listIndent="1" listItemId="a01" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a00" listType="todo">bar</paragraph>'
 			);
 		} );
 
