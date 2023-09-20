@@ -20,12 +20,16 @@
 		&.ck-search__results_n {
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
+
+			/* Prevent duplicated borders between the input and the results pane. */
 			margin-bottom: -1px;
 		}
 
 		&.ck-search__results_s {
 			border-top-left-radius: 0;
 			border-top-right-radius: 0;
+
+			/* Prevent duplicated borders between the input and the results pane. */
 			margin-top: -1px;
 		}
 	}
