@@ -195,7 +195,7 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * Returns list of model attribute names that should affect downcast conversion.
 	 */
-	private _getListAttributeNames() {
+	public getListAttributeNames(): Array<string> {
 		return [
 			...LIST_BASE_ATTRIBUTES,
 			...this._downcastStrategies.map( strategy => strategy.attributeName )
@@ -389,7 +389,7 @@ export default class DocumentListEditing extends Plugin {
 	private _setupConversion() {
 		const editor = this.editor;
 		const model = editor.model;
-		const attributeNames = this._getListAttributeNames();
+		const attributeNames = this.getListAttributeNames();
 
 		editor.conversion.for( 'upcast' )
 			// Convert <li> to a generic paragraph so the content of <li> is always inside a block.
@@ -478,7 +478,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupModelPostFixing() {
 		const model = this.editor.model;
-		const attributeNames = this._getListAttributeNames();
+		const attributeNames = this.getListAttributeNames();
 
 		// Register list fixing.
 		// First the low level handler.
