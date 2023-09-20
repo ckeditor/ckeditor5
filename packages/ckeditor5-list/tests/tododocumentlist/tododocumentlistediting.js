@@ -905,6 +905,64 @@ describe( 'TodoDocumentListEditing', () => {
 			);
 		} );
 
+		it( 'should toggle check state of a to-do list item on todoCheckboxChange event with input target element', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			view.document.fire( 'todoCheckboxChange', {
+				target: view.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 )
+			} );
+
+			sinon.assert.calledOnce( command.execute );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
+		it( 'should not toggle check state of a to-do list item on todoCheckboxChange event without target element', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			view.document.fire( 'todoCheckboxChange', {} );
+
+			sinon.assert.notCalled( command.execute );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+		} );
+
+		it( 'should not toggle check state of a to-do list item on todoCheckboxChange event with target element', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+
+			const command = editor.commands.get( 'checkTodoList' );
+
+			sinon.spy( command, 'execute' );
+
+			view.document.fire( 'todoCheckboxChange', {
+				target: view.document.getRoot()
+			} );
+
+			sinon.assert.notCalled( command.execute );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
+			);
+		} );
+
 		describe( 'arrow keys', () => {
 			it( 'should move collapsed selection at start of following todo list item on right arrow in todo list item', () => {
 				setModelData( model,
