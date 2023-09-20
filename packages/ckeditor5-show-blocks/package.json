@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-ui": "39.0.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^38.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
     "@ckeditor/ckeditor5-editor-classic": "39.0.2",
     "@ckeditor/ckeditor5-editor-balloon": "39.0.2",
     "@ckeditor/ckeditor5-editor-decoupled": "39.0.2",

@@ -10,6 +10,26 @@ parameters:
     default: false
 
 commands:
+  halt_if_short_flow:
+    steps:
+      - run:
+          name: ⭐ Short flow breakpoint - Check if the build should continue
+          command: |
+            #!/bin/bash
+
+            COMMIT_MESSAGE=$(git log -n 1 --pretty=format:%s ${CIRCLE_SHA1})
+            IS_NIGHTLY=<< pipeline.parameters.isNightly >>
+
+            if [[ "$IS_NIGHTLY" == "true" ]]; then
+              echo "Running full flow due to nightly build, despite detecting '[short flow]'."
+              exit 0
+            fi
+            
+            if [[ "$COMMIT_MESSAGE" == *"[short flow]" ]]; then
+              echo "Skipping, because the commit message contains '[short flow]'."
+              circleci step halt
+            fi
+
   prepare_environment_command:
     description: "Prepare environment (RAM, browsers, hosts, etc.)"
     steps:
@@ -50,7 +70,7 @@ commands:
           name: 👤 Verify if the build was triggered by community - Check if the build should continue
           command: |
             #!/bin/bash
-            
+
             if [[ -z ${COVERALLS_REPO_TOKEN} ]];
             then
               circleci-agent step halt
@@ -61,6 +81,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
+      - halt_if_short_flow
       - bootstrap_repository_command
       - prepare_environment_command
       - run:
@@ -106,6 +127,7 @@ jobs:
     steps:
       - community_verification_command
       - checkout_command
+      - halt_if_short_flow
       - bootstrap_repository_command
       - prepare_environment_command
       - attach_workspace:
@@ -123,6 +145,31 @@ jobs:
           name: Upload the coverage to Coveralls
           command: npx coveralls -v < .out/combined_lcov.info
 
+  cke5_trigger_release_process:
+    machine: true
+    steps:
+      - community_verification_command
+      - checkout_command
+      - bootstrap_repository_command
+      - run:
+          name: Verify if CKEditor 5 is ready to release
+          command: |
+            #!/bin/bash
+
+            # Do not fail if the Node script ends with non-zero exit code.
+            set +e
+
+            node scripts/ci/is-ckeditor5-ready-to-release.js
+            EXIT_CODE=$( echo $? )
+
+            if [ ${EXIT_CODE} -eq 1 ];
+            then
+              circleci-agent step halt
+            fi
+      - run:
+          name: Trigger the Uber CI
+          command: node scripts/ci/trigger-ckeditor5-continuous-integration.js -r ckeditor/ckeditor5 -c $CIRCLE_SHA1 -b $CIRCLE_BRANCH
+
   cke5_trigger_uber_ci:
     machine: true
     steps:
@@ -137,6 +184,7 @@ jobs:
     machine: true
     steps:
       - checkout_command
+      - halt_if_short_flow
       - bootstrap_repository_command
       - prepare_environment_command
       - run:
@@ -168,8 +216,16 @@ workflows:
   main:
     unless: << pipeline.parameters.isNightly >>
     jobs:
-      - cke5_tests_framework
-      - cke5_tests_features
+      - cke5_tests_framework:
+          filters:
+            branches:
+              ignore:
+                - stable
+      - cke5_tests_features:
+          filters:
+            branches:
+              ignore:
+                - stable
       - cke5_coverage:
           requires:
             - cke5_tests_framework
@@ -178,9 +234,19 @@ workflows:
             branches:
               only:
                 - master
+              ignore:
+                - stable
       - cke5_validators
-      - cke5_manual
-      - release_prepare
+      - cke5_manual:
+          filters:
+            branches:
+              ignore:
+                - stable
+      - release_prepare:
+          filters:
+            branches:
+              ignore:
+                - stable
       - cke5_trigger_uber_ci:
           requires:
             - cke5_tests_framework
@@ -193,6 +259,17 @@ workflows:
             branches:
               only:
                 - master
+      - cke5_trigger_release_process:
+          requires:
+            - cke5_tests_framework
+            - cke5_tests_features
+            - cke5_validators
+            - cke5_manual
+            - release_prepare
+          filters:
+            branches:
+              only:
+                - release
       - notify_ci_failure:
           filters:
             branches:
