@@ -103,6 +103,9 @@ export default class TodoDocumentListEditing extends Plugin {
 			dispatcher.on( 'element:label', elementUpcastConsumingConverter(
 				{ name: 'label', classes: 'todo-list__label' }
 			) );
+			dispatcher.on( 'element:label', elementUpcastConsumingConverter(
+				{ name: 'label', classes: [ 'todo-list__label', 'todo-list__label_without-description' ] }
+			) );
 			dispatcher.on( 'element:span', elementUpcastConsumingConverter(
 				{ name: 'span', classes: 'todo-list__label__description' }
 			) );

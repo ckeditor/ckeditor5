@@ -3,11 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document, Event */
+
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -25,8 +28,6 @@ import TodoCheckboxChangeObserver from '../../src/tododocumentlist/todocheckboxc
 import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
 
 import stubUid from '../documentlist/_utils/uid';
-
-/* global document, Event */
 
 describe( 'TodoDocumentListEditing', () => {
 	let editor, model, view, editorElement;
@@ -270,6 +271,18 @@ describe( 'TodoDocumentListEditing', () => {
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted"><input></input>foo</paragraph>'
 			);
 		} );
+
+		it( 'should not convert label element if already consumed', () => {
+			model.schema.register( 'label', { inheritAllFrom: '$inlineObject', allowChildren: '$text' } );
+			editor.conversion.elementToElement( { model: 'label', view: 'label', converterPriority: 'high' } );
+
+			testUpcast(
+				'<ul>' +
+					'<li><label class="todo-list__label"><input type="checkbox">foo</label></li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted"><label>foo</label></paragraph>'
+			);
+		} );
 	} );
 
 	describe( 'upcast - list properties integration', () => {
@@ -322,16 +335,24 @@ describe( 'TodoDocumentListEditing', () => {
 		} );
 	} );
 
-	describe.skip( 'upcast - GHS integration', () => {
-		let editor, model;
+	describe( 'upcast - GHS integration', () => {
+		let element, editor, model;
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( {
-				plugins: [ Paragraph, TodoDocumentListEditing, DocumentListPropertiesEditing ],
-				list: {
-					properties: {
-						startIndex: true
-					}
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ Paragraph, TodoDocumentListEditing, GeneralHtmlSupport ],
+				htmlSupport: {
+					allow: [
+						{
+							name: /./,
+							styles: true,
+							attributes: true,
+							classes: true
+						}
+					]
 				}
 			} );
 
@@ -339,35 +360,54 @@ describe( 'TodoDocumentListEditing', () => {
 			view = editor.editing.view;
 		} );
 
-		afterEach( () => {
-			return editor.destroy();
+		afterEach( async () => {
+			element.remove();
+			await editor.destroy();
 		} );
 
-		it( 'should not convert list style on to-do list', () => {
+		it( 'should consume all to-do list related elements and attributes so GHS will not handle them (with description)', () => {
 			editor.setData(
-				'<ul style="list-style-type:circle;">' +
-					'<li><input type="checkbox">Foo</li>' +
-					'<li><input type="checkbox">Bar</li>' +
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label">' +
+							'<input type="checkbox" disabled="disabled" checked="checked">' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</label>' +
+					'</li>' +
 				'</ul>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
+				'<paragraph' +
+						' htmlLiAttributes="{}" htmlUlAttributes="{}"' +
+						' listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">' +
+					'foo' +
+				'</paragraph>'
 			);
 		} );
 
-		it( 'should not convert list start on to-do list', () => {
+		it( 'should consume all to-do list related elements and attributes so GHS will not handle them (without description)', () => {
 			editor.setData(
-				'<ol start="2">' +
-					'<li><input type="checkbox">Foo</li>' +
-					'<li><input type="checkbox">Bar</li>' +
-				'</ol>'
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<label class="todo-list__label todo-list__label_without-description">' +
+							'<input type="checkbox" disabled="disabled">' +
+						'</label>' +
+						'<h2>foo</h2>' +
+					'</li>' +
+				'</ul>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
+				'<htmlH2 htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
+			);
+		} );
+
+		it( 'should not consume other label elements', () => {
+			editor.setData( '<p><label>foo</label></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph><$text htmlLabel="{}">foo</$text></paragraph>'
 			);
 		} );
 	} );
