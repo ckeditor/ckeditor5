@@ -40,8 +40,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { icons } from '@ckeditor/ckeditor5-core';
 import {
+	AutoImage,
 	Image,
 	ImageCaption,
+	ImageInsert,
+	ImageResize,
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload
@@ -165,8 +168,11 @@ ClassicEditor.builtinPlugins = [
 	Paragraph,
 	ParagraphButtonUI,
 	PasteFromOffice,
+	AutoImage,
 	Image,
 	ImageCaption,
+	ImageInsert,
+	ImageResize,
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload
