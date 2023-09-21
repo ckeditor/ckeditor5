@@ -8,6 +8,7 @@
  */
 
 import View from '../view';
+import type ViewCollection from '../viewcollection';
 import ListView from './listview';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
@@ -30,6 +31,11 @@ export default class ListItemGroupView extends View {
 	public readonly items: ListView[ 'items' ];
 
 	/**
+	 * Collection of the child elements of the group.
+	 */
+	public readonly children: ViewCollection;
+
+	/**
 	 * Controls whether the item view is visible. Visible by default, list items are hidden
 	 * using a CSS class.
 	 *
@@ -47,6 +53,9 @@ export default class ListItemGroupView extends View {
 		const bind = this.bindTemplate;
 		const groupLabelId = `ck-editor__label_${ uid() }`;
 		const nestedList = new ListView( locale );
+
+		this.children = this.createCollection();
+		this.children.addMany( [ this._createLabel( groupLabelId ), nestedList ] );
 
 		this.set( {
 			label: '',
@@ -76,19 +85,28 @@ export default class ListItemGroupView extends View {
 				]
 			},
 
+			children: this.children
+		} );
+	}
+
+	/**
+	 * Creates a label for the group.
+	 */
+	private _createLabel( groupLabelId: string ): View {
+		const labelView = new View( this.locale );
+		const bind = this.bindTemplate;
+
+		labelView.setTemplate( {
+			tag: 'span',
+			attributes: {
+				id: groupLabelId
+			},
 			children: [
-				{
-					tag: 'span',
-					attributes: {
-						id: groupLabelId
-					},
-					children: [
-						{ text: bind.to( 'label' ) }
-					]
-				},
-				nestedList
+				{ text: bind.to( 'label' ) }
 			]
 		} );
+
+		return labelView;
 	}
 
 	/**

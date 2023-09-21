@@ -35,6 +35,12 @@ describe( 'ListItemGroupView', () => {
 				expect( labelElement.textContent ).to.equal( 'Foo' );
 			} );
 
+			it( 'should have #children view collection with a label and a nested list', () => {
+				expect( view.children ).to.be.instanceOf( ViewCollection );
+				expect( view.children.first.element.textContent ).to.equal( 'Foo' );
+				expect( view.children.last.items ).to.equal( view.items );
+			} );
+
 			describe( 'nested list', () => {
 				it( 'is created as a last child', () => {
 					const listElement = view.element.lastChild;
