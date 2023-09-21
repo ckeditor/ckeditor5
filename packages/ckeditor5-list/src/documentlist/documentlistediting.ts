@@ -70,7 +70,7 @@ import ListWalker, {
 
 import type {
 	ClipboardPipeline,
-	ViewDocumentClipboardOutputEvent
+	ModelDocumentOutputTransformationEvent
 } from 'ckeditor5/src/clipboard';
 
 import '../../theme/documentlist.css';
@@ -514,7 +514,7 @@ export default class DocumentListEditing extends Plugin {
 		//	                       └─────────────────────┴───────────────────┘
 		//
 		// See https://github.com/ckeditor/ckeditor5/issues/11608, https://github.com/ckeditor/ckeditor5/issues/14969
-		this.listenTo<any>( clipboardPipeline, 'outputTransformation', ( evt, data ) => {
+		this.listenTo<ModelDocumentOutputTransformationEvent>( clipboardPipeline, 'outputTransformation', ( evt, data ) => {
 			model.change( writer => {
 				const allContentChildren = Array.from( data.content.getChildren() );
 				const lastItem = allContentChildren[ allContentChildren.length - 1 ] as Element;

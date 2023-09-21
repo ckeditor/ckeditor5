@@ -43,8 +43,8 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import ClipboardPipeline, {
-	type ClipboardContentInsertionEvent,
-	type ViewDocumentClipboardOutputEvent
+	type ModelDocumentOutputTransformationEvent,
+	type ClipboardContentInsertionEvent
 } from './clipboardpipeline';
 
 import ClipboardObserver, {
@@ -292,7 +292,7 @@ export default class DragDropExperimental extends Plugin {
 			const content = model.getSelectedContent( draggedSelection );
 			const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
 
-			clipboardPipeline.fire<any>( 'outputTransformation', {
+			clipboardPipeline.fire<ModelDocumentOutputTransformationEvent>( 'outputTransformation', {
 				dataTransfer: data.dataTransfer,
 				content,
 				method: 'dragstart'

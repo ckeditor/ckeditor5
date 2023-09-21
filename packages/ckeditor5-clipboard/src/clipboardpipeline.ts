@@ -264,7 +264,7 @@ export default class ClipboardPipeline extends Plugin {
 
 			const content = editor.model.getSelectedContent( modelDocument.selection );
 
-			this.fire<any>( 'outputTransformation', {
+			this.fire<ModelDocumentOutputTransformationEvent>( 'outputTransformation', {
 				dataTransfer,
 				content,
 				method: evt.name
@@ -282,13 +282,13 @@ export default class ClipboardPipeline extends Plugin {
 			}
 		}, { priority: 'low' } );
 
-		this.listenTo<any>( this, 'outputTransformation', ( evt, data ) => {
+		this.listenTo<ModelDocumentOutputTransformationEvent>( this, 'outputTransformation', ( evt, data ) => {
 			const content = editor.data.toView( data.content );
 
 			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 				dataTransfer: data.dataTransfer,
 				content,
-				method: evt.name
+				method: data.method
 			} );
 		}, { priority: 'low' } );
 
@@ -450,6 +450,38 @@ export interface ViewDocumentClipboardOutputEventData {
 	 * Read more about the clipboard pipelines in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
 	content: ViewDocumentFragment;
+
+	/**
+	 * Whether the event was triggered by a copy or cut operation.
+	 */
+	method: 'copy' | 'cut' | 'dragstart';
+}
+
+/**
+ * TODO
+ */
+export type ModelDocumentOutputTransformationEvent = {
+	name: 'outputTransformation';
+	args: [ data: ModelDocumentOutputTransformationEventData ];
+};
+
+/**
+ * The value of the 'outputTransformation' event.
+ */
+export interface ModelDocumentOutputTransformationEventData {
+
+	/**
+	 * The data transfer instance.
+	 *
+	 * @readonly
+	 */
+	dataTransfer: DataTransfer;
+
+	/**
+	 * Content to be put into the clipboard. It can be modified by the event listeners.
+	 * Read more about the clipboard pipelines in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
+	 */
+	content: DocumentFragment;
 
 	/**
 	 * Whether the event was triggered by a copy or cut operation.
