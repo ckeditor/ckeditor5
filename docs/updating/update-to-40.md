@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-09-13
+modified_at: 2023-09-21
 ---
 
 # Update to CKEditor&nbsp;5 v40.x
@@ -30,7 +30,7 @@ Last but not least, content styles have been updated with this release, which me
 
 ### New Balloon Block editor icon
 
-We have changed the default Balloon Block editor indicator icon from the pilcrow icon (`¶`) to the braille pattern dots icon (`⠿`). The new icon better corresponds to the dual function of the indicator, which may be used to both invoke the balloon toolbar and to drag to content block around.
+We have changed the default {@link features/blocktoolbar Balloon Block editor toolbar} indicator icon from the pilcrow icon (`¶`) to the braille pattern dots icon (`⠿`). The new icon better corresponds to the dual function of the indicator, which may be used to both invoke the balloon toolbar and to drag to content block around.
 
 While `⠿` is now a default, the icon can still be configured by the integrator, for example:
 <!-- add this to balloon toolbar config guide-->
