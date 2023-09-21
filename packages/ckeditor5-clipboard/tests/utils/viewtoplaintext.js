@@ -85,4 +85,18 @@ describe( 'viewToPlainText()', () => {
 			'Foo\n\nAlt\nCaption\n\nBar'
 		);
 	} );
+
+	it( 'should add two line breaks between document list items', () => {
+		testViewToPlainText(
+			'<container:p>Foo</container:p>' +
+			'<container:ul>' +
+				'<container:li><container:p>A</container:p></container:li>' +
+				'<container:li><container:p>B</container:p></container:li>' +
+				'<container:li><container:p>C</container:p></container:li>' +
+			'</container:ul>' +
+			'<container:p>Bar</container:p>',
+
+			'Foo\n\nA\n\nB\n\nC\n\nBar'
+		);
+	} );
 } );
