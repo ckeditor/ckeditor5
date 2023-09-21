@@ -1,5 +1,6 @@
 ---
 category: framework-architecture
+meta-title: UI Components | CKEditor 5 Framework Documentation
 order: 50
 modified_at: 2023-03-06
 ---

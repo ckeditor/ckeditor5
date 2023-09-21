@@ -7,7 +7,7 @@
  * @module mention/ui/domwrapperview
  */
 
-import { View, type Template } from 'ckeditor5/src/ui';
+import { View } from 'ckeditor5/src/ui';
 import type { Locale } from 'ckeditor5/src/utils';
 
 /**

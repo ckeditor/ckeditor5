@@ -55,7 +55,7 @@ export default class MutationObserver extends Observer {
 	/**
 	 * Native mutation observer.
 	 */
-	private _mutationObserver: InstanceType<typeof global.MutationObserver>;
+	private _mutationObserver: InstanceType<typeof window.MutationObserver>;
 
 	/**
 	 * @inheritDoc

@@ -92,7 +92,7 @@ export type { Marker } from './model/markercollection';
 export type { default as Batch } from './model/batch';
 export type { default as Differ, DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ';
 export type { default as Item } from './model/item';
-export type { default as Node } from './model/node';
+export type { default as Node, NodeAttributes } from './model/node';
 export type { default as RootElement } from './model/rootelement';
 export type {
 	default as Schema,

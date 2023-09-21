@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: UI language
+meta-title: Setting the UI language | CKEditor 5 Documentation
 ---
 
 {@snippet features/build-ui-language-source}

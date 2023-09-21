@@ -1,5 +1,6 @@
 ---
 title: Block toolbar
+meta-title: Block toolbar | CKEditor 5 Documentation
 category: features-toolbar
 order: 20
 ---
@@ -104,6 +105,35 @@ BalloonEditor
 				'blockQuote', 'uploadImage'
 			],
 			shouldNotGroupWhenFull: true
+		},
+		toolbar: [ /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+You can also change the current default toolbar icon `'dragIndicator'` {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} by choosing predefined icon from {@link features/toolbar#changing-the-icon list} using option `icon` or by passing a `SVG` string:
+
+```js
+import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
+import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
+import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
+
+BalloonEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, /* ... */ ],
+		blockToolbar: {
+			items: [
+				'paragraph', 'heading1', 'heading2', 'heading3',
+				'|',
+				'bulletedList', 'numberedList',
+				'|',
+				'blockQuote', 'uploadImage'
+			],
+			icon: 'pilcrow',
+			// or
+			icon: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">' +
+					'<path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>'
 		},
 		toolbar: [ /* ... */ ]
 	} )

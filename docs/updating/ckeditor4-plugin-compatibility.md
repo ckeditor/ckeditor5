@@ -4,8 +4,8 @@
 
 category: ckeditor4-migration
 menu-title: Plugin equivalents
-meta-title: CKEditor 4 migration - Plugin equivalents
-meta-description: This guide presents plugins available in CKEditor 4 and their equivalent in CKEditor&nbsp;5.
+meta-title: Migration from CKEditor 4 - Plugin equivalents | CKEditor 5 Documentation
+meta-description: This guide presents plugins available in CKEditor 4 and their equivalent in CKEditor 5.
 order: 40
 modified_at: 2023-03-21
 ---

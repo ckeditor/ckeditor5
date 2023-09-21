@@ -100,7 +100,7 @@ describe( 'LinkImageEditing', () => {
 				setModelData( model,
 					'<imageBlock src="/assets/sample.png" ' +
 						'linkHref="http://ckeditor.com" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>'
 				);
 

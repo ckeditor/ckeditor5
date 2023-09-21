@@ -2,6 +2,10 @@
 .*/**
 !.github/**
 !.husky/**
+!.circleci/**
+
+# Generated automatically via CircleCI.
+.circleci/config-tests.yml
 
 # Files associated with CKEditor 5 repository.
 **/node_modules

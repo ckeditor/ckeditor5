@@ -9,6 +9,7 @@ import ViewElement from '../../../src/view/element';
 import ViewUIElement from '../../../src/view/uielement';
 import ViewDocument from '../../../src/view/document';
 import ViewDocumentSelection from '../../../src/view/documentselection';
+import ViewSelection from '../../../src/view/selection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
@@ -18,6 +19,7 @@ import { parse, stringify } from '../../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
@@ -1286,6 +1288,90 @@ describe( 'DomConverter', () => {
 			expect( bindViewSelection.isEqual( viewSelection ) ).to.be.true;
 
 			domContainer.remove();
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/9635.
+		describe( 'restricted objects in Firefox', () => {
+			it( 'not throw if selection is anchored in the restricted object', () => {
+				testUtils.sinon.stub( env, 'isGecko' ).value( true );
+
+				const domFoo = document.createTextNode( 'foo' );
+				const domP = createElement( document, 'p', null, [ domFoo ] );
+
+				const viewP = parse( '<p>foo</p>' );
+
+				converter.bindElements( domP, viewP );
+
+				document.body.appendChild( domP );
+
+				const domRange = document.createRange();
+				domRange.setStart( domFoo, 1 );
+				domRange.setEnd( domFoo, 2 );
+
+				const domSelection = document.getSelection();
+				domSelection.removeAllRanges();
+				domSelection.addRange( domRange );
+
+				const viewSelection = converter.domSelectionToView( domSelection );
+
+				expect( viewSelection.rangeCount ).to.equal( 1 );
+				expect( stringify( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{o}o</p>' );
+
+				// Now we know that there should be a valid view range. So let's test if the DOM node throws an error.
+				sinon.stub( domFoo, Symbol.toStringTag ).get( () => {
+					throw new Error( 'Permission denied to access property Symbol.toStringTag' );
+				} );
+
+				let result = null;
+
+				expect( () => {
+					result = converter.domSelectionToView( domSelection );
+				} ).to.not.throw();
+
+				expect( result instanceof ViewSelection ).to.be.true;
+				expect( result.rangeCount ).to.equal( 0 );
+
+				domP.remove();
+			} );
+
+			it( 'should not check if restricted object on non-Gecko browsers', () => {
+				testUtils.sinon.stub( env, 'isGecko' ).value( false );
+
+				const domFoo = document.createTextNode( 'foo' );
+				const domP = createElement( document, 'p', null, [ domFoo ] );
+
+				const viewP = parse( '<p>foo</p>' );
+
+				converter.bindElements( domP, viewP );
+
+				document.body.appendChild( domP );
+
+				const domRange = document.createRange();
+				domRange.setStart( domFoo, 1 );
+				domRange.setEnd( domFoo, 2 );
+
+				const domSelection = document.getSelection();
+				domSelection.removeAllRanges();
+				domSelection.addRange( domRange );
+
+				const viewSelection = converter.domSelectionToView( domSelection );
+
+				expect( viewSelection.rangeCount ).to.equal( 1 );
+				expect( stringify( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{o}o</p>' );
+
+				domP.remove();
+			} );
+
+			it( 'should convert empty selection to empty selection (in Gecko)', () => {
+				testUtils.sinon.stub( env, 'isGecko' ).value( true );
+
+				const domSelection = document.getSelection();
+				domSelection.removeAllRanges();
+
+				const viewSelection = converter.domSelectionToView( domSelection );
+
+				expect( viewSelection.rangeCount ).to.equal( 0 );
+			} );
 		} );
 	} );
 } );

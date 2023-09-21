@@ -1,5 +1,6 @@
 ---
 category: examples-builds
+meta-title: Classic editor build example | CKEditor 5 Documentation
 order: 10
 toc: false
 classes: main__content--no-toc

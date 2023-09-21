@@ -1,6 +1,7 @@
 ---
 category: features-image-upload
 menu-title: Easy Image
+meta-title: Easy Image | CKEditor 5 Documentation
 order: 30
 badges: [ premium ]
 ---

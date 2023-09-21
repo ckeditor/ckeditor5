@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Block quote
+meta-title: Block quote | CKEditor 5 Documentation
 ---
 {@snippet features/block-quote-source}
 
@@ -91,7 +92,7 @@ ClassicEditor
 ```
 
 <info-box>
-	Check the {@link framework/creating-simple-plugin-timestamp plugin development guide} if you need more information about the technical side of this solution.
+	Check the {@link tutorials/crash-course/editor step-by-step tutorial} if you need more information about the technical side of this solution.
 </info-box>
 
 ## Related features
@@ -118,7 +119,7 @@ editor.execute( 'blockQuote' );
 ```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Contribute

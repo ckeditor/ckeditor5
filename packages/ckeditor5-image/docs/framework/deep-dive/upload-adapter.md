@@ -1,14 +1,15 @@
 ---
 category: framework-deep-dive
 menu-title: Custom upload adapter
+meta-title: Custom image upload adapter | CKEditor 5 Framework Documentation
 classes: custom-adapter
 ---
 
 # Custom image upload adapter
 
-In this guide you will learn the basic concepts of the file upload architecture in CKEditor&nbsp;5 WYSIWYG editor which will help you implement your own custom upload adapter.
+In this guide, you will learn the basic concepts of the file upload architecture in CKEditor&nbsp;5 WYSIWYG editor which will help you implement your own custom upload adapter.
 
-While this guide is mainly focused on the image upload (the most common kind of upload), keep in mind that the presented concepts and the API allow developing all sorts of file upload adapters for different file types like PDFs, movies, etc.
+While this guide is mainly focused on image upload (the most common kind of upload), keep in mind that the presented concepts and the API allow developmentof all sorts of file upload adapters for different file types like PDFs, movies, etc.
 
 <info-box>
 	If you do not feel like getting through this guide but you want a simple upload adapter that works, check out the {@link features/simple-upload-adapter Simple upload adapter} plugin we implemented for you.
@@ -71,9 +72,9 @@ Before we start, let's make sure all terms used in this guide are clear.
 
 Before you can implement your own custom upload adapter, you should learn about the image upload process in CKEditor&nbsp;5. The whole process boils down to the following steps:
 
-1. First, an image (or images) need to get into the rich-text editor content. There are many ways to do that, for instance:
+1. First, an image (or images) needs to get into the rich-text editor content. There are many ways to do that, for instance:
 
-	* pasting an image from clipboard,
+	* pasting an image from the clipboard,
 	* dragging a file from the file system,
 	* selecting an image through a file system dialog.
 
@@ -104,7 +105,7 @@ To sum up, for the image upload to work in the rich-text editor, two conditions 
 
 ## The anatomy of the adapter
 
-A custom upload adapter allows you to take the **full control** over the process of sending the files to the server as well as passing the response from the server back to the rich-text editor.
+A custom upload adapter allows you to take **full control** over the process of sending the files to the server as well as passing the response from the server back to the rich-text editor.
 
 Any upload adapter, whether an image upload adapter or a generic file upload adapter, must implement the {@link module:upload/filerepository~UploadAdapter `UploadAdapter` interface} in order to work, i.e. it must bring its own `upload()` and `abort()` methods.
 

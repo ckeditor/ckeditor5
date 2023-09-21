@@ -1,5 +1,6 @@
 ---
 category: getting-started
+meta-title: Customized installation | CKEditor 5 documentation
 order: 30
 modified_at: 2022-03-15
 ---
@@ -49,7 +50,7 @@ The basic build comes with a predefined set of plugins grouped in a bar at the t
 
 {@img assets/img/online-builder-02-predefined-plugins.png 778 Predefined plugins. Feel free to remove unneeded ones.}
 
-Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs. Some of the plugins may not work well with others or require dependencies. Online builder will provide information in such cases.
+Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs. Some of the plugins may not work well with others or may require dependencies. Online builder will provide information in such cases.
 
 {@img assets/img/online-builder-03-plugin-choice.png 778 Predefined plugins. Some of the plugins to choose from.}
 
@@ -103,7 +104,7 @@ A build is a simple npm package (usually developed in a Git repository) with a p
 
 Some of the reasons for creating custom builds are:
 
-* Adding features not included in the existing builds, either from a third party or custom developed.
+* Adding features not included in the existing builds, either from a third party or custom-developed.
 * Removing unnecessary features present in a build.
 * Changing the {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create editor creator}.
 * Changing the {@link framework/theme-customization editor theme}.
@@ -118,7 +119,7 @@ Some of the reasons for creating custom builds are:
 
 To start developing CKEditor&nbsp;5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 16.0.0+
+* [Node.js](https://nodejs.org/en/) 18.0.0+
 * [npm](https://www.npmjs.com) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 * [Git](https://git-scm.com/)
 
@@ -284,7 +285,7 @@ You can validate whether your new build works by opening the `sample/index.html`
 
 This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds introduced in the previous path, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
-This is an advanced path that assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and check the result.
+This is an advanced path that assumes that you are familiar with npm and that your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and check the result.
 
 ### Setting up the environment
 
@@ -478,7 +479,7 @@ Finally, it is time to create an HTML page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Quick start guide</title>
+		<title>CKEditor 5 Quick start guide</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -495,7 +496,7 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 {@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of CKEditor&nbsp;5 classic editor with bold and italic features.}
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 <info-box hint>

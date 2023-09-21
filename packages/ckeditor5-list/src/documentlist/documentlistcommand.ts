@@ -30,7 +30,7 @@ export default class DocumentListCommand extends Command {
 	/**
 	 * The type of the list created by the command.
 	 */
-	public readonly type: 'numbered' | 'bulleted';
+	public readonly type: 'numbered' | 'bulleted' | 'todo';
 
 	/**
 	 * A flag indicating whether the command is active, which means that the selection starts in a list of the same type.
@@ -46,7 +46,7 @@ export default class DocumentListCommand extends Command {
 	 * @param editor The editor instance.
 	 * @param type List type that will be handled by this command.
 	 */
-	constructor( editor: Editor, type: 'numbered' | 'bulleted' ) {
+	constructor( editor: Editor, type: 'numbered' | 'bulleted' | 'todo' ) {
 		super( editor );
 
 		this.type = type;
@@ -184,8 +184,10 @@ export default class DocumentListCommand extends Command {
 	 * @returns Whether the command should be enabled.
 	 */
 	private _checkEnabled(): boolean {
-		const selection = this.editor.model.document.selection;
-		const schema = this.editor.model.schema;
+		const model = this.editor.model;
+		const schema = model.schema;
+		const selection = model.document.selection;
+
 		const blocks = Array.from( selection.getSelectedBlocks() );
 
 		if ( !blocks.length ) {

@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive
 classes: schema-deep-dive
+meta-title: Schema | CKEditor 5 Framework Documentation
 ---
 
 # Schema
@@ -401,7 +402,7 @@ It is important to remember that a block should not allow another block inside. 
 
 In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios.
 
-Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link framework/tutorials/implementing-an-inline-widget Implementing an inline widget} tutorial.
+Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link tutorials/widgets/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
 The support for inline elements in CKEditor&nbsp;5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
 

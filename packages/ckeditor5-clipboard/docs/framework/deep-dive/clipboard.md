@@ -1,5 +1,6 @@
 ---
 category: framework-deep-dive
+meta-title: Clipboard | CKEditor 5 Framework Documentation
 ---
 
 # Clipboard
@@ -124,7 +125,7 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', ( evt, data ) 
 
 You can use the knowledge from the previous sections to create a complete plugin that will allow users to paste the content as plain text while the feature is toggled on.
 
-If you are not familiar with creating plugins in CKEditor&nbsp;5, it is recommended to start from reading the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to get a better understanding of what happens in the code below.
+If you are not familiar with creating plugins in CKEditor&nbsp;5, it is recommended to start from reading the {@link tutorials/crash-course/editor Creating a simple plugin} guide to get a better understanding of what happens in the code below.
 
 ```js
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';

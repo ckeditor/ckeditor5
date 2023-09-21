@@ -1,6 +1,7 @@
 ---
 category: licensing
 order: 20
+meta-title: License key and activation | CKEditor 5 Documentation
 menu-title: License key and activation
 ---
 

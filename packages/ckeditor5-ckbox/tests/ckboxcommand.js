@@ -148,6 +148,14 @@ describe( 'CKBoxCommand', () => {
 
 	describe( 'events', () => {
 		describe( 'opening dialog ("ckbox:open")', () => {
+			beforeEach( () => {
+				sinon.useFakeTimers( { now: Date.now() } );
+			} );
+
+			afterEach( () => {
+				sinon.restore();
+			} );
+
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
 				command.execute();
 

@@ -1,7 +1,7 @@
 ---
 menu-title: Drag and drop
-meta-title: Drag and drop in CKEditor&nbsp;5
-meta-description: Learn all about using the drag and drop mechanism to manage content and uploads in CKEditor&nbsp;5
+meta-title: Drag and drop | CKEditor 5 Documentation
+meta-description: Learn all about using the drag and drop mechanism to manage content and uploads in CKEditor 5
 category: features
 ---
 
@@ -121,6 +121,16 @@ BalloonEditor.create(document.querySelector( '#editor' ), {
 })
 	.then( /* ... */ )
 	.catch( /* ... */ );
+```
+
+## Styling the drag and drop
+
+The drag and drop target line color is managed by CSS variable (`--ck-clipboard-drop-target-color`). You can use the following snippet to change the color of the line:
+
+```css
+:root {
+	--ck-clipboard-drop-target-color: green;
+}
 ```
 
 ## Related features

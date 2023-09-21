@@ -4,12 +4,13 @@
 # * Offer developers a way to obtain the editor content styles.
 
 category: advanced
+meta-title: Content styles | CKEditor 5 documentation
 order: 30
 ---
 
 # Content styles
 
-Some of the {@link features/index core editor features} bring additional CSS to control the look of the content they produce. Take, for example, the {@link features/images-overview image feature} that needs special content styles to render images and their captions in the content. Or the {@link module:block-quote/blockquote~BlockQuote block quote} feature that displays quotes in italic with a subtle border on the side.
+Some of the {@link features/index core editor features} bring additional CSS to control the look of the content they produce. Take, for example, the {@link features/images-overview image feature} that needs special content styles to render images and their captions in the content. Or the {@link module:block-quote/blockquote~BlockQuote block quote} feature that displays quotes in italics with a subtle border on the side.
 
 {@img assets/img/builds-content-styles.png 823 Editor content styles.}
 
@@ -44,7 +45,7 @@ The content in the front–end of your application should now look the same as w
 
 ## The full list of content styles
 
-Below there is a full list of content styles used by the editor features. You can copy it and use straight in your project. **Make sure to add the `ck-content` class to your content container for the styles to work** ([see above](#sharing-content-styles-between-frontend-and-backend)).
+Below there is a full list of content styles used by the editor features. You can copy it and use it straight in your project. **Make sure to add the `ck-content` class to your content container for the styles to work** ([see above](#sharing-content-styles-between-frontend-and-backend)).
 
 ```css
 {@exec ../scripts/docs/read-content-styles-file.js}

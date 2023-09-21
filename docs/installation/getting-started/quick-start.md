@@ -3,6 +3,7 @@
 # - Guidance on all possible installation options.
 
 category: getting-started
+meta-title: Quick start | CKEditor 5 documentation
 order: 10
 modified_at: 2022-06-27
 ---
@@ -58,7 +59,7 @@ A full webpage with embedded CKEditor&nbsp;5 from the above example would look l
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 – Classic editor</title>
+	<title>CKEditor 5 – Classic editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
@@ -97,11 +98,11 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 
 In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link installation/getting-started/predefined-builds#available-builds available builds documentation}.
 
-Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the <code>removePlugins</code> configuration option and adjust the toolbar configuration.
+Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the <code>removePlugins</code> configuration option and adjust the toolbar configuration. There are also some plugins, like the {@link features/productivity-pack Productivity Pack}, that require a license to run. You can learn more about obtaining and activating license keys in the {@link support/license-key-and-activation License key and activation} guide. Observe the config below to see this implemented.
 
 ### Sample implementation
 
-In this example, we remove the premium collaboration features as well as several other plugins that require credentials to work. We need to do this, otherwise the editor would throw an error.
+In this example, we remove the premium collaboration features as well as several other plugins that require credentials to work. We need to do this, otherwise, the editor will throw an error.
 
 
 ```html
@@ -285,7 +286,8 @@ In this example, we remove the premium collaboration features as well as several
 					'Template',
 					'DocumentOutline',
 					'FormatPainter',
-					'TableOfContents'
+					'TableOfContents',
+					'PasteFromOfficeEnhanced'
 				]
 			});
 		</script>

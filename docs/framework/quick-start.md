@@ -1,5 +1,6 @@
 ---
 category: framework
+meta-title: Framework Quick Start | CKEditor 5 Framework Documentation
 order: 20
 ---
 
@@ -17,12 +18,12 @@ This guide will show you how to initialize the CKEditor&nbsp;5 rich-text editor 
 	npx ckeditor5-package-generator <packageName>
 	```
 
-	More info about this tool can be found in the {@link framework/package-generator/using-package-generator dedicated guide}.
+	More info about this tool can be found in the {@link framework/development-tools/package-generator/using-package-generator dedicated guide}.
 </info-box>
 
-The CKEditor&nbsp;5 Framework consist of several [npm packages](https://npmjs.com). To install it you need:
+The CKEditor&nbsp;5 Framework consists of several [npm packages](https://npmjs.com). To install it you need:
 
-* [Node.js](https://nodejs.org/en/) 16.0.0+
+* [Node.js](https://nodejs.org/en/) 18.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor&nbsp;5 in the {@link installation/advanced/integrating-from-source-webpack Integrating from source} guide.
@@ -31,9 +32,9 @@ Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a
 
 ## Let's start!
 
-This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
+This guide assumes that you are familiar with npm and that your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
 
-First, install packages needed to build CKEditor&nbsp;5:
+First, install the packages needed to build CKEditor&nbsp;5:
 
 ```bash
 npm install --save \
@@ -112,7 +113,7 @@ module.exports = {
 
 ## Creating an editor
 
-You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
+You can now install some of the CKEditor&nbsp;5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
 You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
 ```bash
@@ -216,7 +217,7 @@ Finally, it is time to create an HTML page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor&nbsp;5 Framework – Quick start</title>
+		<title>CKEditor 5 Framework – Quick start</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -233,11 +234,11 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 {@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of CKEditor&nbsp;5 classic editor with bold and italic features.}
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?
 
-If you finished this guide, you should definitely check out the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor&nbsp;5 ecosystem.
+If you finished this guide, you should definitely check out the {@link tutorials/crash-course/editor Creating a simple plugin} guide that will teach you some basics of developing features in the CKEditor&nbsp;5 ecosystem.
 
 If you are more into reading about the CKEditor&nbsp;5 architecture, check out the {@link framework/architecture/intro Introduction to CKEditor&nbsp;5 architecture}.

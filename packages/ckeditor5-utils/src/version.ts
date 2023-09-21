@@ -7,19 +7,14 @@
  * @module utils/version
  */
 
-/* globals window, global */
-
 import CKEditorError from './ckeditorerror';
 
-const version = '39.0.1';
+const version = '39.0.2';
 
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2023, 7, 10 );
-
-/* istanbul ignore next -- @preserve */
-const windowOrGlobal = typeof window === 'object' ? window : global;
+export const releaseDate = new Date( 2023, 8, 6 );
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -27,7 +22,7 @@ declare global {
 }
 
 /* istanbul ignore next -- @preserve */
-if ( windowOrGlobal.CKEDITOR_VERSION ) {
+if ( globalThis.CKEDITOR_VERSION ) {
 	/**
 	 * This error is thrown when due to a mistake in how CKEditor 5 was installed or initialized, some
 	 * of its modules were duplicated (evaluated and executed twice). Module duplication leads to inevitable runtime
@@ -167,5 +162,5 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 		null
 	);
 } else {
-	windowOrGlobal.CKEDITOR_VERSION = version;
+	globalThis.CKEDITOR_VERSION = version;
 }

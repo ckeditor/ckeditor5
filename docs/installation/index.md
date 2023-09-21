@@ -2,8 +2,8 @@
 category: installation
 order: 10
 menu-title: Overview
-meta-title: CKEditor 5 installation documentation
-meta-description: Learn how to install, integrate, configure, and develop CKEditor&nbsp;5. Browse through the API documentation and online samples.
+meta-title: Getting started with CKEditor 5 | CKEditor 5 documentation
+meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
 ---
 
 # Getting started with CKEditor&nbsp;5
@@ -48,6 +48,10 @@ Learn how to install a custom CKEditor&nbsp;5 build easily with the use of {@lin
 ## Integration with frameworks
 
 Get to know the supported {@link installation/integrations/overview integrations with popular JavaScript frameworks} such as React, Angular, or Vue, and learn to use them and integrate CKEditor&nbsp;5 with your software.
+
+## Tutorial
+
+To learn how to use, configure and extend CKEditor, see our {@link tutorials/crash-course/editor step-by-step tutorial}.
 
 ## Advanced installation concepts
 

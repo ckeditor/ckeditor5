@@ -1,5 +1,6 @@
 ---
 category: framework-deep-dive-ui
+meta-title: Theme customization | CKEditor 5 Framework Documentation
 order: 10
 ---
 

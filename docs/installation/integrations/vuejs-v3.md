@@ -1,5 +1,6 @@
 ---
 menu-title: Vue.js 3+
+meta-title: Vue.js 3+ rich text editor component | CKEditor 5 documentation
 category: integrations
 order: 50
 ---
@@ -236,6 +237,18 @@ Finally, import the build in your application:
     }
 </script>
 ```
+
+## Using the editor with collaboration plugins
+
+The easiest way to integrate {@link features/collaboration collaboration plugins} in a Vue application is to build the editor from source including the collaboration plugins together with the Vue application.
+
+<info-box>
+	For such a scenario we provide a **ready-to-use integration** featuring collaborative editing in a Vue application:
+
+	* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-vue)
+
+	It is not mandatory to build applications on top of the above sample, however, it should help you get started.
+</info-box>
 
 ## Using CKEditor&nbsp;5 from source
 

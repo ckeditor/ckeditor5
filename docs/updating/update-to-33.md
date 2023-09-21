@@ -1,5 +1,6 @@
 ---
 category: update-guides
+meta-title: Update to version 33.x | CKEditor 5 Documentation
 menu-title: Update to v33.x
 order: 91
 modified_at: 2022-02-01
