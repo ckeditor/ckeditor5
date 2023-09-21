@@ -264,7 +264,7 @@ export default class ClipboardPipeline extends Plugin {
 
 			const content = editor.model.getSelectedContent( modelDocument.selection );
 
-			modelDocument.fire<any>( 'outputTransformation', {
+			this.fire<any>( 'outputTransformation', {
 				dataTransfer,
 				content,
 				method: evt.name
@@ -282,7 +282,7 @@ export default class ClipboardPipeline extends Plugin {
 			}
 		}, { priority: 'low' } );
 
-		this.listenTo<any>( modelDocument, 'outputTransformation', ( evt, data ) => {
+		this.listenTo<any>( this, 'outputTransformation', ( evt, data ) => {
 			const content = editor.data.toView( data.content );
 
 			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {

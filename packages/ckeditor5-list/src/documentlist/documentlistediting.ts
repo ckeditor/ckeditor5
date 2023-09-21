@@ -69,6 +69,7 @@ import ListWalker, {
 } from './utils/listwalker';
 
 import type {
+	ClipboardPipeline,
 	ViewDocumentClipboardOutputEvent
 } from 'ckeditor5/src/clipboard';
 
@@ -481,7 +482,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupClipboardIntegration() {
 		const model = this.editor.model;
-		const viewDoc = this.editor.editing.view.document;
+		const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
 
 		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
@@ -513,24 +514,24 @@ export default class DocumentListEditing extends Plugin {
 		//	                       └─────────────────────┴───────────────────┘
 		//
 		// See https://github.com/ckeditor/ckeditor5/issues/11608, https://github.com/ckeditor/ckeditor5/issues/14969
-		this.listenTo<any>( model.document, 'outputTransformation', ( evt, data ) => {
-			const writer = new UpcastWriter( data.content.document );
-			const allContentChildren = Array.from( data.content.getChildren() );
-			const lastItem = allContentChildren[ allContentChildren.length - 1 ] as Element;
+		this.listenTo<any>( clipboardPipeline, 'outputTransformation', ( evt, data ) => {
+			model.change( writer => {
+				const allContentChildren = Array.from( data.content.getChildren() );
+				const lastItem = allContentChildren[ allContentChildren.length - 1 ] as Element;
 
-			if ( allContentChildren.length > 1 && lastItem.isEmpty ) {
-				writer.removeChildren( allContentChildren.length - 1, 1, data.content );
-			}
-
-			if ( data.method != 'dragstart' ) {
-				const isSingleListItemSelected = isSingleListItem( Array.from( data.content.getChildren() ) as any );
-
-				if ( isSingleListItemSelected ) {
-					const childrenWithoutListAttributes = model.change(
-						writer => removeListAttributes( Array.from( data.content.getChildren() as any ), writer ) );
-					// TODO?
+				if ( allContentChildren.length > 1 && lastItem.isEmpty ) {
+					writer.remove( lastItem );
 				}
-			}
+
+				if ( data.method != 'dragstart' ) {
+					const allChildren = Array.from( data.content.getChildren() ) as any;
+					const isSingleListItemSelected = isSingleListItem( allChildren );
+
+					if ( isSingleListItemSelected ) {
+						removeListAttributes( allChildren, writer );
+					}
+				}
+			} );
 		} );
 	}
 }

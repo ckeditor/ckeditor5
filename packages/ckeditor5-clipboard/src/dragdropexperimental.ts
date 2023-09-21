@@ -290,8 +290,9 @@ export default class DragDropExperimental extends Plugin {
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
 			const content = model.getSelectedContent( draggedSelection );
+			const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
 
-			model.document.fire<any>( 'outputTransformation', {
+			clipboardPipeline.fire<any>( 'outputTransformation', {
 				dataTransfer: data.dataTransfer,
 				content,
 				method: 'dragstart'
