@@ -289,9 +289,9 @@ export default class DragDropExperimental extends Plugin {
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
-			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
+			const content = model.getSelectedContent( draggedSelection );
 
-			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
+			model.document.fire<any>( 'outputTransformation', {
 				dataTransfer: data.dataTransfer,
 				content,
 				method: 'dragstart'

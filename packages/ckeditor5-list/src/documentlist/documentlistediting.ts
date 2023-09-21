@@ -12,18 +12,19 @@ import {
 	type MultiCommand
 } from 'ckeditor5/src/core';
 
-import type {
-	DowncastAttributeEvent,
-	DocumentChangeEvent,
-	DowncastWriter,
-	Element,
-	Model,
-	ModelGetSelectedContentEvent,
-	ModelInsertContentEvent,
-	UpcastElementEvent,
-	ViewDocumentTabEvent,
-	ViewElement,
-	Writer
+import {
+	type DowncastAttributeEvent,
+	type DocumentChangeEvent,
+	type DowncastWriter,
+	type Element,
+	type Model,
+	type ModelGetSelectedContentEvent,
+	type ModelInsertContentEvent,
+	type UpcastElementEvent,
+	type ViewDocumentTabEvent,
+	type ViewElement,
+	type Writer,
+	UpcastWriter
 } from 'ckeditor5/src/engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
@@ -512,15 +513,22 @@ export default class DocumentListEditing extends Plugin {
 		//	                       └─────────────────────┴───────────────────┘
 		//
 		// See https://github.com/ckeditor/ckeditor5/issues/11608, https://github.com/ckeditor/ckeditor5/issues/14969
-		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
+		this.listenTo<any>( model.document, 'outputTransformation', ( evt, data ) => {
+			const writer = new UpcastWriter( data.content.document );
+			const allContentChildren = Array.from( data.content.getChildren() );
+			const lastItem = allContentChildren[ allContentChildren.length - 1 ] as Element;
+
+			if ( allContentChildren.length > 1 && lastItem.isEmpty ) {
+				writer.removeChildren( allContentChildren.length - 1, 1, data.content );
+			}
+
 			if ( data.method != 'dragstart' ) {
-				const selection = model.document.selection;
-				const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
+				const isSingleListItemSelected = isSingleListItem( Array.from( data.content.getChildren() ) as any );
 
 				if ( isSingleListItemSelected ) {
-					const content = this.editor.data.toModel( data.content );
-
-					model.change( writer => removeListAttributes( Array.from( content.getChildren() as any ), writer ) );
+					const childrenWithoutListAttributes = model.change(
+						writer => removeListAttributes( Array.from( data.content.getChildren() as any ), writer ) );
+					// TODO?
 				}
 			}
 		} );
