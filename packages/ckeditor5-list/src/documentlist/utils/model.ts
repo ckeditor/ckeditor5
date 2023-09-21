@@ -13,7 +13,8 @@ import type {
 	Model,
 	Node,
 	Writer,
-	Item
+	Item,
+	Schema
 } from 'ckeditor5/src/engine';
 
 import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
@@ -45,7 +46,7 @@ export class ListItemUid {
 export interface ListElement extends Element {
 	getAttribute( key: 'listItemId' ): string;
 	getAttribute( key: 'listIndent' ): number;
-	getAttribute( key: 'listType' ): 'numbered' | 'bulleted';
+	getAttribute( key: 'listType' ): 'numbered' | 'bulleted' | 'todo';
 	getAttribute( key: string ): unknown;
 }
 

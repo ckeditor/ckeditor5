@@ -23,6 +23,7 @@ import type {
 	UpcastElementEvent,
 	ViewDocumentTabEvent,
 	ViewElement,
+	ViewAttributeElement,
 	Writer
 } from 'ckeditor5/src/engine';
 
@@ -79,7 +80,7 @@ const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
  * Map of model attributes applicable to list blocks.
  */
 export interface ListItemAttributesMap {
-	listType?: 'numbered' | 'bulleted';
+	listType?: 'numbered' | 'bulleted' | 'todo';
 	listIndent?: number;
 	listItemId?: string;
 }
@@ -194,7 +195,7 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * Returns list of model attribute names that should affect downcast conversion.
 	 */
-	private _getListAttributeNames() {
+	public getListAttributeNames(): Array<string> {
 		return [
 			...LIST_BASE_ATTRIBUTES,
 			...this._downcastStrategies.map( strategy => strategy.attributeName )
@@ -388,10 +389,31 @@ export default class DocumentListEditing extends Plugin {
 	private _setupConversion() {
 		const editor = this.editor;
 		const model = editor.model;
-		const attributeNames = this._getListAttributeNames();
+		const attributeNames = this.getListAttributeNames();
 
 		editor.conversion.for( 'upcast' )
-			.elementToElement( { view: 'li', model: 'paragraph' } )
+			// Convert <li> to a generic paragraph so the content of <li> is always inside a block.
+			// Setting the listType attribute to let other features (to-do list) know that this is part of a list item.
+			.elementToElement( {
+				view: 'li',
+				model: ( viewElement, { writer } ) => writer.createElement( 'paragraph', { listType: '' } )
+			} )
+			// Convert paragraph to the list block (without list type defined yet).
+			// This is important to properly handle bogus paragraph and to-do lists.
+			// Most of the time the bogus paragraph should not appear in the data of to-do list,
+			// but if there is any marker or an attribute on the paragraph then the bogus paragraph
+			// is preserved in the data, and we need to be able to detect this case.
+			.elementToElement( {
+				view: 'p',
+				model: ( viewElement, { writer } ) => {
+					if ( viewElement.parent && viewElement.parent.is( 'element', 'li' ) ) {
+						return writer.createElement( 'paragraph', { listType: '' } );
+					}
+
+					return null;
+				},
+				converterPriority: 'high'
+			} )
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 				dispatcher.on<UpcastElementEvent>( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
@@ -403,6 +425,12 @@ export default class DocumentListEditing extends Plugin {
 				model: 'paragraph',
 				view: bogusParagraphCreator( attributeNames ),
 				converterPriority: 'high'
+			} )
+			.add( dispatcher => {
+				dispatcher.on<DowncastAttributeEvent<ListElement>>(
+					'attribute',
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+				);
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
@@ -410,13 +438,11 @@ export default class DocumentListEditing extends Plugin {
 				model: 'paragraph',
 				view: bogusParagraphCreator( attributeNames, { dataPipeline: true } ),
 				converterPriority: 'high'
-			} );
-
-		editor.conversion.for( 'downcast' )
+			} )
 			.add( dispatcher => {
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
-					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, { dataPipeline: true } )
 				);
 			} );
 
@@ -452,7 +478,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupModelPostFixing() {
 		const model = this.editor.model;
-		const attributeNames = this._getListAttributeNames();
+		const attributeNames = this.getListAttributeNames();
 
 		// Register list fixing.
 		// First the low level handler.
@@ -518,9 +544,9 @@ export default class DocumentListEditing extends Plugin {
 }
 
 /**
- * The downcast strategy.
+ * The attribute to attribute downcast strategy for UL, OL, LI elements.
  */
-export interface DowncastStrategy {
+export interface AttributeDowncastStrategy {
 
 	/**
 	 * The scope of the downcast (whether it applies to LI or OL/UL).
@@ -537,6 +563,51 @@ export interface DowncastStrategy {
 	 */
 	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
 }
+
+/**
+ * The custom marker downcast strategy.
+ */
+export interface ItemMarkerDowncastStrategy {
+
+	/**
+	 * The scope of the downcast.
+	 */
+	scope: 'itemMarker';
+
+	/**
+	 * The model attribute name.
+	 */
+	attributeName: string;
+
+	/**
+	 * Creates a view element for a custom item marker.
+	 */
+	createElement(
+		writer: DowncastWriter,
+		modelElement: Element,
+		{ dataPipeline }: { dataPipeline?: boolean }
+	): ViewElement | null;
+
+	/**
+	 * Creates an AttributeElement to be used for wrapping a first block of a list item.
+	 */
+	createWrapperElement?(
+		writer: DowncastWriter,
+		modelElement: Element,
+		{ dataPipeline }: { dataPipeline?: boolean }
+	): ViewAttributeElement;
+
+	/**
+	 * Should return true if the given list block can be wrapped with the wrapper created by `createWrapperElement()`
+	 * or only the marker element should be wrapped.
+	 */
+	canWrapElement?( modelElement: Element ): boolean;
+}
+
+/**
+ * The downcast strategy.
+ */
+export type DowncastStrategy = AttributeDowncastStrategy | ItemMarkerDowncastStrategy;
 
 /**
  * Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
@@ -789,6 +860,24 @@ export type DocumentListEditingCheckAttributesEvent = {
 	args: [ {
 		viewElement: ViewElement & { id?: string };
 		modelAttributes: ListItemAttributesMap;
+	} ];
+	return: boolean;
+};
+
+/**
+ * Event fired on changes detected on the model list element to verify if the view representation of a list block element
+ * is representing those attributes.
+ *
+ * It allows triggering a reconversion of a list item block.
+ *
+ * @internal
+ * @eventName ~DocumentListEditing#checkElement
+ */
+export type DocumentListEditingCheckElementEvent = {
+	name: 'checkElement';
+	args: [ {
+		viewElement: ViewElement;
+		modelElement: Element;
 	} ];
 	return: boolean;
 };
