@@ -216,7 +216,7 @@ export function* iterateSiblingListBlocks(
 	direction: 'forward' | 'backward' = 'forward'
 ): IterableIterator<ListIteratorValue> {
 	const isForward = direction == 'forward';
-	const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
+	const previousNodesByIndent: Array<ListElement> = []; // Last seen nodes of lower indented lists.
 	let previous = null;
 
 	while ( isListItemBlock( node ) ) {

@@ -152,7 +152,7 @@ export default class TodoDocumentListEditing extends Plugin {
 						{ checked: 'checked' } :
 						null
 					),
-					... ( dataPipeline ?
+					...( dataPipeline ?
 						{ disabled: 'disabled' } :
 						{ tabindex: '-1' }
 					)
