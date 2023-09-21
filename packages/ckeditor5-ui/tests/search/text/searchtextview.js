@@ -395,9 +395,9 @@ describe( 'SearchTextView', () => {
 
 	describe( 'render()', () => {
 		describe( 'focus tracking and cycling', () => {
-			it( 'should add #queryView and #filteredView to the #focusableChildren collection', () => {
+			it( 'should add #queryView and #resultsView to the #focusableChildren collection', () => {
 				expect( view.focusableChildren.map( view => view ) ).to.have.ordered.members( [
-					view.queryView, view.filteredView
+					view.queryView, view.resultsView
 				] );
 			} );
 
@@ -413,7 +413,7 @@ describe( 'SearchTextView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.queryView.element;
 
-					const spy = sinon.spy( filteredView, 'focus' );
+					const spy = sinon.spy( view.resultsView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -433,7 +433,7 @@ describe( 'SearchTextView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = filteredView.element;
 
-					const spy = sinon.spy( view.queryView, 'focus' );
+					const spy = sinon.spy( view.resultsView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
