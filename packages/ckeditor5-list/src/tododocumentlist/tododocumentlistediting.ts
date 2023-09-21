@@ -79,9 +79,7 @@ export default class TodoDocumentListEditing extends Plugin {
 
 		editing.view.addObserver( TodoCheckboxChangeObserver );
 
-		model.schema.extend( '$container', { allowAttributes: 'todoListChecked' } );
-		model.schema.extend( '$block', { allowAttributes: 'todoListChecked' } );
-		model.schema.extend( '$blockObject', { allowAttributes: 'todoListChecked' } );
+		model.schema.extend( '$listItem', { allowAttributes: 'todoListChecked' } );
 
 		model.schema.addAttributeCheck( ( context, attributeName ) => {
 			const item = context.last;
