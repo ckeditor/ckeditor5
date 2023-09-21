@@ -24,6 +24,11 @@ export default class AutocompleteView<
 	TQueryFieldView extends InputBase<HTMLInputElement | HTMLTextAreaElement>
 > extends SearchTextView<TQueryFieldView> {
 	/**
+	 * The configuration of the autocomplete view.
+	 */
+	protected override _config: AutocompleteViewConfig<TQueryFieldView>;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale: Locale, config: AutocompleteViewConfig<TQueryFieldView> ) {
@@ -65,7 +70,7 @@ export default class AutocompleteView<
 
 			if ( isFocused ) {
 				// Reset the scroll position of the results view whenever the autocomplete reopens.
-				this.resultsView.element!.scrollTop = 0;
+				resultsView.element!.scrollTop = 0;
 			} else if ( config.resetOnBlur ) {
 				this.queryView.reset();
 			}
@@ -115,7 +120,7 @@ export default class AutocompleteView<
 		} );
 
 		// Update the position and width of the results view when it becomes visible.
-		this.resultsView.on( 'change:isVisible', () => {
+		resultsView.on( 'change:isVisible', () => {
 			this._updateResultsViewWidthAndPosition();
 		} );
 	}
@@ -148,8 +153,7 @@ export default class AutocompleteView<
 	 */
 	private _updateResultsVisibility() {
 		const resultsView = ( this.resultsView as AutocompleteResultsView );
-		const config = this._config as AutocompleteViewConfig<TQueryFieldView>;
-		const queryMinChars = typeof config.queryMinChars === 'undefined' ? 0 : config.queryMinChars;
+		const queryMinChars = typeof this._config.queryMinChars === 'undefined' ? 0 : this._config.queryMinChars;
 		const queryLength = this.queryView.fieldView.element!.value.length;
 
 		resultsView.isVisible = this.focusTracker.isFocused && this.isEnabled && queryLength >= queryMinChars;
