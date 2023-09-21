@@ -13,23 +13,19 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getData as getModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import ListEditing from '../../src/list/listediting';
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
 import DocumentListSplitCommand from '../../src/documentlist/documentlistsplitcommand';
 
 import stubUid from './_utils/uid';
-import { modelList, prepareTest } from './_utils/utils';
+import { prepareTest } from './_utils/utils';
 
 describe( 'DocumentListEditing (multiBlock=false)', () => {
-	let editor, model, modelDoc, modelRoot, view;
+	let editor, model, view;
 
 	testUtils.createSinonSandbox();
 
@@ -43,9 +39,6 @@ describe( 'DocumentListEditing (multiBlock=false)', () => {
 		} );
 
 		model = editor.model;
-		modelDoc = model.document;
-		modelRoot = modelDoc.getRoot();
-
 		view = editor.editing.view;
 
 		model.schema.extend( 'paragraph', {
@@ -146,24 +139,41 @@ describe( 'DocumentListEditing (multiBlock=false)', () => {
 
 	describe( 'post fixer', () => {
 		describe( 'insert', () => {
-			// TODO: insert the same listItemId and check it's fixed.
-		} );
-
-		describe( 'move', () => {
-			// eslint-disable-next-line no-unused-vars
-			function testList( input, offset, output ) {
+			function testList( input, inserted, output ) {
 				const selection = prepareTest( model, input );
 
-				model.change( writer => {
-					const targetPosition = writer.createPositionAt( modelRoot, offset );
-
-					writer.move( selection.getFirstRange(), targetPosition );
+				model.change( () => {
+					model.change( writer => {
+						writer.insert( parseModel( inserted, model.schema ), selection.getFirstPosition() );
+					} );
 				} );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			}
 
-			// TODO: insert the same listItemId and check it's fixed.
+			it( 'should make sure that all list items have a unique IDs (insert after)', () => {
+				testList(
+					'<listItem listIndent="0" listItemId="a" listType="bulleted">a</listItem>' +
+					'[]',
+
+					'<listItem listIndent="0" listItemId="a" listType="bulleted">x</listItem>',
+
+					'<listItem listIndent="0" listItemId="a" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listItemId="a00" listType="bulleted">x</listItem>'
+				);
+			} );
+
+			it( 'should make sure that all list items have a unique IDs (insert before)', () => {
+				testList(
+					'[]' +
+					'<listItem listIndent="0" listItemId="a" listType="bulleted">a</listItem>',
+
+					'<listItem listIndent="0" listItemId="a" listType="bulleted">x</listItem>',
+
+					'<listItem listIndent="0" listItemId="a" listType="bulleted">x</listItem>' +
+					'<listItem listIndent="0" listItemId="a00" listType="bulleted">a</listItem>'
+				);
+			} );
 		} );
 
 		describe( 'rename', () => {
@@ -216,8 +226,7 @@ describe( 'DocumentListEditing (multiBlock=false)', () => {
 				const expectedModel =
 					'<listItem listIndent="0" listItemId="a" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="1" listItemId="b" listType="bulleted">b</listItem>' +
-					// TODO
-					'<listItem>c</listItem>' +
+					'<paragraph>c</paragraph>' +
 					'<listItem listIndent="0" listItemId="d" listType="bulleted">d</listItem>' +
 					'<listItem listIndent="1" listItemId="e" listType="bulleted">e</listItem>' +
 					'<listItem listIndent="0" listItemId="f" listType="bulleted">f</listItem>' +
@@ -237,25 +246,24 @@ describe( 'DocumentListEditing (multiBlock=false)', () => {
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
-			// TODO: What to do?
-			it.skip( 'add list attributes', () => {
+			it( 'add list attributes', () => {
 				const modelBefore =
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<listItem listIndent="0" listItemId="a" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listItemId="b" listType="bulleted">b</listItem>' +
 					'[<paragraph>c</paragraph>]' +
-					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>' +
-					'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>' +
-					'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>';
+					'<listItem listIndent="0" listItemId="d" listType="bulleted">d</listItem>' +
+					'<listItem listIndent="1" listItemId="e" listType="bulleted">e</listItem>' +
+					'<listItem listIndent="2" listItemId="f" listType="bulleted">f</listItem>' +
+					'<listItem listIndent="1" listItemId="g" listType="bulleted">g</listItem>';
 
 				const expectedModel =
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
-					'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>' +
-					'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>' +
-					'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>';
+					'<listItem listIndent="0" listItemId="a" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listItemId="b" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="2" listItemId="c" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="2" listItemId="d" listType="bulleted">d</listItem>' +
+					'<listItem listIndent="1" listItemId="e" listType="bulleted">e</listItem>' +
+					'<listItem listIndent="2" listItemId="f" listType="bulleted">f</listItem>' +
+					'<listItem listIndent="1" listItemId="g" listType="bulleted">g</listItem>';
 
 				const selection = prepareTest( model, modelBefore );
 				const element = selection.getFirstPosition().nodeAfter;
@@ -271,79 +279,4 @@ describe( 'DocumentListEditing (multiBlock=false)', () => {
 			} );
 		} );
 	} );
-
-	describe( 'multiBlock = false', () => {
-
-	} );
-} );
-
-describe( 'DocumentListEditing - registerDowncastStrategy()', () => {
-	let editor, model, view;
-
-	afterEach( async () => {
-		await editor.destroy();
-	} );
-
-	it( 'should allow registering strategy for list elements', async () => {
-		await createEditor( class CustomPlugin extends Plugin {
-			init() {
-				this.editor.plugins.get( 'DocumentListEditing' ).registerDowncastStrategy( {
-					scope: 'list',
-					attributeName: 'someFoo',
-
-					setAttributeOnDowncast( writer, attributeValue, viewElement ) {
-						writer.setAttribute( 'data-foo', attributeValue, viewElement );
-					}
-				} );
-			}
-		} );
-
-		setModelData( model, modelList( `
-			* <paragraph someFoo="123">foo</paragraph>
-			* <paragraph someFoo="123">bar</paragraph>
-		` ) );
-
-		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-			'<ul data-foo="123">' +
-				'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
-				'<li><span class="ck-list-bogus-paragraph">bar</span></li>' +
-			'</ul>'
-		);
-	} );
-
-	it( 'should allow registering strategy for list items elements', async () => {
-		await createEditor( class CustomPlugin extends Plugin {
-			init() {
-				this.editor.plugins.get( 'DocumentListEditing' ).registerDowncastStrategy( {
-					scope: 'item',
-					attributeName: 'someFoo',
-
-					setAttributeOnDowncast( writer, attributeValue, viewElement ) {
-						writer.setAttribute( 'data-foo', attributeValue, viewElement );
-					}
-				} );
-			}
-		} );
-
-		setModelData( model, modelList( `
-			* <paragraph someFoo="123">foo</paragraph>
-			* <paragraph someFoo="321">bar</paragraph>
-		` ) );
-
-		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-			'<ul>' +
-				'<li data-foo="123"><span class="ck-list-bogus-paragraph">foo</span></li>' +
-				'<li data-foo="321"><span class="ck-list-bogus-paragraph">bar</span></li>' +
-			'</ul>'
-		);
-	} );
-
-	async function createEditor( extraPlugin ) {
-		editor = await VirtualTestEditor.create( {
-			plugins: [ extraPlugin, Paragraph, DocumentListEditing, UndoEditing ]
-		} );
-
-		model = editor.model;
-		view = editor.editing.view;
-	}
 } );

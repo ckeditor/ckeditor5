@@ -684,6 +684,7 @@ function modelChangePostFixer(
 ) {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map<ListElement, ListElement>();
+	const multiBlock = documentListEditing.editor.config.get( 'list.multiBlock' );
 
 	let applied = false;
 
@@ -726,6 +727,19 @@ function modelChangePostFixer(
 
 			if ( entry.attributeNewValue === null ) {
 				findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
+			}
+		}
+
+		// Make sure that there is no left over listItem element without attributes or a block with list attributes that is not a listItem.
+		if ( !multiBlock && entry.type == 'attribute' && LIST_BASE_ATTRIBUTES.includes( entry.attributeKey ) ) {
+			const element = entry.range.start.nodeAfter!;
+
+			if ( entry.attributeNewValue === null && element && element.is( 'element', 'listItem' ) ) {
+				writer.rename( element, 'paragraph' );
+				applied = true;
+			} else if ( entry.attributeOldValue === null && element && element.is( 'element' ) && element.name != 'listItem' ) {
+				writer.rename( element, 'listItem' );
+				applied = true;
 			}
 		}
 	}
