@@ -562,8 +562,8 @@ export function getSelectedBlockObject( model: Model ): Element | null {
  * @param block A block to be tested.
  * @param schema The schema of the document.
  */
-export function checkCanBecomeSimpleListItem( block: Element, schema: Schema ): boolean {
-	return schema.checkChild( block.parent as Element, 'listItem' ) && !schema.isObject( block );
+export function canBecomeSimpleListItem( block: Element, schema: Schema ): boolean {
+	return schema.checkChild( block.parent as Element, 'listItem' ) && schema.checkChild( block, '$text' ) && !schema.isObject( block );
 }
 
 /**

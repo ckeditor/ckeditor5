@@ -124,7 +124,7 @@ export default class DocumentListEditing extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const multiBlock = editor.config.get( 'list.multiBlock' )!;
+		const multiBlock = editor.config.get( 'list.multiBlock' );
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
@@ -412,7 +412,7 @@ export default class DocumentListEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const attributeNames = this.getListAttributeNames();
-		const multiBlock = editor.config.get( 'list.multiBlock' )!;
+		const multiBlock = editor.config.get( 'list.multiBlock' );
 		const elementName = multiBlock ? 'paragraph' : 'listItem';
 
 		editor.conversion.for( 'upcast' )

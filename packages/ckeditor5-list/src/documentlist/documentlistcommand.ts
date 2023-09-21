@@ -20,7 +20,7 @@ import {
 	sortBlocks,
 	getSelectedBlockObject,
 	isListItemBlock,
-	checkCanBecomeSimpleListItem
+	canBecomeSimpleListItem
 } from './utils/model';
 
 /**
@@ -76,7 +76,7 @@ export default class DocumentListCommand extends Command {
 		const selectedBlockObject = getSelectedBlockObject( model );
 
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => model.schema.checkAttribute( block, 'listType' ) || checkCanBecomeSimpleListItem( block, model.schema ) );
+			.filter( block => model.schema.checkAttribute( block, 'listType' ) || canBecomeSimpleListItem( block, model.schema ) );
 
 		// Whether we are turning off some items.
 		const turnOff = options.forceValue !== undefined ? !options.forceValue : this.value;
@@ -119,7 +119,7 @@ export default class DocumentListCommand extends Command {
 					// Promote the given block to the list item.
 					if ( !block.hasAttribute( 'listType' ) ) {
 						// Rename block to a simple list item if this option is enabled.
-						if ( !block.is( 'element', 'listItem' ) && checkCanBecomeSimpleListItem( block, model.schema ) ) {
+						if ( !block.is( 'element', 'listItem' ) && canBecomeSimpleListItem( block, model.schema ) ) {
 							writer.rename( block, 'listItem' );
 						}
 
@@ -200,7 +200,7 @@ export default class DocumentListCommand extends Command {
 		}
 
 		for ( const block of blocks ) {
-			if ( schema.checkAttribute( block, 'listType' ) || checkCanBecomeSimpleListItem( block, schema ) ) {
+			if ( schema.checkAttribute( block, 'listType' ) || canBecomeSimpleListItem( block, schema ) ) {
 				return true;
 			}
 		}

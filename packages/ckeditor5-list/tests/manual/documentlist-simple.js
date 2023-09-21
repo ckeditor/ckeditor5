@@ -13,20 +13,51 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import DocumentList from '../../src/documentlist';
 import TodoDocumentList from '../../src/tododocumentlist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, DocumentList, TodoDocumentList, Indent, Clipboard ],
-		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'todoList', '|', 'outdent', 'indent', '|', 'undo', 'redo' ],
+		plugins: [
+			Enter, Typing, Heading, Paragraph, Undo, DocumentList, TodoDocumentList, Indent, Clipboard, Alignment, SourceEditing,
+			GeneralHtmlSupport
+		],
+		toolbar: [
+			'heading', '|',
+			'bulletedList', 'numberedList', 'todoList', '|',
+			'outdent', 'indent', '|',
+			'alignment', '|',
+			'undo', 'redo', '|',
+			'sourceEditing'
+		],
 		list: {
 			multiBlock: false
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /./,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
+			]
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		const contentPreviewBox = document.getElementById( 'preview' );
+
+		contentPreviewBox.innerHTML = editor.getData();
+
+		editor.model.document.on( 'change:data', () => {
+			contentPreviewBox.innerHTML = editor.getData();
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
