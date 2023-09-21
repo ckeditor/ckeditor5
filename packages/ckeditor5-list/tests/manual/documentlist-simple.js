@@ -16,6 +16,7 @@ import { Indent } from '@ckeditor/ckeditor5-indent';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 
 import DocumentList from '../../src/documentlist';
 import TodoDocumentList from '../../src/tododocumentlist';
@@ -24,7 +25,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Enter, Typing, Heading, Paragraph, Undo, DocumentList, TodoDocumentList, Indent, Clipboard, Alignment, SourceEditing,
-			GeneralHtmlSupport
+			GeneralHtmlSupport, Autoformat
 		],
 		toolbar: [
 			'heading', '|',
