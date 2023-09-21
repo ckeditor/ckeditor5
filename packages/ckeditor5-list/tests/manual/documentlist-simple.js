@@ -15,11 +15,12 @@ import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 
 import DocumentList from '../../src/documentlist';
+import TodoDocumentList from '../../src/tododocumentlist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, DocumentList, Indent, Clipboard ],
-		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'undo', 'redo' ],
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, DocumentList, TodoDocumentList, Indent, Clipboard ],
+		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'todoList', '|', 'outdent', 'indent', '|', 'undo', 'redo' ],
 		list: {
 			multiBlock: false
 		}

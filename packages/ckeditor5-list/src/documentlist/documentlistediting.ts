@@ -416,9 +416,9 @@ export default class DocumentListEditing extends Plugin {
 		const elementName = multiBlock ? 'paragraph' : 'listItem';
 
 		editor.conversion.for( 'upcast' )
-			// Convert <li> to a generic paragraph so the content of <li> is always inside a block.
+			// Convert <li> to a generic paragraph (or listItem element) so the content of <li> is always inside a block.
 			// Setting the listType attribute to let other features (to-do list) know that this is part of a list item.
-			// This is important to properly handle simple lists so that paragraphs inside a list item won't break the list item.
+			// This is also important to properly handle simple lists so that paragraphs inside a list item won't break the list item.
 			// <li>  <-- converted to listItem
 			//   <p></p> <-- should be also converted to listItem, so it won't split and replace the listItem generated from the above li.
 			.elementToElement( {
