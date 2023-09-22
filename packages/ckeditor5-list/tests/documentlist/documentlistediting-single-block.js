@@ -13,10 +13,12 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
 import DocumentListSplitCommand from '../../src/documentlist/documentlistsplitcommand';
@@ -35,7 +37,7 @@ describe( 'DocumentListEditing (multiBlock=false)', () => {
 				multiBlock: false
 			},
 			plugins: [ Paragraph, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
-				BlockQuoteEditing, TableEditing, HeadingEditing ]
+				BlockQuoteEditing, TableEditing, HeadingEditing, AlignmentEditing ]
 		} );
 
 		model = editor.model;
@@ -277,6 +279,123 @@ describe( 'DocumentListEditing (multiBlock=false)', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
+		} );
+	} );
+
+	describe( 'upcast', () => {
+		it( 'should split multi block to a separate list items', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>' +
+						'<p>foo</p>' +
+						'<p>bar</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<listItem listIndent="0" listItemId="a00" listType="bulleted">foo</listItem>' +
+				'<listItem listIndent="0" listItemId="a01" listType="bulleted">bar</listItem>'
+			);
+		} );
+
+		it( 'should split multi block nested list to a separate list items', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>' +
+						'<ul>' +
+							'<li>' +
+								'<p>foo</p>' +
+								'<p>bar</p>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<listItem listIndent="0" listItemId="a01" listType="bulleted"></listItem>' +
+				'<listItem listIndent="1" listItemId="a00" listType="bulleted">foo</listItem>' +
+				'<listItem listIndent="1" listItemId="a02" listType="bulleted">bar</listItem>'
+			);
+		} );
+
+		it( 'should split multi block nested block to a separate list items', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>' +
+						'<p>foo</p>' +
+						'<ul>' +
+							'<li>' +
+								'<p>a</p>' +
+								'<p>b</p>' +
+							'</li>' +
+						'</ul>' +
+						'<p>bar</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<listItem listIndent="0" listItemId="a01" listType="bulleted">foo</listItem>' +
+				'<listItem listIndent="1" listItemId="a00" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listItemId="a02" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listItemId="a03" listType="bulleted">bar</listItem>'
+			);
+		} );
+	} );
+
+	describe( 'downcast - editing', () => {
+		it( 'should use bogus paragraph', () => {
+			setModelData( model,
+				'<listItem listIndent="0" listItemId="a" listType="bulleted">foo</listItem>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should use paragraph if there are any non-list attributes on the block', () => {
+			setModelData( model,
+				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li><p style="text-align:center">foo</p></li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should refresh item after adding non-list attribute', () => {
+			setModelData( model,
+				'<listItem listIndent="0" listItemId="a" listType="bulleted">foo</listItem>'
+			);
+
+			editor.execute( 'alignment', { value: 'center' } );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li><p style="text-align:center">foo</p></li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should refresh item after removing non-list attribute', () => {
+			setModelData( model,
+				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
+			);
+
+			editor.execute( 'alignment', { value: 'left' } );
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'</ul>'
+			);
 		} );
 	} );
 } );
