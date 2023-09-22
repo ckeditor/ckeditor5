@@ -289,11 +289,21 @@ export default class SearchTextView<
 				let primaryText, secondaryText;
 
 				if ( data.totalItemsCount ) {
-					primaryText = defaultTextConfig?.notFound?.primary || t( 'No results found' );
-					secondaryText = defaultTextConfig?.notFound?.secondary || '';
+					if ( defaultTextConfig && defaultTextConfig.notFound ) {
+						primaryText = defaultTextConfig.notFound.primary;
+						secondaryText = defaultTextConfig.notFound.secondary;
+					} else {
+						primaryText = t( 'No results found' );
+						secondaryText = '';
+					}
 				} else {
-					primaryText = defaultTextConfig?.noSearchableItems?.primary || t( 'No searchable items' );
-					secondaryText = defaultTextConfig?.noSearchableItems?.secondary || '';
+					if ( defaultTextConfig && defaultTextConfig.noSearchableItems ) {
+						primaryText = defaultTextConfig.noSearchableItems.primary;
+						secondaryText = defaultTextConfig.noSearchableItems.secondary;
+					} else {
+						primaryText = t( 'No searchable items' );
+						secondaryText = '';
+					}
 				}
 
 				infoView.set( {
