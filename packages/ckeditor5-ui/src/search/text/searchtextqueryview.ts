@@ -19,7 +19,7 @@ import { icons } from '@ckeditor/ckeditor5-core';
 /**
  * A search input field for the {@link module:ui/search/text/searchtextview~SearchTextView} component.
  *
- * @private
+ * @internal
  * @extends module:ui/labeledfield/labeledfieldview~LabeledFieldView
  */
 export default class SearchTextQueryView<

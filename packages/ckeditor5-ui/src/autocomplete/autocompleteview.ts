@@ -28,6 +28,8 @@ export default class AutocompleteView<
 	 */
 	protected override _config: AutocompleteViewConfig<TQueryFieldView>;
 
+	declare public resultsView: AutocompleteResultsView;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -44,21 +46,20 @@ export default class AutocompleteView<
 			}
 		} );
 
-		const resultsView = this.resultsView as AutocompleteResultsView;
-		const bindResultsView = resultsView.bindTemplate;
+		const bindResultsView = this.resultsView.bindTemplate;
 
-		resultsView.set( 'isVisible', false );
-		resultsView.set( '_position', 's' );
-		resultsView.set( '_width', 0 );
+		this.resultsView.set( 'isVisible', false );
+		this.resultsView.set( '_position', 's' );
+		this.resultsView.set( '_width', 0 );
 
-		resultsView.extendTemplate( {
+		this.resultsView.extendTemplate( {
 			attributes: {
 				class: [
 					bindResultsView.if( 'isVisible', 'ck-hidden', value => !value ),
 					bindResultsView.to( '_position', value => `ck-search__results_${ value }` )
 				],
 				style: {
-					width: bindResultsView.to( '_width', value => toPx( value ) )
+					width: bindResultsView.to( '_width', toPx )
 				}
 			}
 		} );
@@ -70,7 +71,7 @@ export default class AutocompleteView<
 
 			if ( isFocused ) {
 				// Reset the scroll position of the results view whenever the autocomplete reopens.
-				resultsView.element!.scrollTop = 0;
+				this.resultsView.element!.scrollTop = 0;
 			} else if ( config.resetOnBlur ) {
 				this.queryView.reset();
 			}
@@ -86,7 +87,7 @@ export default class AutocompleteView<
 
 		// Hide the results view when the user presses the ESC key.
 		this.keystrokes.set( 'esc', ( evt, cancel ) => {
-			resultsView.isVisible = false;
+			this.resultsView.isVisible = false;
 			cancel();
 		} );
 
@@ -116,11 +117,11 @@ export default class AutocompleteView<
 			this.queryView.fieldView.value = this.queryView.fieldView.element!.value = value;
 
 			// Finally, hide the results view. The focus has been moved earlier so this is safe.
-			resultsView.isVisible = false;
+			this.resultsView.isVisible = false;
 		} );
 
 		// Update the position and width of the results view when it becomes visible.
-		resultsView.on( 'change:isVisible', () => {
+		this.resultsView.on( 'change:isVisible', () => {
 			this._updateResultsViewWidthAndPosition();
 		} );
 	}
@@ -129,13 +130,11 @@ export default class AutocompleteView<
 	 * Updates the position of the results view on demand.
 	 */
 	private _updateResultsViewWidthAndPosition() {
-		const resultsView = ( this.resultsView as AutocompleteResultsView );
-
-		if ( !resultsView.isVisible ) {
+		if ( !this.resultsView.isVisible ) {
 			return;
 		}
 
-		resultsView._width = new Rect( this.queryView.fieldView.element! ).width;
+		this.resultsView._width = new Rect( this.queryView.fieldView.element! ).width;
 
 		const optimalResultsPosition = AutocompleteView._getOptimalPosition( {
 			element: this.resultsView.element!,
@@ -145,18 +144,17 @@ export default class AutocompleteView<
 		} );
 
 		// _getOptimalPosition will return null if there is no optimal position found (e.g. target is off the viewport).
-		resultsView._position = optimalResultsPosition ? optimalResultsPosition.name as string : 's';
+		this.resultsView._position = optimalResultsPosition ? optimalResultsPosition.name : 's';
 	}
 
 	/**
 	 * Updates the visibility of the results view on demand.
 	 */
 	private _updateResultsVisibility() {
-		const resultsView = ( this.resultsView as AutocompleteResultsView );
 		const queryMinChars = typeof this._config.queryMinChars === 'undefined' ? 0 : this._config.queryMinChars;
 		const queryLength = this.queryView.fieldView.element!.value.length;
 
-		resultsView.isVisible = this.focusTracker.isFocused && this.isEnabled && queryLength >= queryMinChars;
+		this.resultsView.isVisible = this.focusTracker.isFocused && this.isEnabled && queryLength >= queryMinChars;
 	}
 
 	/**
@@ -204,7 +202,7 @@ export interface AutocompleteResultsView extends SearchResultsView {
 	 *
 	 * @internal
 	*/
-	_position: string;
+	_position?: string;
 
 	/**
 	 * The observable property determining the CSS width of the results view.

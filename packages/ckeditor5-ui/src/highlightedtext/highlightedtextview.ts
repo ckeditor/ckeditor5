@@ -21,6 +21,8 @@ export default class HighlightedTextView extends View {
 	 * The text that can be highlighted using the {@link #highlightText} method.
 	 *
 	 * **Note:** When this property changes, the previous highlighting is removed.
+	 *
+	 * @observable
 	 */
 	declare public text: string | undefined;
 
@@ -62,31 +64,31 @@ export default class HighlightedTextView extends View {
 
 	/**
 	 * Updates element's innerHTML with the passed content.
-	 *
-	 * @param newText
 	 */
 	private _updateInnerHTML( newInnerHTML: string | undefined ) {
 		this.element!.innerHTML = newInnerHTML || '';
 	}
 }
 
-// Replaces RegExp occurrences with <mark> tags in a text.
-//
-// @param text A text to get marked.
-// @param [regExp] An optional RegExp. If not passed, this is a pass-through function.
-// @returns A text with RegExp occurrences marked by <mark>.
-function markText( text: string, regExp: RegExp | null ) {
+/**
+ * Replaces RegExp occurrences with <mark> tags in a text.
+ *
+ * @param text A text to get marked.
+ * @param regExp An optional RegExp. If not passed, this is a pass-through function.
+ * @returns A text with RegExp occurrences marked by <mark>.
+ */
+function markText( text: string, regExp?: RegExp | null ) {
 	if ( !regExp ) {
 		return escape( text );
 	}
 
 	const textParts: Array<{ text: string; isMatch: boolean }> = [];
 	let lastMatchEnd = 0;
-	let matchInfo;
+	let matchInfo = regExp.exec( text );
 
 	// Iterate over all matches and create an array of text parts. The idea is to mark which parts are query matches
 	// so that later on they can be highlighted.
-	while ( ( matchInfo = regExp.exec( text ) ) !== null ) {
+	while ( matchInfo !== null ) {
 		const curMatchStart = matchInfo.index;
 		// Detect if there was something between last match and this one.
 		if ( curMatchStart !== lastMatchEnd ) {
@@ -102,6 +104,7 @@ function markText( text: string, regExp: RegExp | null ) {
 		} );
 
 		lastMatchEnd = regExp.lastIndex;
+		matchInfo = regExp.exec( text );
 	}
 
 	// Your match might not be the last part of a string. Be sure to add any plain text following the last match.

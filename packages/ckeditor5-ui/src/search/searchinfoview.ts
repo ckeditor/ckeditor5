@@ -12,7 +12,7 @@ import View from '../view';
 /**
  * A view displaying an information text related to different states of {@link module:ui/search/text/searchtextview~SearchTextView}.
  *
- * @private
+ * @internal
  */
 export default class SearchInfoView extends View {
 	/**

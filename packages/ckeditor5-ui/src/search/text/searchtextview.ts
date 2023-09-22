@@ -81,6 +81,7 @@ export default class SearchTextView<
 	 * Controls whether the component is in read-only mode.
 	 *
 	 * @default true
+	 * @observable
 	 */
 	declare public isEnabled: boolean;
 
@@ -88,6 +89,7 @@ export default class SearchTextView<
 	 * The number of results found for the current search query. Updated upon the {@link #search} event.
 	 *
 	 * @default 0
+	 * @observable
 	 */
 	declare public resultsCount: number;
 
@@ -95,6 +97,7 @@ export default class SearchTextView<
 	 * The number of the items that can be searched in the {@link #filteredView}. Updated upon the {@link #search} event.
 	 *
 	 * @default 0
+	 * @observable
 	 */
 	declare public totalItemsCount: number;
 
@@ -111,6 +114,8 @@ export default class SearchTextView<
 	 * @readonly
 	 */
 	declare public readonly focusableChildren: ViewCollection;
+
+	public declare locale: Locale;
 
 	/**
 	 * Provides the focus management (keyboard navigation) between {@link #queryView} and {@link #filteredView}.
@@ -177,7 +182,7 @@ export default class SearchTextView<
 			}
 		} );
 
-		this.on( 'search', ( evt, { resultsCount, totalItemsCount } ) => {
+		this.on<SearchTextViewSearchEvent>( 'search', ( evt, { resultsCount, totalItemsCount } ) => {
 			this.resultsCount = resultsCount;
 			this.totalItemsCount = totalItemsCount;
 		} );
@@ -256,12 +261,9 @@ export default class SearchTextView<
 
 	/**
 	 * Creates a search field view based on configured creator..
-	 *
-	 * @param locale The localization services instance.
-	 * @param label The label of the search field.
 	 */
 	private _createSearchTextQueryView(): SearchTextQueryView<TQueryFieldView> {
-		const queryView = new SearchTextQueryView<TQueryFieldView>( this.locale!, this._config.queryView );
+		const queryView = new SearchTextQueryView<TQueryFieldView>( this.locale, this._config.queryView );
 
 		this.listenTo( queryView.fieldView, 'input', () => {
 			this.search( queryView.fieldView.element!.value );
@@ -278,12 +280,12 @@ export default class SearchTextView<
 	 * was specified in the view config.
 	 */
 	private _enableDefaultInfoViewBehavior(): void {
-		const t = this.locale!.t;
+		const t = this.locale.t;
 		const infoView = this.infoView as SearchInfoView;
 
 		this.on<SearchTextViewSearchEvent>( 'search', ( evt, data ) => {
 			if ( !data.resultsCount ) {
-				const defaultTextConfig = this._config.infoView?.text;
+				const defaultTextConfig = this._config.infoView && this._config.infoView.text;
 				let primaryText, secondaryText;
 
 				if ( data.totalItemsCount ) {
@@ -380,9 +382,23 @@ export type SearchTextViewDefaultInfoText = string | ( ( query: string, resultsC
  */
 export type SearchTextViewSearchEvent = {
 	name: 'search';
-	args: [ {
-		query: string;
-		resultsCount: number;
-		totalItemsCount: number;
-	} ];
+	args: [ SearchTextViewSearchEventData ];
+};
+
+export type SearchTextViewSearchEventData = {
+
+	/**
+	 * The search query string.
+	 */
+	query: string;
+
+	/**
+	 * The number of results found for the current search query.
+	 */
+	resultsCount: number;
+
+	/**
+	 * The number of the items that can be searched.
+	 */
+	totalItemsCount: number;
 };
