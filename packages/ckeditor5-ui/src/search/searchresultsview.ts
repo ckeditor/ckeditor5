@@ -9,13 +9,20 @@
 
 import View from '../view';
 import type ViewCollection from '../viewcollection';
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type { FocusableView } from '../focuscycler';
+import { FocusTracker, type Locale } from '@ckeditor/ckeditor5-utils';
+import { default as FocusCycler, type ViewWithFocusableChildren } from '../focuscycler';
 
 /**
  * A sub-component of {@link module:ui/search/text/searchtextview~SearchTextView}. It hosts the filtered and the information views.
  */
-export default class SearchResultsView extends View implements FocusableView {
+export default class SearchResultsView extends View implements ViewWithFocusableChildren {
+	/**
+	 * Tracks information about the DOM focus in the view.
+	 *
+	 * @readonly
+	 */
+	public focusTracker: FocusTracker;
+
 	/**
 	 * The collection of the child views inside of the list item {@link #element}.
 	 *
@@ -24,12 +31,20 @@ export default class SearchResultsView extends View implements FocusableView {
 	public children: ViewCollection;
 
 	/**
+	 * Provides the focus management (keyboard navigation) in the view.
+	 *
+	 * @readonly
+	 */
+	protected _focusCycler: FocusCycler;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale: Locale ) {
 		super( locale );
 
 		this.children = this.createCollection();
+		this.focusTracker = new FocusTracker();
 
 		this.setTemplate( {
 			tag: 'div',
@@ -42,16 +57,42 @@ export default class SearchResultsView extends View implements FocusableView {
 			},
 			children: this.children
 		} );
+
+		this._focusCycler = new FocusCycler( {
+			focusables: this.children,
+			focusTracker: this.focusTracker
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override render(): void {
+		super.render();
+
+		for ( const child of this.children ) {
+			this.focusTracker.add( child.element! );
+		}
+	}
+
+	/**
+	 * Focuses the view.
+	 */
+	public focus(): void {
+		this._focusCycler.focusFirst();
 	}
 
 	/**
 	 * Focuses the first child view.
 	 */
-	public focus(): void {
-		const firstFocusableChild = this.children.find( ( child: any ) => typeof child.focus === 'function' );
+	public focusFirst(): void {
+		this._focusCycler.focusFirst();
+	}
 
-		if ( firstFocusableChild ) {
-			( firstFocusableChild as FocusableView ).focus();
-		}
+	/**
+	 * Focuses the last child view.
+	 */
+	public focusLast(): void {
+		this._focusCycler.focusLast();
 	}
 }

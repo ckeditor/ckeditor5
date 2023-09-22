@@ -413,7 +413,7 @@ describe( 'SearchTextView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.queryView.element;
 
-					const spy = sinon.spy( view.resultsView, 'focus' );
+					const spy = sinon.spy( view.resultsView, 'focusFirst' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -433,7 +433,7 @@ describe( 'SearchTextView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = filteredView.element;
 
-					const spy = sinon.spy( view.resultsView, 'focus' );
+					const spy = sinon.spy( view.resultsView, 'focusLast' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );

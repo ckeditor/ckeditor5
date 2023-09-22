@@ -425,6 +425,24 @@ describe( 'ListView', () => {
 		} );
 	} );
 
+	describe( 'focusFirst()', () => {
+		it( 'focuses the first focusable item in DOM', () => {
+			// No children to focus.
+			view.focusFirst();
+
+			// The second child is focusable.
+			view.items.add( nonFocusable() );
+			view.items.add( focusable() );
+			view.items.add( focusable() );
+			view.items.add( nonFocusable() );
+
+			const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+			view.focusFirst();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	describe( 'focusLast()', () => {
 		it( 'focuses the last focusable item in DOM', () => {
 			// No children to focus.
@@ -433,9 +451,10 @@ describe( 'ListView', () => {
 			// The second child is focusable.
 			view.items.add( nonFocusable() );
 			view.items.add( focusable() );
+			view.items.add( focusable() );
 			view.items.add( nonFocusable() );
 
-			const spy = sinon.spy( view.items.get( 1 ), 'focus' );
+			const spy = sinon.spy( view.items.get( 2 ), 'focus' );
 			view.focusLast();
 
 			sinon.assert.calledOnce( spy );

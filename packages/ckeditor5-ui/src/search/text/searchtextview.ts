@@ -122,7 +122,7 @@ export default class SearchTextView<
 	 *
 	 * @readonly
 	 */
-	private _focusCycler: FocusCycler;
+	protected _focusCycler: FocusCycler;
 
 	/**
 	 * The cached configuration object.

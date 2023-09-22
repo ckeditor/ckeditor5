@@ -11,7 +11,8 @@ import {
 	isVisible,
 	type ArrayOrItem,
 	type FocusTracker,
-	type KeystrokeHandler
+	type KeystrokeHandler,
+	EmitterMixin
 } from '@ckeditor/ckeditor5-utils';
 
 import type View from './view';
@@ -69,7 +70,7 @@ import type ViewCollection from './viewcollection';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-export default class FocusCycler {
+export default class FocusCycler extends EmitterMixin() {
 	/**
 	 * A {@link module:ui/view~View view} collection that the cycler operates on.
 	 */
@@ -116,6 +117,8 @@ export default class FocusCycler {
 		keystrokeHandler?: KeystrokeHandler;
 		actions?: FocusCyclerActions;
 	} ) {
+		super();
+
 		this.focusables = options.focusables;
 		this.focusTracker = options.focusTracker;
 		this.keystrokeHandler = options.keystrokeHandler;
@@ -146,7 +149,7 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public get first(): FocusableView | null {
-		return ( this.focusables.find( isFocusable ) || null ) as FocusableView | null;
+		return ( this.focusables.find( isPlainFocusableView ) || null ) as FocusableView | null;
 	}
 
 	/**
@@ -156,7 +159,7 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public get last(): FocusableView | null {
-		return ( this.focusables.filter( isFocusable ).slice( -1 )[ 0 ] || null ) as FocusableView | null;
+		return ( this.focusables.filter( isPlainFocusableView ).slice( -1 )[ 0 ] || null ) as FocusableView | null;
 	}
 
 	/**
@@ -210,7 +213,7 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusFirst(): void {
-		this._focus( this.first );
+		this._focus( this.first, 1 );
 	}
 
 	/**
@@ -219,7 +222,7 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusLast(): void {
-		this._focus( this.last );
+		this._focus( this.last, -1 );
 	}
 
 	/**
@@ -228,7 +231,13 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusNext(): void {
-		this._focus( this.next );
+		const next = this.next;
+
+		this._focus( next, 1 );
+
+		if ( next == this.first ) {
+			this.fire<FocusCyclerForwardCycleEvent>( 'forwardCycle' );
+		}
 	}
 
 	/**
@@ -237,14 +246,34 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusPrevious(): void {
-		this._focus( this.previous );
+		const previous = this.previous;
+
+		this._focus( previous, -1 );
+
+		if ( previous == this.last ) {
+			this.fire<FocusCyclerBackwardCycleEvent>( 'backwardCycle' );
+		}
 	}
 
 	/**
 	 * Focuses the given view if it exists.
+	 *
+	 * @param view The view to be focused
+	 * @param childrenFocusDirection The direction of the focus if the view has focusable children.
+	 * @returns
 	 */
-	private _focus( view: FocusableView | null ) {
-		if ( view ) {
+	private _focus( view: FocusableView | null, childrenFocusDirection: 1 | -1 ) {
+		if ( !view ) {
+			return;
+		}
+
+		if ( isViewWithFocusableChildren( view ) ) {
+			if ( childrenFocusDirection === 1 ) {
+				view.focusFirst();
+			} else if ( childrenFocusDirection === -1 ) {
+				view.focusLast();
+			}
+		} else {
 			view.focus();
 		}
 	}
@@ -276,7 +305,7 @@ export default class FocusCycler {
 		do {
 			const view = this.focusables.get( index )!;
 
-			if ( isFocusable( view ) ) {
+			if ( isPlainFocusableView( view ) ) {
 				return view as FocusableView;
 			}
 
@@ -288,12 +317,16 @@ export default class FocusCycler {
 	}
 }
 
-/**
- * A {@link module:ui/view~View} that can be focused, meaning it has a `focus()` method.
- */
-export interface FocusableView extends View {
+export type FocusableView = SimpleFocusableView	| ViewWithFocusableChildren;
+
+export type SimpleFocusableView = View & {
 	focus(): void;
-}
+};
+
+export type ViewWithFocusableChildren = SimpleFocusableView & {
+	focusFirst(): void;
+	focusLast(): void;
+};
 
 export interface FocusCyclerActions {
 	focusFirst?: ArrayOrItem<string>;
@@ -303,10 +336,39 @@ export interface FocusCyclerActions {
 }
 
 /**
+ * Fired when the focus cycler is about to move the focus from the last focusable item
+ * to the first one.
+ *
+ * @eventName ~FocusCycler#forwardCycle
+ */
+export type FocusCyclerForwardCycleEvent = {
+	name: 'forwardCycle';
+	args: [];
+};
+
+/**
+ * Fired when the focus cycler is about to move the focus from the first focusable item
+ * to the last one.
+ *
+ * @eventName ~FocusCycler#backwardCycle
+ */
+export type FocusCyclerBackwardCycleEvent = {
+	name: 'backwardCycle';
+	args: [];
+};
+
+/**
  * Checks whether a view is focusable.
  *
  * @param view A view to be checked.
  */
-function isFocusable( view: View & { focus?: unknown } ) {
-	return !!( view.focus && isVisible( view.element ) );
+function isPlainFocusableView( view: View ): view is SimpleFocusableView {
+	return !!( 'focus' in view && isVisible( view.element ) );
+}
+
+/**
+ * Checks whether the view meets the requirements of the {@link ViewWithFocusableChildren} interface.
+ */
+function isViewWithFocusableChildren( view: View ): view is ViewWithFocusableChildren {
+	return isPlainFocusableView( view ) && 'focusFirst' in view && 'focusLast' in view;
 }

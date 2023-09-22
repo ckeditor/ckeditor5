@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { FocusableView } from '../focuscycler';
-import type View from '../view';
+import type { ViewWithFocusableChildren } from '../focuscycler';
 
 /**
  * @module ui/search/filteredview
@@ -13,7 +12,7 @@ import type View from '../view';
 /**
  * A view that can be filtered by a {@link module:ui/search/text/searchtextview~SearchTextView}.
  */
-export default interface FilteredView extends View, FocusableView {
+export default interface FilteredView extends ViewWithFocusableChildren {
 
 	/**
 	 * Filters the view by the given regular expression.

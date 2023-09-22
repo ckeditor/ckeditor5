@@ -404,6 +404,25 @@ describe( 'FocusCycler', () => {
 				cycler.focusNext();
 			} ).to.not.throw();
 		} );
+
+		it( 'fires an event while making full cycle back to the beginning', () => {
+			focusables = new ViewCollection( [ focusable(), focusable(), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+
+			const forwardCycleSpy = sinon.spy();
+			const backwardCycleSpy = sinon.spy();
+
+			cycler.on( 'forwardCycle', forwardCycleSpy );
+			cycler.on( 'backwardCycle', backwardCycleSpy );
+
+			cycler.focusNext();
+			focusTracker.focusedElement = focusables.get( 0 ).element;
+			cycler.focusNext();
+
+			sinon.assert.calledOnce( forwardCycleSpy );
+			sinon.assert.notCalled( backwardCycleSpy );
+		} );
 	} );
 
 	describe( 'focusPrevious()', () => {
@@ -430,6 +449,25 @@ describe( 'FocusCycler', () => {
 			expect( () => {
 				cycler.focusPrevious();
 			} ).to.not.throw();
+		} );
+
+		it( 'fires an event while making full cycle back to the end', () => {
+			focusables = new ViewCollection( [ focusable(), focusable(), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+			focusTracker.focusedElement = focusables.get( 0 ).element;
+
+			const forwardCycleSpy = sinon.spy();
+			const backwardCycleSpy = sinon.spy();
+
+			cycler.on( 'forwardCycle', forwardCycleSpy );
+			cycler.on( 'backwardCycle', backwardCycleSpy );
+
+			cycler.focusPrevious();
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+			cycler.focusPrevious();
+
+			sinon.assert.notCalled( forwardCycleSpy );
+			sinon.assert.calledOnce( backwardCycleSpy );
 		} );
 	} );
 
