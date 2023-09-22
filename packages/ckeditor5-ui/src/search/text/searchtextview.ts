@@ -308,7 +308,7 @@ export default class SearchTextView<
 
 				infoView.set( {
 					primaryText: normalizeInfoText( primaryText, data ),
-					secondaryText: normalizeInfoText( secondaryText, data ),
+					secondaryText: normalizeInfoText( secondaryText!, data ),
 					isVisible: true
 				} );
 			} else {
