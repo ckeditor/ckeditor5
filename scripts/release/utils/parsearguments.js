@@ -18,7 +18,8 @@ module.exports = function parseArguments( cliArguments ) {
 		boolean: [
 			'nightly',
 			'verbose',
-			'compile-only'
+			'compile-only',
+			'ci'
 		],
 
 		number: [
@@ -39,7 +40,8 @@ module.exports = function parseArguments( cliArguments ) {
 			packages: null,
 			branch: 'release',
 			'npm-tag': 'staging',
-			verbose: false
+			verbose: false,
+			ci: false
 		}
 	};
 
@@ -57,6 +59,10 @@ module.exports = function parseArguments( cliArguments ) {
 
 	if ( options.nightly ) {
 		options.npmTag = 'nightly';
+	}
+
+	if ( process.env.CI ) {
+		options.ci = true;
 	}
 
 	return options;
@@ -80,4 +86,6 @@ module.exports = function parseArguments( cliArguments ) {
  * @property {Array.<String>|null} packages
  *
  * @property {Boolean} [verbose=false]
+ *
+ * @property {Boolean} [ci=false]
  */
