@@ -317,13 +317,17 @@ export default class FocusCycler extends EmitterMixin() {
 	}
 }
 
-export type FocusableView = SimpleFocusableView	| ViewWithFocusableChildren;
-
-export type SimpleFocusableView = View & {
+/**
+ * A view that can be focused.
+ */
+export type FocusableView = View & {
 	focus(): void;
 };
 
-export type ViewWithFocusableChildren = SimpleFocusableView & {
+/**
+ * A view that can be focused and contains some children that also can be focused.
+ */
+export type ViewWithFocusableChildren = FocusableView & {
 	focusFirst(): void;
 	focusLast(): void;
 };
@@ -362,7 +366,7 @@ export type FocusCyclerBackwardCycleEvent = {
  *
  * @param view A view to be checked.
  */
-function isPlainFocusableView( view: View ): view is SimpleFocusableView {
+function isPlainFocusableView( view: View ): view is FocusableView {
 	return !!( 'focus' in view && isVisible( view.element ) );
 }
 

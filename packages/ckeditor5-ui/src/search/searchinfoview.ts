@@ -7,7 +7,7 @@
  * @module ui/search/searchinfoview
 */
 
-import type { SimpleFocusableView } from '../focuscycler';
+import type { FocusableView } from '../focuscycler';
 import View from '../view';
 
 /**
@@ -15,7 +15,7 @@ import View from '../view';
  *
  * @internal
  */
-export default class SearchInfoView extends View implements SimpleFocusableView {
+export default class SearchInfoView extends View implements FocusableView {
 	/**
 	 * Controls whether the view is visible.
 	 *
