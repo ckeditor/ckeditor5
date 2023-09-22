@@ -11,6 +11,7 @@ import { Rect, type Locale, toUnit, getBorderWidths, global } from '@ckeditor/ck
 import InputBase from '../input/inputbase';
 
 import '../../theme/components/input/input.css';
+import '../../theme/components/textarea/textarea.css';
 
 /**
  * The textarea view class.
