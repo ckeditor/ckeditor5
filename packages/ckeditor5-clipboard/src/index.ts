@@ -14,7 +14,7 @@ export {
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData,
 	type ViewDocumentClipboardOutputEvent,
-	type ModelDocumentOutputTransformationEvent
+	type ClipboardOutputTransformationEvent
 } from './clipboardpipeline';
 
 export type {

@@ -12,19 +12,17 @@ import {
 	type MultiCommand
 } from 'ckeditor5/src/core';
 
-import {
-	type DowncastAttributeEvent,
-	type DocumentChangeEvent,
-	type DowncastWriter,
-	type Element,
-	type Model,
-	type ModelGetSelectedContentEvent,
-	type ModelInsertContentEvent,
-	type UpcastElementEvent,
-	type ViewDocumentTabEvent,
-	type ViewElement,
-	type Writer,
-	UpcastWriter
+import type {
+	DowncastAttributeEvent,
+	DocumentChangeEvent,
+	DowncastWriter,
+	Element,
+	Model,
+	ModelInsertContentEvent,
+	UpcastElementEvent,
+	ViewDocumentTabEvent,
+	ViewElement,
+	Writer
 } from 'ckeditor5/src/engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
@@ -68,9 +66,9 @@ import ListWalker, {
 	ListBlocksIterable
 } from './utils/listwalker';
 
-import type {
+import {
 	ClipboardPipeline,
-	ModelDocumentOutputTransformationEvent
+	type ClipboardOutputTransformationEvent
 } from 'ckeditor5/src/clipboard';
 
 import '../../theme/documentlist.css';
@@ -110,7 +108,7 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Enter, Delete, DocumentListUtils ] as const;
+		return [ Enter, Delete, DocumentListUtils, ClipboardPipeline ] as const;
 	}
 
 	/**
@@ -514,7 +512,7 @@ export default class DocumentListEditing extends Plugin {
 		//	                       └─────────────────────┴───────────────────┘
 		//
 		// See https://github.com/ckeditor/ckeditor5/issues/11608, https://github.com/ckeditor/ckeditor5/issues/14969
-		this.listenTo<ModelDocumentOutputTransformationEvent>( clipboardPipeline, 'outputTransformation', ( evt, data ) => {
+		this.listenTo<ClipboardOutputTransformationEvent>( clipboardPipeline, 'outputTransformation', ( evt, data ) => {
 			model.change( writer => {
 				const allContentChildren = Array.from( data.content.getChildren() );
 				const lastItem = allContentChildren[ allContentChildren.length - 1 ] as Element;
