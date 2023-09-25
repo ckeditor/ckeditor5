@@ -636,6 +636,75 @@ describe( 'Drag and Drop target', () => {
 
 			expect( model.markers.get( 'drop-target' ) ).to.be.null;
 		} );
+
+		it( 'should find drop position when mouse is over the bottom half of the block element', () => {
+			setModelData( model,
+				'<paragraph>foobar</paragraph>' +
+				'<horizontalLine></horizontalLine>'
+			);
+
+			const hrViewElement = mapper.toViewElement( root.getNodeByPath( [ 1 ] ) );
+			const { x, y, height } = domConverter.mapViewToDom( hrViewElement ).getBoundingClientRect();
+
+			// Simulate mouse position at 60% of the `<horizontalLine>` height.
+			dragDropTarget.updateDropMarker(
+				hrViewElement,
+				null,
+				x,
+				y + ( height * 0.6 ),
+				false,
+				LiveRange.fromRange( model.createRangeOn( root.getNodeByPath( [ 0 ] ) ) )
+			);
+
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
+				model.createPositionAt( root.getNodeByPath( [ 1 ] ), 'after' )
+			) ).to.be.true;
+		} );
+
+		it( 'should hide drop target if element cannot be dropped on a given position', () => {
+			setModelData( model,
+				'<paragraph>' +
+					'<imageInline alt="foo" src=""></imageInline>' +
+				'</paragraph>' +
+				'<imageBlock alt="bar" src="">' +
+					'<caption>Caption</caption>' +
+				'</imageBlock>'
+			);
+
+			const blockImageViewElement = mapper.toViewElement( root.getNodeByPath( [ 1 ] ) );
+			const blockImageDomRect = domConverter.mapViewToDom( blockImageViewElement ).getBoundingClientRect();
+
+			// Simulate mouse position at 60% of the `<imageBlock>` height.
+			dragDropTarget.updateDropMarker(
+				blockImageViewElement,
+				null,
+				blockImageDomRect.x,
+				blockImageDomRect.y + ( blockImageDomRect.height * 0.6 ),
+				false,
+				LiveRange.fromRange( model.createRangeOn( root.getNodeByPath( [ 0, 0 ] ) ) )
+			);
+
+			// Marker should be places after the `<imageBlock>` element.
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
+				model.createPositionAt( root.getNodeByPath( [ 1 ] ), 'after' )
+			) ).to.be.true;
+
+			const captionViewElement = mapper.toViewElement( root.getNodeByPath( [ 1, 0 ] ) );
+			const captionDomRect = domConverter.mapViewToDom( captionViewElement ).getBoundingClientRect();
+
+			// Simulate mouse position on `<caption>` element.
+			dragDropTarget.updateDropMarker(
+				captionViewElement,
+				null,
+				captionDomRect.x,
+				captionDomRect.y,
+				false,
+				LiveRange.fromRange( model.createRangeOn( root.getNodeByPath( [ 0, 0 ] ) ) )
+			);
+
+			// Marker should be removed, because `<imageInline>` can't be dropped inside the `<caption>`.
+			expect( model.markers.get( 'drop-target' ) ).to.be.null;
+		} );
 	} );
 
 	describe( 'removeDropMarker', () => {

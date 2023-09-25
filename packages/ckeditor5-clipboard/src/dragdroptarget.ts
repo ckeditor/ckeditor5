@@ -136,7 +136,7 @@ export default class DragDropTarget extends Plugin {
 		}
 
 		if ( draggedRange && !canDropOnRange( this.editor, targetViewElement, targetRange, draggedRange ) ) {
-			return;
+			return this.removeDropMarker();
 		}
 
 		this._updateDropMarkerThrottled( targetRange );
@@ -502,10 +502,17 @@ function canDropOnRange(
 	draggedRange: LiveRange
 ): boolean {
 	if ( draggedRange.containsRange( targetRange ) ) {
-		return false; // Don't drop inside the element being dragged
+		// Can't drop inside the element being dragged.
+		return false;
 	}
 
 	const targetModelElement = editor.editing.mapper.toModelElement( targetViewElement );
+
+	if ( targetModelElement && editor.model.schema.isBlock( targetModelElement ) ) {
+		// If the target element is block, then the dragged element will be placed before or after it, not on it.
+		return true;
+	}
+
 	const draggedModelElement = draggedRange.getContainedElement();
 
 	if (
@@ -513,7 +520,8 @@ function canDropOnRange(
 		draggedModelElement &&
 		!editor.model.schema.checkChild( targetModelElement, draggedModelElement )
 	) {
-		return false; // Don't drop if schema doesn't allow it
+		// Can't drop because the schema doesn't allow it.
+		return false;
 	}
 
 	return true;
