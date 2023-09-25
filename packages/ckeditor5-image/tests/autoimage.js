@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global setTimeout */
+/* globals window, setTimeout */
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
@@ -17,13 +18,35 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import { UploadAdapterMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+
 import Image from '../src/image';
 import ImageUtils from '../src/imageutils';
 import ImageCaption from '../src/imagecaption';
 import AutoImage from '../src/autoimage';
+import ImageBlockEditing from '../src/image/imageblockediting';
+import ImageInlineEditing from '../src/image/imageinlineediting';
+import ImageUploadEditing from '../src/imageupload/imageuploadediting';
 
 describe( 'AutoImage - integration', () => {
-	let editorElement, editor;
+	let editorElement, editor, fileRepository, loader, nativeReaderMock;
+
+	let adapterMocks = [];
+
+	class UploadAdapterPluginMock extends Plugin {
+		init() {
+			fileRepository = this.editor.plugins.get( FileRepository );
+			fileRepository.createUploadAdapter = newLoader => {
+				loader = newLoader;
+				const adapterMock = new UploadAdapterMock( loader );
+
+				adapterMocks.push( adapterMock );
+
+				return adapterMock;
+			};
+		}
+	}
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -40,6 +63,7 @@ describe( 'AutoImage - integration', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+		adapterMocks = [];
 
 		return editor.destroy();
 	} );
@@ -553,6 +577,42 @@ describe( 'AutoImage - integration', () => {
 				done();
 			}, 100 );
 		} );
+
+		it( 'should upload image if FileRepository plugin is loaded', async () => {
+			sinon.stub( window, 'FileReader' ).callsFake( () => {
+				nativeReaderMock = new NativeFileReaderMock();
+	
+				return nativeReaderMock;
+			} );
+
+			sinon.stub( window, 'fetch' ).callsFake( () => {
+				return Promise.resolve( {
+					blob: () => Promise.resolve( new Blob( [ 'SomeData' ], { type: 'image/png' } ) )
+				} );
+			} );
+			
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [
+					Typing, Paragraph, Link, Image, LinkImage, ImageCaption, AutoImage,
+					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing, UploadAdapterPluginMock
+				]
+			} );
+	
+			setData( editor.model, '<paragraph>[]foo</paragraph>' );
+			pasteHtml( editor, 'http://example.com/image.png' );
+	
+			await new Promise(done => setTimeout(async () => {
+				const fileRepository = editor.plugins.get( 'FileRepository' );
+
+				expect( getData( editor.model ) ).to.match(
+					/<paragraph>\[<imageInline uploadId="[a-z0-9]+" uploadStatus="reading"><\/imageInline>\]foo<\/paragraph>/
+				);
+
+				await editor.destroy();
+
+				done();
+			}, 100));
+		} );
 	} );
 
 	it( 'should detach LiveRange', async () => {
@@ -607,6 +667,7 @@ describe( 'AutoImage - integration', () => {
 
 	function createDataTransfer( data ) {
 		return {
+			types: Object.keys(data),
 			getData( type ) {
 				return data[ type ];
 			}
