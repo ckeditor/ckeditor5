@@ -17,11 +17,13 @@ CKSource
 (?i)constructor
 Cordova
 (?i)downcast
+[Dd]ropdown
 ESLint
 Gantt
 hardcode
 JSDoc
 Laravel
+matcher
 mindmap
 (?i)multiline
 [Nn]amespace
@@ -29,6 +31,7 @@ npm
 nvm
 (?i)polyfill
 Rollup
+scrollbar
 Sinon
 Stylelint
 [Ss]uperbuild
@@ -40,6 +43,7 @@ Transifex
 (?i)upcast
 (?i)uploader
 (?i)upvote
+(?i)viewport
 Vite
 Vue
 webpack
