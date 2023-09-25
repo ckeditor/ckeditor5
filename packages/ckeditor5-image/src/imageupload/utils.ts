@@ -32,14 +32,12 @@ export function createImageTypeRegExp( types: Array<string> ): RegExp {
 /**
  * Creates a promise that fetches the image local source (Base64 or blob) and resolves with a `File` object.
  *
- * @param image Image whose source to fetch.
+ * @param imageSrc Source of the image to fetch.
  * @returns A promise which resolves when an image source is fetched and converted to a `File` instance.
  * It resolves with a `File` object. If there were any errors during file processing, the promise will be rejected.
  */
-export function fetchLocalImage( image: ViewElement ): Promise<File> {
+export function fetchImage( imageSrc: string ): Promise<File> {
 	return new Promise( ( resolve, reject ) => {
-		const imageSrc = image.getAttribute( 'src' )!;
-
 		// Fetch works asynchronously and so does not block browser UI when processing data.
 		fetch( imageSrc )
 			.then( resource => resource.blob() )
@@ -63,17 +61,12 @@ export function fetchLocalImage( image: ViewElement ): Promise<File> {
 }
 
 /**
- * Checks whether a given node is an image element with a local source (Base64 or blob).
+ * Checks whether a given node is an image element.
  *
  * @param node The node to check.
  */
-export function isLocalImage( imageUtils: ImageUtils, node: ViewElement ): boolean {
-	if ( !imageUtils.isInlineImageView( node ) || !node.getAttribute( 'src' ) ) {
-		return false;
-	}
-
-	return !!node.getAttribute( 'src' )!.match( /^data:image\/\w+;base64,/g ) ||
-		!!node.getAttribute( 'src' )!.match( /^blob:/g );
+export function isImage( imageUtils: ImageUtils, node: ViewElement ): boolean {
+	return imageUtils.isInlineImageView( node ) && !!node.getAttribute( 'src' );
 }
 
 /**
@@ -116,6 +109,8 @@ function convertLocalImageOnCanvas( imageSrc: string ): Promise<File> {
 function getBlobFromCanvas( imageSrc: string ): Promise<Blob> {
 	return new Promise( ( resolve, reject ) => {
 		const image = global.document.createElement( 'img' );
+
+		image.setAttribute( 'crossorigin', 'anonymous' );
 
 		image.addEventListener( 'load', () => {
 			const canvas = global.document.createElement( 'canvas' );

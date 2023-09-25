@@ -258,6 +258,35 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
+	it( 'should insert image when is included in pasted HTML content', async () => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<p>SomeData</p><img width="50" src=${ base64Sample } /><p>foo</p>`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png' } ) );
+		} );
+
+		await timeout( 100 );
+
+		expect( getModelData( model ) ).to.equal(
+			'<paragraph>SomeData</paragraph>' +
+			'<paragraph><imageInline src="/assets/sample.png" width="50"></imageInline></paragraph><paragraph>foo[]foo</paragraph>'
+		);
+	} );
+
 	it( 'should not insert image when editor is in read-only mode', () => {
 		// Clipboard plugin is required for this test.
 		return VirtualTestEditor
