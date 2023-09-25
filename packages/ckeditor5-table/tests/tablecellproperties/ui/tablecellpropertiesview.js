@@ -695,10 +695,8 @@ describe( 'table cell properties', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.borderStyleDropdown,
 					view.borderColorInput,
-					view.borderColorInput.fieldView.dropdownView.buttonView,
 					view.borderWidthInput,
 					view.backgroundInput,
-					view.backgroundInput.fieldView.dropdownView.buttonView,
 					view.widthInput,
 					view.heightInput,
 					view.paddingInput,
@@ -771,6 +769,49 @@ describe( 'table cell properties', () => {
 					const spy = sinon.spy( view.cancelButtonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'providing seamless forward navigation over child views with their own focusable children and focus cyclers', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.tab,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the border color dropdown button button is focused.
+					view.focusTracker.isFocused = view.borderColorInput.fieldView.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.borderColorInput.element;
+					view.borderColorInput.fieldView.focusTracker.focusedElement =
+						view.borderColorInput.fieldView.dropdownView.buttonView.element;
+
+					const spy = sinon.spy( view.borderWidthInput, 'focus' );
+
+					view.borderColorInput.fieldView.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'providing seamless backward navigation over child views with their own focusable children and focus cyclers', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.tab,
+						shiftKey: true,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					// Mock the border color dropdown input is focused.
+					view.focusTracker.isFocused = view.borderColorInput.fieldView.focusTracker.isFocused = true;
+					view.focusTracker.focusedElement = view.borderColorInput.element;
+					view.borderColorInput.fieldView.focusTracker.focusedElement =
+						view.borderColorInput.fieldView.inputView.element;
+
+					const spy = sinon.spy( view.borderStyleDropdown, 'focus' );
+
+					view.borderColorInput.fieldView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
 					sinon.assert.calledOnce( keyEvtData.stopPropagation );
 					sinon.assert.calledOnce( spy );
