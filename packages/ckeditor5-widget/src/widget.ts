@@ -209,15 +209,21 @@ export default class Widget extends Plugin {
 			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
 
 			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
-				setSelectionInAncestorElement();
+				this._setSelectionInAncestorElement( element, domEventData );
 			}
 
 			return;
 		}
 
+		const parentElement = element.parent;
+
 		// If triple click should select entire paragraph.
-		if ( domEventData.domEvent.detail >= 3 ) {
-			setSelectionInAncestorElement();
+		if ( parentElement &&
+			parentElement.is( 'element' ) &&
+			!isWidget( parentElement ) &&
+			domEventData.domEvent.detail >= 3
+		) {
+			this._setSelectionInAncestorElement( element, domEventData );
 		}
 
 		// If target is not a widget element - check if one of the ancestors is.
@@ -244,20 +250,20 @@ export default class Widget extends Plugin {
 		const modelElement = editor.editing.mapper.toModelElement( element );
 
 		this._setSelectionOverElement( modelElement! );
+	}
 
-		function setSelectionInAncestorElement() {
-			if ( element ) {
-				const mapper = editor.editing.mapper;
-				const viewElement = element.is( 'attributeElement' ) ?
-					element.findAncestor( element => !element.is( 'attributeElement' ) )! : element;
-				const modelElement = mapper.toModelElement( viewElement )!;
+	private _setSelectionInAncestorElement( element: ViewElement, domEventData: DomEventData<MouseEvent> ): void {
+		if ( element ) {
+			const mapper = this.editor.editing.mapper;
+			const viewElement = element.is( 'attributeElement' ) ?
+				element.findAncestor( element => !element.is( 'attributeElement' ) )! : element;
+			const modelElement = mapper.toModelElement( viewElement )!;
 
-				domEventData.preventDefault();
+			domEventData.preventDefault();
 
-				editor.model.change( writer => {
-					writer.setSelection( modelElement, 'in' );
-				} );
-			}
+			this.editor.model.change( writer => {
+				writer.setSelection( modelElement, 'in' );
+			} );
 		}
 	}
 
