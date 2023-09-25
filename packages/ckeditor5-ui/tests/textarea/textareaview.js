@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, document */
+/* global document */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import TextareaView from '../../src/textarea/textareaview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'TextareaView', () => {
 	let wrapper, view;
@@ -43,21 +44,30 @@ describe( 'TextareaView', () => {
 			expect( view.element.style.resize ).to.equal( 'none' );
 		} );
 
-		it( 'should warn if #minHeight is greater than #maxHeight', () => {
-			const warnSpy = testUtils.sinon.stub( console, 'warn' );
-
+		it( 'should throw if #minHeight is greater than #maxHeight', () => {
 			view.minRows = 2;
 			view.maxRows = 3;
-			sinon.assert.notCalled( warnSpy );
-
 			view.minRows = view.maxRows;
-			sinon.assert.notCalled( warnSpy );
 
-			view.minRows = 4;
-			sinon.assert.calledOnceWithMatch( warnSpy, 'ui-textarea-view-min-rows-greater-than-max-rows' );
+			expectToThrowCKEditorError(
+				() => { view.minRows = 4; },
+				'ui-textarea-view-min-rows-greater-than-max-rows',
+				{
+					view,
+					minRows: 4,
+					maxRows: 3
+				}
+			);
 
-			view.maxRows = 5;
-			sinon.assert.calledOnceWithMatch( warnSpy, 'ui-textarea-view-min-rows-greater-than-max-rows' );
+			expectToThrowCKEditorError(
+				() => { view.minRows = 5; },
+				'ui-textarea-view-min-rows-greater-than-max-rows',
+				{
+					view,
+					minRows: 5,
+					maxRows: 3
+				}
+			);
 		} );
 	} );
 

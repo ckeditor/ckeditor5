@@ -7,7 +7,7 @@
  * @module ui/textarea/textareaview
  */
 
-import { Rect, type Locale, toUnit, getBorderWidths, global } from '@ckeditor/ckeditor5-utils';
+import { Rect, type Locale, toUnit, getBorderWidths, global, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import InputBase from '../input/inputbase';
 
 import '../../theme/components/input/input.css';
@@ -176,8 +176,14 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 			 *
 			 * @error ui-textarea-view-min-rows-greater-than-max-rows
 			 * @param textareaView The misconfigured textarea view instance.
+			 * @param minRows The value of `minRows` property.
+			 * @param maxRows The value of `maxRows` property.
 			 */
-			console.warn( 'ui-textarea-view-min-rows-greater-than-max-rows', { textareaView: this } );
+			throw new CKEditorError( 'ui-textarea-view-min-rows-greater-than-max-rows', {
+				textareaView: this,
+				minRows: this.minRows,
+				maxRows: this.maxRows
+			} );
 		}
 	}
 }
