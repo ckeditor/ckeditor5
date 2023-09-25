@@ -186,6 +186,13 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	}
 
 	/**
+	 * Focuses the first focusable in {@link #items}.
+	 */
+	public focusFirst(): void {
+		this._focusCycler.focusFirst();
+	}
+
+	/**
 	 * Focuses the last focusable in {@link #items}.
 	 */
 	public focusLast(): void {

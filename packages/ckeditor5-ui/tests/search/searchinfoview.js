@@ -51,4 +51,14 @@ describe( 'SearchInfoView', () => {
 			expect( view.element.innerHTML ).to.equal( '<span></span><span>bar</span>' );
 		} );
 	} );
+
+	describe( 'focus()', () => {
+		it( 'should focus #element', () => {
+			const spy = sinon.spy( view.element, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
 } );

@@ -4,7 +4,6 @@
  */
 
 import type { FocusableView } from '../focuscycler';
-import type View from '../view';
 
 /**
  * @module ui/search/filteredview
@@ -13,7 +12,7 @@ import type View from '../view';
 /**
  * A view that can be filtered by a {@link module:ui/search/text/searchtextview~SearchTextView}.
  */
-export default interface FilteredView extends View, FocusableView {
+export default interface FilteredView extends FocusableView {
 
 	/**
 	 * Filters the view by the given regular expression.

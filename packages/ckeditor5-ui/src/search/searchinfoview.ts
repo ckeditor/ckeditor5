@@ -7,6 +7,7 @@
  * @module ui/search/searchinfoview
 */
 
+import type { FocusableView } from '../focuscycler';
 import View from '../view';
 
 /**
@@ -14,7 +15,7 @@ import View from '../view';
  *
  * @internal
  */
-export default class SearchInfoView extends View {
+export default class SearchInfoView extends View implements FocusableView {
 	/**
 	 * Controls whether the view is visible.
 	 *
@@ -60,7 +61,8 @@ export default class SearchInfoView extends View {
 					'ck',
 					'ck-search__info',
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
-				]
+				],
+				tabindex: -1
 			},
 			children: [
 				{
@@ -81,5 +83,12 @@ export default class SearchInfoView extends View {
 				}
 			]
 		} );
+	}
+
+	/**
+	 * Focuses the view
+	 */
+	public focus(): void {
+		this.element!.focus();
 	}
 }

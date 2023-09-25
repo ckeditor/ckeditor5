@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import SearchResultsView from '../../src/search/searchresultsview';
 
@@ -18,11 +20,15 @@ describe( 'SearchResultsView', () => {
 		locale = new Locale();
 
 		view = new SearchResultsView( locale );
+		view.children.addMany( [ createNonFocusableView(), createFocusableView(), createFocusableView() ] );
 		view.render();
+
+		document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
 		view.destroy();
+		view.element.remove();
 	} );
 
 	describe( 'constructor()', () => {
@@ -47,16 +53,45 @@ describe( 'SearchResultsView', () => {
 		} );
 
 		it( 'focuses first focusable view in #children', () => {
-			const firstChild = new View();
-			const firstFocusableChild = new View();
-
-			firstFocusableChild.focus = sinon.spy();
-
-			view.children.addMany( [ firstChild, firstFocusableChild ] );
-
 			view.focus();
 
-			sinon.assert.calledOnce( firstFocusableChild.focus );
+			sinon.assert.calledOnce( view.children.get( 1 ).focus );
 		} );
 	} );
+
+	describe( 'focusFirst()', () => {
+		it( 'focuses first focusable view in #children', () => {
+			view.focusFirst();
+
+			sinon.assert.calledOnce( view.children.get( 1 ).focus );
+		} );
+	} );
+
+	describe( 'focusLast()', () => {
+		it( 'focuses first focusable view in #children', () => {
+			view.focusLast();
+
+			sinon.assert.calledOnce( view.children.get( 2 ).focus );
+		} );
+	} );
+
+	function createFocusableView( name ) {
+		const view = createNonFocusableView();
+
+		view.name = name;
+		view.focus = () => view.element.focus();
+		sinon.spy( view, 'focus' );
+
+		return view;
+	}
+
+	function createNonFocusableView() {
+		const view = new View();
+
+		view.element = document.createElement( 'div' );
+		view.element.textContent = 'foo';
+		document.body.appendChild( view.element );
+
+		return view;
+	}
 } );

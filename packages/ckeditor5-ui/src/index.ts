@@ -49,7 +49,12 @@ export { default as BoxedEditorUIView } from './editorui/boxed/boxededitoruiview
 export { default as InlineEditableUIView } from './editableui/inline/inlineeditableuiview';
 
 export { default as FormHeaderView } from './formheader/formheaderview';
-export { default as FocusCycler, type FocusableView } from './focuscycler';
+export {
+	default as FocusCycler,
+	type FocusableView,
+	type FocusCyclerForwardCycleEvent,
+	type FocusCyclerBackwardCycleEvent
+} from './focuscycler';
 
 export { default as IconView } from './icon/iconview';
 export { default as InputView } from './input/inputview';

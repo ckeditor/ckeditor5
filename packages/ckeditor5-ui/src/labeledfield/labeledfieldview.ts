@@ -291,8 +291,8 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 	/**
 	 * Focuses the {@link #fieldView}.
 	 */
-	public focus(): void {
-		this.fieldView.focus();
+	public focus( direction?: 1 | -1 ): void {
+		this.fieldView.focus( direction );
 	}
 }
 

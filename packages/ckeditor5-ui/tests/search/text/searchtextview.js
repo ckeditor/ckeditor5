@@ -85,8 +85,8 @@ describe( 'SearchTextView', () => {
 			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
-		it( 'creates and instance of FocusCycle', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+		it( 'creates and instance of FocusCycler', () => {
+			expect( view.focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
 		it( 'assigns an instance of a view to #filteredView', () => {
