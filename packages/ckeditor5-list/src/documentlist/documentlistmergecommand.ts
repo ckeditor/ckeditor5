@@ -106,7 +106,7 @@ export default class DocumentListMergeCommand extends Command {
 				// Check if the element after it was in the same list item and adjust it if needed.
 				const nextSibling = lastElementAfterDelete.nextSibling;
 
-				changedBlocks.push( lastElementAfterDelete as any );
+				changedBlocks.push( lastElementAfterDelete as Element );
 
 				if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
 					changedBlocks.push( ...mergeListItemBefore( nextSibling, lastElementAfterDelete, writer ) );

@@ -73,15 +73,15 @@ export default class TodoDocumentListEditing extends Plugin {
 		const model = editor.model;
 		const editing = editor.editing;
 		const documentListEditing = editor.plugins.get( DocumentListEditing );
+		const multiBlock = editor.config.get( 'list.multiBlock' );
+		const elementName = multiBlock ? 'paragraph' : 'listItem';
 
 		editor.commands.add( 'todoList', new DocumentListCommand( editor, 'todo' ) );
 		editor.commands.add( 'checkTodoList', new CheckTodoDocumentListCommand( editor ) );
 
 		editing.view.addObserver( TodoCheckboxChangeObserver );
 
-		model.schema.extend( '$container', { allowAttributes: 'todoListChecked' } );
-		model.schema.extend( '$block', { allowAttributes: 'todoListChecked' } );
-		model.schema.extend( '$blockObject', { allowAttributes: 'todoListChecked' } );
+		model.schema.extend( '$listItem', { allowAttributes: 'todoListChecked' } );
 
 		model.schema.addAttributeCheck( ( context, attributeName ) => {
 			const item = context.last;
@@ -115,7 +115,7 @@ export default class TodoDocumentListEditing extends Plugin {
 		} );
 
 		editor.conversion.for( 'downcast' ).elementToElement( {
-			model: 'paragraph',
+			model: elementName,
 			view: ( element, { writer } ) => {
 				if ( isDescriptionBlock( element, documentListEditing.getListAttributeNames() ) ) {
 					return writer.createContainerElement( 'span', { class: 'todo-list__label__description' } );
@@ -445,7 +445,7 @@ function attributeUpcastConsumingConverter( matcherPattern: MatcherPattern ): Ge
  * Returns true if the given list item block should be converted as a description block of a to-do list item.
  */
 function isDescriptionBlock( modelElement: Element, listAttributeNames: Array<string> ): boolean {
-	return modelElement.is( 'element', 'paragraph' ) &&
+	return ( modelElement.is( 'element', 'paragraph' ) || modelElement.is( 'element', 'listItem' ) ) &&
 		modelElement.getAttribute( 'listType' ) == 'todo' &&
 		isFirstBlockOfListItem( modelElement ) &&
 		hasOnlyListAttributes( modelElement, listAttributeNames );
