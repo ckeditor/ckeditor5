@@ -19,7 +19,8 @@ import {
 	ListItemUid,
 	sortBlocks,
 	getSelectedBlockObject,
-	isListItemBlock
+	isListItemBlock,
+	canBecomeSimpleListItem
 } from './utils/model';
 
 /**
@@ -75,7 +76,7 @@ export default class DocumentListCommand extends Command {
 		const selectedBlockObject = getSelectedBlockObject( model );
 
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => model.schema.checkAttribute( block, 'listType' ) );
+			.filter( block => model.schema.checkAttribute( block, 'listType' ) || canBecomeSimpleListItem( block, model.schema ) );
 
 		// Whether we are turning off some items.
 		const turnOff = options.forceValue !== undefined ? !options.forceValue : this.value;
@@ -92,7 +93,7 @@ export default class DocumentListCommand extends Command {
 					changedBlocks.push( ...splitListItemBefore( itemBlocks[ 1 ], writer ) );
 				}
 
-				// Convert list blocks to plain blocks.
+				// Strip list attributes.
 				changedBlocks.push( ...removeListAttributes( blocks, writer ) );
 
 				// Outdent items following the selected list item.
@@ -117,6 +118,11 @@ export default class DocumentListCommand extends Command {
 				for ( const block of blocks ) {
 					// Promote the given block to the list item.
 					if ( !block.hasAttribute( 'listType' ) ) {
+						// Rename block to a simple list item if this option is enabled.
+						if ( !block.is( 'element', 'listItem' ) && canBecomeSimpleListItem( block, model.schema ) ) {
+							writer.rename( block, 'listItem' );
+						}
+
 						writer.setAttributes( {
 							listIndent: 0,
 							listItemId: ListItemUid.next(),
@@ -194,7 +200,7 @@ export default class DocumentListCommand extends Command {
 		}
 
 		for ( const block of blocks ) {
-			if ( schema.checkAttribute( block, 'listType' ) ) {
+			if ( schema.checkAttribute( block, 'listType' ) || canBecomeSimpleListItem( block, schema ) ) {
 				return true;
 			}
 		}

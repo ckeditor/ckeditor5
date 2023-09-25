@@ -89,9 +89,7 @@ export default class DocumentListElementSupport extends Plugin {
 
 			const allowAttributes = viewElements.map( element => getHtmlAttributeName( element ) );
 
-			schema.extend( '$block', { allowAttributes } );
-			schema.extend( '$blockObject', { allowAttributes } );
-			schema.extend( '$container', { allowAttributes } );
+			schema.extend( '$listItem', { allowAttributes } );
 
 			conversion.for( 'upcast' ).add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>(

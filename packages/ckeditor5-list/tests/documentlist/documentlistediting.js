@@ -76,6 +76,12 @@ describe( 'DocumentListEditing', () => {
 		expect( editor.plugins.get( DocumentListEditing ) ).to.be.instanceOf( DocumentListEditing );
 	} );
 
+	it( 'should define config', () => {
+		expect( editor.config.get( 'list' ) ).to.deep.equal( {
+			multiBlock: true
+		} );
+	} );
+
 	it( 'should throw if loaded alongside ListEditing plugin', async () => {
 		let caughtError;
 
@@ -91,6 +97,9 @@ describe( 'DocumentListEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listItemId' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listItemId' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listIndent' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listType' ) ).to.be.true;

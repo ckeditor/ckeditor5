@@ -68,12 +68,10 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		editor.config.define( 'list', {
-			properties: {
-				styles: true,
-				startIndex: false,
-				reversed: false
-			}
+		editor.config.define( 'list.properties', {
+			styles: true,
+			startIndex: false,
+			reversed: false
 		} );
 	}
 
@@ -91,9 +89,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
 
-			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
-			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
-			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
+			model.schema.extend( '$listItem', { allowAttributes: strategy.attributeName } );
 
 			// Register downcast strategy.
 			documentListEditing.registerDowncastStrategy( {

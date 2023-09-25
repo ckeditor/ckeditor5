@@ -269,7 +269,7 @@ export function reconvertItemsOnDataChange(
 			return true;
 		}
 
-		if ( !item.is( 'element', 'paragraph' ) ) {
+		if ( !item.is( 'element', 'paragraph' ) && !item.is( 'element', 'listItem' ) ) {
 			return false;
 		}
 
