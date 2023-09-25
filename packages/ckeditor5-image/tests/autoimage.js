@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, setTimeout */
+/* globals window, setTimeout, Blob */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -581,7 +581,7 @@ describe( 'AutoImage - integration', () => {
 		it( 'should upload image if FileRepository plugin is loaded', async () => {
 			sinon.stub( window, 'FileReader' ).callsFake( () => {
 				nativeReaderMock = new NativeFileReaderMock();
-	
+
 				return nativeReaderMock;
 			} );
 
@@ -590,20 +590,18 @@ describe( 'AutoImage - integration', () => {
 					blob: () => Promise.resolve( new Blob( [ 'SomeData' ], { type: 'image/png' } ) )
 				} );
 			} );
-			
+
 			const editor = await ClassicTestEditor.create( editorElement, {
 				plugins: [
 					Typing, Paragraph, Link, Image, LinkImage, ImageCaption, AutoImage,
 					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing, UploadAdapterPluginMock
 				]
 			} );
-	
+
 			setData( editor.model, '<paragraph>[]foo</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
-	
-			await new Promise(done => setTimeout(async () => {
-				const fileRepository = editor.plugins.get( 'FileRepository' );
 
+			await new Promise( done => setTimeout( async () => {
 				expect( getData( editor.model ) ).to.match(
 					/<paragraph>\[<imageInline uploadId="[a-z0-9]+" uploadStatus="reading"><\/imageInline>\]foo<\/paragraph>/
 				);
@@ -611,7 +609,7 @@ describe( 'AutoImage - integration', () => {
 				await editor.destroy();
 
 				done();
-			}, 100));
+			}, 100 ) );
 		} );
 	} );
 
@@ -667,7 +665,7 @@ describe( 'AutoImage - integration', () => {
 
 	function createDataTransfer( data ) {
 		return {
-			types: Object.keys(data),
+			types: Object.keys( data ),
 			getData( type ) {
 				return data[ type ];
 			}
