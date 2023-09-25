@@ -17,7 +17,9 @@ import type {
 	DomEventData,
 	Range,
 	ViewDocumentFragment,
-	ViewRange
+	ViewRange,
+	Selection,
+	DocumentSelection
 } from '@ckeditor/ckeditor5-engine';
 
 import ClipboardObserver, {
@@ -148,7 +150,17 @@ export default class ClipboardPipeline extends Plugin {
 	/**
 	 * TODO
 	 */
-	public fireOutputTransformationEvent( data: ClipboardOutputTransformationEventData ): void {
+	public fireOutputTransformationEvent(
+		dataTransfer: DataTransfer,
+		selection: Selection | DocumentSelection,
+		method: 'copy' | 'cut' | 'dragstart'
+	): void {
+		const content = this.editor.model.getSelectedContent( selection );
+		const data = {
+			dataTransfer,
+			content,
+			method
+		};
 		this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', data );
 	}
 
@@ -269,13 +281,7 @@ export default class ClipboardPipeline extends Plugin {
 
 			data.preventDefault();
 
-			const content = editor.model.getSelectedContent( modelDocument.selection );
-
-			this.fireOutputTransformationEvent( {
-				dataTransfer,
-				content,
-				method: evt.name
-			} );
+			this.fireOutputTransformationEvent( dataTransfer, modelDocument.selection, evt.name );
 		};
 
 		this.listenTo<ViewDocumentCopyEvent>( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
