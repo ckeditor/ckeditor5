@@ -472,6 +472,52 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) ).to.equal( '[<imageBlock><caption></caption></imageBlock>]' );
 					expect( command.value ).to.equal( defaultBlock.name );
 				} );
+
+				it( 'should set width and height when imageStyle is set (and be undoable in single step)', async () => {
+					const initialData = '[<imageBlock src="/assets/sample.png"></imageBlock>]';
+
+					setData( model, initialData );
+					command.execute( { value: anyImage.name } );
+					await timeout( 100 );
+
+					expect( getData( model ) ).to.equal(
+						`[<imageBlock height="96" imageStyle="${ anyImage.name }" src="/assets/sample.png" width="96"></imageBlock>]`
+					);
+
+					editor.execute( 'undo' );
+
+					expect( getData( model ) )
+						.to.equal( initialData );
+				} );
+
+				it( 'should set width and height when imageStyle is removed (and be undoable in single step)', async () => {
+					const initialData =
+						`[<imageBlock imageStyle="${ anyImage.name }" src="/assets/sample.png"></imageBlock>]`;
+
+					setData( model, initialData );
+					command.execute( { value: defaultBlock.name } );
+					await timeout( 100 );
+
+					expect( getData( model ) )
+						.to.equal( '[<imageBlock height="96" src="/assets/sample.png" width="96"></imageBlock>]' );
+
+					editor.execute( 'undo' );
+
+					expect( getData( model ) )
+						.to.equal( initialData );
+				} );
+
+				it( 'should not set width and height when command `setImageSizes` parameter is false', async () => {
+					const initialData = '[<imageBlock src="/assets/sample.png"></imageBlock>]';
+
+					setData( model, initialData );
+					command.execute( { value: anyImage.name, setImageSizes: false } );
+					await timeout( 100 );
+
+					expect( getData( model ) ).to.equal(
+						`[<imageBlock imageStyle="${ anyImage.name }" src="/assets/sample.png"></imageBlock>]`
+					);
+				} );
 			} );
 
 			it( 'should set the style if the selection is inside a caption', () => {
