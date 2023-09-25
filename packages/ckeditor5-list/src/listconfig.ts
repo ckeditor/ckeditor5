@@ -37,6 +37,10 @@ export interface ListConfig {
 	/**
 	 * Allows multiple blocks in single list item.
 	 *
+	 * With this option enabled you can have block widgets, for example images or even tables, within a list item.
+	 *
+	 * **Note:** This is enabled by default.
+	 *
 	 * @default true
 	 */
 	multiBlock?: boolean;
