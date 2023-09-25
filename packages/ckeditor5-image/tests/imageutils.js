@@ -724,7 +724,7 @@ describe( 'ImageUtils plugin', () => {
 		it( 'should not set image width and height if `setImageSizes` parameter is false', done => {
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			imageUtils.insertImage( { src: '/assets/sample.png' }, null, null, false );
+			imageUtils.insertImage( { src: '/assets/sample.png' }, null, null, { setImageSizes: false } );
 
 			setTimeout( () => {
 				expect( getModelData( model ) ).to.equal(
