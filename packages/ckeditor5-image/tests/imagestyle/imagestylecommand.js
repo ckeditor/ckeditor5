@@ -402,6 +402,18 @@ describe( 'ImageStyleCommand', () => {
 					expect( getData( model ) )
 						.to.equal( initialData );
 				} );
+
+				it( 'should not set width and height when command `setImageSizes` parameter is false', async () => {
+					const initialData = '<paragraph>[<imageInline src="/assets/sample.png"></imageInline>]</paragraph>';
+
+					setData( model, initialData );
+					command.execute( { value: anyImage.name, setImageSizes: false } );
+					await timeout( 100 );
+
+					expect( getData( model ) ).to.equal(
+						`<paragraph>[<imageInline imageStyle="${ anyImage.name }" src="/assets/sample.png"></imageInline>]</paragraph>`
+					);
+				} );
 			} );
 
 			describe( 'when a block image is selected', () => {
