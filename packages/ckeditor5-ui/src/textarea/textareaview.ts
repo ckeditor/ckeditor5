@@ -101,11 +101,15 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 		this.on( 'input', () => {
 			this._updateAutoGrowHeight( true );
+			this.fire<TextareaViewUpdateEvent>( 'update' );
 		} );
 
 		this.on( 'change:value', () => {
 			// The content needs to be updated by the browser after the value is changed. It takes a few ms.
-			global.window.requestAnimationFrame( () => this._updateAutoGrowHeight() );
+			global.window.requestAnimationFrame( () => {
+				this._updateAutoGrowHeight();
+				this.fire<TextareaViewUpdateEvent>( 'update' );
+			} );
 		} );
 	}
 
@@ -116,6 +120,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		super.reset();
 
 		this._updateAutoGrowHeight();
+		this.fire<TextareaViewUpdateEvent>( 'update' );
 	}
 
 	/**
@@ -159,8 +164,6 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 		singleLineContentClone.remove();
 		fullTextValueClone.remove();
-
-		this.fire<TextareaViewAutoGrowEvent>( 'autoGrow' );
 	}
 
 	/**
@@ -198,14 +201,12 @@ function getTextareaElementClone( element: HTMLTextAreaElement, value: string ):
 }
 
 /**
- * Fired when the logic of {@link module:ui/textarea/textareaview~TextareaView} checks whether
- * the component should be resized upon user interaction.
+ * Fired every time the layout of the {@link module:ui/textarea/textareaview~TextareaView} possibly changed as a result
+ * of the user input or the value change via {@link module:ui/textarea/textareaview~TextareaView#value}.
  *
- * See {@link module:ui/textarea/textareaview~TextareaView#minRows}, {@link module:ui/textarea/textareaview~TextareaView#maxRows}.
- *
- * @eventName ~TextareaView#autoGrow
+ * @eventName ~TextareaView#update
  */
-export type TextareaViewAutoGrowEvent = {
-	name: 'autoGrow';
+export type TextareaViewUpdateEvent = {
+	name: 'update';
 	args: [];
 };

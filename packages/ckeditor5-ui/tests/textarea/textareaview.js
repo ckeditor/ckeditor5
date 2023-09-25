@@ -164,11 +164,13 @@ describe( 'TextareaView', () => {
 				await requestAnimationFrame();
 				expect( parseFloat( view.element.style.height ) ).to.equal( twoRowsHeight );
 			} );
+		} );
 
-			it( 'should fire the #autoGrow event', () => {
+		describe( '#update event', () => {
+			it( 'should get fired on the user #input', () => {
 				const spy = sinon.spy();
 
-				view.on( 'autoGrow', spy );
+				view.on( 'update', spy );
 
 				view.element.value = '1\n2\n3\n4\n5\n6';
 
@@ -178,6 +180,34 @@ describe( 'TextareaView', () => {
 				view.fire( 'input' );
 
 				// The event gets fired whether the view is changing dimensions or not.
+				sinon.assert.calledTwice( spy );
+			} );
+
+			it( 'should get fired on #value change', async () => {
+				const spy = sinon.spy();
+
+				view.on( 'update', spy );
+
+				view.value = '1\n2\n3\n4\n5\n6';
+
+				await requestAnimationFrame();
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should be fired upon reset()', async () => {
+				const spy = sinon.spy();
+
+				view.on( 'update', spy );
+
+				view.value = '1\n2\n3\n4\n5\n6';
+
+				await requestAnimationFrame();
+
+				sinon.assert.calledOnce( spy );
+
+				view.reset();
+
 				sinon.assert.calledTwice( spy );
 			} );
 		} );
