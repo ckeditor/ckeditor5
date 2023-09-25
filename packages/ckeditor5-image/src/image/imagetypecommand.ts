@@ -81,7 +81,7 @@ export default class ImageTypeCommand extends Command {
 				attributes,
 				model.createSelection( oldElement, 'on' ),
 				this._modelElementName,
-				setImageSizes
+				{ setImageSizes }
 			);
 
 			if ( !newElement ) {
