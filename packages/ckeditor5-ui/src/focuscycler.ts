@@ -274,11 +274,9 @@ export default class FocusCycler extends EmitterMixin() {
 	 * @returns
 	 */
 	private _focus( view: FocusableView | null, direction: 1 | -1 ) {
-		if ( !view ) {
-			return;
+		if ( view ) {
+			view.focus( direction );
 		}
-
-		view.focus( direction );
 	}
 
 	/**
