@@ -69,7 +69,7 @@ import viewToPlainText from './utils/viewtoplaintext';
 //                               │   ClipboardPipeline   │
 //                               │  outputTransformation │
 //                               └───────────┬───────────┘
-// TODO                                      │
+//                                           │
 //                                 ┌─────────V────────┐
 //                                 │   view.Document  │   Processes view.DocumentFragment to text/html and text/plain
 //                                 │  clipboardOutput │   and stores the results in data.dataTransfer.
@@ -143,6 +143,13 @@ export default class ClipboardPipeline extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'ClipboardPipeline' as const;
+	}
+
+	/**
+	 * TODO
+	 */
+	public fireOutputTransformationEvent( data: ClipboardOutputTransformationEventData ): void {
+		this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', data );
 	}
 
 	/**
@@ -264,7 +271,7 @@ export default class ClipboardPipeline extends Plugin {
 
 			const content = editor.model.getSelectedContent( modelDocument.selection );
 
-			this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', {
+			this.fireOutputTransformationEvent( {
 				dataTransfer,
 				content,
 				method: evt.name

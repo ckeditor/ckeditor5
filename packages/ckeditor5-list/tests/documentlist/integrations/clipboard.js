@@ -33,7 +33,7 @@ import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/vie
 import stubUid from '../_utils/uid';
 
 describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
-	let element, editor, model, modelDoc, modelRoot, view;
+	let element, editor, model, modelDoc, modelRoot, view, clipboard;
 
 	testUtils.createSinonSandbox();
 
@@ -57,6 +57,8 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 		model.schema.extend( 'paragraph', {
 			allowAttributes: 'foo'
 		} );
+
+		clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
 		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
@@ -127,6 +129,13 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					] ) );
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
+					const dataTransferMock = createDataTransfer();
+
+					clipboard.fireOutputTransformationEvent( {
+						dataTransfer: dataTransferMock,
+						content: modelFragment,
+						method: 'copy'
+					} );
 
 					expect( modelFragment.childCount ).to.equal( 1 );
 					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
@@ -140,6 +149,13 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					] ) );
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
+					const dataTransferMock = createDataTransfer();
+
+					clipboard.fireOutputTransformationEvent( {
+						dataTransfer: dataTransferMock,
+						content: modelFragment,
+						method: 'copy'
+					} );
 
 					expect( modelFragment.childCount ).to.equal( 1 );
 					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
@@ -151,6 +167,13 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					] ) );
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
+					const dataTransferMock = createDataTransfer();
+
+					clipboard.fireOutputTransformationEvent( {
+						dataTransfer: dataTransferMock,
+						content: modelFragment,
+						method: 'copy'
+					} );
 
 					expect( modelFragment.childCount ).to.equal( 1 );
 					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
@@ -164,6 +187,13 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					] ) );
 
 					const modelFragment = model.getSelectedContent( model.document.selection );
+					const dataTransferMock = createDataTransfer();
+
+					clipboard.fireOutputTransformationEvent( {
+						dataTransfer: dataTransferMock,
+						content: modelFragment,
+						method: 'copy'
+					} );
 
 					expect( modelFragment.childCount ).to.equal( 3 );
 					expect( Array.from( modelFragment.getChildren() ).some( isListItemBlock ) ).to.be.false;
@@ -236,6 +266,13 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					//
 					// Note: It is impossible to set a document selection like this because the postfixer will normalize it to * [Foo].
 					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
+					const dataTransferMock = createDataTransfer();
+
+					clipboard.fireOutputTransformationEvent( {
+						dataTransfer: dataTransferMock,
+						content: modelFragment,
+						method: 'copy'
+					} );
 
 					expect( modelFragment.childCount ).to.equal( 1 );
 					expect( Array.from( modelFragment.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
@@ -249,6 +286,13 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					` ) );
 
 					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
+					const dataTransferMock = createDataTransfer();
+
+					clipboard.fireOutputTransformationEvent( {
+						dataTransfer: dataTransferMock,
+						content: modelFragment,
+						method: 'copy'
+					} );
 
 					expect( modelFragment.childCount ).to.equal( 1 );
 					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.false;
@@ -260,6 +304,20 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						'</blockQuote>'
 					);
 				} );
+
+				function createDataTransfer() {
+					const store = new Map();
+
+					return {
+						setData( type, data ) {
+							store.set( type, data );
+						},
+
+						getData( type ) {
+							return store.get( type );
+						}
+					};
+				}
 			} );
 
 			describe( 'preserving list structure when a cross-list item selection existed', () => {
@@ -419,8 +477,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
@@ -439,8 +495,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
@@ -462,8 +516,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
@@ -487,8 +539,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 				);
 
-				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 				} );
@@ -509,8 +559,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
@@ -527,8 +575,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph>A[]</paragraph>' +
 				'<paragraph>B</paragraph>'
 			);
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -563,8 +609,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					'<paragraph>Bar</paragraph>'
 				);
 
-				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<li>X</li>' )
 				} );
@@ -591,8 +635,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					'<paragraph>Bar</paragraph>'
 				);
 
-				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
 				} );
@@ -615,8 +657,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
@@ -638,8 +678,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
@@ -660,8 +698,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
@@ -694,8 +730,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				conversionApi.safeInsert( splitBlock, data.modelCursor );
 				conversionApi.updateConversionResult( splitBlock, data );
 			} ) );
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
