@@ -85,8 +85,8 @@ describe( 'SearchTextView', () => {
 			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
-		it( 'creates and instance of FocusCycle', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+		it( 'creates and instance of FocusCycler', () => {
+			expect( view.focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
 		it( 'assigns an instance of a view to #filteredView', () => {
@@ -413,7 +413,7 @@ describe( 'SearchTextView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.queryView.element;
 
-					const spy = sinon.spy( view.resultsView, 'focusFirst' );
+					const spy = sinon.spy( view.resultsView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -433,7 +433,7 @@ describe( 'SearchTextView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = filteredView.element;
 
-					const spy = sinon.spy( view.resultsView, 'focusLast' );
+					const spy = sinon.spy( view.resultsView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );

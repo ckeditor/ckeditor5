@@ -122,7 +122,7 @@ export default class SearchTextView<
 	 *
 	 * @readonly
 	 */
-	protected _focusCycler: FocusCycler;
+	public focusCycler: FocusCycler;
 
 	/**
 	 * The cached configuration object.
@@ -169,7 +169,7 @@ export default class SearchTextView<
 
 		this.resultsView.children.addMany( [ this.infoView, this.filteredView ] );
 
-		this._focusCycler = new FocusCycler( {
+		this.focusCycler = new FocusCycler( {
 			focusables: this.focusableChildren,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
