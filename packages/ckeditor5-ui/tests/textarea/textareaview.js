@@ -40,7 +40,7 @@ describe( 'TextareaView', () => {
 		} );
 
 		it( 'should have default resize attribute value', () => {
-			expect( view.element.style.resize ).to.equal( 'both' );
+			expect( view.element.style.resize ).to.equal( 'none' );
 		} );
 
 		it( 'should warn if #minHeight is greater than #maxHeight', () => {
@@ -201,7 +201,7 @@ describe( 'TextareaView', () => {
 
 		describe( 'resize attribute', () => {
 			it( 'should react on view#reisze', () => {
-				expect( view.element.style.resize ).to.equal( 'both' );
+				expect( view.element.style.resize ).to.equal( 'none' );
 
 				view.resize = 'vertical';
 

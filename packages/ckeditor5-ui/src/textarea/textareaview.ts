@@ -48,7 +48,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	 * Specifies the value of HTML attribute that indicates whether the user can resize the element.
 	 *
 	 * @observable
-	 * @default 'both'
+	 * @default 'none'
 	*/
 	declare public resize: 'both' | 'horizontal' | 'vertical' | 'none';
 
@@ -72,7 +72,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		this.set( 'minRows', 2 );
 		this.set( 'maxRows', 5 );
 		this.set( '_height', null );
-		this.set( 'resize', 'both' );
+		this.set( 'resize', 'none' );
 
 		this.on( 'change:minRows', this._validateMinMaxRows.bind( this ) );
 		this.on( 'change:maxRows', this._validateMinMaxRows.bind( this ) );

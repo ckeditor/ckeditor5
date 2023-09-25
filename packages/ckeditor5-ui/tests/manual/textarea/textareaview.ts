@@ -46,21 +46,13 @@ function createPlainTextareaWithVerticalResizeOnly() {
 	addToPlayground( 'Default rows, manual v-resize only', textareaView );
 }
 
-function createPlainTextareaWithNoResize() {
-	const textareaView = new TextareaView();
-
-	textareaView.resize = 'none';
-
-	addToPlayground( 'Default rows, no manual resize', textareaView );
-}
-
-function createPlainTextareaWithFixedSizeAndNoResize() {
+function createPlainTextareaWithFixedSizeAndResizeBoth() {
 	const textareaView = new TextareaView();
 
 	textareaView.minRows = textareaView.maxRows = 3;
-	textareaView.resize = 'none';
+	textareaView.resize = 'both';
 
-	addToPlayground( '3 fixed rows, no manual resize', textareaView );
+	addToPlayground( '3 fixed rows, resize: both', textareaView );
 }
 
 function addToPlayground( name, view ) {
@@ -110,5 +102,4 @@ createPlainTextareaWithMoreRows();
 createPlainTextareaWithFixedRows();
 createPlainTextareaWithSingleRow();
 createPlainTextareaWithVerticalResizeOnly();
-createPlainTextareaWithNoResize();
-createPlainTextareaWithFixedSizeAndNoResize();
+createPlainTextareaWithFixedSizeAndResizeBoth();
