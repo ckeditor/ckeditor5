@@ -53,7 +53,7 @@ export default class HighlightedTextView extends View {
 	}
 
 	/**
-	 * Highlights view's {@link #text} according to the specified RegExp. If the passed RegExp is `null`, the
+	 * Highlights view's {@link #text} according to the specified `RegExp`. If the passed RegExp is `null`, the
 	 * highlighting is removed
 	 *
 	 * @param regExp
@@ -63,7 +63,7 @@ export default class HighlightedTextView extends View {
 	}
 
 	/**
-	 * Updates element's innerHTML with the passed content.
+	 * Updates element's `innerHTML` with the passed content.
 	 */
 	private _updateInnerHTML( newInnerHTML: string | undefined ) {
 		this.element!.innerHTML = newInnerHTML || '';
@@ -71,11 +71,11 @@ export default class HighlightedTextView extends View {
 }
 
 /**
- * Replaces RegExp occurrences with <mark> tags in a text.
+ * Replaces `regExp` occurrences with `<mark>` tags in a text.
  *
  * @param text A text to get marked.
- * @param regExp An optional RegExp. If not passed, this is a pass-through function.
- * @returns A text with RegExp occurrences marked by <mark>.
+ * @param regExp An optional `RegExp`. If not passed, this is a pass-through function.
+ * @returns A text with `RegExp` occurrences marked by `<mark>`.
  */
 function markText( text: string, regExp?: RegExp | null ) {
 	if ( !regExp ) {
