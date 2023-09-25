@@ -31,6 +31,10 @@ describe( 'IconView', () => {
 			expect( view.isColorInherited ).to.be.true;
 		} );
 
+		it( 'sets #isVisible', () => {
+			expect( view.isVisible ).to.be.true;
+		} );
+
 		it( 'creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'svg' );
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
@@ -59,6 +63,18 @@ describe( 'IconView', () => {
 
 				view.isColorInherited = true;
 				expect( view.element.classList.contains( 'ck-icon_inherit-color' ) ).to.be.true;
+			} );
+		} );
+
+		describe( '#isVisible', () => {
+			it( 'should react to changes in view#isVisible', () => {
+				view.isVisible = true;
+
+				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+				view.isVisible = false;
+
+				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
 			} );
 		} );
 

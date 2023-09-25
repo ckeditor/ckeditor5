@@ -21,6 +21,7 @@ import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../.
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
 	listDropdown: '#list-dropdown',
+	listDropdownWithGroups: '#list-dropdown-with-groups',
 	dropdownLabel: '#dropdown-label',
 	toolbarDropdown: '#dropdown-toolbar',
 	splitButton: '#dropdown-splitbutton'
@@ -73,6 +74,80 @@ function testList() {
 	ui.listDropdown.add( dropdownView );
 
 	window.listDropdownCollection = collection;
+	window.Model = Model;
+}
+
+function testListWithGroups() {
+	const collection = new Collection( { idProperty: 'label' } );
+
+	collection.addMany( [
+		{
+			type: 'button',
+			model: new Model( {
+				label: 'Item 1',
+				withText: true
+			} )
+		},
+		{
+			type: 'group',
+			label: 'Group 1',
+			items: new Collection( [
+				{
+					type: 'button',
+					model: new Model( {
+						label: 'Group 1, Item 1',
+						withText: true
+					} )
+				},
+				{
+					type: 'button',
+					model: new Model( {
+						label: 'Group 1, Item 1',
+						withText: true
+					} )
+				}
+			] )
+		},
+		{
+			type: 'group',
+			label: 'Group 2',
+			items: new Collection( [
+				{
+					type: 'button',
+					model: new Model( {
+						label: 'Group 2, Item 1',
+						withText: true
+					} )
+				},
+				{
+					type: 'button',
+					model: new Model( {
+						label: 'Group 2, Item 1',
+						withText: true
+					} )
+				}
+			] )
+		}
+	] );
+
+	const dropdownView = createDropdown( {} );
+
+	dropdownView.buttonView.set( {
+		label: 'ListDropdown (with groups)',
+		isEnabled: true,
+		isOn: false,
+		withText: true
+	} );
+
+	addListToDropdown( dropdownView, collection );
+
+	dropdownView.on( 'execute', evt => {
+		console.log( 'List#execute:', evt.source.label );
+	} );
+
+	ui.listDropdownWithGroups.add( dropdownView );
+
+	window.listDropdownWithGroupsCollection = collection;
 	window.Model = Model;
 }
 
@@ -160,6 +235,7 @@ function testSplitButton() {
 
 testEmpty();
 testList();
+testListWithGroups();
 testLongLabel();
 testToolbar();
 testSplitButton();

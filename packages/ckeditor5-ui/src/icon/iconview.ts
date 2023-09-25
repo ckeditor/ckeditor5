@@ -65,6 +65,14 @@ export default class IconView extends View {
 	declare public isColorInherited: boolean;
 
 	/**
+	 * Controls whether the icon is visible.
+	 *
+	 * @observable
+	 * @default true
+	 */
+	declare public isVisible: boolean;
+
+	/**
 	 * A list of presentational attributes that can be set on the `<svg>` element and should be preserved
 	 * when the icon {@link module:ui/icon/iconview~IconView#content content} is loaded.
 	 *
@@ -93,6 +101,7 @@ export default class IconView extends View {
 		this.set( 'viewBox', '0 0 20 20' );
 		this.set( 'fillColor', '' );
 		this.set( 'isColorInherited', true );
+		this.set( 'isVisible', true );
 
 		this.setTemplate( {
 			tag: 'svg',
@@ -101,6 +110,7 @@ export default class IconView extends View {
 				class: [
 					'ck',
 					'ck-icon',
+					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 
 					// Exclude icon internals from the CSS reset to allow rich (non-monochromatic) icons
 					// (https://github.com/ckeditor/ckeditor5/issues/12599).
