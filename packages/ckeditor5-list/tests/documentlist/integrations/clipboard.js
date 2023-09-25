@@ -771,6 +771,36 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 
 			clipboard.fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
 		} );
+
+		it( 'should return all selected content, even when end of selection is positioned in first place in next paragraph', () => {
+			setModelData( model,
+				'<paragraph>[Foo bar.</paragraph>' +
+				'<paragraph>]</paragraph>'
+			);
+
+			const elements = Array.from( model.document.selection.getSelectedBlocks() );
+			const firstElement = elements[ 0 ];
+			const lastElement = elements[ elements.length - 1 ];
+			const startPosition = model.createPositionBefore( firstElement );
+			const endPosition = model.createPositionAfter( lastElement );
+			const blockRange = model.createRange( startPosition, endPosition );
+			const draggedRange = LiveRange.fromRange( blockRange );
+
+			const dataTransferMock = createDataTransfer();
+			const draggedSelection = model.createSelection( draggedRange.toRange() );
+
+			view.document.on( 'dragstart', evt => {
+				evt.stop();
+			} );
+
+			view.document.on( 'clipboardOutput', ( evt, data ) => {
+				expect( stringifyView( data.content ) ).is.equal(
+					'<p>Foo bar.</p><p></p>'
+				);
+			} );
+
+			clipboard.fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
+		} );
 	} );
 
 	function createDataTransfer() {

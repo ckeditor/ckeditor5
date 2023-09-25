@@ -518,7 +518,12 @@ export default class DocumentListEditing extends Plugin {
 				const lastItem = allContentChildren[ allContentChildren.length - 1 ] as Element;
 
 				if ( allContentChildren.length > 1 && lastItem.isEmpty ) {
-					writer.remove( lastItem );
+					const contentChildrenExceptLastItem = Array.from( data.content.getChildren() ).slice( 0, -1 );
+					const isContentDocumentList = contentChildrenExceptLastItem!.every( isListItemBlock );
+
+					if ( isContentDocumentList ) {
+						writer.remove( lastItem );
+					}
 				}
 
 				if ( data.method != 'dragstart' ) {
