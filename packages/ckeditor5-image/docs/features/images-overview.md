@@ -22,7 +22,6 @@ To see all the image features in action, check out the demo below. To learn more
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-
 ## Base image feature
 
 The base image feature does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (listed below) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor&nbsp;5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
@@ -204,6 +203,16 @@ ClassicEditor
 Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the {@link updating/update-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link features/toolbar editor toolbar} guide.
 
 See the common API of image-related features such as {@link module:image/imagestyle~ImageStyle}, {@link module:image/imageresize~ImageResize}, and {@link module:link/linkimage~LinkImage} to learn more about available image toolbar buttons.
+
+## Image `width` and `height` attributes
+
+Starting with v40.0.0, the image's `width` and `height` attributes are retained by the editor when it is loaded. Upon {@link features/image-upload uploading an image file} or {@link features/images-inserting inserting it} into the editor content, the CKEditor 5 image feature fetches these dimensions from the file. It will also happen on any interaction with the image if the content is preloaded. The editor then adds these properties to the markup, just like the {@link features/images-text-alternative text alternative tag}.
+
+However, if the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
+
+Adding the image's `width` and `height` attributes is done to ensure that the image dimensions ratio is properly kept when it is styled or aligned and that the image always looks like it should, rather than forcing the image size within the content.
+
+These image properties can be further controlled via CSS styles. If you need to crop, resize, or mirror flip your images, you can use the {@link features/ckbox CKBox asset manager} to achieve that.
 
 ## Typing around images
 
