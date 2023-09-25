@@ -140,6 +140,9 @@ export default class FocusCycler extends EmitterMixin() {
 				}
 			}
 		}
+
+		this.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', () => this.focusFirst(), { priority: 'low' } );
+		this.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', () => this.focusLast(), { priority: 'low' } );
 	}
 
 	/**
@@ -149,7 +152,7 @@ export default class FocusCycler extends EmitterMixin() {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public get first(): FocusableView | null {
-		return ( this.focusables.find( isPlainFocusableView ) || null ) as FocusableView | null;
+		return ( this.focusables.find( isFocusable ) || null ) as FocusableView | null;
 	}
 
 	/**
@@ -159,7 +162,7 @@ export default class FocusCycler extends EmitterMixin() {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public get last(): FocusableView | null {
-		return ( this.focusables.filter( isPlainFocusableView ).slice( -1 )[ 0 ] || null ) as FocusableView | null;
+		return ( this.focusables.filter( isFocusable ).slice( -1 )[ 0 ] || null ) as FocusableView | null;
 	}
 
 	/**
@@ -233,10 +236,14 @@ export default class FocusCycler extends EmitterMixin() {
 	public focusNext(): void {
 		const next = this.next;
 
-		this._focus( next, 1 );
+		if ( next && this.focusables.getIndex( next ) === this.current ) {
+			return;
+		}
 
-		if ( next == this.first ) {
+		if ( next === this.first ) {
 			this.fire<FocusCyclerForwardCycleEvent>( 'forwardCycle' );
+		} else {
+			this._focus( next, 1 );
 		}
 	}
 
@@ -248,10 +255,14 @@ export default class FocusCycler extends EmitterMixin() {
 	public focusPrevious(): void {
 		const previous = this.previous;
 
-		this._focus( previous, -1 );
+		if ( previous && this.focusables.getIndex( previous ) === this.current ) {
+			return;
+		}
 
-		if ( previous == this.last ) {
+		if ( previous === this.last ) {
 			this.fire<FocusCyclerBackwardCycleEvent>( 'backwardCycle' );
+		} else {
+			this._focus( previous, -1 );
 		}
 	}
 
@@ -259,23 +270,15 @@ export default class FocusCycler extends EmitterMixin() {
 	 * Focuses the given view if it exists.
 	 *
 	 * @param view The view to be focused
-	 * @param childrenFocusDirection The direction of the focus if the view has focusable children.
+	 * @param direction The direction of the focus if the view has focusable children.
 	 * @returns
 	 */
-	private _focus( view: FocusableView | null, childrenFocusDirection: 1 | -1 ) {
+	private _focus( view: FocusableView | null, direction: 1 | -1 ) {
 		if ( !view ) {
 			return;
 		}
 
-		if ( isViewWithFocusableChildren( view ) ) {
-			if ( childrenFocusDirection === 1 ) {
-				view.focusFirst();
-			} else if ( childrenFocusDirection === -1 ) {
-				view.focusLast();
-			}
-		} else {
-			view.focus();
-		}
+		view.focus( direction );
 	}
 
 	/**
@@ -305,8 +308,8 @@ export default class FocusCycler extends EmitterMixin() {
 		do {
 			const view = this.focusables.get( index )!;
 
-			if ( isPlainFocusableView( view ) ) {
-				return view as FocusableView;
+			if ( isFocusable( view ) ) {
+				return view;
 			}
 
 			// Cycle in both directions.
@@ -321,15 +324,19 @@ export default class FocusCycler extends EmitterMixin() {
  * A view that can be focused.
  */
 export type FocusableView = View & {
-	focus(): void;
-};
 
-/**
- * A view that can be focused and contains some children that also can be focused.
- */
-export type ViewWithFocusableChildren = FocusableView & {
-	focusFirst(): void;
-	focusLast(): void;
+	/**
+	 * Focuses the view.
+	 *
+	 * @param direction This optional parameter helps improve the UX by providing additional information about the direction the focus moved
+	 * (e.g. in a complex view or a form). It is useful for views that host multiple focusable children (e.g. lists, toolbars):
+	 * * `1` indicates that the focus moved forward and, in most cases, the first child of the focused view should get focused,
+	 * * `-1` indicates that the focus moved backwards, and the last focusable child should get focused
+	 *
+	 * See {@link module:ui/focuscycler~FocusCycler#forwardCycle} and {@link module:ui/focuscycler~FocusCycler#backwardCycle} to
+	 * learn more.
+	 */
+	focus( direction?: 1 | -1 ): void;
 };
 
 export interface FocusCyclerActions {
@@ -366,13 +373,6 @@ export type FocusCyclerBackwardCycleEvent = {
  *
  * @param view A view to be checked.
  */
-function isPlainFocusableView( view: View ): view is FocusableView {
+function isFocusable( view: View ): view is FocusableView {
 	return !!( 'focus' in view && isVisible( view.element ) );
-}
-
-/**
- * Checks whether the view meets the requirements of the {@link ViewWithFocusableChildren} interface.
- */
-function isViewWithFocusableChildren( view: View ): view is ViewWithFocusableChildren {
-	return isPlainFocusableView( view ) && 'focusFirst' in view && 'focusLast' in view;
 }

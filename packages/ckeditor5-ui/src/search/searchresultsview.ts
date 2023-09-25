@@ -10,12 +10,12 @@
 import View from '../view';
 import type ViewCollection from '../viewcollection';
 import { FocusTracker, type Locale } from '@ckeditor/ckeditor5-utils';
-import { default as FocusCycler, type ViewWithFocusableChildren } from '../focuscycler';
+import { default as FocusCycler, type FocusableView } from '../focuscycler';
 
 /**
  * A sub-component of {@link module:ui/search/text/searchtextview~SearchTextView}. It hosts the filtered and the information views.
  */
-export default class SearchResultsView extends View implements ViewWithFocusableChildren {
+export default class SearchResultsView extends View implements FocusableView {
 	/**
 	 * Tracks information about the DOM focus in the view.
 	 *

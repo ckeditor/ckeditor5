@@ -52,7 +52,6 @@ export { default as FormHeaderView } from './formheader/formheaderview';
 export {
 	default as FocusCycler,
 	type FocusableView,
-	type ViewWithFocusableChildren,
 	type FocusCyclerForwardCycleEvent,
 	type FocusCyclerBackwardCycleEvent
 } from './focuscycler';
