@@ -62,7 +62,7 @@ import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
-import { Clipboard, DragDropBlockToolbar, DragDrop } from '../../src';
+import { Clipboard, DragDrop } from '../../src';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -274,7 +274,7 @@ BalloonEditor
 			Essentials, List, Paragraph, Heading,
 			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
 			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
-			CloudServices, ImageUpload, EasyImage, DragDropBlockToolbar, DragDrop
+			CloudServices, ImageUpload, EasyImage, DragDrop
 		],
 		cloudServices: CS_CONFIG,
 		blockToolbar: [
@@ -310,7 +310,7 @@ BalloonEditor
 			Essentials, List, Paragraph, Heading,
 			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
 			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
-			CloudServices, ImageUpload, EasyImage, DragDropBlockToolbar, DragDrop
+			CloudServices, ImageUpload, EasyImage, DragDrop
 		],
 		cloudServices: CS_CONFIG,
 		blockToolbar: {

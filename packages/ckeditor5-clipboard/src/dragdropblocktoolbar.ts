@@ -7,8 +7,6 @@
  * @module clipboard/dragdropblocktoolbar
  */
 
-/* istanbul ignore file -- @preserve */
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
@@ -69,12 +67,18 @@ export default class DragDropBlockToolbar extends Plugin {
 			const blockToolbar: BlockToolbar = editor.plugins.get( 'BlockToolbar' );
 			const element = blockToolbar.buttonView.element!;
 
-			element.setAttribute( 'draggable', 'true' );
-
 			this._domEmitter.listenTo( element, 'dragstart', ( evt, data ) => this._handleBlockDragStart( data ) );
 			this._domEmitter.listenTo( global.document, 'dragover', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'drop', ( evt, data ) => this._handleBlockDragging( data ) );
 			this._domEmitter.listenTo( global.document, 'dragend', () => this._handleBlockDragEnd(), { useCapture: true } );
+
+			if ( this.isEnabled ) {
+				element.setAttribute( 'draggable', 'true' );
+			}
+
+			this.on<ObservableChangeEvent<boolean>>( 'change:isEnabled', ( evt, name, isEnabled ) => {
+				element.setAttribute( 'draggable', isEnabled ? 'true' : 'false' );
+			} );
 		}
 	}
 
@@ -146,4 +150,3 @@ export default class DragDropBlockToolbar extends Plugin {
 		this._isBlockDragging = false;
 	}
 }
-

@@ -57,6 +57,7 @@ import ClipboardObserver, {
 } from './clipboardobserver';
 
 import DragDropTarget from './dragdroptarget';
+import DragDropBlockToolbar from './dragdropblocktoolbar';
 
 import '../theme/clipboard.css';
 
@@ -196,7 +197,7 @@ export default class DragDrop extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ClipboardPipeline, Widget, DragDropTarget ] as const;
+		return [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ] as const;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import ClipboardPipeline from '../src/clipboardpipeline';
 import DragDrop from '../src/dragdrop';
 import DragDropTarget from '../src/dragdroptarget';
 import PastePlainText from '../src/pasteplaintext';
+import DragDropBlockToolbar from '../src/dragdropblocktoolbar';
 
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
@@ -33,7 +34,7 @@ describe( 'Drag and Drop', () => {
 	testUtils.createSinonSandbox();
 
 	it( 'requires DragDropTarget, ClipboardPipeline and Widget', () => {
-		expect( DragDrop.requires ).to.deep.equal( [ ClipboardPipeline, Widget, DragDropTarget ] );
+		expect( DragDrop.requires ).to.deep.equal( [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ] );
 	} );
 
 	it( 'has proper name', () => {
