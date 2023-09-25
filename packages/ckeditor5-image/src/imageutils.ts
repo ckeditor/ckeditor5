@@ -91,12 +91,15 @@ export default class ImageUtils extends Plugin {
 	 *
 	 * @param imageType Image type of inserted image. If not specified,
 	 * it will be determined automatically depending of editor config or place of the insertion.
+	 * @param setImageSizes Specifies whether the image `width` and `height` attributes should be set automatically.
+	 * The default is `true`.
 	 * @return The inserted model image element.
 	 */
 	public insertImage(
 		attributes: Record<string, unknown> = {},
 		selectable: Selection | Position | null = null,
-		imageType: ( 'imageBlock' | 'imageInline' | null ) = null
+		imageType: ( 'imageBlock' | 'imageInline' | null ) = null,
+		setImageSizes: boolean = true
 	): Element | null {
 		const editor = this.editor;
 		const model = editor.model;
@@ -130,7 +133,9 @@ export default class ImageUtils extends Plugin {
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
-				this.setImageNaturalSizeAttributes( imageElement );
+				if ( setImageSizes ) {
+					this.setImageNaturalSizeAttributes( imageElement );
+				}
 
 				return imageElement;
 			}
