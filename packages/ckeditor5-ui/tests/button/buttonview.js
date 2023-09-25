@@ -305,6 +305,10 @@ describe( 'ButtonView', () => {
 				view.ariaLabel = 'Foo';
 				expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'Foo' );
 			} );
+
+			it( '-checked is not present', () => {
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+			} );
 		} );
 
 		describe( 'mousedown event', () => {
