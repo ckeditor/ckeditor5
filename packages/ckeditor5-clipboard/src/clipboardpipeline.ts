@@ -148,7 +148,11 @@ export default class ClipboardPipeline extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Fires Clipboard `'outputTransformation'` event for given parameters.
+	 *
+	 * @param dataTransfer
+	 * @param selection
+	 * @param method
 	 */
 	public fireOutputTransformationEvent(
 		dataTransfer: DataTransfer,
@@ -471,7 +475,13 @@ export interface ViewDocumentClipboardOutputEventData {
 }
 
 /**
- * TODO
+ * Fired on {@link module:engine/view/document~Document#event:copy}, {@link module:engine/view/document~Document#event:cut}
+ * and {@link module:engine/view/document~Document#event:dragstart}. The content can be processed before it ends up in the clipboard.
+ *
+ * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
+ *
+ * @eventName module:engine/view/document~Document#clipboardOutput
+ * @param data The event data.
  */
 export type ClipboardOutputTransformationEvent = {
 	name: 'outputTransformation';
