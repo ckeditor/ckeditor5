@@ -140,7 +140,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
 					} );
 
-					clipboard.fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
+					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
 				} );
 
 				it( 'should return an object stripped of list attributes, if that object was selected as a middle list item block', () => {
@@ -155,7 +155,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
 					} );
 
-					clipboard.fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
+					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
 				} );
 
 				it( 'should strip other list attributes', () => {
@@ -168,7 +168,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
 					} );
 
-					clipboard.fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
+					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
 				} );
 
 				it( 'should return nodes stripped of list attributes, if more than a single block of the same item was selected', () => {
@@ -183,7 +183,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						expect( Array.from( data.content.getChildren() ).some( isListItemBlock ) ).to.be.false;
 					} );
 
-					clipboard.fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
+					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
 				} );
 
 				it( 'should return just a text, if a list item block was partially selected', () => {
@@ -258,7 +258,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						expect( Array.from( data.content.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
 					} );
 
-					clipboard.fireOutputTransformationEvent(
+					clipboard._fireOutputTransformationEvent(
 						createDataTransfer(), model.createSelection( model.document.getRoot(), 'in' ), 'copy' );
 				} );
 
@@ -281,7 +281,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						);
 					} );
 
-					clipboard.fireOutputTransformationEvent(
+					clipboard._fireOutputTransformationEvent(
 						createDataTransfer(), model.createSelection( model.document.getRoot(), 'in' ), 'copy' );
 				} );
 			} );
@@ -738,7 +738,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				);
 			} );
 
-			clipboard.fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
+			clipboard._fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
 		} );
 
 		it( 'should return a list item, when a whole list item was selected and' +
@@ -769,7 +769,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				);
 			} );
 
-			clipboard.fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
+			clipboard._fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
 		} );
 
 		it( 'should return all selected content, even when end of selection is positioned in first place in next paragraph', () => {
@@ -799,7 +799,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				);
 			} );
 
-			clipboard.fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
+			clipboard._fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
 		} );
 	} );
 
