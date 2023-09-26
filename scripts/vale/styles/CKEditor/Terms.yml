@@ -1,10 +1,12 @@
 extends: substitution
 message: "Use '%s' instead of '%s'."
-level: warning
+level: error
 ignorecase: true
 action:
   name: replace
 swap:
+  bugfix: bug fix
+  bugfixes: bug fixes
   drop-down: dropdown
   plug-in: plugin
   MSWord: Microsoft Word
