@@ -202,28 +202,20 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element: ViewElement | null = domEventData.target;
 
-		// Do nothing for single or double click inside nested editable.
-		if ( isInsideNestedEditable( element ) ) {
-			// But at least triple click inside nested editable causes broken selection in Safari.
-			// For such event, we select the entire nested editable element.
-			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
-
-			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
-				this._setSelectionInAncestorElement( element, domEventData );
-			}
-
-			return;
-		}
-
 		const parentElement = element.parent;
 
 		// If triple click should select entire paragraph.
-		if ( parentElement &&
+		if (
+			parentElement &&
 			parentElement.is( 'element' ) &&
 			!isWidget( parentElement ) &&
 			domEventData.domEvent.detail >= 3
 		) {
 			this._setSelectionInAncestorElement( element, domEventData );
+		}
+
+		if ( isInsideNestedEditable( element ) ) {
+			return;
 		}
 
 		// If target is not a widget element - check if one of the ancestors is.
