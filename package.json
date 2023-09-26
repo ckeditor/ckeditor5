@@ -216,5 +216,8 @@
       "external/*/packages/*",
       "."
     ]
+  },
+  "resolutions": {
+    "get-func-name": "2.0.0"
   }
 }
