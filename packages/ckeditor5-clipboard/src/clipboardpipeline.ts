@@ -148,27 +148,6 @@ export default class ClipboardPipeline extends Plugin {
 	}
 
 	/**
-	 * Fires Clipboard `'outputTransformation'` event for given parameters.
-	 *
-	 * @param dataTransfer
-	 * @param selection
-	 * @param method
-	 */
-	public fireOutputTransformationEvent(
-		dataTransfer: DataTransfer,
-		selection: Selection | DocumentSelection,
-		method: 'copy' | 'cut' | 'dragstart'
-	): void {
-		const content = this.editor.model.getSelectedContent( selection );
-		const data = {
-			dataTransfer,
-			content,
-			method
-		};
-		this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', data );
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
@@ -179,6 +158,25 @@ export default class ClipboardPipeline extends Plugin {
 
 		this._setupPasteDrop();
 		this._setupCopyCut();
+	}
+
+	/**
+	 * Fires Clipboard `'outputTransformation'` event for given parameters.
+	 *
+	 * @internal
+	 */
+	public _fireOutputTransformationEvent(
+		dataTransfer: DataTransfer,
+		selection: Selection | DocumentSelection,
+		method: 'copy' | 'cut' | 'dragstart'
+	): void {
+		const content = this.editor.model.getSelectedContent( selection );
+
+		this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', {
+			dataTransfer,
+			content,
+			method
+		} );
 	}
 
 	/**
@@ -285,7 +283,7 @@ export default class ClipboardPipeline extends Plugin {
 
 			data.preventDefault();
 
-			this.fireOutputTransformationEvent( dataTransfer, modelDocument.selection, evt.name );
+			this._fireOutputTransformationEvent( dataTransfer, modelDocument.selection, evt.name );
 		};
 
 		this.listenTo<ViewDocumentCopyEvent>( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
@@ -480,18 +478,18 @@ export interface ViewDocumentClipboardOutputEventData {
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
  *
- * @eventName module:engine/view/document~Document#outputTransformation
+ * @eventName ~ClipboardPipeline##outputTransformation
  * @param data The event data.
  */
 export type ClipboardOutputTransformationEvent = {
 	name: 'outputTransformation';
-	args: [ data: ClipboardOutputTransformationEventData ];
+	args: [ data: ClipboardOutputTransformationData ];
 };
 
 /**
  * The value of the 'outputTransformation' event.
  */
-export interface ClipboardOutputTransformationEventData {
+export interface ClipboardOutputTransformationData {
 
 	/**
 	 * The data transfer instance.

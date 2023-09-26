@@ -237,7 +237,7 @@ The output pipeline is the equivalent of the input pipeline but for the copy and
              └────────────────┌────────────────┘
                               │
             	┌─────────────V────────────┐   Processes model.DocumentFragment
-                │       view.Document      │   and converts it to
+                │     ClipboardPipeline    │   and converts it to
                 │    outputTransformation  │   view.DocumentFragment.
                 └──────────────────────────┘
                               │

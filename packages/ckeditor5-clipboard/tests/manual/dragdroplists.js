@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, CKEditorInspector */
+/* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -53,8 +53,6 @@ import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting'
 import Style from '@ckeditor/ckeditor5-style/src/style';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
-import { DragDropExperimental } from '../../src';
-
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
@@ -66,7 +64,7 @@ ClassicEditor
 			CodeBlock, DocumentListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
 			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed,
 			AutoLink, Mention, TextTransformation, Alignment, IndentBlock, PageBreak, HorizontalLine,
-			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, DragDropExperimental
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport
 		],
 		toolbar: [
 			'heading', 'style',
@@ -102,9 +100,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editorClassicLists = editor;
-
-		CKEditorInspector.attach( { classicLists: editor } );
+		window.editor = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
