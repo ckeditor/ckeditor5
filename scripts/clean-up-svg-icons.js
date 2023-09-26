@@ -12,10 +12,13 @@
 // Usage:
 // 	yarn run clean-up-svg-icons <path/to/icons>
 //
+// 	yarn run clean-up-svg-icons <path/to/icons> <another/path/to/icons>
+//
 // The <path/to/icons> can be either a direct path to a SVG file, or a path to a directory. Glob patterns in path are supported.
+// Multiple arguments (paths) in one call are supported.
 //
 // To optimize the entire project run:
-// 	yarn clean-up-svg-icons packages/**/theme/icons
+// 	yarn run clean-up-svg-icons
 
 'use strict';
 
@@ -32,7 +35,10 @@ const EXCLUDED_ICONS = [
 	'project-logo.svg'
 ];
 
-const globPattern = minimist( process.argv.slice( 2 ) )._
+// A pattern to match all the icons.
+const ALL_ICONS_PATTERN = 'packages/**/theme/icons';
+
+const globPattern = parseArguments( process.argv.slice( 2 ) )
 	.map( pathToIcon => pathToIcon.endsWith( '.svg' ) ? pathToIcon : pathToIcon + '/*.svg' );
 
 globSync( globPattern )
@@ -52,3 +58,13 @@ globSync( globPattern )
 
 		execSync( `svgo --config=./scripts/svgo.config.js -i ${ pathToIcon }` );
 	} );
+
+function parseArguments( args ) {
+	const paths = minimist( args )._;
+
+	if ( paths.length > 0 ) {
+		return paths;
+	}
+
+	return [ ALL_ICONS_PATTERN ];
+}

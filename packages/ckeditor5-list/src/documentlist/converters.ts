@@ -30,6 +30,7 @@ import {
 	getAllListItemBlocks,
 	getListItemBlocks,
 	isListItemBlock,
+	isFirstBlockOfListItem,
 	ListItemUid,
 	type ListElement
 } from './utils/model';
@@ -48,8 +49,9 @@ import { findAndAddListHeadToMap } from './utils/postfixers';
 import type {
 	default as DocumentListEditing,
 	DocumentListEditingCheckAttributesEvent,
-	DowncastStrategy,
-	ListItemAttributesMap
+	DocumentListEditingCheckElementEvent,
+	ListItemAttributesMap,
+	DowncastStrategy
 } from './documentlistediting';
 
 /**
@@ -72,15 +74,26 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 			return;
 		}
 
+		const listItemId = ListItemUid.next();
+		const listIndent = getIndent( data.viewItem );
+		let listType = data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted';
+
+		// Preserve list type if was already set (for example by to-do list feature).
+		const firstItemListType = items[ 0 ].getAttribute( 'listType' ) as string;
+
+		if ( firstItemListType ) {
+			listType = firstItemListType;
+		}
+
 		const attributes = {
-			listItemId: ListItemUid.next(),
-			listIndent: getIndent( data.viewItem ),
-			listType: data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted'
+			listItemId,
+			listIndent,
+			listType
 		};
 
 		for ( const item of items ) {
 			// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
-			if ( !isListItemBlock( item ) ) {
+			if ( !item.hasAttribute( 'listItemId' ) ) {
 				writer.setAttributes( attributes, item );
 			}
 		}
@@ -172,7 +185,7 @@ export function reconvertItemsOnDataChange(
 						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
-						if ( doesItemParagraphRequiresRefresh( item ) ) {
+						if ( doesItemBlockRequiresRefresh( item as Element ) ) {
 							itemsToRefresh.push( item );
 						}
 					} else {
@@ -181,7 +194,7 @@ export function reconvertItemsOnDataChange(
 				} else if ( isListItemBlock( item ) ) {
 					// Some other attribute was changed on the list item,
 					// check if paragraph does not need to be converted to bogus or back.
-					if ( doesItemParagraphRequiresRefresh( item ) ) {
+					if ( doesItemBlockRequiresRefresh( item ) ) {
 						itemsToRefresh.push( item );
 					}
 				}
@@ -227,7 +240,7 @@ export function reconvertItemsOnDataChange(
 				visited.add( block );
 
 				// Check if bogus vs plain paragraph needs refresh.
-				if ( doesItemParagraphRequiresRefresh( block, blocks ) ) {
+				if ( doesItemBlockRequiresRefresh( block, blocks ) ) {
 					itemsToRefresh.push( block );
 				}
 				// Check if wrapping with UL, OL, LIs needs refresh.
@@ -240,14 +253,23 @@ export function reconvertItemsOnDataChange(
 		return itemsToRefresh;
 	}
 
-	function doesItemParagraphRequiresRefresh( item: Node, blocks?: Array<Node> ) {
-		if ( !item.is( 'element', 'paragraph' ) ) {
-			return false;
-		}
-
+	function doesItemBlockRequiresRefresh( item: Element, blocks?: Array<Node> ) {
 		const viewElement = editing.mapper.toViewElement( item );
 
 		if ( !viewElement ) {
+			return false;
+		}
+
+		const needsRefresh = documentListEditing.fire<DocumentListEditingCheckElementEvent>( 'checkElement', {
+			modelElement: item,
+			viewElement
+		} );
+
+		if ( needsRefresh ) {
+			return true;
+		}
+
+		if ( !item.is( 'element', 'paragraph' ) && !item.is( 'element', 'listItem' ) ) {
 			return false;
 		}
 
@@ -323,7 +345,8 @@ export function reconvertItemsOnDataChange(
 export function listItemDowncastConverter(
 	attributeNames: Array<string>,
 	strategies: Array<DowncastStrategy>,
-	model: Model
+	model: Model,
+	{ dataPipeline }: { dataPipeline?: boolean } = {}
 ): GetCallback<DowncastAttributeEvent<ListElement>> {
 	const consumer = createAttributesConsumer( attributeNames );
 
@@ -345,11 +368,17 @@ export function listItemDowncastConverter(
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model )!;
 
+		// Remove custom item marker.
+		removeCustomMarkerElements( viewElement, writer, mapper );
+
 		// Unwrap element from current list wrappers.
 		unwrapListItemBlock( viewElement, writer );
 
-		// Then wrap them with the new list wrappers.
-		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategies, writer );
+		// Insert custom item marker.
+		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, { dataPipeline } );
+
+		// Then wrap them with the new list wrappers (UL, OL, LI).
+		wrapListItemBlock( listItem, viewRange, strategies, writer );
 	};
 }
 
@@ -395,10 +424,104 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
-	return viewRange.getContainedElement();
+	return viewRange.end.nodeBefore as ViewElement | null;
 }
 
-// Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
+/**
+ * Removes a custom marker elements and item wrappers related to that marker.
+ */
+function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: DowncastWriter, mapper: Mapper ): void {
+	// Remove item wrapper.
+	while ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
+		viewWriter.unwrap( viewWriter.createRangeIn( viewElement.parent ), viewElement.parent );
+	}
+
+	// Remove custom item markers.
+	const viewWalker = viewWriter.createPositionBefore( viewElement ).getWalker( { direction: 'backward' } );
+	const markersToRemove = [];
+
+	for ( const { item } of viewWalker ) {
+		// Walk only over the non-mapped elements between list item blocks.
+		if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
+			break;
+		}
+
+		if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
+			markersToRemove.push( item );
+		}
+	}
+
+	for ( const marker of markersToRemove ) {
+		viewWriter.remove( marker );
+	}
+}
+
+/**
+ * Inserts a custom marker elements and wraps first block of a list item if marker requires it.
+ */
+function insertCustomMarkerElements(
+	listItem: Element,
+	viewElement: ViewElement,
+	strategies: Array<DowncastStrategy>,
+	writer: DowncastWriter,
+	{ dataPipeline }: { dataPipeline?: boolean }
+): ViewRange {
+	let viewRange = writer.createRangeOn( viewElement );
+
+	// Marker can be inserted only before the first block of a list item.
+	if ( !isFirstBlockOfListItem( listItem ) ) {
+		return viewRange;
+	}
+
+	for ( const strategy of strategies ) {
+		if ( strategy.scope != 'itemMarker' ) {
+			continue;
+		}
+
+		// Create the custom marker element and inject it before the first block of the list item.
+		const markerElement = strategy.createElement( writer, listItem, { dataPipeline } );
+
+		if ( !markerElement ) {
+			continue;
+		}
+
+		writer.setCustomProperty( 'listItemMarker', true, markerElement );
+		writer.insert( viewRange.start, markerElement );
+
+		viewRange = writer.createRange(
+			writer.createPositionBefore( markerElement ),
+			writer.createPositionAfter( viewElement )
+		);
+
+		// Wrap the marker and optionally the first block with an attribute element (label for to-do lists).
+		if ( !strategy.createWrapperElement || !strategy.canWrapElement ) {
+			continue;
+		}
+
+		const wrapper = strategy.createWrapperElement( writer, listItem, { dataPipeline } );
+
+		writer.setCustomProperty( 'listItemWrapper', true, wrapper );
+
+		// The whole block can be wrapped...
+		if ( strategy.canWrapElement( listItem ) ) {
+			viewRange = writer.wrap( viewRange, wrapper );
+		} else {
+			// ... or only the marker element (if the block is downcasted to heading or block widget).
+			viewRange = writer.wrap( writer.createRangeOn( markerElement ), wrapper );
+
+			viewRange = writer.createRange(
+				viewRange.start,
+				writer.createPositionAfter( viewElement )
+			);
+		}
+	}
+
+	return viewRange;
+}
+
+/**
+ * Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
+ */
 function unwrapListItemBlock( viewElement: ViewElement, viewWriter: DowncastWriter ) {
 	let attributeElement: ViewElement | ViewDocumentFragment = viewElement.parent!;
 
@@ -411,7 +534,9 @@ function unwrapListItemBlock( viewElement: ViewElement, viewWriter: DowncastWrit
 	}
 }
 
-// Wraps the given list item with appropriate attribute elements for ul, ol, and li.
+/**
+ * Wraps the given list item with appropriate attribute elements for ul, ol, and li.
+ */
 function wrapListItemBlock(
 	listItem: ListElement,
 	viewRange: ViewRange,
@@ -430,7 +555,10 @@ function wrapListItemBlock(
 		const listViewElement = createListElement( writer, indent, currentListItem.getAttribute( 'listType' ) );
 
 		for ( const strategy of strategies ) {
-			if ( currentListItem.hasAttribute( strategy.attributeName ) ) {
+			if (
+				( strategy.scope == 'list' || strategy.scope == 'item' ) &&
+				currentListItem.hasAttribute( strategy.attributeName )
+			) {
 				strategy.setAttributeOnDowncast(
 					writer,
 					currentListItem.getAttribute( strategy.attributeName ),
