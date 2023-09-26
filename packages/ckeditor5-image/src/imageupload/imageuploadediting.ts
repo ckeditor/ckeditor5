@@ -133,10 +133,7 @@ export default class ImageUploadEditing extends Plugin {
 					writer.setSelection( data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) ) );
 				}
 
-				// Upload images after the selection has changed in order to ensure the command's state is refreshed.
-				editor.model.enqueueChange( () => {
-					editor.execute( 'uploadImage', { file: images } );
-				} );
+				editor.execute( 'uploadImage', { file: images } );
 			} );
 		} );
 

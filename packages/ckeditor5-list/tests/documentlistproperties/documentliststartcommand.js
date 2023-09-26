@@ -63,6 +63,12 @@ describe( 'DocumentListStartCommand', () => {
 			expect( listStartCommand.isEnabled ).to.be.false;
 		} );
 
+		it( 'should be false if selection is inside a listItem (listType: todo)', () => {
+			setData( model, '<paragraph listType="todo" listItemId="a" listIndent="0">foo[]</paragraph>' );
+
+			expect( listStartCommand.isEnabled ).to.be.false;
+		} );
+
 		it( 'should be true if selection is inside a listItem (collapsed selection)', () => {
 			setData( model, modelList( [ '# Foo[] {start:2}' ] ) );
 

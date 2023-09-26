@@ -89,9 +89,7 @@ export default class DocumentListElementSupport extends Plugin {
 
 			const allowAttributes = viewElements.map( element => getHtmlAttributeName( element ) );
 
-			schema.extend( '$block', { allowAttributes } );
-			schema.extend( '$blockObject', { allowAttributes } );
-			schema.extend( '$container', { allowAttributes } );
+			schema.extend( '$listItem', { allowAttributes } );
 
 			conversion.for( 'upcast' ).add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>(
@@ -107,36 +105,8 @@ export default class DocumentListElementSupport extends Plugin {
 		} );
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
-		// Note: This is almost an exact copy from DocumentListPropertiesEditing.
 		documentListEditing.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
-			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
-
-			for ( const { node, previous } of listNodes ) {
-				// For the first list block there is nothing to compare with.
-				if ( !previous ) {
-					continue;
-				}
-
-				const nodeIndent = node.getAttribute( 'listIndent' );
-				const previousNodeIndent = previous.getAttribute( 'listIndent' );
-
-				let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
-
-				// Let's find previous node for the same indent.
-				// We're going to need that when we get back to previous indent.
-				if ( nodeIndent > previousNodeIndent ) {
-					previousNodesByIndent[ previousNodeIndent ] = previous;
-				}
-				// Restore the one for given indent.
-				else if ( nodeIndent < previousNodeIndent ) {
-					previousNodeInList = previousNodesByIndent[ nodeIndent ];
-					previousNodesByIndent.length = nodeIndent;
-				}
-				// Same indent.
-				else {
-					previousNodeInList = previous;
-				}
-
+			for ( const { node, previousNodeInList } of listNodes ) {
 				// This is a first item of a nested list.
 				if ( !previousNodeInList ) {
 					continue;
@@ -174,7 +144,7 @@ export default class DocumentListElementSupport extends Plugin {
 			for ( const { node } of listNodes ) {
 				const listType = node.getAttribute( 'listType' );
 
-				if ( listType === 'bulleted' && node.getAttribute( 'htmlOlAttributes' ) ) {
+				if ( listType !== 'numbered' && node.getAttribute( 'htmlOlAttributes' ) ) {
 					writer.removeAttribute( 'htmlOlAttributes', node );
 					evt.return = true;
 				}
@@ -256,8 +226,8 @@ function viewToModelListAttributeConverter( attributeName: string, dataFilter: D
 /**
  * Returns HTML attribute name based on provided list type.
  */
-function getAttributeFromListType( listType: 'bulleted' | 'numbered' ) {
-	return listType === 'bulleted' ?
-		'htmlUlAttributes' :
-		'htmlOlAttributes';
+function getAttributeFromListType( listType: 'bulleted' | 'numbered' | 'todo' ) {
+	return listType === 'numbered' ?
+		'htmlOlAttributes' :
+		'htmlUlAttributes';
 }
