@@ -123,8 +123,8 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			const modelSelection = model.document.selection;
 			const { focus, anchor } = modelSelection;
 
-			expect( focus.path ).to.have.same.members( [ 0, 6 ] );
-			expect( anchor.path ).to.have.same.members( [ 0, 0 ] );
+			expect( focus.path ).to.deep.equal( [ 0, 6 ] );
+			expect( anchor.path ).to.deep.equal( [ 0, 0 ] );
 			expect( dragDropBlockToolbar._isBlockDragging ).to.be.true;
 		} );
 
@@ -140,8 +140,8 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			const modelSelection = model.document.selection;
 			const { focus, anchor } = modelSelection;
 
-			expect( focus.path ).to.have.same.members( [ 0, 3 ] );
-			expect( anchor.path ).to.have.same.members( [ 0, 0 ] );
+			expect( focus.path ).to.deep.equal( [ 0, 3 ] );
+			expect( anchor.path ).to.deep.equal( [ 0, 0 ] );
 		} );
 
 		it( 'should display dragging marker', () => {
