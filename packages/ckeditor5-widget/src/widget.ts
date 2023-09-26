@@ -19,7 +19,8 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentFragment,
 	type ViewDocumentMouseDownEvent,
-	type ViewElement
+	type ViewElement,
+	type Schema
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -202,22 +203,18 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element: ViewElement | null = domEventData.target;
 
-		// Do nothing for single or double click inside nested editable.
-		if ( isInsideNestedEditable( element ) ) {
-			// But at least triple click inside nested editable causes broken selection in Safari.
-			// For such event, we select the entire nested editable element.
-			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
-
-			if ( ( env.isSafari || env.isGecko ) && domEventData.domEvent.detail >= 3 ) {
-				this._setSelectionInAncestorElement( element, domEventData );
+		// If triple click should select entire paragraph.
+		if ( element && domEventData.domEvent.detail >= 3 ) {
+			if ( this._selectBlockContent( element ) ) {
+				domEventData.preventDefault();
 			}
 
 			return;
 		}
 
-		// If triple click should select entire paragraph.
-		if ( domEventData.domEvent.detail >= 3 ) {
-			this._setSelectionInAncestorElement( element, domEventData );
+		// Do nothing for single or double click inside nested editable.
+		if ( isInsideNestedEditable( element ) ) {
+			return;
 		}
 
 		// If target is not a widget element - check if one of the ancestors is.
@@ -246,24 +243,28 @@ export default class Widget extends Plugin {
 		this._setSelectionOverElement( modelElement! );
 	}
 
-	private _setSelectionInAncestorElement( element: ViewElement, domEventData: DomEventData<MouseEvent> ): void {
-		if ( !element ) {
-			return;
+	/**
+	 * TODO
+	 */
+	private _selectBlockContent( element: ViewElement ): boolean {
+		const editor = this.editor;
+		const model = editor.model;
+		const mapper = editor.editing.mapper;
+
+		const viewElement = mapper.findMappedViewAncestor( this.editor.editing.view.createPositionAt( element, 0 ) );
+		const modelElement = findTextBlockAncestor( mapper.toModelElement( viewElement )!, model.schema );
+
+		if ( !modelElement ) {
+			return false;
 		}
 
-		const mapper = this.editor.editing.mapper;
-		const viewElement = element.is( 'attributeElement' ) ?
-			element.findAncestor( element => !element.is( 'attributeElement' ) )! : element;
+		model.change( writer => {
+			// TODO the selection end should be in the next text block start (even nested in block quote,
+			//  but should not cross the limit element).
+			writer.setSelection( modelElement, 'in' );
+		} );
 
-		domEventData.preventDefault();
-
-		if ( viewElement.is( 'containerElement' ) ) {
-			const modelElement = mapper.toModelElement( viewElement )!;
-
-			this.editor.model.change( writer => {
-				writer.setSelection( modelElement, 'in' );
-			} );
-		}
+		return true;
 	}
 
 	/**
@@ -495,4 +496,22 @@ function isChild( element: ViewElement, parent: ViewElement | null ) {
 	}
 
 	return Array.from( element.getAncestors() ).includes( parent );
+}
+
+/**
+ * TODO
+ */
+function findTextBlockAncestor( modelElement: Element, schema: Schema ): Element | null {
+	for ( const element of modelElement.getAncestors( { includeSelf: true, parentFirst: true } ) ) {
+		// Do not go beyond nested editable.
+		if ( schema.isLimit( element ) && !schema.isObject( element ) ) {
+			break;
+		}
+
+		if ( schema.checkChild( element as Element, '$text' ) ) {
+			return element as Element;
+		}
+	}
+
+	return null;
 }
