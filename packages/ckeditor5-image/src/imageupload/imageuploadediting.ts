@@ -137,7 +137,7 @@ export default class ImageUploadEditing extends Plugin {
 			} );
 		} );
 
-		// Handle HTML pasted with images with base64 or blob sources.
+		// Handle HTML pasted with images.
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
