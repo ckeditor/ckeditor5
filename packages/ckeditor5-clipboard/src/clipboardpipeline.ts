@@ -478,7 +478,7 @@ export interface ViewDocumentClipboardOutputEventData {
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
  *
- * @eventName ~ClipboardPipeline##outputTransformation
+ * @eventName ~ClipboardPipeline#outputTransformation
  * @param data The event data.
  */
 export type ClipboardOutputTransformationEvent = {
