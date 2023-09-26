@@ -253,9 +253,9 @@ The default action is to:
 
 1. {@link module:engine/model/model~Model#getSelectedContent Get the selected content} from the editor.
 1. Prevent the default action of the native `copy` or `cut` event.
-1. Fire {@link module:engine/view/document~Document#event:outputTransformation `view.Document#outputTransformation`}` with a selected content represented by a {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+1. Fire {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:outputTransformation `view.Document#outputTransformation`}` with a selected content represented by a {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
 
-### 2. On {@link module:engine/view/document~Document#event:outputTransformation `view.Document#outputTransformation`}
+### 2. On {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:outputTransformation `view.Document#outputTransformation`}
 
 The default action is to:
 
