@@ -1,0 +1,8 @@
+extends: metric
+message: "Try to keep the Coleman–Liau Index grade (%s) below 9."
+link: https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index
+
+formula: |
+  (0.0588 * (characters / words) * 100) - (0.296 * (sentences / words) * 100) - 15.8
+
+condition: "> 9"
