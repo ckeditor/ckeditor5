@@ -62,14 +62,14 @@ import viewToPlainText from './utils/viewtoplaintext';
 //
 //              ┌──────────────────────┐          ┌──────────────────────┐
 //              │     view.Document    │          │     view.Document    │   Retrieves the selected model.DocumentFragment
-//              │         copy         │          │          cut         │   and converts it to view.DocumentFragment.
+//              │         copy         │          │          cut         │   and fires `outputTransformation` event.
 //              └───────────┬──────────┘          └───────────┬──────────┘
 //                          │                                 │
 //                          └────────────────┌────────────────┘
 //                                           │
 //                               ┌───────────V───────────┐
-//                               │   ClipboardPipeline   │
-//                               │  outputTransformation │
+//                               │   ClipboardPipeline   │   Processes model.DocumentFragment and converts it to
+//                               │  outputTransformation │   view.DocumentFragment.
 //                               └───────────┬───────────┘
 //                                           │
 //                                 ┌─────────V────────┐
@@ -480,7 +480,7 @@ export interface ViewDocumentClipboardOutputEventData {
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
  *
- * @eventName module:engine/view/document~Document#clipboardOutput
+ * @eventName module:engine/view/document~Document#outputTransformation
  * @param data The event data.
  */
 export type ClipboardOutputTransformationEvent = {
