@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-09-21
+modified_at: 2023-09-26
 ---
 
 # Update to CKEditor&nbsp;5 v40.x
@@ -47,6 +47,10 @@ While `⠿` is now a default, the icon can still be configured by the integrator
 
 ### A new default lists plugin coming
 
-The regular lists feature will be replaced with the new {@link features/document-lists document lists} in one of the upcoming releases and it will be sunset at the beginning of 2024. The change will be seamless for the users, but there are significant changes between these plugins. We will update the information about this process as it unfolds.
+We currently maintain two list features: {@link features/lists List} and {@link features/document-lists DocumentList}. The list v1 feature was implemented in the early days of CKEditor 5. It supports “plain lists” &ndash; lists where `<li>` cannot contain block content (paragraphs, headings, tables, block images). It supports to-do lists, but it does not support extending list markup via the {@link features/general-html-support General HTML Support (GHS)} feature.
 
-See [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) for more details.
+The list v2 (document list) feature was implemented in 2022 to add support for block content in list items. It supported extending list markup via GHS. It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. We are nearing the end of a long job of pairing these two plugins in their functions. You can follow the current state of works in the [Document list feature parity](https://github.com/ckeditor/ckeditor5/issues/14632) issue.
+
+Considering this progress, the old lists feature will be replaced with the new document lists in one of the upcoming releases and it will be sunset at the beginning of 2024. The change will be seamless for the users, but there are significant changes between these plugins. We will update the information about this process as it unfolds.
+
+See the [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) issue for more details.
