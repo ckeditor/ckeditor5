@@ -12,7 +12,7 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { ListProperties } from '@ckeditor/ckeditor5-list';
 import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { TableProperties, TableCellProperties, tableColumn } from '@ckeditor/ckeditor5-table';
+import { TableProperties, TableCellProperties, TableColumnResize } from '@ckeditor/ckeditor5-table';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
@@ -39,10 +39,10 @@ ClassicEditor.builtinPlugins.push(
 	CKBox,
 	TableProperties,
 	TableCellProperties,
-	tableColumn
+	TableColumnResize
 );
 
-ClassicEditor.defaultConfig.table.contentToolbar.push( 'tableProperties', 'tableCellProperties', 'tableColumn' );
+ClassicEditor.defaultConfig.table.contentToolbar.push( 'tableProperties', 'tableCellProperties', 'tableColumnResize' );
 
 window.ClassicEditor = ClassicEditor;
 window.ListProperties = ListProperties;
