@@ -575,24 +575,25 @@ export default class DocumentListEditing extends Plugin {
 		// See https://github.com/ckeditor/ckeditor5/issues/11608, https://github.com/ckeditor/ckeditor5/issues/14969
 		this.listenTo<ClipboardOutputTransformationEvent>( clipboardPipeline, 'outputTransformation', ( evt, data ) => {
 			model.change( writer => {
+				// Remove last block if it's empty.
 				const allContentChildren = Array.from( data.content.getChildren() );
-				const lastItem = allContentChildren[ allContentChildren.length - 1 ] as Element;
+				const lastItem = allContentChildren[ allContentChildren.length - 1 ];
 
-				if ( allContentChildren.length > 1 && lastItem.isEmpty ) {
-					const contentChildrenExceptLastItem = Array.from( data.content.getChildren() ).slice( 0, -1 );
-					const isContentDocumentList = contentChildrenExceptLastItem!.every( isListItemBlock );
+				if ( allContentChildren.length > 1 && lastItem.is( 'element' ) && lastItem.isEmpty ) {
+					const contentChildrenExceptLastItem = allContentChildren.slice( 0, -1 );
 
-					if ( isContentDocumentList ) {
+					if ( contentChildrenExceptLastItem.every( isListItemBlock ) ) {
 						writer.remove( lastItem );
 					}
 				}
 
-				if ( data.method != 'dragstart' ) {
-					const allChildren = Array.from( data.content.getChildren() ) as any;
+				// Copy/cut only content of a list item (for drag-drop move the whole list item).
+				if ( data.method == 'copy' || data.method == 'cut' ) {
+					const allChildren = Array.from( data.content.getChildren() );
 					const isSingleListItemSelected = isSingleListItem( allChildren );
 
 					if ( isSingleListItemSelected ) {
-						removeListAttributes( allChildren, writer );
+						removeListAttributes( allChildren as Array<Element>, writer );
 					}
 				}
 			} );
