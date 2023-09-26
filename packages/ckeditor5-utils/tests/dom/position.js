@@ -261,8 +261,8 @@ describe( 'getOptimalPosition()', () => {
 				parent.appendChild( element );
 
 				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
-					top: 100,
-					left: 80,
+					top: -900,
+					left: -920,
 					name: 'left-bottom'
 				} );
 			} );
@@ -307,8 +307,8 @@ describe( 'getOptimalPosition()', () => {
 				parent.scrollTop = 100;
 
 				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
-					top: 1200,
-					left: 1280,
+					top: 200,
+					left: 280,
 					name: 'left-bottom'
 				} );
 			} );

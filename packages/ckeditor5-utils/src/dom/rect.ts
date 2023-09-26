@@ -576,7 +576,7 @@ function getElementOverflow( element: HTMLElement | Range ): string {
  * (and scrollable) ancestors.
  */
 function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementAncestor: HTMLElement ): void {
-	const ancestorPosition = new Rect( positionedElementAncestor );
+	const ancestorPosition = new Rect( positionedElementAncestor ).toAbsoluteRect();
 	const ancestorBorderWidths = getBorderWidths( positionedElementAncestor );
 
 	let moveX = 0;
