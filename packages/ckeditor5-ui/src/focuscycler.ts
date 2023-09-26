@@ -331,8 +331,8 @@ export type FocusableView = View & {
 	 * * `1` indicates that the focus moved forward and, in most cases, the first child of the focused view should get focused,
 	 * * `-1` indicates that the focus moved backwards, and the last focusable child should get focused
 	 *
-	 * See {@link module:ui/focuscycler~FocusCycler#forwardCycle} and {@link module:ui/focuscycler~FocusCycler#backwardCycle} to
-	 * learn more.
+	 * See {@link module:ui/focuscycler~FocusCycler#event:forwardCycle} and {@link module:ui/focuscycler~FocusCycler#event:backwardCycle}
+	 * to learn more.
 	 */
 	focus( direction?: 1 | -1 ): void;
 };

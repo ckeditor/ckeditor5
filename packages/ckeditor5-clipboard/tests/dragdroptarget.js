@@ -5,7 +5,7 @@
 
 /* globals document, Event, setTimeout */
 
-import DragDropExperimental from '../src/dragdropexperimental';
+import DragDrop from '../src/dragdrop';
 import DragDropTarget from '../src/dragdroptarget';
 import PastePlainText from '../src/pasteplaintext';
 
@@ -31,7 +31,7 @@ describe( 'Drag and Drop target', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ DragDropExperimental, PastePlainText, Paragraph, Table, HorizontalLine, ShiftEnter, BlockQuote, Bold ]
+			plugins: [ DragDrop, PastePlainText, Paragraph, Table, HorizontalLine, ShiftEnter, BlockQuote, Bold ]
 		} );
 
 		model = editor.model;
