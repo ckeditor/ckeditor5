@@ -68,12 +68,10 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		editor.config.define( 'list', {
-			properties: {
-				styles: true,
-				startIndex: false,
-				reversed: false
-			}
+		editor.config.define( 'list.properties', {
+			styles: true,
+			startIndex: false,
+			reversed: false
 		} );
 	}
 
@@ -91,9 +89,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
 
-			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
-			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
-			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
+			model.schema.extend( '$listItem', { allowAttributes: strategy.attributeName } );
 
 			// Register downcast strategy.
 			documentListEditing.registerDowncastStrategy( {
@@ -171,35 +167,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
-		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
-			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
-
-			for ( const { node, previous } of listNodes ) {
-				// For the first list block there is nothing to compare with.
-				if ( !previous ) {
-					continue;
-				}
-
-				const nodeIndent = node.getAttribute( 'listIndent' );
-				const previousNodeIndent = previous.getAttribute( 'listIndent' );
-
-				let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
-
-				// Let's find previous node for the same indent.
-				// We're going to need that when we get back to previous indent.
-				if ( nodeIndent > previousNodeIndent ) {
-					previousNodesByIndent[ previousNodeIndent ] = previous;
-				}
-				// Restore the one for given indent.
-				else if ( nodeIndent < previousNodeIndent ) {
-					previousNodeInList = previousNodesByIndent[ nodeIndent ];
-					previousNodesByIndent.length = nodeIndent;
-				}
-				// Same indent.
-				else {
-					previousNodeInList = previous;
-				}
-
+		documentListEditing.on<DocumentListEditingPostFixerEvent>( 'postFixer', ( evt, { listNodes, writer } ) => {
+			for ( const { node, previousNodeInList } of listNodes ) {
 				// This is a first item of a nested list.
 				if ( !previousNodeInList ) {
 					continue;
@@ -302,11 +271,15 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 				editor.commands.add( 'listStyle', new DocumentListStyleCommand( editor, DEFAULT_LIST_TYPE, supportedTypes ) );
 			},
 
-			appliesToListItem() {
-				return true;
+			appliesToListItem( item ) {
+				return item.getAttribute( 'listType' ) == 'numbered' || item.getAttribute( 'listType' ) == 'bulleted';
 			},
 
 			hasValidAttribute( item ) {
+				if ( !this.appliesToListItem( item ) ) {
+					return !item.hasAttribute( 'listStyle' );
+				}
+
 				if ( !item.hasAttribute( 'listStyle' ) ) {
 					return false;
 				}

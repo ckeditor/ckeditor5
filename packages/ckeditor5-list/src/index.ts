@@ -26,6 +26,8 @@ export { default as ListPropertiesUI } from './listproperties/listpropertiesui';
 export { default as TodoList } from './todolist';
 export { default as TodoListEditing } from './todolist/todolistediting';
 export { default as TodoListUI } from './todolist/todolistui';
+export { default as TodoDocumentList } from './tododocumentlist';
+export { default as TodoDocumentListEditing } from './tododocumentlist/tododocumentlistediting';
 
 export type { ListConfig, ListPropertiesConfig } from './listconfig';
 export type { default as ListStyle } from './liststyle';
@@ -40,5 +42,6 @@ export type { default as ListReversedCommand } from './listproperties/listrevers
 export type { default as ListStartCommand } from './listproperties/liststartcommand';
 export type { default as ListStyleCommand } from './listproperties/liststylecommand';
 export type { default as CheckTodoListCommand } from './todolist/checktodolistcommand';
+export type { default as CheckTodoDocumentListCommand } from './tododocumentlist/checktododocumentlistcommand';
 
 import './augmentation';

@@ -181,7 +181,7 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 	 */
 	constructor(
 		locale: Locale | undefined,
-		viewCreator: ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => TFieldView
+		viewCreator: LabeledFieldViewCreator<TFieldView>
 	) {
 		super( locale );
 
@@ -291,7 +291,14 @@ export default class LabeledFieldView<TFieldView extends FocusableView = Focusab
 	/**
 	 * Focuses the {@link #fieldView}.
 	 */
-	public focus(): void {
-		this.fieldView.focus();
+	public focus( direction?: 1 | -1 ): void {
+		this.fieldView.focus( direction );
 	}
 }
+
+/**
+ * A creator function that returns a focusable view to be labeled by a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+ * instance.
+ */
+export type LabeledFieldViewCreator<TFieldView extends FocusableView> =
+	( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => TFieldView;
