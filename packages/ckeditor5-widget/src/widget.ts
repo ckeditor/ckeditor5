@@ -215,14 +215,8 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		const parentElement = element.parent;
-
 		// If triple click should select entire paragraph.
-		if ( parentElement &&
-			parentElement.is( 'element' ) &&
-			!isWidget( parentElement ) &&
-			domEventData.domEvent.detail >= 3
-		) {
+		if ( domEventData.domEvent.detail >= 3 ) {
 			this._setSelectionInAncestorElement( element, domEventData );
 		}
 
@@ -253,13 +247,18 @@ export default class Widget extends Plugin {
 	}
 
 	private _setSelectionInAncestorElement( element: ViewElement, domEventData: DomEventData<MouseEvent> ): void {
-		if ( element ) {
-			const mapper = this.editor.editing.mapper;
-			const viewElement = element.is( 'attributeElement' ) ?
-				element.findAncestor( element => !element.is( 'attributeElement' ) )! : element;
-			const modelElement = mapper.toModelElement( viewElement )!;
+		if ( !element ) {
+			return;
+		}
 
-			domEventData.preventDefault();
+		const mapper = this.editor.editing.mapper;
+		const viewElement = element.is( 'attributeElement' ) ?
+			element.findAncestor( element => !element.is( 'attributeElement' ) )! : element;
+
+		domEventData.preventDefault();
+
+		if ( viewElement.is( 'containerElement' ) ) {
+			const modelElement = mapper.toModelElement( viewElement )!;
 
 			this.editor.model.change( writer => {
 				writer.setSelection( modelElement, 'in' );
