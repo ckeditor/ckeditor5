@@ -1670,6 +1670,7 @@ describe( 'CodeBlockEditing', () => {
 				dataTransfer: dataTransferMock,
 				targetRanges: [ targetViewRange ],
 				target: targetViewRange.start.parent.parent,
+				domEvent: sinon.spy(),
 				stop: sinon.spy()
 			} );
 
