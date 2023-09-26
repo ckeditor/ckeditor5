@@ -43,8 +43,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import ClipboardPipeline, {
-	type ClipboardContentInsertionEvent,
-	type ViewDocumentClipboardOutputEvent
+	type ClipboardContentInsertionEvent
 } from './clipboardpipeline';
 
 import ClipboardObserver, {
@@ -290,13 +289,9 @@ export default class DragDrop extends Plugin {
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
-			const content = editor.data.toView( model.getSelectedContent( draggedSelection ) );
+			const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
 
-			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
-				dataTransfer: data.dataTransfer,
-				content,
-				method: 'dragstart'
-			} );
+			clipboardPipeline._fireOutputTransformationEvent( data.dataTransfer, draggedSelection, 'dragstart' );
 
 			const { dataTransfer, domTarget, domEvent } = data;
 			const { clientX } = domEvent;
