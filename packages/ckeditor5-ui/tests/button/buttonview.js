@@ -307,6 +307,7 @@ describe( 'ButtonView', () => {
 			} );
 
 			it( '-checked is not present', () => {
+				view.isOn = true;
 				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
 			} );
 		} );
