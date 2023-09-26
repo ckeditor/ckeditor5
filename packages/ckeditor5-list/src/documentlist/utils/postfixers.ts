@@ -135,6 +135,17 @@ export function fixListItemIds(
 
 		seenIds.add( listItemId );
 
+		// Make sure that all items in a simple list have unique IDs.
+		if ( node.is( 'element', 'listItem' ) ) {
+			if ( node.getAttribute( 'listItemId' ) != listItemId ) {
+				writer.setAttribute( 'listItemId', listItemId, node );
+
+				applied = true;
+			}
+
+			continue;
+		}
+
 		for ( const block of getListItemBlocks( node, { direction: 'forward' } ) ) {
 			visited.add( block );
 

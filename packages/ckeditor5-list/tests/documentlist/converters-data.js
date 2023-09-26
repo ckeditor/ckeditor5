@@ -2506,4 +2506,88 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 			} );
 		} );
 	} );
+
+	describe( 'list item content should be able to detect if it is inside some list item', () => {
+		beforeEach( () => {
+			model.schema.register( 'obj', { inheritAllFrom: '$inlineObject' } );
+
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:obj', ( evt, data, conversionApi ) => {
+					const modelCursor = data.modelCursor;
+					const modelItem = modelCursor.parent;
+					const viewItem = data.viewItem;
+
+					// This is the main part.
+					if ( !modelItem.hasAttribute( 'listType' ) ) {
+						return;
+					}
+
+					if ( !conversionApi.consumable.consume( viewItem, { name: true } ) ) {
+						return;
+					}
+
+					const writer = conversionApi.writer;
+
+					writer.setAttribute( 'listType', 'todo', modelItem );
+
+					data.modelRange = writer.createRange( modelCursor );
+				} );
+			} );
+
+			editor.plugins.get( DocumentListEditing ).registerDowncastStrategy( {
+				scope: 'list',
+				attributeName: 'listType',
+
+				setAttributeOnDowncast( writer, value, element ) {
+					if ( value === 'todo' ) {
+						writer.addClass( 'todo-list', element );
+					}
+				}
+			} );
+
+			editor.conversion.elementToElement( { model: 'obj', view: 'obj' } );
+		} );
+
+		it( 'content directly inside LI element', () => {
+			test.data(
+				'<ul>' +
+					'<li><obj></obj>foo</li>' +
+				'</ul>' +
+				'<p><obj></obj>bar</p>',
+
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph><obj></obj>bar</paragraph>',
+
+				'<ul class="todo-list">' +
+					'<li>foo</li>' +
+				'</ul>' +
+				'<p><obj>&nbsp;</obj>bar</p>'
+			);
+		} );
+
+		it( 'content inside a P in LI element', () => {
+			test.data(
+				'<ul>' +
+					'<li>' +
+						'<obj></obj>' +
+						'<p>foo</p>' +
+						'<p>123</p>' +
+					'</li>' +
+				'</ul>' +
+				'<p><obj></obj>bar</p>',
+
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="todo">123</paragraph>' +
+				'<paragraph><obj></obj>bar</paragraph>',
+
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<p>foo</p>' +
+						'<p>123</p>' +
+					'</li>' +
+				'</ul>' +
+				'<p><obj>&nbsp;</obj>bar</p>'
+			);
+		} );
+	} );
 } );

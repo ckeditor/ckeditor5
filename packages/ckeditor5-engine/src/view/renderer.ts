@@ -357,7 +357,7 @@ export default class Renderer extends ObservableMixin() {
 		//
 		// Converting live list to an array to make the list static.
 		const actualDomChildren = Array.from(
-			this.domConverter.mapViewToDom( viewElement )!.childNodes
+			domElement.childNodes
 		);
 		const expectedDomChildren = Array.from(
 			this.domConverter.viewChildrenToDom( viewElement, { withChildren: false } )
