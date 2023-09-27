@@ -51,7 +51,7 @@ If you plan to run the editor in a right–to–left (RTL) language, keep in min
 }
 ```
 
-Before the v40.0.0 release of CKEditor 5, the block toolbar used the pilcrow icon (¶) as a placeholder. This was changed to braille pattern dots icon (`⠿`) as a default. If you want to use a different icon, you can configure it easily, for example:
+Before the v40.0.0 release of CKEditor 5, the block toolbar used the pilcrow icon (¶) as a handle. This was changed to braille pattern dots icon (`⠿`) as a default. If you want to use a different icon, you can configure it easily, for example:
 
 ```js
 	blockToolbar: {
