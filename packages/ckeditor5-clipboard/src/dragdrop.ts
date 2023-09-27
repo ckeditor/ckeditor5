@@ -345,7 +345,7 @@ export default class DragDrop extends Plugin {
 
 			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
 
-			dragDropTarget.updateDropMarker( data.target, data.targetRanges, clientX, clientY, this._blockMode );
+			dragDropTarget.updateDropMarker( data.target, data.targetRanges, clientX, clientY, this._blockMode, this._draggedRange );
 
 			// If this is content being dragged from another editor, moving out of current editor instance
 			// is not possible until 'dragend' event case will be fixed.
