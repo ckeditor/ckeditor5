@@ -96,7 +96,25 @@ ClassicEditor
 
 ### To-do lists
 
-<!-- Kuba, tutaj -->
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-list
+```
+
+Then add the `TodoDocumentList` plugin to your plugin list and the toolbar configuration:
+
+```js
+import { TodoDocumentList } from '@ckeditor/ckeditor5-list';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ TodoDocumentList, /* ... */ ],
+		toolbar: [ 'todoList', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
@@ -130,7 +148,20 @@ ClassicEditor
 
 ## Simple lists
 
-<!-- Kuba, tutaj -->
+```js
+import { DocumentList } from '@ckeditor/ckeditor5-list';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ DocumentList, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
+		list: {
+		    multiBlock: false // Turn off the multi block support (enabled by default).
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ## Related features
 
