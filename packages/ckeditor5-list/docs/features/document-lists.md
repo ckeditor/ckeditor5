@@ -10,7 +10,7 @@ modified_at: 2022-09-20
 
 # Document lists
 
-The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. They support ordered, unordered and to-do lists.
+The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. They support ordered, unordered, and to-do lists.
 
 <info-box warning>
 	The document lists feature will become the default list feature for CKEditor&nbsp;5 in the upcoming releases and will replace the {@link features/lists current one}. This plugin will then be withdrawn at the beginning of 2024.
@@ -96,7 +96,7 @@ ClassicEditor
 
 ### To-do lists
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+To add the to-do lists feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-list
@@ -128,7 +128,7 @@ ClassicEditor
 
 By default, two lists of the same type (ordered and unordered) that are next to each other are merged together. This is done so that lists that visually appear to be one continuous list actually are, even if the user has accidentally created several of them.
 
-Unfortunately, in some cases this can be undesirable behavior. For example, two adjacent numbered lists, each with two items, will merge into a single list with the numbers 1 through 4.
+Unfortunately, in some cases, this can be undesirable behavior. For example, two adjacent numbered lists, each with two items, will merge into a single list with the numbers 1 through 4.
 
 To prevent this behavior, enable the `AdjacentListsSupport` plugin.
 
@@ -147,6 +147,10 @@ ClassicEditor
 ```
 
 ## Simple lists
+
+The simple list config option is a great solution for users who do not need to turn block elements into list items. When this setting is active, users can only insert text into list items and will not be able to nest content blocks &ndash; like paragraphs,  or tables &ndash; inside a list item. This would be handy for small editing areas and for content creation solutions that mostly need to work with less advanced documents. Turning off the default block support will make editing easier with limited capabilities and also affect some fields like keyboard shortcuts.
+
+Turn the block list support off in the config:
 
 ```js
 import { DocumentList } from '@ckeditor/ckeditor5-list';
