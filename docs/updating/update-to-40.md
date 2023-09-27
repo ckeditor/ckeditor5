@@ -33,7 +33,7 @@ Last but not least, content styles have been updated with this release, which me
 We have changed the default {@link features/blocktoolbar Balloon Block editor toolbar} indicator icon from the pilcrow icon (`¶`) to the braille pattern dots icon (`⠿`). The new icon better corresponds to the dual function of the indicator, which may be used to both invoke the balloon toolbar and to drag to content block around.
 
 While `⠿` is now a default, the icon can still be configured by the integrator, for example:
-<!-- add this to balloon toolbar config guide-->
+
 ```js
 	blockToolbar: {
 		items: [
