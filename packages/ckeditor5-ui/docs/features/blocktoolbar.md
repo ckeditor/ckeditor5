@@ -10,7 +10,7 @@ The block toolbar plugin provides an additional [configurable](#configuration) t
 ## Demo
 
 <info-box hint>
-	In the editor below, move the caret around the content. You'll see that the block toolbar button (&#182;) is following your selection. Click the button to show the toolbar.
+	In the editor below, move the caret around the content. You'll see that the block toolbar button (`⠿`) is following your selection. Click the button to show the toolbar.
 </info-box>
 
 {@snippet features/blocktoolbar}
