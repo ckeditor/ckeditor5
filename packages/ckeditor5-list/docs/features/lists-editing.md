@@ -16,8 +16,19 @@ The current list feature lets any part of the content be part of a list. Content
 
 The simple list config option is a great solution for users who do not need to turn block elements into list items. When this setting is active, users can only insert text into list items and will not be able to nest content blocks &ndash; like paragraphs,  or tables &ndash; inside a list item. This would be handy for small editing areas and for content creation solutions that mostly need to work with less advanced documents. Turning off the block list will make editing easier with limited capabilities and also affect some fields like keyboard shortcuts.
 
-```
-Option snippet
+```js
+import { DocumentList } from '@ckeditor/ckeditor5-list';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ DocumentList, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
+		list: {
+		    multiBlock: false // Turn off the multi block support (enabled by default).
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ## Adjacent lists merging
