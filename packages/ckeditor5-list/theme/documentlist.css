@@ -6,3 +6,15 @@
 .ck-editor__editable .ck-list-bogus-paragraph {
 	display: block;
 }
+
+.ck-content {
+	& li > p {
+		&:first-child {
+			margin-top: 0;
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
