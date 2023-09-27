@@ -502,27 +502,23 @@ function canDropOnRange(
 	draggedRange: LiveRange
 ): boolean {
 	if ( draggedRange.containsRange( targetRange ) ) {
-		// Can't drop inside the element being dragged.
+		// Target range is inside the dragged range.
 		return false;
 	}
 
-	const targetModelElement = editor.editing.mapper.toModelElement( targetViewElement );
+	const targetElement = editor.editing.mapper.toModelElement( targetViewElement )!;
+	const draggedElement = draggedRange.getContainedElement();
 
-	if ( targetModelElement && editor.model.schema.isBlock( targetModelElement ) ) {
-		// If the target element is block, then the dragged element will be placed before or after it, not on it.
+	if ( !draggedElement ) {
+		// Dragged range only contains text.
 		return true;
 	}
 
-	const draggedModelElement = draggedRange.getContainedElement();
-
-	if (
-		targetModelElement &&
-		draggedModelElement &&
-		!editor.model.schema.checkChild( targetModelElement, draggedModelElement )
-	) {
-		// Can't drop because the schema doesn't allow it.
-		return false;
+	if ( editor.model.schema.isBlock( targetElement ) || editor.model.schema.isBlock( draggedElement )	) {
+		// When the dragged or target element is a block, the dragged element is placed before or after the target, not inside it.
+		return true;
 	}
 
-	return true;
+	// Check if the schema allows the dragged item to be dropped into the target item.
+	return editor.model.schema.checkChild( targetElement, draggedElement );
 }
