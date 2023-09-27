@@ -14,7 +14,9 @@ The current list feature lets any part of the content be part of a list. Content
 
 ## Simple lists
 
-The simple list config option is a great solution for users who do not need to turn block elements into list items. When this setting is active, users can only insert text into list items and will not be able to nest content blocks &ndash; like paragraphs,  or tables &ndash; inside a list item. This would be handy for small editing areas and for content creation solutions that mostly need to work with less advanced documents. Turning off the block list will make editing easier with limited capabilities and also affect some fields like keyboard shortcuts.
+The simple list config option is a great solution for users who do not need to turn block elements into list items. When this setting is active, users can only insert text into list items and will not be able to nest content blocks &ndash; like paragraphs,  or tables &ndash; inside a list item. This would be handy for small editing areas and for content creation solutions that mostly need to work with less advanced documents.
+
+Turning off the block list capabilities as shown below will make editing easier with limited capabilities and also affect some fields like keyboard shortcuts.
 
 ```js
 import { DocumentList } from '@ckeditor/ckeditor5-list';
