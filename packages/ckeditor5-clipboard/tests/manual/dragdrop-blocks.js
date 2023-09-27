@@ -341,3 +341,40 @@ BalloonEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+BalloonEditor
+	.create( document.querySelector( '#editor-block-rtl' ), {
+		plugins: [
+			Essentials, List, Paragraph, Heading,
+			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
+			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
+			CloudServices, ImageUpload, EasyImage, DragDrop
+		],
+		language: 'ar',
+		cloudServices: CS_CONFIG,
+		blockToolbar: {
+			items: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList',
+				'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph', 'heading1', 'heading2',
+				'heading3', 'bulletedList', 'numberedList', 'insertTable', 'uploadImage' ]
+		},
+		image: {
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'resizeImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editorBalloonRtl = editor;
+
+		CKEditorInspector.attach( { balloonRtl: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );

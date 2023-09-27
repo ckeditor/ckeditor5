@@ -101,6 +101,7 @@ export default class DragDropBlockToolbar extends Plugin {
 
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const view = this.editor.editing.view;
 
 		const blocks = Array.from( selection.getSelectedBlocks() );
 		const draggedRange = model.createRange(
@@ -112,7 +113,8 @@ export default class DragDropBlockToolbar extends Plugin {
 
 		this._isBlockDragging = true;
 
-		this.editor.editing.view.getObserver( ClipboardObserver )!.onDomEvent( domEvent );
+		view.focus();
+		view.getObserver( ClipboardObserver )!.onDomEvent( domEvent );
 	}
 
 	/**
@@ -123,15 +125,16 @@ export default class DragDropBlockToolbar extends Plugin {
 			return;
 		}
 
-		const clientX = domEvent.clientX + 100;
+		const clientX = domEvent.clientX + ( this.editor.locale.contentLanguageDirection == 'ltr' ? 100 : -100 );
 		const clientY = domEvent.clientY;
 		const target = document.elementFromPoint( clientX, clientY );
+		const view = this.editor.editing.view;
 
 		if ( !target || !target.closest( '.ck-editor__editable' ) ) {
 			return;
 		}
 
-		this.editor.editing.view.getObserver( ClipboardObserver )!.onDomEvent( {
+		view.getObserver( ClipboardObserver )!.onDomEvent( {
 			...domEvent,
 			type: domEvent.type,
 			dataTransfer: domEvent.dataTransfer,

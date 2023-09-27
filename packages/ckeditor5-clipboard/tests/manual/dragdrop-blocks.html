@@ -178,9 +178,9 @@ function bar() {
 	}
 </style>
 
-<h2>Balloon Block Editor</h2>
+<div class="wrapper relative">
+	<h2>Balloon Block Editor</h2>
 
-<div class="wrapper">
 	<div id="editor-balloon" class="editor-balloon">
 		<h2>The three greatest things you learn from traveling</h2>
 		<p>
@@ -222,9 +222,8 @@ function bar() {
 	</div>
 </div>
 
-<h2>Balloon Block Editor with custom icon</h2>
-
-<div class="wrapper">
+<div class="wrapper relative with-overflow ">
+	<h2>Balloon Block Editor with custom icon</h2>
 	<div id="editor-balloon-custom-icon" class="editor-balloon">
 		<h2>The three greatest things you learn from traveling</h2>
 		<p>
@@ -267,6 +266,31 @@ function bar() {
 	</div>
 </div>
 
+<div id="editor-block-rtl">
+	<p>مرحبا</p>
+	<ul>
+		<li><input type="checkbox">مرحبا</li>
+		<li><input type="checkbox" checked="checked">مرحبا</li>
+		<li><input type="checkbox">مرحبا</li>
+		<li><input type="checkbox" checked="checked">مرحبا</li>
+		<li><input type="checkbox">مرحبا</li>
+		<li><input type="checkbox">مرحبا</li>
+		<li><input type="checkbox" checked="checked">مرحبا</li>
+		<li><input type="checkbox">مرحبا</li>
+	</ul>
+	<p>مرحبا.</p>
+	<p>مرحبا</p>
+	<ol>
+		<li>مرحبا</li>
+	</ol>
+	<ul>
+		<li><input type="checkbox">مرحبا</li>
+	</ul>
+	<ul>
+		<li>مرحبا</li>
+	</ul>
+</div>
+
 <style>
 	.editor-balloon {
 		margin: 0 auto;
@@ -283,5 +307,16 @@ function bar() {
 
 	[dir="rtl"] .ck-block-toolbar-button {
 		transform: translateX( 10px );
+	}
+
+	.relative {
+		position: relative;
+	}
+
+	.with-overflow {
+		max-height: 400px;
+		padding: 2em 4em;
+		overflow: auto;
+		border: 1px #D3D3D3 solid;
 	}
 </style>

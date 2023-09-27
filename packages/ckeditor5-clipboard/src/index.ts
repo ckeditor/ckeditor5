@@ -13,6 +13,8 @@ export {
 	type ClipboardContentInsertionEvent,
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData,
+	type ClipboardOutputTransformationEvent,
+	type ClipboardOutputTransformationData,
 	type ViewDocumentClipboardOutputEvent
 } from './clipboardpipeline';
 

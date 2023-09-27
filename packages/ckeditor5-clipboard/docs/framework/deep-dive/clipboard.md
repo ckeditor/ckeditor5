@@ -231,15 +231,20 @@ The output pipeline is the equivalent of the input pipeline but for the copy and
 ```plaintext
  ┌──────────────────────┐          ┌──────────────────────┐   Retrieves the selected
  │     view.Document    │          │     view.Document    │   model.DocumentFragment
- │         copy         │          │          cut         │   and converts it to
- └───────────┬──────────┘          └───────────┬──────────┘   view.DocumentFragment.
+ │         copy         │          │          cut         │   and fires `outputTransformation`
+ └───────────┬──────────┘          └───────────┬──────────┘   event.
              │                                 │
              └────────────────┌────────────────┘
                               │
-                    ┌─────────V────────┐   Processes view.DocumentFragment
-                    │   view.Document  │   to text/html and text/plain
-                    │  clipboardOutput │   and stores results in data.dataTransfer.
-                    └──────────────────┘
+            	┌─────────────V────────────┐   Processes model.DocumentFragment
+                │     ClipboardPipeline    │   and converts it to
+                │    outputTransformation  │   view.DocumentFragment.
+                └──────────────────────────┘
+                              │
+                ┌─────────────V────────────┐   Processes view.DocumentFragment
+                │       view.Document      │   to text/html and text/plain
+                │      clipboardOutput     │   and stores results in data.dataTransfer.
+                └──────────────────────────┘
 ```
 
 ### 1. On {@link module:engine/view/document~Document#event:copy `view.Document#copy`} and {@link module:engine/view/document~Document#event:cut `view.Document#cut`}
@@ -248,9 +253,16 @@ The default action is to:
 
 1. {@link module:engine/model/model~Model#getSelectedContent Get the selected content} from the editor.
 1. Prevent the default action of the native `copy` or `cut` event.
-1. Fire {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`} with a clone of the selected content converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
+1. Fire {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:outputTransformation `clipboard.ClipboardPipeline#outputTransformation`}` with a selected content represented by a {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
 
-### 2. On {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`}
+### 2. On {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:outputTransformation `clipboard.ClipboardPipeline#outputTransformation`}
+
+The default action is to:
+
+1. Processes `data.content` represented by a {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+1. Fire {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`} with a processed `data.content` converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
+
+### 3. On {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`}
 
 The default action is to put the content (`data.content`, represented by a {@link module:engine/view/documentfragment~DocumentFragment}) to the clipboard as HTML. In case of the cut operation, the selected content is also deleted from the editor.
 

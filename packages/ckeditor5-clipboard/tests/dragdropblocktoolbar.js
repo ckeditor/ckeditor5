@@ -111,6 +111,8 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		it( 'should set selection on drag block toolbar button', () => {
 			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
+			sinon.spy( editor.editing.view, 'focus' );
+
 			const dragEvent = new DragEvent( 'dragstart' );
 
 			viewDocument.on( 'dragstart', ( evt, data ) => {
@@ -126,6 +128,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			expect( focus.path ).to.deep.equal( [ 0, 6 ] );
 			expect( anchor.path ).to.deep.equal( [ 0, 0 ] );
 			expect( dragDropBlockToolbar._isBlockDragging ).to.be.true;
+			expect( editor.editing.view.focus.calledOnce ).to.be.true;
 		} );
 
 		it( 'should not set selection if plugin is disabled', () => {
@@ -150,16 +153,39 @@ describe( 'Drag and Drop Block Toolbar', () => {
 			const dragStartEvent = new DragEvent( 'dragstart', {
 				dataTransfer: new DataTransfer()
 			} );
-			const modelParagraph = root.getNodeByPath( [ 0 ] );
-			const viewParagraph = mapper.toViewElement( modelParagraph );
-			const domNode = domConverter.mapViewToDom( viewParagraph );
 
-			const { x: clientX, y: clientY } = domNode.getBoundingClientRect();
+			const { x: clientX, y: clientY } = editor.editing.view.getDomRoot().getBoundingClientRect();
 
 			blockToolbarButton.dispatchEvent( dragStartEvent );
 
 			const dragOverEvent = new DragEvent( 'dragover', {
-				clientX,
+				clientX: clientX - 50,
+				clientY,
+				dataTransfer: new DataTransfer()
+			} );
+
+			document.dispatchEvent( dragOverEvent );
+
+			const targetPosition = model.createPositionAt( root.getChild( 0 ), 'before' );
+
+			expectDraggingMarker( targetPosition );
+		} );
+
+		it( 'should display dragging marker (RTL)', () => {
+			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+
+			editor.locale.contentLanguageDirection = 'rtl';
+
+			const dragStartEvent = new DragEvent( 'dragstart', {
+				dataTransfer: new DataTransfer()
+			} );
+
+			const { x: clientX, y: clientY, width } = editor.editing.view.getDomRoot().getBoundingClientRect();
+
+			blockToolbarButton.dispatchEvent( dragStartEvent );
+
+			const dragOverEvent = new DragEvent( 'dragover', {
+				clientX: clientX + width + 50,
 				clientY,
 				dataTransfer: new DataTransfer()
 			} );
