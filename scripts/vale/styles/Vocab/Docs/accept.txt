@@ -4,6 +4,7 @@ autodetect
 [Aa]utosave
 (?i)backport
 (?i)bookmarklet
+(?i)breakpoint
 (?i)bundler
 Browserify
 Chai
@@ -16,6 +17,7 @@ ckfinder
 CKSource
 (?i)constructor
 Cordova
+DLL
 (?i)downcast
 [Dd]ropdown
 ESLint
@@ -31,10 +33,13 @@ npm
 nvm
 (?i)polyfill
 Rollup
+scaffold
 scrollbar
 Sinon
 Stylelint
+(?i)subfolder
 [Ss]uperbuild
+SVG
 textarea
 (?i)tooltip
 Transifex
