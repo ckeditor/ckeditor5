@@ -203,6 +203,12 @@ The {@link module:list/documentlistproperties~DocumentListProperties} plugin reg
 * The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
 * The `bulletedList` UI split button that overrides the UI button registered by the `List` plugin.
 
+The {@link module:list/tododocumentlist~TodoDocumentList} plugin registers:
+
+* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'todoList'`} command.
+* The {@link module:list/tododocumentlist/checktododocumentlistcommand~CheckTodoDocumentListCommand `'checkTodoList'`} command.
+* The `'todoList'` UI button.
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list).
