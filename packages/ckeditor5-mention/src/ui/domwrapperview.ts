@@ -72,4 +72,11 @@ export default class DomWrapperView extends View {
 
 		this.element = this.domElement;
 	}
+
+	/**
+	 * Focuses the DOM element.
+	 */
+	public focus(): void {
+		this.domElement.focus();
+	}
 }

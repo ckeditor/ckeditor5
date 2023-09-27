@@ -62,7 +62,7 @@ import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
-import { Clipboard, DragDropBlockToolbar, DragDropExperimental } from '../../src';
+import { Clipboard, DragDrop } from '../../src';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -75,7 +75,7 @@ ClassicEditor
 			CodeBlock, DocumentListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
 			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed,
 			AutoLink, Mention, TextTransformation, Alignment, IndentBlock, PageBreak, HorizontalLine,
-			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, DragDropExperimental
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, DragDrop
 		],
 		toolbar: [
 			'heading', 'style',
@@ -253,7 +253,7 @@ const editorData = document.querySelector( '#editor-classic' ).innerHTML;
 
 DecoupledEditor
 	.create( editorData, {
-		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, Clipboard, Table, DragDropExperimental ],
+		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, Clipboard, Table, DragDrop ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'insertTable', 'undo', 'redo' ]
 	} )
 	.then( editor => {
@@ -274,7 +274,7 @@ BalloonEditor
 			Essentials, List, Paragraph, Heading,
 			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
 			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
-			CloudServices, ImageUpload, EasyImage, DragDropBlockToolbar, DragDropExperimental
+			CloudServices, ImageUpload, EasyImage, DragDrop
 		],
 		cloudServices: CS_CONFIG,
 		blockToolbar: [
@@ -310,7 +310,7 @@ BalloonEditor
 			Essentials, List, Paragraph, Heading,
 			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
 			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
-			CloudServices, ImageUpload, EasyImage, DragDropBlockToolbar, DragDropExperimental
+			CloudServices, ImageUpload, EasyImage, DragDrop
 		],
 		cloudServices: CS_CONFIG,
 		blockToolbar: {
@@ -318,7 +318,7 @@ BalloonEditor
 				'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph', 'heading1', 'heading2',
 				'heading3', 'bulletedList', 'numberedList', 'insertTable', 'uploadImage' ],
 			icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">' +
-			'<path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>'
+				'<path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>'
 		},
 		image: {
 			toolbar: [
@@ -337,6 +337,43 @@ BalloonEditor
 		window.editorBalloonCustomIcon = editor;
 
 		CKEditorInspector.attach( { balloonCustomIcon: editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+BalloonEditor
+	.create( document.querySelector( '#editor-block-rtl' ), {
+		plugins: [
+			Essentials, List, Paragraph, Heading,
+			Image, ImageResize, ImageStyle, ImageToolbar, ImageCaption,
+			HeadingButtonsUI, ParagraphButtonUI, BlockToolbar, Table, TableToolbar,
+			CloudServices, ImageUpload, EasyImage, DragDrop
+		],
+		language: 'ar',
+		cloudServices: CS_CONFIG,
+		blockToolbar: {
+			items: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList',
+				'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'paragraph', 'heading1', 'heading2',
+				'heading3', 'bulletedList', 'numberedList', 'insertTable', 'uploadImage' ]
+		},
+		image: {
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+				'resizeImage'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
+			]
+		}
+	} )
+	.then( editor => {
+		window.editorBalloonRtl = editor;
+
+		CKEditorInspector.attach( { balloonRtl: editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );

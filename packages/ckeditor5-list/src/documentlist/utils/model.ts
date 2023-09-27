@@ -393,6 +393,14 @@ export function removeListAttributes(
 ): Array<Element> {
 	blocks = toArray( blocks );
 
+	// Convert simple list items to plain paragraphs.
+	for ( const block of blocks ) {
+		if ( block.is( 'element', 'listItem' ) ) {
+			writer.rename( block, 'paragraph' );
+		}
+	}
+
+	// Remove list attributes.
 	for ( const block of blocks ) {
 		for ( const attributeKey of block.getAttributeKeys() ) {
 			if ( attributeKey.startsWith( 'list' ) ) {
@@ -546,7 +554,21 @@ export function getSelectedBlockObject( model: Model ): Element | null {
 	return null;
 }
 
-// Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
+/**
+ * Checks whether the given block can be replaced by a listItem.
+ *
+ * Note that this is possible only when multiBlock = false option is set in feature config.
+ *
+ * @param block A block to be tested.
+ * @param schema The schema of the document.
+ */
+export function canBecomeSimpleListItem( block: Element, schema: Schema ): boolean {
+	return schema.checkChild( block.parent as Element, 'listItem' ) && schema.checkChild( block, '$text' ) && !schema.isObject( block );
+}
+
+/**
+ * Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
+ */
 function mergeListItemIfNotLast(
 	block: ListElement,
 	parentBlock: ListElement,

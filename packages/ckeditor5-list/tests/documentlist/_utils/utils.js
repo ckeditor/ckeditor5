@@ -312,6 +312,8 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 	return items.join( '' );
 }
 
+modelList.defaultBlock = 'paragraph';
+
 /**
  * Returns document list pseudo markdown notation for a given document fragment or element.
  *
@@ -349,7 +351,7 @@ export function stringifyList( fragmentOrElement ) {
 function stringifyNode( node, writer ) {
 	const fragment = writer.createDocumentFragment();
 
-	if ( node.is( 'element', 'paragraph' ) ) {
+	if ( node.is( 'element', modelList.defaultBlock ) ) {
 		for ( const child of node.getChildren() ) {
 			writer.append( writer.cloneElement( child ), fragment );
 		}
@@ -369,7 +371,7 @@ function stringifyNode( node, writer ) {
 }
 
 function stringifyElement( content, listAttributes = {} ) {
-	let name = 'paragraph';
+	let name = listAttributes.listItemId ? modelList.defaultBlock : 'paragraph';
 	let elementAttributes = '';
 	let selectionBefore = '';
 	let selectionAfter = '';

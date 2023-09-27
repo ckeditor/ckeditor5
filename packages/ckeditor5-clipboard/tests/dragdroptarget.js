@@ -5,7 +5,7 @@
 
 /* globals document, Event, setTimeout */
 
-import DragDropExperimental from '../src/dragdropexperimental';
+import DragDrop from '../src/dragdrop';
 import DragDropTarget from '../src/dragdroptarget';
 import PastePlainText from '../src/pasteplaintext';
 
@@ -34,7 +34,7 @@ describe( 'Drag and Drop target', () => {
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
-				DragDropExperimental,
+				DragDrop,
 				PastePlainText,
 				Paragraph,
 				Table,

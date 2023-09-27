@@ -554,7 +554,7 @@ describe( 'BlockToolbar', () => {
 
 			editor.ui.fire( 'update' );
 
-			expect( blockToolbar.buttonView.top ).to.equal( 462 );
+			expect( blockToolbar.buttonView.top ).to.equal( 470 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
 		} );
 
@@ -589,7 +589,7 @@ describe( 'BlockToolbar', () => {
 
 			editor.ui.fire( 'update' );
 
-			expect( blockToolbar.buttonView.top ).to.equal( 464 );
+			expect( blockToolbar.buttonView.top ).to.equal( 472 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
 		} );
 
@@ -626,7 +626,7 @@ describe( 'BlockToolbar', () => {
 
 			editor.ui.fire( 'update' );
 
-			expect( blockToolbar.buttonView.top ).to.equal( 464 );
+			expect( blockToolbar.buttonView.top ).to.equal( 472 );
 			expect( blockToolbar.buttonView.left ).to.equal( 600 );
 		} );
 
