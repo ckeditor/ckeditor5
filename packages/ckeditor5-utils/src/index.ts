@@ -52,6 +52,7 @@ export { default as findClosestScrollableAncestor } from './dom/findclosestscrol
 export { default as global } from './dom/global';
 export { default as getAncestors } from './dom/getancestors';
 export { default as getDataFromElement } from './dom/getdatafromelement';
+export { default as getBorderWidths } from './dom/getborderwidths';
 export { default as isText } from './dom/istext';
 export { default as Rect, type RectSource } from './dom/rect';
 export { default as ResizeObserver } from './dom/resizeobserver';

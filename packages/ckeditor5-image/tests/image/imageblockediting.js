@@ -672,7 +672,8 @@ describe( 'ImageBlockEditing', () => {
 				domTarget: domNode,
 				target: viewElement,
 				dataTransfer,
-				targetRanges: [ targetViewRange ]
+				targetRanges: [ targetViewRange ],
+				domEvent: sinon.spy()
 			} );
 
 			expect( getModelData( model ) ).to.equal(

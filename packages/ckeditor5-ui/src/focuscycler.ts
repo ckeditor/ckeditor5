@@ -11,7 +11,8 @@ import {
 	isVisible,
 	type ArrayOrItem,
 	type FocusTracker,
-	type KeystrokeHandler
+	type KeystrokeHandler,
+	EmitterMixin
 } from '@ckeditor/ckeditor5-utils';
 
 import type View from './view';
@@ -69,7 +70,7 @@ import type ViewCollection from './viewcollection';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-export default class FocusCycler {
+export default class FocusCycler extends EmitterMixin() {
 	/**
 	 * A {@link module:ui/view~View view} collection that the cycler operates on.
 	 */
@@ -116,6 +117,8 @@ export default class FocusCycler {
 		keystrokeHandler?: KeystrokeHandler;
 		actions?: FocusCyclerActions;
 	} ) {
+		super();
+
 		this.focusables = options.focusables;
 		this.focusTracker = options.focusTracker;
 		this.keystrokeHandler = options.keystrokeHandler;
@@ -137,6 +140,9 @@ export default class FocusCycler {
 				}
 			}
 		}
+
+		this.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', () => this.focusFirst(), { priority: 'low' } );
+		this.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', () => this.focusLast(), { priority: 'low' } );
 	}
 
 	/**
@@ -210,7 +216,7 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusFirst(): void {
-		this._focus( this.first );
+		this._focus( this.first, 1 );
 	}
 
 	/**
@@ -219,7 +225,7 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusLast(): void {
-		this._focus( this.last );
+		this._focus( this.last, -1 );
 	}
 
 	/**
@@ -228,7 +234,17 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusNext(): void {
-		this._focus( this.next );
+		const next = this.next;
+
+		if ( next && this.focusables.getIndex( next ) === this.current ) {
+			return;
+		}
+
+		if ( next === this.first ) {
+			this.fire<FocusCyclerForwardCycleEvent>( 'forwardCycle' );
+		} else {
+			this._focus( next, 1 );
+		}
 	}
 
 	/**
@@ -237,15 +253,29 @@ export default class FocusCycler {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public focusPrevious(): void {
-		this._focus( this.previous );
+		const previous = this.previous;
+
+		if ( previous && this.focusables.getIndex( previous ) === this.current ) {
+			return;
+		}
+
+		if ( previous === this.last ) {
+			this.fire<FocusCyclerBackwardCycleEvent>( 'backwardCycle' );
+		} else {
+			this._focus( previous, -1 );
+		}
 	}
 
 	/**
 	 * Focuses the given view if it exists.
+	 *
+	 * @param view The view to be focused
+	 * @param direction The direction of the focus if the view has focusable children.
+	 * @returns
 	 */
-	private _focus( view: FocusableView | null ) {
+	private _focus( view: FocusableView | null, direction: 1 | -1 ) {
 		if ( view ) {
-			view.focus();
+			view.focus( direction );
 		}
 	}
 
@@ -277,7 +307,7 @@ export default class FocusCycler {
 			const view = this.focusables.get( index )!;
 
 			if ( isFocusable( view ) ) {
-				return view as FocusableView;
+				return view;
 			}
 
 			// Cycle in both directions.
@@ -288,7 +318,24 @@ export default class FocusCycler {
 	}
 }
 
-export type FocusableView = View & { focus(): void };
+/**
+ * A view that can be focused.
+ */
+export type FocusableView = View & {
+
+	/**
+	 * Focuses the view.
+	 *
+	 * @param direction This optional parameter helps improve the UX by providing additional information about the direction the focus moved
+	 * (e.g. in a complex view or a form). It is useful for views that host multiple focusable children (e.g. lists, toolbars):
+	 * * `1` indicates that the focus moved forward and, in most cases, the first child of the focused view should get focused,
+	 * * `-1` indicates that the focus moved backwards, and the last focusable child should get focused
+	 *
+	 * See {@link module:ui/focuscycler~FocusCycler#event:forwardCycle} and {@link module:ui/focuscycler~FocusCycler#event:backwardCycle}
+	 * to learn more.
+	 */
+	focus( direction?: 1 | -1 ): void;
+};
 
 export interface FocusCyclerActions {
 	focusFirst?: ArrayOrItem<string>;
@@ -298,10 +345,32 @@ export interface FocusCyclerActions {
 }
 
 /**
+ * Fired when the focus cycler is about to move the focus from the last focusable item
+ * to the first one.
+ *
+ * @eventName ~FocusCycler#forwardCycle
+ */
+export type FocusCyclerForwardCycleEvent = {
+	name: 'forwardCycle';
+	args: [];
+};
+
+/**
+ * Fired when the focus cycler is about to move the focus from the first focusable item
+ * to the last one.
+ *
+ * @eventName ~FocusCycler#backwardCycle
+ */
+export type FocusCyclerBackwardCycleEvent = {
+	name: 'backwardCycle';
+	args: [];
+};
+
+/**
  * Checks whether a view is focusable.
  *
  * @param view A view to be checked.
  */
-function isFocusable( view: View & { focus?: unknown } ) {
-	return !!( view.focus && isVisible( view.element ) );
+function isFocusable( view: View ): view is FocusableView {
+	return !!( 'focus' in view && isVisible( view.element ) );
 }

@@ -38,7 +38,9 @@ import caption from './../theme/icons/caption.svg';
 import check from './../theme/icons/check.svg';
 import cog from './../theme/icons/cog.svg';
 import eraser from './../theme/icons/eraser.svg';
+import history from './../theme/icons/history.svg';
 import lowVision from './../theme/icons/low-vision.svg';
+import loupe from './../theme/icons/loupe.svg';
 import image from './../theme/icons/image.svg';
 
 import alignBottom from './../theme/icons/align-bottom.svg';
@@ -81,8 +83,10 @@ export const icons = {
 	check,
 	cog,
 	eraser,
+	history,
 	image,
 	lowVision,
+	loupe,
 	importExport,
 	paragraph,
 	plus,

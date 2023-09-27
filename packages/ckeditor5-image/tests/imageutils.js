@@ -720,6 +720,20 @@ describe( 'ImageUtils plugin', () => {
 				done();
 			}, 100 );
 		} );
+
+		it( 'should not set image width and height if `setImageSizes` parameter is false', done => {
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			imageUtils.insertImage( { src: '/assets/sample.png' }, null, null, { setImageSizes: false } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>f[<imageInline src="/assets/sample.png"></imageInline>]o</paragraph>'
+				);
+
+				done();
+			}, 100 );
+		} );
 	} );
 
 	describe( 'findViewImgElement()', () => {
