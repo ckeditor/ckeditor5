@@ -57,15 +57,13 @@ The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate a
 
 ## Drag and drop of content blocks
 
-In the v38.0.0 release, we introduced plugins that enable dragging content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
+The drag and drop plugin enables dragging content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
 
 Functions introduced in the initial release include:
 
 * Selection of the text, elements, multiple blocks, and moving these around.
 * Placement of blocks inside other blocks such as tables, blockquotes, etc.
-* The pilcrow icon 	{@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg} in the balloon block editor now behaves as a drag handle.
-
-Feedback for the drag and drop of blocks is gathered in [issue #7731](https://github.com/ckeditor/ckeditor5/issues/7731). If you have any thoughts on what should work better, leave us a comment!
+* The braille dots panel icon (`⠿`) in the balloon block editor now behaves as a drag handle.
 
 ### Classic editor demo
 
@@ -73,42 +71,11 @@ Select a block or blocks, and drag them across the document. You can place block
 
 {@snippet features/block-drag-drop}
 
-#### Installation
-
-<info-box info>
-	This feature is required by the clipboard plugin and is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. These installation instructions are for developers interested in building their own custom rich-text editor.
-</info-box>
-
 ### Balloon block editor demo
 
-In the balloon block editor, you can also drag content blocks using the drag handle. Select or focus on the block, and then drag the block with the pilcrow icon {@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg}.
+In the balloon block editor, you can also drag content blocks using the drag handle. Select or focus on the block, and then drag the block with the braille dots panel icon (`⠿`).
 
 {@snippet features/block-balloon-drag-drop}
-
-#### Installation
-
-To enable the block drag and drop in a balloon block editor, you need to add the {@link module:clipboard/dragdrop~DragDrop `DragDrop`} and the {@link module:clipboard/dragdropblocktoolbar~DragDropBlockToolbar `DragDropBlockToolbar`} modules to your editor configuration::
-
-```js
-import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
-import {
-	DragDrop,
-	DragDropBlockToolbar,
-} from '@ckeditor/ckeditor5-clipboard';
-import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
-
-BalloonEditor.create(document.querySelector( '#editor' ), {
-	plugins: [
-		Clipboard,
-		DragDrop,
-		DragDropBlockToolbar,
-		BlockToolbar,
-		/* ... */
-	],
-})
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
 
 ## Styling the drag and drop
 
