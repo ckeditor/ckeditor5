@@ -10,7 +10,7 @@ modified_at: 2022-09-20
 
 # Document lists
 
-The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.
+The document list feature lets you create ordered and unordered lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. They support ordered, unordered and to-do lists.
 
 <info-box warning>
 	The document lists feature will become the default list feature for CKEditor&nbsp;5 in the upcoming releases and will replace the {@link features/lists current one}. This plugin will then be withdrawn at the beginning of 2024.
@@ -94,6 +94,10 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+### To-do lists
+
+<!-- Kuba, tutaj -->
+
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
@@ -123,6 +127,10 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+## Simple lists
+
+<!-- Kuba, tutaj -->
 
 ## Related features
 
