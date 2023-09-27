@@ -167,13 +167,6 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-## Related features
-
-These features also provide similar functionality:
-* {@link features/todo-lists To-do lists} &ndash; Create a list of interactive checkboxes with labels.
-* {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or headings and lists.
-* {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
-
 ## Common API
 
 The {@link module:list/documentlist~DocumentList} plugin registers:
