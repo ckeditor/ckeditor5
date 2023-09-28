@@ -32,6 +32,9 @@ mindmap
 npm
 nvm
 (?i)polyfill
+(?i)preconfigure
+reinitialization
+reinitialize
 Rollup
 scaffold
 scrollbar
