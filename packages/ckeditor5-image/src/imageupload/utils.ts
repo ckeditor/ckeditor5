@@ -103,7 +103,7 @@ function convertLocalImageOnCanvas( imageSrc: string ): Promise<File> {
 }
 
 /**
- * Creates a promise that resolves with a `Blob` object converted from the image source (Base64 or blob).
+ * Creates a promise that resolves with a `Blob` object converted from the image source.
  * @param imageSrc Image `src` attribute value.
  */
 function getBlobFromCanvas( imageSrc: string ): Promise<Blob> {
