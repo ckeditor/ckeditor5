@@ -717,10 +717,9 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listIndent="1" listItemId="y" listType="bulleted">Y</paragraph>'
 			);
 
-			view.document.fire( 'paste', {
-				dataTransfer: createDataTransfer( { 'text/plain': 'A\n\nB' } ),
-				stopPropagation() {},
-				preventDefault() {}
+			clipboard.fire( 'inputTransformation', {
+				// Two plain-pasted list items are just paragraphs
+				content: parseView( '<p>A</p><p>B</p>' )
 			} );
 
 			expect( getModelData( model ) ).to.equalMarkup(
