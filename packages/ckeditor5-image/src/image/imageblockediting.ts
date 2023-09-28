@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
+import { ClipboardPipeline, type ClipboardInputTransformationEvent, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard';
 import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine';
 
 import {
@@ -128,6 +128,8 @@ export default class ImageBlockEditing extends Plugin {
 	 * if they decided to put their image there.
 	 *
 	 * See the `ImageInlineEditing` for the similar integration that works in the opposite direction.
+	 *
+	 * The feature also sets image `width` and `height` attributes on paste.
 	 */
 	private _setupClipboardIntegration(): void {
 		const editor = this.editor;
@@ -174,6 +176,25 @@ export default class ImageBlockEditing extends Plugin {
 
 					data.content = writer.createDocumentFragment( blockViewImages );
 				}
+			} );
+
+		this.listenTo<ClipboardContentInsertionEvent>(
+			clipboardPipeline,
+			'contentInsertion',
+			( evt, data ) => {
+				if ( data.method !== 'paste' ) {
+					return;
+				}
+
+				model.change( writer => {
+					const range = writer.createRangeIn( data.content );
+
+					for ( const item of range.getItems() ) {
+						if ( item.is( 'element', 'imageBlock' ) ) {
+							imageUtils.setImageNaturalSizeAttributes( item );
+						}
+					}
+				} );
 			} );
 	}
 }
