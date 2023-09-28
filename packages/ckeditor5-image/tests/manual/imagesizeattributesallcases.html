@@ -1,0 +1,50 @@
+<style>
+	img {
+		outline: 2px dashed darkgray;
+	}
+	.editor-wrapper {
+		display: flex;
+		margin: 20px 0;
+		flex-wrap: wrap;
+	}
+	.editor-wrapper > .ck.ck-editor {
+		width: 50%;
+		min-width: 50%;
+	}
+
+	/* model & data (texts) */
+	.editor-model,
+	.editor-data-text {
+  		width: 50%;
+		min-width: 50%;
+		word-wrap: break-word;
+		padding: 10px;
+		font-family: monospace;
+		box-sizing: border-box;
+	}
+
+	.editor-data-text.inlineColor {
+		background-color: #cdd;
+	}
+
+	.editor-model.inlineColor {
+		background-color: #ccd;
+	}
+
+	.editor-data-text.blockColor {
+		background-color: #ccc;
+	}
+
+	.editor-model.blockColor {
+		background-color: #cdc;
+	}
+
+	/* data (html) */
+	.editor-data {
+  		width: 50%;
+		min-width: 50%;
+		margin-top: 40px;
+		overflow: auto;
+	}
+</style>
+

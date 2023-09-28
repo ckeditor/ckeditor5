@@ -9,4 +9,12 @@
 	flex-wrap: nowrap;
 	align-items: center;
 	justify-content: space-between;
+
+	& .ck-icon {
+		margin-right: var(--ck-spacing-medium);
+	}
+
+	& h2.ck-form__header__label {
+		flex-grow: 1;
+	}
 }

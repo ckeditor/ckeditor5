@@ -23,7 +23,7 @@ This guide will show you how to initialize the CKEditor&nbsp;5 rich-text editor 
 
 The CKEditor&nbsp;5 Framework consists of several [npm packages](https://npmjs.com). To install it you need:
 
-* [Node.js](https://nodejs.org/en/) 16.0.0+
+* [Node.js](https://nodejs.org/en/) 18.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor&nbsp;5 in the {@link installation/advanced/integrating-from-source-webpack Integrating from source} guide.

@@ -11,7 +11,7 @@ ClassicEditor
 			CKEditorPlugins.TableColumnResize, CKEditorPlugins.TableProperties, CKEditorPlugins.TableCaption, CKEditorPlugins.Superscript
 		],
 		table: {
-			contentToolbar: [ 'toggleTableCaption', 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties' ]
+			contentToolbar: [ 'toggleTableCaption', 'tableRow', 'mergeTableCells', 'tableProperties' ]
 		},
 		image: {
 			toolbar: [

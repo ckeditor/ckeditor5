@@ -230,7 +230,7 @@ describe( 'PictureEditing', () => {
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>[]' +
 							'foo' +
-							'<imageInline sources="[object Object]" src="/assets/sample.png" width="123px"></imageInline>' +
+							'<imageInline resizedWidth="123px" sources="[object Object]" src="/assets/sample.png"></imageInline>' +
 							'bar' +
 						'</paragraph>'
 					);
@@ -449,9 +449,9 @@ describe( 'PictureEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'[<imageBlock ' +
+							'resizedWidth="123px" ' +
 							'sources="[object Object],[object Object]" ' +
-							'src="/assets/sample.png" ' +
-							'width="123px"' +
+							'src="/assets/sample.png"' +
 						'>' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'
@@ -492,9 +492,9 @@ describe( 'PictureEditing', () => {
 					expect( getModelData( model ) ).to.equal(
 						'[<imageBlock ' +
 							'linkHref="https://cksource.com" ' +
+							'resizedWidth="123px" ' +
 							'sources="[object Object]" ' +
-							'src="/assets/sample.png" ' +
-							'width="123px"' +
+							'src="/assets/sample.png"' +
 						'>' +
 							'<caption>Text of the caption</caption>' +
 						'</imageBlock>]'

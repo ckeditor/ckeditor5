@@ -11,6 +11,7 @@ import IconView from '../../src/icon/iconview';
 import View from '../../src/view';
 import ViewCollection from '../../src/viewcollection';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { ButtonLabelView } from '../../src';
 
 describe( 'ButtonView', () => {
 	let locale, view;
@@ -45,6 +46,64 @@ describe( 'ButtonView', () => {
 
 		it( 'creates #iconView', () => {
 			expect( view.iconView ).to.be.instanceOf( IconView );
+		} );
+
+		describe( 'label', () => {
+			it( 'uses ButtonLabelView by default', () => {
+				expect( view.labelView ).to.be.instanceOf( ButtonLabelView );
+
+				view.set( {
+					labelStyle: 'color: red',
+					label: 'bar'
+				} );
+
+				expect( view.labelView.id ).to.equal( view.element.getAttribute( 'aria-labelledby' ) );
+				expect( view.labelView.element.getAttribute( 'style' ) ).to.equal( 'color: red' );
+				expect( view.labelView.element.textContent ).to.equal( 'bar' );
+			} );
+
+			it( 'accepts a custom label instance that implements the same button label interface', () => {
+				class CustomLabel extends View {
+					constructor() {
+						super();
+
+						const bind = this.bindTemplate;
+
+						this.set( {
+							text: undefined,
+							style: undefined,
+							id: undefined
+						} );
+
+						this.setTemplate( {
+							tag: 'span',
+							attributes: {
+								id: bind.to( 'id' ),
+								style: bind.to( 'style' )
+							},
+							children: [
+								{ text: bind.to( 'text' ) }
+							]
+						} );
+					}
+				}
+
+				const view = new ButtonView( locale, new CustomLabel() );
+
+				view.set( {
+					labelStyle: 'color: red',
+					label: 'bar'
+				} );
+
+				view.render();
+
+				expect( view.labelView ).to.be.instanceOf( CustomLabel );
+				expect( view.labelView.element.id ).to.equal( view.element.getAttribute( 'aria-labelledby' ) );
+				expect( view.labelView.element.getAttribute( 'style' ) ).to.equal( 'color: red' );
+				expect( view.labelView.element.textContent ).to.equal( 'bar' );
+
+				view.destroy();
+			} );
 		} );
 	} );
 

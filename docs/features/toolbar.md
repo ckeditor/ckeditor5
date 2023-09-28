@@ -206,6 +206,8 @@ You can use one of the icons listed below for your dropdown:
 | `'paragraph'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/paragraph.svg Paragraph}        |
 | `'text'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/text.svg Text}                  |
 | `'plus'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/plus.svg Plus}                  |
+| `'dragIndicator'` | {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} |
+| `'pilcrow'`       | {@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg Pilcrow}            |
 
 * The default icons are loaded from the `ckeditor5-core` package.
 * If no icon is specified, `'threeVerticalDots'` will be used as a default.

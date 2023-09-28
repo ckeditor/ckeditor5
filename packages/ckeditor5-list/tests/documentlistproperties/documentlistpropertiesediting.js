@@ -33,12 +33,10 @@ describe( 'DocumentListPropertiesEditing', () => {
 		} );
 
 		it( 'should have default values', () => {
-			expect( editor.config.get( 'list' ) ).to.deep.equal( {
-				properties: {
-					styles: true,
-					startIndex: false,
-					reversed: false
-				}
+			expect( editor.config.get( 'list.properties' ) ).to.deep.equal( {
+				styles: true,
+				startIndex: false,
+				reversed: false
 			} );
 		} );
 

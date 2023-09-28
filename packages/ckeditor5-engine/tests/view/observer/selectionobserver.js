@@ -30,7 +30,6 @@ describe( 'SelectionObserver', () => {
 		domRoot.innerHTML = '<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>';
 		domMain = domRoot.childNodes[ 0 ];
 		domDocument.body.appendChild( domRoot );
-
 		view = new View( new StylesProcessor() );
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
@@ -160,6 +159,25 @@ describe( 'SelectionObserver', () => {
 		} );
 
 		changeDomSelection();
+	} );
+
+	it( 'should detect "restricted objects" in Firefox DOM ranges and prevent an error being thrown', () => {
+		testUtils.sinon.stub( env, 'isGecko' ).value( true );
+
+		changeDomSelection();
+		domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+		expect( view.hasDomSelection ).to.be.true;
+
+		const domFoo = domDocument.getSelection().anchorNode;
+
+		sinon.stub( domFoo, Symbol.toStringTag ).get( () => {
+			throw new Error( 'Permission denied to access property Symbol.toStringTag' );
+		} );
+
+		domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+		expect( view.hasDomSelection ).to.be.false;
 	} );
 
 	it( 'should add only one #selectionChange listener to one document', done => {
