@@ -21,7 +21,9 @@ The block toolbar plugin provides an additional [configurable](#configuration) t
 
 ## Additional feature information
 
-To access the block toolbar, you need to click the button with a paragraph mark (or pilcrow &ndash; &#182;) on the left-hand side of the content area (the gutter). The button appears next to the selected block element (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
+To access the block toolbar, you need to click the button with braille pattern dots icon (`⠿`) on the left-hand side of the content area (the gutter). The button appears next to the selected block element (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
+
+The icon (`⠿`) is also a handle to drag blocks of content around the editor. E.g. click on a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
 
 The block toolbar complements the {@link installation/getting-started/predefined-builds#balloon-editor balloon editor} where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. You can read more about it in the {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor overview}.
 
@@ -49,6 +51,19 @@ If you plan to run the editor in a right–to–left (RTL) language, keep in min
 .ck[dir="rtl"] .ck-block-toolbar-button {
 	transform: translateX( 10px );
 }
+```
+
+Before the v40.0.0 release of CKEditor 5, the block toolbar used the pilcrow icon (¶) as a handle. This was changed to braille pattern dots icon (`⠿`) as a default. If you want to use a different icon, you can configure it easily, for example:
+
+```js
+	blockToolbar: {
+		items: [
+			'bold',
+			'italic',
+			'link'
+		],
+		icon: 'pilcrow' // or SVG.
+	},
 ```
 
 ## Installation

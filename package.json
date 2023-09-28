@@ -86,6 +86,7 @@
     "@ckeditor/ckeditor5-word-count": "39.0.2"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-ai": "0.0.1",
     "@ckeditor/ckeditor5-comments": "39.0.2",
     "@ckeditor/ckeditor5-dev-bump-year": "^39.0.0",
     "@ckeditor/ckeditor5-dev-ci": "^39.0.0",

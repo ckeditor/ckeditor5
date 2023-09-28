@@ -19,7 +19,6 @@ import type {
 	DowncastWriter,
 	Element,
 	Model,
-	ModelGetSelectedContentEvent,
 	ModelInsertContentEvent,
 	UpcastElementEvent,
 	ViewDocumentTabEvent,
@@ -70,6 +69,11 @@ import ListWalker, {
 	ListBlocksIterable
 } from './utils/listwalker';
 
+import {
+	ClipboardPipeline,
+	type ClipboardOutputTransformationEvent
+} from 'ckeditor5/src/clipboard';
+
 import '../../theme/documentlist.css';
 import '../../theme/list.css';
 
@@ -107,7 +111,7 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Enter, Delete, DocumentListUtils ] as const;
+		return [ Enter, Delete, DocumentListUtils, ClipboardPipeline ] as const;
 	}
 
 	/**
@@ -538,6 +542,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupClipboardIntegration() {
 		const model = this.editor.model;
+		const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
 
 		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( this.editor ), { priority: 'high' } );
 
@@ -568,13 +573,31 @@ export default class DocumentListEditing extends Plugin {
 		//	                       │  * bar]             │ * bar             │
 		//	                       └─────────────────────┴───────────────────┘
 		//
-		// See https://github.com/ckeditor/ckeditor5/issues/11608.
-		this.listenTo<ModelGetSelectedContentEvent>( model, 'getSelectedContent', ( evt, [ selection ] ) => {
-			const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
+		// See https://github.com/ckeditor/ckeditor5/issues/11608, https://github.com/ckeditor/ckeditor5/issues/14969
+		this.listenTo<ClipboardOutputTransformationEvent>( clipboardPipeline, 'outputTransformation', ( evt, data ) => {
+			model.change( writer => {
+				// Remove last block if it's empty.
+				const allContentChildren = Array.from( data.content.getChildren() );
+				const lastItem = allContentChildren[ allContentChildren.length - 1 ];
 
-			if ( isSingleListItemSelected ) {
-				model.change( writer => removeListAttributes( Array.from( evt.return!.getChildren() as any ), writer ) );
-			}
+				if ( allContentChildren.length > 1 && lastItem.is( 'element' ) && lastItem.isEmpty ) {
+					const contentChildrenExceptLastItem = allContentChildren.slice( 0, -1 );
+
+					if ( contentChildrenExceptLastItem.every( isListItemBlock ) ) {
+						writer.remove( lastItem );
+					}
+				}
+
+				// Copy/cut only content of a list item (for drag-drop move the whole list item).
+				if ( data.method == 'copy' || data.method == 'cut' ) {
+					const allChildren = Array.from( data.content.getChildren() );
+					const isSingleListItemSelected = isSingleListItem( allChildren );
+
+					if ( isSingleListItemSelected ) {
+						removeListAttributes( allChildren as Array<Element>, writer );
+					}
+				}
+			} );
 		} );
 	}
 }

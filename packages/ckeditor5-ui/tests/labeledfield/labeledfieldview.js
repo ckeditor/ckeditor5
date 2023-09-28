@@ -211,5 +211,13 @@ describe( 'LabeledFieldView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should pass down the focus direction parameter', () => {
+			const spy = sinon.spy( fieldView, 'focus' );
+
+			labeledField.focus( -1 );
+
+			sinon.assert.calledOnceWithExactly( spy, -1 );
+		} );
 	} );
 } );
