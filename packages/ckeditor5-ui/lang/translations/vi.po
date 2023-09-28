@@ -31,11 +31,11 @@ msgstr "Chỉnh sửa đoạn"
 
 msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Click to edit block"
-msgstr ""
+msgstr "Nhấp để sửa khối"
 
 msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Drag to move"
-msgstr ""
+msgstr "Kéo để di chuyển"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -131,8 +131,8 @@ msgstr "Chấp nhận"
 
 msgctxt "The main text of the message shown to the user when given query does not match any results."
 msgid "No results found"
-msgstr ""
+msgstr "Không tìm thấy kết quả"
 
 msgctxt "The main text of the message shown to the user when no results are available."
 msgid "No searchable items"
-msgstr ""
+msgstr "Không có mục nào tìm kiếm được"

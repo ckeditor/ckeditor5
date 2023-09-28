@@ -31,11 +31,11 @@ msgstr "এডিট ব্লক"
 
 msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Click to edit block"
-msgstr ""
+msgstr "ব্লক এডিট করতে ক্লিক করুন"
 
 msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Drag to move"
-msgstr ""
+msgstr "সরানোর জন্য টেনে আনুন"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -131,8 +131,8 @@ msgstr "গ্রহণ করুন"
 
 msgctxt "The main text of the message shown to the user when given query does not match any results."
 msgid "No results found"
-msgstr ""
+msgstr "কোন ফলাফল পাওয়া যায়নি"
 
 msgctxt "The main text of the message shown to the user when no results are available."
 msgid "No searchable items"
-msgstr ""
+msgstr "কোনো অনুসন্ধানযোগ্য আইটেম নেই"
