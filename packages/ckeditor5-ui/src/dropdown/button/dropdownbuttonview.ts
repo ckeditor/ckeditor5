@@ -43,23 +43,15 @@ export default class DropdownButtonView extends ButtonView implements DropdownBu
 	/**
 	 * @inheritDoc
 	 */
-	declare public ariaChecked: boolean | undefined;
-
-	/**
-	 * @inheritDoc
-	 */
 	constructor( locale?: Locale ) {
 		super( locale );
-
-		const bind = this.bindTemplate;
 
 		this.arrowView = this._createArrowView();
 
 		this.extendTemplate( {
 			attributes: {
 				'aria-haspopup': true,
-				'aria-expanded': bind.to( 'isOn', value => String( value ) ),
-				'aria-checked': bind.to( 'isOn', value => String( value ) )
+				'aria-expanded': this.bindTemplate.to( 'isOn', value => String( value ) )
 			}
 		} );
 

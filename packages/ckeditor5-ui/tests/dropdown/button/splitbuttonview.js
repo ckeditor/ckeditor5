@@ -80,14 +80,6 @@ describe( 'SplitButtonView', () => {
 			expect( view.arrowView.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
 		} );
 
-		it( 'binds arrowView aria-checked attribute to #isOn', () => {
-			view.arrowView.isOn = true;
-			expect( view.arrowView.element.getAttribute( 'aria-checked' ) ).to.equal( 'true' );
-
-			view.arrowView.isOn = false;
-			expect( view.arrowView.element.getAttribute( 'aria-checked' ) ).to.equal( 'false' );
-		} );
-
 		it( 'binds arrowView#tooltip to view', () => {
 			expect( view.arrowView.tooltip ).to.be.false;
 

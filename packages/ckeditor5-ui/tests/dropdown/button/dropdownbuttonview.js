@@ -52,13 +52,5 @@ describe( 'DropdownButtonView', () => {
 			view.isOn = false;
 			expect( view.element.getAttribute( 'aria-expanded' ) ).to.equal( 'false' );
 		} );
-
-		it( 'binds button\'s aria-checked attribute to #isOn', () => {
-			view.isOn = true;
-			expect( view.element.getAttribute( 'aria-checked' ) ).to.equal( 'true' );
-
-			view.isOn = false;
-			expect( view.element.getAttribute( 'aria-checked' ) ).to.equal( 'false' );
-		} );
 	} );
 } );

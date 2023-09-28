@@ -14,13 +14,6 @@ import type ViewCollection from '../../viewcollection';
  * The dropdown button interface.
  */
 export default interface DropdownButton extends Button {
-
-	/**
-	 * (Optional) The ARIA property reflected by the `aria-checked` DOM attribute used by assistive technologies.
-	 *
-	 * @observable
-	 */
-	ariaChecked?: boolean | undefined;
 	children: ViewCollection;
 }
 

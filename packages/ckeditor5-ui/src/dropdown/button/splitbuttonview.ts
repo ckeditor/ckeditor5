@@ -314,8 +314,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 				],
 				'data-cke-tooltip-disabled': bind.to( 'isOn' ),
 				'aria-haspopup': true,
-				'aria-expanded': bind.to( 'isOn', value => String( value ) ),
-				'aria-checked': bind.to( 'isOn', value => String( value ) )
+				'aria-expanded': bind.to( 'isOn', value => String( value ) )
 			}
 		} );
 
