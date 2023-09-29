@@ -146,11 +146,11 @@ describe( 'Widget - integration', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
-				'[<figcaption contenteditable="true">foo bar</figcaption>]' +
+				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
-		expect( getModelData( model ) ).to.equal( '<widget>[<nested>foo bar</nested>]</widget>' );
+		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
 	} );
 
 	it( 'should select the entire nested editable if triple clicked on link', () => {
@@ -171,11 +171,11 @@ describe( 'Widget - integration', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
-			'[<figcaption contenteditable="true">foo <a href="abc">bar</a></figcaption>]' +
+			'<figcaption contenteditable="true">{foo <a href="abc">bar</a>]</figcaption>' +
 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
-		expect( getModelData( model ) ).to.equal( '<widget>[<nested>foo <$text linkHref="abc">bar</$text></nested>]</widget>' );
+		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo <$text linkHref="abc">bar</$text>]</nested></widget>' );
 	} );
 
 	it( 'should select only clicked paragraph if triple clicked on link', () => {
@@ -206,7 +206,7 @@ describe( 'Widget - integration', () => {
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">' +
 					'<p>foo</p>' +
-					'[<p>foo <a href="abc">bar</a></p>' +
+					'<p>{foo <a href="abc">bar</a></p>' +
 					'<p>}bar</p>' +
 				'</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -216,7 +216,7 @@ describe( 'Widget - integration', () => {
 			'<widget>' +
 				'<nested>' +
 					'<paragraph>foo</paragraph>' +
-					'[<paragraph>foo <$text linkHref="abc">bar</$text></paragraph>' +
+					'<paragraph>[foo <$text linkHref="abc">bar</$text></paragraph>' +
 					'<paragraph>]bar</paragraph>' +
 				'</nested>' +
 			'</widget>'
@@ -242,12 +242,12 @@ describe( 'Widget - integration', () => {
 		expect( getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo</figcaption>' +
-				'[<figcaption contenteditable="true">bar</figcaption>]' +
+				'<figcaption contenteditable="true">{bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
 
-		expect( getModelData( model ) ).to.equal( '<widget><nested>foo</nested>[<nested>bar</nested>]</widget>' );
+		expect( getModelData( model ) ).to.equal( '<widget><nested>foo</nested><nested>[bar]</nested></widget>' );
 	} );
 
 	it( 'should select the entire nested editable if quadra clicked', () => {
@@ -268,12 +268,12 @@ describe( 'Widget - integration', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
-				'[<figcaption contenteditable="true">foo bar</figcaption>]' +
+				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
 		);
 
-		expect( getModelData( model ) ).to.equal( '<widget>[<nested>foo bar</nested>]</widget>' );
+		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
 	} );
 
 	it( 'should select image block if triple clicked', () => {

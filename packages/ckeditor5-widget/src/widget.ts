@@ -264,9 +264,9 @@ export default class Widget extends Plugin {
 			const treeWalker = new TreeWalker( { startPosition: writer.createRangeOn( modelElement ).end } );
 			const nextTextBlock = findNextTextBlock( treeWalker, schema );
 
-			const start = writer.createRangeOn( modelElement ).start;
+			const start = writer.createRangeIn( modelElement ).start;
 			const end = nextTextBlock && nextTextBlock.is( 'element' ) &&
-				writer.createRangeIn( nextTextBlock ).start || writer.createRangeOn( modelElement ).end;
+				writer.createRangeIn( nextTextBlock ).start || writer.createRangeIn( modelElement ).end;
 
 			const range = writer.createRange( start, end );
 
