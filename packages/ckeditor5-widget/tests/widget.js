@@ -428,6 +428,133 @@ describe( 'Widget', () => {
 		);
 	} );
 
+	describe( 'triple click', () => {
+		it( 'should properly set selection on entire paragraph', () => {
+			setModelData( model,
+				'<paragraph>[]foo bar</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 0 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>[foo bar]</paragraph>'
+			);
+		} );
+
+		it( 'should properly set selection', () => {
+			setModelData( model,
+				'<paragraph>[]foo bar</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 0 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>[foo bar</paragraph>' +
+				'<paragraph>]baz</paragraph>'
+			);
+		} );
+
+		it( 'should properly set selection when widget is after paragraph', () => {
+			setModelData( model,
+				'<paragraph>[]foo bar</paragraph>' +
+				'<widget><nested>foo bar</nested></widget>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 0 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>[foo bar]</paragraph>' +
+				'<widget><nested>foo bar</nested></widget>'
+			);
+		} );
+
+		it( 'should properly set selection when block quote is after paragraph', () => {
+			setModelData( model,
+				'<paragraph>[]foo bar</paragraph>' +
+				'<blockQuote><paragraph>foo bar</paragraph></blockQuote>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 0 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>[foo bar</paragraph>' +
+				'<blockQuote><paragraph>]foo bar</paragraph></blockQuote>'
+			);
+		} );
+
+		it( 'should properly set selection when after block quote is paragraph', () => {
+			setModelData( model,
+				'<blockQuote><paragraph>[]foo bar</paragraph></blockQuote>' +
+				'<paragraph>foo bar</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const blockQuote = viewRoot.getChild( 0 );
+			const paragraph = blockQuote.getChild( 0 );
+			const preventDefault = sinon.spy();
+
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<blockQuote><paragraph>[foo bar</paragraph></blockQuote>' +
+				'<paragraph>]foo bar</paragraph>'
+			);
+		} );
+	} );
+
 	describe( 'keys handling', () => {
 		describe( 'arrows', () => {
 			test(

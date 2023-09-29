@@ -11,6 +11,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	MouseObserver,
+	TreeWalker,
 	type DomEventData,
 	type DowncastSelectionEvent,
 	type DowncastWriter,
@@ -244,7 +245,7 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Selects entire block content, e.g. on triple click it selects entire paragraph.
 	 */
 	private _selectBlockContent( element: ViewElement ): boolean {
 		const editor = this.editor;
@@ -259,9 +260,17 @@ export default class Widget extends Plugin {
 		}
 
 		model.change( writer => {
-			// TODO the selection end should be in the next text block start (even nested in block quote,
-			//  but should not cross the limit element).
-			writer.setSelection( modelElement, 'in' );
+			const schema = model.schema;
+			const treeWalker = new TreeWalker( { startPosition: writer.createRangeOn( modelElement ).end } );
+			const nextTextBlock = findNextTextBlock( treeWalker, schema );
+
+			const start = writer.createRangeOn( modelElement ).start;
+			const end = nextTextBlock && nextTextBlock.is( 'element' ) &&
+				writer.createRangeIn( nextTextBlock ).start || writer.createRangeOn( modelElement ).end;
+
+			const range = writer.createRange( start, end );
+
+			writer.setSelection( range );
 		} );
 
 		return true;
@@ -499,18 +508,41 @@ function isChild( element: ViewElement, parent: ViewElement | null ) {
 }
 
 /**
- * TODO
+ * Returns nearest text block ancestor.
  */
 function findTextBlockAncestor( modelElement: Element, schema: Schema ): Element | null {
 	for ( const element of modelElement.getAncestors( { includeSelf: true, parentFirst: true } ) ) {
+		if ( schema.checkChild( element as Element, '$text' ) ) {
+			return element as Element;
+		}
+
 		// Do not go beyond nested editable.
 		if ( schema.isLimit( element ) && !schema.isObject( element ) ) {
 			break;
 		}
+	}
 
-		if ( schema.checkChild( element as Element, '$text' ) ) {
-			return element as Element;
-		}
+	return null;
+}
+
+/**
+ * Returns next text block where could put selection.
+ */
+function findNextTextBlock( treeWalker: TreeWalker, schema: Schema ): Element | null {
+	const value = treeWalker.next();
+
+	if ( !value.value ) {
+		return null;
+	}
+
+	const item = value.value.item;
+
+	if ( !schema.isLimit( item ) && schema.checkChild( item, '$text' ) ) {
+		return item;
+	}
+
+	if ( !schema.isBlock( item ) && !schema.isLimit( item ) ) {
+		return findNextTextBlock( treeWalker, schema );
 	}
 
 	return null;
