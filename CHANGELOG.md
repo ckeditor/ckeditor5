@@ -1,6 +1,163 @@
 Changelog
 =========
 
+## [40.0.0](https://github.com/ckeditor/ckeditor5/compare/v39.0.2...v40.0.0) (2023-10-02)
+
+### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The model attribute name of the resized image is now changed to `resizedWidth`. The `width` and `height` attributes are now used to preserve the image's natural width and height.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `srcset` model attribute has been simplified. It is no longer an object `{ data: "...", width: "..." }`, but a value previously stored in the `data` part.
+
+### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment threads "resolved" state is now separated from "unlinked" state (state, when the related editor content was removed from the document). A thread can have any combination of these states. If a comment thread is either "resolved" or "unlinked", it is moved to the comments archive. This new approach is reflected in the comments archive UI. Notably, an "unlinked" comment thread can become resolved and reopened while still being in the comments archive. Additionally, "unlinked" comment threads have a gray header color to differentiate from "resolved" comment threads.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `Comment#archivedAt` is now the property to check whether deciding if the comment thread is inside the comments archive or not (earlier that property was `#resolvedAt`).
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Renamed `CommentsArchive#resolvedThreads` to `#archivedThreads`. If your custom code used that property, make sure to apply this change.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Instead deleted comment threads should never be handled in `addCommentThread` as they should never be added to the repository. If your custom code used that property, make sure to apply this change.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: In real-time collaboration environment, removed comment threads will no longer be added to `CommentsRepository` after re-initializing the editor. Earlier, the comment thread was removed from `CommentsRepository` but was added again when the editor re-connected to the Cloud Services. If your custom code expected the old (incorrect) behavior, it might need a change. This change was reflected in the comments outside editor documentation page.
+
+### Features
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced the AI assistant feature.
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Block drag and drop should be enabled by default. Closes [#14734](https://github.com/ckeditor/ckeditor5/issues/14734). ([commit](https://github.com/ckeditor/ckeditor5/commit/a9eff48d47e955537a27d2de2d4adb2be9b7ae9c))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Extend drag-and-drop selection to parent elements when all their children are selected. Closes [#14640](https://github.com/ckeditor/ckeditor5/issues/14640). ([commit](https://github.com/ckeditor/ckeditor5/commit/5e26217556d6e287c1eafaf26e84d70f89238ccf))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The image `width` and `height` attributes are preserved while loading editor content. Closes [#14146](https://github.com/ckeditor/ckeditor5/issues/14146). ([commit](https://github.com/ckeditor/ckeditor5/commit/58e9c88ae6a9d192cc559e429b999a32a03a2dca))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Images without size specified will automatically gain natural image size on any interaction with the image. See [#14146](https://github.com/ckeditor/ckeditor5/issues/14146). ([commit](https://github.com/ckeditor/ckeditor5/commit/58e9c88ae6a9d192cc559e429b999a32a03a2dca))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Allow restricting list item content to single text block by `list.multiBlock` config option. Closes [#14634](https://github.com/ckeditor/ckeditor5/issues/14634). ([commit](https://github.com/ckeditor/ckeditor5/commit/7acb67df0d6750ab7254e1fec6f064f92f1f42f0))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Introducing the to-do lists compatible with the document list feature. Closes [#14663](https://github.com/ckeditor/ckeditor5/issues/14663). ([commit](https://github.com/ckeditor/ckeditor5/commit/613b8e26949743d301dc21c6101aeda1286f2950))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Implemented new UI components: `ListItemGroupView`, `TextareaView`, `SpinnerView`, `SearchView` and `AutocompleteView`. ([commit](https://github.com/ckeditor/ckeditor5/commit/550f73cf641e30a2d363dc8eb87259bc73d2c2e2))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Introduced `HighlightedTextView` component for better search results presentation. ([commit](https://github.com/ckeditor/ckeditor5/commit/550f73cf641e30a2d363dc8eb87259bc73d2c2e2))
+
+### Bug fixes
+
+* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: remove focus helper. ([commit](https://github.com/ckeditor/ckeditor5/commit/78aed299cf0f5add15bd9dcdf36ba4a4ebc09603))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: improve displaying preview in "drag and drop". Closes [#14968](https://github.com/ckeditor/ckeditor5/issues/14968). ([commit](https://github.com/ckeditor/ckeditor5/commit/905f480d405f0b0dcd82caf775351236365eaed4))
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment threads that were permanently deleted will be removed from `CommentsRepository` and, in case of real-time collaboration, will not be added there after re-connecting to the document.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Don't throw an error when clicking on a balloon with input on Firefox. Closes [#9635](https://github.com/ckeditor/ckeditor5/issues/9635). ([commit](https://github.com/ckeditor/ckeditor5/commit/54a4c22c0fce865e45f7b28f25641636d90547e1))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Image should not be replaced when dropped below a widget. Closes [#14710](https://github.com/ckeditor/ckeditor5/issues/14710), [#14740](https://github.com/ckeditor/ckeditor5/issues/14740). ([commit](https://github.com/ckeditor/ckeditor5/commit/03641ca58a5d4f241910f871054aa48edc216114))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Dragged selected whole list item should be still a list item after drop. Closes [#14969](https://github.com/ckeditor/ckeditor5/issues/14969) . ([commit](https://github.com/ckeditor/ckeditor5/commit/a20bcfb2bceb2f56cfdf22057b1b5a1cdf238864))
+* **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Fixes typing of Mention#toMentionAttribute method. Closes [#14923](https://github.com/ckeditor/ckeditor5/issues/14923). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f6bf52e3ef42e8ab9cdfc130e6d369593f6791c))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Balloon panels should not sticks out of the visible part of the editor while scrolling. ([commit](https://github.com/ckeditor/ckeditor5/commit/7f4f63e574606ba7c589059d68316b8a4cc9b132))
+
+  Improvements to getOptimalPosition to handle cases with scrollable ancestors.
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Wrong tooltip when hovering toolbar buttons on Chrome on iOS. Closes [#13812](https://github.com/ckeditor/ckeditor5/issues/13812). ([commit](https://github.com/ckeditor/ckeditor5/commit/5c7fe1ccb6751348d1c12b7dd96d98263b9c9d74))
+
+### Other changes
+
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `Comment#unlinkedAt`, `#setUnlinkedAt()` and `Comment#archivedAt` properties.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Renamed `CommentsArchive#resolvedThreads` to `#archivedThreads`.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment threads are no longer treated as "resolved" when their related content is removed from the document. These threads are now in "unlinked" state.
+* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Improve the drag and drop target line. Closes [#14645](https://github.com/ckeditor/ckeditor5/issues/14645). ([commit](https://github.com/ckeditor/ckeditor5/commit/3ec29eb6eac970d77d00bd327d77da67076e9373))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Made the `ButtonView` label logic open for extension. ([commit](https://github.com/ckeditor/ckeditor5/commit/550f73cf641e30a2d363dc8eb87259bc73d2c2e2))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Changed the default icon for `BallonEditor` and add ability to customize it. Closes [#14646](https://github.com/ckeditor/ckeditor5/issues/14646). ([commit](https://github.com/ckeditor/ckeditor5/commit/238665a602daedf62bc7e30d64ed4e8579c31be5))
+* Optimized icons. ([commit](https://github.com/ckeditor/ckeditor5/commit/257e0f0e02148985499bad6b709aa6e7780465e0))
+* Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/b35611664e82fee4f49c5d8d9dd20da6eba80976), [commit](https://github.com/ckeditor/ckeditor5/commit/cca1dc24118cb4a2a83900326bf2f4c43eaf2c03), [commit](https://github.com/ckeditor/ckeditor5/commit/c9da67901c371632ba8d5232a22be542b0403960))
+* Added support to execute `yarn run clean-up-svg-icons` script without arguments to optimize all icons in the entire project. Closes [#14912](https://github.com/ckeditor/ckeditor5/issues/14912). ([commit](https://github.com/ckeditor/ckeditor5/commit/ba1bcba3d25f693d6e64dceb340f79afa33cae76))
+* Updated the required version of Node.js to 18 for the development environment. See [#14924](https://github.com/ckeditor/ckeditor5/issues/14924). ([commit](https://github.com/ckeditor/ckeditor5/commit/d8c967b1d8d35dcdda376e7194f2ecee0f6d6fa7))
+* Updated the required version of Node.js to 18 when developing the repository. See [ckeditor/ckeditor5#14924](https://github.com/ckeditor/ckeditor5/issues/14924).
+
+### Released packages
+
+Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html) guide for more information.
+
+<details>
+<summary>Released packages (summary)</summary>
+
+New packages:
+
+* [@ckeditor/ckeditor5-ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai/v/40.0.0): v40.0.0
+
+Major releases (contain major breaking changes):
+
+* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image/v/40.0.0): v39.0.2 => v40.0.0
+
+Minor releases (contain minor breaking changes):
+
+* [@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments/v/40.0.0): v39.0.2 => v40.0.0
+
+Other releases:
+
+* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-build-balloon-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-paste-from-office-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office-enhanced/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-show-blocks](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget/v/40.0.0): v39.0.2 => v40.0.0
+* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count/v/40.0.0): v39.0.2 => v40.0.0
+* [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration/v/40.0.0): v39.0.2 => v40.0.0
+</details>
+
+
 ## [39.0.2](https://github.com/ckeditor/ckeditor5/compare/v39.0.1...v39.0.2) (2023-09-06)
 
 We are happy to announce the release of CKEditor 5 v39.0.2.
@@ -589,114 +746,6 @@ Other releases:
 * [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count): v38.2.0-alpha.0 => v38.2.0-alpha.1
 * [@ckeditor/letters](https://www.npmjs.com/package/@ckeditor/letters): v38.2.0-alpha.0 => v38.2.0-alpha.1
 * [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration): v38.2.0-alpha.0 => v38.2.0-alpha.1
-</details>
-
-
-## [38.2.0-alpha.0](https://github.com/ckeditor/ckeditor5/compare/v38.1.0...v38.2.0-alpha.0) (2023-06-29)
-
-### Release highlights
-
-This release is intended to improve compatibility with Vite and Vitest by correctly reporting CKEditor packages as ESM modules.
-
-Please note that this release is based on `v38.1.0` and is marked as alpha, which means that it is an experimental version and some unexpected results may occur when using it.
-
-We appreciate any feedback that will help us improve the final form of the project.
-
-### Bug fixes
-
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Sidebar `min-height` should be correctly updated after switching between various annotations display modes.
-* **[export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf)**: Fix HTML structure in sent requests. Closes [#3364](https://github.com/cksource/ckeditor5-internal/issues/3364).
-* **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Fix of rendering thin space when content is pasted from MSWord. Closes [#12562](https://github.com/ckeditor/ckeditor5/issues/12562). ([commit](https://github.com/ckeditor/ckeditor5/commit/0dd197bef21ce1bb0dd2115645a36e0e131f92cf))
-* **[table-of-contents](https://www.npmjs.com/package/@ckeditor/ckeditor5-table-of-contents)**: Focus editing view after button click. Closes [#3391](https://github.com/cksource/ckeditor5-internal/issues/3391).
-
-### Released packages
-
-Check out the [Versioning policy](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html) guide for more information.
-
-<details>
-<summary>Released packages (summary)</summary>
-
-Other releases:
-
-* [@ckeditor/ckeditor5-adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-alignment](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-autoformat](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-block-quote](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-build-balloon-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-build-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-multi-root): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-collaboration-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-collaboration-core): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-easy-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-editor-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-editor-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-editor-decoupled](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-editor-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-enter](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-essentials](https://www.npmjs.com/package/@ckeditor/ckeditor5-essentials): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-export-pdf](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-pdf): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-export-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-export-word): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-highlight](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-language](https://www.npmjs.com/package/@ckeditor/ckeditor5-language): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-minimap](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-operations-compressor](https://www.npmjs.com/package/@ckeditor/ckeditor5-operations-compressor): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-page-break](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-paragraph](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-remove-format](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-select-all](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-show-blocks](https://www.npmjs.com/package/@ckeditor/ckeditor5-show-blocks): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-slash-command](https://www.npmjs.com/package/@ckeditor/ckeditor5-slash-command): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-special-characters](https://www.npmjs.com/package/@ckeditor/ckeditor5-special-characters): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-style](https://www.npmjs.com/package/@ckeditor/ckeditor5-style): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-template](https://www.npmjs.com/package/@ckeditor/ckeditor5-template): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-watchdog](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/ckeditor5-word-count](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count): v38.1.0 => v38.2.0-alpha.0
-* [@ckeditor/letters](https://www.npmjs.com/package/@ckeditor/letters): v38.1.0 => v38.2.0-alpha.0
-* [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration): v38.1.0 => v38.2.0-alpha.0
 </details>
 
 ---
