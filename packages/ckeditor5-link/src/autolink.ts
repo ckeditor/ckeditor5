@@ -8,9 +8,11 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import type { ClipboardInputTransformationData, ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
 import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
+import { priorities } from 'ckeditor5/src/utils';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
 
@@ -104,6 +106,26 @@ export default class AutoLink extends Plugin {
 	public afterInit(): void {
 		this._enableEnterHandling();
 		this._enableShiftEnterHandling();
+		this._enablePasteLinking();
+	}
+
+	/**
+	 * Enables autolinking on pasting a URL.
+	 */
+	private _enablePasteLinking(): void {
+		const editor = this.editor;
+		const modelDocument = editor.model.document;
+		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+
+		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
+			if ( !modelDocument.selection.isCollapsed ) {
+				const textString = data.dataTransfer.getData( 'text/plain' );
+				if ( URL_REG_EXP.test( textString ) ) {
+					// the whole clipboard is a URL
+					evt.stop();
+				}
+			}
+		}, { priority: priorities.get( 'high' ) } );
 	}
 
 	/**
