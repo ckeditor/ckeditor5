@@ -1,7 +1,15 @@
 Changelog
 =========
 
-## [40.0.0](https://github.com/ckeditor/ckeditor5/compare/v39.0.2...v40.0.0) (2023-10-02)
+## [40.0.0](https://github.com/ckeditor/ckeditor5/compare/v39.0.2...v40.0.0) (2023-10-04)
+
+We are happy to announce the release of CKEditor 5 v40.0.0.
+
+<!-- ### Release highlights -->
+
+<!-- TODO: Add release highlights. -->
+
+Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html) to learn more about these changes.
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -11,51 +19,48 @@ Changelog
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment threads "resolved" state is now separated from "unlinked" state (state, when the related editor content was removed from the document). A thread can have any combination of these states. If a comment thread is either "resolved" or "unlinked", it is moved to the comments archive. This new approach is reflected in the comments archive UI. Notably, an "unlinked" comment thread can become resolved and reopened while still being in the comments archive. Additionally, "unlinked" comment threads have a gray header color to differentiate from "resolved" comment threads.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `Comment#archivedAt` is now the property to check whether deciding if the comment thread is inside the comments archive or not (earlier that property was `#resolvedAt`).
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The `Comment#archivedAt` is now the property to check whether deciding if the comment thread is inside the comments archive or not (earlier that property was `#resolvedAt`).
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Renamed `CommentsArchive#resolvedThreads` to `#archivedThreads`. If your custom code used that property, make sure to apply this change.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Instead deleted comment threads should never be handled in `addCommentThread` as they should never be added to the repository. If your custom code used that property, make sure to apply this change.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Instead, deleted comment threads should never be handled in `addCommentThread` as they should never be added to the repository. If your custom code used that property, make sure to apply this change.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: In real-time collaboration environment, removed comment threads will no longer be added to `CommentsRepository` after re-initializing the editor. Earlier, the comment thread was removed from `CommentsRepository` but was added again when the editor re-connected to the Cloud Services. If your custom code expected the old (incorrect) behavior, it might need a change. This change was reflected in the comments outside editor documentation page.
 
 ### Features
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced the AI assistant feature.
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Block drag and drop should be enabled by default. Closes [#14734](https://github.com/ckeditor/ckeditor5/issues/14734). ([commit](https://github.com/ckeditor/ckeditor5/commit/a9eff48d47e955537a27d2de2d4adb2be9b7ae9c))
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Extend drag-and-drop selection to parent elements when all their children are selected. Closes [#14640](https://github.com/ckeditor/ckeditor5/issues/14640). ([commit](https://github.com/ckeditor/ckeditor5/commit/5e26217556d6e287c1eafaf26e84d70f89238ccf))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Enabled block drag and drop by default. Closes [#14734](https://github.com/ckeditor/ckeditor5/issues/14734). ([commit](https://github.com/ckeditor/ckeditor5/commit/a9eff48d47e955537a27d2de2d4adb2be9b7ae9c))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Extended the drag and drop selection to parent elements when all their children are selected. Closes [#14640](https://github.com/ckeditor/ckeditor5/issues/14640). ([commit](https://github.com/ckeditor/ckeditor5/commit/5e26217556d6e287c1eafaf26e84d70f89238ccf))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The image `width` and `height` attributes are preserved while loading editor content. Closes [#14146](https://github.com/ckeditor/ckeditor5/issues/14146). ([commit](https://github.com/ckeditor/ckeditor5/commit/58e9c88ae6a9d192cc559e429b999a32a03a2dca))
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Images without size specified will automatically gain natural image size on any interaction with the image. See [#14146](https://github.com/ckeditor/ckeditor5/issues/14146). ([commit](https://github.com/ckeditor/ckeditor5/commit/58e9c88ae6a9d192cc559e429b999a32a03a2dca))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Allow restricting list item content to single text block by `list.multiBlock` config option. Closes [#14634](https://github.com/ckeditor/ckeditor5/issues/14634). ([commit](https://github.com/ckeditor/ckeditor5/commit/7acb67df0d6750ab7254e1fec6f064f92f1f42f0))
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Images without specified size will automatically gain natural image size on any interaction with the image. See [#14146](https://github.com/ckeditor/ckeditor5/issues/14146). ([commit](https://github.com/ckeditor/ckeditor5/commit/58e9c88ae6a9d192cc559e429b999a32a03a2dca))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Allow restricting list item content to a single text block by the `list.multiBlock` configuration option. Closes [#14634](https://github.com/ckeditor/ckeditor5/issues/14634). ([commit](https://github.com/ckeditor/ckeditor5/commit/7acb67df0d6750ab7254e1fec6f064f92f1f42f0))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Introducing the to-do lists compatible with the document list feature. Closes [#14663](https://github.com/ckeditor/ckeditor5/issues/14663). ([commit](https://github.com/ckeditor/ckeditor5/commit/613b8e26949743d301dc21c6101aeda1286f2950))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Implemented new UI components: `ListItemGroupView`, `TextareaView`, `SpinnerView`, `SearchView` and `AutocompleteView`. ([commit](https://github.com/ckeditor/ckeditor5/commit/550f73cf641e30a2d363dc8eb87259bc73d2c2e2))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Introduced `HighlightedTextView` component for better search results presentation. ([commit](https://github.com/ckeditor/ckeditor5/commit/550f73cf641e30a2d363dc8eb87259bc73d2c2e2))
 
 ### Bug fixes
 
-* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: remove focus helper. ([commit](https://github.com/ckeditor/ckeditor5/commit/78aed299cf0f5add15bd9dcdf36ba4a4ebc09603))
-* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: improve displaying preview in "drag and drop". Closes [#14968](https://github.com/ckeditor/ckeditor5/issues/14968). ([commit](https://github.com/ckeditor/ckeditor5/commit/905f480d405f0b0dcd82caf775351236365eaed4))
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment threads that were permanently deleted will be removed from `CommentsRepository` and, in case of real-time collaboration, will not be added there after re-connecting to the document.
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Don't throw an error when clicking on a balloon with input on Firefox. Closes [#9635](https://github.com/ckeditor/ckeditor5/issues/9635). ([commit](https://github.com/ckeditor/ckeditor5/commit/54a4c22c0fce865e45f7b28f25641636d90547e1))
+* **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Improved displaying a preview of the drag and drop. Closes [#14968](https://github.com/ckeditor/ckeditor5/issues/14968). ([commit](https://github.com/ckeditor/ckeditor5/commit/905f480d405f0b0dcd82caf775351236365eaed4))
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment threads that were permanently deleted will be removed from the `CommentsRepository` and, in case of real-time collaboration, they will not be added there after re-connecting to the document.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Do not throw an error when clicking on a balloon with input on Firefox. Closes [#9635](https://github.com/ckeditor/ckeditor5/issues/9635). ([commit](https://github.com/ckeditor/ckeditor5/commit/54a4c22c0fce865e45f7b28f25641636d90547e1))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Image should not be replaced when dropped below a widget. Closes [#14710](https://github.com/ckeditor/ckeditor5/issues/14710), [#14740](https://github.com/ckeditor/ckeditor5/issues/14740). ([commit](https://github.com/ckeditor/ckeditor5/commit/03641ca58a5d4f241910f871054aa48edc216114))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Dragged selected whole list item should be still a list item after drop. Closes [#14969](https://github.com/ckeditor/ckeditor5/issues/14969) . ([commit](https://github.com/ckeditor/ckeditor5/commit/a20bcfb2bceb2f56cfdf22057b1b5a1cdf238864))
-* **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Fixes typing of Mention#toMentionAttribute method. Closes [#14923](https://github.com/ckeditor/ckeditor5/issues/14923). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f6bf52e3ef42e8ab9cdfc130e6d369593f6791c))
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Balloon panels should not sticks out of the visible part of the editor while scrolling. ([commit](https://github.com/ckeditor/ckeditor5/commit/7f4f63e574606ba7c589059d68316b8a4cc9b132))
-
-  Improvements to getOptimalPosition to handle cases with scrollable ancestors.
-* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Wrong tooltip when hovering toolbar buttons on Chrome on iOS. Closes [#13812](https://github.com/ckeditor/ckeditor5/issues/13812). ([commit](https://github.com/ckeditor/ckeditor5/commit/5c7fe1ccb6751348d1c12b7dd96d98263b9c9d74))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: A dragged whole list item should still be a list item when dropped. Closes [#14969](https://github.com/ckeditor/ckeditor5/issues/14969). ([commit](https://github.com/ckeditor/ckeditor5/commit/a20bcfb2bceb2f56cfdf22057b1b5a1cdf238864))
+* **[mention](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)**: Fixed typing of the `Mention#toMentionAttribute()` method. Closes [#14923](https://github.com/ckeditor/ckeditor5/issues/14923). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f6bf52e3ef42e8ab9cdfc130e6d369593f6791c))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Balloon panels should not stick out of the visible part of the editor while scrolling. ([commit](https://github.com/ckeditor/ckeditor5/commit/7f4f63e574606ba7c589059d68316b8a4cc9b132))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Fixed wrong tooltip when hovering over the toolbar buttons on Chrome on iOS. Closes [#13812](https://github.com/ckeditor/ckeditor5/issues/13812). ([commit](https://github.com/ckeditor/ckeditor5/commit/5c7fe1ccb6751348d1c12b7dd96d98263b9c9d74))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The coordinates of an element are now correctly calculated relative to the positioned ancestor element. Closes [#14992](https://github.com/ckeditor/ckeditor5/issues/14992). ([commit](https://github.com/ckeditor/ckeditor5/commit/76663b4454cdf42a3a8152391b79f9a1165c8171))
 
 ### Other changes
 
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `Comment#unlinkedAt`, `#setUnlinkedAt()` and `Comment#archivedAt` properties.
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `Comment#unlinkedAt`, `Comment#archivedAt` properties and `Comment#setUnlinkedAt()` method.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Renamed `CommentsArchive#resolvedThreads` to `#archivedThreads`.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comment threads are no longer treated as "resolved" when their related content is removed from the document. These threads are now in "unlinked" state.
-* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Improve the drag and drop target line. Closes [#14645](https://github.com/ckeditor/ckeditor5/issues/14645). ([commit](https://github.com/ckeditor/ckeditor5/commit/3ec29eb6eac970d77d00bd327d77da67076e9373))
+* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Improved the drag and drop target line. Closes [#14645](https://github.com/ckeditor/ckeditor5/issues/14645). ([commit](https://github.com/ckeditor/ckeditor5/commit/3ec29eb6eac970d77d00bd327d77da67076e9373))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Made the `ButtonView` label logic open for extension. ([commit](https://github.com/ckeditor/ckeditor5/commit/550f73cf641e30a2d363dc8eb87259bc73d2c2e2))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Changed the default icon for `BallonEditor` and add ability to customize it. Closes [#14646](https://github.com/ckeditor/ckeditor5/issues/14646). ([commit](https://github.com/ckeditor/ckeditor5/commit/238665a602daedf62bc7e30d64ed4e8579c31be5))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Changed the default icon for the `BallonEditor` and added the ability to customize it. Closes [#14646](https://github.com/ckeditor/ckeditor5/issues/14646). ([commit](https://github.com/ckeditor/ckeditor5/commit/238665a602daedf62bc7e30d64ed4e8579c31be5))
 * Optimized icons. ([commit](https://github.com/ckeditor/ckeditor5/commit/257e0f0e02148985499bad6b709aa6e7780465e0))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/b35611664e82fee4f49c5d8d9dd20da6eba80976), [commit](https://github.com/ckeditor/ckeditor5/commit/cca1dc24118cb4a2a83900326bf2f4c43eaf2c03), [commit](https://github.com/ckeditor/ckeditor5/commit/c9da67901c371632ba8d5232a22be542b0403960))
 * Added support to execute `yarn run clean-up-svg-icons` script without arguments to optimize all icons in the entire project. Closes [#14912](https://github.com/ckeditor/ckeditor5/issues/14912). ([commit](https://github.com/ckeditor/ckeditor5/commit/ba1bcba3d25f693d6e64dceb340f79afa33cae76))
 * Updated the required version of Node.js to 18 for the development environment. See [#14924](https://github.com/ckeditor/ckeditor5/issues/14924). ([commit](https://github.com/ckeditor/ckeditor5/commit/d8c967b1d8d35dcdda376e7194f2ecee0f6d6fa7))
-* Updated the required version of Node.js to 18 when developing the repository. See [ckeditor/ckeditor5#14924](https://github.com/ckeditor/ckeditor5/issues/14924).
 
 ### Released packages
 
@@ -389,7 +394,7 @@ We are happy to announce the release of CKEditor 5 v39.0.0.
 ### Release highlights
 
 #### Paste from Office Enhanced
-	
+
 This release introduces a new plugin that significantly boosts the retention of styles when pasting content from Microsoft Word and Excel. This improved functionality is available as part of our [Productivity pack](https://ckeditor.com/docs/ckeditor5/latest/features/productivity-pack.html) feature set.
 
 #### Color picker in table (cell) properties
