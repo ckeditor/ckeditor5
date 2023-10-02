@@ -30,6 +30,8 @@ import type { CKBoxAssetDefinition } from './ckboxconfig';
 import CKBoxCommand from './ckboxcommand';
 import CKBoxUploadAdapter from './ckboxuploadadapter';
 
+const DEFAULT_CKBOX_THEME_NAME = 'lark';
+
 /**
  * The CKBox editing feature. It introduces the {@link module:ckbox/ckboxcommand~CKBoxCommand CKBox command} and
  * {@link module:ckbox/ckboxuploadadapter~CKBoxUploadAdapter CKBox upload adapter}.
@@ -118,7 +120,7 @@ export default class CKBoxEditing extends Plugin {
 			defaultUploadCategories: null,
 			ignoreDataId: false,
 			language: editor.locale.uiLanguage,
-			theme: 'default',
+			theme: DEFAULT_CKBOX_THEME_NAME,
 			tokenUrl: editor.config.get( 'cloudServices.tokenUrl' )
 		} );
 
