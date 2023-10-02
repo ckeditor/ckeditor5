@@ -322,7 +322,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should show preview with white background on iOS', () => {
-			const originalEnvGecko = env.isiOS;
+			const originalEnviOs = env.isiOS;
 
 			env.isiOS = true;
 
@@ -350,7 +350,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 				} )
 			} ), 0, 0 );
 
-			env.isiOS = originalEnvGecko;
+			env.isiOS = originalEnviOs;
 		} );
 	} );
 
