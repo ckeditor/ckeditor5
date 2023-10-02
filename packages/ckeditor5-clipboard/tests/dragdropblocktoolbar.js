@@ -320,6 +320,38 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			expect( dragDropBlockToolbar._isBlockDragging ).to.be.false;
 		} );
+
+		it( 'should show preview with white background on iOS', () => {
+			const originalEnvGecko = env.isiOS;
+
+			env.isiOS = true;
+
+			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+
+			const dataTransfer = new DataTransfer();
+			const spy = sinon.spy( dataTransfer, 'setDragImage' );
+
+			const dragStartEvent = new DragEvent( 'dragstart', {
+				dataTransfer
+			} );
+
+			blockToolbarButton.dispatchEvent( dragStartEvent );
+
+			sinon.assert.calledOnce( spy );
+
+			sinon.assert.calledWith( spy, sinon.match( {
+				style: {
+					backgroundColor: 'white'
+				},
+				className: 'ck ck-content',
+				firstChild: sinon.match( {
+					tagName: 'P',
+					innerHTML: 'foobar'
+				} )
+			} ), 0, 0 );
+
+			env.isiOS = originalEnvGecko;
+		} );
 	} );
 
 	function expectDraggingMarker( targetPositionOrRange ) {
