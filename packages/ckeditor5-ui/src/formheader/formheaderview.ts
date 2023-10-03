@@ -9,6 +9,7 @@
 
 import View from '../view';
 import type ViewCollection from '../viewcollection';
+import IconView from '../icon/iconview';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -48,6 +49,11 @@ export default class FormHeaderView extends View {
 	public declare class: string | null;
 
 	/**
+	 * The icon view instance. Defined only if icon was passed in the constructor's options.
+	 */
+	public readonly iconView?: IconView;
+
+	/**
 	 * Creates an instance of the form header class.
 	 *
 	 * @param locale The locale instance.
@@ -56,7 +62,11 @@ export default class FormHeaderView extends View {
 	 */
 	constructor(
 		locale: Locale | undefined,
-		options: { label?: string | null; class?: string | null } = {}
+		options: {
+			label?: string | null;
+			class?: string | null;
+			icon?: string | null;
+		} = {}
 	) {
 		super( locale );
 
@@ -78,6 +88,13 @@ export default class FormHeaderView extends View {
 			},
 			children: this.children
 		} );
+
+		if ( options.icon ) {
+			this.iconView = new IconView();
+			this.iconView.content = options.icon;
+
+			this.children.add( this.iconView );
+		}
 
 		const label = new View( locale );
 

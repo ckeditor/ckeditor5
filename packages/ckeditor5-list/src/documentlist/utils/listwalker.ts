@@ -10,7 +10,7 @@
 import { first, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
 import { isListItemBlock, type ListElement } from './model';
 
-import type { DocumentFragment, Element, Node } from 'ckeditor5/src/engine';
+import type { Element, Node } from 'ckeditor5/src/engine';
 
 /**
  * Document list blocks iterator.
@@ -216,10 +216,33 @@ export function* iterateSiblingListBlocks(
 	direction: 'forward' | 'backward' = 'forward'
 ): IterableIterator<ListIteratorValue> {
 	const isForward = direction == 'forward';
+	const previousNodesByIndent: Array<ListElement> = []; // Last seen nodes of lower indented lists.
 	let previous = null;
 
 	while ( isListItemBlock( node ) ) {
-		yield { node, previous };
+		let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
+
+		if ( previous ) {
+			const nodeIndent = node.getAttribute( 'listIndent' );
+			const previousNodeIndent = previous.getAttribute( 'listIndent' );
+
+			// Let's find previous node for the same indent.
+			// We're going to need that when we get back to previous indent.
+			if ( nodeIndent > previousNodeIndent ) {
+				previousNodesByIndent[ previousNodeIndent ] = previous;
+			}
+			// Restore the one for given indent.
+			else if ( nodeIndent < previousNodeIndent ) {
+				previousNodeInList = previousNodesByIndent[ nodeIndent ];
+				previousNodesByIndent.length = nodeIndent;
+			}
+			// Same indent.
+			else {
+				previousNodeInList = previous;
+			}
+		}
+
+		yield { node, previous, previousNodeInList };
 
 		previous = node;
 		node = isForward ? node.nextSibling : node.previousSibling;
@@ -267,4 +290,9 @@ export interface ListIteratorValue {
 	 * The previous list node.
 	 */
 	previous: ListElement | null;
+
+	/**
+	 * The previous list node at the same indent as current node.
+	 */
+	previousNodeInList: ListElement | null;
 }

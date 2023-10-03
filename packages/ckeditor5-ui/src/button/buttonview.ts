@@ -13,6 +13,8 @@ import IconView from '../icon/iconview';
 import type { TemplateDefinition } from '../template';
 import type ViewCollection from '../viewcollection';
 import type { default as Button, ButtonExecuteEvent } from './button';
+import type ButtonLabel from './buttonlabel';
+import ButtonLabelView from './buttonlabelview';
 
 import {
 	env,
@@ -50,9 +52,12 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	public readonly children: ViewCollection;
 
 	/**
-	 * Label of the button view. It is configurable using the {@link #label label attribute}.
+	 * Label of the button view. Its text is configurable using the {@link #label label attribute}.
+	 *
+	 * If not configured otherwise in the `constructor()`, by default the label is an instance
+	 * of {@link module:ui/button/buttonlabelview~ButtonLabelView}.
 	 */
-	public readonly labelView: View;
+	public readonly labelView: ButtonLabel;
 
 	/**
 	 * The icon view of the button. Will be added to {@link #children} when the
@@ -178,9 +183,13 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	private _focusDelayed: DelayedFunc<() => void> | null = null;
 
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the button view class.
+	 *
+	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param labelView The instance of the button's label. If not provided, an instance of
+	 * {@link module:ui/button/buttonlabelview~ButtonLabelView} is used.
 	 */
-	constructor( locale?: Locale ) {
+	constructor( locale?: Locale, labelView: ButtonLabel = new ButtonLabelView() ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -208,7 +217,7 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 		this.set( 'withKeystroke', false );
 
 		this.children = this.createCollection();
-		this.labelView = this._createLabelView();
+		this.labelView = this._setupLabelView( labelView );
 
 		this.iconView = new IconView();
 		this.iconView.extendTemplate( {
@@ -325,30 +334,10 @@ export default class ButtonView extends View<HTMLButtonElement> implements Butto
 	}
 
 	/**
-	 * Creates a label view instance and binds it with button attributes.
+	 * Binds the label view instance it with button attributes.
 	 */
-	private _createLabelView() {
-		const labelView = new View();
-		const bind = this.bindTemplate;
-
-		labelView.setTemplate( {
-			tag: 'span',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-button__label'
-				],
-				style: bind.to( 'labelStyle' ),
-				id: this.ariaLabelledBy
-			},
-
-			children: [
-				{
-					text: bind.to( 'label' )
-				}
-			]
-		} );
+	private _setupLabelView( labelView: ButtonLabelView ) {
+		labelView.bind( 'text', 'style', 'id' ).to( this, 'label', 'labelStyle', 'ariaLabelledBy' );
 
 		return labelView;
 	}

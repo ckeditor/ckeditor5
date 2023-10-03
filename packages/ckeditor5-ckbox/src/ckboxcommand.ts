@@ -177,10 +177,6 @@ export default class CKBoxCommand extends Command {
 			document.body.appendChild( this._wrapper );
 
 			window.CKBox.mount( this._wrapper, this._prepareOptions() );
-
-			const MAX_NUMBER_OF_ATTEMPTS_TO_FOCUS = 50;
-
-			focusCKBoxItem( MAX_NUMBER_OF_ATTEMPTS_TO_FOCUS );
 		} );
 
 		// Handle closing of the CKBox dialog.
@@ -389,38 +385,6 @@ function getAssetUrl( asset: CKBoxRawAssetDefinition ) {
 	url.searchParams.set( 'download', 'true' );
 
 	return url.toString();
-}
-
-/**
- * Focuses the CKBox first item in gallery.
- * This is a temporary fix. A permanent solution to this issue will be provided soon.
- *
- * @param limiter Max number of attempts to focus the ckbox item.
- */
-function focusCKBoxItem( limiter: number ): void {
-	// Trying every 100 ms get access to the CKBox component until component will be loaded.
-	setTimeout( () => {
-		if ( limiter === 0 ) {
-			return;
-		}
-
-		const ckboxGalleryFirstItem = document.querySelector( '.ckbox-gallery .ckbox-gallery-item' );
-		// In case there is no items, "upload button" will be appeared in "div" with
-		// classname ".ckbox-empty-view".
-		const uploadButton = document.querySelector( '.ckbox-empty-view .ckbox-btn' );
-
-		// In case "upload button" is loaded in ".ckbox-empty-view" we focus actual button.
-		if ( uploadButton && uploadButton instanceof HTMLElement ) {
-			uploadButton.focus();
-			return;
-		}
-
-		if ( ckboxGalleryFirstItem && ckboxGalleryFirstItem instanceof HTMLElement ) {
-			ckboxGalleryFirstItem.focus();
-		} else {
-			focusCKBoxItem( limiter - 1 );
-		}
-	}, 100 );
 }
 
 /**

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console */
+/* global console, setTimeout */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
@@ -705,6 +705,34 @@ describe( 'ImageUtils plugin', () => {
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 
 			expect( imageElement ).to.be.null;
+		} );
+
+		it( 'should set image width and height', done => {
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			imageUtils.insertImage( { src: '/assets/sample.png' } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>f[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]o</paragraph>'
+				);
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should not set image width and height if `setImageSizes` parameter is false', done => {
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			imageUtils.insertImage( { src: '/assets/sample.png' }, null, null, { setImageSizes: false } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>f[<imageInline src="/assets/sample.png"></imageInline>]o</paragraph>'
+				);
+
+				done();
+			}, 100 );
 		} );
 	} );
 

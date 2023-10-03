@@ -33,11 +33,11 @@ export default class ResizeImageCommand extends Command {
 
 		this.isEnabled = !!element;
 
-		if ( !element || !element.hasAttribute( 'width' ) ) {
+		if ( !element || !element.hasAttribute( 'resizedWidth' ) ) {
 			this.value = null;
 		} else {
 			this.value = {
-				width: element.getAttribute( 'width' ) as string,
+				width: element.getAttribute( 'resizedWidth' ) as string,
 				height: null
 			};
 		}
@@ -71,7 +71,9 @@ export default class ResizeImageCommand extends Command {
 
 		if ( imageElement ) {
 			model.change( writer => {
-				writer.setAttribute( 'width', options.width, imageElement );
+				writer.setAttribute( 'resizedWidth', options.width, imageElement );
+				writer.removeAttribute( 'resizedHeight', imageElement );
+				imageUtils.setImageNaturalSizeAttributes( imageElement );
 			} );
 		}
 	}

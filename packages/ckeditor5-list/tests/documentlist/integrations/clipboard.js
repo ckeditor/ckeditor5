@@ -28,12 +28,19 @@ import {
 	stringify as stringifyModel,
 	setData as setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import {
+	parse as parseView,
+	stringify as stringifyView
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
+import {
+	LiveRange
+} from '@ckeditor/ckeditor5-engine';
 
 import stubUid from '../_utils/uid';
 
 describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
-	let element, editor, model, modelDoc, modelRoot, view;
+	let element, editor, model, modelDoc, modelRoot, view, clipboard;
 
 	testUtils.createSinonSandbox();
 
@@ -57,6 +64,8 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 		model.schema.extend( 'paragraph', {
 			allowAttributes: 'foo'
 		} );
+
+		clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
 		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
@@ -126,10 +135,12 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						'* [<imageBlock src=""></imageBlock>]'
 					] ) );
 
-					const modelFragment = model.getSelectedContent( model.document.selection );
+					view.document.on( 'clipboardOutput', ( evt, data ) => {
+						expect( data.content.childCount ).to.equal( 1 );
+						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
+					} );
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
 				} );
 
 				it( 'should return an object stripped of list attributes, if that object was selected as a middle list item block', () => {
@@ -139,10 +150,12 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						'  bar'
 					] ) );
 
-					const modelFragment = model.getSelectedContent( model.document.selection );
+					view.document.on( 'clipboardOutput', ( evt, data ) => {
+						expect( data.content.childCount ).to.equal( 1 );
+						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
+					} );
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
 				} );
 
 				it( 'should strip other list attributes', () => {
@@ -150,10 +163,12 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						'* [<imageBlock listStyle="square" src=""></imageBlock>]'
 					] ) );
 
-					const modelFragment = model.getSelectedContent( model.document.selection );
+					view.document.on( 'clipboardOutput', ( evt, data ) => {
+						expect( data.content.childCount ).to.equal( 1 );
+						expect( hasAnyListAttribute( data.content.getChild( 0 ) ) ).to.be.false;
+					} );
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( hasAnyListAttribute( modelFragment.getChild( 0 ) ) ).to.be.false;
+					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
 				} );
 
 				it( 'should return nodes stripped of list attributes, if more than a single block of the same item was selected', () => {
@@ -163,10 +178,12 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						'  B]az'
 					] ) );
 
-					const modelFragment = model.getSelectedContent( model.document.selection );
+					view.document.on( 'clipboardOutput', ( evt, data ) => {
+						expect( data.content.childCount ).to.equal( 3 );
+						expect( Array.from( data.content.getChildren() ).some( isListItemBlock ) ).to.be.false;
+					} );
 
-					expect( modelFragment.childCount ).to.equal( 3 );
-					expect( Array.from( modelFragment.getChildren() ).some( isListItemBlock ) ).to.be.false;
+					clipboard._fireOutputTransformationEvent( createDataTransfer(), model.document.selection, 'copy' );
 				} );
 
 				it( 'should return just a text, if a list item block was partially selected', () => {
@@ -235,10 +252,14 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					// [* Foo]
 					//
 					// Note: It is impossible to set a document selection like this because the postfixer will normalize it to * [Foo].
-					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( Array.from( modelFragment.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
+					view.document.on( 'outputTransformation', ( evt, data ) => {
+						expect( data.content.childCount ).to.equal( 1 );
+						expect( Array.from( data.content.getChildren() ).some( hasAnyListAttribute ) ).to.be.false;
+					} );
+
+					clipboard._fireOutputTransformationEvent(
+						createDataTransfer(), model.createSelection( model.document.getRoot(), 'in' ), 'copy' );
 				} );
 
 				it( 'should not strip attributes of wrapped list', () => {
@@ -248,17 +269,20 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 						` ) }</blockQuote>]
 					` ) );
 
-					const modelFragment = model.getSelectedContent( model.createSelection( model.document.getRoot(), 'in' ) );
+					view.document.on( 'outputTransformation', ( evt, data ) => {
+						expect( data.content.childCount ).to.equal( 1 );
+						expect( Array.from( data.content.getChildren() ).every( isListItemBlock ) ).to.be.false;
+						expect( Array.from( data.content.getChild( 0 ).getChildren() ).every( isListItemBlock ) ).to.be.true;
 
-					expect( modelFragment.childCount ).to.equal( 1 );
-					expect( Array.from( modelFragment.getChildren() ).every( isListItemBlock ) ).to.be.false;
-					expect( Array.from( modelFragment.getChild( 0 ).getChildren() ).every( isListItemBlock ) ).to.be.true;
+						expect( stringifyModel( data.content ) ).to.equal(
+							'<blockQuote>' +
+								'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+							'</blockQuote>'
+						);
+					} );
 
-					expect( stringifyModel( modelFragment ) ).to.equal(
-						'<blockQuote>' +
-							'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
-						'</blockQuote>'
-					);
+					clipboard._fireOutputTransformationEvent(
+						createDataTransfer(), model.createSelection( model.document.getRoot(), 'in' ), 'copy' );
 				} );
 			} );
 
@@ -419,8 +443,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
@@ -439,8 +461,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
@@ -462,8 +482,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
@@ -487,8 +505,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 				);
 
-				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 				} );
@@ -509,8 +525,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
@@ -527,8 +541,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph>A[]</paragraph>' +
 				'<paragraph>B</paragraph>'
 			);
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
@@ -563,8 +575,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					'<paragraph>Bar</paragraph>'
 				);
 
-				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<li>X</li>' )
 				} );
@@ -591,8 +601,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 					'<paragraph>Bar</paragraph>'
 				);
 
-				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 				clipboard.fire( 'inputTransformation', {
 					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
 				} );
@@ -615,8 +623,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
@@ -638,8 +644,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
@@ -660,8 +664,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
-
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
@@ -695,8 +697,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				conversionApi.updateConversionResult( splitBlock, data );
 			} ) );
 
-			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
-
 			clipboard.fire( 'inputTransformation', {
 				content: parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
 			} );
@@ -710,4 +710,110 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 			);
 		} );
 	} );
+
+	describe( 'drag integration', () => {
+		it( 'should return a list item, when a whole list item was selected and dragged', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="000" listType="bulleted">[Foo bar.]</paragraph>'
+			);
+
+			const elements = Array.from( model.document.selection.getSelectedBlocks() );
+			const firstElement = elements[ 0 ];
+			const lastElement = elements[ elements.length - 1 ];
+			const startPosition = model.createPositionBefore( firstElement );
+			const endPosition = model.createPositionAfter( lastElement );
+			const blockRange = model.createRange( startPosition, endPosition );
+			const draggedRange = LiveRange.fromRange( blockRange );
+
+			const dataTransferMock = createDataTransfer();
+			const draggedSelection = model.createSelection( draggedRange.toRange() );
+
+			view.document.on( 'dragstart', evt => {
+				evt.stop();
+			} );
+
+			view.document.on( 'clipboardOutput', ( evt, data ) => {
+				expect( stringifyView( data.content ) ).is.equal(
+					'<ul><li><p>Foo bar.</p></li></ul>'
+				);
+			} );
+
+			clipboard._fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
+		} );
+
+		it( 'should return a list item, when a whole list item was selected and' +
+			'end of selection is positioned in first place in next paragraph (triple click)', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="000" listType="bulleted">[Foo bar.</paragraph>' +
+				'<paragraph>]</paragraph>'
+			);
+
+			const elements = Array.from( model.document.selection.getSelectedBlocks() );
+			const firstElement = elements[ 0 ];
+			const lastElement = elements[ elements.length - 1 ];
+			const startPosition = model.createPositionBefore( firstElement );
+			const endPosition = model.createPositionAfter( lastElement );
+			const blockRange = model.createRange( startPosition, endPosition );
+			const draggedRange = LiveRange.fromRange( blockRange );
+
+			const dataTransferMock = createDataTransfer();
+			const draggedSelection = model.createSelection( draggedRange.toRange() );
+
+			view.document.on( 'dragstart', evt => {
+				evt.stop();
+			} );
+
+			view.document.on( 'clipboardOutput', ( evt, data ) => {
+				expect( stringifyView( data.content ) ).is.equal(
+					'<ul><li><p>Foo bar.</p></li></ul>'
+				);
+			} );
+
+			clipboard._fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
+		} );
+
+		it( 'should return all selected content, even when end of selection is positioned in first place in next paragraph', () => {
+			setModelData( model,
+				'<paragraph>[Foo bar.</paragraph>' +
+				'<paragraph>]</paragraph>'
+			);
+
+			const elements = Array.from( model.document.selection.getSelectedBlocks() );
+			const firstElement = elements[ 0 ];
+			const lastElement = elements[ elements.length - 1 ];
+			const startPosition = model.createPositionBefore( firstElement );
+			const endPosition = model.createPositionAfter( lastElement );
+			const blockRange = model.createRange( startPosition, endPosition );
+			const draggedRange = LiveRange.fromRange( blockRange );
+
+			const dataTransferMock = createDataTransfer();
+			const draggedSelection = model.createSelection( draggedRange.toRange() );
+
+			view.document.on( 'dragstart', evt => {
+				evt.stop();
+			} );
+
+			view.document.on( 'clipboardOutput', ( evt, data ) => {
+				expect( stringifyView( data.content ) ).is.equal(
+					'<p>Foo bar.</p><p></p>'
+				);
+			} );
+
+			clipboard._fireOutputTransformationEvent( dataTransferMock, draggedSelection, 'dragstart' );
+		} );
+	} );
+
+	function createDataTransfer() {
+		const store = new Map();
+
+		return {
+			setData( type, data ) {
+				store.set( type, data );
+			},
+
+			getData( type ) {
+				return store.get( type );
+			}
+		};
+	}
 } );
