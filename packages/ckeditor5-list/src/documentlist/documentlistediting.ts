@@ -841,7 +841,7 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 				const isListItem = isListItemBlock( item );
 
 				writer.setAttributes( {
-					listIndent: ( isListItem ? item.getAttribute( 'listIndent' ) : 0 ) + Math.max( indentDiff, 0 ),
+					listIndent: ( isListItem ? item.getAttribute( 'listIndent' ) : 0 ) + indentDiff,
 					listItemId: isListItem ? item.getAttribute( 'listItemId' ) : ListItemUid.next(),
 					listType: refType
 				}, item );
