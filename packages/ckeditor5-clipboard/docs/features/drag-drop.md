@@ -9,11 +9,11 @@ category: features
 
 # Drag and drop
 
-The drag and drop feature lets you drag and drop text, images, tables, and other content within the editor. You can also drag and drop HTML and plain-text content from outside the editor.
+The drag and drop feature lets you drag and drop text, and content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks. You can also drag and drop HTML and plain-text content from outside the editor and use it to upload images.
 
 ## Demo
 
-The demo below lets you drag contacts from the list to the editor. The contacts are inserted into the editor as custom widgets representing the [h-card microformat](http://microformats.org/wiki/h-card).
+The demo below lets you drag contacts from the list to the editor. The contacts are inserted into the editor as custom widgets representing the [h-card microformat](http://microformats.org/wiki/h-card). You can also select and drag around existing content inside the editor.
 
 {@snippet features/drag-drop}
 
@@ -28,6 +28,28 @@ The source code of the above snippet is available here: [`drag-drop.js`](https:/
 ## File upload via drag and drop
 
 When the {@link features/ckbox CKBox file manager} is enabled in your CKEditor&nbsp;5 integration, you can upload files and images using the drag and drop mechanism. You can test this solution in the {@link features/ckbox#demo CKBox demo}.
+
+## Drag and drop of content blocks
+
+Since v40.0.0, the drag and drop plugin enables dragging content blocks such as paragraphs, tables, or lists inside the editor by default. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
+
+The drag and drop functions include:
+
+* Selection of the text, elements, multiple blocks, and moving these around.
+* Placement of blocks inside other blocks such as tables, blockquotes, etc.
+* The braille dots panel icon (`⠿`) in the balloon block editor now behaves as a drag handle.
+
+### Classic editor demo
+
+Select a block or blocks, and drag them across the document. You can place blocks inside other blocks, such as tables and blockquotes.
+
+{@snippet features/block-drag-drop}
+
+### Balloon block editor demo
+
+In the balloon block editor, you can also drag content blocks using the drag handle. Select or focus on the block, and then drag the block with the braille dots panel icon (`⠿`).
+
+{@snippet features/block-balloon-drag-drop}
 
 ## Installation
 
@@ -54,28 +76,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 The {@link module:clipboard/dragdrop~DragDrop `DragDrop`} plugin will activate along with the clipboard plugin.
-
-## Drag and drop of content blocks
-
-The drag and drop plugin enables dragging content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks.
-
-Functions introduced in the initial release include:
-
-* Selection of the text, elements, multiple blocks, and moving these around.
-* Placement of blocks inside other blocks such as tables, blockquotes, etc.
-* The braille dots panel icon (`⠿`) in the balloon block editor now behaves as a drag handle.
-
-### Classic editor demo
-
-Select a block or blocks, and drag them across the document. You can place blocks inside other blocks, such as tables and blockquotes.
-
-{@snippet features/block-drag-drop}
-
-### Balloon block editor demo
-
-In the balloon block editor, you can also drag content blocks using the drag handle. Select or focus on the block, and then drag the block with the braille dots panel icon (`⠿`).
-
-{@snippet features/block-balloon-drag-drop}
 
 ## Styling the drag and drop
 
