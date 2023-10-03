@@ -64,10 +64,7 @@ import {
 	getViewElementNameForListType
 } from './utils/view';
 
-import ListWalker, {
-	iterateSiblingListBlocks,
-	ListBlocksIterable
-} from './utils/listwalker';
+import ListWalker, { ListBlocksIterable } from './utils/listwalker';
 
 import {
 	ClipboardPipeline,
@@ -544,7 +541,7 @@ export default class DocumentListEditing extends Plugin {
 		const model = this.editor.model;
 		const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
 
-		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( this.editor ), { priority: 'high' } );
+		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
 		// To enhance the UX, the editor should not copy list attributes to the clipboard if the selection
 		// started and ended in the same list item.
@@ -807,15 +804,23 @@ function modelChangePostFixer(
  * <paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>
  * ```
  */
-function createModelIndentPasteFixer( editor: Editor ): GetCallback<ModelInsertContentEvent> {
+function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertContentEvent> {
 	return ( evt, [ content, selectable ] ) => {
+		const items = content.is( 'documentFragment' ) ?
+			Array.from( content.getChildren() ) :
+			[ content ];
+
+		if ( !items.length ) {
+			return;
+		}
+
 		const selection = selectable ?
-			editor.model.createSelection( selectable ) :
-			editor.model.document.selection;
+			model.createSelection( selectable ) :
+			model.document.selection;
 
 		const position = selection.getFirstPosition()!;
 
-		// Get a reference list item. Indention and type of inserted list items will be fixed according to that item.
+		// Get a reference list item. Attributes of the inserted list items will be fixed according to that item.
 		let refItem: ListElement;
 
 		if ( isListItemBlock( position.parent ) ) {
@@ -826,33 +831,20 @@ function createModelIndentPasteFixer( editor: Editor ): GetCallback<ModelInsertC
 			return; // Content is not copied into a list.
 		}
 
-		editor.model.change( writer => {
-			const refIndent = refItem.getAttribute( 'listIndent' );
+		model.change( writer => {
 			const refType = refItem.getAttribute( 'listType' );
+			const refIndent = refItem.getAttribute( 'listIndent' );
+			const firstElementIndent = items[ 0 ].getAttribute( 'listIndent' ) as number || 0;
+			const indentDiff = Math.max( refIndent - firstElementIndent, 0 );
 
-			if ( isListItemBlock( content ) ) {
-				// Content is already a list.
-				const indentDiff = Math.max( refIndent - content.getAttribute( 'listIndent' ), 0 );
+			for ( const item of items ) {
+				const isListItem = isListItemBlock( item );
 
-				for ( const { node } of iterateSiblingListBlocks( content, 'forward' ) ) {
-					writer.setAttributes( {
-						listIndent: node.getAttribute( 'listIndent' ) + indentDiff,
-						listType: refType
-					}, node );
-				}
-			} else if ( content.is( 'documentFragment' ) ) {
-				// Content is pasted into the list and might not be a list itself.
-				const indentDiff = Math.max( refIndent - ( content.getChild( 0 )!.getAttribute( 'listIndent' ) as number || 0 ), 0 );
-
-				for ( const child of content.getChildren() ) {
-					const isListItem = isListItemBlock( child );
-
-					writer.setAttributes( {
-						listIndent: ( isListItem ? child.getAttribute( 'listIndent' ) : 0 ) + indentDiff,
-						listItemId: isListItem ? child.getAttribute( 'listItemId' ) : ListItemUid.next(),
-						listType: refType
-					}, child );
-				}
+				writer.setAttributes( {
+					listIndent: ( isListItem ? item.getAttribute( 'listIndent' ) : 0 ) + Math.max( indentDiff, 0 ),
+					listItemId: isListItem ? item.getAttribute( 'listItemId' ) : ListItemUid.next(),
+					listType: refType
+				}, item );
 			}
 		} );
 	};
