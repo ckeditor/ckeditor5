@@ -664,7 +664,7 @@ export default class DragDrop extends Plugin {
 		 * Check: https://github.com/ckeditor/ckeditor5/issues/15085
 		 */
 		if ( env.isiOS ) {
-			preview.style.backgroundColor = 'white';
+			preview.style.backgroundColor = computedStyle.getPropertyValue( '--ck-color-base-background' );
 		}
 
 		preview.innerHTML = dataTransfer.getData( 'text/html' );
