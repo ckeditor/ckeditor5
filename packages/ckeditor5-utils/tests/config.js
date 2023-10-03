@@ -29,7 +29,8 @@ describe( 'Config', () => {
 					{ bar: 'a' },
 					{ bar: 'z' }
 				]
-			}
+			},
+			callback: () => null
 		} );
 	} );
 
@@ -363,6 +364,11 @@ describe( 'Config', () => {
 			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 		} );
 
+		it( 'should return a function', () => {
+			expect( typeof config.get( 'callback' ) ).to.equal( 'function' );
+			expect( config.get( 'callback' )() ).to.equal( null );
+		} );
+
 		it( 'should retrieve an object of the configuration', () => {
 			const resize = config.get( 'resize' );
 
@@ -482,7 +488,9 @@ describe( 'Config', () => {
 
 	describe( 'names()', () => {
 		it( 'should return an iterator of top level names of the configuration', () => {
-			expect( Array.from( config.names() ) ).to.be.deep.equal( [ 'creator', 'language', 'resize', 'toolbar', 'options' ] );
+			expect( Array.from( config.names() ) ).to.be.deep.equal(
+				[ 'creator', 'language', 'resize', 'toolbar', 'options', 'callback' ]
+			);
 		} );
 	} );
 } );

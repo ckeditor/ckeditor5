@@ -250,6 +250,11 @@ export default class Config<Cfg> {
 			source = source[ part ];
 		}
 
+		// Return actual value if it's a function.
+		if ( source && typeof source[ name ] === 'function' ) {
+			return source[ name ];
+		}
+
 		// Always returns undefined for non existing configuration.
 		return source ? cloneConfig( source[ name ] ) : undefined;
 	}
