@@ -13,8 +13,10 @@ import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckedit
 import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
 import { priorities } from 'ckeditor5/src/utils';
+import type LinkCommand from './linkcommand';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
+import LinkEditing from './linkediting';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
@@ -75,7 +77,7 @@ export default class AutoLink extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Delete ] as const;
+		return [ Delete, LinkEditing ] as const;
 	}
 
 	/**
@@ -116,12 +118,14 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 		const modelDocument = editor.model.document;
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
 			if ( !modelDocument.selection.isCollapsed ) {
 				const textString = data.dataTransfer.getData( 'text/plain' );
 				if ( URL_REG_EXP.test( textString ) ) {
 					// the whole clipboard is a URL
+					linkCommand.execute( textString );
 					evt.stop();
 				}
 			}
