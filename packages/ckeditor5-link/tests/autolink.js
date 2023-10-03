@@ -33,8 +33,7 @@ describe( 'AutoLink', () => {
 		await editor.destroy();
 	} );
 
-	// eslint-disable-next-line mocha/no-exclusive-tests
-	describe( 'link on paste behavior', () => {
+	describe( 'autolink on paste behavior', () => {
 		testUtils.createSinonSandbox();
 		let model, viewDocument;
 
@@ -49,25 +48,58 @@ describe( 'AutoLink', () => {
 
 			model = editor.model;
 			viewDocument = editor.editing.view.document;
-
-			setData( model, '<paragraph>some [selected] text</paragraph>' );
 		} );
 
-		it( 'links on paste', () => {
-			const dataTransferMock = createDataTransfer( {
-				'text/plain': 'http://hello.com'
+		describe( 'pasting on selected text', () => {
+			beforeEach( () => setData( model, '<paragraph>some [selected] text</paragraph>' ) );
+
+			it( 'paste link', () => {
+				pasteText( 'http://hello.com' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>'
+				);
 			} );
-			const preventDefaultSpy = sinon.spy();
-			const stopPropagation = sinon.spy();
+
+			it( 'paste text including a link', () => {
+				pasteText( ' http://hello.com' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some  http://hello.com[] text</paragraph>'
+				);
+			} );
+
+			it( 'paste not a link', () => {
+				pasteText( 'hello' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some hello[] text</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'pasting on collapsed selection', () => {
+			beforeEach( () => setData( model, '<paragraph>some [] text</paragraph>' ) );
+
+			it( 'paste link', () => {
+				pasteText( 'http://hello.com' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some http://hello.com[] text</paragraph>'
+				);
+			} );
+		} );
+
+		function pasteText( text ) {
+			pasteData( {
+				'text/plain': text
+			} );
+		}
+
+		function pasteData( data ) {
+			const dataTransferMock = createDataTransfer( data );
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
-				preventDefault: preventDefaultSpy,
-				stopPropagation
+				preventDefault() {},
+				stopPropagation() {}
 			} );
-			expect( getData( model ) ).to.equal(
-				'<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>'
-			);
-		} );
+		}
 
 		function createDataTransfer( data ) {
 			return {
