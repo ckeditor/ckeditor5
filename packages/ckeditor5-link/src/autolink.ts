@@ -123,7 +123,8 @@ export default class AutoLink extends Plugin {
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
 			if ( !modelDocument.selection.isCollapsed ) {
 				const textString = data.dataTransfer.getData( 'text/plain' );
-				if ( URL_REG_EXP.test( textString ) ) {
+				const matches = textString.match( URL_REG_EXP );
+				if ( matches && matches[ 2 ] === textString ) {
 					// the whole clipboard is a URL
 					linkCommand.execute( textString );
 					evt.stop();
