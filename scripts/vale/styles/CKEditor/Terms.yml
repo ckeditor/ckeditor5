@@ -15,14 +15,17 @@ swap:
   click on: click|click in
   config: configuration
   data are: data is
+  dev environment: development environment
+  docs: documentation
   drop-down: dropdown
   "(?:e-mail|Email|E-mail)": email
   fewer data: less data
   grayed-out|greyed-out: unavailable
   in order to: to
-  plug-in: plugin
   MacOS: macOS
   MSWord: Microsoft Word
+  plug-in: plugin
+  prod: production environment
   regex: regular expression
   repo: repository
   stylesheet: style sheet
