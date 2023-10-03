@@ -5,9 +5,35 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v40.0.0.
 
-<!-- ### Release highlights -->
+### Release highlights
 
-<!-- TODO: Add release highlights. -->
+#### AI Assistant
+
+**We are tremendously excited to share our AI Assistant plugin with you!**
+
+With the AI Assistant, you can boost your editing effectiveness and creativity in a completely new way. This feature gives writers the power to seamlessly interact with artificial intelligence. Users can generate, expand, rewrite, improve, translate, and process the content in many different ways.
+
+The AI Assistant can be used in two ways. You can quickly re-work selected content by choosing one of the predefined AI commands. Or, you can write your own query to generate or process the content in any way you like!
+
+Make sure to visit the [documentation](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant.html) and try the [demo](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant.html#demo)!
+
+#### Introduction of image height and width support
+
+No more layout shifts! We have introduced setting of the image `width` and `height` attributes automatically during the upload/paste process to ensure the highest-quality content with no text jumping all around. While existing images won't be automatically retroactively altered, any changes to images in the editor (like resizing) will automatically set these attributes.
+
+We've also ensured backward compatibility with CKEditor 4, particularly while maintaining user-changed aspect ratios. More details on the changes can be found [in the update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#changes-to-the-image-feature).
+
+#### Drag and drop of blocks
+
+Just drag it!™ We have introduced more intuitive drag-and-drop functionality for blocks and widgets. This makes content rearrangement and editing faster and easier, offering users better control over their content. Dragging by the balloon block toolbar handle is also possible, and we've updated its default icon to reflect this new drag-and-drop capability better ([but it's still changeable](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#new-balloon-block-editor-icon)).
+
+#### Document lists feature parity
+
+Document lists — our second-generation list plugin that supports multiple content blocks in list items — have finally landed the support for to-do lists! We also added the configuration that enforces the document list to have only a single block inside the list item (we call it “simple lists”). All this is to start deprecating the Lists v1 implementation and use the document lists as default. [Coming soon](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#a-new-default-lists-plugin-coming)!
+
+#### Contextual balloon fixes
+
+Last but not least, we prepared significant fixes to the way the contextual balloons work. They had the tendency to overflow on other elements, especially in the fixed height editors. We polished their internals, and problems should exist no more!
 
 Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html) to learn more about these changes.
 
