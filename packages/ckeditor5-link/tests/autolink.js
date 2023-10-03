@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
@@ -12,7 +15,6 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
 import LinkEditing from '../src/linkediting';
 import AutoLink from '../src/autolink';
 
@@ -29,6 +31,51 @@ describe( 'AutoLink', () => {
 		} );
 
 		await editor.destroy();
+	} );
+
+	// eslint-disable-next-line mocha/no-exclusive-tests
+	describe( 'link on paste behavior', () => {
+		testUtils.createSinonSandbox();
+		let model, viewDocument;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, ClipboardPipeline, LinkEditing, AutoLink ]
+			} );
+
+			// VirtualTestEditor has no DOM, so this method must be stubbed for all tests.
+			// Otherwise it will throw as it accesses the DOM to do its job.
+			sinon.stub( editor.editing.view, 'scrollToTheSelection' );
+
+			model = editor.model;
+			viewDocument = editor.editing.view.document;
+
+			setData( model, '<paragraph>some [selected] text</paragraph>' );
+		} );
+
+		it( 'links on paste', () => {
+			const dataTransferMock = createDataTransfer( {
+				'text/plain': 'http://hello.com'
+			} );
+			const preventDefaultSpy = sinon.spy();
+			const stopPropagation = sinon.spy();
+			viewDocument.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy,
+				stopPropagation
+			} );
+			expect( getData( model ) ).to.equal(
+				'<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>'
+			);
+		} );
+
+		function createDataTransfer( data ) {
+			return {
+				getData( type ) {
+					return data[ type ];
+				}
+			};
+		}
 	} );
 
 	describe( 'auto link behavior', () => {
