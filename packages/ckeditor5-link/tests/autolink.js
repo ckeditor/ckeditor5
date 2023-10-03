@@ -86,6 +86,24 @@ describe( 'AutoLink', () => {
 			} );
 		} );
 
+		describe( 'pasting on a link', () => {
+			it( 'paste with entire link selected', () => {
+				setData( model, '<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>' );
+				pasteText( 'http://world.com' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some [<$text linkHref="http://world.com">selected</$text>] text</paragraph>'
+				);
+			} );
+
+			it( 'paste with partially selected link updates the entire link', () => {
+				setData( model, '<paragraph><$text linkHref="http://hello.com">some [selected] text</$text></paragraph>' );
+				pasteText( 'http://world.com' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph><$text linkHref="http://world.com">some [selected] text</$text></paragraph>'
+				);
+			} );
+		} );
+
 		function pasteText( text ) {
 			pasteData( {
 				'text/plain': text
