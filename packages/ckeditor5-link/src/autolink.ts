@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
 import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
-import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
+import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent, findAttributeRange } from 'ckeditor5/src/typing';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
 import { priorities } from 'ckeditor5/src/utils';
 
@@ -115,20 +115,39 @@ export default class AutoLink extends Plugin {
 	 */
 	private _enablePasteLinking(): void {
 		const editor = this.editor;
-		const modelDocument = editor.model.document;
+		const model = editor.model;
+		const modelDocument = model.document;
 		const clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const linkCommand = editor.commands.get( 'link' )!;
 
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
 			const selection = modelDocument.selection;
 			if ( linkCommand.isEnabled && !selection.isCollapsed ) {
-				const textString = data.dataTransfer.getData( 'text/plain' );
-				const matches = textString.match( URL_REG_EXP );
+				const newLink = data.dataTransfer.getData( 'text/plain' );
+				const matches = newLink.match( URL_REG_EXP );
 
 				// if there is a URL in the clipboard, and that URL is the whole clipboard
-				if ( matches && matches[ 2 ] === textString ) {
-					linkCommand.execute( textString );
-					evt.stop();
+				if ( matches && matches[ 2 ] === newLink ) {
+					// TODO: refactoring
+
+					if ( selection.hasAttribute( 'linkHref' ) ) {
+						const selStart = selection.getFirstPosition()!;
+						const selEnd = selection.getLastPosition()!;
+
+						const linkRange = findAttributeRange( selStart, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+						// why is containsPosition false when the point is equal to the start or end of the range?
+						if ( linkRange.containsPosition( selEnd ) || linkRange.end.isEqual( selEnd ) ) {
+							// update the whole link
+							evt.stop();
+
+							model.change( writer => writer.setAttribute( 'linkHref', newLink, linkRange ) );
+						} else {
+							// fall through to pasting normally
+						}
+					} else {
+						linkCommand.execute( newLink );
+						evt.stop();
+					}
 				}
 			}
 		}, { priority: priorities.get( 'high' ) } );
