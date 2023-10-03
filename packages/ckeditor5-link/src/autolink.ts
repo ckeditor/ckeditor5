@@ -8,12 +8,11 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import type { ClipboardInputTransformationData, ClipboardPipeline } from 'ckeditor5/src/clipboard';
+import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
 import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
 import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
 import { priorities } from 'ckeditor5/src/utils';
-import type LinkCommand from './linkcommand';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
 import LinkEditing from './linkediting';
@@ -117,11 +116,12 @@ export default class AutoLink extends Plugin {
 	private _enablePasteLinking(): void {
 		const editor = this.editor;
 		const modelDocument = editor.model.document;
-		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
-		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
+		const clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+		const linkCommand = editor.commands.get( 'link' )!;
 
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
-			if ( linkCommand.isEnabled && !modelDocument.selection.isCollapsed ) {
+			const selection = modelDocument.selection;
+			if ( linkCommand.isEnabled && !selection.isCollapsed ) {
 				const textString = data.dataTransfer.getData( 'text/plain' );
 				const matches = textString.match( URL_REG_EXP );
 
