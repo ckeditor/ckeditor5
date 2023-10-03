@@ -1,0 +1,29 @@
+extends: substitution
+message: "Use '%s' instead of '%s'."
+level: error
+ignorecase: true
+action:
+  name: replace
+swap:
+  "(?:kill|terminate|abort)": stop|exit|cancel|end
+  admin: administrator
+  a\.k\.a|aka: or|also known as
+  android: Android
+  bugfix: bug fix
+  bugfixes: bug fixes
+  check box: checkbox
+  click on: click|click in
+  config: configuration
+  data are: data is
+  drop-down: dropdown
+  "(?:e-mail|Email|E-mail)": email
+  fewer data: less data
+  grayed-out|greyed-out: unavailable
+  in order to: to
+  plug-in: plugin
+  MacOS: macOS
+  MSWord: Microsoft Word
+  regex: regular expression
+  repo: repository
+  stylesheet: style sheet
+  "un(?:check|select)": clear
