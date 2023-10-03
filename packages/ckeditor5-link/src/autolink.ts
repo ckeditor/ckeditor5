@@ -121,11 +121,12 @@ export default class AutoLink extends Plugin {
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
-			if ( !modelDocument.selection.isCollapsed ) {
+			if ( linkCommand.isEnabled && !modelDocument.selection.isCollapsed ) {
 				const textString = data.dataTransfer.getData( 'text/plain' );
 				const matches = textString.match( URL_REG_EXP );
+
+				// if there is a URL in the clipboard, and that URL is the whole clipboard
 				if ( matches && matches[ 2 ] === textString ) {
-					// the whole clipboard is a URL
 					linkCommand.execute( textString );
 					evt.stop();
 				}
