@@ -341,7 +341,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			sinon.assert.calledWith( spy, sinon.match( {
 				style: {
-					backgroundColor: 'rgb(255, 255, 255)'
+					backgroundColor: 'white'
 				},
 				className: 'ck ck-content',
 				firstChild: sinon.match( {
