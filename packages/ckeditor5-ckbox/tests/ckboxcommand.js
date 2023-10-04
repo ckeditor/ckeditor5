@@ -7,6 +7,7 @@
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
@@ -766,8 +767,8 @@ describe( 'CKBoxCommand', () => {
 				onChoose( [ assets.links[ 0 ], assets.images[ 0 ], assets.links[ 1 ], assets.images[ 1 ] ] );
 
 				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
-						'foo' +
 						'<$text ' +
 							'ckboxLinkId="link-id1" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
@@ -779,6 +780,8 @@ describe( 'CKBoxCommand', () => {
 							'sources="[object Object]" ' +
 							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
 						'</imageInline>' +
+					'</paragraph>' +
+					'<paragraph>' +
 						'<$text ' +
 							'ckboxLinkId="link-id2" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
@@ -793,11 +796,13 @@ describe( 'CKBoxCommand', () => {
 					'</paragraph>'
 				);
 
-				expect( spy.callCount ).to.equal( 4 );
-				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'link' );
-				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'insertImage' );
-				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'link' );
-				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.callCount ).to.equal( 6 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 4 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 5 ][ 0 ] ).to.equal( 'insertImage' );
 			} );
 
 			it( 'should insert multiple images and links in mixed order - link, link, image, image', () => {
@@ -806,13 +811,15 @@ describe( 'CKBoxCommand', () => {
 				onChoose( [ ...assets.links, ...assets.images ] );
 
 				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
-						'foo' +
 						'<$text ' +
 							'ckboxLinkId="link-id1" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
 							'file1' +
 						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
 						'<$text ' +
 							'ckboxLinkId="link-id2" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
@@ -833,11 +840,107 @@ describe( 'CKBoxCommand', () => {
 					'</paragraph>'
 				);
 
-				expect( spy.callCount ).to.equal( 4 );
-				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.callCount ).to.equal( 6 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
 				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
-				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertImage' );
-				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 4 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 5 ][ 0 ] ).to.equal( 'insertImage' );
+			} );
+
+			it( 'should split heading and insert multiple links', () => {
+				setModelData( model, '<heading1>foo[]bar</heading1>' );
+				const spy = sinon.spy( editor, 'execute' );
+
+				onChoose( [ ...assets.links ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'<heading1>foo</heading1>' +
+					'<paragraph>' +
+						'<$text ' +
+							'ckboxLinkId="link-id1" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+							'file1' +
+						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'[<$text ' +
+							'ckboxLinkId="link-id2" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
+							'file2' +
+						'</$text>]' +
+					'</paragraph>' +
+					'<heading1>bar</heading1>'
+				);
+
+				expect( spy.callCount ).to.equal( 4 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
+			} );
+
+			it( 'should insert multiple links before heading', () => {
+				setModelData( model, '<heading1>[]foobar</heading1>' );
+				const spy = sinon.spy( editor, 'execute' );
+
+				onChoose( [ ...assets.links ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+						'<$text ' +
+							'ckboxLinkId="link-id1" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+							'file1' +
+						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'[<$text ' +
+							'ckboxLinkId="link-id2" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
+							'file2' +
+						'</$text>]' +
+					'</paragraph>' +
+					'<heading1>foobar</heading1>'
+				);
+
+				expect( spy.callCount ).to.equal( 4 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
+			} );
+
+			it( 'should insert multiple links after heading', () => {
+				setModelData( model, '<heading1>foobar[]</heading1>' );
+				const spy = sinon.spy( editor, 'execute' );
+
+				onChoose( [ ...assets.links ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'<heading1>foobar</heading1>' +
+					'<paragraph>' +
+						'<$text ' +
+							'ckboxLinkId="link-id1" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
+							'file1' +
+						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'[<$text ' +
+							'ckboxLinkId="link-id2" ' +
+							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
+							'file2' +
+						'</$text>]' +
+					'</paragraph>'
+				);
+
+				expect( spy.callCount ).to.equal( 4 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
 			} );
 
 			it( 'should insert only links if "insertImage" is disabled', () => {
@@ -848,13 +951,15 @@ describe( 'CKBoxCommand', () => {
 				onChoose( [ ...assets.links, ...assets.images ] );
 
 				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
-						'foo' +
 						'<$text ' +
 							'ckboxLinkId="link-id1" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id1/file?download=true">' +
 							'file1' +
 						'</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
 						'[<$text ' +
 							'ckboxLinkId="link-id2" ' +
 							'linkHref="https://example.com/workspace1/assets/link-id2/file?download=true">' +
@@ -863,9 +968,11 @@ describe( 'CKBoxCommand', () => {
 					'</paragraph>'
 				);
 
-				expect( spy.callCount ).to.equal( 2 );
-				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.callCount ).to.equal( 4 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertParagraph' );
 				expect( spy.args[ 1 ][ 0 ] ).to.equal( 'link' );
+				expect( spy.args[ 2 ][ 0 ] ).to.equal( 'insertParagraph' );
+				expect( spy.args[ 3 ][ 0 ] ).to.equal( 'link' );
 			} );
 
 			it( 'should insert only images if "link" is disabled', () => {
@@ -914,6 +1021,7 @@ function createTestEditor( config = {} ) {
 	return VirtualTestEditor.create( {
 		plugins: [
 			BoldEditing,
+			HeadingEditing,
 			Paragraph,
 			ImageBlockEditing,
 			ImageInlineEditing,
