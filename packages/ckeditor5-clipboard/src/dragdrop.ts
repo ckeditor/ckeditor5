@@ -659,6 +659,14 @@ export default class DragDrop extends Plugin {
 		preview.style.width = computedStyle.width;
 		preview.style.paddingLeft = `${ domRect.left - clientX + domEditablePaddingLeft }px`;
 
+		/**
+		 * Set white background in drag and drop preview if iOS.
+		 * Check: https://github.com/ckeditor/ckeditor5/issues/15085
+		 */
+		if ( env.isiOS ) {
+			preview.style.backgroundColor = 'white';
+		}
+
 		preview.innerHTML = dataTransfer.getData( 'text/html' );
 
 		dataTransfer.setDragImage( preview, 0, 0 );
