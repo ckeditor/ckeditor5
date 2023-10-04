@@ -559,6 +559,11 @@ function bindViewCollectionItemsToDefinitions(
 
 			if ( def.type === 'button' ) {
 				buttonView = new ButtonView( locale );
+				buttonView.extendTemplate( {
+					attributes: {
+						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
+					}
+				} );
 			} else {
 				buttonView = new SwitchButtonView( locale );
 			}
