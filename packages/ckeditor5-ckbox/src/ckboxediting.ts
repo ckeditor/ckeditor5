@@ -23,7 +23,7 @@ import {
 	type ViewElement,
 	type Writer
 } from 'ckeditor5/src/engine';
-import { CKEditorError, logError } from 'ckeditor5/src/utils';
+import { CKEditorError, logError, logWarning } from 'ckeditor5/src/utils';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig';
 
@@ -64,6 +64,29 @@ export default class CKBoxEditing extends Plugin {
 
 		// Proceed with plugin initialization only when the integrator intentionally wants to use it, i.e. when the `config.ckbox` exists or
 		// the CKBox JavaScript library is loaded.
+		if ( !isLibraryLoaded ) {
+			/**
+			 * The CKBox library is not loaded.
+			 * Follow the instructions provided in {@glink features/file-management/ckbox#installation the CKBox feature documentation}
+			 * to load the library properly.
+			 *
+			 * @error ckbox-library-not-loaded
+			 */
+			logWarning( 'ckbox-library-not-loaded' );
+		}
+
+		if ( !hasConfiguration ) {
+			/**
+			 * The configuration required by the ckbox plugin is missing.
+			 * Follow the instructions provided in {@glink features/file-management/ckbox#configuration the CKBox feature documentation}
+			 * to initialize the plugin properly.
+			 *
+			 * @error ckbox-config-not-found
+			 * @param {module:ckbox/ckboxconfig~CKBoxConfig} config Configuration of the ckbox.
+			 */
+			logWarning( 'ckbox-config-not-found', editor );
+		}
+
 		if ( !hasConfiguration && !isLibraryLoaded ) {
 			return;
 		}
