@@ -11,13 +11,13 @@ We are happy to announce the release of CKEditor 5 v40.0.0.
 
 **We are tremendously excited to share our AI Assistant plugin with you!**
 
-With the AI Assistant, you can boost your editing effectiveness and creativity in a completely new way. This feature gives writers the power to seamlessly interact with artificial intelligence. Users can generate, expand, rewrite, improve, translate, and process the content in many different ways.
+With the AI Assistant, you can boost your editing effectiveness and creativity in a completely new way. This feature gives writers and editors the power to seamlessly interact with artificial intelligence. Users can generate, expand, rewrite, improve, translate, and process the content in many different ways.
 
 The AI Assistant can be used in two ways. You can quickly re-work selected content by choosing one of the predefined AI commands. Or, you can write your own query to generate or process the content in any way you like!
 
 Make sure to visit the [documentation](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant.html) and try the [demo](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant.html#demo)!
 
-#### Introduction of image height and width support
+#### Introduction of the image height and width support
 
 No more layout shifts! We have introduced setting of the image `width` and `height` attributes automatically during the upload/paste process to ensure the highest-quality content with no text jumping all around. While existing images won't be automatically retroactively altered, any changes to images in the editor (like resizing) will automatically set these attributes.
 
@@ -25,7 +25,7 @@ We've also ensured backward compatibility with CKEditor 4, particularly while ma
 
 #### Drag and drop of blocks
 
-Just drag it!™ We have introduced more intuitive drag-and-drop functionality for blocks and widgets. This makes content rearrangement and editing faster and easier, offering users better control over their content. Dragging by the balloon block toolbar handle is also possible, and we've updated its default icon to reflect this new drag-and-drop capability better ([but it's still changeable](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#new-balloon-block-editor-icon)).
+Just drag it!™ We have introduced a more intuitive drag-and-drop functionality for blocks and widgets. This makes content rearrangement and editing faster and easier, offering users better control over their content. Dragging by the balloon block toolbar handle is also possible, and we've updated its default icon to reflect this new drag-and-drop capability better ([but it's still changeable](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#new-balloon-block-editor-icon)).
 
 #### Document lists feature parity
 
