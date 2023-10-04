@@ -378,6 +378,10 @@ function findDropTargetRange(
 			let startIndex = 0;
 			let endIndex = childNodes.length;
 
+			if ( endIndex == 0 ) {
+				return model.createRange( model.createPositionAt( modelElement as Element, 'end' ) );
+			}
+
 			while ( startIndex < endIndex - 1 ) {
 				const middleIndex = Math.floor( ( startIndex + endIndex ) / 2 );
 				const side = findElementSide( editor, childNodes[ middleIndex ], clientX, clientY );

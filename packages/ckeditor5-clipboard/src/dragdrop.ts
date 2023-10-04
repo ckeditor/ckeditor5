@@ -553,7 +553,22 @@ export default class DragDrop extends Plugin {
 
 		// Delete moved content.
 		if ( moved && this.isEnabled ) {
-			model.deleteContent( model.createSelection( this._draggedRange ), { doNotAutoparagraph: true } );
+			model.change( writer => {
+				const selection = model.createSelection( this._draggedRange );
+
+				model.deleteContent( selection, { doNotAutoparagraph: true } );
+
+				// Check result selection if it does not require auto-paragraphing of empty container.
+				const selectionParent = selection.getFirstPosition()!.parent as Element;
+
+				if (
+					selectionParent.isEmpty &&
+					!model.schema.checkChild( selectionParent, '$text' ) &&
+					model.schema.checkChild( selectionParent, 'paragraph' )
+				) {
+					writer.insertElement( 'paragraph', selectionParent, 0 );
+				}
+			} );
 		}
 
 		this._draggedRange.detach();
