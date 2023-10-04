@@ -910,6 +910,12 @@ describe( 'utils', () => {
 					expect( button.foo ).to.equal( 'bar' );
 					expect( button.baz ).to.equal( 'qux' );
 
+					button.isOn = true;
+					expect( button.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
+
+					button.isOn = false;
+					expect( button.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+
 					def.model.baz = 'foo?';
 					expect( button.baz ).to.equal( 'foo?' );
 				} );
