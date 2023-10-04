@@ -305,12 +305,13 @@ export default class CKBoxCommand extends Command {
 			const textNode = writer.createText( linkName, selectionAttributes );
 
 			if ( writer && assetsCount > 1 ) {
-				const parentElement = selection.getLastPosition()!.parent;
+				const selectionLastPosition = selection.getLastPosition()!;
+				const parentElement = selectionLastPosition.parent;
 
 				// Insert new `paragraph` when selection is not in an empty `paragraph`.
 				if ( !( parentElement.name === 'paragraph' && parentElement.isEmpty ) ) {
 					editor.execute( 'insertParagraph', {
-						position: selection.getLastPosition()
+						position: selectionLastPosition
 					} );
 				}
 
