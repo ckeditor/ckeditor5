@@ -23,6 +23,7 @@ swap:
   drop-down: dropdown
   "(?:e-mail|Email|E-mail)": email
   fewer data: less data
+  Github: GitHub
   grayed-out|greyed-out: unavailable
   in order to: to
   Javascript: JavaScript
@@ -38,8 +39,10 @@ swap:
   prod: production environment
   regex: regular expression
   repo: repository
+  semver: SemVer
   stylesheet: style sheet
   (?<!.)TS: TypeScript
   Typescript: TypeScript
   "un(?:check|select)": clear
+  url: URL
   utils: utilities
