@@ -1,3 +1,4 @@
+API
 aspx
 [Aa]utocorrect
 autodetect
@@ -18,15 +19,20 @@ ckfinder
 CKSource
 (?i)constructor
 Cordova
+DLL
 (?i)downcast
 [Dd]ropdown
 ESLint
+formatter
 Gantt
+[Gg]etter
 hardcode
 JSDoc
 Laravel
+localizable
 matcher
 mindmap
+[Mm]ixin
 (?i)multiline
 [Nn]amespace
 npm
@@ -34,9 +40,11 @@ nvm
 (?i)polyfill
 Rollup
 scrollbar
+[Ss]etter
 Sinon
 Stylelint
 [Ss]ubfolder
+[Ss]ubstring
 [Ss]uperbuild
 textarea
 (?i)tooltip

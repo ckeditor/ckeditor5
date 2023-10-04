@@ -9,8 +9,11 @@ swap:
   admin: administrator
   a\.k\.a|aka: or|also known as
   android: Android
+  Api|api: API
+  boolean: Boolean
   bugfix: bug fix
   bugfixes: bug fixes
+  builtin|built in: built-in
   check box: checkbox
   click on: click|click in
   config: configuration
@@ -23,12 +26,20 @@ swap:
   grayed-out|greyed-out: unavailable
   in order to: to
   Javascript: JavaScript
+  (?<!.)JS: JavaScript
   MacOS: macOS
   MSOffice|MS Office: Microsoft Office
   MSWord|MS Word: Microsoft Word
+  plaintext|plain-text: plain text
   plug-in: plugin
+  preconfigure: pre-configure
+  preconfigured: pre-configured
+  premade: pre-made
   prod: production environment
   regex: regular expression
   repo: repository
   stylesheet: style sheet
+  (?<!.)TS: TypeScript
+  Typescript: TypeScript
   "un(?:check|select)": clear
+  utils: utilities
