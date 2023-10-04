@@ -89,21 +89,24 @@ export default class ImageStyleCommand extends Command {
 	 * configuration for the style option.
 	 *
 	 * @param options.value The name of the style (as configured in {@link module:image/imageconfig~ImageStyleConfig#options}).
+	 * @param options.setImageSizes Specifies whether the image `width` and `height` attributes should be set automatically.
+	 * The default is `true`.
 	 * @fires execute
 	 */
-	public override execute( options: { value?: string } = {} ): void {
+	public override execute( options: { value?: string; setImageSizes?: boolean } = {} ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		model.change( writer => {
 			const requestedStyle = options.value;
+			const { setImageSizes = true } = options;
 
 			let imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection )!;
 
 			// Change the image type if a style requires it.
 			if ( requestedStyle && this.shouldConvertImageType( requestedStyle, imageElement ) ) {
-				this.editor.execute( imageUtils.isBlockImage( imageElement ) ? 'imageTypeInline' : 'imageTypeBlock' );
+				this.editor.execute( imageUtils.isBlockImage( imageElement ) ? 'imageTypeInline' : 'imageTypeBlock', { setImageSizes } );
 
 				// Update the imageElement to the newly created image.
 				imageElement = imageUtils.getClosestSelectedImageElement( model.document.selection )!;
@@ -115,6 +118,10 @@ export default class ImageStyleCommand extends Command {
 				writer.removeAttribute( 'imageStyle', imageElement );
 			} else {
 				writer.setAttribute( 'imageStyle', requestedStyle, imageElement );
+			}
+
+			if ( setImageSizes ) {
+				imageUtils.setImageNaturalSizeAttributes( imageElement );
 			}
 		} );
 	}

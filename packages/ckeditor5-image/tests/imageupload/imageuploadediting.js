@@ -171,7 +171,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( model ) ).to.equal(
-			`<paragraph>foo[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]</paragraph>`
+			`<paragraph>foo</paragraph>[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]`
 		);
 		expect( eventInfo.stop.called ).to.be.true;
 	} );
@@ -198,7 +198,10 @@ describe( 'ImageUploadEditing', () => {
 		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetRange = model.createRange(
+			model.createPositionAt( doc.getRoot().getChild( 0 ), 3 ),
+			model.createPositionAt( doc.getRoot().getChild( 0 ), 3 )
+		);
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
@@ -214,7 +217,7 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
-	it( 'should insert multiple image files when are pasted (block image type)', () => {
+	it( 'should insert multiple image files when are pasted', () => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
 		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
 		setModelData( model, '[]' );
@@ -228,12 +231,13 @@ describe( 'ImageUploadEditing', () => {
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
 		expect( getModelData( model ) ).to.equal(
+			'<paragraph></paragraph>' +
 			`<imageBlock uploadId="${ id1 }" uploadStatus="reading"></imageBlock>` +
 			`[<imageBlock uploadId="${ id2 }" uploadStatus="reading"></imageBlock>]`
 		);
 	} );
 
-	it( 'should insert image when is pasted on allowed position when UploadImageCommand is disabled', () => {
+	it( 'should insert image when is pasted on allowed position when UploadImageCommand is enabled', () => {
 		setModelData( model, '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
 
 		const fileMock = createNativeFileMock();
@@ -250,7 +254,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( model ) ).to.equal(
-			`<paragraph>[<imageInline uploadId="${ id }" uploadStatus="reading"></imageInline>]foo</paragraph><imageBlock></imageBlock>`
+			`[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]<paragraph>foo</paragraph><imageBlock></imageBlock>`
 		);
 	} );
 
@@ -485,6 +489,84 @@ describe( 'ImageUploadEditing', () => {
 			'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="image.png"></img></span>}foo bar</p>'
 		);
 		expect( loader.status ).to.equal( 'idle' );
+	} );
+
+	it( 'should set image width and height after server response', async () => {
+		const file = createNativeFileMock();
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'uploadImage', { file } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png' } ) );
+		} );
+
+		await timeout( 100 );
+
+		expect( getModelData( model ) ).to.equal(
+			'<paragraph>[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]foo bar</paragraph>'
+		);
+	} );
+
+	it( 'should not modify image width if width was set before server response', async () => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img width="50" src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'image-800.png' } ) );
+		} );
+
+		await timeout( 100 );
+
+		expect( getModelData( model ) ).to.equal(
+			'[<imageBlock src="/assets/sample.png" srcset="image-800.png 800w" width="50"></imageBlock>]<paragraph>foo</paragraph>'
+		);
+	} );
+
+	it( 'should not modify image width if height was set before server response', async () => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img height="50" src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		await new Promise( res => {
+			model.document.once( 'change', res );
+			loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+		} );
+
+		await new Promise( res => {
+			model.document.once( 'change', res, { priority: 'lowest' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'image-800.png' } ) );
+		} );
+
+		await timeout( 100 );
+
+		expect( getModelData( model ) ).to.equal(
+			'[<imageBlock height="50" src="/assets/sample.png" srcset="image-800.png 800w"></imageBlock>]<paragraph>foo</paragraph>'
+		);
 	} );
 
 	it( 'should support adapter response with the normalized `urls` property', async () => {
@@ -1482,4 +1564,8 @@ function base64ToBlob( base64Data ) {
 	}
 
 	return new Blob( byteArrays, { type } );
+}
+
+function timeout( ms ) {
+	return new Promise( res => setTimeout( res, ms ) );
 }

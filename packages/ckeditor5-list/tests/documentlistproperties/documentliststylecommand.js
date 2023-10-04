@@ -75,6 +75,14 @@ describe( 'DocumentListStyleCommand', () => {
 
 			expect( listStyleCommand.isEnabled ).to.equal( false );
 		} );
+
+		it( 'should be true if selection is inside a to-do list item', () => {
+			setData( model, '<paragraph listType="todo" listItemId="a" listIndent="0">foo[]</paragraph>' );
+
+			listStyleCommand.refresh();
+
+			expect( listStyleCommand.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( '#value', () => {

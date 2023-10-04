@@ -9,6 +9,7 @@
 
 import {
 	Plugin,
+	type Editor,
 	type MultiCommand
 } from 'ckeditor5/src/core';
 
@@ -18,11 +19,11 @@ import type {
 	DowncastWriter,
 	Element,
 	Model,
-	ModelGetSelectedContentEvent,
 	ModelInsertContentEvent,
 	UpcastElementEvent,
 	ViewDocumentTabEvent,
 	ViewElement,
+	ViewAttributeElement,
 	Writer
 } from 'ckeditor5/src/engine';
 
@@ -67,6 +68,11 @@ import ListWalker, {
 	ListBlocksIterable
 } from './utils/listwalker';
 
+import {
+	ClipboardPipeline,
+	type ClipboardOutputTransformationEvent
+} from 'ckeditor5/src/clipboard';
+
 import '../../theme/documentlist.css';
 import '../../theme/list.css';
 
@@ -79,7 +85,7 @@ const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
  * Map of model attributes applicable to list blocks.
  */
 export interface ListItemAttributesMap {
-	listType?: 'numbered' | 'bulleted';
+	listType?: 'numbered' | 'bulleted' | 'todo';
 	listIndent?: number;
 	listItemId?: string;
 }
@@ -104,7 +110,16 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Enter, Delete, DocumentListUtils ] as const;
+		return [ Enter, Delete, DocumentListUtils, ClipboardPipeline ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'list.multiBlock', true );
 	}
 
 	/**
@@ -113,6 +128,7 @@ export default class DocumentListEditing extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const model = editor.model;
+		const multiBlock = editor.config.get( 'list.multiBlock' );
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
@@ -124,9 +140,18 @@ export default class DocumentListEditing extends Plugin {
 			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'ListEditing' } );
 		}
 
-		model.schema.extend( '$container', { allowAttributes: LIST_BASE_ATTRIBUTES } );
-		model.schema.extend( '$block', { allowAttributes: LIST_BASE_ATTRIBUTES } );
-		model.schema.extend( '$blockObject', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+		model.schema.register( '$listItem', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+
+		if ( multiBlock ) {
+			model.schema.extend( '$container', { allowAttributesOf: '$listItem' } );
+			model.schema.extend( '$block', { allowAttributesOf: '$listItem' } );
+			model.schema.extend( '$blockObject', { allowAttributesOf: '$listItem' } );
+		} else {
+			model.schema.register( 'listItem', {
+				inheritAllFrom: '$block',
+				allowAttributesOf: '$listItem'
+			} );
+		}
 
 		for ( const attribute of LIST_BASE_ATTRIBUTES ) {
 			model.schema.setAttributeProperties( attribute, {
@@ -141,11 +166,13 @@ export default class DocumentListEditing extends Plugin {
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
 
-		editor.commands.add( 'mergeListItemBackward', new DocumentListMergeCommand( editor, 'backward' ) );
-		editor.commands.add( 'mergeListItemForward', new DocumentListMergeCommand( editor, 'forward' ) );
-
 		editor.commands.add( 'splitListItemBefore', new DocumentListSplitCommand( editor, 'before' ) );
 		editor.commands.add( 'splitListItemAfter', new DocumentListSplitCommand( editor, 'after' ) );
+
+		if ( multiBlock ) {
+			editor.commands.add( 'mergeListItemBackward', new DocumentListMergeCommand( editor, 'backward' ) );
+			editor.commands.add( 'mergeListItemForward', new DocumentListMergeCommand( editor, 'forward' ) );
+		}
 
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
@@ -194,7 +221,7 @@ export default class DocumentListEditing extends Plugin {
 	/**
 	 * Returns list of model attribute names that should affect downcast conversion.
 	 */
-	private _getListAttributeNames() {
+	public getListAttributeNames(): Array<string> {
 		return [
 			...LIST_BASE_ATTRIBUTES,
 			...this._downcastStrategies.map( strategy => strategy.attributeName )
@@ -207,8 +234,8 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupDeleteIntegration() {
 		const editor = this.editor;
-		const mergeBackwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemBackward' )!;
-		const mergeForwardCommand: DocumentListMergeCommand = editor.commands.get( 'mergeListItemForward' )!;
+		const mergeBackwardCommand: DocumentListMergeCommand | undefined = editor.commands.get( 'mergeListItemBackward' );
+		const mergeForwardCommand: DocumentListMergeCommand | undefined = editor.commands.get( 'mergeListItemForward' );
 
 		this.listenTo<ViewDocumentDeleteEvent>( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
@@ -247,7 +274,7 @@ export default class DocumentListEditing extends Plugin {
 					}
 					// Merge block with previous one (on the block level or on the content level).
 					else {
-						if ( !mergeBackwardCommand.isEnabled ) {
+						if ( !mergeBackwardCommand || !mergeBackwardCommand.isEnabled ) {
 							return;
 						}
 
@@ -266,7 +293,7 @@ export default class DocumentListEditing extends Plugin {
 						return;
 					}
 
-					if ( !mergeForwardCommand.isEnabled ) {
+					if ( !mergeForwardCommand || !mergeForwardCommand.isEnabled ) {
 						return;
 					}
 
@@ -388,35 +415,73 @@ export default class DocumentListEditing extends Plugin {
 	private _setupConversion() {
 		const editor = this.editor;
 		const model = editor.model;
-		const attributeNames = this._getListAttributeNames();
+		const attributeNames = this.getListAttributeNames();
+		const multiBlock = editor.config.get( 'list.multiBlock' );
+		const elementName = multiBlock ? 'paragraph' : 'listItem';
 
 		editor.conversion.for( 'upcast' )
-			.elementToElement( { view: 'li', model: 'paragraph' } )
+			// Convert <li> to a generic paragraph (or listItem element) so the content of <li> is always inside a block.
+			// Setting the listType attribute to let other features (to-do list) know that this is part of a list item.
+			// This is also important to properly handle simple lists so that paragraphs inside a list item won't break the list item.
+			// <li>  <-- converted to listItem
+			//   <p></p> <-- should be also converted to listItem, so it won't split and replace the listItem generated from the above li.
+			.elementToElement( {
+				view: 'li',
+				model: ( viewElement, { writer } ) => writer.createElement( elementName, { listType: '' } )
+			} )
+			// Convert paragraph to the list block (without list type defined yet).
+			// This is important to properly handle bogus paragraph and to-do lists.
+			// Most of the time the bogus paragraph should not appear in the data of to-do list,
+			// but if there is any marker or an attribute on the paragraph then the bogus paragraph
+			// is preserved in the data, and we need to be able to detect this case.
+			.elementToElement( {
+				view: 'p',
+				model: ( viewElement, { writer } ) => {
+					if ( viewElement.parent && viewElement.parent.is( 'element', 'li' ) ) {
+						return writer.createElement( elementName, { listType: '' } );
+					}
+
+					return null;
+				},
+				converterPriority: 'high'
+			} )
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
 				dispatcher.on<UpcastElementEvent>( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
 				dispatcher.on<UpcastElementEvent>( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
 			} );
 
+		if ( !multiBlock ) {
+			editor.conversion.for( 'downcast' )
+				.elementToElement( {
+					model: 'listItem',
+					view: 'p'
+				} );
+		}
+
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
-				model: 'paragraph',
+				model: elementName,
 				view: bogusParagraphCreator( attributeNames ),
 				converterPriority: 'high'
-			} );
-
-		editor.conversion.for( 'dataDowncast' )
-			.elementToElement( {
-				model: 'paragraph',
-				view: bogusParagraphCreator( attributeNames, { dataPipeline: true } ),
-				converterPriority: 'high'
-			} );
-
-		editor.conversion.for( 'downcast' )
+			} )
 			.add( dispatcher => {
 				dispatcher.on<DowncastAttributeEvent<ListElement>>(
 					'attribute',
 					listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+				);
+			} );
+
+		editor.conversion.for( 'dataDowncast' )
+			.elementToElement( {
+				model: elementName,
+				view: bogusParagraphCreator( attributeNames, { dataPipeline: true } ),
+				converterPriority: 'high'
+			} )
+			.add( dispatcher => {
+				dispatcher.on<DowncastAttributeEvent<ListElement>>(
+					'attribute',
+					listItemDowncastConverter( attributeNames, this._downcastStrategies, model, { dataPipeline: true } )
 				);
 			} );
 
@@ -452,7 +517,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupModelPostFixing() {
 		const model = this.editor.model;
-		const attributeNames = this._getListAttributeNames();
+		const attributeNames = this.getListAttributeNames();
 
 		// Register list fixing.
 		// First the low level handler.
@@ -476,6 +541,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	private _setupClipboardIntegration() {
 		const model = this.editor.model;
+		const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
 
 		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
@@ -506,21 +572,39 @@ export default class DocumentListEditing extends Plugin {
 		//	                       │  * bar]             │ * bar             │
 		//	                       └─────────────────────┴───────────────────┘
 		//
-		// See https://github.com/ckeditor/ckeditor5/issues/11608.
-		this.listenTo<ModelGetSelectedContentEvent>( model, 'getSelectedContent', ( evt, [ selection ] ) => {
-			const isSingleListItemSelected = isSingleListItem( Array.from( selection.getSelectedBlocks() ) );
+		// See https://github.com/ckeditor/ckeditor5/issues/11608, https://github.com/ckeditor/ckeditor5/issues/14969
+		this.listenTo<ClipboardOutputTransformationEvent>( clipboardPipeline, 'outputTransformation', ( evt, data ) => {
+			model.change( writer => {
+				// Remove last block if it's empty.
+				const allContentChildren = Array.from( data.content.getChildren() );
+				const lastItem = allContentChildren[ allContentChildren.length - 1 ];
 
-			if ( isSingleListItemSelected ) {
-				model.change( writer => removeListAttributes( Array.from( evt.return!.getChildren() as any ), writer ) );
-			}
+				if ( allContentChildren.length > 1 && lastItem.is( 'element' ) && lastItem.isEmpty ) {
+					const contentChildrenExceptLastItem = allContentChildren.slice( 0, -1 );
+
+					if ( contentChildrenExceptLastItem.every( isListItemBlock ) ) {
+						writer.remove( lastItem );
+					}
+				}
+
+				// Copy/cut only content of a list item (for drag-drop move the whole list item).
+				if ( data.method == 'copy' || data.method == 'cut' ) {
+					const allChildren = Array.from( data.content.getChildren() );
+					const isSingleListItemSelected = isSingleListItem( allChildren );
+
+					if ( isSingleListItemSelected ) {
+						removeListAttributes( allChildren as Array<Element>, writer );
+					}
+				}
+			} );
 		} );
 	}
 }
 
 /**
- * The downcast strategy.
+ * The attribute to attribute downcast strategy for UL, OL, LI elements.
  */
-export interface DowncastStrategy {
+export interface AttributeDowncastStrategy {
 
 	/**
 	 * The scope of the downcast (whether it applies to LI or OL/UL).
@@ -537,6 +621,51 @@ export interface DowncastStrategy {
 	 */
 	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
 }
+
+/**
+ * The custom marker downcast strategy.
+ */
+export interface ItemMarkerDowncastStrategy {
+
+	/**
+	 * The scope of the downcast.
+	 */
+	scope: 'itemMarker';
+
+	/**
+	 * The model attribute name.
+	 */
+	attributeName: string;
+
+	/**
+	 * Creates a view element for a custom item marker.
+	 */
+	createElement(
+		writer: DowncastWriter,
+		modelElement: Element,
+		{ dataPipeline }: { dataPipeline?: boolean }
+	): ViewElement | null;
+
+	/**
+	 * Creates an AttributeElement to be used for wrapping a first block of a list item.
+	 */
+	createWrapperElement?(
+		writer: DowncastWriter,
+		modelElement: Element,
+		{ dataPipeline }: { dataPipeline?: boolean }
+	): ViewAttributeElement;
+
+	/**
+	 * Should return true if the given list block can be wrapped with the wrapper created by `createWrapperElement()`
+	 * or only the marker element should be wrapped.
+	 */
+	canWrapElement?( modelElement: Element ): boolean;
+}
+
+/**
+ * The downcast strategy.
+ */
+export type DowncastStrategy = AttributeDowncastStrategy | ItemMarkerDowncastStrategy;
 
 /**
  * Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
@@ -578,6 +707,7 @@ function modelChangePostFixer(
 ) {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map<ListElement, ListElement>();
+	const multiBlock = documentListEditing.editor.config.get( 'list.multiBlock' );
 
 	let applied = false;
 
@@ -620,6 +750,19 @@ function modelChangePostFixer(
 
 			if ( entry.attributeNewValue === null ) {
 				findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
+			}
+		}
+
+		// Make sure that there is no left over listItem element without attributes or a block with list attributes that is not a listItem.
+		if ( !multiBlock && entry.type == 'attribute' && LIST_BASE_ATTRIBUTES.includes( entry.attributeKey ) ) {
+			const element = entry.range.start.nodeAfter!;
+
+			if ( entry.attributeNewValue === null && element && element.is( 'element', 'listItem' ) ) {
+				writer.rename( element, 'paragraph' );
+				applied = true;
+			} else if ( entry.attributeOldValue === null && element && element.is( 'element' ) && element.name != 'listItem' ) {
+				writer.rename( element, 'listItem' );
+				applied = true;
 			}
 		}
 	}
@@ -789,6 +932,24 @@ export type DocumentListEditingCheckAttributesEvent = {
 	args: [ {
 		viewElement: ViewElement & { id?: string };
 		modelAttributes: ListItemAttributesMap;
+	} ];
+	return: boolean;
+};
+
+/**
+ * Event fired on changes detected on the model list element to verify if the view representation of a list block element
+ * is representing those attributes.
+ *
+ * It allows triggering a reconversion of a list item block.
+ *
+ * @internal
+ * @eventName ~DocumentListEditing#checkElement
+ */
+export type DocumentListEditingCheckElementEvent = {
+	name: 'checkElement';
+	args: [ {
+		viewElement: ViewElement;
+		modelElement: Element;
 	} ];
 	return: boolean;
 };

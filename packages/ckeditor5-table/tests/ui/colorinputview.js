@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event */
+/* global document, Event */
 
 import ColorInputView from '../../src/ui/colorinputview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
@@ -48,10 +48,12 @@ describe( 'ColorInputView', () => {
 		inputView = view.inputView;
 		removeColorButton = colorSelectorView.colorGridsFragmentView.removeColorButtonView;
 		colorGridView = colorSelectorView.colorGridsFragmentView.staticColorsGrid;
+		document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
 		view.destroy();
+		view.element.remove();
 	} );
 
 	describe( 'constructor()', () => {
@@ -106,8 +108,8 @@ describe( 'ColorInputView', () => {
 			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
-		it( 'should have #_focusCycler', () => {
-			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
+		it( 'should have #focusCycler', () => {
+			expect( view.focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
 		describe( 'dropdown', () => {
@@ -230,6 +232,12 @@ describe( 'ColorInputView', () => {
 			} );
 
 			describe( 'position', () => {
+				let view;
+
+				afterEach( () => {
+					view.destroy();
+				} );
+
 				it( 'should be SouthWest in LTR', () => {
 					locale.uiLanguageDirection = 'ltr';
 					view = new ColorInputView( locale, {
@@ -251,17 +259,6 @@ describe( 'ColorInputView', () => {
 
 					expect( view.dropdownView.panelPosition ).to.equal( 'se' );
 				} );
-			} );
-
-			it( 'should register panelView children in #_focusables', () => {
-				expect( view._focusables.map( f => f ) ).to.have.members( [
-					view.dropdownView.panelView.children.first
-				] );
-			} );
-
-			it( 'should register panelView children elements in #focusTracker', () => {
-				expect( view.focusTracker._elements ).to.include( view.dropdownView.panelView.children.first.element );
-				expect( view.focusTracker._elements ).to.include( view.dropdownView.panelView.children.last.element );
 			} );
 		} );
 
@@ -590,10 +587,10 @@ describe( 'ColorInputView', () => {
 
 					// Mock the remove color button view is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view._focusables.first.element;
+					view.focusTracker.focusedElement = view.inputView.element;
 
 					// Spy the next view which in this case is the color grid view.
-					const spy = sinon.spy( view._focusables.last, 'focus' );
+					const spy = sinon.spy( view.dropdownView.buttonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -613,10 +610,10 @@ describe( 'ColorInputView', () => {
 
 					// Mock the remove color button view is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view._focusables.first.element;
+					view.focusTracker.focusedElement = view.inputView.element;
 
 					// Spy the previous view which in this case is the color grid view.
-					const spy = sinon.spy( view._focusables.last, 'focus' );
+					const spy = sinon.spy( view.dropdownView.buttonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -679,6 +676,14 @@ describe( 'ColorInputView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should focus the dropdown button if the backwards direction was specified', () => {
+			const spy = sinon.spy( view.dropdownView.buttonView, 'focus' );
+
+			view.focus( -1 );
+
+			sinon.assert.calledOnce( spy );
+		} );
 	} );
 
 	describe( 'render()', () => {
@@ -692,7 +697,7 @@ describe( 'ColorInputView', () => {
 
 			view.render();
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, view.dropdownView.panelView.element );
+			sinon.assert.calledWithExactly( spy, view.element );
 
 			view.destroy();
 		} );
