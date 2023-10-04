@@ -847,7 +847,7 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 					 *
 					 * See https://github.com/ckeditor/ckeditor5/issues/13826
 					 */
-					writer.rename( item as Element, refItem.name );
+					writer.rename( item as Element, 'listItem' );
 				}
 
 				writer.setAttributes( {
