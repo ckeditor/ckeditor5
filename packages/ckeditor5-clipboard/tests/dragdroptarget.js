@@ -638,7 +638,7 @@ describe( 'Drag and Drop target', () => {
 			expect( model.markers.get( 'drop-target' ) ).to.be.null;
 		} );
 
-		it( 'should z drop position when mouse is over the bottom half of the block element', () => {
+		it( 'should drop position when mouse is over the bottom half of the block element', () => {
 			setModelData( model,
 				'<paragraph>foobar</paragraph>' +
 				'<horizontalLine></horizontalLine>'
@@ -715,7 +715,7 @@ describe( 'Drag and Drop target', () => {
 			) ).to.be.true;
 		} );
 
-		it( 'should find drop position while hovering over object element', () => {
+		it( 'should find drop position when hovering over object element', () => {
 			setModelData( model,
 				'<paragraph>[foo]</paragraph>' +
 				'<imageBlock alt="bar" src="/assets/sample.png">' +
