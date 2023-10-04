@@ -1,9 +1,11 @@
+aspx
 [Aa]utocorrect
 autodetect
 [Aa]utoformatting
 [Aa]utosave
 (?i)backport
 (?i)bookmarklet
+breakpoint
 (?i)bundler
 Browserify
 Chai
@@ -34,6 +36,7 @@ Rollup
 scrollbar
 Sinon
 Stylelint
+[Ss]ubfolder
 [Ss]uperbuild
 textarea
 (?i)tooltip
