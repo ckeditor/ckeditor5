@@ -17,6 +17,7 @@ ckeditor
 CKFinder
 ckfinder
 CKSource
+CMS
 (?i)constructor
 Cordova
 DLL
@@ -38,7 +39,11 @@ mindmap
 npm
 nvm
 (?i)polyfill
+previewable
+reinitialization
+reinitialize
 Rollup
+scaffold
 scrollbar
 [Ss]etter
 Sinon
@@ -46,6 +51,7 @@ Stylelint
 [Ss]ubfolder
 [Ss]ubstring
 [Ss]uperbuild
+SVG
 textarea
 (?i)tooltip
 Transifex
