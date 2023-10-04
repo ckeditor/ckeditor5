@@ -61,7 +61,7 @@ function newLinePadding(
 		return '';
 	}
 
-	if ( element.is( 'element', 'li' ) && !element.isEmpty && !element.getChild( 0 )!.is( '$text' ) ) {
+	if ( element.is( 'element', 'li' ) && !element.isEmpty && element.getChild( 0 )!.is( 'containerElement' ) ) {
 		// Separate document list items with empty lines.
 		return '\n\n';
 	}

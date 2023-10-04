@@ -64,7 +64,7 @@ describe( 'viewToPlainText()', () => {
 			'<container:p>Foo</container:p>' +
 			'<container:ul>' +
 				'<container:li>A</container:li>' +
-				'<container:li>B</container:li>' +
+				'<container:li><strong>B</strong></container:li>' +
 				'<container:li>C</container:li>' +
 			'</container:ul>' +
 			'<container:p>Bar</container:p>',
