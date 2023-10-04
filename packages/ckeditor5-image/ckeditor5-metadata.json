@@ -38,6 +38,7 @@
 					"elements": "img",
 					"attributes": [
 						"alt",
+						"height",
 						"sizes",
 						"src",
 						"srcset",
@@ -67,6 +68,7 @@
 					"elements": "img",
 					"attributes": [
 						"alt",
+						"height",
 						"sizes",
 						"src",
 						"srcset",
@@ -124,6 +126,16 @@
 					"elements": "figure",
 					"classes": "image_resized",
 					"styles": [
+						"height",
+						"width"
+					]
+				},
+				{
+					"elements": "img",
+					"classes": "image_resized",
+					"styles": [
+						"aspect-ratio",
+						"height",
 						"width"
 					]
 				}

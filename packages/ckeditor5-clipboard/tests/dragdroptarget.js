@@ -410,6 +410,33 @@ describe( 'Drag and Drop target', () => {
 			) ).to.be.true;
 		} );
 
+		it( 'should find drop position inside empty container element', () => {
+			model.schema.register( 'htmlDiv', { inheritAllFrom: '$container' } );
+			editor.conversion.elementToElement( { model: 'htmlDiv', view: 'div' } );
+
+			setModelData( model,
+				'<htmlDiv></htmlDiv>'
+			);
+
+			const modelElement = root.getChild( 0 );
+			const viewElement = mapper.toViewElement( modelElement );
+			const domNode = domConverter.mapViewToDom( viewElement );
+
+			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+
+			dragDropTarget.updateDropMarker(
+				viewElement,
+				[ view.createRange( view.createPositionAt( viewElement, 0 ) ) ],
+				clientX,
+				clientY,
+				false
+			);
+
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
+				model.createPositionAt( root.getChild( 0 ), 0 )
+			) ).to.be.true;
+		} );
+
 		it( 'should hide drop target if target is not in editing root', () => {
 			setModelData( model,
 				'<horizontalLine></horizontalLine>'
