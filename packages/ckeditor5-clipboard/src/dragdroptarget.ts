@@ -509,8 +509,7 @@ function canDropOnRange(
 	const targetElement = editor.editing.mapper.toModelElement( targetViewElement )!;
 	const draggedElement = draggedRange.getContainedElement();
 
-	if ( !draggedElement ) {
-		// Dragged range only contains text.
+	if ( !targetElement || !draggedElement ) {
 		return true;
 	}
 

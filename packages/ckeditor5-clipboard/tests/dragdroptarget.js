@@ -638,7 +638,7 @@ describe( 'Drag and Drop target', () => {
 			expect( model.markers.get( 'drop-target' ) ).to.be.null;
 		} );
 
-		it( 'should find drop position when mouse is over the bottom half of the block element', () => {
+		it( 'should z drop position when mouse is over the bottom half of the block element', () => {
 			setModelData( model,
 				'<paragraph>foobar</paragraph>' +
 				'<horizontalLine></horizontalLine>'
@@ -713,6 +713,34 @@ describe( 'Drag and Drop target', () => {
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
 				model.createPositionAt( imageBlock, 'after' )
 			) ).to.be.true;
+		} );
+
+		it( 'should find drop position while hovering over object element', () => {
+			setModelData( model,
+				'<paragraph>[foo]</paragraph>' +
+				'<imageBlock alt="bar" src="/assets/sample.png">' +
+					'<caption>Caption</caption>' +
+				'</imageBlock>'
+			);
+
+			const modelElement = root.getChild( 0 );
+			const viewElement = mapper.toViewElement( modelElement );
+			const domNode = domConverter.mapViewToDom( viewElement );
+			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+
+			// Get `<img>`, because that's what the event returns when dragging over an image.
+			const targetViewElement = viewElement.getChild( 0 );
+
+			dragDropTarget.updateDropMarker(
+				targetViewElement,
+				[ view.createRange( view.createPositionAt( viewDocument.getRoot().getChild( 1 ), 0 ) ) ],
+				clientX,
+				clientY,
+				false,
+				LiveRange.fromRange( model.createRangeOn( modelElement ) )
+			);
+
+			expect( model.markers.get( 'drop-target' ) ).to.not.be.undefined;
 		} );
 
 		it( 'should hide drop target if element cannot be dropped on a given position', () => {
