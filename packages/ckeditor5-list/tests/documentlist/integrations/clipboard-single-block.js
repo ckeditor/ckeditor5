@@ -299,9 +299,9 @@ describe( 'DocumentListEditing (multiBlock=false) integrations: clipboard copy &
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listItemId="a00" listType="bulleted">X</listItem>' +
-				'<paragraph>Y</paragraph>' +
-				'<listItem listIndent="0" listItemId="a02" listType="bulleted">Z[]</listItem>' +
-				'<listItem listIndent="1" listItemId="c" listType="bulleted">C</listItem>'
+				'<listItem listIndent="1" listItemId="a03" listType="bulleted">Y</listItem>' +
+				'<listItem listIndent="1" listItemId="a02" listType="bulleted">Z[]</listItem>' +
+				'<listItem listIndent="2" listItemId="c" listType="bulleted">C</listItem>'
 			);
 		} );
 

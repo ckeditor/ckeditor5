@@ -840,6 +840,16 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 			for ( const item of items ) {
 				const isListItem = isListItemBlock( item );
 
+				if ( refItem.is( 'element', 'listItem' ) && item.is( 'element', 'paragraph' ) ) {
+					/**
+					 * When paragraphs or a plain text list is pasted into a simple list, convert
+					 * the `<paragraphs>' to `<listItem>' to avoid breaking the target list.
+					 *
+					 * See https://github.com/ckeditor/ckeditor5/issues/13826
+					 */
+					writer.rename( item as Element, refItem.name );
+				}
+
 				writer.setAttributes( {
 					listIndent: ( isListItem ? item.getAttribute( 'listIndent' ) : 0 ) + indentDiff,
 					listItemId: isListItem ? item.getAttribute( 'listItemId' ) : ListItemUid.next(),
