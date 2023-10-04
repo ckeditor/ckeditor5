@@ -30,15 +30,66 @@ Last but not least, content styles have been updated with this release, which me
 
 ### Changes to the comments feature
 
-The comment thread's **resolved** state has been separated from the **unlinked** state (a state, when the related editor content was removed from the document). A thread can now have any combination of these states, so if a comment thread is either **resolved** or **unlinked**, it is moved to the comments archive. This new approach is reflected in the comments archive UI. Notably, an **unlinked** comment thread can become resolved and reopened while still being in the comments archive. Additionally, the **unlinked** comment threads have a gray header color to differentiate them from the **resolved** comment threads.
+#### Unlinked comment threads and UX/UI changes
 
-The `Comment#archivedAt` property is now the property to check when deciding whether the comment thread is inside the comments archive or not (that property was `#resolvedAt` before).
+The comment thread's **resolved** state has been separated from the **unlinked** state. Thread is **resolved** when manually resolved by the user. Thread is **unlinked** when the related content in the editor was removed. Earlier, these actions were treated as the same. Both actions still put the comment thread inside the comments archive. This new approach is reflected in the comments archive UI and UX. Notably, an unlinked comment thread can be further resolved and reopened, while inside the comments archive. Additionally, an unlinked comment thread has a gray header color to differentiate it from a resolved comment thread.
 
-The `CommentsArchive#resolvedThreads` property has been renamed to `#archivedThreads`. If your custom code used that property, make sure to apply this change.
+The new approach has impact on how revision history (or loading legacy document data) works. Now, **resolved** comment threads will stay in the comments archive after restoring a revision. However, **unlinked** comment threads will be restored together with the document data.
 
-The `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Deleted comment threads should never be added to the repository, so they should not be handled in `addCommentThread`. If your custom code used that property, make sure to apply this change.
+#### New `CommentThread#unlinkedAt` property
 
-In a real-time collaboration environment, removed comment threads will no longer be added to `CommentsRepository` after re-initializing the editor. Before, the comment thread was removed from `CommentsRepository` but was added back when the editor re-connected to Cloud Services. If your custom code expected the old (incorrect) behavior, it might need a change. This change was reflected in the {@link features/comments-outside-editor comments outside the editor} guide.
+A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property, and returns it together with other `CommentThread` data.  
+
+#### Changes impacting custom features
+
+The `Comment#archivedAt` property is now the property to check when deciding whether the comment thread is inside the comments archive or not. Earlier, it was based on `#resolvedAt`. If you have custom code that uses `#resolvedAt` property to filter threads in the comments archive, change it to use `#archivedAt` instead.
+
+The `CommentsArchive#resolvedThreads` property has been renamed to `#archivedThreads`. If your custom code uses that property, make sure to apply this change.
+
+The `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Additionally, now, `CommentsRepository` should never store deleted comment threads.
+
+Your custom code may need to be updated accordingly (e.g. if your application uses comments outside editor feature). Examples:
+
+```js
+// Before:
+for ( const thread of commentsRepository.getCommentThreads( { channelId } ) ) {
+	// Ignore threads that have been already resolved or removed.
+	if ( !thread.isResolved && !thread.deletedAt ) {
+        handleNewCommentThread( thread.id );
+    }
+}
+
+// After:
+for ( const thread of commentsRepository.getCommentThreads( { channelId } ) ) {
+	// Ignore threads that have been already resolved.
+	if ( !thread.isResolved ) {
+		handleNewCommentThread( thread.id );
+	}
+}
+```
+
+```js
+// Before:
+commentsRepository.on( 'addCommentThread', ( evt, data ) => {
+	if ( data.deletedAt ) {
+		// Return to avoid processing deleted comment threads.
+		return;
+    }
+
+    // ... Custom code processing the comment thread.
+} );
+
+// After:
+commentsRepository.on( 'addCommentThread', ( evt, data ) => {
+	// ... Custom code processing the comment thread.
+} );
+```
+
+This change was reflected in the {@link features/comments-outside-editor comments outside the editor} guide. You might want to revise the new version of the guide.
+
+Previously, in a real-time collaboration environment, deleted comment threads were fetched and added to `CommentsRepository` when the editor re-connected to Cloud Services. This was an incorrect behavior and was fixed.
+
+If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not, and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it. 
 
 ### New Balloon Block editor icon
 
