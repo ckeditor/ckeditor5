@@ -44,6 +44,22 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 			expect( element.getAttribute( 'src' ) ).to.equal( 'bar/foo.jpg' );
 		} );
+
+		it( 'should clean up some attributes in responsive image', () => {
+			setModelData( model, `[<imageBlock 
+				src="foo/bar.jpg"
+				ckboxImageId="id" 
+				sources="[{srcset:'url', sizes:'100vw, 1920px', type: 'image/webp'}]"
+			></imageBlock>]` );
+
+			const element = model.document.selection.getSelectedElement();
+
+			command.execute( { source: 'bar/foo.jpg' } );
+
+			expect( element.getAttribute( 'src' ) ).to.equal( 'bar/foo.jpg' );
+			expect( element.getAttribute( 'ckboxImageId' ) ).to.be.undefined;
+			expect( element.getAttribute( 'sources' ) ).to.be.undefined;
+		} );
 	} );
 
 	describe( 'refresh()', () => {

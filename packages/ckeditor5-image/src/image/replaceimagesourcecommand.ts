@@ -47,6 +47,13 @@ export default class ReplaceImageSourceCommand extends Command {
 			writer.setAttribute( 'src', options.source, image );
 			writer.removeAttribute( 'srcset', image );
 			writer.removeAttribute( 'sizes', image );
+
+			/**
+			 * In case responsive images some attributes should be cleaned up.
+			 * Check: https://github.com/ckeditor/ckeditor5/issues/15093
+			 */
+			writer.removeAttribute( 'ckboxImageId', image );
+			writer.removeAttribute( 'sources', image );
 		} );
 	}
 }
