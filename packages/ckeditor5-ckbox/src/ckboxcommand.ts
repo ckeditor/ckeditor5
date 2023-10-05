@@ -214,8 +214,9 @@ export default class CKBoxCommand extends Command {
 			model.change( writer => {
 				for ( const asset of assetsToProcess ) {
 					const isLastAsset = asset === assetsToProcess[ assetsCount - 1 ];
+					const isSingleAsset = assetsCount === 1;
 
-					this._insertAsset( asset, isLastAsset, writer, assetsCount );
+					this._insertAsset( asset, isLastAsset, writer, isSingleAsset );
 
 					// If asset ID must be set for the inserted model element, store the asset temporarily and remove it automatically
 					// after the timeout.
@@ -241,13 +242,13 @@ export default class CKBoxCommand extends Command {
 	 * @param asset The asset to be inserted.
 	 * @param isLastAsset Indicates if the current asset is the last one from the chosen set.
 	 * @param writer An instance of the model writer.
-	 * @param assetsCount Number of assets to process.
+	 * @param isSingleAsset It's true when only one asset is processed.
 	 */
 	private _insertAsset(
 		asset: CKBoxAssetDefinition,
 		isLastAsset: boolean,
 		writer: Writer,
-		assetsCount: number
+		isSingleAsset: boolean
 	) {
 		const editor = this.editor;
 		const model = editor.model;
@@ -259,7 +260,7 @@ export default class CKBoxCommand extends Command {
 		if ( asset.type === 'image' ) {
 			this._insertImage( asset );
 		} else {
-			this._insertLink( asset, writer, assetsCount );
+			this._insertLink( asset, writer, isSingleAsset );
 		}
 
 		// Except for the last chosen asset, move the selection to the end of the current range to avoid overwriting other, already
@@ -292,9 +293,9 @@ export default class CKBoxCommand extends Command {
 	 *
 	 * @param asset The asset to be inserted.
 	 * @param writer An instance of the model writer.
-	 * @param assetsCount Number of assets to process.
+	 * @param isSingleAsset It's true when only one asset is processed.
 	 */
-	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: Writer, assetsCount: number ): void {
+	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: Writer, isSingleAsset: boolean ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -305,7 +306,7 @@ export default class CKBoxCommand extends Command {
 			const selectionAttributes = toMap( selection.getAttributes() );
 			const textNode = writer.createText( linkName, selectionAttributes );
 
-			if ( writer && assetsCount > 1 ) {
+			if ( !isSingleAsset ) {
 				const selectionLastPosition = selection.getLastPosition()!;
 				const parentElement = selectionLastPosition.parent;
 
