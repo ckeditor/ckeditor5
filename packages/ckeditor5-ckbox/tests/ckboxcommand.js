@@ -268,6 +268,24 @@ describe( 'CKBoxCommand', () => {
 				expect( spy.callCount ).to.equal( 1 );
 				expect( command._wrapper ).to.equal( null );
 			} );
+
+			it( 'should focus view after closing the CKBox dialog', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+				const openSpy = sinon.spy();
+				const closeSpy = sinon.spy();
+
+				command.on( 'ckbox:open', openSpy );
+				command.execute();
+
+				command.on( 'ckbox:close', closeSpy );
+				onClose();
+
+				expect( openSpy.callCount ).to.equal( 1 );
+				expect( closeSpy.callCount ).to.equal( 1 );
+
+				sinon.assert.calledOnce( focusSpy );
+			} );
 		} );
 
 		describe( 'choosing assets ("ckbox:choose")', () => {
@@ -905,6 +923,14 @@ describe( 'CKBoxCommand', () => {
 
 				expect( command._chosenAssets.size ).to.equal( 0 );
 				expect( command._wrapper ).to.equal( null );
+			} );
+
+			it( 'should focus view after assets were chosen', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+				onChoose( [ ...assets.images, ...assets.links ] );
+
+				sinon.assert.calledOnce( focusSpy );
 			} );
 		} );
 	} );

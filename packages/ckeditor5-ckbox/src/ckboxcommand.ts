@@ -187,6 +187,8 @@ export default class CKBoxCommand extends Command {
 
 			this._wrapper!.remove();
 			this._wrapper = null;
+
+			editor.editing.view.focus();
 		} );
 
 		// Handle choosing the assets.
@@ -224,6 +226,8 @@ export default class CKBoxCommand extends Command {
 					}
 				}
 			} );
+
+			editor.editing.view.focus();
 		} );
 
 		// Clean up after the editor is destroyed.
