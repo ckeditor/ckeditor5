@@ -28,7 +28,8 @@ describe( 'Config', () => {
 					{ bar: 'b' },
 					{ bar: 'a' },
 					{ bar: 'z' }
-				]
+				],
+				callback: () => null
 			},
 			callback: () => null
 		} );
@@ -367,6 +368,11 @@ describe( 'Config', () => {
 		it( 'should return a function', () => {
 			expect( typeof config.get( 'callback' ) ).to.equal( 'function' );
 			expect( config.get( 'callback' )() ).to.equal( null );
+		} );
+
+		it( 'should return a function nested in option', () => {
+			expect( typeof config.get( 'options.callback' ) ).to.equal( 'function' );
+			expect( config.get( 'options.callback' )() ).to.equal( null );
 		} );
 
 		it( 'should retrieve an object of the configuration', () => {
