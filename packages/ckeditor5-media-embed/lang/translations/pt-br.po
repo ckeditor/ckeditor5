@@ -39,7 +39,7 @@ msgstr "A URL não pode ficar em branco."
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "A URL desta mídia não é suportada."
+msgstr "Esta URL de mídia não é suportada."
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
