@@ -32,13 +32,13 @@ Last but not least, content styles have been updated with this release, which me
 
 #### Unlinked comment threads and UX/UI changes
 
-The comment thread's **resolved** state has been separated from the **unlinked** state. Thread is **resolved** when manually resolved by the user. Thread is **unlinked** when the related content in the editor was removed. Earlier, these actions were treated as the same. Both actions still put the comment thread inside the comments archive. This new approach is reflected in the comments archive UI and UX. Notably, an unlinked comment thread can be further resolved and reopened, while inside the comments archive. Additionally, an unlinked comment thread has a gray header color to differentiate it from a resolved comment thread.
+The comment thread's **resolved** state has been separated from the **unlinked** state. Thread is **resolved** when manually resolved by the user. A thread is **unlinked** when the related content in the editor has been removed. Earlier, these actions were treated as the same. Both actions still put the comment thread inside the comments archive. This new approach is reflected in the comments archive UI and UX. Notably, an unlinked comment thread can be further resolved and reopened, while inside the comments archive. Additionally, an unlinked comment thread has a gray header color to differentiate it from a resolved comment thread.
 
-The new approach has impact on how revision history (or loading legacy document data) works. Now, **resolved** comment threads will stay in the comments archive after restoring a revision. However, **unlinked** comment threads will be restored together with the document data.
+The new approach has an impact on how revision history (or loading legacy document data) works. Now, **resolved** comment threads will stay in the comments archive after restoring a revision. However, **unlinked** comment threads will be restored together with the document data.
 
 #### New `CommentThread#unlinkedAt` property
 
-A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property, and returns it together with other `CommentThread` data.  
+A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property and returns it together with other `CommentThread` data.  
 
 #### Changes impacting custom features
 
@@ -48,7 +48,7 @@ The `CommentsArchive#resolvedThreads` property has been renamed to `#archivedThr
 
 The `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Additionally, now, `CommentsRepository` should never store deleted comment threads.
 
-Your custom code may need to be updated accordingly (e.g. if your application uses comments outside editor feature). Examples:
+Your custom code may need to be updated accordingly (e.g. if your application uses the comments outside the editor feature). Examples:
 
 ```js
 // Before:
@@ -89,7 +89,7 @@ This change was reflected in the {@link features/comments-outside-editor comment
 
 Previously, in a real-time collaboration environment, deleted comment threads were fetched and added to `CommentsRepository` when the editor re-connected to Cloud Services. This was an incorrect behavior and was fixed.
 
-If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not, and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it. 
+If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it. 
 
 ### New Balloon Block editor icon
 
