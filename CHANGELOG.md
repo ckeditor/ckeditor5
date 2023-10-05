@@ -7,7 +7,7 @@ We are happy to announce the release of CKEditor 5 v40.0.0.
 
 ### Release highlights
 
-#### AI Assistant
+#### Release of the AI Assistant feature
 
 **We are tremendously excited to share our AI Assistant plugin with you!**
 
