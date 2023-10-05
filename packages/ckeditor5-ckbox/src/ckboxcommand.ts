@@ -203,6 +203,7 @@ export default class CKBoxCommand extends Command {
 				isImageAllowed: imageCommand.isEnabled,
 				isLinkAllowed: linkCommand.isEnabled
 			} );
+
 			const assetsCount = assetsToProcess.length;
 
 			if ( assetsCount === 0 ) {
