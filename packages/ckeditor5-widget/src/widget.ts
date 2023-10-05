@@ -21,7 +21,8 @@ import {
 	type ViewDocumentFragment,
 	type ViewDocumentMouseDownEvent,
 	type ViewElement,
-	type Schema
+	type Schema,
+	type Position
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -251,6 +252,7 @@ export default class Widget extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const mapper = editor.editing.mapper;
+		const schema = model.schema;
 
 		const viewElement = mapper.findMappedViewAncestor( this.editor.editing.view.createPositionAt( element, 0 ) );
 		const modelElement = findTextBlockAncestor( mapper.toModelElement( viewElement )!, model.schema );
@@ -260,17 +262,16 @@ export default class Widget extends Plugin {
 		}
 
 		model.change( writer => {
-			const schema = model.schema;
-			const treeWalker = new TreeWalker( { startPosition: writer.createRangeOn( modelElement ).end } );
-			const nextTextBlock = findNextTextBlock( treeWalker, schema );
+			const nextTextBlock = !schema.isLimit( modelElement ) ?
+				findNextTextBlock( writer.createPositionAfter( modelElement ), schema ) :
+				null;
 
-			const start = writer.createRangeIn( modelElement ).start;
-			const end = nextTextBlock && nextTextBlock.is( 'element' ) &&
-				writer.createRangeIn( nextTextBlock ).start || writer.createRangeIn( modelElement ).end;
+			const start = writer.createPositionAt( modelElement, 0 );
+			const end = nextTextBlock ?
+				writer.createPositionAt( nextTextBlock, 0 ) :
+				writer.createPositionAt( modelElement, 'end' );
 
-			const range = writer.createRange( start, end );
-
-			writer.setSelection( range );
+			writer.setSelection( writer.createRange( start, end ) );
 		} );
 
 		return true;
@@ -528,21 +529,17 @@ function findTextBlockAncestor( modelElement: Element, schema: Schema ): Element
 /**
  * Returns next text block where could put selection.
  */
-function findNextTextBlock( treeWalker: TreeWalker, schema: Schema ): Element | null {
-	const value = treeWalker.next();
+function findNextTextBlock( position: Position, schema: Schema ): Element | null {
+	const treeWalker = new TreeWalker( { startPosition: position } );
 
-	if ( !value.value ) {
-		return null;
-	}
+	for ( const { item } of treeWalker ) {
+		if ( schema.isLimit( item ) || !item.is( 'element' ) ) {
+			return null;
+		}
 
-	const item = value.value.item;
-
-	if ( !schema.isLimit( item ) && schema.checkChild( item, '$text' ) ) {
-		return item;
-	}
-
-	if ( !schema.isBlock( item ) && !schema.isLimit( item ) ) {
-		return findNextTextBlock( treeWalker, schema );
+		if ( schema.checkChild( item, '$text' ) ) {
+			return item;
+		}
 	}
 
 	return null;
