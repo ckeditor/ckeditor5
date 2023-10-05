@@ -73,6 +73,26 @@ describe( 'AutoLink', () => {
 					'<paragraph>some hello[] text</paragraph>'
 				);
 			} );
+
+			it( 'paste a HTML link', () => {
+				pasteData( {
+					'text/plain': 'http://hello.com',
+					'text/html': '<a href="http://hello.com">http://hello.com</a>'
+				} );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>'
+				);
+			} );
+
+			it( 'paste a HTML link that doesn not look like a link', () => {
+				pasteData( {
+					'text/plain': 'hello.com',
+					'text/html': '<a href="http://hello.com">hello.com</a>'
+				} );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some <$text linkHref="http://hello.com">hello.com</$text>[] text</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'pasting on collapsed selection', () => {
@@ -100,6 +120,15 @@ describe( 'AutoLink', () => {
 				pasteText( 'http://world.com' );
 				expect( getData( model ) ).to.equal(
 					'<paragraph><$text linkHref="http://world.com">some [selected] text</$text></paragraph>'
+				);
+			} );
+
+			it( 'paste with selection overlapping a link inserts a new link', () => {
+				setData( model, '<paragraph>[some <$text linkHref="http://hello.com">selected] text</$text></paragraph>' );
+				pasteText( 'http://world.com' );
+				expect( getData( model ) ).to.equal(
+					// eslint-disable-next-line max-len
+					'<paragraph>[<$text linkHref="http://world.com">some selected</$text>]<$text linkHref="http://hello.com"> text</$text></paragraph>'
 				);
 			} );
 		} );
