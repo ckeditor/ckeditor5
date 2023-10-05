@@ -231,7 +231,7 @@ The output pipeline is the equivalent of the input pipeline but for the copy and
 ```plaintext
  ┌──────────────────────┐          ┌──────────────────────┐   Retrieves the selected
  │     view.Document    │          │     view.Document    │   model.DocumentFragment
- │         copy         │          │          cut         │   and fires `outputTransformation`
+ │         copy         │          │          cut         │   and fires the `outputTransformation`
  └───────────┬──────────┘          └───────────┬──────────┘   event.
              │                                 │
              └────────────────┌────────────────┘
