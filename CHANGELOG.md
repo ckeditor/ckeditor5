@@ -11,7 +11,7 @@ We are happy to announce the release of CKEditor 5 v40.0.0.
 
 **We are tremendously excited to share our AI Assistant plugin with you!**
 
-With the AI Assistant, you can boost your editing effectiveness and creativity in a completely new way. This feature gives writers and editors the power to seamlessly interact with artificial intelligence. Users can generate, expand, rewrite, improve, translate, and process the content in many different ways.
+With the AI Assistant, you can boost your editing effectiveness and creativity in a completely new way. This feature gives the writers and editors the power to seamlessly interact with artificial intelligence. Users can generate, expand, rewrite, improve, translate, and process the content in many different ways.
 
 The AI Assistant can be used in two ways. You can quickly re-work selected content by choosing one of the predefined AI commands. Or, you can write your own query to generate or process the content in any way you like!
 
