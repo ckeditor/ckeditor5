@@ -123,12 +123,20 @@ describe( 'AutoLink', () => {
 				);
 			} );
 
-			it( 'paste with selection overlapping a link inserts a new link', () => {
+			it( 'paste with selection overlapping the start of the link inserts a new link', () => {
 				setData( model, '<paragraph>[some <$text linkHref="http://hello.com">selected] text</$text></paragraph>' );
 				pasteText( 'http://world.com' );
 				expect( getData( model ) ).to.equal(
 					// eslint-disable-next-line max-len
 					'<paragraph>[<$text linkHref="http://world.com">some selected</$text>]<$text linkHref="http://hello.com"> text</$text></paragraph>'
+				);
+			} );
+
+			it( 'paste with selection overlapping the end of the link pastes normally', () => {
+				setData( model, '<paragraph>some <$text linkHref="http://hello.com">[selected</$text> text]</paragraph>' );
+				pasteText( 'http://world.com' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some http://world.com[]</paragraph>'
 				);
 			} );
 		} );

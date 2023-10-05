@@ -116,33 +116,37 @@ export default class AutoLink extends Plugin {
 	private _enablePasteLinking(): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const modelDocument = model.document;
+		const selection = model.document.selection;
 		const clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const linkCommand = editor.commands.get( 'link' )!;
 
+		const updateLink = ( newLink: string ): boolean => {
+			const selStart = selection.getFirstPosition()!;
+			const selEnd = selection.getLastPosition()!;
+
+			const linkRange = findAttributeRange( selStart, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+			// why is containsPosition false when the point is equal to the start or end of the range?
+			if ( linkRange.containsPosition( selEnd ) || linkRange.end.isEqual( selEnd ) ) {
+				// update the whole link if one is partially selected
+				model.change( writer => writer.setAttribute( 'linkHref', newLink, linkRange ) );
+				return true;
+			} else {
+				return false;
+			}
+		};
+
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
-			const selection = modelDocument.selection;
 			if ( linkCommand.isEnabled && !selection.isCollapsed ) {
 				const newLink = data.dataTransfer.getData( 'text/plain' );
 				const matches = newLink.match( URL_REG_EXP );
 
-				// if there is a URL in the clipboard, and that URL is the whole clipboard
+				// if the text in the clipboard has a URL, and that URL is the whole clipboard
 				if ( matches && matches[ 2 ] === newLink ) {
-					// TODO: refactoring
-
 					if ( selection.hasAttribute( 'linkHref' ) ) {
-						const selStart = selection.getFirstPosition()!;
-						const selEnd = selection.getLastPosition()!;
-
-						const linkRange = findAttributeRange( selStart, 'linkHref', selection.getAttribute( 'linkHref' ), model );
-						// why is containsPosition false when the point is equal to the start or end of the range?
-						if ( linkRange.containsPosition( selEnd ) || linkRange.end.isEqual( selEnd ) ) {
-							// update the whole link
+						if ( updateLink( newLink ) ) {
+							// only stop the paste action if the link was updated
+							// otherwise fall through to pasting normally
 							evt.stop();
-
-							model.change( writer => writer.setAttribute( 'linkHref', newLink, linkRange ) );
-						} else {
-							// fall through to pasting normally
 						}
 					} else {
 						linkCommand.execute( newLink );
