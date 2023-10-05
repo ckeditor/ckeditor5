@@ -62,7 +62,7 @@ import viewToPlainText from './utils/viewtoplaintext';
 //
 //              ┌──────────────────────┐          ┌──────────────────────┐
 //              │     view.Document    │          │     view.Document    │   Retrieves the selected model.DocumentFragment
-//              │         copy         │          │          cut         │   and fires `outputTransformation` event.
+//              │         copy         │          │          cut         │   and fires the `outputTransformation` event.
 //              └───────────┬──────────┘          └───────────┬──────────┘
 //                          │                                 │
 //                          └────────────────┌────────────────┘

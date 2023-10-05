@@ -10,7 +10,7 @@ The block toolbar plugin provides an additional [configurable](#configuration) t
 ## Demo
 
 <info-box hint>
-	In the editor below, move the caret around the content. You'll see that the block toolbar button (&#182;) is following your selection. Click the button to show the toolbar.
+	In the editor below, move the caret around the content. You'll see that the block toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator}  is following your selection. Click the button to show the toolbar.
 </info-box>
 
 {@snippet features/blocktoolbar}
@@ -21,9 +21,9 @@ The block toolbar plugin provides an additional [configurable](#configuration) t
 
 ## Additional feature information
 
-To access the block toolbar, you need to click the button with braille pattern dots icon (`⠿`) on the left-hand side of the content area (the gutter). The button appears next to the selected block element (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
+To access the block toolbar, you need to click the button with braille pattern dots icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator}  on the left-hand side of the content area (the gutter). The button appears next to the selected block element (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
 
-The icon (`⠿`) is also a handle to drag blocks of content around the editor. E.g. click on a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
+The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator}  is also a handle to drag blocks of content around the editor. E.g. click on a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
 
 The block toolbar complements the {@link installation/getting-started/predefined-builds#balloon-editor balloon editor} where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. You can read more about it in the {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor overview}.
 
@@ -53,7 +53,7 @@ If you plan to run the editor in a right–to–left (RTL) language, keep in min
 }
 ```
 
-Before the v40.0.0 release of CKEditor 5, the block toolbar used the pilcrow icon (¶) as a handle. This was changed to braille pattern dots icon (`⠿`) as a default. If you want to use a different icon, you can configure it easily, for example:
+Before the v40.0.0 release of CKEditor 5, the block toolbar used the pilcrow icon (¶) as a handle. This was changed to braille pattern dots icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator}  as a default. If you want to use a different icon, you can configure it easily, for example:
 
 ```js
 	blockToolbar: {
