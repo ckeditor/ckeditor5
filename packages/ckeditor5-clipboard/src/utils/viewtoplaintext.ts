@@ -14,6 +14,8 @@ import type { ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/cked
 // together (like `<li>`) so it is better to separate them by only one "\n".
 const smallPaddingElements = [ 'figcaption', 'li' ];
 
+const listElements = [ 'ol', 'ul' ];
+
 /**
  * Converts {@link module:engine/view/item~Item view item} and all of its children to plain text.
  *
@@ -63,6 +65,14 @@ function newLinePadding(
 
 	if ( element.is( 'element', 'li' ) && !element.isEmpty && element.getChild( 0 )!.is( 'containerElement' ) ) {
 		// Separate document list items with empty lines.
+		return '\n\n';
+	}
+
+	if ( listElements.includes( element.name ) && listElements.includes( previous.name ) ) {
+		/**
+		 * Because `<ul>` and `<ol>` are AttributeElements, two consecutive lists will not have any padding between
+		 * them (see the `if` statement below). To fix this, we need to make an exception for this case.
+		 */
 		return '\n\n';
 	}
 

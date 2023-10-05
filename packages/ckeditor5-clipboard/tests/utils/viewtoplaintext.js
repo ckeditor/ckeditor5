@@ -89,14 +89,29 @@ describe( 'viewToPlainText()', () => {
 	it( 'should add two line breaks between document list items', () => {
 		testViewToPlainText(
 			'<container:p>Foo</container:p>' +
-			'<container:ul>' +
-				'<container:li><container:p>A</container:p></container:li>' +
-				'<container:li><container:p>B</container:p></container:li>' +
-				'<container:li><container:p>C</container:p></container:li>' +
-			'</container:ul>' +
+			'<ul>' +
+				'<li><container:p>A</container:p></li>' +
+				'<li><container:p>B</container:p></li>' +
+				'<li><container:p>C</container:p></li>' +
+			'</ul>' +
 			'<container:p>Bar</container:p>',
 
 			'Foo\n\nA\n\nB\n\nC\n\nBar'
+		);
+	} );
+
+	it( 'should add line breaks between two document lists with one item each', () => {
+		testViewToPlainText(
+			'<container:p>Foo</container:p>' +
+			'<ul>' +
+				'<li><span>A</span></li>' +
+			'</ul>' +
+			'<ol>' +
+				'<li><span>B</span></li>' +
+			'</ol>' +
+			'<container:p>Bar</container:p>',
+
+			'Foo\n\nA\n\nB\n\nBar'
 		);
 	} );
 } );

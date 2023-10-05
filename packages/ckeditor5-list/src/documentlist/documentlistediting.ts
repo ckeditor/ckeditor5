@@ -845,7 +845,7 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 					 * When paragraphs or a plain text list is pasted into a simple list, convert
 					 * the `<paragraphs>' to `<listItem>' to avoid breaking the target list.
 					 *
-					 * See https://github.com/ckeditor/ckeditor5/issues/13826
+					 * See https://github.com/ckeditor/ckeditor5/issues/13826.
 					 */
 					writer.rename( item as Element, 'listItem' );
 				}
