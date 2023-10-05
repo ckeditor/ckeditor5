@@ -506,7 +506,7 @@ function canDropOnRange(
 		return false;
 	}
 
-	const targetElement = editor.editing.mapper.toModelElement( targetViewElement )!;
+	const targetElement = editor.editing.mapper.toModelElement( targetViewElement );
 	const draggedElement = draggedRange.getContainedElement();
 
 	if ( !targetElement || !draggedElement ) {
