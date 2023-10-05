@@ -84,7 +84,7 @@ export default class CKBoxEditing extends Plugin {
 			 * @error ckbox-config-not-found
 			 * @param {module:ckbox/ckboxconfig~CKBoxConfig} config Configuration of the ckbox.
 			 */
-			logWarning( 'ckbox-config-not-found', editor );
+			logWarning( 'ckbox-config-not-found', editor.config );
 		}
 
 		if ( !hasConfiguration && !isLibraryLoaded ) {
