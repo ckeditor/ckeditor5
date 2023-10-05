@@ -206,7 +206,7 @@ export default class Widget extends Plugin {
 		let element: ViewElement | null = domEventData.target;
 
 		// If triple click should select entire paragraph.
-		if ( element && domEventData.domEvent.detail >= 3 ) {
+		if ( domEventData.domEvent.detail >= 3 ) {
 			if ( this._selectBlockContent( element ) ) {
 				domEventData.preventDefault();
 			}
