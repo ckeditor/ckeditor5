@@ -609,7 +609,7 @@ describe( 'Drag and Drop target', () => {
 			expect( model.markers.get( 'drop-target' ) ).to.be.null;
 		} );
 
-		it( 'should not drop target marker in places where dropping is not allowed', () => {
+		it( 'should find place to drop target marker when dropping is not allowed on a given element', () => {
 			setModelData( model,
 				'<paragraph>' +
 					'[<imageInline src="/assets/sample.png"></imageInline>]' +
@@ -622,20 +622,21 @@ describe( 'Drag and Drop target', () => {
 			const inlineImageElement = root.getNodeByPath( [ 0, 0 ] );
 			const captionElement = root.getNodeByPath( [ 1, 0 ] );
 			const viewElement = mapper.toViewElement( captionElement );
-			const domNode = domConverter.mapViewToDom( viewElement );
-			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+			const { x, y, height } = domConverter.mapViewToDom( viewElement ).getBoundingClientRect();
 
 			// Simulate dragging inline image into block image caption
 			dragDropTarget.updateDropMarker(
 				viewElement,
-				null,
-				clientX,
-				clientY,
+				[ view.createRange( view.createPositionAt( viewElement, 0 ) ) ],
+				x,
+				y + ( height * 0.6 ),
 				false,
 				LiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
 			);
 
-			expect( model.markers.get( 'drop-target' ) ).to.be.null;
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
+				model.createPositionAt( root.getChild( 1 ), 'after' )
+			) ).to.be.true;
 		} );
 
 		it( 'should drop position when mouse is over the bottom half of the block element', () => {
@@ -743,7 +744,7 @@ describe( 'Drag and Drop target', () => {
 			expect( model.markers.get( 'drop-target' ) ).to.not.be.undefined;
 		} );
 
-		it( 'should hide drop target if element cannot be dropped on a given position', () => {
+		it( 'should find the drop target if element cannot be dropped on a given position', () => {
 			setModelData( model,
 				'<paragraph>' +
 					'<imageInline alt="foo" src="/assets/sample.png"></imageInline>' +
@@ -785,13 +786,15 @@ describe( 'Drag and Drop target', () => {
 				captionViewElement,
 				null,
 				captionDomRect.x,
-				captionDomRect.y,
+				captionDomRect.y + ( captionDomRect.height * 0.6 ),
 				false,
 				LiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
 			);
 
-			// Marker should be removed, because `<imageInline>` can't be dropped inside the `<caption>`.
-			expect( model.markers.get( 'drop-target' ) ).to.be.null;
+			// Marker should be placed after the `<imageBlock>`, because `<imageInline>` can't be dropped inside the `<caption>`.
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
+				model.createPositionAt( root.getChild( 1 ), 'after' )
+			) ).to.be.true;
 		} );
 	} );
 

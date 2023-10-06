@@ -13,6 +13,7 @@ import {
 } from '@ckeditor/ckeditor5-core';
 
 import {
+	type Node,
 	type Element,
 	type Range,
 	type LiveRange,
@@ -128,14 +129,23 @@ export default class DragDropTarget extends Plugin {
 	): void {
 		this.removeDropMarkerDelayed.cancel();
 
-		const targetRange = findDropTargetRange( this.editor, targetViewElement, targetViewRanges, clientX, clientY, blockMode );
+		const targetRange = findDropTargetRange(
+			this.editor,
+			targetViewElement,
+			targetViewRanges,
+			clientX,
+			clientY,
+			blockMode,
+			draggedRange
+		);
 
 		/* istanbul ignore next -- @preserve */
 		if ( !targetRange ) {
 			return;
 		}
 
-		if ( draggedRange && !canDropOnRange( this.editor, targetViewElement, targetRange, draggedRange ) ) {
+		if ( draggedRange && draggedRange.containsRange( targetRange ) ) {
+			// Target range is inside the dragged range.
 			return this.removeDropMarker();
 		}
 
@@ -152,9 +162,18 @@ export default class DragDropTarget extends Plugin {
 		targetViewRanges: Array<ViewRange> | null,
 		clientX: number,
 		clientY: number,
-		blockMode: boolean
+		blockMode: boolean,
+		draggedRange: LiveRange | null
 	): Range | null {
-		const targetRange = findDropTargetRange( this.editor, targetViewElement, targetViewRanges, clientX, clientY, blockMode );
+		const targetRange = findDropTargetRange(
+			this.editor,
+			targetViewElement,
+			targetViewRanges,
+			clientX,
+			clientY,
+			blockMode,
+			draggedRange
+		);
 		// The dragging markers must be removed after searching for the target range because sometimes
 		// the target lands on the marker itself.
 		this.removeDropMarker();
@@ -344,7 +363,8 @@ function findDropTargetRange(
 	targetViewRanges: Array<ViewRange> | null,
 	clientX: number,
 	clientY: number,
-	blockMode: boolean
+	blockMode: boolean,
+	draggedRange: LiveRange | null
 ): Range | null {
 	const model = editor.model;
 	const mapper = editor.editing.mapper;
@@ -355,19 +375,26 @@ function findDropTargetRange(
 	while ( modelElement ) {
 		if ( !blockMode ) {
 			if ( model.schema.checkChild( modelElement, '$text' ) ) {
-				const targetViewPosition = targetViewRanges ? targetViewRanges[ 0 ].start : null;
-				const targetModelPosition = targetViewPosition ? mapper.toModelPosition( targetViewPosition ) : null;
+				if ( targetViewRanges ) {
+					const targetViewPosition = targetViewRanges[ 0 ].start;
+					const targetModelPosition = mapper.toModelPosition( targetViewPosition );
+					const canDropOnPosition = !draggedRange || Array
+						.from( draggedRange.getItems() )
+						.every( item => model.schema.checkChild( targetModelPosition, item as Node ) );
 
-				if ( targetModelPosition ) {
-					if ( model.schema.checkChild( targetModelPosition, '$text' ) ) {
-						return model.createRange( targetModelPosition );
-					}
-					else if ( targetViewPosition ) {
+					if ( canDropOnPosition ) {
+						if ( model.schema.checkChild( targetModelPosition, '$text' ) ) {
+							return model.createRange( targetModelPosition );
+						}
+						else if ( targetViewPosition ) {
 						// This is the case of dropping inside a span wrapper of an inline image.
-						return findDropTargetRangeForElement( editor,
-							getClosestMappedModelElement( editor, targetViewPosition.parent as ViewElement ),
-							clientX, clientY
-						);
+							return findDropTargetRangeForElement(
+								editor,
+								getClosestMappedModelElement( editor, targetViewPosition.parent as ViewElement ),
+								clientX,
+								clientY
+							);
+						}
 					}
 				}
 			}
@@ -490,34 +517,4 @@ function findScrollableElement( domNode: HTMLElement ): HTMLElement {
 	} while ( domElement.tagName != 'BODY' );
 
 	return domElement;
-}
-
-/**
- * Checks if `draggedRange` can be dropped into the `targetRange`.
- */
-function canDropOnRange(
-	editor: Editor,
-	targetViewElement: ViewElement,
-	targetRange: Range,
-	draggedRange: LiveRange
-): boolean {
-	if ( draggedRange.containsRange( targetRange ) ) {
-		// Target range is inside the dragged range.
-		return false;
-	}
-
-	const targetElement = editor.editing.mapper.toModelElement( targetViewElement );
-	const draggedElement = draggedRange.getContainedElement();
-
-	if ( !targetElement || !draggedElement ) {
-		return true;
-	}
-
-	if ( editor.model.schema.isBlock( targetElement ) || editor.model.schema.isBlock( draggedElement )	) {
-		// When the dragged or target element is a block, the dragged element is placed before or after the target, not inside it.
-		return true;
-	}
-
-	// Check if the schema allows the dragged item to be dropped into the target item.
-	return editor.model.schema.checkChild( targetElement, draggedElement );
 }
