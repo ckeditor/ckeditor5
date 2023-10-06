@@ -10,7 +10,7 @@ modified_at: 2023-10-06
 
 # Real-time editing in Drupal
 
-Drupal is an open source editing platform. CKEditor 5 is the default editor module for Drupal since version 10. The [CKEditor 5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features. Currently, the module includes a set of GDocs-style content collaboration tools, the {@link features/productivity-pack Productivity Pack} of essential formatting and navigation features, plus document import and export plugins.
+Drupal is an open source editing platform. CKEditor 5 is the default editor module for Drupal. The [CKEditor 5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features. Currently, the module includes a set of GDocs-style content collaboration tools, the {@link features/productivity-pack Productivity Pack} of essential formatting and navigation features, plus document import and export plugins.
 
 The module also includes the free Full Screen Mode, a free-to-use plugin that maximizes the editing area. It is especially useful when using features like Document outline or Comments which take up extra space around the editor.
 
@@ -28,7 +28,12 @@ Collaboration Features include:
 * {@link features/real-time-collaboration Real-time Collaboration} to allow multiple users to edit simultaneously.
 * There is also a configurable notifications system to stay up-to-date whenever someone mentions you in a document, comments, or replies to you, accepts or rejects suggestions, and so on. Integrate it with your own plugin to get notifications via email, Slack or other services.
 
-## Using CKEditor&nbsp;5 real-time collaboration in Drupal
+## Supported Drupal versions
+
+* Drupal 9 (requires [enabling CKEditor 5](https://www.drupal.org/docs/core-modules-and-themes/core-modules/experimental-ckeditor-5/installation-and-configuration-of-ckeditor-5-module-on-drupal-9))
+* Drupal 10
+
+## Quick start
 
 ### Requirements
 
