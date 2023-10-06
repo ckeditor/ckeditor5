@@ -19,7 +19,9 @@ swap:
   config: configuration
   data are: data is
   dev environment: development environment
+  dev server: development server
   docs: documentation
+  doctype: DOCTYPE|document type declaration
   drop-down: dropdown
   "(?:e-mail|Email|E-mail)": email
   fewer data: less data
