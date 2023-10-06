@@ -22,7 +22,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### Changes to the image feature
 
-This release introduces changes connected with the image `width` and `height` attributes. These are now preserved while loading editor content. Images without their size specified will automatically gain natural image size on any interaction with the image within the editor. Due to this new behavior, the `width` and `height` attributes are now used to preserve the image's natural width and height and the model attribute name of a resized image is now changed to `resizedWidth`.
+This release introduces changes connected with the image `width` and `height` attributes. These are now preserved while loading editor content. Images without their size specified will automatically gain natural image size on any interaction with the image within the editor. Due to this new behavior, the `width` and `height` attributes are now used to preserve the image's natural width and height. The model attribute name of a resized image is now changed to `resizedWidth` and a new `resizeHeight` attribute has been added.
 
 The `srcset` model attribute which provides parameters for responsive images, has been simplified. It is no longer an object `{ data: "...", width: "..." }`, but the value that was previously stored in the `data` part.
 

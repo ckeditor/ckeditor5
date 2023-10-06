@@ -206,13 +206,21 @@ See the common API of image-related features such as {@link module:image/imagest
 
 ## Image `width` and `height` attributes
 
-Starting with v40.0.0, the image's `width` and `height` attributes are retained by the editor when it is loaded. Upon {@link features/image-upload uploading an image file} or {@link features/images-inserting inserting it} into the editor content, the CKEditor 5 image feature fetches these dimensions from the file. It will also happen on any interaction with the image if the content is preloaded. The editor then adds these properties to the markup, just like the {@link features/images-text-alternative text alternative tag}.
+Starting with v40.0.0, the image's `width` and `height` attributes are retained by the editor when it is loaded. The attributes are now handled as follows:
 
-However, if the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
+* Upon {@link features/image-upload uploading an image file} or {@link features/images-inserting inserting it} into the editor content, the CKEditor 5 image feature fetches these dimensions from the file. The editor then adds these properties to the markup, just like the {@link features/images-text-alternative text alternative tag}.
+	* If the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
+* The editor will not change already existing content. It means, loading HTML (i.e., `setData`) with images does not set up these attributes.
+* Changes to an image (such as resize, etc.) will trigger the creation of those attributes. These attributes are crucial to proper content handling, and actions on a current image that does not have these improve this image's markup.
+* The `aspect-ratio` attribute has been added to the image's properties to handle situations when the file is resized or scaled with a tweaked aspect ratio.
 
-Adding the image's `width` and `height` attributes is done to ensure that the image dimensions ratio is properly kept when it is styled or aligned and that the image always looks like it should, rather than forcing the image size within the content.
+These image properties can be further controlled via CSS styles. If you need to crop, resize, rotate, or mirror flip your images, you can use the {@link features/ckbox CKBox asset manager} to achieve that.
 
-These image properties can be further controlled via CSS styles. If you need to crop, resize, or mirror flip your images, you can use the {@link features/ckbox CKBox asset manager} to achieve that.
+Adding the image's `width` and `height` attributes is done to ensure that the image dimensions ratio is properly kept when it is styled or aligned and that the image always looks like it should, rather than forcing the image size within the content. This ensures high-quality output.
+
+<info-box>
+	Due to the introduction of this new behavior in CKEditor&nbsp;v40.0.0, the `width` and `height` attributes are now used to preserve the image’s natural width and height. The information about a resized image is stored in the `resizedWidth` and `resizeHeight` attributes.
+</info-box>
 
 ## Typing around images
 
