@@ -45,7 +45,7 @@ export default class InsertParagraphCommand extends Command {
 	 */
 	public override execute( options: {
 		position: Position;
-		attributes: Record<string, unknown>;
+		attributes?: Record<string, unknown>;
 	} ): void {
 		const model = this.editor.model;
 		const attributes = options.attributes;
