@@ -219,7 +219,7 @@ The attributes are now handled as follows:
 These image properties can be further controlled via CSS styles. If you need to crop, resize, rotate, or mirror flip your images, you can use the {@link features/ckbox CKBox asset manager} to achieve that.
 
 <info-box>
-	Due to the introduction of this new behavior in CKEditor&nbsp;v40.0.0, the `width` and `height` attributes are now used to preserve the image’s natural width and height. The information about a resized image is stored in the `resizedWidth` and `resizeHeight` attributes.
+	Due to the introduction of this new behavior in CKEditor&nbsp;5 v40.0.0, the `width` and `height` attributes are now used to preserve the image’s natural width and height. The information about a resized image is stored in the `resizedWidth` and `resizeHeight` attributes.
 </info-box>
 
 ## Typing around images
