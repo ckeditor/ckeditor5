@@ -1,7 +1,7 @@
 ---
 category: integrations
 meta-title: Integrating CKEditor 5 with other frameworks | CKEditor 5 documentation
-order: 90
+order: 100
 menu-title: Other
 ---
 
