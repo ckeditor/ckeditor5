@@ -567,7 +567,22 @@ export default class DragDrop extends Plugin {
 
 		// Delete moved content.
 		if ( moved && this.isEnabled ) {
-			model.deleteContent( model.createSelection( this._draggedRange ), { doNotAutoparagraph: true } );
+			model.change( writer => {
+				const selection = model.createSelection( this._draggedRange );
+
+				model.deleteContent( selection, { doNotAutoparagraph: true } );
+
+				// Check result selection if it does not require auto-paragraphing of empty container.
+				const selectionParent = selection.getFirstPosition()!.parent as Element;
+
+				if (
+					selectionParent.isEmpty &&
+					!model.schema.checkChild( selectionParent, '$text' ) &&
+					model.schema.checkChild( selectionParent, 'paragraph' )
+				) {
+					writer.insertElement( 'paragraph', selectionParent, 0 );
+				}
+			} );
 		}
 
 		this._draggedRange.detach();
@@ -672,6 +687,14 @@ export default class DragDrop extends Plugin {
 		preview.className = 'ck ck-content';
 		preview.style.width = computedStyle.width;
 		preview.style.paddingLeft = `${ domRect.left - clientX + domEditablePaddingLeft }px`;
+
+		/**
+		 * Set white background in drag and drop preview if iOS.
+		 * Check: https://github.com/ckeditor/ckeditor5/issues/15085
+		 */
+		if ( env.isiOS ) {
+			preview.style.backgroundColor = 'white';
+		}
 
 		preview.innerHTML = dataTransfer.getData( 'text/html' );
 

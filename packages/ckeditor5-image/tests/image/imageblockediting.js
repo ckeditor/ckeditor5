@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document, Event, setTimeout */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -709,6 +709,44 @@ describe( 'ImageBlockEditing', () => {
 			expect( getModelData( model ) ).to.equal(
 				'[<imageBlock alt="abc" src="/assets/sample.png"></imageBlock>]'
 			);
+		} );
+
+		it( 'should add image width and height on image paste', done => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'paste' } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock height="96" src="/assets/sample.png" width="96"></imageBlock>]'
+				);
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should not add image width and height on image method other than paste', done => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'foo' } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock src="/assets/sample.png"></imageBlock>]'
+				);
+
+				done();
+			}, 100 );
 		} );
 	} );
 } );
