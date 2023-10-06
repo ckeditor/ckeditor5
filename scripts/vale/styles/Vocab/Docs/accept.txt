@@ -47,6 +47,8 @@ Rollup
 scaffold
 scrollbar
 [Ss]etter
+shortcode
+sidenote
 Sinon
 Stylelint
 [Ss]ubfolder
