@@ -10,7 +10,7 @@ modified_at: 2023-10-06
 
 # Real-time editing in Drupal
 
-Drupal is an open source editing platform. CKEditor 5 is the default editor module for Drupal. The [CKEditor 5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features. Currently, the module includes a set of GDocs-style content collaboration tools, the {@link features/productivity-pack Productivity Pack} of essential formatting and navigation features, plus document import and export plugins.
+Drupal is an open-source editing platform. CKEditor 5 is the default editor module for Drupal. The [CKEditor 5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features. Currently, the module includes a set of GDocs-style content collaboration tools, the {@link features/productivity-pack Productivity Pack} of essential formatting and navigation features, plus document import and export plugins.
 
 The module also includes the free Full Screen Mode, a free-to-use plugin that maximizes the editing area. It is especially useful when using features like Document outline or Comments which take up extra space around the editor.
 
@@ -26,7 +26,7 @@ Collaboration Features include:
 * {@link features/comments Comments} to discuss the content.
 * {@link features/revision-history Revision History} to see what changes were made, and compare and restore previous versions of the content.
 * {@link features/real-time-collaboration Real-time Collaboration} to allow multiple users to edit simultaneously.
-* There is also a configurable notifications system to stay up-to-date whenever someone mentions you in a document, comments, or replies to you, accepts or rejects suggestions, and so on. Integrate it with your own plugin to get notifications via email, Slack or other services.
+* There is also a configurable notifications system to stay up-to-date whenever someone mentions you in a document, comments, or replies to you, accepts or rejects suggestions, and so on. Integrate it with your own plugin to get notifications via email, Slack, or other services.
 
 ## Supported Drupal versions
 
@@ -51,7 +51,7 @@ composer require drupal/ckeditor5_premium_features
 
 Alternatively, add the CKEditor 5 Premium Features Module to your Drupal installation.
 
-To do it, enter the **Manage > Extend** section in Drupal dashboard first and use the **Add new** module button to provide the source for the CKEditor 5 Premium features module. You can fetch the module from https://www.drupal.org/project/ckeditor5_premium_features
+To do it, enter the **Manage > Extend** section in the Drupal dashboard first and use the **Add new** module button to provide the source for the CKEditor 5 Premium features module. You can fetch the module from https://www.drupal.org/project/ckeditor5_premium_features
 
 
 {@img assets/img/drupal_dashboard_add_pfm.png 878 Adding CKEditor&nbsp;5 Premium Features module to Drupal.}
@@ -64,12 +64,12 @@ Once you have the key ready, in the Drupal dashboard go to the CKEditor&nbsp;5 P
 
 {@img assets/img/drupal_general_settings.png 810 Drupal dashboard.}
 
-Next, use the information obtained in [CKEditr&nbsp;5 Dashboard](https://dashboard.ckeditor.com/) and fill in the following fields in Drupal module's **General Settings**.
+Next, use the information obtained from the [CKEditor 5 Dashboard](https://dashboard.ckeditor.com/) and fill in the following fields in the Drupal module's **General Settings**.
 
 {@img assets/img/drupal_authorization.png 786 Drupal dashboard.}
 
-You can find more details of this process in the [Adding credential to Drupal](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module#s-adding-credentials-to-drupal) guide on Drupal website.
+You can find more details of this process in the [Adding credentials to Drupal](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module#s-adding-credentials-to-drupal) guide on the Drupal website.
 
 ## Configuration
 
-Refer to the CKEditor&nbsp;5 Premium module for Drupal documentation to lear how to [configure the module](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module#s-configuring-ckeditor-5-premium-features) in the dedicated guide on Drupal website.
+Refer to the CKEditor&nbsp;5 Premium module for Drupal documentation to learn how to [configure the module](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module#s-configuring-ckeditor-5-premium-features) in the dedicated guide on the Drupal website.
