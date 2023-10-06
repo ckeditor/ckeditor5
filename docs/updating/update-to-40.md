@@ -22,9 +22,35 @@ Listed below are the most important changes that require your attention when upg
 
 ### Changes to the image feature
 
-This release introduces changes connected with the image `width` and `height` attributes. These are now preserved while loading editor content. Images without their size specified will automatically gain natural image size on any interaction with the image within the editor. Due to this new behavior, the `width` and `height` attributes are now used to preserve the image's natural width and height. The model attribute name of a resized image is now changed to `resizedWidth` and a new `resizeHeight` attribute has been added.
+#### Width and height attributes
+
+This release introduces changes to the {@link features/images-overview image feature} connected with the image `width` and `height` attributes. The changes include:
+
+* Upon {@link features/image-upload uploading an image file} or {@link features/images-inserting inserting it} into the editor content, the CKEditor 5 image feature fetches these dimensions from the file. The editor then adds these properties to the markup, just like the {@link features/images-text-alternative text alternative tag}.
+	* The editor **will not change already existing content**. It means, loading HTML (i.e., `setData`) with images does not set up these attributes.
+	* If the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
+* Changes to an image (such as resize, etc.) will trigger the creation of those attributes. These attributes are crucial to proper content handling, and actions on a current image that does not have these improve this image's markup.
+* The `aspect-ratio` attribute has been added to the image's properties to handle situations when the file is resized or scaled with a tweaked aspect ratio.
+
+#### Changes to the model
+
+Due to the introduction of this new behavior, the following changes to model attributes have been introduced:
+
+* The `width` and `height` attributes are now used to preserve the **image’s natural width and height**.
+* The information about a **resized image** is stored in the `resizedWidth` attribute (renamed from `width`) and a newly added `resizeHeight` attribute.
+
+Therefore, the relation between styles and attributes toward model attributes looks as follows:
+
+* Style `width` → model `resizedWidth` (changed from `width`).
+* Style `height` → model `resizedHeight` (new).
+* Attribute `width` → model `width` (new).
+* Attribute `height` → model `height` (new).
+
+#### Changes to the `srcset` attribute
 
 The `srcset` model attribute which provides parameters for responsive images, has been simplified. It is no longer an object `{ data: "...", width: "..." }`, but the value that was previously stored in the `data` part.
+
+#### Changes to content styles
 
 Last but not least, content styles have been updated with this release, which means you need to update them in your editor implementation to avoid any discrepancies. Please refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the stylesheet.
 
