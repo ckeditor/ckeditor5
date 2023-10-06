@@ -3,6 +3,7 @@ menu-title: Drupal
 meta-title: Real-time editing in Drupal | CKEditor 5 documentation
 category: integrations
 order: 90
+modified_at: 2023-10-06
 ---
 
 {@snippet installation/integrations/framework-integration}
@@ -58,9 +59,9 @@ Once you have the key ready, in the Drupal dashboard go to the CKEditor&nbsp;5 P
 
 {@img assets/img/drupal_general_settings.png 810 Drupal dashboard.}
 
-Next, use the information obtained in [CKEditr&nbsp;5 Dashboard](https://dashboard.ckeditor.com/) and fill in the following field in Drupal module's **General Setting**.
+Next, use the information obtained in [CKEditr&nbsp;5 Dashboard](https://dashboard.ckeditor.com/) and fill in the following fields in Drupal module's **General Settings**.
 
-{@img assets/img/drupal_authorization.png 1188 Drupal dashboard.}
+{@img assets/img/drupal_authorization.png 786 Drupal dashboard.}
 
 You can find more details of this process in the [Adding credential to Drupal](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module#s-adding-credentials-to-drupal) guide on Drupal website.
 
