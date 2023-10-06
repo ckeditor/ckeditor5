@@ -78,6 +78,8 @@ describe( 'CKBoxEditing', () => {
 	it( 'should not register the "ckbox" command if CKBox lib is missing', async () => {
 		delete window.CKBox;
 
+		sinon.stub( console, 'warn' );
+
 		const editor = await createTestEditor( {
 			ckbox: {
 				tokenUrl: 'http://cs.example.com'
@@ -85,6 +87,7 @@ describe( 'CKBoxEditing', () => {
 		} );
 
 		expect( editor.commands.get( 'ckbox' ) ).to.be.undefined;
+		expect( console.warn.callCount ).to.equal( 1 );
 	} );
 
 	describe( 'getToken()', () => {
@@ -217,6 +220,8 @@ describe( 'CKBoxEditing', () => {
 
 	describe( 'config', () => {
 		it( 'should set default values', async () => {
+			sinon.stub( console, 'warn' );
+
 			const editor = await createTestEditor( {
 				language: 'pl',
 				cloudServices: {
@@ -232,12 +237,15 @@ describe( 'CKBoxEditing', () => {
 				theme: 'default',
 				tokenUrl: 'http://cs.example.com'
 			} );
+			expect( console.warn.callCount ).to.equal( 1 );
 
 			await editor.destroy();
 		} );
 
 		it( 'should set default values if CKBox lib is missing but `config.ckbox` is set', async () => {
 			delete window.CKBox;
+
+			sinon.stub( console, 'warn' );
 
 			const editor = await createTestEditor( {
 				ckbox: {
@@ -253,12 +261,15 @@ describe( 'CKBoxEditing', () => {
 				theme: 'default',
 				tokenUrl: 'http://cs.example.com'
 			} );
+			expect( console.warn.callCount ).to.equal( 1 );
 
 			await editor.destroy();
 		} );
 
 		it( 'should not set default values if CKBox lib and `config.ckbox` are missing', async () => {
 			delete window.CKBox;
+
+			sinon.stub( console, 'warn' );
 
 			const editor = await createTestEditor( {
 				cloudServices: {
@@ -267,6 +278,7 @@ describe( 'CKBoxEditing', () => {
 			} );
 
 			expect( editor.config.get( 'ckbox' ) ).to.be.undefined;
+			expect( console.warn.callCount ).to.equal( 2 );
 
 			await editor.destroy();
 		} );
@@ -304,6 +316,8 @@ describe( 'CKBoxEditing', () => {
 		} );
 
 		it( 'should throw if the "tokenUrl" is not provided', async () => {
+			sinon.stub( console, 'warn' );
+
 			await createTestEditor()
 				.then(
 					() => {
@@ -313,6 +327,8 @@ describe( 'CKBoxEditing', () => {
 						expect( error.message ).to.match( /ckbox-plugin-missing-token-url/ );
 					}
 				);
+
+			expect( console.warn.callCount ).to.equal( 1 );
 		} );
 
 		it( 'should log an error if there is no image feature loaded in the editor', async () => {
@@ -390,6 +406,8 @@ describe( 'CKBoxEditing', () => {
 		it( 'should not extend the schema rules for image if CKBox lib and `config.ckbox` are missing', async () => {
 			delete window.CKBox;
 
+			sinon.stub( console, 'warn' );
+
 			const editor = await createTestEditor( {
 				cloudServices: {
 					tokenUrl: 'http://cs.example.com'
@@ -407,6 +425,7 @@ describe( 'CKBoxEditing', () => {
 			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxImageId' ) ).to.be.false;
 			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'ckboxLinkId' ) ).to.be.false;
 			expect( model.schema.checkAttribute( [ '$root', '$block', linkedImageInlineElement ], 'ckboxLinkId' ) ).to.be.false;
+			expect( console.warn.callCount ).to.equal( 2 );
 
 			await editor.destroy();
 		} );
@@ -432,6 +451,8 @@ describe( 'CKBoxEditing', () => {
 		it( 'should not extend the schema rules for link if CKBox lib and `config.ckbox` are missing', async () => {
 			delete window.CKBox;
 
+			sinon.stub( console, 'warn' );
+
 			const editor = await createTestEditor( {
 				cloudServices: {
 					tokenUrl: 'http://cs.example.com'
@@ -444,6 +465,7 @@ describe( 'CKBoxEditing', () => {
 
 			expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'ckboxLinkId' ) ).to.be.false;
 			expect( model.schema.checkAttribute( [ '$root', '$block', linkElement ], 'ckboxLinkId' ) ).to.be.false;
+			expect( console.warn.callCount ).to.equal( 2 );
 
 			await editor.destroy();
 		} );
@@ -821,6 +843,7 @@ describe( 'CKBoxEditing', () => {
 			describe( 'CKBox lib and `config.ckbox` are missing', () => {
 				beforeEach( () => {
 					delete window.CKBox;
+					sinon.stub( console, 'warn' );
 				} );
 
 				it( 'should not convert the "data-ckbox-resource-id" for the link element', async () => {
@@ -831,6 +854,7 @@ describe( 'CKBoxEditing', () => {
 					expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph><$text linkHref="/assets/file">foo</$text>bar</paragraph>'
 					);
+					expect( console.warn.callCount ).to.equal( 2 );
 
 					return editor.destroy();
 				} );
@@ -843,6 +867,7 @@ describe( 'CKBoxEditing', () => {
 					expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>'
 					);
+					expect( console.warn.callCount ).to.equal( 2 );
 
 					return editor.destroy();
 				} );
@@ -871,6 +896,7 @@ describe( 'CKBoxEditing', () => {
 							'</imageInline>' +
 						'</paragraph>'
 					);
+					expect( console.warn.callCount ).to.equal( 2 );
 
 					return editor.destroy();
 				} );
@@ -897,6 +923,7 @@ describe( 'CKBoxEditing', () => {
 							'src="/assets/sample.png">' +
 						'</imageBlock>'
 					);
+					expect( console.warn.callCount ).to.equal( 2 );
 
 					return editor.destroy();
 				} );

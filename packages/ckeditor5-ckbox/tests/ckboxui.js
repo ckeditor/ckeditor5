@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window */
+/* globals console, document, window */
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
@@ -76,6 +76,8 @@ describe( 'CKBoxUI', () => {
 	it( 'should not add the "ckbox" component to the factory if the "ckbox" command does not exist', async () => {
 		delete window.CKBox;
 
+		sinon.stub( console, 'warn' );
+
 		const editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
@@ -98,6 +100,7 @@ describe( 'CKBoxUI', () => {
 
 		expect( editor.ui.componentFactory.has( 'ckbox' ) ).to.be.false;
 		expect( editor.commands.get( 'ckbox' ) ).to.be.undefined;
+		expect( console.warn.callCount ).to.equal( 2 );
 
 		editorElement.remove();
 

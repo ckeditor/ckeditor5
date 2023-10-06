@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document */
+/* global document, window */
 
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
@@ -20,13 +20,16 @@ import CKBoxUI from '../src/ckboxui';
 import CKBoxEditing from '../src/ckboxediting';
 
 describe( 'CKBox', () => {
-	let editorElement, editor;
+	let editorElement, editor, originalCKBox;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+
+		originalCKBox = window.CKBox;
+		window.CKBox = {};
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
@@ -49,6 +52,8 @@ describe( 'CKBox', () => {
 
 	afterEach( async () => {
 		editorElement.remove();
+
+		window.CKBox = originalCKBox;
 
 		await editor.destroy();
 	} );
