@@ -23,6 +23,7 @@ swap:
   drop-down: dropdown
   "(?:e-mail|Email|E-mail)": email
   fewer data: less data
+  git: Git
   Github: GitHub
   grayed-out|greyed-out: unavailable
   in order to: to
