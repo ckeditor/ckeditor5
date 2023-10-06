@@ -44,13 +44,18 @@ describe( 'table properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should be false if selection does not have table', () => {
+					it( 'should be false if selection in not in table', () => {
 						setData( model, '<paragraph>f[oo]</paragraph>' );
 						expect( command.isEnabled ).to.be.false;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be true is selection is in table', () => {
 						setData( model, modelTable( [ [ 'f[o]o' ] ] ) );
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true is selection is over table', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
@@ -72,14 +77,20 @@ describe( 'table properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should be false if selection does not have table', () => {
+					it( 'should be undefined if selection is in table', () => {
 						setData( model, '<paragraph>f[oo]</paragraph>' );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be set is selection is in table', () => {
 						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBackgroundColor: 'blue' } ) );
+
+						expect( command.value ).to.equal( 'blue' );
+					} );
+
+					it( 'should be set is selection is over table', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ], { tableBackgroundColor: 'blue' } ) + ']' );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -122,7 +133,7 @@ describe( 'table properties', () => {
 					} );
 				} );
 
-				describe( 'non-collapsed selection', () => {
+				describe( 'non-collapsed selection (inside table)', () => {
 					it( 'should set selected table backgroundColor to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
@@ -141,6 +152,32 @@ describe( 'table properties', () => {
 
 					it( 'should remove backgroundColor from a selected table if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection (over table)', () => {
+					it( 'should set selected table backgroundColor to a passed value', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+
+						command.execute( { value: '#f00' } );
+
+						assertTableStyle( editor, 'background-color:#f00;' );
+					} );
+
+					it( 'should change selected table backgroundColor to a passed value', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+
+						command.execute( { value: '#f00' } );
+
+						assertTableStyle( editor, 'background-color:#f00;' );
+					} );
+
+					it( 'should remove backgroundColor from a selected table if no value is passed', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 
 						command.execute();
 

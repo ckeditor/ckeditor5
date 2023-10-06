@@ -49,8 +49,13 @@ describe( 'table properties', () => {
 						expect( command.isEnabled ).to.be.false;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be true if selection is inside table', () => {
 						setData( model, modelTable( [ [ 'f[o]o' ] ] ) );
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true if selection is over table', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
@@ -72,14 +77,20 @@ describe( 'table properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should be false if selection does not have table', () => {
+					it( 'should be undefined if selection does not have table', () => {
 						setData( model, '<paragraph>f[oo]</paragraph>' );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be set is selection is inside table', () => {
 						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableWidth: '100px' } ) );
+
+						expect( command.value ).to.equal( '100px' );
+					} );
+
+					it( 'should be set is selection is over table', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ], { tableWidth: '100px' } ) + ']' );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -178,7 +189,7 @@ describe( 'table properties', () => {
 					} );
 				} );
 
-				describe( 'non-collapsed selection', () => {
+				describe( 'non-collapsed selection (inside table)', () => {
 					it( 'should set selected table width to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
@@ -197,6 +208,32 @@ describe( 'table properties', () => {
 
 					it( 'should remove width from a selected table if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection (over table)', () => {
+					it( 'should set selected table width to a passed value', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+
+						command.execute( { value: '25px' } );
+
+						assertTableStyle( editor, null, 'width:25px;' );
+					} );
+
+					it( 'should change selected table width to a passed value', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+
+						command.execute( { value: '25px' } );
+
+						assertTableStyle( editor, null, 'width:25px;' );
+					} );
+
+					it( 'should remove width from a selected table if no value is passed', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 
 						command.execute();
 

@@ -13,7 +13,8 @@ import type {
 	Item,
 	Position,
 	Schema,
-	Writer
+	Writer,
+	DocumentSelection
 } from 'ckeditor5/src/engine';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties';
@@ -86,4 +87,18 @@ export function enableProperty(
 
 	upcastStyleToAttribute( conversion, { viewElement: /^(td|th)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
+}
+
+/**
+ * Depending on the position of the selection we either return the table under cursor or look for the table higher in the hierarchy.
+ */
+export function getSelectionAffectedTable( selection: DocumentSelection ): Element {
+	const selectedElement = selection.getSelectedElement();
+
+	// Is the command triggered from the `tableToolbar`?
+	if ( selectedElement && selectedElement.is( 'element', 'table' ) ) {
+		return selectedElement;
+	}
+
+	return selection.getFirstPosition()!.findAncestor( 'table' )!;
 }
