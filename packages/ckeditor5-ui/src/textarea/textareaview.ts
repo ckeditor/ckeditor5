@@ -7,7 +7,7 @@
  * @module ui/textarea/textareaview
  */
 
-import { Rect, type Locale, toUnit, getBorderWidths, global, CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { Rect, type Locale, toUnit, getBorderWidths, global, CKEditorError, isVisible } from '@ckeditor/ckeditor5-utils';
 import InputBase from '../input/inputbase';
 
 import '../../theme/components/input/input.css';
@@ -107,8 +107,10 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		this.on( 'change:value', () => {
 			// The content needs to be updated by the browser after the value is changed. It takes a few ms.
 			global.window.requestAnimationFrame( () => {
-				this._updateAutoGrowHeight();
-				this.fire<TextareaViewUpdateEvent>( 'update' );
+				if ( isVisible( this.element ) ) {
+					this._updateAutoGrowHeight();
+					this.fire<TextareaViewUpdateEvent>( 'update' );
+				}
 			} );
 		} );
 	}
