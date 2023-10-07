@@ -218,6 +218,21 @@ export interface CKBoxAssetImageAttributesDefinition {
 	 * An alternative text for an image.
 	 */
 	imageTextAlternative: string;
+
+	/**
+	 * TODO
+	 */
+	imageWidth?: number;
+
+	/**
+	 * TODO
+	 */
+	imageHeight?: number;
+
+	/**
+	 * TODO
+	 */
+	imagePlaceholder?: string;
 }
 
 /**
@@ -320,4 +335,9 @@ export interface CKBoxRawAssetMetadataDefinition {
 	 * Image height.
 	 */
 	height?: number;
+
+	/**
+	 * TODO
+	 */
+	blurHash?: string;
 }

@@ -12,6 +12,8 @@
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import type { CKBoxImageUrls } from './ckboxconfig';
 
+import { decode } from 'blurhash';
+
 /**
  * Converts image source set provided by the CKBox into an object containing:
  * - responsive URLs for the "webp" image format,
@@ -73,4 +75,52 @@ export function getWorkspaceId( token: InitializedToken, defaultWorkspaceId?: st
 	}
 
 	return null;
+}
+
+/**
+ * Default resolution for decoding blurhash values.
+ * Relatively small values must be used in order to ensure acceptable performance.
+ */
+const BLUR_RESOLUTION = 32;
+
+/**
+ * Base-64 representation of 1 x 1 transparent image.
+ */
+const blurDefaultBase64Fallback =
+	'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+/**
+ * Generates base64-encoded image from its `blurhash` representation.
+ *
+ * @param hash blurhash representation of an image
+ * @returns base64-encoded image
+ */
+export function base64FromBlurHash( hash?: string ): string {
+	if ( !hash ) {
+		return blurDefaultBase64Fallback;
+	}
+
+	try {
+		const resolutionInPx = `${ BLUR_RESOLUTION }px`;
+		const canvas = document.createElement( 'canvas' );
+
+		canvas.setAttribute( 'width', resolutionInPx );
+		canvas.setAttribute( 'height', resolutionInPx );
+
+		const ctx = canvas.getContext( '2d' );
+
+		if ( !ctx ) {
+			return blurDefaultBase64Fallback;
+		}
+
+		const imageData = ctx.createImageData( BLUR_RESOLUTION, BLUR_RESOLUTION );
+		const decoded = decode( hash, BLUR_RESOLUTION, BLUR_RESOLUTION );
+
+		imageData.data.set( decoded );
+		ctx.putImageData( imageData, 0, 0 );
+
+		return canvas.toDataURL();
+	} catch ( e ) {
+		return blurDefaultBase64Fallback;
+	}
 }
