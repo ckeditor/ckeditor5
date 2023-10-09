@@ -50,15 +50,17 @@ export default function normalizeToolbarConfig(
 		};
 	}
 
-	if ( !config ) {
-		return {
-			items: [],
-			removeItems: []
-		};
-	}
-
-	return Object.assign( {
+	const predefinedConfigOptions = {
 		items: [],
 		removeItems: []
-	}, config );
+	};
+
+	if ( !config ) {
+		return predefinedConfigOptions;
+	}
+
+	return {
+		...predefinedConfigOptions,
+		...config
+	};
 }
