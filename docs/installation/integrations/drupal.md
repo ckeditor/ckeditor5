@@ -18,7 +18,7 @@ The module also includes the free Full Screen Mode, a free-to-use plugin that ma
 
 With collaboration features, users can work together to write, review, and discuss their content right within Drupal. No need to use different apps for drafting and commenting &ndash; you can do it all in one place.
 
-<!-- RTC in Drupal image placeholder -->
+{@img assets/img/drupal.png 1876drupal Drupal with CKEditor&nbsp;5 real-time editing.}
 
 Collaboration Features include:
 
@@ -52,7 +52,6 @@ composer require drupal/ckeditor5_premium_features
 Alternatively, add the CKEditor 5 Premium Features Module to your Drupal installation.
 
 To do it, enter the **Manage > Extend** section in the Drupal dashboard first and use the **Add new** module button to provide the source for the CKEditor 5 Premium features module. You can fetch the module from https://www.drupal.org/project/ckeditor5_premium_features
-
 
 {@img assets/img/drupal_dashboard_add_pfm.png 878 Adding CKEditor&nbsp;5 Premium Features module to Drupal.}
 
