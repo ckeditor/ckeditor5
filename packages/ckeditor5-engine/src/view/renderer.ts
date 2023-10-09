@@ -377,8 +377,14 @@ export default class Renderer extends ObservableMixin() {
 					// UIElement and RawElement are special cases. Their children are not stored in a view (#799)
 					// so we cannot use them with replacing flow (since they use view children during rendering
 					// which will always result in rendering empty elements).
-					if ( viewChild && !( viewChild.is( 'uiElement' ) || viewChild.is( 'rawElement' ) ) ) {
-						this._updateElementMappings( viewChild as ViewElement, actualDomChildren[ deleteIndex ] as DomElement );
+					if ( viewChild && !viewChild.is( 'uiElement' ) && !viewChild.is( 'rawElement' ) ) {
+						// Do not update mapping for element that should not be reused (for example an IMG element
+						// so it can immediately display a placeholder background instead of waiting for the new src to load).
+						if ( viewChild.is( 'element' ) && viewChild.getCustomProperty( 'editingPipeline:doNotReuseOnce' ) ) {
+							viewChild._removeCustomProperty( 'editingPipeline:doNotReuseOnce' );
+						} else {
+							this._updateElementMappings( viewChild as ViewElement, actualDomChildren[ deleteIndex ] as DomElement );
+						}
 					}
 
 					remove( expectedDomChildren[ insertIndex ] );

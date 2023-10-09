@@ -94,6 +94,7 @@ export default class ImagePlaceholder extends Plugin {
 				if ( data.attributeNewValue ) {
 					viewWriter.addClass( 'image_placeholder', img );
 					viewWriter.setStyle( 'background-image', `url( ${ data.attributeNewValue } )`, img );
+					viewWriter.setCustomProperty( 'editingPipeline:doNotReuseOnce', true, img );
 				} else {
 					viewWriter.removeClass( 'image_placeholder', img );
 					viewWriter.removeStyle( 'background-image', img );
