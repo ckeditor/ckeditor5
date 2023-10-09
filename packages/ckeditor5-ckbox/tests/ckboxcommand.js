@@ -25,6 +25,7 @@ import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock
 
 import CKBoxEditing from '../src/ckboxediting';
 import CKBoxCommand from '../src/ckboxcommand';
+import { base64FromBlurHash } from '../src/utils';
 
 describe( 'CKBoxCommand', () => {
 	let editor, model, command, originalCKBox;
@@ -349,6 +350,26 @@ describe( 'CKBoxCommand', () => {
 								url: 'https://example.com/workspace1/assets/link-id2/file'
 							}
 						}
+					],
+					imagesWithBlurHash: [
+						{
+							data: {
+								id: 'image-id3',
+								extension: 'png',
+								metadata: {
+									width: 200,
+									height: 100,
+									blurHash: 'KTF55N=ZR4PXSirp5ZOZW9'
+								},
+								name: 'image3',
+								imageUrls: {
+									120: 'https://example.com/workspace1/assets/image-id3/images/120.webp',
+									200: 'https://example.com/workspace1/assets/image-id3/images/200.webp',
+									default: 'https://example.com/workspace1/assets/image-id3/images/200.png'
+								},
+								url: 'https://example.com/workspace1/assets/image-id2/file'
+							}
+						}
 					]
 				};
 			} );
@@ -406,6 +427,8 @@ describe( 'CKBoxCommand', () => {
 										type: 'image/webp'
 									}
 								],
+								imageWidth: 100,
+								imageHeight: 100,
 								imageTextAlternative: ''
 							}
 						},
@@ -423,6 +446,8 @@ describe( 'CKBoxCommand', () => {
 										type: 'image/webp'
 									}
 								],
+								imageWidth: 200,
+								imageHeight: 200,
 								imageTextAlternative: 'foo'
 							}
 						},
@@ -545,8 +570,10 @@ describe( 'CKBoxCommand', () => {
 						'[<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -563,7 +590,52 @@ describe( 'CKBoxCommand', () => {
 								type: 'image/webp'
 							}
 						],
-						src: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						src: 'https://example.com/workspace1/assets/image-id1/images/100.png',
+						width: 100,
+						height: 100
+					}
+				} );
+			} );
+
+			it( 'should insert an image inline (with blurhash placeholder)', () => {
+				const spy = sinon.spy( editor, 'execute' );
+				const placeholder = base64FromBlurHash( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
+
+				onChoose( [ assets.imagesWithBlurHash[ 0 ] ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>' +
+						'foo' +
+						'[<imageInline ' +
+							'alt="" ' +
+							'ckboxImageId="image-id3" ' +
+							'height="100" ' +
+							'placeholder="' + placeholder + '" ' +
+							'sources="[object Object]" ' +
+							'src="https://example.com/workspace1/assets/image-id3/images/200.png" ' +
+							'width="200">' +
+						'</imageInline>]' +
+					'</paragraph>'
+				);
+
+				expect( spy.callCount ).to.equal( 1 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
+					source: {
+						alt: '',
+						sources: [
+							{
+								sizes: '(max-width: 200px) 100vw, 200px',
+								srcset:
+									'https://example.com/workspace1/assets/image-id3/images/120.webp 120w,' +
+									'https://example.com/workspace1/assets/image-id3/images/200.webp 200w',
+								type: 'image/webp'
+							}
+						],
+						src: 'https://example.com/workspace1/assets/image-id3/images/200.png',
+						width: 200,
+						height: 100,
+						placeholder
 					}
 				} );
 			} );
@@ -579,8 +651,10 @@ describe( 'CKBoxCommand', () => {
 					'[<imageBlock ' +
 						'alt="foo" ' +
 						'ckboxImageId="image-id2" ' +
+						'height="200" ' +
 						'sources="[object Object]" ' +
-						'src="https://example.com/workspace1/assets/image-id2/images/200.png">' +
+						'src="https://example.com/workspace1/assets/image-id2/images/200.png" ' +
+						'width="200">' +
 					'</imageBlock>]'
 				);
 
@@ -598,7 +672,51 @@ describe( 'CKBoxCommand', () => {
 								type: 'image/webp'
 							}
 						],
-						src: 'https://example.com/workspace1/assets/image-id2/images/200.png'
+						src: 'https://example.com/workspace1/assets/image-id2/images/200.png',
+						width: 200,
+						height: 200
+					}
+				} );
+			} );
+
+			it( 'should insert an image block (with blurhash placeholder)', () => {
+				const spy = sinon.spy( editor, 'execute' );
+				const placeholder = base64FromBlurHash( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
+
+				setModelData( model, '<paragraph>[]</paragraph>' );
+
+				onChoose( [ assets.imagesWithBlurHash[ 0 ] ] );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id3" ' +
+						'height="100" ' +
+						'placeholder="' + placeholder + '" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id3/images/200.png" ' +
+						'width="200">' +
+					'</imageBlock>]'
+				);
+
+				expect( spy.callCount ).to.equal( 1 );
+				expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertImage' );
+				expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
+					source: {
+						alt: '',
+						sources: [
+							{
+								sizes: '(max-width: 200px) 100vw, 200px',
+								srcset:
+									'https://example.com/workspace1/assets/image-id3/images/120.webp 120w,' +
+									'https://example.com/workspace1/assets/image-id3/images/200.webp 200w',
+								type: 'image/webp'
+							}
+						],
+						src: 'https://example.com/workspace1/assets/image-id3/images/200.png',
+						width: 200,
+						height: 100,
+						placeholder
 					}
 				} );
 			} );
@@ -615,8 +733,10 @@ describe( 'CKBoxCommand', () => {
 						'[<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -633,7 +753,9 @@ describe( 'CKBoxCommand', () => {
 								type: 'image/webp'
 							}
 						],
-						src: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						src: 'https://example.com/workspace1/assets/image-id1/images/100.png',
+						width: 100,
+						height: 100
 					}
 				} );
 			} );
@@ -756,8 +878,10 @@ describe( 'CKBoxCommand', () => {
 							'alt="" ' +
 							'bold="true" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -774,7 +898,9 @@ describe( 'CKBoxCommand', () => {
 								type: 'image/webp'
 							}
 						],
-						src: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						src: 'https://example.com/workspace1/assets/image-id1/images/100.png',
+						width: 100,
+						height: 100
 					}
 				} );
 			} );
@@ -795,8 +921,10 @@ describe( 'CKBoxCommand', () => {
 						'<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>' +
 					'</paragraph>' +
 					'<paragraph>' +
@@ -808,8 +936,10 @@ describe( 'CKBoxCommand', () => {
 						'[<imageInline ' +
 							'alt="foo" ' +
 							'ckboxImageId="image-id2" ' +
+							'height="200" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id2/images/200.png">' +
+							'src="https://example.com/workspace1/assets/image-id2/images/200.png" ' +
+							'width="200">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -846,14 +976,18 @@ describe( 'CKBoxCommand', () => {
 						'<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>' +
 						'[<imageInline ' +
 							'alt="foo" ' +
 							'ckboxImageId="image-id2" ' +
+							'height="200" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id2/images/200.png">' +
+							'src="https://example.com/workspace1/assets/image-id2/images/200.png" ' +
+							'width="200">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -1006,14 +1140,18 @@ describe( 'CKBoxCommand', () => {
 						'<imageInline ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +
+							'height="100" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+							'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+							'width="100">' +
 						'</imageInline>' +
 						'[<imageInline ' +
 							'alt="foo" ' +
 							'ckboxImageId="image-id2" ' +
+							'height="200" ' +
 							'sources="[object Object]" ' +
-							'src="https://example.com/workspace1/assets/image-id2/images/200.png">' +
+							'src="https://example.com/workspace1/assets/image-id2/images/200.png" ' +
+							'width="200">' +
 						'</imageInline>]' +
 					'</paragraph>'
 				);
@@ -1066,4 +1204,3 @@ function createTestEditor( config = {} ) {
 		...config
 	} );
 }
-

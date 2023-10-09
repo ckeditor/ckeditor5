@@ -297,7 +297,7 @@ export default class CKBoxCommand extends Command {
 				alt: imageTextAlternative,
 				width: imageWidth,
 				height: imageHeight,
-				placeholder: imagePlaceholder
+				...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
 			}
 		} );
 	}
@@ -379,6 +379,7 @@ function prepareAssets(
 function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
 	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
 	const { description, width, height, blurHash } = asset.data.metadata || {};
+	const imagePlaceholder = base64FromBlurHash( blurHash );
 
 	return {
 		imageFallbackUrl,
@@ -386,7 +387,7 @@ function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAss
 		imageTextAlternative: description || '',
 		imageWidth: width,
 		imageHeight: height,
-		imagePlaceholder: base64FromBlurHash( blurHash )
+		...( imagePlaceholder ? { imagePlaceholder } : null )
 	};
 }
 

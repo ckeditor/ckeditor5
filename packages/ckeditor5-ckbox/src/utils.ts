@@ -84,20 +84,11 @@ export function getWorkspaceId( token: InitializedToken, defaultWorkspaceId?: st
 const BLUR_RESOLUTION = 32;
 
 /**
- * Base-64 representation of 1 x 1 transparent image.
- */
-const blurDefaultBase64Fallback =
-	'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
-/**
  * Generates base64-encoded image from its `blurhash` representation.
- *
- * @param hash blurhash representation of an image
- * @returns base64-encoded image
  */
-export function base64FromBlurHash( hash?: string ): string {
+export function base64FromBlurHash( hash?: string ): string | undefined {
 	if ( !hash ) {
-		return blurDefaultBase64Fallback;
+		return;
 	}
 
 	try {
@@ -109,8 +100,9 @@ export function base64FromBlurHash( hash?: string ): string {
 
 		const ctx = canvas.getContext( '2d' );
 
+		/* istanbul ignore next -- @preserve */
 		if ( !ctx ) {
-			return blurDefaultBase64Fallback;
+			return;
 		}
 
 		const imageData = ctx.createImageData( BLUR_RESOLUTION, BLUR_RESOLUTION );
@@ -121,6 +113,6 @@ export function base64FromBlurHash( hash?: string ): string {
 
 		return canvas.toDataURL();
 	} catch ( e ) {
-		return blurDefaultBase64Fallback;
+		return undefined;
 	}
 }
