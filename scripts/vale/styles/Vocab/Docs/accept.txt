@@ -25,6 +25,7 @@ CMS
 codebase
 (?i)constructor
 Cordova
+cycler
 Dailymotion
 DLL
 DOM
@@ -63,6 +64,8 @@ reinitialize
 Rollup
 sanitization
 scaffold
+[Ss]chema
+scrollable
 scrollbar
 [Ss]etter
 shortcode
