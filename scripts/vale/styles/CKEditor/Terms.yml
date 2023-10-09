@@ -1,7 +1,6 @@
 extends: substitution
 message: "Use '%s' instead of '%s'."
 level: error
-ignorecase: true
 action:
   name: replace
 swap:
@@ -21,7 +20,7 @@ swap:
   dev environment: development environment
   dev server: development server
   docs: documentation
-  doctype: DOCTYPE|document type declaration
+  doctype: DOCTYPE
   drop-down: dropdown
   "(?:e-mail|Email|E-mail)": email
   fewer data: less data
