@@ -54,6 +54,9 @@ export default class ReplaceImageSourceCommand extends Command {
 			 */
 			writer.removeAttribute( 'ckboxImageId', image );
 			writer.removeAttribute( 'sources', image );
+			writer.removeAttribute( 'width', image );
+			writer.removeAttribute( 'height', image );
+			writer.removeAttribute( 'alt', image );
 		} );
 	}
 }
