@@ -87,6 +87,14 @@ export default class AutocompleteView<
 
 		// Hide the results view when the user presses the ESC key.
 		this.keystrokes.set( 'esc', ( evt, cancel ) => {
+			// Let the DOM event pass through if the focus is in the query view.
+			if ( !this.resultsView.isVisible ) {
+				return;
+			}
+
+			// Focus the query view first and only then close the results view. Otherwise, if the focus
+			// was in the results view, it will get lost.
+			this.queryView.focus();
 			this.resultsView.isVisible = false;
 			cancel();
 		} );
