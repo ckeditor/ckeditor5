@@ -110,7 +110,10 @@ describe( 'DropdownView', () => {
 			} );
 
 			describe( 'view.panelView#isVisible to view#isOpen', () => {
-				it( 'is activated', () => {
+				it( 'is activated before the view gets rendered', () => {
+					const panelView = new DropdownPanelView( locale );
+					const buttonView = new ButtonView( locale );
+					const view = new DropdownView( locale, buttonView, panelView );
 					const values = [];
 
 					view.listenTo( view.panelView, 'change:isVisible', () => {
@@ -122,6 +125,10 @@ describe( 'DropdownView', () => {
 					view.isOpen = true;
 
 					expect( values ).to.have.members( [ true, false, true ] );
+
+					view.destroy();
+					buttonView.destroy();
+					panelView.destroy();
 				} );
 			} );
 

@@ -187,6 +187,8 @@ export default class CKBoxCommand extends Command {
 
 			this._wrapper!.remove();
 			this._wrapper = null;
+
+			editor.editing.view.focus();
 		} );
 
 		// Handle choosing the assets.
@@ -204,16 +206,19 @@ export default class CKBoxCommand extends Command {
 				isLinkAllowed: linkCommand.isEnabled
 			} );
 
-			if ( assetsToProcess.length === 0 ) {
+			const assetsCount = assetsToProcess.length;
+
+			if ( assetsCount === 0 ) {
 				return;
 			}
 
 			// All assets are inserted in one undo step.
 			model.change( writer => {
 				for ( const asset of assetsToProcess ) {
-					const isLastAsset = asset === assetsToProcess[ assetsToProcess.length - 1 ];
+					const isLastAsset = asset === assetsToProcess[ assetsCount - 1 ];
+					const isSingleAsset = assetsCount === 1;
 
-					this._insertAsset( asset, isLastAsset, writer );
+					this._insertAsset( asset, isLastAsset, writer, isSingleAsset );
 
 					// If asset ID must be set for the inserted model element, store the asset temporarily and remove it automatically
 					// after the timeout.
@@ -224,6 +229,8 @@ export default class CKBoxCommand extends Command {
 					}
 				}
 			} );
+
+			editor.editing.view.focus();
 		} );
 
 		// Clean up after the editor is destroyed.
@@ -239,11 +246,13 @@ export default class CKBoxCommand extends Command {
 	 * @param asset The asset to be inserted.
 	 * @param isLastAsset Indicates if the current asset is the last one from the chosen set.
 	 * @param writer An instance of the model writer.
+	 * @param isSingleAsset It's true when only one asset is processed.
 	 */
 	private _insertAsset(
 		asset: CKBoxAssetDefinition,
 		isLastAsset: boolean,
-		writer: Writer
+		writer: Writer,
+		isSingleAsset: boolean
 	) {
 		const editor = this.editor;
 		const model = editor.model;
@@ -255,7 +264,7 @@ export default class CKBoxCommand extends Command {
 		if ( asset.type === 'image' ) {
 			this._insertImage( asset );
 		} else {
-			this._insertLink( asset, writer );
+			this._insertLink( asset, writer, isSingleAsset );
 		}
 
 		// Except for the last chosen asset, move the selection to the end of the current range to avoid overwriting other, already
@@ -288,8 +297,9 @@ export default class CKBoxCommand extends Command {
 	 *
 	 * @param asset The asset to be inserted.
 	 * @param writer An instance of the model writer.
+	 * @param isSingleAsset It's true when only one asset is processed.
 	 */
-	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: Writer ) {
+	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: Writer, isSingleAsset: boolean ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -299,6 +309,25 @@ export default class CKBoxCommand extends Command {
 		if ( selection.isCollapsed ) {
 			const selectionAttributes = toMap( selection.getAttributes() );
 			const textNode = writer.createText( linkName, selectionAttributes );
+
+			if ( !isSingleAsset ) {
+				const selectionLastPosition = selection.getLastPosition()!;
+				const parentElement = selectionLastPosition.parent;
+
+				// Insert new `paragraph` when selection is not in an empty `paragraph`.
+				if ( !( parentElement.name === 'paragraph' && parentElement.isEmpty ) ) {
+					editor.execute( 'insertParagraph', {
+						position: selectionLastPosition
+					} );
+				}
+
+				const range = model.insertContent( textNode );
+
+				writer.setSelection( range );
+				editor.execute( 'link', linkHref );
+				return;
+			}
+
 			const range = model.insertContent( textNode );
 
 			writer.setSelection( range );

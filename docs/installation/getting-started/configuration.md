@@ -14,7 +14,7 @@ order: 40
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/quick-start-other previous guide} you have learned about various ways to set up CKEditor 5 in the project. Now, you know how to use the online builder or create the editor from the source. It is time to play a bit with the configuration!
+In the {@link installation/getting-started/quick-start-other previous guide} you have learned about various ways to set up CKEditor&nbsp;5 in the project. Now, you know how to use the online builder or create the editor from the source. It is time to play a bit with the configuration!
 </info-box>
 
 When creating an editor on your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configurations} that change many of its aspects. For example:

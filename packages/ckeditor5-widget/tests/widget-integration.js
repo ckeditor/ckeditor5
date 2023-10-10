@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
+import Image from '@ckeditor/ckeditor5-image/src/image';
 import Widget from '../src/widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
@@ -33,7 +34,7 @@ describe( 'Widget - integration', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement, { plugins: [ Paragraph, Widget, Typing, LinkEditing ] } )
+		return ClassicEditor.create( editorElement, { plugins: [ Paragraph, Widget, Typing, LinkEditing, Image ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -205,8 +206,8 @@ describe( 'Widget - integration', () => {
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">' +
 					'<p>foo</p>' +
-					'<p>{foo <a href="abc">bar</a>]</p>' +
-					'<p>bar</p>' +
+					'<p>{foo <a href="abc">bar</a></p>' +
+					'<p>}bar</p>' +
 				'</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
 			'</div>'
@@ -215,8 +216,8 @@ describe( 'Widget - integration', () => {
 			'<widget>' +
 				'<nested>' +
 					'<paragraph>foo</paragraph>' +
-					'<paragraph>[foo <$text linkHref="abc">bar</$text>]</paragraph>' +
-					'<paragraph>bar</paragraph>' +
+					'<paragraph>[foo <$text linkHref="abc">bar</$text></paragraph>' +
+					'<paragraph>]bar</paragraph>' +
 				'</nested>' +
 			'</widget>'
 		);
@@ -275,55 +276,26 @@ describe( 'Widget - integration', () => {
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
 	} );
 
-	it( 'should select the inline widget if triple clicked', () => {
-		setModelData( model, '<paragraph>Foo<inline-widget>foo bar</inline-widget>Bar</paragraph>' );
+	it( 'should select image block if triple clicked', () => {
+		setModelData( model, '[]<imageBlock></imageBlock>' );
 
-		const viewParagraph = viewDocument.getRoot().getChild( 0 );
-		const viewInlineWidget = viewParagraph.getChild( 1 );
+		const image = viewDocument.getRoot().getChild( 0 );
 		const preventDefault = sinon.spy();
 		const domEventDataMock = new DomEventData( view, {
-			target: view.domConverter.mapViewToDom( viewInlineWidget ),
+			target: view.domConverter.mapViewToDom( image ),
 			preventDefault,
 			detail: 3
 		} );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		expect( viewDocument.selection.isFake ).to.be.true;
 		expect( getViewData( view ) ).to.equal(
-			'<p>Foo[<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>]Bar</p>'
-		);
-
-		expect( getModelData( model ) ).to.equal( '<paragraph>Foo[<inline-widget>foo bar</inline-widget>]Bar</paragraph>' );
-	} );
-
-	it( 'should do nothing for non-Safari and non-Gecko browser', () => {
-		testUtils.sinon.stub( env, 'isSafari' ).get( () => false );
-		testUtils.sinon.stub( env, 'isGecko' ).get( () => false );
-
-		setModelData( model, '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
-
-		const viewDiv = viewDocument.getRoot().getChild( 1 );
-		const viewFigcaption = viewDiv.getChild( 0 );
-		const preventDefault = sinon.spy();
-		const domEventDataMock = new DomEventData( view, {
-			target: view.domConverter.mapViewToDom( viewFigcaption ),
-			preventDefault,
-			detail: 4
-		} );
-
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		sinon.assert.notCalled( preventDefault );
-
-		expect( getViewData( view ) ).to.equal(
-			'<p>[]</p>' +
-			'<div class="ck-widget" contenteditable="false">' +
-				'<figcaption contenteditable="true">foo bar</figcaption>' +
+			'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+				'<img></img>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-			'</div>'
+			'</figure>]'
 		);
 
-		expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget><nested>foo bar</nested></widget>' );
+		expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 	} );
 } );

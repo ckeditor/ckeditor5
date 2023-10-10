@@ -229,7 +229,7 @@ describe( 'CKBoxEditing', () => {
 				defaultUploadCategories: null,
 				ignoreDataId: false,
 				language: 'pl',
-				theme: 'default',
+				theme: 'lark',
 				tokenUrl: 'http://cs.example.com'
 			} );
 
@@ -250,7 +250,7 @@ describe( 'CKBoxEditing', () => {
 				defaultUploadCategories: null,
 				ignoreDataId: false,
 				language: 'en',
-				theme: 'default',
+				theme: 'lark',
 				tokenUrl: 'http://cs.example.com'
 			} );
 
@@ -299,6 +299,19 @@ describe( 'CKBoxEditing', () => {
 			} );
 
 			expect( editor.config.get( 'ckbox' ).tokenUrl ).to.equal( 'bar' );
+
+			await editor.destroy();
+		} );
+
+		it( 'should set "theme" value based on `config.ckbox.theme`', async () => {
+			const editor = await createTestEditor( {
+				ckbox: {
+					theme: 'newTheme',
+					tokenUrl: 'http://cs.example.com'
+				}
+			} );
+
+			expect( editor.config.get( 'ckbox' ).theme ).to.equal( 'newTheme' );
 
 			await editor.destroy();
 		} );

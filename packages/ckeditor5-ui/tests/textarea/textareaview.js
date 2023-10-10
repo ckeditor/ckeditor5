@@ -133,6 +133,19 @@ describe( 'TextareaView', () => {
 			expect( view.element.style.height ).to.not.equal( initialHeight );
 		} );
 
+		it( 'should not resize the view on the #value change when the view element is not in DOM', async () => {
+			wrapper.removeChild( view.element );
+
+			const initialHeight = view.element.style.height;
+
+			view.value = 'foo\nbar\nbaz\nqux';
+
+			expect( view.element.style.height ).to.equal( initialHeight );
+
+			await requestAnimationFrame();
+			expect( view.element.style.height ).to.equal( initialHeight );
+		} );
+
 		describe( 'dynamic resizing', () => {
 			it( 'should respect #minRows and #maxRows', async () => {
 				// One row, it's less than default #minRows.

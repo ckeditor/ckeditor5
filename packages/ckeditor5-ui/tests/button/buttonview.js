@@ -357,20 +357,17 @@ describe( 'ButtonView', () => {
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
 			} );
 
-			it( '-checked reacts on #isOn', () => {
-				view.isOn = true;
-				expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
-
-				view.isOn = false;
-				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
-			} );
-
 			it( '-label reacts on #ariaLabel', () => {
 				view.ariaLabel = undefined;
 				expect( view.element.hasAttribute( 'aria-label' ) ).to.be.false;
 
 				view.ariaLabel = 'Foo';
 				expect( view.element.attributes[ 'aria-label' ].value ).to.equal( 'Foo' );
+			} );
+
+			it( '-checked is not present', () => {
+				view.isOn = true;
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
 			} );
 		} );
 

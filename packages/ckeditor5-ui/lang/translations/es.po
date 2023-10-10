@@ -31,11 +31,11 @@ msgstr "Cuadro de edición"
 
 msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Click to edit block"
-msgstr ""
+msgstr "Haz clic para editar el bloque"
 
 msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Drag to move"
-msgstr ""
+msgstr "Arrastra para mover"
 
 msgctxt "Label for a button showing the next thing (tab, page, etc.)."
 msgid "Next"
@@ -131,8 +131,8 @@ msgstr "Aceptar"
 
 msgctxt "The main text of the message shown to the user when given query does not match any results."
 msgid "No results found"
-msgstr ""
+msgstr "No se han encontrado resultados"
 
 msgctxt "The main text of the message shown to the user when no results are available."
 msgid "No searchable items"
-msgstr ""
+msgstr "No hay elementos que buscar"
