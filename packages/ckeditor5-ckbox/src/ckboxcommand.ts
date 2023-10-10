@@ -378,7 +378,7 @@ function prepareAssets(
  */
 function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
 	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
-	const { description, width, height, blurHash } = asset.data.metadata || {};
+	const { description, width, height, blurHash } = asset.data.metadata!;
 	const imagePlaceholder = base64FromBlurHash( blurHash );
 
 	return {
