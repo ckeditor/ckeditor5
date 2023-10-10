@@ -49,8 +49,13 @@ describe( 'table properties', () => {
 						expect( command.isEnabled ).to.be.false;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be true if selection is in table', () => {
 						setData( model, modelTable( [ [ 'f[o]o' ] ] ) );
+						expect( command.isEnabled ).to.be.true;
+					} );
+
+					it( 'should be true if selection is over table', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
@@ -97,14 +102,20 @@ describe( 'table properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should be false if selection does not have table', () => {
+					it( 'should be undefined if selection does not have table', () => {
 						setData( model, '<paragraph>f[oo]</paragraph>' );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be true is selection has table', () => {
+					it( 'should be set if selection is inside table', () => {
 						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'ridge' } ) );
+
+						expect( command.value ).to.equal( 'ridge' );
+					} );
+
+					it( 'should be set id selection is over table', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ], { tableBorderStyle: 'ridge' } ) + ']' );
 
 						expect( command.value ).to.equal( 'ridge' );
 					} );
@@ -147,7 +158,7 @@ describe( 'table properties', () => {
 					} );
 				} );
 
-				describe( 'non-collapsed selection', () => {
+				describe( 'non-collapsed selection (inside table)', () => {
 					it( 'should set selected table borderStyle to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
@@ -166,6 +177,32 @@ describe( 'table properties', () => {
 
 					it( 'should remove borderStyle from a selected table if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute();
+
+						assertTableStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection (over table)', () => {
+					it( 'should set selected table borderStyle to a passed value', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+
+						command.execute( { value: 'solid' } );
+
+						assertTableStyle( editor, 'border-style:solid;' );
+					} );
+
+					it( 'should change selected table borderStyle to a passed value', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+
+						command.execute( { value: 'solid' } );
+
+						assertTableStyle( editor, 'border-style:solid;' );
+					} );
+
+					it( 'should remove borderStyle from a selected table if no value is passed', () => {
+						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 
 						command.execute();
 
