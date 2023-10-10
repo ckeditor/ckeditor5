@@ -20,7 +20,7 @@ import ImageLoadObserver, { type ImageLoadedEvent } from './imageloadobserver';
 import '../../theme/imageplaceholder.css';
 
 /**
- * TODO
+ * Adds support for image placeholder that is automatically removed when the image is loaded.
  */
 export default class ImagePlaceholder extends Plugin {
 	/**
@@ -43,11 +43,11 @@ export default class ImagePlaceholder extends Plugin {
 	public afterInit(): void {
 		this._setupSchema();
 		this._setupConversion();
-		this._setupChangeListener();
+		this._setupLoadListener();
 	}
 
 	/**
-	 * TODO
+	 * Extends model schema.
 	 */
 	private _setupSchema(): void {
 		const schema = this.editor.model.schema;
@@ -68,7 +68,7 @@ export default class ImagePlaceholder extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers converters.
 	 */
 	private _setupConversion(): void {
 		const editor = this.editor;
@@ -93,7 +93,7 @@ export default class ImagePlaceholder extends Plugin {
 
 				if ( data.attributeNewValue ) {
 					viewWriter.addClass( 'image_placeholder', img );
-					viewWriter.setStyle( 'background-image', `url( ${ data.attributeNewValue } )`, img );
+					viewWriter.setStyle( 'background-image', `url(${ data.attributeNewValue })`, img );
 					viewWriter.setCustomProperty( 'editingPipeline:doNotReuseOnce', true, img );
 				} else {
 					viewWriter.removeClass( 'image_placeholder', img );
@@ -104,9 +104,9 @@ export default class ImagePlaceholder extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Prepares listener for image load.
 	 */
-	private _setupChangeListener(): void {
+	private _setupLoadListener(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const editing = editor.editing;
