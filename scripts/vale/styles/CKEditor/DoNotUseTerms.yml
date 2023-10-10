@@ -5,7 +5,6 @@
 extends: substitution
 ignorecase: true
 level: warning
-link: https://redhat-documentation.github.io/vale-at-red-hat/docs/main/reference-guide/donotuse/
 message: "%s"
 swap:
   # Start each error message with "Do not use ..."
