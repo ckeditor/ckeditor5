@@ -22,6 +22,7 @@ swap:
   docs: documentation
   doctype: DOCTYPE
   drop-down: dropdown
+  dummy: placeholder|sample|fake
   "(?:e-mail|Email|E-mail)": email
   fewer data: less data
   git: Git
@@ -30,9 +31,12 @@ swap:
   in order to: to
   Javascript: JavaScript
   (?<!.)JS: JavaScript
+  LINUX|linux: Linux
   MacOS: macOS
-  MSOffice|MS Office: Microsoft Office
-  MSWord|MS Word: Microsoft Word
+  "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
+  "(?:MSOffice|MS Office)": Microsoft Office
+  "(?:MSWord|MS Word)": Microsoft Word
+  "(?:[nN]odejs|[nN]ode.JS|node.js)": Node.js
   plaintext|plain-text: plain text
   plug-in: plugin
   preconfigure: pre-configure
@@ -41,6 +45,7 @@ swap:
   prod: production environment
   regex: regular expression
   repo: repository
+  sanity (?:check|test): check for completeness
   semver: SemVer
   stylesheet: style sheet
   (?<!.)TS: TypeScript
