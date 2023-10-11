@@ -7,20 +7,24 @@ swap:
   "(?:kill|terminate|abort)": stop|exit|cancel|end
   admin: administrator
   a\.k\.a|aka: or|also known as
+  all caps: uppercase
   android: Android
   Api|api: API
   boolean: Boolean
   bugfix: bug fix
   bugfixes: bug fixes
   builtin|built in: built-in
+  can not: cannot
   check box: checkbox
   click on: click|click in
   config: configuration
   data are: data is
+  deselect: clear
   dev environment: development environment
   dev server: development server
   docs: documentation
   doctype: DOCTYPE
+  double click: double-click
   drop-down: dropdown
   dummy: placeholder|sample|fake
   "(?:e-mail|Email|E-mail)": email
@@ -45,6 +49,7 @@ swap:
   prod: production environment
   regex: regular expression
   repo: repository
+  right click: right-click
   sanity (?:check|test): check for completeness
   semver: SemVer
   stylesheet: style sheet
