@@ -19,6 +19,10 @@
 	cursor: default;
 	min-width: 12em;
 
+	&.ck-list__item_selected {
+		background: var(--ck-color-list-button-hover-background);
+	}
+
 	& .ck-button {
 		min-height: unset;
 		width: 100%;

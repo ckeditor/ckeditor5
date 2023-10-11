@@ -10,7 +10,7 @@
 import View from '../view';
 import FocusCycler from '../focuscycler';
 
-import type ListItemView from './listitemview';
+import ListItemView from './listitemview';
 import ListItemGroupView from './listitemgroupview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import ViewCollection from '../viewcollection';
@@ -20,10 +20,12 @@ import {
 	KeystrokeHandler,
 	type Locale,
 	type GetCallback,
-	type CollectionChangeEvent
+	type CollectionChangeEvent,
+	isVisible
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/list/list.css';
+import ViewCycler from '../viewcycler';
 
 /**
  * The list view class.
@@ -34,7 +36,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	 * between the {@link module:ui/list/listitemview~ListItemView list items} and
 	 * {@link module:ui/list/listitemgroupview~ListItemGroupView list groups}.
 	 */
-	public readonly focusables: ViewCollection;
+	public readonly focusables: ViewCollection<ListItemView | ListItemGroupView>;
 
 	/**
 	 * Collection of the child list views.
@@ -78,6 +80,11 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	private readonly _focusCycler: FocusCycler;
 
 	/**
+	 * TODO
+	 */
+	private readonly _viewCycler: ViewCycler;
+
+	/**
 	 * A cached map of {@link module:ui/list/listitemgroupview~ListItemGroupView} to `change` event listeners for their `items`.
 	 * Used for accessibility and keyboard navigation purposes.
 	 */
@@ -95,6 +102,11 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
+		this._viewCycler = new ViewCycler( {
+			views: this.focusables,
+			viewsFilter: ( view: View ) => view instanceof ListItemView && isVisible( view.element ),
+			currentViewFilter: ( view: View ) => ( view as ListItemView ).isSelected
+		} );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this.focusables,
@@ -200,6 +212,61 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	}
 
 	/**
+	 * TODO
+	 */
+	public selectPrevious(): ListItemView | null {
+		const previousListItemView = this._viewCycler.previous! as ListItemView | null;
+
+		if ( previousListItemView ) {
+			this.resetSelect();
+
+			previousListItemView.isSelected = true;
+			previousListItemView.element!.scrollIntoView( { block: 'nearest', inline: 'nearest' } );
+
+			this.fire<ListViewSelectEvent>( 'select', {
+				listItemView: previousListItemView
+			} );
+
+			return previousListItemView;
+		}
+
+		return null;
+	}
+
+	/**
+	 * TODO
+	*/
+	public selectNext(): ListItemView | null {
+		const nextListItemView = this._viewCycler.next! as ListItemView | null;
+
+		if ( nextListItemView ) {
+			this.resetSelect();
+
+			nextListItemView.isSelected = true;
+			nextListItemView.element!.scrollIntoView( { block: 'nearest', inline: 'nearest' } );
+
+			this.fire<ListViewSelectEvent>( 'select', {
+				listItemView: nextListItemView
+			} );
+
+			return nextListItemView;
+		}
+
+		return null;
+	}
+
+	/**
+	 * TODO
+	 */
+	public resetSelect(): void {
+		const currentListItemView = this._viewCycler.current as ListItemView | null;
+
+		if ( currentListItemView ) {
+			currentListItemView.isSelected = false;
+		}
+	}
+
+	/**
 	 * Registers a list item view in the focus tracker.
 	 *
 	 * @param item The list item view to be registered.
@@ -277,3 +344,15 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 
 // There's no support for nested groups yet.
 type ListItemsChangeEvent = CollectionChangeEvent<ListItemView>;
+
+/**
+ * TODO
+ *
+ * @eventName ~ListView#select
+ */
+export interface ListViewSelectEvent {
+	name: 'select';
+	args: [ {
+		listItemView: ListItemView;
+	} ];
+}

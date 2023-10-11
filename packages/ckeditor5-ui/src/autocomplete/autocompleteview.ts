@@ -11,7 +11,7 @@ import { getOptimalPosition, type PositioningFunction, type Locale, global, toUn
 import SearchTextView, { type SearchTextViewConfig } from '../search/text/searchtextview';
 import type SearchResultsView from '../search/searchresultsview';
 import type InputBase from '../input/inputbase';
-import type { FilteredViewExecuteEvent } from '../search/filteredview';
+import type { FilteredViewExecuteEvent, FilteredViewSelectEvent } from '../search/filteredview';
 
 import '../../theme/components/autocomplete/autocomplete.css';
 
@@ -83,12 +83,42 @@ export default class AutocompleteView<
 		this.on( 'search', () => {
 			this._updateResultsVisibility();
 			this._updateResultsViewWidthAndPosition();
+			this.filteredView.resetSelect();
 		} );
 
 		// Hide the results view when the user presses the ESC key.
 		this.keystrokes.set( 'esc', ( evt, cancel ) => {
 			this.resultsView.isVisible = false;
 			cancel();
+		} );
+
+		this.keystrokes.set( 'arrowdown', ( evt, cancel ) => {
+			if ( this.resultsView.isVisible ) {
+				this.filteredView.selectNext();
+			} else {
+				this.resultsView.isVisible = true;
+				this.search( this.queryView.fieldView.element!.value );
+			}
+
+			cancel();
+		} );
+
+		this.keystrokes.set( 'arrowup', ( evt, cancel ) => {
+			if ( this.resultsView.isVisible ) {
+				this.filteredView.selectPrevious();
+			} else {
+				this.resultsView.isVisible = true;
+				this.search( this.queryView.fieldView.element!.value );
+			}
+
+			cancel();
+		} );
+
+		this.keystrokes.set( 'enter', ( evt, cancel ) => {
+			if ( this.resultsView.isVisible ) {
+				this.resultsView.isVisible = false;
+				cancel();
+			}
 		} );
 
 		// Update the position of the results view when the user scrolls the page.
@@ -120,9 +150,18 @@ export default class AutocompleteView<
 			this.resultsView.isVisible = false;
 		} );
 
+		this.filteredView.on<FilteredViewSelectEvent>( 'select', ( evt, { selectedValue } ) => {
+			// Update the value of the query field.
+			this.queryView.fieldView.value = this.queryView.fieldView.element!.value = selectedValue;
+		} );
+
 		// Update the position and width of the results view when it becomes visible.
-		this.resultsView.on( 'change:isVisible', () => {
+		this.resultsView.on( 'change:isVisible', ( evt, name, isVisible ) => {
 			this._updateResultsViewWidthAndPosition();
+
+			if ( !isVisible ) {
+				this.filteredView.resetSelect();
+			}
 		} );
 	}
 

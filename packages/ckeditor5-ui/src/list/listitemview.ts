@@ -35,12 +35,18 @@ export default class ListItemView extends View {
 	/**
 	 * @inheritDoc
 	 */
+	declare public isSelected: boolean;
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale?: Locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
 		this.set( 'isVisible', true );
+		this.set( 'isSelected', false );
 
 		this.children = this.createCollection();
 
@@ -51,7 +57,8 @@ export default class ListItemView extends View {
 				class: [
 					'ck',
 					'ck-list__item',
-					bind.if( 'isVisible', 'ck-hidden', value => !value )
+					bind.if( 'isVisible', 'ck-hidden', value => !value ),
+					bind.if( 'isSelected', 'ck-list__item_selected' )
 				],
 				role: 'presentation'
 			},

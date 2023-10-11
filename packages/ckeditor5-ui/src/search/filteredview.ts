@@ -21,14 +21,32 @@ export default interface FilteredView extends FocusableView {
 		resultsCount: number;
 		totalItemsCount: number;
 	};
+
+	selectNext(): void;
+
+	selectPrevious(): void;
+
+	resetSelect(): void;
 }
 
 /**
- * Fired when the user selects an autocomplete option. The event data should contain the selected value.
+ * Fired when the user picks an autocomplete option (e.g. by clicking on it). The event data should contain the selected value.
  *
  * @eventName ~FilteredView#execute
  */
 export interface FilteredViewExecuteEvent {
 	name: 'execute';
 	args: [ { value: string } ];
+}
+
+/**
+ * Fired when the user selects an autocomplete option (e.g. by using arrow keys). The event data should contain the selected value.
+ *
+ * @eventName ~FilteredView#select
+ */
+export interface FilteredViewSelectEvent {
+	name: 'select';
+	args: [ {
+		selectedValue: any;
+	} ];
 }

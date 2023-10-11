@@ -12,24 +12,38 @@ import {
 	ListView,
 	AutocompleteView,
 	type FilteredView,
-	type FilteredViewExecuteEvent
+	type FilteredViewExecuteEvent,
+	ListItemGroupView
 } from '../../../src';
+import type { ListViewSelectEvent } from '../../../src/list/listview';
+import type { FilteredViewSelectEvent } from '../../../src/search/filteredview';
 
 const locale = new Locale();
 
 class FilteredTestListView extends ListView implements FilteredView {
+	constructor( locale: Locale ) {
+		super( locale );
+
+		this.on<ListViewSelectEvent>( 'select', ( evt, data ) => {
+			data.selectedValue = ( data.listItemView.children.first! as ButtonView ).label;
+		} );
+	}
+
 	public filter( query ) {
 		let visibleItems = 0;
 
-		for ( const item of this.items ) {
-			const listItemView = ( item as ListItemView );
-			const buttonView = listItemView.children.first! as ButtonView;
+		for ( const groupView of this.items ) {
+			for ( const listItemView of ( groupView as ListItemGroupView ).items ) {
+				const buttonView = listItemView.children.first! as ButtonView;
 
-			listItemView.isVisible = query ? !!buttonView.label!.match( query ) : true;
+				listItemView.isVisible = query ? !!buttonView.label!.match( query ) : true;
 
-			if ( listItemView.isVisible ) {
-				visibleItems++;
+				if ( listItemView.isVisible ) {
+					visibleItems++;
+				}
 			}
+
+			groupView.isVisible = !!( groupView as ListItemGroupView ).items.filter( listItemView => listItemView.isVisible ).length;
 		}
 
 		return {
@@ -39,29 +53,57 @@ class FilteredTestListView extends ListView implements FilteredView {
 	}
 }
 
-const listView = new FilteredTestListView();
+const listView = new FilteredTestListView( locale );
 
-[
-	'getAttribute()', 'getAttributeNames()', 'getAttributeNode()', 'getAttributeNodeNS()', 'getAttributeNS()',
-	'getBoundingClientRect()', 'getClientRects()', 'getElementsByClassName()', 'getElementsByTagName()', 'getElementsByTagNameNS()',
-	'hasAttribute()', 'hasAttributeNS()', 'hasAttributes()', 'hasPointerCapture()', 'insertAdjacentElement()', 'insertAdjacentHTML()',
-	'insertAdjacentText()', 'matches()', 'prepend()', 'querySelector()', 'querySelectorAll()', 'releasePointerCapture()', 'remove()',
-	'removeAttribute()', 'removeAttributeNode()', 'removeAttributeNS()'
-].forEach( item => {
-	const listItemView = new ListItemView();
-	const buttonView = new ButtonView();
+/* eslint-disable max-len */
+const groupedCountries = [ 'Albania', 'Andorra', 'Austria', 'Belarus', 'Belgium', 'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Czech Republic (Czechia)', 'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Holy See', 'Hungary', 'Iceland', 'Ireland', 'Italy', 'Latvia', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 'Monaco', 'Montenegro', 'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal', 'Romania', 'Russia', 'San Marino', 'Serbia', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'Switzerland', 'Ukraine', 'United Kingdom' ]
+	.reduce( ( acc, current ) => {
+		const firstLetter = current[ 0 ].toUpperCase();
 
-	buttonView.on( 'execute', () => {
-		listView.fire<FilteredViewExecuteEvent>( 'execute', {
-			value: buttonView.label!
+		if ( !acc[ firstLetter ] ) {
+			acc[ firstLetter ] = [];
+		}
+
+		acc[ firstLetter ].push( current );
+
+		return acc;
+	}, {} );
+
+for ( const groupName in groupedCountries ) {
+	const countryViews = groupedCountries[ groupName ].map( countryName => {
+		const listItemView = createItem( countryName );
+
+		listItemView.children.first!.on( 'execute', () => {
+			listView.fire<FilteredViewExecuteEvent>( 'execute', {
+				value: countryName
+			} );
 		} );
+
+		return listItemView;
 	} );
 
-	buttonView.withText = true;
-	buttonView.label = item;
-	listItemView.children.add( buttonView );
-	listView.items.add( listItemView );
-} );
+	listView.items.add( createGroup( groupName, countryViews ) );
+}
+
+function createItem( label: string ): ListItemView {
+	const item = new ListItemView();
+	const button = new ButtonView();
+
+	item.children.add( button );
+
+	button.set( { label, withText: true } );
+
+	return item;
+}
+
+function createGroup( label: string, items: Array<ListItemView> ): ListItemGroupView {
+	const groupView = new ListItemGroupView();
+
+	groupView.label = label;
+	groupView.items.addMany( items );
+
+	return groupView;
+}
 
 const view = new AutocompleteView( locale, {
 	queryView: {
