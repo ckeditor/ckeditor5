@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, window */
 
 import BalloonEditor from '../src/ckeditor';
 import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
@@ -12,9 +12,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import '@ckeditor/ckeditor5-image';
 
-/* global window */
-
-window.CKBox = 'CKBOX';
+window.CKBox = {};
 
 const config = {
 	ckbox: {

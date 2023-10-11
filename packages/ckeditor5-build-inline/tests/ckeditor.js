@@ -3,11 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, window */
 
 import InlineEditor from '../src/ckeditor';
 import BaseInlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+window.CKBox = {};
+
+const config = {
+	ckbox: {
+		tokenUrl: CS_CONFIG.tokenUrl
+	}
+};
 
 describe( 'InlineEditor build', () => {
 	let editor, editorElement;
@@ -35,7 +44,7 @@ describe( 'InlineEditor build', () => {
 
 	describe( 'create()', () => {
 		beforeEach( () => {
-			return InlineEditor.create( editorElement )
+			return InlineEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -57,7 +66,7 @@ describe( 'InlineEditor build', () => {
 
 	describe( 'destroy()', () => {
 		beforeEach( () => {
-			return InlineEditor.create( editorElement )
+			return InlineEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -85,7 +94,7 @@ describe( 'InlineEditor build', () => {
 
 	describe( 'plugins', () => {
 		beforeEach( () => {
-			return InlineEditor.create( editorElement )
+			return InlineEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -170,6 +179,6 @@ describe( 'InlineEditor build', () => {
 	describeMemoryUsage( () => {
 		testMemoryUsage(
 			'should not grow on multiple create/destroy',
-			() => InlineEditor.create( document.querySelector( '#mem-editor' ) ) );
+			() => InlineEditor.create( document.querySelector( '#mem-editor' ), config ) );
 	} );
 } );

@@ -3,11 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, window */
 
 import MultiRootEditor from '../src/ckeditor';
 import BaseMultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+window.CKBox = {};
+
+const config = {
+	ckbox: {
+		tokenUrl: CS_CONFIG.tokenUrl
+	}
+};
 
 describe( 'MultiRootEditor build', () => {
 	let editor, fooElement, barElement;
@@ -43,7 +52,7 @@ describe( 'MultiRootEditor build', () => {
 
 	describe( 'create()', () => {
 		beforeEach( () => {
-			return MultiRootEditor.create( { foo: fooElement, bar: barElement } )
+			return MultiRootEditor.create( { foo: fooElement, bar: barElement }, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -66,7 +75,7 @@ describe( 'MultiRootEditor build', () => {
 
 	describe( 'destroy()', () => {
 		beforeEach( () => {
-			return MultiRootEditor.create( { foo: fooElement, bar: barElement } )
+			return MultiRootEditor.create( { foo: fooElement, bar: barElement }, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -94,6 +103,6 @@ describe( 'MultiRootEditor build', () => {
 	describeMemoryUsage( () => {
 		testMemoryUsage(
 			'should not grow on multiple create/destroy',
-			() => MultiRootEditor.create( { foo: document.querySelector( '#mem-editor' ) } ) );
+			() => MultiRootEditor.create( { foo: document.querySelector( '#mem-editor' ) }, config ) );
 	} );
 } );
