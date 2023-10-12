@@ -83,6 +83,8 @@ export interface ElementApi {
 	 * Updates the {@link #sourceElement editor source element}'s content with the data if the
 	 * {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`}
 	 * configuration option is set to `true`.
+	 *
+	 * @param data Data that the {@link #sourceElement editor source element} should be updated with.
 	 */
 	updateSourceElement( data?: string ): void;
 }
