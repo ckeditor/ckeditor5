@@ -10,7 +10,7 @@ modified_at: 2023-10-06
 
 # Real-time editing in Drupal
 
-Drupal is an open-source editing platform. CKEditor 5 is the default editor module for Drupal. The [CKEditor 5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features. Currently, the module includes a set of GDocs-style content collaboration tools, the {@link features/productivity-pack Productivity Pack} of essential formatting and navigation features, plus document import and export plugins.
+Drupal is an open-source editing platform. CKEditor 5 is the default editor module for Drupal. The [CKEditor&nbsp;5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features. Currently, the module includes a set of collaboration tools, the {@link features/productivity-pack Productivity Pack} of essential formatting and navigation features, plus document import and export plugins.
 
 The module also includes the free Full Screen Mode, a free-to-use plugin that maximizes the editing area. It is especially useful when using features like Document outline or Comments which take up extra space around the editor.
 
@@ -18,7 +18,7 @@ The module also includes the free Full Screen Mode, a free-to-use plugin that ma
 
 With collaboration features, users can work together to write, review, and discuss their content right within Drupal. No need to use different apps for drafting and commenting &ndash; you can do it all in one place.
 
-{@img assets/img/drupal.png 1876drupal Drupal with CKEditor&nbsp;5 real-time editing.}
+{@img assets/img/drupal_premium_module.gif 721 Drupal with CKEditor&nbsp;5 real-time editing.}
 
 Collaboration Features include:
 
@@ -27,6 +27,17 @@ Collaboration Features include:
 * {@link features/revision-history Revision History} to see what changes were made, and compare and restore previous versions of the content.
 * {@link features/real-time-collaboration Real-time Collaboration} to allow multiple users to edit simultaneously.
 * There is also a configurable notifications system to stay up-to-date whenever someone mentions you in a document, comments, or replies to you, accepts or rejects suggestions, and so on. Integrate it with your own plugin to get notifications via email, Slack, or other services.
+
+All the collaboration features can also be used for asynchronous editing.
+
+Other features available in the CKeditor&nbsp;5 Premium module include:
+
+* Easily defined {@link features/template templates}.
+* {@link features/slash-commands Slash commands} that let you create, insert, and format rich content on the go.
+* {@link features/format-painter Format painter} to easily style the edited text.
+* Enhanced {@link features/paste-from-office-enhanced Paste from Office} and {@link features/import-word Import from Word} features.
+* Handy one-click {@link features/export-pdf Export to PDF} and {@link features/export-word Export to Word} features that offer portability and cross-platform interoperability.
+
 
 ## Supported Drupal versions
 
