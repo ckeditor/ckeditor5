@@ -373,7 +373,7 @@ schema.register( 'myImage', {
 The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
 
 <info-box>
-	There are also the `$blockObject` and the `$inlineObject` generic items which have the `isObject` property set to `true`. Most object type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
+	There are also the `$blockObject` and the `$inlineObject` generic items which have the `isObject` property set to `true`. Most object-type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
 </info-box>
 
 <info-box>
@@ -393,7 +393,7 @@ Schema items with the `isBlock` property set are (among others) affecting the {@
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 
 <info-box>
-	There are also the `$block` and the `$blockObject` generic items which have the `isBlock` property set to `true`. Most block type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
+	There are also the `$block` and the `$blockObject` generic items which have the `isBlock` property set to `true`. Most block-type items will inherit from `$block` or `$blockObject` (through `inheritAllFrom`).
 
 	Note that every item that inherits from `$block` has `isBlock` set, but not every item with `isBlock` set has to be a `$block`.
 </info-box>
@@ -440,7 +440,7 @@ schema.register( 'myImage', {
 
 The {@link module:engine/model/schema~Schema#isContent `Schema#isContent()`} method can later be used to check this property.
 
-At the same time, elements like paragraphs, list items, or headings **are not** content elements because they are skipped in the editor output when they are empty. From the data perspective they are transparent unless they contain other content elements (an empty paragraph is as good as no paragraph).
+At the same time, elements like paragraphs, list items, or headings **are not** content elements because they are skipped in the editor output when they are empty. From the data perspective, they are transparent unless they contain other content elements (an empty paragraph is as good as no paragraph).
 
 <info-box>
 	[Object elements](#object-elements) and [`$text`](#generic-items) are content by default.
@@ -663,7 +663,7 @@ Now imagine that the user presses the "Block quote" button. Normally it would wr
 </$root>
 ```
 
-But it turns out that this creates an incorrect structure &mdash; `<x>` is not followed by `<y>` anymore.
+But it turns out that this creates an incorrect structure &ndash; `<x>` is not followed by `<y>` anymore.
 
 What should happen instead? There are at least 4 possible solutions: the block quote feature should not be applicable in such a context, someone should create a new `<y>` right after `<x>`, `<x>` should be moved inside `<blockQuote>` together with `<y>` or vice versa.
 
@@ -675,7 +675,7 @@ To sum up, the answer to who and how should implement additional constraints is:
 
 ## Who checks the schema?
 
-The CKEditor&nbsp;5 API exposes many ways to work on (change) the model. It can be done {@link framework/architecture/editing-engine#changing-the-model through the writer}, via methods like {@link module:engine/model/model~Model#insertContent `Model#insertContent()`}, via commands and so on.
+The CKEditor&nbsp;5 API exposes many ways to work on (change) the model. It can be done {@link framework/architecture/editing-engine#changing-the-model through the writer}, via methods like {@link module:engine/model/model~Model#insertContent `Model#insertContent()`}, via commands, and so on.
 
 ### Low-level APIs
 
@@ -685,14 +685,12 @@ The reason for this is that when you implement a command or any other feature yo
 
 For instance, you need to move `<foo>` from `<$root>` to `<bar>` and (at the same time) rename it to `<oof>`. But the schema defines that `<oof>` is not allowed in `<$root>` and `<foo>` is disallowed in `<bar>`. If the writer checked the schema, it would complain regardless of the order of `rename` and `move` operations.
 
-You can argue that the engine could handle this by checking the schema at the end of a {@link module:engine/model/model~Model#change `Model#change()` block} (it works like a transaction &mdash; the state needs to be correct at the end of it). In fact, we [plan to strip disallowed attributes](https://github.com/ckeditor/ckeditor5-engine/issues/1228) at the end of these blocks.
+You can argue that the engine could handle this by checking the schema at the end of a {@link module:engine/model/model~Model#change `Model#change()` block} (it works like a transaction &ndash; the state needs to be correct at the end of it). This approach, however, was not adopted, as there are the following problems:
 
-There are problems, though:
-
-* How to fix the content after a transaction is committed? It is impossible to implement a reasonable heuristic that would not break the content from the user perspective.
+* How to fix the content after a transaction is committed? It is impossible to implement a reasonable heuristic that would not break the content from the user's perspective.
 * The model can become invalid during real-time collaborative changes. Operational Transformation, while implemented by us in a very rich form (with 11 types of operations instead of the base 3), ensures conflict resolution and eventual consistency, but not the model's validity.
 
-Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~Document#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility to check the schema to features. They can make a lot better decisions a priori, before doing changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
+Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~Document#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility of checking the schema to features. They can make a lot better decisions a priori, before making changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
 
 ### High-level APIs
 
@@ -700,7 +698,7 @@ What about other, higher-level methods? **We recommend that all APIs built on to
 
 For instance, the {@link module:engine/model/model~Model#insertContent `Model#insertContent()`} method will make sure that inserted nodes are allowed in the place of their insertion. It may also attempt to split the insertion container (if allowed by the schema) if that will make the element to insert allowed, and so on.
 
-Similarly, commands &mdash; if implemented correctly &mdash; {@link module:core/command~Command#isEnabled get disabled} if they should not be executed in the current place.
+Similarly, commands &ndash; if implemented correctly &ndash; {@link module:core/command~Command#isEnabled get disabled} if they should not be executed in the current place.
 
 Finally, the schema plays a crucial role during the conversion from the view to the model (also called "upcasting"). During this process converters decide whether they can convert specific view elements or attributes to the given positions in the model. Thanks to that if you tried to load incorrect data to the editor or when you paste content copied from another website, the structure and attributes of the data get adjusted to the current schema rules.
 
