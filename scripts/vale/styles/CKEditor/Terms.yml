@@ -10,6 +10,7 @@ swap:
   all caps: uppercase
   android: Android
   Api|api: API
+  back-end|back end: backend
   boolean: Boolean
   bugfix: bug fix
   bugfixes: bug fixes
@@ -29,6 +30,7 @@ swap:
   dummy: placeholder|sample|fake
   "(?:e-mail|Email|E-mail)": email
   fewer data: less data
+  front-end|front end: frontend
   git: Git
   Github: GitHub
   grayed-out|greyed-out: unavailable
@@ -41,15 +43,19 @@ swap:
   "(?:MSOffice|MS Office)": Microsoft Office
   "(?:MSWord|MS Word)": Microsoft Word
   "(?:[nN]odejs|[nN]ode.JS|node.js)": Node.js
+  non-real-time|non real-time|non real time|non-RTC: asynchronous
+  on-premise: on-premises
   plaintext|plain-text: plain text
   plug-in: plugin
   preconfigure: pre-configure
   preconfigured: pre-configured
   premade: pre-made
   prod: production environment
+  (?<!in) real time: real-time
   regex: regular expression
   repo: repository
   right click: right-click
+  SAAS: SaaS
   sanity (?:check|test): check for completeness
   semver: SemVer
   stylesheet: style sheet
