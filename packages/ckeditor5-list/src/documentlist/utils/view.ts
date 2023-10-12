@@ -96,7 +96,7 @@ export function getIndent( listItem: ViewElement ): number {
 export function createListElement(
 	writer: DowncastWriter,
 	indent: number,
-	type: 'bulleted' | 'numbered',
+	type: 'bulleted' | 'numbered' | 'todo',
 	id = getViewElementIdForListType( type, indent )
 ): ViewAttributeElement {
 	// Negative priorities so that restricted editing attribute won't wrap lists.
@@ -128,7 +128,7 @@ export function createListItemElement(
  *
  * @internal
  */
-export function getViewElementNameForListType( type?: 'bulleted' | 'numbered' ): 'ol' | 'ul' {
+export function getViewElementNameForListType( type?: 'bulleted' | 'numbered' | 'todo' ): 'ol' | 'ul' {
 	return type == 'numbered' ? 'ol' : 'ul';
 }
 
@@ -137,6 +137,6 @@ export function getViewElementNameForListType( type?: 'bulleted' | 'numbered' ):
  *
  * @internal
  */
-export function getViewElementIdForListType( type?: 'bulleted' | 'numbered', indent?: number ): string {
+export function getViewElementIdForListType( type?: 'bulleted' | 'numbered' | 'todo', indent?: number ): string {
 	return `list-${ type }-${ indent }`;
 }

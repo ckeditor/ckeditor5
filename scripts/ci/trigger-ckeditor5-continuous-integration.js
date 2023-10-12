@@ -35,7 +35,7 @@ main()
  * @returns {Object} CircleCI API response as JSON.
  */
 function main() {
-	const { repository, commit } = getOptions( process.argv.slice( 2 ) );
+	const { repository, commit, branch } = getOptions( process.argv.slice( 2 ) );
 	const requestUrl =
 		`https://circleci.com/api/v2/project/github/${ INTEGRATION_CI_ORGANIZATION }/${ INTEGRATION_CI_REPOSITORY }/pipeline`;
 
@@ -47,11 +47,11 @@ function main() {
 			'Circle-Token': CKE5_CIRCLE_TOKEN
 		},
 		body: JSON.stringify( {
-			branch: 'master',
+			branch,
 			parameters: {
 				triggerRepositorySlug: repository,
 				triggerCommitHash: commit,
-				isExternal: true
+				isRelease: branch === 'release'
 			}
 		} )
 	};
@@ -72,16 +72,22 @@ function main() {
  * @returns {Object} options
  * @returns {String} options.commit
  * @returns {String} options.repository
+ * @returns {String} [options.branch='master']
  */
 function getOptions( argv ) {
 	return minimist( argv, {
 		string: [
 			'commit',
-			'repository'
+			'repository',
+			'branch'
 		],
 		alias: {
+			b: 'branch',
 			c: 'commit',
 			r: 'repository'
+		},
+		default: {
+			branch: 'master'
 		}
 	} );
 }

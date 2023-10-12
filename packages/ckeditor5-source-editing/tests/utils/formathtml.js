@@ -179,14 +179,13 @@ describe( 'SourceEditing utils', () => {
 				'<main>\n' +
 				'    <form action="#" method="post">\n' +
 				'        <fieldset>\n' +
-				'            <label for="name"><i>Name:</i></label>\n' +
-				'            <input type="text" placeholder="Enter your full name">\n' +
-				'            <label for="email"><i>Email:</i></label>\n' +
-				'            <input type="email" placeholder="Enter your email address">\n' +
-				'            <label for="message"><i>Message:</i></label>\n' +
-				'            <textarea placeholder="What\'s on your mind?">\n' +
-				'            </textarea>\n' +
-				'            <input type="submit" value="Send message">\n' +
+				'            <label for="name"><i>Name:</i></label>' +
+							'<input type="text" placeholder="Enter your full name">' +
+							'<label for="email"><i>Email:</i></label>' +
+							'<input type="email" placeholder="Enter your email address">' +
+							'<label for="message"><i>Message:</i></label>' +
+							'<textarea placeholder="What\'s on your mind?"></textarea>' +
+							'<input type="submit" value="Send message">\n' +
 				'        </fieldset>\n' +
 				'    </form>\n' +
 				'</main>';

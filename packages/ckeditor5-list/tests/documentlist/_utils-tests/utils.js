@@ -524,6 +524,24 @@ describe( 'mockList()', () => {
 			'* bar {id:000}'
 		] ) ).to.throw( Error, 'ID conflict: 000' );
 	} );
+
+	it( 'should allow using different default block', () => {
+		modelList.defaultBlock = 'listItem';
+
+		expect( modelList( `
+			text
+			* foo
+			# bar
+			# <paragraph>baz</paragraph>
+		` ) ).to.equalMarkup(
+			'<paragraph>text</paragraph>' +
+			'<listItem listIndent="0" listItemId="001" listType="bulleted">foo</listItem>' +
+			'<listItem listIndent="0" listItemId="002" listType="numbered">bar</listItem>' +
+			'<paragraph listIndent="0" listItemId="003" listType="numbered">baz</paragraph>'
+		);
+
+		modelList.defaultBlock = 'paragraph';
+	} );
 } );
 
 describe( 'stringifyList()', () => {
@@ -920,6 +938,26 @@ describe( 'stringifyList()', () => {
 				'  b',
 				'  # 0'
 			].join( '\n' ) );
+		} );
+
+		it( 'should allow using different default block', () => {
+			modelList.defaultBlock = 'listItem';
+			model.schema.register( 'listItem', { inheritAllFrom: '$block' } );
+
+			const input = parseModel(
+				'<listItem listIndent="0" listItemId="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="0" listItemId="1" listType="numbered">b</listItem>' +
+				'<paragraph listIndent="0" listItemId="2" listType="numbered">c</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* a',
+				'# b',
+				'# <paragraph>c</paragraph>'
+			].join( '\n' ) );
+
+			modelList.defaultBlock = 'paragraph';
 		} );
 	} );
 } );

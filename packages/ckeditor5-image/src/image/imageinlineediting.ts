@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
+import { ClipboardPipeline, type ClipboardInputTransformationEvent, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard';
 import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine';
 
 import {
@@ -17,6 +17,7 @@ import {
 } from './converters';
 
 import ImageEditing from './imageediting';
+import ImageSizeAttributes from '../imagesizeattributes';
 import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
@@ -40,7 +41,7 @@ export default class ImageInlineEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageEditing, ImageUtils, ClipboardPipeline ] as const;
+		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ClipboardPipeline ] as const;
 	}
 
 	/**
@@ -135,6 +136,8 @@ export default class ImageInlineEditing extends Plugin {
 	 * in the clipboard pipeline.
 	 *
 	 * See the `ImageBlockEditing` for the similar integration that works in the opposite direction.
+	 *
+	 * The feature also sets image `width` and `height` attributes when pasting.
 	 */
 	private _setupClipboardIntegration(): void {
 		const editor = this.editor;
@@ -198,6 +201,25 @@ export default class ImageInlineEditing extends Plugin {
 
 					data.content = writer.createDocumentFragment( inlineViewImages );
 				}
+			} );
+
+		this.listenTo<ClipboardContentInsertionEvent>(
+			clipboardPipeline,
+			'contentInsertion',
+			( evt, data ) => {
+				if ( data.method !== 'paste' ) {
+					return;
+				}
+
+				model.change( writer => {
+					const range = writer.createRangeIn( data.content );
+
+					for ( const item of range.getItems() ) {
+						if ( item.is( 'element', 'imageInline' ) ) {
+							imageUtils.setImageNaturalSizeAttributes( item );
+						}
+					}
+				} );
 			} );
 	}
 }

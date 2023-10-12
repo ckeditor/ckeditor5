@@ -121,7 +121,7 @@ export function parseKeystroke( keystroke: string | ReadonlyArray<number | strin
 export function getEnvKeystrokeText( keystroke: string ): string {
 	let keystrokeCode = parseKeystroke( keystroke );
 
-	const modifiersToGlyphs = Object.entries( env.isMac ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
+	const modifiersToGlyphs = Object.entries( ( env.isMac || env.isiOS ) ? modifiersToGlyphsMac : modifiersToGlyphsNonMac );
 
 	const modifiers = modifiersToGlyphs.reduce( ( modifiers, [ name, glyph ] ) => {
 		// Modifier keys are stored as a bit mask so extract those from the keystroke code.
@@ -202,7 +202,7 @@ function getEnvKeyCode( key: string ): number {
 
 	const code = getCode( key );
 
-	return env.isMac && code == keyCodes.ctrl ? keyCodes.cmd : code;
+	return ( env.isMac || env.isiOS ) && code == keyCodes.ctrl ? keyCodes.cmd : code;
 }
 
 /**
