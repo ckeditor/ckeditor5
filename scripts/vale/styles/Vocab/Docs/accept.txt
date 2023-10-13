@@ -17,7 +17,6 @@ Chai
 CKBox
 ckbox
 CKEditor
-ckeditor
 CKFinder
 ckfinder
 CKSource

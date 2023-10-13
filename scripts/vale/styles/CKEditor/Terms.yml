@@ -17,6 +17,8 @@ swap:
   builtin|built in: built-in
   can not: cannot
   check box: checkbox
+  Ckeditor|CKeditor|CK Editor|CK editor: CKEditor
+  Cksource|CKsource|CK Source: CKSource
   click on: click|click in
   config: configuration
   data are: data is
@@ -29,6 +31,7 @@ swap:
   drop-down: dropdown
   dummy: placeholder|sample|fake
   "(?:e-mail|Email|E-mail)": email
+  Fckeditor|FCkeditor|FCKEditor: FCKeditor
   fewer data: less data
   front-end|front end: frontend
   git: Git
@@ -44,7 +47,7 @@ swap:
   "(?:MSWord|MS Word)": Microsoft Word
   "(?:[nN]odejs|[nN]ode.JS|node.js)": Node.js
   non-real-time|non real-time|non real time|non-RTC: asynchronous
-  on-premise: on-premises
+  on-premise|on-prem: on-premises
   plaintext|plain-text: plain text
   plug-in: plugin
   preconfigure: pre-configure
@@ -59,6 +62,7 @@ swap:
   sanity (?:check|test): check for completeness
   semver: SemVer
   stylesheet: style sheet
+  (?i)todo list: to-do list
   (?<!.)TS: TypeScript
   Typescript: TypeScript
   "un(?:check|select)": clear
