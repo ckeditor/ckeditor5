@@ -209,6 +209,9 @@ export default class DropdownView extends View<HTMLDivElement> {
 		this.set( 'id', undefined );
 		this.set( 'panelPosition', 'auto' );
 
+		// Toggle the visibility of the panel when the dropdown becomes open.
+		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
+
 		this.keystrokes = new KeystrokeHandler();
 		this.focusTracker = new FocusTracker();
 
@@ -255,9 +258,6 @@ export default class DropdownView extends View<HTMLDivElement> {
 		this.listenTo<DropdownButtonOpenEvent>( this.buttonView, 'open', () => {
 			this.isOpen = !this.isOpen;
 		} );
-
-		// Toggle the visibility of the panel when the dropdown becomes open.
-		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
 
 		// Let the dropdown control the position of the panel. The position must
 		// be updated every time the dropdown is open.

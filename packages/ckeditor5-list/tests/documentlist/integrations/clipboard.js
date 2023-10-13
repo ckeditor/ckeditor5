@@ -12,6 +12,7 @@ import { modelList } from '../_utils/utils';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
+import PastePlainText from '@ckeditor/ckeditor5-clipboard/src/pasteplaintext';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
@@ -50,7 +51,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [
-				Paragraph, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
+				Paragraph, ClipboardPipeline, PastePlainText, BoldEditing, DocumentListEditing, UndoEditing,
 				BlockQuoteEditing, TableEditing, HeadingEditing, ImageBlockEditing, ImageInlineEditing, Widget
 			]
 		} );
@@ -455,7 +456,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 			);
 		} );
 
-		it( 'should not fix indents of list items that are separated by non-list element', () => {
+		it( 'should fix indents of list items that are separated by non-list element', () => {
 			setModelData( model,
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
@@ -470,9 +471,9 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BW</paragraph>' +
 				'<paragraph listIndent="2" listItemId="a00" listType="bulleted">X</paragraph>' +
-				'<paragraph>Y</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a02" listType="bulleted">Z[]</paragraph>' +
-				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
+				'<paragraph listIndent="1" listItemId="a03" listType="bulleted">Y</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a02" listType="bulleted">Z[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
@@ -490,8 +491,8 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 			expect( getModelData( model ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
-				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
@@ -584,7 +585,7 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">X[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="numbered">X[]</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
@@ -610,8 +611,8 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a01" listType="bulleted">X</paragraph>' +
-				'<paragraph listIndent="2" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a00" listType="numbered">Y[]</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
@@ -707,6 +708,83 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
 				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
+			);
+		} );
+
+		it( 'should correctly handle pasting plain-text list into another list', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="x" listType="bulleted">[]X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="y" listType="bulleted">Y</paragraph>'
+			);
+
+			clipboard.fire( 'inputTransformation', {
+				// Two plain-pasted list items are just paragraphs
+				content: parseView( '<p>A</p><p>B</p>' )
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">B[]X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="y" listType="bulleted">Y</paragraph>'
+			);
+		} );
+
+		it( 'should change `listType` of the pasted list', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="y" listType="numbered">Y[]</paragraph>'
+			);
+
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+
+			clipboard.fire( 'inputTransformation', {
+				// Bulleted list
+				content: parseView( '<ul><li>A</li><li>B</li></ul>' )
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="y" listType="numbered">YA</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="numbered">B[]</paragraph>'
+			);
+		} );
+
+		it( 'should change `listType` of the pasted list with nesting', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="y" listType="numbered">Y[]</paragraph>'
+			);
+
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>A<ul><li>B<ul><li>C</li></ul></li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="y" listType="numbered">YA</paragraph>' +
+				'<paragraph listIndent="2" listItemId="a01" listType="numbered">B</paragraph>' +
+				'<paragraph listIndent="3" listItemId="a00" listType="numbered">C[]</paragraph>'
+			);
+		} );
+
+		it( 'should convert paragraphs to list items when pasting into a list', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="y" listType="numbered">Y[]</paragraph>'
+			);
+
+			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<p>A</p><p>B</p>' )
+			} );
+
+			expect( getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="x" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="y" listType="numbered">YA</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listType="numbered">B[]</paragraph>'
 			);
 		} );
 	} );

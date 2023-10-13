@@ -524,6 +524,7 @@
 			"name": "Examples",
 			"id": "examples",
 			"slug": "examples",
+			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Predefined builds",
