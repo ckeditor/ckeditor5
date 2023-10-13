@@ -29,7 +29,7 @@ export default class ListItemGroupView extends View {
 	/**
 	 * Label of the group view. Its text is configurable using the {@link #label label attribute}.
 	 *
-	 * If not configured otherwise in the `constructor()`, by default the label is an instance
+	 * If a custom label view is not passed in `ListItemGroupView` constructor, the label is an instance
 	 * of {@link module:ui/label/labelview~LabelView}.
 	 */
 	public readonly labelView: LabelView;
@@ -57,7 +57,7 @@ export default class ListItemGroupView extends View {
 	 * Creates an instance of the list item group view class.
 	 *
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
-	 * @param labelView The instance of the gorup's label. If not provided, an instance of
+	 * @param labelView The instance of the group's label. If not provided, an instance of
 	 * {@link module:ui/label/labelview~LabelView} is used.
 	 */
 	constructor( locale?: Locale, labelView: LabelView = new LabelView() ) {
