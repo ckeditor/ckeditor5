@@ -50,6 +50,7 @@ swap:
   on-premise|on-prem: on-premises
   plaintext|plain-text: plain text
   plug-in: plugin
+  popup: pop-up
   preconfigure: pre-configure
   preconfigured: pre-configured
   premade: pre-made
@@ -68,3 +69,5 @@ swap:
   "un(?:check|select)": clear
   url: URL
   utils: utilities
+  webpage: web page|page|website
+  web site: website
