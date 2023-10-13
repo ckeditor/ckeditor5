@@ -77,12 +77,12 @@ export default class CKBoxEditing extends Plugin {
 
 		if ( !hasConfiguration ) {
 			/**
-			 * The configuration required by the ckbox plugin is missing.
+			 * The configuration required by the CKBox plugin is missing.
 			 * Follow the instructions provided in {@glink features/file-management/ckbox#configuration the CKBox feature documentation}
 			 * to initialize the plugin properly.
 			 *
 			 * @error ckbox-config-not-found
-			 * @param {module:ckbox/ckboxconfig~CKBoxConfig} config Configuration of the ckbox.
+			 * @param {module:ckbox/ckboxconfig~CKBoxConfig} config Configuration of the CKBox.
 			 */
 			logWarning( 'ckbox-config-not-found', editor.config );
 		}
