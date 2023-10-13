@@ -59,7 +59,18 @@ export default class ReplaceImageSourceCommand extends Command {
 	}
 
 	/**
-	 * Cleanup some image attributes.
+	 * Cleanup image attributes that are not relevant to the new source.
+	 *
+	 * Removed attributes are: 'srcset', 'sizes', 'sources', 'width', 'height', 'alt'.
+	 *
+	 * This method is decorated, to allow custom cleanup logic.
+	 * For example, to remove 'myImageId' attribute after 'src' has changed:
+	 *
+	 * ```ts
+	 * replaceImageSourceCommand.on( 'cleanupImage', ( eventInfo, [ writer, image ] ) => {
+	 * 	writer.removeAttribute( 'myImageId', image );
+	 * } );
+	 * ```
 	 */
 	public cleanupImage( writer: Writer, image: Element ): void {
 		writer.removeAttribute( 'srcset', image );

@@ -67,11 +67,6 @@ export default class CKBoxEditing extends Plugin {
 		const isLibraryLoaded = !!window.CKBox;
 
 		if ( replaceImageSourceCommand ) {
-			// // After replacing image, "ckboxImageId" attribute will be removed.
-			// replaceImageSourceCommand.registerImageCallback( ( writer, image ) => {
-			// 	writer.removeAttribute( 'ckboxImageId', image );
-			// } );
-
 			this.listenTo<DecoratedMethodEvent<ReplaceImageSourceCommand, 'cleanupImage'>>(
 				replaceImageSourceCommand,
 				'cleanupImage',
