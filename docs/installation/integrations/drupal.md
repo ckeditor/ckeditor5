@@ -26,7 +26,8 @@ Collaboration Features include:
 * {@link features/comments Comments} to discuss the content.
 * {@link features/revision-history Revision History} to see what changes were made, and compare and restore previous versions of the content.
 * {@link features/real-time-collaboration Real-time Collaboration} to allow multiple users to edit simultaneously.
-* There is also a configurable notifications system to stay up-to-date whenever someone mentions you in a document, comments, or replies to you, accepts or rejects suggestions, and so on. Integrate it with your own plugin to get notifications via email, Slack, or other services.
+
+There is also a dedicated, configurable notifications system developed especially for the CKEditor 5 Premium module for Drupal. It helps the users stay up-to-date whenever someone mentions you in a document, comments, or replies to you, accepts or rejects suggestions, and so on. Integrate it with your own plugin to get notifications via email, Slack, or other services.
 
 All the collaboration features can also be used for asynchronous editing.
 
@@ -37,6 +38,7 @@ Other features available in the CKeditor&nbsp;5 Premium module include:
 * {@link features/format-painter Format painter} to easily style the edited text.
 * Enhanced {@link features/paste-from-office-enhanced Paste from Office} and {@link features/import-word Import from Word} features.
 * Handy one-click {@link features/export-pdf Export to PDF} and {@link features/export-word Export to Word} features that offer portability and cross-platform interoperability.
+* {@link features/mentions Mentions} features that lets you tag other users in comments.
 
 
 ## Supported Drupal versions
