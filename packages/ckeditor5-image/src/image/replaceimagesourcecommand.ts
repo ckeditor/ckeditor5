@@ -23,12 +23,10 @@ import type { Writer, Element } from 'ckeditor5/src/engine';
 export default class ReplaceImageSourceCommand extends Command {
 	declare public value: string | null;
 
-	declare private _imageCallbacks: Array<( writer: Writer, image: Element ) => void>;
-
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this._imageCallbacks = [];
+		this.decorate( 'cleanupImage' );
 	}
 
 	/**
@@ -44,15 +42,6 @@ export default class ReplaceImageSourceCommand extends Command {
 	}
 
 	/**
-	 * Register callback which will be executed after command execution.
-	 *
-	 * @param callback Callback which will be called after command execution.
-	 */
-	public registerImageCallback( callback: ( writer: Writer, image: Element ) => void ): void {
-		this._imageCallbacks.push( callback );
-	}
-
-	/**
 	 * Executes the command.
 	 *
 	 * @fires execute
@@ -65,14 +54,14 @@ export default class ReplaceImageSourceCommand extends Command {
 		this.editor.model.change( writer => {
 			writer.setAttribute( 'src', options.source, image );
 
-			this._cleanupImage( writer, image );
+			this.cleanupImage( writer, image );
 		} );
 	}
 
 	/**
 	 * Cleanup some image attributes.
 	 */
-	private _cleanupImage( writer: Writer, image: Element ) {
+	public cleanupImage( writer: Writer, image: Element ): void {
 		writer.removeAttribute( 'srcset', image );
 		writer.removeAttribute( 'sizes', image );
 
@@ -84,7 +73,5 @@ export default class ReplaceImageSourceCommand extends Command {
 		writer.removeAttribute( 'width', image );
 		writer.removeAttribute( 'height', image );
 		writer.removeAttribute( 'alt', image );
-
-		this._imageCallbacks.forEach( callback => callback( writer, image ) );
 	}
 }

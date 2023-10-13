@@ -23,12 +23,13 @@ import {
 	type ViewElement,
 	type Writer
 } from 'ckeditor5/src/engine';
-import { CKEditorError, logError } from 'ckeditor5/src/utils';
+import { CKEditorError, type DecoratedMethodEvent, logError } from 'ckeditor5/src/utils';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig';
 
 import CKBoxCommand from './ckboxcommand';
 import CKBoxUploadAdapter from './ckboxuploadadapter';
+import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
 
 const DEFAULT_CKBOX_THEME_NAME = 'lark';
 
@@ -66,10 +67,18 @@ export default class CKBoxEditing extends Plugin {
 		const isLibraryLoaded = !!window.CKBox;
 
 		if ( replaceImageSourceCommand ) {
-			// After replacing image, "ckboxImageId" attribute will be removed.
-			replaceImageSourceCommand.registerImageCallback( ( writer, image ) => {
-				writer.removeAttribute( 'ckboxImageId', image );
-			} );
+			// // After replacing image, "ckboxImageId" attribute will be removed.
+			// replaceImageSourceCommand.registerImageCallback( ( writer, image ) => {
+			// 	writer.removeAttribute( 'ckboxImageId', image );
+			// } );
+
+			this.listenTo<DecoratedMethodEvent<ReplaceImageSourceCommand, 'cleanupImage'>>(
+				replaceImageSourceCommand,
+				'cleanupImage',
+				( _, [ writer, image ] ) => {
+					writer.removeAttribute( 'ckboxImageId', image );
+				}
+			);
 		}
 
 		// Proceed with plugin initialization only when the integrator intentionally wants to use it, i.e. when the `config.ckbox` exists or
