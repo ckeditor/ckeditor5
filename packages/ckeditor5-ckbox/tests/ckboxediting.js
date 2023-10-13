@@ -34,7 +34,7 @@ import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock
 const CKBOX_API_URL = 'https://upload.example.com';
 
 describe( 'CKBoxEditing', () => {
-	let editor, model, view, originalCKBox;
+	let editor, model, view, originalCKBox, replaceImageSourceCommand;
 
 	testUtils.createSinonSandbox();
 
@@ -50,6 +50,7 @@ describe( 'CKBoxEditing', () => {
 			}
 		} );
 
+		replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
 		model = editor.model;
 		view = editor.editing.view;
 	} );
@@ -2055,6 +2056,23 @@ describe( 'CKBoxEditing', () => {
 				);
 			} );
 		} );
+	} );
+
+	it( 'should remove ckboxImageId attribute on image replace', () => {
+		const schema = model.schema;
+		schema.extend( 'imageBlock', { allowAttributes: 'ckboxImageId' } );
+
+		setModelData( model, `[<imageBlock
+			ckboxImageId="id"
+		></imageBlock>]` );
+
+		const element = model.document.selection.getSelectedElement();
+
+		expect( element.getAttribute( 'ckboxImageId' ) ).to.equal( 'id' );
+
+		replaceImageSourceCommand.execute( { source: 'bar/foo.jpg' } );
+
+		expect( element.getAttribute( 'ckboxImageId' ) ).to.be.undefined;
 	} );
 } );
 

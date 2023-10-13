@@ -58,7 +58,6 @@ describe( 'ReplaceImageSourceCommand', () => {
 			const element = model.document.selection.getSelectedElement();
 
 			expect( element.getAttribute( 'src' ) ).to.equal( 'foo/bar.jpg' );
-			expect( element.getAttribute( 'ckboxImageId' ) ).to.equal( 'id' );
 			expect( element.getAttribute( 'sources' ) ).to.equal( '[{srcset:\'url\', sizes:\'100vw, 1920px\', type: \'image/webp\'}]' );
 			expect( element.getAttribute( 'width' ) ).to.equal( 100 );
 			expect( element.getAttribute( 'height' ) ).to.equal( 200 );
@@ -67,7 +66,6 @@ describe( 'ReplaceImageSourceCommand', () => {
 			command.execute( { source: 'bar/foo.jpg' } );
 
 			expect( element.getAttribute( 'src' ) ).to.equal( 'bar/foo.jpg' );
-			expect( element.getAttribute( 'ckboxImageId' ) ).to.be.undefined;
 			expect( element.getAttribute( 'sources' ) ).to.be.undefined;
 			expect( element.getAttribute( 'width' ) ).to.be.undefined;
 			expect( element.getAttribute( 'height' ) ).to.be.undefined;

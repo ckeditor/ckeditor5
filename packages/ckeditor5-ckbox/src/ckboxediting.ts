@@ -62,7 +62,15 @@ export default class CKBoxEditing extends Plugin {
 	public async init(): Promise<void> {
 		const editor = this.editor;
 		const hasConfiguration = !!editor.config.get( 'ckbox' );
+		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
 		const isLibraryLoaded = !!window.CKBox;
+
+		if ( replaceImageSourceCommand ) {
+			// After replacing image, "ckboxImageId" attribute will be removed.
+			replaceImageSourceCommand.registerImageCallback( ( writer, image ) => {
+				writer.removeAttribute( 'ckboxImageId', image );
+			} );
+		}
 
 		// Proceed with plugin initialization only when the integrator intentionally wants to use it, i.e. when the `config.ckbox` exists or
 		// the CKBox JavaScript library is loaded.
