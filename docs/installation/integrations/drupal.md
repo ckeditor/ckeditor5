@@ -76,11 +76,11 @@ CKEditor&nbsp;5 Premium module for Drupal requires an active license key and a f
 
 Please follow the {@link support/license-key-and-activation License key and activation} guide to find out how to obtain the key and activate the license. You can also use the {@link @trial guides/overview Premium features Free Trial} to obtain a commitment-free, 30-day trial key. Once you have the key ready, in the Drupal dashboard go to the CKEditor&nbsp;5 Premium module configuration. In the **General Setting** section, paste the key in the **License key** input box.
 
-{@img assets/img/drupal_license_key.png 623 Drupal license key.}
+{@img assets/img/drupal_license_key.png 1250 Drupal license key.}
 
-Next, use the information obtained from the [CKEditor 5 Dashboard](https://dashboard.ckeditor.com/) and fill in the following fields in the Drupal module's **General Settings**. You will find the key generator in the Access credentials tab of the Environment section. You will find the EnvironmentID below the Environment name on top of this section in the dashboard.
+Next, use the information obtained from the [CKEditor 5 Dashboard](https://dashboard.ckeditor.com/) and fill in the following fields in the Drupal module's **General Settings**.
 
-{@img assets/img/drupal_authorizations.png 786 Drupal dashboard.}
+{@img assets/img/drupal_authorizations.png 1342 Drupal dashboard.}
 
 You can find more details of this process in the [Adding credentials to Drupal](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module#s-adding-credentials-to-drupal) guide on the Drupal website.
 
