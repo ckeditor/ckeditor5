@@ -62,7 +62,7 @@ export default class ReplaceImageSourceCommand extends Command {
 	public override execute( options: { source: string } ): void {
 		const image = this.editor.model.document.selection.getSelectedElement()!;
 
-		this.editor.model.enqueueChange( writer => {
+		this.editor.model.change( writer => {
 			writer.setAttribute( 'src', options.source, image );
 
 			this._cleanupImage( writer, image );
