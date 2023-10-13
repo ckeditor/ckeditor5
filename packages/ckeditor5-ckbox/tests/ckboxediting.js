@@ -88,6 +88,7 @@ describe( 'CKBoxEditing', () => {
 
 		expect( editor.commands.get( 'ckbox' ) ).to.be.undefined;
 		expect( console.warn.callCount ).to.equal( 1 );
+		expect( console.warn.args[ 0 ][ 0 ] ).to.equal( 'ckbox-library-not-loaded' );
 	} );
 
 	describe( 'getToken()', () => {
@@ -238,6 +239,7 @@ describe( 'CKBoxEditing', () => {
 				tokenUrl: 'http://cs.example.com'
 			} );
 			expect( console.warn.callCount ).to.equal( 1 );
+			expect( console.warn.args[ 0 ][ 0 ] ).to.equal( 'ckbox-config-not-found' );
 
 			await editor.destroy();
 		} );
