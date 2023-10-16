@@ -38,7 +38,7 @@ Other features available in the CKeditor&nbsp;5 Premium module include:
 * {@link features/format-painter Format painter} to easily style the edited text.
 * Enhanced {@link features/paste-from-office-enhanced Paste from Office} and {@link features/import-word Import from Word} features.
 * Handy one-click {@link features/export-pdf Export to PDF} and {@link features/export-word Export to Word} features that offer portability and cross-platform interoperability.
-* {@link features/mentions Mentions} features that lets you tag other users in comments.
+* {@link features/mentions Mentions} feature that lets you tag other users in comments.
 
 
 ## Supported Drupal versions
