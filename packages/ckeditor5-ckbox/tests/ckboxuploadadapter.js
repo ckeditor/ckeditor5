@@ -31,7 +31,7 @@ const BASE64_SAMPLE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQ
 const CKBOX_API_URL = 'https://upload.example.com';
 
 describe( 'CKBoxUploadAdapter', () => {
-	let editor, fileRepository, editorElement;
+	let editor, fileRepository, editorElement, originalCKBox;
 
 	const jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
 
@@ -40,6 +40,9 @@ describe( 'CKBoxUploadAdapter', () => {
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+
+		originalCKBox = window.CKBox;
+		window.CKBox = {};
 
 		TokenMock.initialToken = jwtToken;
 
@@ -79,6 +82,8 @@ describe( 'CKBoxUploadAdapter', () => {
 		if ( editor ) {
 			return editor.destroy();
 		}
+
+		window.CKBox = originalCKBox;
 	} );
 
 	it( 'should be named', () => {
@@ -109,6 +114,10 @@ describe( 'CKBoxUploadAdapter', () => {
 		}
 
 		it( 'should not overwrite existing upload adapter if CKBox lib and `config.ckbox` are missing', async () => {
+			delete window.CKBox;
+
+			sinon.stub( console, 'warn' );
+
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -133,6 +142,7 @@ describe( 'CKBoxUploadAdapter', () => {
 			const fileRepositoryPlugin = editor.plugins.get( FileRepository );
 
 			expect( fileRepositoryPlugin.createUploadAdapter ).to.equal( uploadAdapterCreator );
+			expect( console.warn.callCount ).to.equal( 2 );
 
 			editorElement.remove();
 			return editor.destroy();
@@ -176,6 +186,8 @@ describe( 'CKBoxUploadAdapter', () => {
 			const originalCKBox = window.CKBox;
 			window.CKBox = {};
 
+			sinon.stub( console, 'warn' );
+
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -204,6 +216,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			expect( fileRepositoryPlugin.createUploadAdapter ).to.be.a( 'function' );
 			expect( fileRepositoryPlugin.createUploadAdapter ).not.to.equal( uploadAdapterCreator );
+			expect( console.warn.callCount ).to.equal( 1 );
 
 			window.CKBox = originalCKBox;
 			editorElement.remove();

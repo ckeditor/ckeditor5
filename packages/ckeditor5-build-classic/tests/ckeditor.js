@@ -3,11 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, window */
 
 import ClassicEditor from '../src/ckeditor';
 import BaseClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+window.CKBox = {};
+
+const config = {
+	ckbox: {
+		tokenUrl: CS_CONFIG.tokenUrl
+	}
+};
 
 describe( 'ClassicEditor build', () => {
 	let editor, editorElement;
@@ -36,7 +45,7 @@ describe( 'ClassicEditor build', () => {
 
 	describe( 'create()', () => {
 		beforeEach( () => {
-			return ClassicEditor.create( editorElement )
+			return ClassicEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -58,7 +67,7 @@ describe( 'ClassicEditor build', () => {
 
 	describe( 'destroy()', () => {
 		beforeEach( () => {
-			return ClassicEditor.create( editorElement )
+			return ClassicEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -95,7 +104,7 @@ describe( 'ClassicEditor build', () => {
 
 	describe( 'plugins', () => {
 		beforeEach( () => {
-			return ClassicEditor.create( editorElement )
+			return ClassicEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -186,7 +195,8 @@ describe( 'ClassicEditor build', () => {
 		it( 'allows configuring toolbar items through config.toolbar', () => {
 			return ClassicEditor
 				.create( editorElement, {
-					toolbar: [ 'bold' ]
+					toolbar: [ 'bold' ],
+					...config
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -203,7 +213,8 @@ describe( 'ClassicEditor build', () => {
 						viewportOffset: {
 							top: 42
 						}
-					}
+					},
+					...config
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -218,7 +229,8 @@ describe( 'ClassicEditor build', () => {
 				.create( editorElement, {
 					toolbar: {
 						removeItems: [ 'italic' ]
-					}
+					},
+					...config
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -232,6 +244,6 @@ describe( 'ClassicEditor build', () => {
 	describeMemoryUsage( () => {
 		testMemoryUsage(
 			'should not grow on multiple create/destroy',
-			() => ClassicEditor.create( document.querySelector( '#mem-editor' ) ) );
+			() => ClassicEditor.create( document.querySelector( '#mem-editor' ), config ) );
 	} );
 } );

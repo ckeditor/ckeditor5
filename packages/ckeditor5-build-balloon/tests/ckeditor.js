@@ -3,13 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, window */
 
 import BalloonEditor from '../src/ckeditor';
 import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import '@ckeditor/ckeditor5-image';
+
+window.CKBox = {};
+
+const config = {
+	ckbox: {
+		tokenUrl: CS_CONFIG.tokenUrl
+	}
+};
 
 describe( 'BalloonEditor build', () => {
 	let editor, editorElement;
@@ -37,7 +46,7 @@ describe( 'BalloonEditor build', () => {
 
 	describe( 'create()', () => {
 		beforeEach( () => {
-			return BalloonEditor.create( editorElement )
+			return BalloonEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -59,7 +68,7 @@ describe( 'BalloonEditor build', () => {
 
 	describe( 'destroy()', () => {
 		beforeEach( () => {
-			return BalloonEditor.create( editorElement )
+			return BalloonEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -87,7 +96,7 @@ describe( 'BalloonEditor build', () => {
 
 	describe( 'plugins', () => {
 		beforeEach( () => {
-			return BalloonEditor.create( editorElement )
+			return BalloonEditor.create( editorElement, config )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -172,6 +181,6 @@ describe( 'BalloonEditor build', () => {
 	describeMemoryUsage( () => {
 		testMemoryUsage(
 			'should not grow on multiple create/destroy',
-			() => BalloonEditor.create( document.querySelector( '#mem-editor' ) ) );
+			() => BalloonEditor.create( document.querySelector( '#mem-editor' ), config ) );
 	} );
 } );

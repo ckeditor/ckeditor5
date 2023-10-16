@@ -3,11 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, window */
 
 import DecoupledEditor from '../src/ckeditor';
 import BaseDecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
+window.CKBox = {};
+
+const config = {
+	ckbox: {
+		tokenUrl: CS_CONFIG.tokenUrl
+	}
+};
 
 describe( 'DecoupledEditor build', () => {
 	let editor, editorData, editorElement;
@@ -40,7 +49,7 @@ describe( 'DecoupledEditor build', () => {
 		test( () => editorData );
 
 		it( 'does not define the UI DOM structure', () => {
-			return DecoupledEditor.create( editorData )
+			return DecoupledEditor.create( editorData, config )
 				.then( newEditor => {
 					expect( newEditor.ui.view.element ).to.be.null;
 					expect( newEditor.ui.view.toolbar.element.parentElement ).to.be.null;
@@ -55,7 +64,7 @@ describe( 'DecoupledEditor build', () => {
 		test( () => editorElement );
 
 		it( 'uses the provided editable element', () => {
-			return DecoupledEditor.create( editorElement )
+			return DecoupledEditor.create( editorElement, config )
 				.then( newEditor => {
 					expect( newEditor.ui.view.editable.element.parentElement ).to.equal( document.body );
 
@@ -67,13 +76,13 @@ describe( 'DecoupledEditor build', () => {
 	describeMemoryUsage( () => {
 		testMemoryUsage(
 			'should not grow on multiple create/destroy',
-			() => DecoupledEditor.create( document.querySelector( '#mem-editor' ) ) );
+			() => DecoupledEditor.create( document.querySelector( '#mem-editor' ), config ) );
 	} );
 
 	function test( getEditorDataOrElement ) {
 		describe( 'create()', () => {
 			beforeEach( () => {
-				return DecoupledEditor.create( getEditorDataOrElement() )
+				return DecoupledEditor.create( getEditorDataOrElement(), config )
 					.then( newEditor => {
 						editor = newEditor;
 					} );
@@ -95,7 +104,7 @@ describe( 'DecoupledEditor build', () => {
 
 		describe( 'destroy()', () => {
 			beforeEach( () => {
-				return DecoupledEditor.create( getEditorDataOrElement() )
+				return DecoupledEditor.create( getEditorDataOrElement(), config )
 					.then( newEditor => {
 						editor = newEditor;
 					} );
@@ -104,7 +113,7 @@ describe( 'DecoupledEditor build', () => {
 
 		describe( 'plugins', () => {
 			beforeEach( () => {
-				return DecoupledEditor.create( getEditorDataOrElement() )
+				return DecoupledEditor.create( getEditorDataOrElement(), config )
 					.then( newEditor => {
 						editor = newEditor;
 					} );
@@ -248,7 +257,8 @@ describe( 'DecoupledEditor build', () => {
 			it( 'allows configure toolbar items through config.toolbar', () => {
 				return DecoupledEditor
 					.create( getEditorDataOrElement(), {
-						toolbar: [ 'bold' ]
+						toolbar: [ 'bold' ],
+						...config
 					} )
 					.then( newEditor => {
 						editor = newEditor;
