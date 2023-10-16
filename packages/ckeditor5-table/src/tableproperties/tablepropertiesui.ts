@@ -29,7 +29,7 @@ import {
 	lineWidthFieldValidator,
 	defaultColors
 } from '../utils/ui/table-properties';
-import { getTableWidgetAncestor } from '../utils/ui/widget';
+import { getSelectionAffectedTableWidget } from '../utils/ui/widget';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
 import { getNormalizedDefaultProperties, type NormalizedDefaultProperties } from '../utils/table-properties';
 import type { Batch } from 'ckeditor5/src/engine';
@@ -357,7 +357,7 @@ export default class TablePropertiesUI extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
-		if ( !getTableWidgetAncestor( viewDocument.selection ) ) {
+		if ( !getSelectionAffectedTableWidget( viewDocument.selection ) ) {
 			this._hideView();
 		} else if ( this._isViewVisible ) {
 			repositionContextualBalloon( editor, 'table' );

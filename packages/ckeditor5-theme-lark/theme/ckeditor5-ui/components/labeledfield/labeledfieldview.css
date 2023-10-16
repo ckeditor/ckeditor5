@@ -25,17 +25,18 @@
 
 			@mixin ck-dir ltr {
 				left: 0px;
+				transform-origin: 0 0;
+				/* By default, display the label scaled down above the field. */
+				transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
 			}
 
 			@mixin ck-dir rtl {
 				right: 0px;
+				transform-origin: 100% 0;
+				transform: translate(calc(-1 * var(--ck-spacing-medium)), -6px) scale(.75);
 			}
 
 			pointer-events: none;
-			transform-origin: 0 0;
-
-			/* By default, display the label scaled down above the field. */
-			transform: translate(var(--ck-spacing-medium), -6px) scale(.75);
 
 			background: var(--ck-color-labeled-field-label-background);
 			padding: 0 calc(.5 * var(--ck-font-size-tiny));

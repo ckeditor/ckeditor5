@@ -56,6 +56,7 @@ import {
 	getSelectedBlockObject,
 	isListItemBlock,
 	removeListAttributes,
+	ListItemUid,
 	type ListElement
 } from './utils/model';
 import {
@@ -63,10 +64,7 @@ import {
 	getViewElementNameForListType
 } from './utils/view';
 
-import ListWalker, {
-	iterateSiblingListBlocks,
-	ListBlocksIterable
-} from './utils/listwalker';
+import ListWalker, { ListBlocksIterable } from './utils/listwalker';
 
 import {
 	ClipboardPipeline,
@@ -790,72 +788,73 @@ function modelChangePostFixer(
  * Example:
  *
  * ```xml
- * <paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
- * <paragraph listType="bulleted" listItemId="b" listIndent=1>B^</paragraph>
- * // At ^ paste:  <paragraph listType="bulleted" listItemId="x" listIndent=4>X</paragraph>
- * //              <paragraph listType="bulleted" listItemId="y" listIndent=5>Y</paragraph>
- * <paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
+ * <paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>
+ * <paragraph listType="bulleted" listItemId="b" listIndent="1">B^</paragraph>
+ * // At ^ paste:  <paragraph listType="numbered" listItemId="x" listIndent="0">X</paragraph>
+ * //              <paragraph listType="numbered" listItemId="y" listIndent="1">Y</paragraph>
+ * <paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>
  * ```
  *
  * Should become:
  *
  * ```xml
- * <paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
- * <paragraph listType="bulleted" listItemId="b" listIndent=1>BX</paragraph>
- * <paragraph listType="bulleted" listItemId="y" listIndent=2>Y/paragraph>
- * <paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
+ * <paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>
+ * <paragraph listType="bulleted" listItemId="b" listIndent="1">BX</paragraph>
+ * <paragraph listType="bulleted" listItemId="y" listIndent="2">Y/paragraph>
+ * <paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>
  * ```
  */
 function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertContentEvent> {
 	return ( evt, [ content, selectable ] ) => {
-		// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
-		// elements before it and there is no need to fix indents, because even if we insert that content into a list,
-		// that list will be broken.
-		// Note: we also need to handle singular elements because inserting item with indent 0 into 0,1,[],2
-		// would create incorrect model.
-		const item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
+		const items = content.is( 'documentFragment' ) ?
+			Array.from( content.getChildren() ) :
+			[ content ];
 
-		if ( !isListItemBlock( item ) ) {
+		if ( !items.length ) {
 			return;
 		}
 
-		let selection;
+		const selection = selectable ?
+			model.createSelection( selectable ) :
+			model.document.selection;
 
-		if ( !selectable ) {
-			selection = model.document.selection;
+		const position = selection.getFirstPosition()!;
+
+		// Get a reference list item. Attributes of the inserted list items will be fixed according to that item.
+		let refItem: ListElement;
+
+		if ( isListItemBlock( position.parent ) ) {
+			refItem = position.parent;
+		} else if ( isListItemBlock( position.nodeBefore ) ) {
+			refItem = position.nodeBefore;
 		} else {
-			selection = model.createSelection( selectable );
-		}
-
-		// Get a reference list item. Inserted list items will be fixed according to that item.
-		const pos = selection.getFirstPosition()!;
-		let refItem = null;
-
-		if ( isListItemBlock( pos.parent ) ) {
-			refItem = pos.parent;
-		} else if ( isListItemBlock( pos.nodeBefore ) ) {
-			refItem = pos.nodeBefore;
-		}
-
-		// If there is `refItem` it means that we do insert list items into an existing list.
-		if ( !refItem ) {
-			return;
-		}
-
-		// First list item in `data` has indent equal to 0 (it is a first list item). It should have indent equal
-		// to the indent of reference item. We have to fix the first item and all of it's children and following siblings.
-		// Indent of all those items has to be adjusted to reference item.
-		const indentChange = refItem.getAttribute( 'listIndent' ) - item.getAttribute( 'listIndent' );
-
-		// Fix only if there is anything to fix.
-		if ( indentChange <= 0 ) {
-			return;
+			return; // Content is not copied into a list.
 		}
 
 		model.change( writer => {
-			// Adjust indent of all "first" list items in inserted data.
-			for ( const { node } of iterateSiblingListBlocks( item, 'forward' ) ) {
-				writer.setAttribute( 'listIndent', node.getAttribute( 'listIndent' ) + indentChange, node );
+			const refType = refItem.getAttribute( 'listType' );
+			const refIndent = refItem.getAttribute( 'listIndent' );
+			const firstElementIndent = items[ 0 ].getAttribute( 'listIndent' ) as number || 0;
+			const indentDiff = Math.max( refIndent - firstElementIndent, 0 );
+
+			for ( const item of items ) {
+				const isListItem = isListItemBlock( item );
+
+				if ( refItem.is( 'element', 'listItem' ) && item.is( 'element', 'paragraph' ) ) {
+					/**
+					 * When paragraphs or a plain text list is pasted into a simple list, convert
+					 * the `<paragraphs>' to `<listItem>' to avoid breaking the target list.
+					 *
+					 * See https://github.com/ckeditor/ckeditor5/issues/13826.
+					 */
+					writer.rename( item as Element, 'listItem' );
+				}
+
+				writer.setAttributes( {
+					listIndent: ( isListItem ? item.getAttribute( 'listIndent' ) : 0 ) + indentDiff,
+					listItemId: isListItem ? item.getAttribute( 'listItemId' ) : ListItemUid.next(),
+					listType: refType
+				}, item );
 			}
 		} );
 	};
