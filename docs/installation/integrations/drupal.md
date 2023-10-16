@@ -51,7 +51,7 @@ Other features available in the CKeditor&nbsp;5 Premium module include:
 ### Requirements
 
 * PHP 8.0+
-* Drupal 9 with CKEditor 5 enabled
+* Drupal 9.4 with CKEditor 5 enabled
 * Drupal 10
 
 ### Installation
