@@ -4,7 +4,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import ImageUtils from '../imageutils';
+import type ImageUtils from '../imageutils';
 import type { Writer, Element } from 'ckeditor5/src/engine';
 
 /**
@@ -27,13 +27,6 @@ export default class ReplaceImageSourceCommand extends Command {
 		super( editor );
 
 		this.decorate( 'cleanupImage' );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static get requires() {
-		return [ ImageUtils ] as const;
 	}
 
 	/**
