@@ -4,7 +4,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import type ImageUtils from '../imageutils';
+import ImageUtils from '../imageutils';
 import type { Writer, Element } from 'ckeditor5/src/engine';
 
 /**
@@ -32,6 +32,13 @@ export default class ReplaceImageSourceCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
+	public static get requires() {
+		return [ ImageUtils ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override refresh(): void {
 		const editor = this.editor;
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
@@ -50,12 +57,15 @@ export default class ReplaceImageSourceCommand extends Command {
 	 */
 	public override execute( options: { source: string } ): void {
 		const image = this.editor.model.document.selection.getSelectedElement()!;
+		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		this.editor.model.change( writer => {
 			writer.setAttribute( 'src', options.source, image );
 
 			this.cleanupImage( writer, image );
 		} );
+
+		imageUtils.setImageNaturalSizeAttributes( image );
 	}
 
 	/**
