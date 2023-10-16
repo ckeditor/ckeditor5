@@ -56,9 +56,9 @@ export default class ReplaceImageSourceCommand extends Command {
 			writer.setAttribute( 'src', options.source, image );
 
 			this.cleanupImage( writer, image );
-		} );
 
-		imageUtils.setImageNaturalSizeAttributes( image );
+			imageUtils.setImageNaturalSizeAttributes( image );
+		} );
 	}
 
 	/**

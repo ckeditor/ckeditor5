@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global setTimeout */
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -75,6 +77,27 @@ describe( 'ReplaceImageSourceCommand', () => {
 			expect( element.getAttribute( 'height' ) ).to.be.undefined;
 			expect( element.getAttribute( 'alt' ) ).to.be.undefined;
 			expect( element.getAttribute( 'myCustomId' ) ).to.be.undefined;
+		} );
+
+		it( 'should set width and height on replaced image', done => {
+			setModelData( model, `[<imageBlock
+				src="foo/bar.jpg"
+				width="100"
+				height="200"
+				myCustomId="id"
+				alt="Example image"
+				sources="[{srcset:'url', sizes:'100vw, 1920px', type: 'image/webp'}]"
+			></imageBlock>]` );
+
+			const element = model.document.selection.getSelectedElement();
+
+			command.execute( { source: '/assets/sample.png' } );
+
+			setTimeout( () => {
+				expect( element.getAttribute( 'width' ) ).to.equal( 96 );
+				expect( element.getAttribute( 'height' ) ).to.equal( 96 );
+				done();
+			}, 100 );
 		} );
 	} );
 
