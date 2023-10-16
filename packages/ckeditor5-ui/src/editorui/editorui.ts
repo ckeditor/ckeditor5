@@ -26,6 +26,7 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
+import AriaLiveAnnouncer from './arialiveannouncer';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -57,6 +58,11 @@ export default abstract class EditorUI extends ObservableMixin() {
 	 * A helper that enables the "powered by" feature in the editor and renders a link to the project's webpage.
 	 */
 	public readonly poweredBy: PoweredBy;
+
+	/**
+	 * TODO
+	 */
+	public readonly ariaLiveAnnouncer: AriaLiveAnnouncer;
 
 	/**
 	 * Indicates the UI is ready. Set `true` after {@link #event:ready} event is fired.
@@ -130,6 +136,7 @@ export default abstract class EditorUI extends ObservableMixin() {
 		this.focusTracker = new FocusTracker();
 		this.tooltipManager = new TooltipManager( editor );
 		this.poweredBy = new PoweredBy( editor );
+		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
 
 		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
