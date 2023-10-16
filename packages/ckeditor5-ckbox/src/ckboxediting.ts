@@ -23,7 +23,7 @@ import {
 	type ViewElement,
 	type Writer
 } from 'ckeditor5/src/engine';
-import { CKEditorError, type DecoratedMethodEvent, logError } from 'ckeditor5/src/utils';
+import { CKEditorError, logError, type DecoratedMethodEvent } from 'ckeditor5/src/utils';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig';
 
@@ -63,18 +63,7 @@ export default class CKBoxEditing extends Plugin {
 	public async init(): Promise<void> {
 		const editor = this.editor;
 		const hasConfiguration = !!editor.config.get( 'ckbox' );
-		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
 		const isLibraryLoaded = !!window.CKBox;
-
-		if ( replaceImageSourceCommand ) {
-			this.listenTo<DecoratedMethodEvent<ReplaceImageSourceCommand, 'cleanupImage'>>(
-				replaceImageSourceCommand,
-				'cleanupImage',
-				( _, [ writer, image ] ) => {
-					writer.removeAttribute( 'ckboxImageId', image );
-				}
-			);
-		}
 
 		// Proceed with plugin initialization only when the integrator intentionally wants to use it, i.e. when the `config.ckbox` exists or
 		// the CKBox JavaScript library is loaded.
@@ -330,6 +319,18 @@ export default class CKBoxEditing extends Plugin {
 				}
 			}
 		} );
+
+		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
+
+		if ( replaceImageSourceCommand ) {
+			this.listenTo<DecoratedMethodEvent<ReplaceImageSourceCommand, 'cleanupImage'>>(
+				replaceImageSourceCommand,
+				'cleanupImage',
+				( _, [ writer, image ] ) => {
+					writer.removeAttribute( 'ckboxImageId', image );
+				}
+			);
+		}
 	}
 
 	/**
