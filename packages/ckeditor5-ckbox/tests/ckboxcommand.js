@@ -25,7 +25,7 @@ import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock
 
 import CKBoxEditing from '../src/ckboxediting';
 import CKBoxCommand from '../src/ckboxcommand';
-import { base64FromBlurHash } from '../src/utils';
+import { blurHashToDataUrl } from '../src/utils';
 
 describe( 'CKBoxCommand', () => {
 	let editor, model, command, originalCKBox;
@@ -599,7 +599,7 @@ describe( 'CKBoxCommand', () => {
 
 			it( 'should insert an image inline (with blurhash placeholder)', () => {
 				const spy = sinon.spy( editor, 'execute' );
-				const placeholder = base64FromBlurHash( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
+				const placeholder = blurHashToDataUrl( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
 
 				onChoose( [ assets.imagesWithBlurHash[ 0 ] ] );
 
@@ -681,7 +681,7 @@ describe( 'CKBoxCommand', () => {
 
 			it( 'should insert an image block (with blurhash placeholder)', () => {
 				const spy = sinon.spy( editor, 'execute' );
-				const placeholder = base64FromBlurHash( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
+				const placeholder = blurHashToDataUrl( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
 
 				setModelData( model, '<paragraph>[]</paragraph>' );
 

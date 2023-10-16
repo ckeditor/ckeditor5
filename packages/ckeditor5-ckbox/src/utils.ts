@@ -84,9 +84,9 @@ export function getWorkspaceId( token: InitializedToken, defaultWorkspaceId?: st
 const BLUR_RESOLUTION = 32;
 
 /**
- * Generates base64-encoded image from its `blurhash` representation.
+ * Generates an image data URL from its `blurhash` representation.
  */
-export function base64FromBlurHash( hash?: string ): string | undefined {
+export function blurHashToDataUrl( hash?: string ): string | undefined {
 	if ( !hash ) {
 		return;
 	}

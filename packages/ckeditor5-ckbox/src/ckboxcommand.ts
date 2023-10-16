@@ -22,7 +22,7 @@ import type {
 	CKBoxRawAssetDefinition
 } from './ckboxconfig';
 
-import { base64FromBlurHash, getImageUrls } from './utils';
+import { blurHashToDataUrl, getImageUrls } from './utils';
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -379,7 +379,7 @@ function prepareAssets(
 function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
 	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
 	const { description, width, height, blurHash } = asset.data.metadata!;
-	const imagePlaceholder = base64FromBlurHash( blurHash );
+	const imagePlaceholder = blurHashToDataUrl( blurHash );
 
 	return {
 		imageFallbackUrl,

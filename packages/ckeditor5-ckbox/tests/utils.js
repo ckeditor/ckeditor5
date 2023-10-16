@@ -7,7 +7,7 @@
 
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getWorkspaceId, getImageUrls, base64FromBlurHash } from '../src/utils';
+import { getWorkspaceId, getImageUrls, blurHashToDataUrl } from '../src/utils';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();
@@ -171,17 +171,17 @@ describe( 'utils', () => {
 
 	describe( 'base64FromBlurHash()', () => {
 		it( 'should return undefined if no blurHash', () => {
-			expect( base64FromBlurHash( undefined ) ).to.be.undefined;
-			expect( base64FromBlurHash( null ) ).to.be.undefined;
-			expect( base64FromBlurHash( '' ) ).to.be.undefined;
+			expect( blurHashToDataUrl( undefined ) ).to.be.undefined;
+			expect( blurHashToDataUrl( null ) ).to.be.undefined;
+			expect( blurHashToDataUrl( '' ) ).to.be.undefined;
 		} );
 
 		it( 'should return undefined if invalid blurHash', () => {
-			expect( base64FromBlurHash( '123' ) ).to.be.undefined;
+			expect( blurHashToDataUrl( '123' ) ).to.be.undefined;
 		} );
 
 		it( 'should generate image data url', () => {
-			const result = base64FromBlurHash( 'KTF55N=ZR4PXSirp5ZOZW9' );
+			const result = blurHashToDataUrl( 'KTF55N=ZR4PXSirp5ZOZW9' );
 			const prefix = 'data:image/png;base64,';
 			const binary = atob( result.substring( prefix.length ) );
 
