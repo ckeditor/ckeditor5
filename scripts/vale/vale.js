@@ -17,12 +17,15 @@ const CKEDITOR5_ROOT = upath.join( __dirname, '..', '..' );
 
 const minimistOptions = {
 	string: [
+		'directory',
 		'files'
 	],
 	alias: {
+		d: 'directory',
 		f: 'files'
 	},
 	default: {
+		directory: '',
 		files: ''
 	}
 };
@@ -58,7 +61,9 @@ main();
 
 function main() {
 	const args = minimist( process.argv.slice( 2 ), minimistOptions );
-	const patterns = args.files.split( ',' ).filter( Boolean );
+	const patterns = args.directory ?
+		[ `**/${ args.directory }/**/*.md` ] :
+		args.files.split( ',' ).filter( Boolean );
 	const valeArgs = [ 'run', 'docs:vale' ];
 
 	if ( patterns.length ) {
