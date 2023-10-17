@@ -106,7 +106,7 @@ function main() {
 		if ( output.trim() === 'The command line is too long.' ) {
 			console.log( chalk.red( [
 				'Provided pattern matched too many files',
-				'to pass their paths through the command line.',
+				'and exceed the command character limit.',
 				'Please use a more specific pattern.',
 				''
 			].join( '\n' ) ) );
