@@ -41,7 +41,7 @@ const globOptions = {
 };
 
 const itemsToCheckInsidePackages = [
-	'README.MD',
+	'README.md',
 	'docs'
 ];
 
