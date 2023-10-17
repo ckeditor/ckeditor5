@@ -100,7 +100,22 @@ function main() {
 		console.log( output );
 	} );
 
-	vale.stderr.on( 'data', data => console.log( data.toString() ) );
+	vale.stderr.on( 'data', data => {
+		const output = data.toString( 'utf-8' );
+
+		if ( output.trim() === 'The command line is too long.' ) {
+			console.log( chalk.red( [
+				'Provided pattern matched too many files',
+				'to pass their paths through the command line.',
+				'Please use a more specific pattern.',
+				''
+			].join( '\n' ) ) );
+
+			return;
+		}
+
+		console.log( chalk.red( data.toString() ) );
+	} );
 
 	vale.on( 'close', code => {
 		if ( code === 0 ) {
