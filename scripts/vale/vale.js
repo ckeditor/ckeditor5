@@ -13,6 +13,7 @@ const minimist = require( 'minimist' );
 const { globSync } = require( 'glob' );
 const { spawn } = require( 'child_process' );
 
+const ARGS_CHAR_LIMIT = 4000;
 const CKEDITOR5_ROOT = upath.join( __dirname, '..', '..' );
 
 const minimistOptions = {
@@ -59,77 +60,118 @@ const defaultPatterns = [
 
 main();
 
-function main() {
+async function main() {
 	const args = minimist( process.argv.slice( 2 ), minimistOptions );
-	const patterns = args.directory ?
-		[ `**/${ args.directory }/**/*.md` ] :
-		args.files.split( ',' ).filter( Boolean );
-	const valeArgs = [ 'run', 'docs:vale' ];
+	const patterns = args.directory ? [ `**/${ args.directory }/**/*.md` ] : args._;
+	const files = [];
 
 	if ( patterns.length ) {
-		const files = patterns.flatMap( pattern => globSync( pattern, globOptions ) );
+		const globOutput = globSync( patterns, globOptions );
 
-		if ( !files.length ) {
+		if ( !globOutput.length ) {
 			console.log( chalk.red( '\nProvided pattern did not match any files.\n' ) );
 
 			process.exit( 1 );
 		}
 
-		console.log( chalk.blue( `\nMatched ${ files.length } files.` ) );
-
-		valeArgs.push( ...files );
+		files.push( ...globOutput );
 	} else {
-		valeArgs.push( ...defaultPatterns );
+		files.push( ...defaultPatterns );
 	}
 
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
-	const vale = spawn( 'yarn', valeArgs, spawnOptions );
+	const countersTotal = {
+		errors: 0,
+		warnings: 0,
+		suggestions: 0,
+		files: 0
+	};
 
-	vale.stdout.on( 'data', data => {
-		const output = data.toString( 'utf-8' );
+	const chunks = splitFilesIntoChunks( files );
 
-		if ( output.startsWith( 'yarn run' ) ) {
-			return;
+	for ( let i = 0; i < chunks.length; i++ ) {
+		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...\n` ) );
+
+		const counters = await runVale( chunks[ i ] );
+
+		for ( const key in counters ) {
+			countersTotal[ key ] += counters[ key ];
+		}
+	}
+
+	console.log( chalk.blue( '\nVale execution complete.\n' ) );
+	console.log( [
+		chalk.red( `${ countersTotal.errors } errors` ),
+		', ',
+		chalk.yellow( `${ countersTotal.warnings } warnings` ),
+		' and ',
+		chalk.blue( `${ countersTotal.suggestions } suggestions` ),
+		` in ${ countersTotal.files } files.`
+	].join( '' ) );
+}
+
+function splitFilesIntoChunks( files ) {
+	return files.reduce( ( output, currentFile ) => {
+		const lastChunk = output[ output.length - 1 ];
+		const canAddFile = [ ...lastChunk, currentFile ].join( ' ' ).length <= ARGS_CHAR_LIMIT;
+
+		if ( canAddFile ) {
+			lastChunk.push( currentFile );
+		} else {
+			output.push( [ currentFile ] );
 		}
 
-		if ( output.startsWith( '$ vale' ) ) {
-			return;
-		}
+		return output;
+	}, [ [] ] );
+}
 
-		console.log( output );
-	} );
+function runVale( files ) {
+	const valeFooterPattern = /\n.*?(\d+) errors?.*?(\d+) warnings?.*?(\d+) suggestions?.*?(\d+) files?[\s\S]+/;
 
-	vale.stderr.on( 'data', data => {
-		const output = data.toString( 'utf-8' );
+	return new Promise( ( resolve, reject ) => {
+		const vale = spawn( 'yarn', [ 'run', 'docs:vale', ...files ], spawnOptions );
 
-		if ( output.trim() === 'The command line is too long.' ) {
-			console.log( chalk.red( [
-				'Provided pattern matched too many files',
-				'and exceed the command character limit.',
-				'Please use a more specific pattern.',
-				''
-			].join( '\n' ) ) );
+		let output = '';
 
-			return;
-		}
+		vale.stdout.on( 'data', data => {
+			output += data.toString( 'utf-8' );
+		} );
 
-		console.log( chalk.red( data.toString() ) );
-	} );
+		vale.stderr.on( 'data', data => {
+			const output = data.toString( 'utf-8' );
 
-	vale.on( 'close', code => {
-		if ( code === 0 ) {
-			console.log( chalk.green( 'No errors detected.\n' ) );
-		}
+			if ( output.startsWith( 'error Command failed with exit code 1.' ) ) {
+				return;
+			}
 
-		process.exit( code );
+			reject( output );
+		} );
+
+		vale.on( 'close', () => {
+			const match = output.match( valeFooterPattern );
+
+			if ( !match ) {
+				resolve( {} );
+			}
+
+			console.log( output
+				.replace( /^\$ vale .+\n/m, '' )
+				.replace( valeFooterPattern, '' )
+			);
+
+			resolve( {
+				errors: Number( match[ 1 ] ),
+				warnings: Number( match[ 2 ] ),
+				suggestions: Number( match[ 3 ] ),
+				files: Number( match[ 4 ] )
+			} );
+		} );
 	} );
 }
 
 function getPathsFromPackages( packagesDirPath ) {
-	return itemsToCheckInsidePackages.flatMap( item => {
-		const globPattern = upath.join( packagesDirPath, '*', item );
+	const globPatterns = itemsToCheckInsidePackages.map( item => upath.join( packagesDirPath, '*', item ) );
 
-		return globSync( globPattern, globOptions );
-	} );
+	return globSync( globPatterns, globOptions );
 }
