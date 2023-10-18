@@ -93,6 +93,29 @@ describe( 'ElementApiMixin', () => {
 			sinon.assert.notCalled( dataGetSpy );
 		} );
 
+		it( 'sets empty string as a data passed as a function `updateSourceElement` argument to editor element (div)', () => {
+			const editorElement = document.createElement( 'div' );
+
+			const dataGetSpy = testUtils.sinon.spy( editor.data, 'get' );
+
+			// Adding `updateSourceElementOnDestroy` config to the editor allows setting the data
+			// back to the source element.
+			editor.config.set( 'updateSourceElementOnDestroy', true );
+			editor.data.set( 'foo bar' );
+
+			editorElement.innerHTML = 'foo bar';
+
+			editor.sourceElement = editorElement;
+
+			expect( editorElement.innerHTML ).to.equal( 'foo bar' );
+
+			editor.updateSourceElement( '' );
+
+			expect( editorElement.innerHTML ).to.equal( '' );
+
+			sinon.assert.notCalled( dataGetSpy );
+		} );
+
 		it( 'sets data to editor element (textarea)', () => {
 			const editorElement = document.createElement( 'textarea' );
 

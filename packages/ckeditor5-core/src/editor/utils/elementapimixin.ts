@@ -52,7 +52,7 @@ export default function ElementApiMixin<Base extends Constructor<Editor>>( base:
 				return;
 			}
 
-			const dataToSet = data || this.data.get();
+			const dataToSet = typeof data === 'string' ? data : this.data.get();
 
 			setDataInElement( this.sourceElement, dataToSet );
 		}
