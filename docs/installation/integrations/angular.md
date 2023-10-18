@@ -534,7 +534,11 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes (except of crashes during the editor initialization). Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+Fired when the editor crashes. Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+
+<info-box>
+	Prior to ckeditor5-angular v7.0.1, this event did not include crashes during the editor initialization.
+</info-box>
 
 ## Styling
 
