@@ -41,21 +41,14 @@ const globOptions = {
 	ignore: '**/node_modules/**'
 };
 
-const itemsToCheckInsidePackages = [
-	'README.md',
-	'docs'
-];
-
 const defaultPatterns = [
-	'CHANGELOG.md',
-	'CONTRIBUTING.md',
-	'LICENSE.md',
-	'README.md',
-	'SECURITY.md',
+	'*.md',
 	'docs',
+	'packages/*/docs',
+	'packages/*/README.md',
 	'external/ckeditor5-commercial/docs',
-	...getPathsFromPackages( 'packages' ),
-	...getPathsFromPackages( 'external/ckeditor5-commercial/packages' )
+	'external/ckeditor5-commercial/packages/*/docs',
+	'external/ckeditor5-commercial/packages/*/README.md'
 ];
 
 main();
@@ -76,7 +69,7 @@ async function main() {
 
 		files.push( ...globOutput );
 	} else {
-		files.push( ...defaultPatterns );
+		files.push( ...globSync( defaultPatterns, globOptions ) );
 	}
 
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
@@ -129,7 +122,7 @@ function splitFilesIntoChunks( files ) {
 function runVale( files ) {
 	const valeFooterPattern = /\n.*?(\d+) errors?.*?(\d+) warnings?.*?(\d+) suggestions?.*?(\d+) files?[\s\S]+/;
 
-	return new Promise( ( resolve, reject ) => {
+	return new Promise( resolve => {
 		const vale = spawn( 'yarn', [ 'run', 'docs:vale', ...files ], spawnOptions );
 
 		let output = '';
@@ -145,7 +138,7 @@ function runVale( files ) {
 				return;
 			}
 
-			reject( output );
+			throw new Error( data );
 		} );
 
 		vale.on( 'close', () => {
@@ -168,10 +161,4 @@ function runVale( files ) {
 			} );
 		} );
 	} );
-}
-
-function getPathsFromPackages( packagesDirPath ) {
-	const globPatterns = itemsToCheckInsidePackages.map( item => upath.join( packagesDirPath, '*', item ) );
-
-	return globSync( globPatterns, globOptions );
 }
