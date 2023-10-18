@@ -53,7 +53,7 @@ describe( 'ElementApiMixin', () => {
 			sinon.assert.notCalled( dataGetSpy );
 		} );
 
-		it( 'sets data to editor element (div)', () => {
+		it( 'sets data to editor element without passing it as an argument (div)', () => {
 			const editorElement = document.createElement( 'div' );
 
 			const dataGetSpy = testUtils.sinon.spy( editor.data, 'get' );
@@ -72,7 +72,7 @@ describe( 'ElementApiMixin', () => {
 			sinon.assert.calledOnce( dataGetSpy );
 		} );
 
-		it( 'sets data passed as a function `updateSourceElement` argument to editor element (div)', () => {
+		it( 'sets data to editor element with passing it as an argument (div)', () => {
 			const editorElement = document.createElement( 'div' );
 
 			const dataGetSpy = testUtils.sinon.spy( editor.data, 'get' );
@@ -93,7 +93,7 @@ describe( 'ElementApiMixin', () => {
 			sinon.assert.notCalled( dataGetSpy );
 		} );
 
-		it( 'sets empty string as a data passed as a function `updateSourceElement` argument to editor element (div)', () => {
+		it( 'sets data to editor element with passing it as an argument using empty string (div)', () => {
 			const editorElement = document.createElement( 'div' );
 
 			const dataGetSpy = testUtils.sinon.spy( editor.data, 'get' );
