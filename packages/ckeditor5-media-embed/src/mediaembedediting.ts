@@ -242,12 +242,10 @@ export default class MediaEmbedEditing extends Plugin {
 						const id = match[ 1 ];
 
 						return (
-							'<div style="position: relative; background-color: black; text-align: center;">' +
-								`<video id=${ id } style="max-width: 100%;"  ${ poster }` +
-									'controls controlsList="nodownload" preload="metadata">' +
-									`<source type="video/${ ext }" src=${ url }></source>` +
-								'</video>' +
-							'</div>'
+							`<video id=${ id } style="max-width: 100%;"  ${ poster }` +
+								'controls controlsList="nodownload" preload="metadata">' +
+								`<source type="video/${ ext }" src=${ url }></source>` +
+							'</video>'
 						);
 					}
 				},
