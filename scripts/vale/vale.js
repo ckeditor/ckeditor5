@@ -35,17 +35,23 @@ const spawnOptions = {
 
 const globOptions = {
 	cwd: CKEDITOR5_ROOT,
-	ignore: '**/node_modules/**'
+	ignore: [
+		'**/node_modules/**',
+		'**/tests/**'
+	]
 };
 
 const defaultPatterns = [
+	// "README.md", "CHANGELOG.md" etc.
 	'*.md',
+	'packages/*/*.md',
+	'external/ckeditor5-commercial/packages/*/*.md',
+
+	// All "docs" directories.
 	'docs',
 	'packages/*/docs',
-	'packages/*/README.md',
 	'external/ckeditor5-commercial/docs',
-	'external/ckeditor5-commercial/packages/*/docs',
-	'external/ckeditor5-commercial/packages/*/README.md'
+	'external/ckeditor5-commercial/packages/*/docs'
 ];
 
 main();
@@ -91,15 +97,15 @@ async function main() {
 		}
 	}
 
-	console.log( chalk.blue( '\nVale execution complete.\n' ) );
-	console.log( collectedValeData.text );
 	console.log( [
-		chalk.red( `${ collectedValeData.errors } errors` ),
+		chalk.blue( '\nVale execution complete.\n' ),
+		collectedValeData.text,
+		chalk.red( `\n${ collectedValeData.errors } errors` ),
 		', ',
 		chalk.yellow( `${ collectedValeData.warnings } warnings` ),
 		' and ',
 		chalk.blue( `${ collectedValeData.suggestions } suggestions` ),
-		` in ${ collectedValeData.files } files.`
+		` in ${ collectedValeData.files } files.\n`
 	].join( '' ) );
 }
 
@@ -120,7 +126,7 @@ function splitFilesIntoChunks( files ) {
 }
 
 function runVale( files ) {
-	const valeFooterPattern = /\n.*?(\d+) errors?.*?(\d+) warnings?.*?(\d+) suggestions?.*?(\d+) files?[\s\S]+/;
+	const valeFooterPattern = /\n?.*?(\d+) errors?.*?(\d+) warnings?.*?(\d+) suggestions?.*?(\d+) files?[\s\S]+/;
 
 	return new Promise( resolve => {
 		const vale = spawn( 'yarn', [ 'run', 'docs:vale', ...files ], spawnOptions );
