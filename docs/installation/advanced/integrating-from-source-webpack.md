@@ -3,6 +3,7 @@ category: alternative-setups
 meta-title: Integrating CKEditor 5 from source using Webpack | CKEditor 5 documentation
 order: 10
 ---
+
 # Integrating from source using webpack
 
 <info-box>
@@ -218,13 +219,13 @@ Encore.
 		language: 'pl'
 	} ) )
 
-	// Use raw-loader for CKEditor&nbsp;5 SVG files.
+	// Use raw-loader for CKEditor 5 SVG files.
 	.addRule( {
 		test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 		loader: 'raw-loader'
 	} )
 
-	// Configure other image loaders to exclude CKEditor&nbsp;5 SVG files.
+	// Configure other image loaders to exclude CKEditor 5 SVG files.
 	.configureLoaderRule( 'images', loader => {
 		loader.exclude = /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/;
 	} )
