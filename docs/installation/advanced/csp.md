@@ -5,7 +5,7 @@
 # * List the strictest working Content Security Policy settings.
 
 category: advanced
-meta-title: Content Securoty Policy | CKEditor 5 documentation
+meta-title: Content Security Policy | CKEditor 5 documentation
 order: 40
 ---
 
