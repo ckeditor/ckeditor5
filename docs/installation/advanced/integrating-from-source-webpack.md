@@ -253,34 +253,28 @@ If you want to use TypeScript, add the `tsconfig.json` file at the root of your 
 // tsconfig.json
 
 {
-  "compilerOptions": {
-	"lib": [
-	  "DOM",
-	  "DOM.Iterable"
-	],
-	"outDir": "lib",
-	"removeComments": true,
-	"module": "es6",
-	"target": "es2019",
-	"baseUrl": "./",
-	"esModuleInterop": true,
-	"moduleResolution": "node",
-	"paths": {},
-	"sourceMap": true,
-	"sourceRoot": "/",
-	"alwaysStrict": true,
-	"allowUnreachableCode": false,
-	"noImplicitAny": true,
-	"strictNullChecks": true,
-	"noImplicitReturns": true,
-	"noUncheckedIndexedAccess": true,
-	"noUnusedLocals": true,
-	"noUnusedParameters": true
-  },
-  "include": ["./**/*.ts"],
-  "exclude": [
-	"node_modules/**/*"
-  ]
+	"compilerOptions": {
+		"types": [],
+		"lib": [
+		"ES2019",
+		"ES2020.String",
+		"DOM",
+		"DOM.Iterable"
+		],
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"strict": true,
+		"module": "es6",
+		"target": "es2019",
+		"sourceMap": true,
+		"allowJs": true,
+		"moduleResolution": "node",
+		"skipLibCheck": true
+	},
+	"include": ["./**/*.ts"],
+	"exclude": [
+		"node_modules/**/*"
+	]
 }
 ```
 
