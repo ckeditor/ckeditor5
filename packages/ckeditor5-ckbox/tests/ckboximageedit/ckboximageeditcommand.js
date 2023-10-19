@@ -3,12 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console */
-
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -51,14 +48,6 @@ describe( 'CKBoxImageEditCommand', () => {
 	} );
 
 	describe( '#execute()', () => {
-		it( 'should invoke console.warn()', () => {
-			const consoleWarnStub = testUtils.sinon.stub( console, 'warn' );
-
-			editor.execute( 'ckboxImageEdit' );
-
-			expect( consoleWarnStub.callCount ).to.equal( 1 );
-		} );
-
 		it( 'should set "#value" property to true', () => {
 			editor.execute( 'ckboxImageEdit' );
 

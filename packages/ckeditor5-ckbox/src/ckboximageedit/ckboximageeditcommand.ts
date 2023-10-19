@@ -34,7 +34,5 @@ export default class CKBoxImageEditCommand extends Command {
 	 */
 	public override execute(): void {
 		this.value = true;
-
-		console.warn( 'Edit image command execution' );
 	}
 }
