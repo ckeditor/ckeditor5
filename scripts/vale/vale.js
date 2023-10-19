@@ -13,21 +13,18 @@ const minimist = require( 'minimist' );
 const { globSync } = require( 'glob' );
 const { spawn } = require( 'child_process' );
 
-const ARGS_CHAR_LIMIT = 4000;
+const ARGS_CHAR_LIMIT = 8000;
 const CKEDITOR5_ROOT = upath.join( __dirname, '..', '..' );
 
 const minimistOptions = {
 	string: [
-		'directory',
-		'files'
+		'directory'
 	],
 	alias: {
-		d: 'directory',
-		f: 'files'
+		d: 'directory'
 	},
 	default: {
-		directory: '',
-		files: ''
+		directory: ''
 	}
 };
 
@@ -74,45 +71,48 @@ async function main() {
 
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
-	const countersTotal = {
+	const collectedValeData = {
 		errors: 0,
 		warnings: 0,
 		suggestions: 0,
-		files: 0
+		files: 0,
+		text: ''
 	};
 
 	const chunks = splitFilesIntoChunks( files );
 
 	for ( let i = 0; i < chunks.length; i++ ) {
-		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...\n` ) );
+		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...` ) );
 
-		const counters = await runVale( chunks[ i ] );
+		const valeData = await runVale( chunks[ i ] );
 
-		for ( const key in counters ) {
-			countersTotal[ key ] += counters[ key ];
+		for ( const key in valeData ) {
+			collectedValeData[ key ] += valeData[ key ];
 		}
 	}
 
 	console.log( chalk.blue( '\nVale execution complete.\n' ) );
+	console.log( collectedValeData.text );
 	console.log( [
-		chalk.red( `${ countersTotal.errors } errors` ),
+		chalk.red( `${ collectedValeData.errors } errors` ),
 		', ',
-		chalk.yellow( `${ countersTotal.warnings } warnings` ),
+		chalk.yellow( `${ collectedValeData.warnings } warnings` ),
 		' and ',
-		chalk.blue( `${ countersTotal.suggestions } suggestions` ),
-		` in ${ countersTotal.files } files.`
+		chalk.blue( `${ collectedValeData.suggestions } suggestions` ),
+		` in ${ collectedValeData.files } files.`
 	].join( '' ) );
 }
 
 function splitFilesIntoChunks( files ) {
 	return files.reduce( ( output, currentFile ) => {
+		const wrappedFile = `"${ currentFile }"`;
 		const lastChunk = output[ output.length - 1 ];
-		const canAddFile = [ ...lastChunk, currentFile ].join( ' ' ).length <= ARGS_CHAR_LIMIT;
+		const canAddFile = [ ...lastChunk, wrappedFile ].join( ' ' ).length <= ARGS_CHAR_LIMIT;
 
 		if ( canAddFile ) {
-			lastChunk.push( currentFile );
+			lastChunk.push( wrappedFile );
 		} else {
-			output.push( [ currentFile ] );
+			output.push( [ wrappedFile ] );
 		}
 
 		return output;
@@ -125,39 +125,35 @@ function runVale( files ) {
 	return new Promise( resolve => {
 		const vale = spawn( 'yarn', [ 'run', 'docs:vale', ...files ], spawnOptions );
 
-		let output = '';
+		let text = '';
 
-		vale.stdout.on( 'data', data => {
-			output += data.toString( 'utf-8' );
-		} );
+		vale.stdout.on( 'data', stdoutData => ( text += stdoutData.toString( 'utf-8' ) ) );
 
-		vale.stderr.on( 'data', data => {
-			const output = data.toString( 'utf-8' );
+		vale.stderr.on( 'data', stderrData => {
+			const stderrText = stderrData.toString( 'utf-8' );
 
-			if ( output.startsWith( 'error Command failed with exit code 1.' ) ) {
+			if ( stderrText.startsWith( 'error Command failed with exit code 1.' ) ) {
 				return;
 			}
 
-			throw new Error( data );
+			throw new Error( stderrText );
 		} );
 
 		vale.on( 'close', () => {
-			const match = output.match( valeFooterPattern );
+			const match = text.match( valeFooterPattern );
 
 			if ( !match ) {
-				resolve( {} );
+				throw new Error( 'Vale output does not match the footer pattern:\n\n' + text );
 			}
-
-			console.log( output
-				.replace( /^\$ vale .+\n/m, '' )
-				.replace( valeFooterPattern, '' )
-			);
 
 			resolve( {
 				errors: Number( match[ 1 ] ),
 				warnings: Number( match[ 2 ] ),
 				suggestions: Number( match[ 3 ] ),
-				files: Number( match[ 4 ] )
+				files: Number( match[ 4 ] ),
+				text: text
+					.replace( /^\$ vale .+\n/m, '' )
+					.replace( valeFooterPattern, '' )
 			} );
 		} );
 	} );
