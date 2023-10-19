@@ -891,7 +891,7 @@ describe( 'LinkEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
-						'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
+						'<$text linkHref="url" linkIsDownloadable="true" linkRel="noopener noreferrer" linkTarget="_blank">Foo</$text>' +
 						'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
 						'<$text linkHref="example.com" linkIsDownloadable="true">Baz</$text>' +
 					'</paragraph>'
@@ -930,7 +930,7 @@ describe( 'LinkEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
-						'<$text linkHref="url">Foo</$text>' +
+						'<$text linkHref="url" linkTarget="_blank">Foo</$text>' +
 						'<$text linkHref="example.com">Bar</$text>' +
 					'</paragraph>'
 				);

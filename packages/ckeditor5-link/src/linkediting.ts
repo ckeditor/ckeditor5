@@ -43,6 +43,8 @@ import ManualDecorator from './utils/manualdecorator';
 import {
 	createLinkElement,
 	ensureSafeUrl,
+	ensureSafeRel,
+	ensureSafeTarget,
 	getLocalizedDecorators,
 	normalizeDecorators,
 	openLink,
@@ -98,15 +100,53 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 
 		// Allow link attribute on all inline nodes.
-		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
+		editor.model.schema.extend( '$text', { allowAttributes: [
+			'linkHref',
+			// 'linkHreflang',
+			// 'linkPing',
+			// 'linkReferrerpolicy',
+			'linkRel',
+			'linkTarget'
+		] } );
 
 		editor.conversion.for( 'dataDowncast' )
-			.attributeToElement( { model: 'linkHref', view: createLinkElement } );
+			.attributeToElement( {
+				model: 'linkHref',
+				view: ( href, conversionApi ) =>
+					createLinkElement( { href }, conversionApi )
+			} )
+			.attributeToElement( {
+				model: 'linkRel',
+				view: ( rel, conversionApi ) => createLinkElement( { rel }, conversionApi )
+			} )
+			.attributeToElement( {
+				model: 'linkTarget',
+				view: ( target, conversionApi ) =>
+					createLinkElement( { target }, conversionApi )
+			} );
 
 		editor.conversion.for( 'editingDowncast' )
-			.attributeToElement( { model: 'linkHref', view: ( href, conversionApi ) => {
-				return createLinkElement( ensureSafeUrl( href ), conversionApi );
-			} } );
+			.attributeToElement( {
+				model: 'linkHref',
+				view: ( hrefValue, conversionApi ) => {
+					const href = ensureSafeUrl( hrefValue );
+					return createLinkElement( { href }, conversionApi );
+				}
+			} )
+			.attributeToElement( {
+				model: 'linkRel',
+				view: ( relValue, conversionApi ) => {
+					const rel = ensureSafeRel( relValue );
+					return createLinkElement( { rel }, conversionApi );
+				}
+			} )
+			.attributeToElement( {
+				model: 'linkTarget',
+				view: ( targetValue, conversionApi ) => {
+					const target = ensureSafeTarget( targetValue );
+					return createLinkElement( { target }, conversionApi );
+				}
+			} );
 
 		editor.conversion.for( 'upcast' )
 			.elementToAttribute( {
@@ -118,7 +158,34 @@ export default class LinkEditing extends Plugin {
 				},
 				model: {
 					key: 'linkHref',
-					value: ( viewElement: ViewElement ) => viewElement.getAttribute( 'href' )
+					value: ( viewElement: ViewElement ) =>
+						viewElement.getAttribute( 'href' )
+				}
+			} )
+			.elementToAttribute( {
+				view: {
+					name: 'a',
+					attributes: {
+						rel: true
+					}
+				},
+				model: {
+					key: 'linkRel',
+					value: ( viewElement: ViewElement ) =>
+						viewElement.getAttribute( 'rel' )
+				}
+			} )
+			.elementToAttribute( {
+				view: {
+					name: 'a',
+					attributes: {
+						target: true
+					}
+				},
+				model: {
+					key: 'linkTarget',
+					value: ( viewElement: ViewElement ) =>
+						viewElement.getAttribute( 'target' )
 				}
 			} );
 
@@ -469,7 +536,7 @@ export default class LinkEditing extends Plugin {
 		const view = editor.editing.view;
 
 		// Selection attributes when started typing over the link.
-		let selectionAttributes: IterableIterator<[ string, unknown ]> | null = null;
+		let selectionAttributes: IterableIterator<[string, unknown]> | null = null;
 
 		// Whether pressed `Backspace` or `Delete`. If so, attributes should not be preserved.
 		let deletedContent = false;
