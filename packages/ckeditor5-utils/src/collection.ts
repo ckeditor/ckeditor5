@@ -331,6 +331,18 @@ export default class Collection<T extends Record<string, any>> extends EmitterMi
 	}
 
 	/**
+	 * Performs the specified action for each item in the collection.
+	 *
+	 * @param ctx Context in which the `callback` will be called.
+	 */
+	public forEach(
+		callback: ( item: T, index: number ) => unknown,
+		ctx?: any
+	): void {
+		this._items.forEach( callback, ctx );
+	}
+
+	/**
 	 * Finds the first item in the collection for which the `callback` returns a true value.
 	 *
 	 * @param callback
