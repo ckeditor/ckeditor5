@@ -24,7 +24,7 @@ import type Operation from './operation/operation';
  * @see module:engine/model/model~Model#enqueueChange
  * @see module:engine/model/model~Model#change
  */
-export default class Batch {
+export default class Batch implements BatchType {
 	/**
 	 * An array of operations that compose this batch.
 	 */
