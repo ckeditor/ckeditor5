@@ -39,7 +39,7 @@ There is also a dedicated, configurable notifications system developed especiall
 
 All the collaboration features **can also be used for {@link features/collaboration#non-real-time-asynchronous-collaboration asynchronous editing}**. It is a collaboration mode when a single actor can work on the document at once, using the revision history, track changes, and comments features to interact with previous and following editors, as the work is done sequentially.
 
-## Productivity-improving features included in the CKEditor&nbsp;5 Premium Features module
+## Productivity-improving features
 
 Apart from the real-time collaboration tools, the module provides various other plugins. The {@link features/format-painter Format painter} feature lets users easily style the edited text, while the {@link features/mentions Mentions} feature allows you to tag other users in comments. Meanwhile, {@link features/slash-commands Slash commands} let you create, insert, and format rich content on the go by typing a `/` sign and choosing from many predefined actions, such as text formatting, and inserting headings, tables, or lists.
 
