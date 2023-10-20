@@ -551,7 +551,7 @@ export default class Renderer extends ObservableMixin() {
 	 */
 	private _updateText( viewText: ViewText, options: { inlineFillerPosition?: ViewPosition | null } ) {
 		const domText = this.domConverter.findCorrespondingDomText( viewText )!;
-		const newDomText = this.domConverter.viewToDom( viewText ) as DomText;
+		const newDomText = this.domConverter.viewToDom( viewText );
 
 		let expectedText = newDomText.data;
 		const filler = options.inlineFillerPosition;

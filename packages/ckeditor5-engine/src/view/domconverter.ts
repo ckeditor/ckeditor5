@@ -345,6 +345,16 @@ export default class DomConverter {
 	}
 
 	public viewToDom(
+		viewNode: ViewText,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomText;
+
+	public viewToDom(
+		viewNode: ViewElement,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomElement;
+
+	public viewToDom(
 		viewNode: ViewNode,
 		options?: { bind?: boolean; withChildren?: boolean }
 	): DomNode;
