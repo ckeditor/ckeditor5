@@ -10,7 +10,6 @@
 import Operation from './operation';
 
 import type Document from '../document';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Selectable } from '../selection';
 
 /**
