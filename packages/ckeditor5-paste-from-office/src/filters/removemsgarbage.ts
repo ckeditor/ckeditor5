@@ -10,10 +10,44 @@
 import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
 
 /**
- * Removes `<style>` block added by Google Sheets to a copied content.
+ * Cleanup MS garbage like styles, attributes and elements.
  *
  * @param documentFragment element `data.content` obtained from clipboard
  */
 export default function removeMSGarbage( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
-	console.log( Array.from( documentFragment.getChildren() ) );
+	const elementsToRemove = [];
+
+	for ( const { item } of writer.createRangeIn( documentFragment ) ) {
+		if ( !item.is( 'element' ) ) {
+			continue;
+		}
+
+		const itemClassName = item.getAttribute( 'class' );
+
+		if ( itemClassName && /mso/gi.exec( itemClassName ) ) {
+			writer.removeAttribute( 'class', item );
+		}
+
+		if ( Array.from( item.getStyleNames() ).length ) {
+			for ( const styleName of item.getStyleNames() ) {
+				if ( /mso/gi.exec( styleName ) ) {
+					writer.removeStyle( styleName, item );
+				}
+			}
+		}
+
+		if ( item.is( 'element' ) && item.name === 'w:sdt' ) {
+			if ( item.is( 'element' ) ) {
+				elementsToRemove.push( item );
+			}
+		}
+	}
+
+	for ( const item of elementsToRemove ) {
+		const container = writer.createElement( 'div', [], item.getChildren() );
+
+		if ( container.is( 'element' ) ) {
+			writer.replace( item, container );
+		}
+	}
 }
