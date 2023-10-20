@@ -31,7 +31,9 @@ ClassicEditor
 			'undo',
 			'redo',
 			'|',
-			'ckbox'
+			'ckbox',
+			'|',
+			'ckboxImageEdit'
 		],
 		image: {
 			toolbar: [

@@ -30,6 +30,23 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public override refresh(): void {
+		const editor = this.editor;
+
+		const selectedElement = editor.model.document.selection.getSelectedElement()!;
+		const isImageElement = selectedElement && ( selectedElement.is( 'element', 'imageInline' ) ||
+			selectedElement.is( 'element', 'imageBlock' ) );
+
+		if ( isImageElement && ( selectedElement.hasAttribute( 'ckboxImageId' ) ) ) {
+			this.isEnabled = true;
+		} else {
+			this.isEnabled = false;
+		}
+	}
+
+	/**
 	 * Opens the CKBox dialog for editing the image.
 	 */
 	public override execute(): void {

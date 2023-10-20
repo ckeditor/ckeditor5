@@ -5,13 +5,16 @@
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { Image } from '@ckeditor/ckeditor5-image';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditUI from '../../src/ckboximageedit/ckboximageeditui';
 
 describe( 'CKBoxImageEditUI', () => {
-	let editor, element, button;
+	let editor, model, element, button;
 
 	beforeEach( () => {
 		element = global.document.createElement( 'div' );
@@ -19,10 +22,11 @@ describe( 'CKBoxImageEditUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ CKBoxImageEditEditing, CKBoxImageEditUI ]
+				plugins: [ CKBoxImageEditEditing, CKBoxImageEditUI, Image, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				model = editor.model;
 				button = editor.ui.componentFactory.create( 'ckboxImageEdit' );
 			} );
 	} );
@@ -55,11 +59,19 @@ describe( 'CKBoxImageEditUI', () => {
 		} );
 
 		it( 'should have #isEnabled bound to the command isEnabled', () => {
-			expect( button.isEnabled ).to.be.true;
+			expect( button.isEnabled ).to.be.false;
 
 			editor.commands.get( 'ckboxImageEdit' ).isEnabled = false;
 
 			expect( button.isEnabled ).to.be.false;
+
+			setModelData( model, '[<paragraph>Foo</paragraph>]' );
+
+			expect( button.isEnabled ).to.be.false;
+
+			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
+			expect( button.isEnabled ).to.be.true;
 		} );
 
 		it( 'should have #isOn bound to the command value', () => {
@@ -68,6 +80,12 @@ describe( 'CKBoxImageEditUI', () => {
 			expect( button.isOn ).to.be.false;
 
 			editor.commands.get( 'ckboxImageEdit' ).value = true;
+
+			setModelData( model, '[<paragraph>Foo</paragraph>]' );
+
+			expect( button.isOn ).to.be.false;
+
+			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
 			expect( button.isOn ).to.be.true;
 		} );
