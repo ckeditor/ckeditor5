@@ -67,6 +67,7 @@ swap:
   (?i)todo list: to-do list
   (?<!.)TS: TypeScript
   Typescript: TypeScript
+  (?i)typings: types|type definitions
   "un(?:check|select)": clear
   url: URL
   utils: utilities
