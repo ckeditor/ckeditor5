@@ -9,6 +9,8 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import GFMDataProcessor from './gfmdataprocessor';
+import type { ClipboardPipeline, ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
+import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 
 /**
  * The GitHub Flavored Markdown (GFM) plugin.
@@ -30,5 +32,32 @@ export default class Markdown extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'Markdown' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+
+		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
+
+		let shiftPressed = false;
+
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			shiftPressed = data.shiftKey;
+		} );
+
+		this.listenTo<ClipboardInputTransformationEvent>( clipboardPipeline, 'inputTransformation', ( evt, data ) => {
+			if ( data.dataTransfer.getData( 'text/html' ) || shiftPressed ) {
+				return;
+			}
+
+			const dataStr = data.dataTransfer.getData( 'text/plain' );
+
+			data.content = editor.data.processor.toView( dataStr );
+		} );
 	}
 }
