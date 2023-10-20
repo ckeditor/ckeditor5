@@ -223,7 +223,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 
 		// When there is a conversion result.
 		if ( modelRange ) {
-			// Remove all empty elements that were create while splitting.
+			// Remove all empty elements that were created while splitting.
 			this._removeEmptyElements();
 
 			// Move all items that were converted in context tree to the document fragment.

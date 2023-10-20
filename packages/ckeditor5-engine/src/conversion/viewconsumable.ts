@@ -570,11 +570,15 @@ export class ViewElementConsumables {
 				 *
 				 * What you have done is trying to use:
 				 *
-				 *		consumables.add( { attributes: [ 'class', 'style' ] } );
+				 * ```ts
+				 * consumables.add( { attributes: [ 'class', 'style' ] } );
+				 * ```
 				 *
 				 * While each class and style should be registered separately:
 				 *
-				 *		consumables.add( { classes: 'some-class', styles: 'font-weight' } );
+				 * ```ts
+				 * consumables.add( { classes: 'some-class', styles: 'font-weight' } );
+				 * ```
 				 *
 				 * @error viewconsumable-invalid-attribute
 				 */

@@ -953,7 +953,7 @@ function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObje
 }
 
 /**
- * A CSS style property descriptor that contains tuplet of two strings:
+ * A CSS style property descriptor that contains tuple of two strings:
  *
  * - first string describes property name
  * - second string describes property value
