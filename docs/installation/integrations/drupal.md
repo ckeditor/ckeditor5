@@ -66,23 +66,23 @@ composer require drupal/ckeditor5_premium_features
 
 Alternatively, add the CKEditor 5 Premium Features Module to your Drupal installation.
 
-To do it, enter the **Manage > Extend** section in the Drupal dashboard first and use the **Add new** module button to provide the source for the CKEditor 5 Premium features module. You can fetch the module from https://www.drupal.org/project/ckeditor5_premium_features
+To do it, enter the **Manage > Extend** section in the Drupal dashboard first and use the **Add new** module button to provide the source for the CKEditor 5 Premium features module. You can fetch the module from [https://www.drupal.org/project/ckeditor5_premium_features](https://www.drupal.org/project/ckeditor5_premium_features).
 
-{@img assets/img/drupal_dashboard_add_pfm.png 878 Adding CKEditor&nbsp;5 Premium Features module to Drupal.}
+{@img assets/img/drupal_dashboard_add_pfm.png 700 Adding CKEditor&nbsp;5 Premium Features module to Drupal.}
 
 ### Activation
 
 CKEditor&nbsp;5 Premium module for Drupal requires an active license key and a few more pieces of information to activate. 
 
-{@img assets/img/drupal_general_settings.png 922 Drupal dashboard.}
+{@img assets/img/drupal_general_settings.png 700 Drupal dashboard.}
 
 Please follow the {@link support/license-key-and-activation License key and activation} guide to find out how to obtain the key and activate the license. You can also use the {@link @trial guides/overview Premium features Free Trial} to obtain a commitment-free, 30-day trial key. Once you have the key ready, in the Drupal dashboard go to the CKEditor&nbsp;5 Premium module configuration. In the **General Setting** section, paste the key in the **License key** input box.
 
-{@img assets/img/drupal_license_key.png 1250 Drupal license key.}
+{@img assets/img/drupal_license_key.png 700 Drupal license key.}
 
 Next, use the information obtained from the [CKEditor 5 Dashboard](https://dashboard.ckeditor.com/) and fill in the following fields in the Drupal module's **General Settings**.
 
-{@img assets/img/drupal_authorizations.png 1342 Drupal authorization settings.}
+{@img assets/img/drupal_authorizations.png 700 Drupal authorization settings.}
 
 You can find more details of this process in the [Adding credentials to Drupal](https://www.drupal.org/docs/contributed-modules/ckeditor-5-premium-features/how-to-install-and-set-up-the-module#s-adding-credentials-to-drupal) guide on the Drupal website.
 
