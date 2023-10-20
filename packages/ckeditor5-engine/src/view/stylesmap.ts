@@ -41,9 +41,8 @@ export default class StylesMap {
 	 */
 	public get isEmpty(): boolean {
 		const entries = Object.entries( this._styles );
-		const from = Array.from( entries );
 
-		return !from.length;
+		return !entries.length;
 	}
 
 	/**
@@ -67,7 +66,7 @@ export default class StylesMap {
 	public setTo( inlineStyle: string ): void {
 		this.clear();
 
-		const parsedStyles = Array.from( parseInlineStyles( inlineStyle ).entries() );
+		const parsedStyles = parseInlineStyles( inlineStyle );
 
 		for ( const [ key, value ] of parsedStyles ) {
 			this._styleProcessor.toNormalizedForm( key, value, this._styles );
@@ -458,7 +457,7 @@ export default class StylesMap {
 			return;
 		}
 
-		const isParentEmpty = !Array.from( Object.keys( parentObject ) ).length;
+		const isParentEmpty = !Object.keys( parentObject ).length;
 
 		if ( isParentEmpty ) {
 			this.remove( parentPath );
@@ -645,7 +644,7 @@ export class StylesProcessor {
 			...Object.keys( styles )
 		] );
 
-		return Array.from( styleNamesKeysSet.values() );
+		return Array.from( styleNamesKeysSet );
 	}
 
 	/**

@@ -177,7 +177,7 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	 * Destroys this instance. Makes sure that all observers are destroyed and listeners removed.
 	 */
 	public destroy(): void {
-		this.roots.map( root => root.destroy() );
+		this.roots.forEach( root => root.destroy() );
 		this.stopListening();
 	}
 
