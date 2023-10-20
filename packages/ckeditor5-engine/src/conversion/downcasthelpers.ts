@@ -2598,7 +2598,7 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
  * @returns Function exposed by writer as createSlot().
  */
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
-	return ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => {
+	return ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
 		let children: Array<ModelNode> | null = null;

@@ -21,7 +21,7 @@ export default class StylesMap {
 	 *
 	 * When no style processor rules are defined it acts as simple key-value storage.
 	 */
-	private _styles: Record<string, string>;
+	private _styles: Styles;
 
 	/**
 	 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
@@ -373,7 +373,7 @@ export default class StylesMap {
 
 		if ( this._styles[ propertyName ] && !isObject( this._styles[ propertyName ] ) ) {
 			// Try return styles set directly - values that are not parsed.
-			return this._styles[ propertyName ];
+			return this._styles[ propertyName ] as string;
 		}
 
 		const styles = this._styleProcessor.getReducedForm( propertyName, this._styles );

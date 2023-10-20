@@ -340,7 +340,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 		}
 
 		// Insert element on allowed position.
-		this.conversionApi.writer!.insert( modelNode, splitResult.position );
+		this.conversionApi.writer.insert( modelNode, splitResult.position );
 
 		return true;
 	}
@@ -502,7 +502,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 
 		for ( const element of this._splitParts.keys() ) {
 			if ( element.isEmpty && !this._emptyElementsToKeep.has( element ) ) {
-				this.conversionApi.writer!.remove( element );
+				this.conversionApi.writer.remove( element );
 				this._splitParts.delete( element );
 
 				anyRemoved = true;
