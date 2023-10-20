@@ -7,6 +7,8 @@
  * @module core/command
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import {
 	ObservableMixin,
 	type EventInfo,

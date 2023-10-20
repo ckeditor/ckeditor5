@@ -7,6 +7,8 @@
  * @module core/editor/editor
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import {
 	Config,
 	CKEditorError,

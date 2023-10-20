@@ -7,6 +7,8 @@
  * @module engine/view/uielement
  */
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import Element, { type ElementAttributes } from './element';
 import Node from './node';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
