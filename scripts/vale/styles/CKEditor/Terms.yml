@@ -41,6 +41,7 @@ swap:
   Javascript: JavaScript
   (?<!.)JS: JavaScript
   LINUX|linux: Linux
+  Lo-Dash|lodash: Lodash
   MacOS: macOS
   "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
   "(?:MSOffice|MS Office)": Microsoft Office
