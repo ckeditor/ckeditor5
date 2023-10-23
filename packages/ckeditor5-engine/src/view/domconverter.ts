@@ -148,6 +148,11 @@ export default class DomConverter {
 	private readonly _inlineObjectElementMatcher = new Matcher();
 
 	/**
+	 * Set of elements with temporary custom properties that require clearing after render.
+	 */
+	private readonly _elementsWithTemporaryCustomProperties = new Set<ViewElement>();
+
+	/**
 	 * Creates a DOM converter.
 	 *
 	 * @param document The view document instance.
@@ -364,7 +369,13 @@ export default class DomConverter {
 			return this._domDocument.createTextNode( textData );
 		} else {
 			if ( this.mapViewToDom( viewNode as ViewElement ) ) {
-				return this.mapViewToDom( viewNode as ViewElement )!;
+				// Do not reuse element that is marked to not reuse (for example an IMG element
+				// so it can immediately display a placeholder background instead of waiting for the new src to load).
+				if ( viewNode.is( 'element' ) && viewNode.getCustomProperty( 'editingPipeline:doNotReuseOnce' ) ) {
+					this._elementsWithTemporaryCustomProperties.add( viewNode );
+				} else {
+					return this.mapViewToDom( viewNode as ViewElement )!;
+				}
 			}
 
 			let domElement: DomElement | DomDocumentFragment | DomComment;
@@ -1239,6 +1250,19 @@ export default class DomConverter {
 	 */
 	public registerInlineObjectMatcher( pattern: MatcherPattern ): void {
 		this._inlineObjectElementMatcher.add( pattern );
+	}
+
+	/**
+	 * Clear temporary custom properties.
+	 *
+	 * @internal
+	 */
+	public _clearTemporaryCustomProperties(): void {
+		for ( const element of this._elementsWithTemporaryCustomProperties ) {
+			element._removeCustomProperty( 'editingPipeline:doNotReuseOnce' );
+		}
+
+		this._elementsWithTemporaryCustomProperties.clear();
 	}
 
 	/**

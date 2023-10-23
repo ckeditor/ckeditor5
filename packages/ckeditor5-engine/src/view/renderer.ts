@@ -324,6 +324,8 @@ export default class Renderer extends ObservableMixin() {
 		this._updateFocus();
 		this._updateSelection();
 
+		this.domConverter._clearTemporaryCustomProperties();
+
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
@@ -377,7 +379,7 @@ export default class Renderer extends ObservableMixin() {
 					// UIElement and RawElement are special cases. Their children are not stored in a view (#799)
 					// so we cannot use them with replacing flow (since they use view children during rendering
 					// which will always result in rendering empty elements).
-					if ( viewChild && !( viewChild.is( 'uiElement' ) || viewChild.is( 'rawElement' ) ) ) {
+					if ( viewChild && !viewChild.is( 'uiElement' ) && !viewChild.is( 'rawElement' ) ) {
 						this._updateElementMappings( viewChild as ViewElement, actualDomChildren[ deleteIndex ] as DomElement );
 					}
 

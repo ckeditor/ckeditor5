@@ -3,12 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global btoa */
+/* global btoa, atob */
 
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import { getWorkspaceId, getImageUrls } from '../src/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { getWorkspaceId, getImageUrls, blurHashToDataUrl } from '../src/utils';
 
 describe( 'utils', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'getWorkspaceId', () => {
 		describe( 'without default workspace', () => {
 			it( 'should return the first workspace id from the token', async () => {
@@ -164,5 +167,26 @@ describe( 'utils', () => {
 		function getExampleUrl( width, extension = 'webp' ) {
 			return `https://example.com/workspace1/assets/foo-id/images/${ width }.${ extension }`;
 		}
+	} );
+
+	describe( 'base64FromBlurHash()', () => {
+		it( 'should return undefined if no blurHash', () => {
+			expect( blurHashToDataUrl( undefined ) ).to.be.undefined;
+			expect( blurHashToDataUrl( null ) ).to.be.undefined;
+			expect( blurHashToDataUrl( '' ) ).to.be.undefined;
+		} );
+
+		it( 'should return undefined if invalid blurHash', () => {
+			expect( blurHashToDataUrl( '123' ) ).to.be.undefined;
+		} );
+
+		it( 'should generate image data url', () => {
+			const result = blurHashToDataUrl( 'KTF55N=ZR4PXSirp5ZOZW9' );
+			const prefix = 'data:image/png;base64,';
+			const binary = atob( result.substring( prefix.length ) );
+
+			expect( result ).to.match( new RegExp( '^' + prefix ) );
+			expect( binary.substring( 0, 8 ) ).to.equal( '\x89PNG\r\n\u001a\n' );
+		} );
 	} );
 } );

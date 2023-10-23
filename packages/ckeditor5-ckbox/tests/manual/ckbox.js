@@ -12,12 +12,13 @@ import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import { TOKEN_URL } from '../_utils/ckbox-config';
 import CKBox from '../../src/ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, PictureEditing, ImageUpload, LinkImageEditing, ImageInsert, CloudServices, CKBox ],
+		plugins: [ ArticlePluginSet, PictureEditing, ImageUpload, LinkImageEditing, ImageInsert, CloudServices, CKBox, LinkImage ],
 		toolbar: [
 			'heading',
 			'|',
