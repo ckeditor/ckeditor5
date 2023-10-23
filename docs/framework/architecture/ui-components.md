@@ -36,7 +36,7 @@ balloon.pin( {
     positions: [ positions.southArrowNorth ]
 } );
 
-document.getElementById( 'balloon' ).append( balloon.element );
+document.body.append( balloon.element );
 ```
 
 Two positions describe the placement of the ballon. The first one describes the relationship between the element and the pinned balloon. The second one is the position of the balloon arrow. It creates many possible balloon positions:
