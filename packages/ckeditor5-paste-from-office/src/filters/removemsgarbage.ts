@@ -24,13 +24,13 @@ export default function removeMSGarbage( documentFragment: ViewDocumentFragment,
 
 		const itemClassName = item.getAttribute( 'class' );
 
-		if ( itemClassName && /mso/gi.exec( itemClassName ) ) {
+		if ( itemClassName && /\bmso/gi.exec( itemClassName ) ) {
 			writer.removeAttribute( 'class', item );
 		}
 
 		if ( Array.from( item.getStyleNames() ).length ) {
 			for ( const styleName of item.getStyleNames() ) {
-				if ( /mso/gi.exec( styleName ) ) {
+				if ( /\bmso/gi.exec( styleName ) ) {
 					writer.removeStyle( styleName, item );
 				}
 			}
@@ -44,10 +44,9 @@ export default function removeMSGarbage( documentFragment: ViewDocumentFragment,
 	}
 
 	for ( const item of elementsToRemove ) {
-		const container = writer.createElement( 'div', [], item.getChildren() );
+		const childIndex = documentFragment.getChildIndex( item );
 
-		if ( container.is( 'element' ) ) {
-			writer.replace( item, container );
-		}
+		writer.remove( item );
+		writer.insertChild( childIndex, item.getChildren(), documentFragment );
 	}
 }
