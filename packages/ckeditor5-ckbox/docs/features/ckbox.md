@@ -265,6 +265,8 @@ ClassicEditor
 
 ## Common API
 
+<!-- UPDATE THE EDIT BUTTON API -->
+
 The {@link module:ckbox/ckbox~CKBox} plugin registers:
 
 * The `'ckbox'` UI button component
