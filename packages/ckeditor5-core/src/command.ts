@@ -7,8 +7,6 @@
  * @module core/command
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import {
 	ObservableMixin,
 	type EventInfo,
@@ -255,7 +253,7 @@ export default class Command extends ObservableMixin() {
 	 *
 	 * @fires execute
 	 */
-	public execute( ...args: Array<unknown> ): unknown { return undefined; }
+	public execute( ...args: Array<unknown> ): unknown { return undefined; } // eslint-disable-line @typescript-eslint/no-unused-vars
 
 	/**
 	 * Destroys the command.

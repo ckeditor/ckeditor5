@@ -2309,7 +2309,15 @@ function normalizeModelElementConfig( model: string | {
 
 interface NormalizedModelElementConfig {
 	name: string;
+
+	/**
+	 * List of attributes that should trigger reconversion.
+	 */
 	attributes: Array<string>;
+
+	/**
+	 * Whether children insertion/deletion should trigger reconversion.
+	 */
 	children: boolean;
 }
 
