@@ -6,6 +6,7 @@
 import Markdown from '../src/markdown';
 import GFMDataProcessor from '../src/gfmdataprocessor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 describe( 'Markdown', () => {
 	it( 'has proper name', () => {
@@ -15,7 +16,7 @@ describe( 'Markdown', () => {
 	it( 'should set editor.data.processor', () => {
 		return ClassicTestEditor
 			.create( '', {
-				plugins: [ Markdown ]
+				plugins: [ Markdown, ClipboardPipeline ]
 			} )
 			.then( editor => {
 				expect( editor.data.processor ).to.be.an.instanceof( GFMDataProcessor );
