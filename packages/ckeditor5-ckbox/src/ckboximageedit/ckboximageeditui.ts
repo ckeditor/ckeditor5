@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ckbox/ckboximageedit/ckboximageedit
+ * @module ckbox/ckboximageedit/ckboximageeditui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
