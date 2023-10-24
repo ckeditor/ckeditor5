@@ -9,7 +9,7 @@
 
 import { transformListItemLikeElementsIntoLists } from '../filters/list';
 import { replaceImagesSourceWithBase64 } from '../filters/image';
-import removeMSGarbage from '../filters/removemsgarbage';
+import removeMSAttributes from '../filters/removemsattributes';
 import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine';
 import type { Normalizer, NormalizerData } from '../normalizer';
 
@@ -47,7 +47,7 @@ export default class MSWordNormalizer implements Normalizer {
 
 		transformListItemLikeElementsIntoLists( documentFragment, stylesString );
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
-		removeMSGarbage( documentFragment, writer );
+		removeMSAttributes( documentFragment, writer );
 
 		data.content = documentFragment;
 	}

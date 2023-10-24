@@ -12,9 +12,9 @@ import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
 /**
  * Cleanup MS garbage like styles, attributes and elements.
  *
- * @param documentFragment element `data.content` obtained from clipboard
+ * @param documentFragment element `data.content` obtained from clipboard.
  */
-export default function removeMSGarbage( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
+export default function removeMSAttributes( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
 	const elementsToRemove = [];
 
 	for ( const { item } of writer.createRangeIn( documentFragment ) ) {
@@ -44,24 +44,10 @@ export default function removeMSGarbage( documentFragment: ViewDocumentFragment,
 	}
 
 	for ( const item of elementsToRemove ) {
-		const childIndex = documentFragment.getChildIndex( item );
 		const firstChild = item.getChild( 0 );
 
 		if ( firstChild && firstChild.is( 'element' ) ) {
 			writer.replace( item, firstChild );
 		}
-
-		// writer.remove( item );
-
-		// const validChildren = Array.from( item.getChildren() ).filter( child => {
-		// 	if ( child.is( '$text' ) ) {
-		// 		return true;
-		// 	}
-
-		// 	return child.is( 'element' ) && !/\bo:p/gi.exec( child.name ) && !/\b"w:sdtpr"/gi.exec( child.name );
-		// } );
-
-		// writer.insertChild( childIndex, item.getChildren(), documentFragment );
-		// writer.remove( item );
 	}
 }
