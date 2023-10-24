@@ -50,7 +50,7 @@ ClassicEditor
 
 Inline images can be inserted in the middle of a paragraph or a link just like regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables, or media. Being larger and existing as standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc.
 
-By default, the {@link module:image/image~Image} plugin available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds} provides support for both inline and block images, working as a glue for {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock} plugins:
+By default, the {@link module:image/image~Image} plugin available in all {@link installation/getting-started/predefined-builds predefined editor builds} provides support for both inline and block images, working as a glue for {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock} plugins:
 
 <figure class="table">
 	<table style="text-align: center">
@@ -85,7 +85,7 @@ By default, the {@link module:image/image~Image} plugin available in all {@link 
 </figure>
 
 <info-box info>
-	Up to CKEditor&nbsp;5 v[27.1.0], only **block** images were supported. The support for **inline** images started in v[28.0.0] in all editor builds loading the `Image` plugin.
+	Up to CKEditor&nbsp;5 v27.1.0, only **block** images were supported. The support for **inline** images started in v[28.0.0] in all editor builds loading the `Image` plugin.
 
 	If your integration depends on a ready–to–use editor build and you want to take advantage of updated CKEditor&nbsp;5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link updating/update-to-29 official migration guide} that will help you configure the editor.
 </info-box>
