@@ -10,7 +10,7 @@ import PasteFromOffice from '../../src/pastefromoffice';
 import { generateTests } from '../_utils/utils';
 import * as fixtures from '../_utils/fixtures';
 
-const browsers = [ 'safari', 'chrome', 'firefox', 'edge' ];
+const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 
 const editorConfig = {
 	plugins: [ ClipboardPipeline, PasteFromOffice, Paragraph ]

@@ -4,50 +4,47 @@
  */
 
 /**
- * @module paste-from-office/filters/removestyleblock
+ * @module paste-from-office/filters/removemsattributes
  */
 
-import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
+import { UpcastWriter, type ViewDocumentFragment } from 'ckeditor5/src/engine';
 
 /**
- * Cleanup MS garbage like styles, attributes and elements.
+ * Cleanup MS attributes like styles, attributes and elements.
  *
  * @param documentFragment element `data.content` obtained from clipboard.
  */
-export default function removeMSAttributes( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
+export default function removeMSAttributes( documentFragment: ViewDocumentFragment ): void {
 	const elementsToRemove = [];
+	const writer = new UpcastWriter( documentFragment.document );
 
 	for ( const { item } of writer.createRangeIn( documentFragment ) ) {
 		if ( !item.is( 'element' ) ) {
 			continue;
 		}
 
-		const itemClassName = item.getAttribute( 'class' );
-
-		if ( itemClassName && /\bmso/gi.exec( itemClassName ) ) {
-			writer.removeAttribute( 'class', item );
-		}
-
-		if ( Array.from( item.getStyleNames() ).length ) {
-			for ( const styleName of item.getStyleNames() ) {
-				if ( /\bmso/gi.exec( styleName ) ) {
-					writer.removeStyle( styleName, item );
-				}
+		for ( const className of item.getClassNames() ) {
+			if ( /\bmso/gi.exec( className ) ) {
+				writer.removeClass( className, item );
 			}
 		}
 
-		if ( item.is( 'element' ) && item.name === 'w:sdt' ) {
-			if ( item.is( 'element' ) ) {
-				elementsToRemove.push( item );
+		for ( const styleName of item.getStyleNames() ) {
+			if ( /\bmso/gi.exec( styleName ) ) {
+				writer.removeStyle( styleName, item );
 			}
+		}
+
+		if ( item.is( 'element', 'w:sdt' ) ) {
+			elementsToRemove.push( item );
 		}
 	}
 
 	for ( const item of elementsToRemove ) {
-		const firstChild = item.getChild( 0 );
+		const itemParent = item.parent!;
+		const childIndex = itemParent.getChildIndex( item );
 
-		if ( firstChild && firstChild.is( 'element' ) ) {
-			writer.replace( item, firstChild );
-		}
+		writer.insertChild( childIndex, item.getChildren(), itemParent );
+		writer.remove( item );
 	}
 }
