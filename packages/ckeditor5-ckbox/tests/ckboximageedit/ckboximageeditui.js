@@ -3,36 +3,65 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global window, btoa */
+
 import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditUI from '../../src/ckboximageedit/ckboximageeditui';
 
 describe( 'CKBoxImageEditUI', () => {
-	let editor, model, element, button;
+	let editor, model, element, button, command;
 
 	beforeEach( () => {
+		TokenMock.initialToken = [
+			// Header.
+			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+			// Payload.
+			btoa( JSON.stringify( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } ) ),
+			// Signature.
+			'signature'
+		].join( '.' );
+
+		window.CKBox = {
+			mountImageEditor: sinon.stub()
+		};
+
 		element = global.document.createElement( 'div' );
 		global.document.body.appendChild( element );
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ CKBoxImageEditEditing, CKBoxImageEditUI, Image, Paragraph ]
+				plugins: [ CKBoxImageEditEditing, CKBoxImageEditUI, Image, Paragraph, CloudServices ],
+				ckbox: {
+					tokenUrl: 'foo'
+				},
+				substitutePlugins: [
+					CloudServicesCoreMock
+				]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				button = editor.ui.componentFactory.create( 'ckboxImageEdit' );
+				command = editor.commands.get( 'ckboxImageEdit' );
 			} );
 	} );
 
 	afterEach( () => {
 		element.remove();
+
+		if ( global.document.querySelector( '.ck.ckbox-wrapper' ) ) {
+			global.document.querySelector( '.ck.ckbox-wrapper' ).remove();
+		}
 
 		return editor.destroy();
 	} );
@@ -86,6 +115,8 @@ describe( 'CKBoxImageEditUI', () => {
 			expect( button.isOn ).to.be.false;
 
 			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
+			command.execute();
 
 			expect( button.isOn ).to.be.true;
 		} );
