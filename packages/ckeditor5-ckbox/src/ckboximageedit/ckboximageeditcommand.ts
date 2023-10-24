@@ -103,7 +103,7 @@ export default class CKBoxImageEditCommand extends Command {
 	 * Initializes various event listeners for the `ckboxImageEditor:*` events,
 	 * because all functionality of the `ckboxImageEditor` command is event-based.
 	 */
-	private _prepareListeners() {
+	private _prepareListeners(): void {
 		const editor = this.editor;
 
 		// Refresh the command after firing the `ckboxImageEditor:*` event.
