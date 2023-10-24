@@ -129,6 +129,7 @@
     "husky": "^8.0.2",
     "ini": "^4.1.1",
     "is-relative-url": "^3.0.0",
+    "js-yaml": "^4.1.0",
     "lint-staged": "^12.0.0",
     "listr2": "^6.5.0",
     "minimatch": "^5.1.0",
@@ -150,8 +151,7 @@
     "umberto": "^4.0.0",
     "upath": "^2.0.0",
     "wait-on": "^6.0.1",
-    "webpack": "^5.58.1",
-    "yaml": "^2.3.3"
+    "webpack": "^5.58.1"
   },
   "engines": {
     "node": ">=18.0.0"

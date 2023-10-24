@@ -8,7 +8,7 @@
 'use strict';
 
 const ini = require( 'ini' );
-const yaml = require( 'yaml' );
+const yaml = require( 'js-yaml' );
 const fs = require( 'fs-extra' );
 const chalk = require( 'chalk' );
 const upath = require( 'upath' );
@@ -294,11 +294,11 @@ async function prepareConfigFiles() {
 	for ( const readabilityFilePath of readabilityFilePaths ) {
 		originalFileContents[ readabilityFilePath ] = await fs.readFile( readabilityFilePath, 'utf-8' );
 
-		const parsedYmlFile = yaml.parse( originalFileContents[ readabilityFilePath ] );
+		const parsedYmlFile = yaml.load( originalFileContents[ readabilityFilePath ] );
 		parsedYmlFile.message = '%s';
 		parsedYmlFile.condition = '> -999999';
 
-		await fs.writeFile( readabilityFilePath, yaml.stringify( parsedYmlFile ), 'utf-8' );
+		await fs.writeFile( readabilityFilePath, yaml.dump( parsedYmlFile ), 'utf-8' );
 	}
 }
 
