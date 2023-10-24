@@ -7,11 +7,14 @@
 
 'use strict';
 
+const ini = require( 'ini' );
+const yaml = require( 'yaml' );
 const fs = require( 'fs-extra' );
 const chalk = require( 'chalk' );
 const upath = require( 'upath' );
 const minimist = require( 'minimist' );
 const { globSync } = require( 'glob' );
+const { format } = require( 'date-fns' );
 const { spawn } = require( 'child_process' );
 
 const ARGS_CHAR_LIMIT = 8000;
@@ -110,7 +113,10 @@ async function executeAndSave( chunks ) {
 
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
-	const collectedValeData = {};
+	const collectedValeData = {
+		timestamp: Date.now(),
+		files: []
+	};
 
 	for ( let i = 0; i < chunks.length; i++ ) {
 		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...` ) );
@@ -118,19 +124,18 @@ async function executeAndSave( chunks ) {
 		const valeData = await runVale( chunks[ i ] );
 
 		for ( const key in valeData ) {
-			const filePath = upath.toUnix( key );
+			const path = upath.toUnix( key );
 
-			if ( !collectedValeData[ filePath ] ) {
-				collectedValeData[ filePath ] = {
-					readability: {},
-					warnings: 0,
-					errors: 0
-				};
-			}
+			const data = {
+				path,
+				errors: 0,
+				warnings: 0,
+				readability: {}
+			};
 
 			for ( const note of valeData[ key ] ) {
 				if ( note.Severity === 'error' ) {
-					collectedValeData[ filePath ].errors++;
+					data.errors++;
 
 					continue;
 				}
@@ -142,15 +147,17 @@ async function executeAndSave( chunks ) {
 				const match = note.Check.match( /(?<=Readability\.).+/ );
 
 				if ( !match ) {
-					collectedValeData[ filePath ].warnings++;
+					data.warnings++;
 
 					continue;
 				}
 
 				const [ readabilityMetric ] = match;
 				const readabilityScore = Number( note.Message );
-				collectedValeData[ filePath ].readability[ readabilityMetric ] = readabilityScore;
+				data.readability[ readabilityMetric ] = readabilityScore;
 			}
+
+			collectedValeData.files.push( data );
 		}
 	}
 
@@ -158,7 +165,7 @@ async function executeAndSave( chunks ) {
 
 	restoreConfigFiles();
 
-	const resultPath = upath.join( RESULTS_DIR, `${ Date.now() }.json` );
+	const resultPath = upath.join( RESULTS_DIR, `${ format( new Date(), 'yyyy-MM-dd--HH-mm-ss' ) }.json` );
 
 	console.log( chalk.blue( '\nResult file saved:' ) );
 	console.log( chalk.underline( resultPath ) + '\n' );
@@ -277,21 +284,21 @@ function runVale( files ) {
 function prepareConfigFiles() {
 	originalFileContents[ VALE_CONFIG_PATH ] = fs.readFileSync( VALE_CONFIG_PATH, 'utf-8' );
 
-	const newValeConfigContent = originalFileContents[ VALE_CONFIG_PATH ]
-		.replace( /(?<=\nMinAlertLevel = )[a-z]+(?=\n)/, 'warning' );
+	const parsedIniFile = ini.parse( originalFileContents[ VALE_CONFIG_PATH ] );
+	parsedIniFile.MinAlertLevel = 'warning';
 
-	fs.writeFileSync( VALE_CONFIG_PATH, newValeConfigContent, 'utf-8' );
+	fs.writeFileSync( VALE_CONFIG_PATH, ini.stringify( parsedIniFile ), 'utf-8' );
 
 	globSync( READABILITY_FILES_GLOB, globOptions )
 		.map( upath.toUnix )
 		.forEach( readabilityFilePath => {
 			originalFileContents[ readabilityFilePath ] = fs.readFileSync( readabilityFilePath, 'utf-8' );
 
-			const newReadabilityFileContent = originalFileContents[ readabilityFilePath ]
-				.replace( /(?<=\nmessage: ").+(?="\n)/, '%s' )
-				.replace( /(?<=\ncondition: ").+(?="\n)/, '> -999999' );
+			const parsedYmlFile = yaml.parse( originalFileContents[ readabilityFilePath ] );
+			parsedYmlFile.message = '%s';
+			parsedYmlFile.condition = '> -999999';
 
-			fs.writeFileSync( readabilityFilePath, newReadabilityFileContent, 'utf-8' );
+			fs.writeFileSync( readabilityFilePath, yaml.stringify( parsedYmlFile ), 'utf-8' );
 		} );
 }
 
