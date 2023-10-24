@@ -15,11 +15,11 @@
  */
 export default function plainTextToHtml( text: string ): string {
 	text = text
+		// Encode &.
+		.replace( /&/g, '&amp;' )
 		// Encode <>.
 		.replace( /</g, '&lt;' )
 		.replace( />/g, '&gt;' )
-		// Encode &.
-		.replace( /&/g, '&amp;' )
 		// Creates a paragraph for each double line break.
 		.replace( /\r?\n\r?\n/g, '</p><p>' )
 		// Creates a line break for each single line break.
