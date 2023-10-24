@@ -83,18 +83,20 @@ These plugins are, by default, loaded with predefined builds, such as `ClassicEd
 
 Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `ArticlePluginSet`, `PictureEditing`, `ImageUpload`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefined builds, these need to be added manually.
 
-Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and [configure](#configuration) the feature as needed. An example configuration may look like this:
+If you want to be able to use CKBox image editing capabilities from within CKEditor&nbsp;5, you need to also include the `CKBoxImageEdit` plugin.
+
+Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list, toolbar and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
 ```js
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CKBox } from "@ckeditor/ckeditor5-ckbox";
+import { CKBox, CKBoxImageEdit } from "@ckeditor/ckeditor5-ckbox";
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [  ArticlePluginSet, PictureEditing, ImageUpload, CloudServices, CKBox, /* ... */ ],
-		toolbar: [ 'ckbox', /* ... */ ], // Depending on your preference.
+		plugins: [  ArticlePluginSet, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
+		toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
 		ckbox: {
 			// Feature configuration.
 			// ...
@@ -105,6 +107,23 @@ ClassicEditor
 ```
 
 Further in the document, the dependency plugins will be omitted in code listings for clarity.
+
+### Adding the image editing button to the image toolbar
+
+To invoke the CKBox image editor straight from the image contextual toolbar (availabnle at right click on an image), it needs to be added to the toolbar configuration.
+
+{@img assets/img/toolbar-items.png 402 An extended contextual toolbar.}
+
+The snippet below show an example image contextual toolbar configuration.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		image: {
+			toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
+		}
+	} )
+```
 
 ## Configuration
 
