@@ -295,7 +295,7 @@ You can open CKBox by executing the following code:
 editor.execute( 'ckbox' );
 ```
 
-The plugin also registers:
+If you want to use the CKBox editing capabilities straight from the editor, the plugin will also register the following:
 
 * The `'ckboxImageEdit'` UI button component for CKBox image editor
 * The `'ckboxImageEdit'`command implemented by the {@link module:ckbox/ckboximageedit~CKBoxImageEdit}
