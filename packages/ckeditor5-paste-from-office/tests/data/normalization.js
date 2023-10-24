@@ -10,12 +10,7 @@ import PasteFromOffice from '../../src/pastefromoffice';
 import { generateTests } from '../_utils/utils';
 import * as fixtures from '../_utils/fixtures';
 
-const browsers = [
-	'safari',
-	'chrome',
-	'firefox',
-	'edge'
-];
+const browsers = [ 'safari', 'chrome', 'firefox', 'edge' ];
 
 const editorConfig = {
 	plugins: [ ClipboardPipeline, PasteFromOffice, Paragraph ]
@@ -59,49 +54,7 @@ describe( 'PasteFromOffice - normalization', () => {
 			type: 'normalization',
 			fixtures,
 			editorConfig,
-			browsers,
-			// skip: {
-			// 	safari: [
-			// 		'boldWithinText',
-			// 		'italicStartingText',
-			// 		'underlinedText',
-			// 		'strikethroughEndingText',
-			// 		'multipleStylesSingleLine',
-			// 		'multipleStylesMultiline'
-			// 	],
-			// 	chrome: [
-			// 		'boldWithinText',
-			// 		'italicStartingText',
-			// 		'underlinedText',
-			// 		'strikethroughEndingText',
-			// 		'multipleStylesSingleLine',
-			// 		'multipleStylesMultiline'
-			// 	]
-			// },
-			only: {
-				// safari: [
-				// 	'resumeTemplate',
-				// ],
-				// chrome: [
-				// 	'resumeTemplate'
-				// ],
-				// firefox: [
-				// 	'boldWithinText',
-				// 	'italicStartingText',
-				// 	'underlinedText',
-				// 	'strikethroughEndingText',
-				// 	'multipleStylesSingleLine',
-				// 	'multipleStylesMultiline'
-				// ],
-				// edge: [
-				// 	'boldWithinText',
-				// 	'italicStartingText',
-				// 	'underlinedText',
-				// 	'strikethroughEndingText',
-				// 	'multipleStylesSingleLine',
-				// 	'multipleStylesMultiline'
-				// ]
-			}
+			browsers
 		};
 
 		return generateTests( Object.assign( {}, config, commonIntegrationConfig ) );

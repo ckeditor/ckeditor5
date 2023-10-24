@@ -45,8 +45,23 @@ export default function removeMSGarbage( documentFragment: ViewDocumentFragment,
 
 	for ( const item of elementsToRemove ) {
 		const childIndex = documentFragment.getChildIndex( item );
+		const firstChild = item.getChild( 0 );
 
-		writer.remove( item );
-		writer.insertChild( childIndex, item.getChildren(), documentFragment );
+		if ( firstChild && firstChild.is( 'element' ) ) {
+			writer.replace( item, firstChild );
+		}
+
+		// writer.remove( item );
+
+		// const validChildren = Array.from( item.getChildren() ).filter( child => {
+		// 	if ( child.is( '$text' ) ) {
+		// 		return true;
+		// 	}
+
+		// 	return child.is( 'element' ) && !/\bo:p/gi.exec( child.name ) && !/\b"w:sdtpr"/gi.exec( child.name );
+		// } );
+
+		// writer.insertChild( childIndex, item.getChildren(), documentFragment );
+		// writer.remove( item );
 	}
 }
