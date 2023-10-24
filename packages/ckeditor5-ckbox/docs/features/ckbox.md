@@ -83,7 +83,7 @@ These plugins are, by default, loaded with predefined builds, such as `ClassicEd
 
 Please also remember, that the CKBox plugin requires the following dependency plugins to work properly: `ArticlePluginSet`, `PictureEditing`, `ImageUpload`, and `CloudServices`. Except for `ImageUpload` which is, likewise, available in predefined builds, these need to be added manually.
 
-If you want to be able to use CKBox image editing capabilities from within CKEditor&nbsp;5, you need to also include the `CKBoxImageEdit` plugin.
+You must include the `CKBoxImageEdit` plugin if you want to use CKBox image editing capabilities from within CKEditor&nbsp;5.
 
 Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list, toolbar and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
@@ -110,11 +110,11 @@ Further in the document, the dependency plugins will be omitted in code listings
 
 ### Adding the image editing button to the image toolbar
 
-To invoke the CKBox image editor straight from the image contextual toolbar (availabnle at right click on an image), it needs to be added to the toolbar configuration.
+To invoke the CKBox image editor straight from the image contextual toolbar (availabne at right-click on an image), it needs to be added to the toolbar configuration.
 
 {@img assets/img/toolbar-items.png 402 An extended contextual toolbar.}
 
-The snippet below show an example image contextual toolbar configuration.
+The snippet below shows an example image contextual toolbar configuration.
 
 ```js
 ClassicEditor

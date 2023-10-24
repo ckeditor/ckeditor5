@@ -37,7 +37,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link features/images-resizing Image resizing} lets the user control the dimensions of images in the content.
 * {@link features/images-linking Linking images} makes it possible to use them as URL anchors.
 * A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor inserting an image via a URL} and even {@link features/images-inserting#inserting-images-via-a-source-url via pasting a URL into the editor} along with custom integrations.
-* Support for {@link features/images-responsive responsive images} in CKEditor&nbsp;5 is brought by the {@link features/ckbox CKBox} management platform. Responsive images will display properly on any viewport, enhancing the accessibility, reach, and user experience.
+* The {@link features/ckbox CKBox management platform} provides support for {@link features/images-responsive responsive images} in CKEdito&nbsp;5. Responsive images will display correctly on any viewport, enhancing the accessibility, reach, and user experience.
 * CKBox also provides basic editing capabilities, like cropping, resizing, rotating, and flipping right from the image contextual toolbar.
 
 The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
