@@ -99,7 +99,7 @@ async function main() {
 
 			console.log( chalk.blue( '\nRestoring config files...\n' ) );
 
-			restoreConfigFiles();
+			return restoreConfigFiles();
 		} );
 	}
 
@@ -109,7 +109,7 @@ async function main() {
 async function executeAndSave( chunks ) {
 	console.log( chalk.blue( '\nPreparing config files...' ) );
 
-	prepareConfigFiles();
+	await prepareConfigFiles();
 
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
@@ -163,15 +163,15 @@ async function executeAndSave( chunks ) {
 
 	console.log( chalk.blue( '\nRestoring config files...' ) );
 
-	restoreConfigFiles();
+	await restoreConfigFiles();
 
 	const resultPath = upath.join( RESULTS_DIR, `${ format( new Date(), 'yyyy-MM-dd--HH-mm-ss' ) }.json` );
 
 	console.log( chalk.blue( '\nResult file saved:' ) );
 	console.log( chalk.underline( resultPath ) + '\n' );
 
-	fs.ensureDirSync( RESULTS_DIR );
-	fs.writeFileSync( resultPath, JSON.stringify( collectedValeData, null, '\t' ), 'utf-8' );
+	await fs.ensureDir( RESULTS_DIR );
+	await fs.writeFile( resultPath, JSON.stringify( collectedValeData, null, '\t' ), 'utf-8' );
 }
 
 async function executeAndLog( chunks ) {
@@ -281,31 +281,31 @@ function runVale( files ) {
 	} );
 }
 
-function prepareConfigFiles() {
-	originalFileContents[ VALE_CONFIG_PATH ] = fs.readFileSync( VALE_CONFIG_PATH, 'utf-8' );
+async function prepareConfigFiles() {
+	originalFileContents[ VALE_CONFIG_PATH ] = await fs.readFile( VALE_CONFIG_PATH, 'utf-8' );
 
 	const parsedIniFile = ini.parse( originalFileContents[ VALE_CONFIG_PATH ] );
 	parsedIniFile.MinAlertLevel = 'warning';
 
-	fs.writeFileSync( VALE_CONFIG_PATH, ini.stringify( parsedIniFile ), 'utf-8' );
+	await fs.writeFile( VALE_CONFIG_PATH, ini.stringify( parsedIniFile ), 'utf-8' );
 
-	globSync( READABILITY_FILES_GLOB, globOptions )
-		.map( upath.toUnix )
-		.forEach( readabilityFilePath => {
-			originalFileContents[ readabilityFilePath ] = fs.readFileSync( readabilityFilePath, 'utf-8' );
+	const readabilityFilePaths = globSync( READABILITY_FILES_GLOB, globOptions ).map( upath.toUnix );
 
-			const parsedYmlFile = yaml.parse( originalFileContents[ readabilityFilePath ] );
-			parsedYmlFile.message = '%s';
-			parsedYmlFile.condition = '> -999999';
+	for ( const readabilityFilePath of readabilityFilePaths ) {
+		originalFileContents[ readabilityFilePath ] = await fs.readFile( readabilityFilePath, 'utf-8' );
 
-			fs.writeFileSync( readabilityFilePath, yaml.stringify( parsedYmlFile ), 'utf-8' );
-		} );
+		const parsedYmlFile = yaml.parse( originalFileContents[ readabilityFilePath ] );
+		parsedYmlFile.message = '%s';
+		parsedYmlFile.condition = '> -999999';
+
+		await fs.writeFile( readabilityFilePath, yaml.stringify( parsedYmlFile ), 'utf-8' );
+	}
 }
 
-function restoreConfigFiles() {
+async function restoreConfigFiles() {
 	for ( const filePath in originalFileContents ) {
 		const originalFileContent = originalFileContents[ filePath ];
 
-		fs.writeFileSync( filePath, originalFileContent, 'utf-8' );
+		await fs.writeFile( filePath, originalFileContent, 'utf-8' );
 	}
 }
