@@ -27,7 +27,7 @@ export default class CKBoxImageEditCommand extends Command {
 	private _wrapper: Element | null = null;
 
 	/**
-	 * Flag indicating whether the command is active, i.e. dialog is open.
+	 * Stores the value of `ckboxImageId` when image with this attribute is selected.
 	 */
 	private _ckboxImageId: string | null = null;
 
