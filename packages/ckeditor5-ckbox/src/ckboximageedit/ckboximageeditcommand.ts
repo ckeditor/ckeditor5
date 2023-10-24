@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import { createElement } from 'ckeditor5/src/utils';
+import { createElement, global } from 'ckeditor5/src/utils';
 
 /**
  * The CKBox edit image command.
@@ -50,7 +50,7 @@ export default class CKBoxImageEditCommand extends Command {
 
 		this.value = this._getValue();
 
-		const selectedElement = editor.model.document.selection.getSelectedElement()!;
+		const selectedElement = editor.model.document.selection.getSelectedElement();
 		const isImageElement = selectedElement && ( selectedElement.is( 'element', 'imageInline' ) ||
 			selectedElement.is( 'element', 'imageBlock' ) );
 
@@ -73,7 +73,7 @@ export default class CKBoxImageEditCommand extends Command {
 	/**
 	 * Indicates if the CKBox Image Editor dialog is already opened.
 	 *
-	 * @protected
+	 * @private
 	 * @returns {Boolean}
 	 */
 	private _getValue(): boolean {
@@ -119,7 +119,7 @@ export default class CKBoxImageEditCommand extends Command {
 			this.value = true;
 			this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
 
-			document.body.appendChild( this._wrapper );
+			global.document.body.appendChild( this._wrapper );
 
 			window.CKBox.mountImageEditor(
 				this._wrapper,
@@ -131,11 +131,11 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close', () => {
-			if ( !this.value ) {
+			if ( !this._wrapper ) {
 				return;
 			}
 
-			this._wrapper!.remove();
+			this._wrapper.remove();
 			this._wrapper = null;
 
 			editor.editing.view.focus();
@@ -154,5 +154,6 @@ export default class CKBoxImageEditCommand extends Command {
  */
 type CKBoxImageEditorEvent<Name extends '' | 'save' | 'open' | 'close' = ''> = {
 	name: Name extends '' ? 'ckboxImageEditor' : `ckboxImageEditor:${ Name }`;
+	// Those arrays below will differ soon enough.
 	args: Name extends 'open' ? [] : [];
 };
