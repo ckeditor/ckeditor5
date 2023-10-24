@@ -72,9 +72,6 @@ export default class CKBoxImageEditCommand extends Command {
 
 	/**
 	 * Indicates if the CKBox Image Editor dialog is already opened.
-	 *
-	 * @private
-	 * @returns {Boolean}
 	 */
 	private _getValue(): boolean {
 		return this._wrapper !== null;
