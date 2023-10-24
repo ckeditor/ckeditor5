@@ -673,10 +673,7 @@ export default {
 			model: 'htmlA',
 			view: 'a',
 			priority: 5,
-			coupledAttribute: 'linkHref',
-			attributeProperties: {
-				copyOnEnter: true
-			}
+			coupledAttribute: 'linkHref'
 		},
 		{
 			model: 'htmlStrong',
