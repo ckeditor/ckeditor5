@@ -7,24 +7,51 @@
 
 'use strict';
 
+const ini = require( 'ini' );
+const yaml = require( 'js-yaml' );
+const fs = require( 'fs-extra' );
 const chalk = require( 'chalk' );
 const upath = require( 'upath' );
 const minimist = require( 'minimist' );
 const { globSync } = require( 'glob' );
+const { format } = require( 'date-fns' );
 const { spawn } = require( 'child_process' );
 
 const ARGS_CHAR_LIMIT = 8000;
 const CKEDITOR5_ROOT = upath.join( __dirname, '..', '..' );
+const RESULTS_DIR = upath.join( CKEDITOR5_ROOT, 'scripts', 'vale', 'results' );
+const VALE_CONFIG_PATH = upath.join( CKEDITOR5_ROOT, '.vale.ini' );
+const READABILITY_FILES_GLOB = 'scripts/vale/styles/Readability/*.yml';
+
+const originalFileContents = {};
+
+const defaultPatterns = [
+	// "README.md", "CHANGELOG.md" etc.
+	'*.md',
+	'packages/*/*.md',
+	'external/ckeditor5-commercial/packages/*/*.md',
+
+	// All "docs" directories.
+	'docs',
+	'packages/*/docs',
+	'external/ckeditor5-commercial/docs',
+	'external/ckeditor5-commercial/packages/*/docs'
+];
 
 const minimistOptions = {
 	string: [
 		'directory'
 	],
+	boolean: [
+		'save'
+	],
 	alias: {
-		d: 'directory'
+		d: 'directory',
+		s: 'save'
 	},
 	default: {
-		directory: ''
+		directory: '',
+		save: false
 	}
 };
 
@@ -41,23 +68,11 @@ const globOptions = {
 	]
 };
 
-const defaultPatterns = [
-	// "README.md", "CHANGELOG.md" etc.
-	'*.md',
-	'packages/*/*.md',
-	'external/ckeditor5-commercial/packages/*/*.md',
-
-	// All "docs" directories.
-	'docs',
-	'packages/*/docs',
-	'external/ckeditor5-commercial/docs',
-	'external/ckeditor5-commercial/packages/*/docs'
-];
+const args = minimist( process.argv.slice( 2 ), minimistOptions );
 
 main();
 
 async function main() {
-	const args = minimist( process.argv.slice( 2 ), minimistOptions );
 	const patterns = args.directory ? [ `**/${ args.directory }/**/*.md` ] : args._;
 	const files = [];
 
@@ -75,6 +90,91 @@ async function main() {
 		files.push( ...globSync( defaultPatterns, globOptions ) );
 	}
 
+	const chunks = splitFilesIntoChunks( files );
+
+	if ( args.save ) {
+		return executeAndSave( chunks ).catch( err => {
+			console.log( chalk.red( '\nScript threw an error:' ) );
+			console.log( err );
+
+			console.log( chalk.blue( '\nRestoring config files...\n' ) );
+
+			return restoreConfigFiles();
+		} );
+	}
+
+	return executeAndLog( chunks );
+}
+
+async function executeAndSave( chunks ) {
+	console.log( chalk.blue( '\nPreparing config files...' ) );
+
+	await prepareConfigFiles();
+
+	console.log( chalk.blue( '\nExecuting vale...\n' ) );
+
+	const collectedValeData = {
+		timestamp: Date.now(),
+		files: []
+	};
+
+	for ( let i = 0; i < chunks.length; i++ ) {
+		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...` ) );
+
+		const valeData = await runVale( chunks[ i ] );
+
+		for ( const key in valeData ) {
+			const path = upath.toUnix( key );
+
+			const data = {
+				path,
+				errors: 0,
+				warnings: 0,
+				readability: {}
+			};
+
+			for ( const note of valeData[ key ] ) {
+				if ( note.Severity === 'error' ) {
+					data.errors++;
+
+					continue;
+				}
+
+				if ( note.Severity !== 'warning' ) {
+					continue;
+				}
+
+				const match = note.Check.match( /(?<=Readability\.).+/ );
+
+				if ( !match ) {
+					data.warnings++;
+
+					continue;
+				}
+
+				const [ readabilityMetric ] = match;
+				const readabilityScore = Number( note.Message );
+				data.readability[ readabilityMetric ] = readabilityScore;
+			}
+
+			collectedValeData.files.push( data );
+		}
+	}
+
+	console.log( chalk.blue( '\nRestoring config files...' ) );
+
+	await restoreConfigFiles();
+
+	const resultPath = upath.join( RESULTS_DIR, `${ format( new Date(), 'yyyy-MM-dd--HH-mm-ss' ) }.json` );
+
+	console.log( chalk.blue( '\nResult file saved:' ) );
+	console.log( chalk.underline( resultPath ) + '\n' );
+
+	await fs.ensureDir( RESULTS_DIR );
+	await fs.writeFile( resultPath, JSON.stringify( collectedValeData, null, '\t' ), 'utf-8' );
+}
+
+async function executeAndLog( chunks ) {
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
 	const collectedValeData = {
@@ -84,8 +184,6 @@ async function main() {
 		files: 0,
 		text: ''
 	};
-
-	const chunks = splitFilesIntoChunks( files );
 
 	for ( let i = 0; i < chunks.length; i++ ) {
 		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...` ) );
@@ -126,10 +224,20 @@ function splitFilesIntoChunks( files ) {
 }
 
 function runVale( files ) {
+	const valeCommandPattern = /^\$ vale .+\n/m;
+	const commandInfoLinePattern = /^info Visit .+\n/m;
 	const valeFooterPattern = /\n?.*?(\d+) errors?.*?(\d+) warnings?.*?(\d+) suggestions?.*?(\d+) files?[\s\S]+/;
 
 	return new Promise( resolve => {
-		const vale = spawn( 'yarn', [ 'run', 'docs:vale', ...files ], spawnOptions );
+		const valeArgs = [ 'run', 'docs:vale' ];
+
+		if ( args.save ) {
+			valeArgs.push( '--output=JSON' );
+		}
+
+		valeArgs.push( ...files );
+
+		const vale = spawn( 'yarn', valeArgs, spawnOptions );
 
 		let text = '';
 
@@ -146,21 +254,58 @@ function runVale( files ) {
 		} );
 
 		vale.on( 'close', () => {
+			if ( args.save ) {
+				const rawJson = text
+					.replace( valeCommandPattern, '' )
+					.replace( commandInfoLinePattern, '' );
+
+				return resolve( JSON.parse( rawJson ) );
+			}
+
 			const match = text.match( valeFooterPattern );
 
 			if ( !match ) {
 				throw new Error( 'Vale output does not match the footer pattern:\n\n' + text );
 			}
 
-			resolve( {
+			return resolve( {
 				errors: Number( match[ 1 ] ),
 				warnings: Number( match[ 2 ] ),
 				suggestions: Number( match[ 3 ] ),
 				files: Number( match[ 4 ] ),
 				text: text
-					.replace( /^\$ vale .+\n/m, '' )
+					.replace( valeCommandPattern, '' )
 					.replace( valeFooterPattern, '' )
 			} );
 		} );
 	} );
+}
+
+async function prepareConfigFiles() {
+	originalFileContents[ VALE_CONFIG_PATH ] = await fs.readFile( VALE_CONFIG_PATH, 'utf-8' );
+
+	const parsedIniFile = ini.parse( originalFileContents[ VALE_CONFIG_PATH ] );
+	parsedIniFile.MinAlertLevel = 'warning';
+
+	await fs.writeFile( VALE_CONFIG_PATH, ini.stringify( parsedIniFile ), 'utf-8' );
+
+	const readabilityFilePaths = globSync( READABILITY_FILES_GLOB, globOptions ).map( upath.toUnix );
+
+	for ( const readabilityFilePath of readabilityFilePaths ) {
+		originalFileContents[ readabilityFilePath ] = await fs.readFile( readabilityFilePath, 'utf-8' );
+
+		const parsedYmlFile = yaml.load( originalFileContents[ readabilityFilePath ] );
+		parsedYmlFile.message = '%s';
+		parsedYmlFile.condition = '> -999999';
+
+		await fs.writeFile( readabilityFilePath, yaml.dump( parsedYmlFile ), 'utf-8' );
+	}
+}
+
+async function restoreConfigFiles() {
+	for ( const filePath in originalFileContents ) {
+		const originalFileContent = originalFileContents[ filePath ];
+
+		await fs.writeFile( filePath, originalFileContent, 'utf-8' );
+	}
 }
