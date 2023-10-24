@@ -284,18 +284,21 @@ ClassicEditor
 
 ## Common API
 
-<!-- UPDATE THE EDIT BUTTON API -->
-
 The {@link module:ckbox/ckbox~CKBox} plugin registers:
 
-* The `'ckbox'` UI button component
+* The `'ckbox'` UI button component for CKBox asset manager
 * The `'ckbox'` command implemented by the {@link module:ckbox/ckboxcommand~CKBoxCommand}
 
-	You can open CKBox by executing the following code:
+You can open CKBox by executing the following code:
 
-	```js
-	editor.execute( 'ckbox' );
-	```
+```js
+editor.execute( 'ckbox' );
+```
+
+The plugin also registers:
+
+* The `'ckboxImageEdit'` UI button component for CKBox image editor
+* The `'ckboxImageEdit'`command implemented by the {@link module:ckbox/ckboximageedit~CKBoxImageEdit}
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
