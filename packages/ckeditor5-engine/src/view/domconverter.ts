@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals Node, NodeFilter, DOMParser, Text */
+/* globals Node, NodeFilter, DOMParser */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -146,6 +146,11 @@ export default class DomConverter {
 	 * Matcher for inline object view elements. This is an extension of a simple {@link #inlineObjectElements} array of element names.
 	 */
 	private readonly _inlineObjectElementMatcher = new Matcher();
+
+	/**
+	 * Set of elements with temporary custom properties that require clearing after render.
+	 */
+	private readonly _elementsWithTemporaryCustomProperties = new Set<ViewElement | ViewDocumentFragment>();
 
 	/**
 	 * Creates a DOM converter.
@@ -386,7 +391,13 @@ export default class DomConverter {
 			const viewElementOrFragment = viewNode as ViewElement | ViewDocumentFragment;
 
 			if ( this.mapViewToDom( viewElementOrFragment ) ) {
-				return this.mapViewToDom( viewElementOrFragment )!;
+				// Do not reuse element that is marked to not reuse (for example an IMG element
+				// so it can immediately display a placeholder background instead of waiting for the new src to load).
+				if ( viewElementOrFragment.getCustomProperty( 'editingPipeline:doNotReuseOnce' ) ) {
+					this._elementsWithTemporaryCustomProperties.add( viewElementOrFragment );
+				} else {
+					return this.mapViewToDom( viewElementOrFragment )!;
+				}
 			}
 
 			let domElement: DomElement | DomDocumentFragment | DomComment;
@@ -1261,6 +1272,19 @@ export default class DomConverter {
 	 */
 	public registerInlineObjectMatcher( pattern: MatcherPattern ): void {
 		this._inlineObjectElementMatcher.add( pattern );
+	}
+
+	/**
+	 * Clear temporary custom properties.
+	 *
+	 * @internal
+	 */
+	public _clearTemporaryCustomProperties(): void {
+		for ( const element of this._elementsWithTemporaryCustomProperties ) {
+			element._removeCustomProperty( 'editingPipeline:doNotReuseOnce' );
+		}
+
+		this._elementsWithTemporaryCustomProperties.clear();
 	}
 
 	/**
