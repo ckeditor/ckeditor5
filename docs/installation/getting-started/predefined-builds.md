@@ -881,9 +881,8 @@ The table below presents the list of all plugins included in various builds. <!-
 				Includes:</br />
 				<ul>
 				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/clipboard.html">Clipboard</a></li>
-				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/enter.html">Enter</a></li>
+				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/enter.html">Enter/ShiftEnter</a></li>
 				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/select-all.html">SelectAll</a></li>
-				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_enter_shiftenter-ShiftEnter.html">ShiftEnter</a></li>
 				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/typing.html">Typing</a></li>
 				<li><a href="https://ckeditor.com/docs/ckeditor5/latest/api/undo.html">Undo</a></li>
 				</ul>
