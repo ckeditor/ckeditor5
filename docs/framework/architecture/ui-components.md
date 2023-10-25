@@ -77,7 +77,7 @@ Two positions describe the placement of the ballon. The first one describes the 
 
 {@snippet framework/ui/ui-button}
 
-There are two basic buttons in CKEditor&nbsp;5 UI library: a standard button and a switch. You can instantiate the standard button with the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class. By modifying the passed config, you can get different button variants and states.
+There are two basic buttons in CKEditor&nbsp;5 UI library: a standard button and a switch. You can instantiate the standard button with the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class. By modifying the passed config, you can get different button variants and states. The {@link module:ui/button/buttonlabelview~ButtonLabelView `ButtonLabelView`} class is a default implementation of the button's label. It supports dynamic text via the {@link module:ui/button/buttonlabelview~ButtonLabelView#text `text`} property.
 
 ### Action
 
