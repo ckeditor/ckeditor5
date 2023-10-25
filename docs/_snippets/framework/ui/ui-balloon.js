@@ -11,9 +11,9 @@ import {
 	IconView,
 	LabeledFieldView,
 	Model,
+	SpinnerView,
 	SplitButtonView,
 	SwitchButtonView,
-	SpinnerView,
 	TextareaView,
 	ToolbarSeparatorView,
 	ToolbarLineBreakView,
@@ -35,33 +35,35 @@ import { icons as coreIcons } from 'ckeditor5/src/core';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 
-window.Locale = Locale;
-window.ButtonView = ButtonView;
 window.BalloonPanelView = BalloonPanelView;
+window.ButtonView = ButtonView;
+window.IconView = IconView;
+window.LabeledFieldView = LabeledFieldView;
+window.Model = Model;
+window.SpinnerView = SpinnerView;
+window.SplitButtonView = SplitButtonView;
+window.SwitchButtonView = SwitchButtonView;
+window.TextareaView = TextareaView;
+window.ToolbarSeparatorView = ToolbarSeparatorView;
+window.ToolbarLineBreakView = ToolbarLineBreakView;
+window.ToolbarView = ToolbarView;
+window.TooltipManager = TooltipManager;
+window.View = View;
+window.addListToDropdown = addListToDropdown;
+window.addToolbarToDropdown = addToolbarToDropdown;
+window.createDropdown = createDropdown;
+window.createLabeledInputNumber = createLabeledInputNumber;
+window.createLabeledInputText = createLabeledInputText;
+window.Collection = Collection;
+window.Locale = Locale;
+
 window.checkIcon = coreIcons.check;
 window.coreIcons = coreIcons;
 window.cancelIcon = coreIcons.cancel;
 window.boldIcon = boldIcon;
 window.italicIcon = italicIcon;
-window.SwitchButtonView = SwitchButtonView;
-window.SplitButtonView = SplitButtonView;
-window.createDropdown = createDropdown;
-window.addToolbarToDropdown = addToolbarToDropdown;
-window.addListToDropdown = addListToDropdown;
-window.Collection = Collection;
-window.Model = Model;
-window.LabeledFieldView = LabeledFieldView;
-window.createLabeledInputText = createLabeledInputText;
-window.createLabeledInputNumber = createLabeledInputNumber;
-window.SpinnerView = SpinnerView;
-window.TextareaView = TextareaView;
-window.ToolbarView = ToolbarView;
-window.ToolbarSeparatorView = ToolbarSeparatorView;
-window.ToolbarLineBreakView = ToolbarLineBreakView;
-window.View = View;
-window.IconView = IconView;
+
 window.ClassicEditor = ClassicEditor;
-window.TooltipManager = TooltipManager;
 window.Essentials = Essentials;
 
 const balloonButton = new ButtonView();
