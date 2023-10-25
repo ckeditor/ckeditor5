@@ -11,6 +11,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Image } from '@ckeditor/ckeditor5-image';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
@@ -42,6 +43,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			plugins: [
 				Paragraph,
 				Heading,
+				Image,
 				CloudServices,
 				Essentials
 			],
@@ -219,10 +221,30 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should fire "ckboxImageEditor:save" event after closing the CKBox Image Editor dialog', () => {
+				const clock = sinon.useFakeTimers();
 				const spy = sinon.spy();
 
 				command.on( 'ckboxImageEditor:save', spy );
-				onSave();
+
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+				onSave( dataMock );
+
+				clock.tick( 4000 );
 
 				expect( spy.callCount ).to.equal( 1 );
 			} );

@@ -149,8 +149,6 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt: any, { data }: CKBoxRawAssetDefinition ) => {
-			console.log( 'data', data );
-
 			const imageCommand = editor.commands.get( 'insertImage' )!;
 
 			const preparedAsset: CKBoxAssetDefinition = prepareAssets( {
@@ -165,17 +163,16 @@ export default class CKBoxImageEditCommand extends Command {
 				imageTextAlternative
 			} = preparedAsset.attributes as CKBoxAssetImageAttributesDefinition;
 
-			imageCommand.execute( {
-				source: {
-					src: imageFallbackUrl,
-					sources: imageSources,
-					alt: imageTextAlternative
-				}
-			} );
-
-			const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
-
 			editor.model.change( writer => {
+				imageCommand.execute( {
+					source: {
+						src: imageFallbackUrl,
+						sources: imageSources,
+						alt: imageTextAlternative
+					}
+				} );
+
+				const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
 				writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
 			} );
 
