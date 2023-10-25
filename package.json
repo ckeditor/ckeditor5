@@ -113,7 +113,7 @@
     "@ckeditor/ckeditor5-slash-command": "40.0.0",
     "@ckeditor/ckeditor5-template": "40.0.0",
     "@ckeditor/ckeditor5-track-changes": "40.0.0",
-    "@ocular-d/vale-bin": "2.29.1",
+    "@ocular-d/vale-bin": "^2.29.1",
     "@webspellchecker/wproofreader-ckeditor5": "^2.0.1",
     "@wiris/mathtype-ckeditor5": "^7.24.0",
     "assert": "^2.0.0",
