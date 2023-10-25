@@ -84,7 +84,7 @@ describe( 'AutoLink', () => {
 				);
 			} );
 
-			it( 'paste a HTML link that doesn not look like a link', () => {
+			it( 'paste a HTML link without a protocol', () => {
 				pasteData( {
 					'text/plain': 'hello.com',
 					'text/html': '<a href="http://hello.com">hello.com</a>'

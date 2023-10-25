@@ -110,6 +110,25 @@ export default class AutoLink extends Plugin {
 		this._enablePasteLinking();
 	}
 
+	private _updateLink( newLink: string ): boolean {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const selStart = selection.getFirstPosition()!;
+		const selEnd = selection.getLastPosition()!;
+
+		const linkRange = findAttributeRange( selStart, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+		// why is containsPosition false when the point is equal to the start or end of the range?
+		if ( linkRange.containsPosition( selEnd ) || linkRange.end.isEqual( selEnd ) ) {
+			// update the whole link if one is partially selected
+			model.change( writer => writer.setAttribute( 'linkHref', newLink, linkRange ) );
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * Enables autolinking on pasting a URL when some content is selected.
 	 */
@@ -120,38 +139,26 @@ export default class AutoLink extends Plugin {
 		const clipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const linkCommand = editor.commands.get( 'link' )!;
 
-		const updateLink = ( newLink: string ): boolean => {
-			const selStart = selection.getFirstPosition()!;
-			const selEnd = selection.getLastPosition()!;
-
-			const linkRange = findAttributeRange( selStart, 'linkHref', selection.getAttribute( 'linkHref' ), model );
-			// why is containsPosition false when the point is equal to the start or end of the range?
-			if ( linkRange.containsPosition( selEnd ) || linkRange.end.isEqual( selEnd ) ) {
-				// update the whole link if one is partially selected
-				model.change( writer => writer.setAttribute( 'linkHref', newLink, linkRange ) );
-				return true;
-			} else {
-				return false;
-			}
-		};
-
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
-			if ( linkCommand.isEnabled && !selection.isCollapsed ) {
-				const newLink = data.dataTransfer.getData( 'text/plain' );
-				const matches = newLink.match( URL_REG_EXP );
+			if ( !this.isEnabled || !linkCommand.isEnabled || selection.isCollapsed ) {
+				return;
+			}
 
-				// if the text in the clipboard has a URL, and that URL is the whole clipboard
-				if ( matches && matches[ 2 ] === newLink ) {
-					if ( selection.hasAttribute( 'linkHref' ) ) {
-						if ( updateLink( newLink ) ) {
-							// only stop the paste action if the link was updated
-							// otherwise fall through to pasting normally
-							evt.stop();
-						}
-					} else {
-						linkCommand.execute( newLink );
+			const newLink = data.dataTransfer.getData( 'text/plain' );
+			const matches = newLink.match( URL_REG_EXP );
+
+			// if the text in the clipboard has a URL, and that URL is the whole clipboard
+			if ( matches && matches[ 2 ] === newLink ) {
+				if ( selection.hasAttribute( 'linkHref' ) ) {
+					const hasUpdated = this._updateLink( newLink );
+					if ( hasUpdated ) {
+						// only stop the paste action if the link was updated
+						// otherwise fall through to pasting normally
 						evt.stop();
 					}
+				} else {
+					linkCommand.execute( newLink );
+					evt.stop();
 				}
 			}
 		}, { priority: 'high' } );
