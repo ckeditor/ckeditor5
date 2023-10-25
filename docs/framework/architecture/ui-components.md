@@ -681,6 +681,8 @@ document.getElementById( 'input-disabled' ).append( disabledInput.element );
 You can use a spinner to indicate some loading process. There is only one essential property here - {@link module:ui/spinner/spinnerview~SpinnerView#isVisible `isVisible`}. As the name suggests, it controls if the component is visible. The property is equal to `false` by default.
 
 ```js
+import { SpinnerView } from '@ckeditor/ckeditor5-ui';
+
 const spinner = new SpinnerView();
 
 spinner.set( { isVisible: true } );
