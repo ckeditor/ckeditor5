@@ -590,7 +590,8 @@ import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
 
-import loupe from '@ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg';
+import history from "@ckeditor/ckeditor5-core/theme/icons/history.svg"
+import loupe from "@ckeditor/ckeditor5-core/theme/icons/loupe.svg"
 ```
 
 ## Input
