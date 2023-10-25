@@ -12,7 +12,6 @@ textarea.set( {
 	maxRows: 10,
 	resize: 'none'
 } );
-
 textarea.render();
 
 document.querySelector( '.ui-textarea' ).append( textarea.element );

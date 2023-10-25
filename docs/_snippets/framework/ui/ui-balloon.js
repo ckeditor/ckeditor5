@@ -13,6 +13,7 @@ import {
 	Model,
 	SplitButtonView,
 	SwitchButtonView,
+	SpinnerView,
 	TextareaView,
 	ToolbarSeparatorView,
 	ToolbarLineBreakView,
@@ -52,6 +53,7 @@ window.Model = Model;
 window.LabeledFieldView = LabeledFieldView;
 window.createLabeledInputText = createLabeledInputText;
 window.createLabeledInputNumber = createLabeledInputNumber;
+window.SpinnerView = SpinnerView;
 window.TextareaView = TextareaView;
 window.ToolbarView = ToolbarView;
 window.ToolbarSeparatorView = ToolbarSeparatorView;

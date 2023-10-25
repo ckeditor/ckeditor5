@@ -674,6 +674,21 @@ disabledInput.render();
 document.getElementById( 'input-disabled' ).append( disabledInput.element );
 ```
 
+## Spinner
+
+{@snippet framework/ui/ui-spinner}
+
+You can use a spinner to indicate some loading process. There is only one essential property here - {@link module:ui/spinner/spinnerview~SpinnerView#isVisible `isVisible`}. As the name suggests, it controls if the component is visible. The property is equal to `false` by default.
+
+```js
+const spinner = new SpinnerView();
+
+spinner.set( { isVisible: true } );
+spinner.render();
+
+document.querySelector( '.ui-spinner' ).append( spinner.element );
+```
+
 ## Textarea
 
 {@snippet framework/ui/ui-textarea}
@@ -690,7 +705,6 @@ textarea.set( {
     maxRows: 10,
     resize: 'none'
 } );
-
 textarea.render();
 
 document.querySelector( '.ui-textarea' ).append( textarea.element );
