@@ -111,7 +111,7 @@ export default class AutoLink extends Plugin {
 	}
 
 	/**
-	 * Enables autolinking on pasting a URL.
+	 * Enables autolinking on pasting a URL when some content is selected.
 	 */
 	private _enablePasteLinking(): void {
 		const editor = this.editor;
@@ -154,7 +154,7 @@ export default class AutoLink extends Plugin {
 					}
 				}
 			}
-		}, { priority: priorities.get( 'high' ) } );
+		}, { priority: 'high' } );
 	}
 
 	/**
