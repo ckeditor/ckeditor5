@@ -14,7 +14,7 @@ import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/image
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { global } from '@ckeditor/ckeditor5-utils';
 
-import { CKBox } from '../src';
+import { CKBoxEditing } from '../src';
 import CKBoxImageEdit from '../src/ckboximageedit';
 import CKBoxImageEditEditing from '../src/ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditUI from '../src/ckboximageedit/ckboximageeditui.ts';
@@ -59,7 +59,7 @@ describe( 'CKBoxImageEdit', () => {
 
 		it( 'should have proper "requires" value', () => {
 			expect( CKBoxImageEdit.requires ).to.deep.equal( [
-				CKBox,
+				CKBoxEditing,
 				CKBoxImageEditEditing,
 				CKBoxImageEditUI
 			] );
