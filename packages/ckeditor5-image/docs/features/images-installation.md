@@ -35,7 +35,11 @@ ClassicEditor
 				'imageTextAlternative',
 				'|',
 				'linkImage'
-			]
+			],
+			insert: { 
+				type: 'auto'
+			}
+			// If this setting is omitted, the editor defaults to `block`. See explanation below.
 		},
 	} )
 	.then( /* ... */ )
@@ -98,7 +102,7 @@ ClassicEditor.create( element, {
 } );
 ```
 
-There are three possible options: `auto`, `block`, and `inline`. The `auto` option uses the default setting, while the other two force the use of the selected image type at insert.
+There are three possible options: `auto`, `block`, and `inline`. The `auto` option uses the default setting, while the other two force the use of the selected image type at insert. If this setting is omitted in the configuration, the editor defaults to `block`.
 
 ## Contribute
 
