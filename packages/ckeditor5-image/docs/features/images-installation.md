@@ -39,7 +39,8 @@ ClassicEditor
 			insert: { 
 				type: 'auto'
 			}
-			// If this setting is omitted, the editor defaults to `block`. See explanation below.
+			// If this setting is omitted, the editor defaults to `block`.
+			// See explanation below.
 		},
 	} )
 	.then( /* ... */ )
