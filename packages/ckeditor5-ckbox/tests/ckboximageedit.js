@@ -6,9 +6,15 @@
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import { global } from '@ckeditor/ckeditor5-utils';
 
+import { CKBox } from '../src';
 import CKBoxImageEdit from '../src/ckboximageedit';
 import CKBoxImageEditEditing from '../src/ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditUI from '../src/ckboximageedit/ckboximageeditui.ts';
@@ -30,6 +36,11 @@ describe( 'CKBoxImageEdit', () => {
 					Paragraph,
 					Heading,
 					Essentials,
+					LinkEditing,
+					PictureEditing,
+					ImageUploadEditing,
+					ImageUploadProgress,
+					CloudServices,
 					CKBoxImageEdit
 				]
 			} );
@@ -48,6 +59,7 @@ describe( 'CKBoxImageEdit', () => {
 
 		it( 'should have proper "requires" value', () => {
 			expect( CKBoxImageEdit.requires ).to.deep.equal( [
+				CKBox,
 				CKBoxImageEditEditing,
 				CKBoxImageEditUI
 			] );
