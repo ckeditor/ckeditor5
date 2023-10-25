@@ -674,6 +674,28 @@ disabledInput.render();
 document.getElementById( 'input-disabled' ).append( disabledInput.element );
 ```
 
+## Textarea
+
+{@snippet framework/ui/ui-textarea}
+
+A textarea is a component for inserting long blocks of text. You can specify the visible height of the component using the {@link module:ui/textarea/textareaview~TextareaView#minRows `minRows`} property. Specify the {@link module:ui/textarea/textareaview~TextareaView#minRows `maxRows`} property if you don't want the component to exceed a certain height. Textarea dimensions don't need to be set in stone, and you can allow users to change them with the {@link module:ui/textarea/textareaview~TextareaView#resize `resize`} option. By default, the property is set to `none`, and resizing is not allowed.
+
+```js
+import { TextareaView } from '@ckeditor/ckeditor5-ui';
+
+const textarea = new TextareaView();
+
+textarea.set( {
+    minRows: 4,
+    maxRows: 10,
+    resize: 'none'
+} );
+
+textarea.render();
+
+document.querySelector( '.ui-textarea' ).append( textarea.element );
+```
+
 ## Toolbar
 
 A toolbar is a base for other components. Usually, you would put other UI elements inside it. But it can also be nested inside a balloon or dropdown. You can use the {@link module:ui/toolbar/toolbarview~ToolbarView `ToolbarView`} class to instantiate a toolbar.
