@@ -173,6 +173,7 @@ export default class CKBoxImageEditCommand extends Command {
 				} );
 
 				const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+
 				writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
 			} );
 

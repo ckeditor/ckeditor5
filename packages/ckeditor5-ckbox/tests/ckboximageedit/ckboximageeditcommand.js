@@ -14,13 +14,14 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Image } from '@ckeditor/ckeditor5-image';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 
 import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
 
 describe( 'CKBoxImageEditCommand', () => {
-	let editor, domElement, command;
+	let editor, domElement, command, model;
 
 	beforeEach( async () => {
 		TokenMock.initialToken = [
@@ -58,6 +59,7 @@ describe( 'CKBoxImageEditCommand', () => {
 		command = new CKBoxImageEditCommand( editor );
 		command.isEnabled = true;
 		editor.commands.add( 'ckboxImageEdit', command );
+		model = editor.model;
 	} );
 
 	afterEach( async () => {
@@ -247,6 +249,37 @@ describe( 'CKBoxImageEditCommand', () => {
 				clock.tick( 4000 );
 
 				expect( spy.callCount ).to.equal( 1 );
+			} );
+
+			it( 'should replace image with saved one', () => {
+				const clock = sinon.useFakeTimers();
+
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+				onSave( dataMock );
+
+				clock.tick( 4000 );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock alt="" ckboxImageId="image-id1" src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+					'</imageBlock>]'
+				);
 			} );
 		} );
 	} );
