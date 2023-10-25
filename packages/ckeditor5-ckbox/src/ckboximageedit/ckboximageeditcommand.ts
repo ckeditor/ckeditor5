@@ -9,8 +9,13 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { createElement, global } from 'ckeditor5/src/utils';
+import { prepareAssets } from '../ckboxcommand';
 
-import type { CKBoxRawAssetDefinition } from '../ckboxconfig';
+import type {
+	CKBoxAssetDefinition,
+	CKBoxAssetImageAttributesDefinition,
+	CKBoxRawAssetDefinition
+} from '../ckboxconfig';
 
 /**
  * The CKBox edit image command.
@@ -146,7 +151,34 @@ export default class CKBoxImageEditCommand extends Command {
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt: any, { data }: CKBoxRawAssetDefinition ) => {
 			console.log( 'data', data );
 
-			// TODO: Add logic to check if the edited image is ready
+			const imageCommand = editor.commands.get( 'insertImage' )!;
+
+			const preparedAsset: CKBoxAssetDefinition = prepareAssets( {
+				assets: [ { data } ],
+				isImageAllowed: imageCommand.isEnabled,
+				isLinkAllowed: false
+			} )[ 0 ];
+
+			const {
+				imageFallbackUrl,
+				imageSources,
+				imageTextAlternative
+			} = preparedAsset.attributes as CKBoxAssetImageAttributesDefinition;
+
+			imageCommand.execute( {
+				source: {
+					src: imageFallbackUrl,
+					sources: imageSources,
+					alt: imageTextAlternative
+				}
+			} );
+
+			const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
+			} );
+
 			this._ckboxImageId = data.id;
 		} );
 	}

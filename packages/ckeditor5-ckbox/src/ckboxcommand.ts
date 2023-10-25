@@ -333,7 +333,7 @@ export default class CKBoxCommand extends Command {
 /**
  * Parses the chosen assets into the internal data format. Filters out chosen assets that are not allowed.
  */
-function prepareAssets(
+export function prepareAssets(
 	{ assets, isImageAllowed, isLinkAllowed }: {
 		assets: Array<CKBoxRawAssetDefinition>;
 		isImageAllowed: boolean;
