@@ -100,7 +100,7 @@ function SimpleImage( editor: Editor ) {
 			converterPriority: 'high'
 		} )
 
-		// Resized width -> width attributes.
+		// There is a resizedWidth so use it as a width attribute in data.
 		.attributeToAttribute( {
 			model: {
 				name: 'imageBlock',
@@ -124,7 +124,7 @@ function SimpleImage( editor: Editor ) {
 			converterPriority: 'high'
 		} )
 
-		// Resized height -> height attributes.
+		// There is a resizedHeight so use it as a height attribute in data.
 		.attributeToAttribute( {
 			model: {
 				name: 'imageBlock',
@@ -148,16 +148,25 @@ function SimpleImage( editor: Editor ) {
 			converterPriority: 'high'
 		} )
 
-		// Natural width consumed and not down-casted.
+		// Natural width should be used only if resizedWidth is not specified (is equal to natural width).
 		.attributeToAttribute( {
 			model: {
 				name: 'imageBlock',
 				key: 'width'
 			},
 			view: ( attributeValue, { consumable }, data ) => {
-				consumable.consume( data.item, 'attribute:width' );
+				if ( data.item.hasAttribute( 'resizedWidth' ) ) {
+					// Natural width consumed and not down-casted (because resizedWidth was used to downcast to the width attribute).
+					consumable.consume( data.item, 'attribute:width' );
 
-				return null;
+					return null;
+				} else {
+					// There is no resizedWidth so downcast natural width to the attribute in data.
+					return {
+						key: 'width',
+						value: attributeValue
+					};
+				}
 			},
 			converterPriority: 'high'
 		} )
@@ -167,29 +176,47 @@ function SimpleImage( editor: Editor ) {
 				key: 'width'
 			},
 			view: ( attributeValue, { consumable }, data ) => {
-				consumable.consume( data.item, 'attribute:width' );
+				if ( data.item.hasAttribute( 'resizedWidth' ) ) {
+					// Natural width consumed and not down-casted (because resizedWidth was used to downcast to the width attribute).
+					consumable.consume( data.item, 'attribute:width' );
 
-				return null;
+					return null;
+				} else {
+					// There is no resizedWidth so downcast natural width to the attribute in data.
+					return {
+						key: 'width',
+						value: attributeValue
+					};
+				}
 			},
 			converterPriority: 'high'
 		} )
 
-		// Natural height converted to resized height attribute (based on aspect ratio and resized width).
+		// Natural height converted to resized height attribute (based on aspect ratio and resized width if available).
 		.attributeToAttribute( {
 			model: {
 				name: 'imageBlock',
 				key: 'height'
 			},
 			view: ( attributeValue, conversionApi, data ) => {
-				const resizedWidth = parseInt( data.item.getAttribute( 'resizedWidth' ) as string );
-				const naturalWidth = parseInt( data.item.getAttribute( 'width' ) as string );
-				const naturalHeight = parseInt( attributeValue as string );
-				const aspectRatio = naturalWidth / naturalHeight;
+				if ( data.item.hasAttribute( 'resizedWidth' ) ) {
+					// The resizedWidth is present so calculate height from aspect ratio.
+					const resizedWidth = parseInt( data.item.getAttribute( 'resizedWidth' ) as string );
+					const naturalWidth = parseInt( data.item.getAttribute( 'width' ) as string );
+					const naturalHeight = parseInt( attributeValue as string );
+					const aspectRatio = naturalWidth / naturalHeight;
 
-				return {
-					key: 'height',
-					value: `${ Math.round( resizedWidth / aspectRatio ) }`
-				};
+					return {
+						key: 'height',
+						value: `${ Math.round( resizedWidth / aspectRatio ) }`
+					};
+				} else {
+					// There is no resizedWidth so using natural height attribute.
+					return {
+						key: 'height',
+						value: attributeValue
+					};
+				}
 			},
 			converterPriority: 'high'
 		} )
@@ -199,15 +226,24 @@ function SimpleImage( editor: Editor ) {
 				key: 'height'
 			},
 			view: ( attributeValue, conversionApi, data ) => {
-				const resizedWidth = parseInt( data.item.getAttribute( 'resizedWidth' ) as string );
-				const naturalWidth = parseInt( data.item.getAttribute( 'width' ) as string );
-				const naturalHeight = parseInt( attributeValue as string );
-				const aspectRatio = naturalWidth / naturalHeight;
+				if ( data.item.hasAttribute( 'resizedWidth' ) ) {
+					// The resizedWidth is present so calculate height from aspect ratio.
+					const resizedWidth = parseInt( data.item.getAttribute( 'resizedWidth' ) as string );
+					const naturalWidth = parseInt( data.item.getAttribute( 'width' ) as string );
+					const naturalHeight = parseInt( attributeValue as string );
+					const aspectRatio = naturalWidth / naturalHeight;
 
-				return {
-					key: 'height',
-					value: `${ Math.round( resizedWidth / aspectRatio ) }`
-				};
+					return {
+						key: 'height',
+						value: `${ Math.round( resizedWidth / aspectRatio ) }`
+					};
+				} else {
+					// There is no resizedWidth so using natural height attribute.
+					return {
+						key: 'height',
+						value: attributeValue
+					};
+				}
 			},
 			converterPriority: 'high'
 		} );
@@ -239,6 +275,55 @@ function SimpleImage( editor: Editor ) {
 		editor.model.enqueueChange( { isUndoable: false }, () => {
 			imageUtils.setImageNaturalSizeAttributes( modelElement );
 		} );
+	} );
+
+	// Post-fixer to ensure we do not have redundant resizedX attributes if image is in original size.
+	editor.model.document.registerPostFixer( writer => {
+		const changes = writer.model.document.differ.getChanges();
+		const images = [];
+		let wasFixed = false;
+
+		for ( const change of changes ) {
+			if ( change.type == 'attribute' ) {
+				if ( ![ 'width', 'height', 'resizedWidth', 'resizedHeight' ].includes( change.attributeKey ) ) {
+					continue;
+				}
+
+				const item = change.range.start.nodeAfter;
+
+				if ( item.is( 'element', 'imageBlock' ) || item.is( 'element', 'imageInline' ) ) {
+					images.push( item );
+				}
+			} else if ( change.type == 'insert' && change.name != '$text' ) {
+				const items = Array.from( writer.createRangeOn( change.position.nodeAfter! ).getItems() );
+
+				for ( const item of items ) {
+					if ( item.is( 'element', 'imageBlock' ) || item.is( 'element', 'imageInline' ) ) {
+						images.push( item );
+					}
+				}
+			}
+		}
+
+		for ( const item of images ) {
+			if (
+				item.hasAttribute( 'resizedWidth' ) &&
+				item.getAttribute( 'resizedWidth' ) == `${ item.getAttribute( 'width' ) }px`
+			) {
+				writer.removeAttribute( 'resizedWidth', item );
+				wasFixed = true;
+			}
+
+			if (
+				item.hasAttribute( 'resizedHeight' ) &&
+				item.getAttribute( 'resizedHeight' ) == `${ item.getAttribute( 'height' ) }px`
+			) {
+				writer.removeAttribute( 'resizedHeight', item );
+				wasFixed = true;
+			}
+		}
+
+		return wasFixed;
 	} );
 }
 
