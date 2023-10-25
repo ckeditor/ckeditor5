@@ -73,7 +73,7 @@ export default class XmlDataProcessor implements DataProcessor {
 	 */
 	public toData( viewFragment: ViewDocumentFragment ): string {
 		// Convert view DocumentFragment to DOM DocumentFragment.
-		const domFragment = this.domConverter.viewToDom( viewFragment ) as DocumentFragment;
+		const domFragment = this.domConverter.viewToDom( viewFragment );
 
 		// Convert DOM DocumentFragment to XML output.
 		// There is no need to use dedicated for XML serializing method because BasicHtmlWriter works well in this case.
