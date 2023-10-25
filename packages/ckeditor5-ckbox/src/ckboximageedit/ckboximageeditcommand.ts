@@ -72,9 +72,6 @@ export default class CKBoxImageEditCommand extends Command {
 
 	/**
 	 * Indicates if the CKBox Image Editor dialog is already opened.
-	 *
-	 * @private
-	 * @returns {Boolean}
 	 */
 	private _getValue(): boolean {
 		return this._wrapper !== null;
@@ -103,7 +100,7 @@ export default class CKBoxImageEditCommand extends Command {
 	 * Initializes various event listeners for the `ckboxImageEditor:*` events,
 	 * because all functionality of the `ckboxImageEditor` command is event-based.
 	 */
-	private _prepareListeners() {
+	private _prepareListeners(): void {
 		const editor = this.editor;
 
 		// Refresh the command after firing the `ckboxImageEditor:*` event.
