@@ -115,15 +115,15 @@ describe( 'AutoLink', () => {
 				);
 			} );
 
-			it( 'paste with partially selected link updates the entire link', () => {
+			it( 'paste with partially selected link updates and selects the entire link', () => {
 				setData( model, '<paragraph><$text linkHref="http://hello.com">some [selected] text</$text></paragraph>' );
 				pasteText( 'http://world.com' );
 				expect( getData( model ) ).to.equal(
-					'<paragraph><$text linkHref="http://world.com">some [selected] text</$text></paragraph>'
+					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
 
-			it( 'paste with selection overlapping the start of the link inserts a new link', () => {
+			it( 'paste with selection overlapping the start of the link extends the link', () => {
 				setData( model, '<paragraph>[some <$text linkHref="http://hello.com">selected] text</$text></paragraph>' );
 				pasteText( 'http://world.com' );
 				expect( getData( model ) ).to.equal(
@@ -132,11 +132,11 @@ describe( 'AutoLink', () => {
 				);
 			} );
 
-			it( 'paste with selection overlapping the end of the link pastes normally', () => {
-				setData( model, '<paragraph>some <$text linkHref="http://hello.com">[selected</$text> text]</paragraph>' );
+			it( 'paste with selection overlapping the end of the link extends the link', () => {
+				setData( model, '<paragraph><$text linkHref="http://hello.com">some [selected</$text> text]</paragraph>' );
 				pasteText( 'http://world.com' );
 				expect( getData( model ) ).to.equal(
-					'<paragraph>some http://world.com[]</paragraph>'
+					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
 		} );

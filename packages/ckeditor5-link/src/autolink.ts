@@ -110,22 +110,23 @@ export default class AutoLink extends Plugin {
 		this._enablePasteLinking();
 	}
 
-	private _updateLink( newLink: string ): boolean {
+	private _expandSelection( selectedRange: Range, href: unknown ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
 		const selStart = selection.getFirstPosition()!;
 		const selEnd = selection.getLastPosition()!;
 
-		const linkRange = findAttributeRange( selStart, 'linkHref', selection.getAttribute( 'linkHref' ), model );
-		// why is containsPosition false when the point is equal to the start or end of the range?
-		if ( linkRange.containsPosition( selEnd ) || linkRange.end.isEqual( selEnd ) ) {
-			// update the whole link if one is partially selected
-			model.change( writer => writer.setAttribute( 'linkHref', newLink, linkRange ) );
+		const linkRange = findAttributeRange( selStart, 'linkHref', href, model );
 
-			return true;
-		} else {
-			return false;
+		const updatedSelection = linkRange.getJoined( selectedRange );
+		if ( updatedSelection === null ) {
+			return;
+		}
+
+		if ( updatedSelection.start.isBefore( selStart ) || updatedSelection.end.isAfter( selEnd ) ) {
+			// only write the selection if it wasn't already the entire link
+			model.change( writer => writer.setSelection( updatedSelection ) );
 		}
 	}
 
@@ -141,8 +142,16 @@ export default class AutoLink extends Plugin {
 
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
 			if ( !this.isEnabled || !linkCommand.isEnabled || selection.isCollapsed ) {
+				// abort if we are disabled or the selection is collapsed
 				return;
 			}
+
+			if ( selection.rangeCount > 1 ) {
+				// abort if there are multiple selection ranges
+				return;
+			}
+
+			const selectedRange = selection.getFirstRange()!;
 
 			const newLink = data.dataTransfer.getData( 'text/plain' );
 			const matches = newLink.match( URL_REG_EXP );
@@ -150,16 +159,10 @@ export default class AutoLink extends Plugin {
 			// if the text in the clipboard has a URL, and that URL is the whole clipboard
 			if ( matches && matches[ 2 ] === newLink ) {
 				if ( selection.hasAttribute( 'linkHref' ) ) {
-					const hasUpdated = this._updateLink( newLink );
-					if ( hasUpdated ) {
-						// only stop the paste action if the link was updated
-						// otherwise fall through to pasting normally
-						evt.stop();
-					}
-				} else {
-					linkCommand.execute( newLink );
-					evt.stop();
+					this._expandSelection( selectedRange, selection.getAttribute( 'linkHref' ) );
 				}
+				linkCommand.execute( newLink );
+				evt.stop();
 			}
 		}, { priority: 'high' } );
 	}
