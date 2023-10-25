@@ -10,6 +10,8 @@
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { createElement, global } from 'ckeditor5/src/utils';
 
+import type { CKBoxRawAssetDefinition } from '../ckboxconfig';
+
 /**
  * The CKBox edit image command.
  *
@@ -92,7 +94,10 @@ export default class CKBoxImageEditCommand extends Command {
 		return {
 			tokenUrl: ckboxConfig.tokenUrl,
 			onClose: () => this.fire<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close' ),
-			onSave: () => this.fire<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save' )
+			// Timeout for demo purpose.
+			onSave: ( data: CKBoxRawAssetDefinition ) => setTimeout( () =>
+				this.fire<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', data )
+			, 3000 )
 		};
 	}
 
@@ -138,8 +143,11 @@ export default class CKBoxImageEditCommand extends Command {
 			editor.editing.view.focus();
 		} );
 
-		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', () => {
-			this._ckboxImageId = null;
+		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt: any, { data }: CKBoxRawAssetDefinition ) => {
+			console.log( 'data', data );
+
+			// TODO: Add logic to check if the edited image is ready
+			this._ckboxImageId = data.id;
 		} );
 	}
 }
@@ -151,6 +159,5 @@ export default class CKBoxImageEditCommand extends Command {
  */
 type CKBoxImageEditorEvent<Name extends '' | 'save' | 'open' | 'close' = ''> = {
 	name: Name extends '' ? 'ckboxImageEditor' : `ckboxImageEditor:${ Name }`;
-	// Those arrays below will differ soon enough.
-	args: Name extends 'open' ? [] : [];
+	args: Name extends 'save' ? [ data: CKBoxRawAssetDefinition ] : [];
 };
