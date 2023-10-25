@@ -10,7 +10,8 @@ import type {
 	CKBoxEditing,
 	CKBoxImageEdit,
 	CKBoxImageEditEditing,
-	CKBoxImageEditCommand
+	CKBoxImageEditCommand,
+	CKBoxImageEditUI
 } from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -29,6 +30,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ CKBoxEditing.pluginName ]: CKBoxEditing;
 		[ CKBoxImageEdit.pluginName ]: CKBoxImageEdit;
 		[ CKBoxImageEditEditing.pluginName ]: CKBoxImageEditEditing;
+		[ CKBoxImageEditUI.pluginName ]: CKBoxImageEditUI;
 	}
 
 	interface CommandsMap {
