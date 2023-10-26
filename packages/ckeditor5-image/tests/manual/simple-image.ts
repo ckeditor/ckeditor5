@@ -16,9 +16,9 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { ViewElement, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
+import type { ViewElement, Element, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 import { AutoImage, ImageInsert, ImageResize, type ImageUtils } from '@ckeditor/ckeditor5-image';
-import ImageLoadObserver from '@ckeditor/ckeditor5-image/src/image/imageloadobserver';
+import ImageLoadObserver, { type ImageLoadedEvent } from '@ckeditor/ckeditor5-image/src/image/imageloadobserver';
 
 declare global {
 	interface Window {
@@ -253,7 +253,7 @@ function SimpleImage( editor: Editor ) {
 	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	// Waiting for any new images loaded, so we can set their natural width and height.
-	editor.editing.view.document.on( 'imageLoaded', ( evt, domEvent ) => {
+	editor.editing.view.document.on<ImageLoadedEvent>( 'imageLoaded', ( evt, domEvent ) => {
 		const imgViewElement = editor.editing.view.domConverter.mapDomToView( domEvent.target as HTMLElement );
 
 		if ( !imgViewElement ) {
@@ -280,7 +280,7 @@ function SimpleImage( editor: Editor ) {
 	// Post-fixer to ensure we do not have redundant resizedX attributes if image is in original size.
 	editor.model.document.registerPostFixer( writer => {
 		const changes = writer.model.document.differ.getChanges();
-		const images = [];
+		const images: Array<Element> = [];
 		let wasFixed = false;
 
 		for ( const change of changes ) {
@@ -289,7 +289,7 @@ function SimpleImage( editor: Editor ) {
 					continue;
 				}
 
-				const item = change.range.start.nodeAfter;
+				const item = change.range.start.nodeAfter!;
 
 				if ( item.is( 'element', 'imageBlock' ) || item.is( 'element', 'imageInline' ) ) {
 					images.push( item );
@@ -328,7 +328,7 @@ function SimpleImage( editor: Editor ) {
 }
 
 ClassicEditor
-	.create( document.getElementById( 'editor' ), {
+	.create( document.getElementById( 'editor' )!, {
 		plugins: [
 			ArticlePluginSet, EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage,
 			CloudServices, SourceEditing, GeneralHtmlSupport, SimpleImage
