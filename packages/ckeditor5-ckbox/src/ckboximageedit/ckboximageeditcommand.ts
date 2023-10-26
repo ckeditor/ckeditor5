@@ -148,7 +148,7 @@ export default class CKBoxImageEditCommand extends Command {
 			editor.editing.view.focus();
 		} );
 
-		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt: any, { data }: CKBoxRawAssetDefinition ) => {
+		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, { data } ) => {
 			const imageCommand = editor.commands.get( 'insertImage' )!;
 
 			const preparedAsset: CKBoxAssetDefinition = prepareAssets( {
