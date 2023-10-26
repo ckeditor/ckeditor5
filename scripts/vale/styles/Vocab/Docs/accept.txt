@@ -53,6 +53,7 @@ Kulykov
 Laravel
 Libre
 localizable
+Lodash
 Luxon
 matcher
 mindmap
