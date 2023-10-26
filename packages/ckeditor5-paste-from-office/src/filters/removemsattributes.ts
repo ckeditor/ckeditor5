@@ -15,7 +15,7 @@ import { UpcastWriter, type ViewDocumentFragment } from 'ckeditor5/src/engine';
  * @param documentFragment element `data.content` obtained from clipboard.
  */
 export default function removeMSAttributes( documentFragment: ViewDocumentFragment ): void {
-	const elementsToRemove = [];
+	const elementsToUnwrap = [];
 	const writer = new UpcastWriter( documentFragment.document );
 
 	for ( const { item } of writer.createRangeIn( documentFragment ) ) {
@@ -36,11 +36,11 @@ export default function removeMSAttributes( documentFragment: ViewDocumentFragme
 		}
 
 		if ( item.is( 'element', 'w:sdt' ) ) {
-			elementsToRemove.push( item );
+			elementsToUnwrap.push( item );
 		}
 	}
 
-	for ( const item of elementsToRemove ) {
+	for ( const item of elementsToUnwrap ) {
 		const itemParent = item.parent!;
 		const childIndex = itemParent.getChildIndex( item );
 
