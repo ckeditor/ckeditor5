@@ -13,13 +13,13 @@ modified_at: 2023-10-06
 
 Drupal is a free and open-source web content management system (CMS) written in PHP. CKEditor 5 WYSIWYG rich text editor is the default editor module for Drupal. The [CKEditor&nbsp;5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features with the editing platform.
 
-Currently, the module includes a full set of {@link features/collaboration collaboration tools}, namely Comments, Track changes, and Revision history. It also provides the {@link features/productivity-pack Productivity Pack} &nbsp; a set of essential formatting and navigation features &nbsp; as well as document import and export plugins.
+Currently, the module includes a full set of {@link features/collaboration collaboration tools}, namely Comments, Track changes, and Revision history. It also provides the {@link features/productivity-pack Productivity Pack} &ndash; a set of essential formatting and navigation features &nbsp; as well as document import and export plugins.
 
 ## Real-time collaboration in Drupal with CKEditor 5
 
 With {@link features/real-time-collaboration Real-time Collaboration} features, multiple users can work together to write, review, and discuss their content right within Drupal. No need to use different apps for drafting and commenting &ndash; you can do it all in one place.
 
-{@img assets/img/drupal_premium_module.gif 721 Drupal with CKEditor&nbsp;5 real-time editing.}
+{@img assets/img/real-time-collaboration-drupal.gif 1014 Drupal with CKEditor&nbsp;5 real-time editing.}
 
 ### Adding comments
 
