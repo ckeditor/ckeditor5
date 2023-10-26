@@ -70,6 +70,14 @@ ClassicEditor
 						'insertImage', 'insertTable', 'mediaEmbed'
 					]
 				},
+				{
+					actionItem: 'bold',
+					label: 'Some custom split button',
+					isVertical: true,
+					items: [
+						'strikethrough', 'underline', 'code', 'subscript', 'superscript'
+					]
+				},
 				'-',
 				{
 					label: 'Icon: default',

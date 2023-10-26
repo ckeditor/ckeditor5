@@ -590,6 +590,8 @@ export type ToolbarConfigItem = string | {
 	icon?: string | false;
 	withText?: boolean;
 	tooltip?: boolean | string | ( ( label: string, keystroke: string | undefined ) => string );
+	actionItem: string;
+	isVertical?: boolean;
 };
 
 /**

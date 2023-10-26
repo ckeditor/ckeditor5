@@ -19,6 +19,8 @@ import type ComponentFactory from '../componentfactory';
 import type ViewCollection from '../viewcollection';
 import type DropdownView from '../dropdown/dropdownview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
+import ButtonView from '../button/buttonview';
+import SplitButtonView from '../dropdown/button/splitbuttonview';
 
 import {
 	FocusTracker,
@@ -507,7 +509,28 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		}
 
 		const locale = this.locale;
-		const dropdownView = createDropdown( locale );
+		let DropdownButtonClass = undefined;
+
+		if ( 'actionItem' in definition ) {
+			const ActionButtonClass = class extends ButtonView {
+				constructor( locale?: Locale ) {
+					super( locale );
+
+					// TODO verify if item is a ButtonView
+					return componentFactory.create( definition.actionItem ) as ButtonView;
+				}
+			};
+
+			DropdownButtonClass = class extends SplitButtonView {
+				constructor( locale?: Locale ) {
+					super( locale );
+
+					return new SplitButtonView( locale, ActionButtonClass );
+				}
+			};
+		}
+
+		const dropdownView = createDropdown( locale, DropdownButtonClass );
 
 		if ( !label ) {
 			/**
@@ -532,25 +555,34 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		}
 
 		dropdownView.class = 'ck-toolbar__nested-toolbar-dropdown';
-		dropdownView.buttonView.set( {
-			label,
-			tooltip,
-			withText: !!withText
-		} );
 
-		// Allow disabling icon by passing false.
-		if ( icon !== false ) {
-			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || threeVerticalDots;
-		}
-		// If the icon is disabled, display the label automatically.
-		else {
-			dropdownView.buttonView.withText = true;
+		if ( 'actionItem' in definition ) {
+			dropdownView.buttonView.set( {
+				label,
+				tooltip
+			} );
+			// TODO withText and icon are not used
+		} else {
+			dropdownView.buttonView.set( {
+				label,
+				tooltip,
+				withText: !!withText
+			} );
+
+			// Allow disabling icon by passing false.
+			if ( icon !== false ) {
+				// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
+				dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || threeVerticalDots;
+			}
+			// If the icon is disabled, display the label automatically.
+			else {
+				dropdownView.buttonView.withText = true;
+			}
 		}
 
 		addToolbarToDropdown( dropdownView, () => (
 			dropdownView.toolbarView!._buildItemsFromConfig( items, componentFactory, removeItems )
-		) );
+		), { isVertical: definition.isVertical } );
 
 		return dropdownView;
 	}
