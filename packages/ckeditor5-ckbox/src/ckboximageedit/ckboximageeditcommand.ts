@@ -176,8 +176,6 @@ export default class CKBoxImageEditCommand extends Command {
 
 				writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
 			} );
-
-			this._ckboxImageId = data.id;
 		} );
 	}
 }
