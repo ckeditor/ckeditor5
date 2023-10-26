@@ -223,7 +223,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 
 		// When there is a conversion result.
 		if ( modelRange ) {
-			// Remove all empty elements that were create while splitting.
+			// Remove all empty elements that were created while splitting.
 			this._removeEmptyElements();
 
 			// Move all items that were converted in context tree to the document fragment.
@@ -340,7 +340,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 		}
 
 		// Insert element on allowed position.
-		this.conversionApi.writer!.insert( modelNode, splitResult.position );
+		this.conversionApi.writer.insert( modelNode, splitResult.position );
 
 		return true;
 	}
@@ -502,7 +502,7 @@ export default class UpcastDispatcher extends EmitterMixin() {
 
 		for ( const element of this._splitParts.keys() ) {
 			if ( element.isEmpty && !this._emptyElementsToKeep.has( element ) ) {
-				this.conversionApi.writer!.remove( element );
+				this.conversionApi.writer.remove( element );
 				this._splitParts.delete( element );
 
 				anyRemoved = true;

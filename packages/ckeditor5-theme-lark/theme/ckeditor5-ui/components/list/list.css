@@ -93,10 +93,10 @@
 		border-top: 1px solid var(--ck-color-base-border);
 	}
 
-	& > span {
+	& > .ck-label {
 		font-size: 11px;
 		font-weight: bold;
-		padding: var(--ck-spacing-medium);
+		padding: var(--ck-spacing-medium) var(--ck-spacing-medium) 0 var(--ck-spacing-medium);
 	}
 }
 

@@ -16,8 +16,8 @@ Paste from Office features let you paste content from Microsoft Word and Microso
 
 Use these sample documents to test pasting from Microsoft Office Word and Excel:
 
-* [Sample Word document](../../assets/Sample_Word_document.docx)
-* [Sample Excel spreadsheet](../../assets/Sample_Excel_spreadsheet.xlsx)
+* [Sample Word document](../../assets/PasteFromOfficeEnhancedWordSample.docx)
+* [Sample Excel spreadsheet](../../assets/PasteFromOfficeEnhancedExcelSample.xlsx)
 
 To test pasting from Office, download the sample documents and open them in Microsoft Office applications. Then, copy the content and paste it into the editor below.
 

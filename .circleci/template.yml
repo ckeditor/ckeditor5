@@ -24,7 +24,7 @@ commands:
               echo "Running full flow due to nightly build, despite detecting '[short flow]'."
               exit 0
             fi
-            
+
             if [[ "$COMMIT_MESSAGE" == *"[short flow]" ]]; then
               echo "Skipping, because the commit message contains '[short flow]'."
               circleci step halt
@@ -105,6 +105,10 @@ jobs:
           when: always
           name: Validate icons specified in "ckeditor5-metadata.json" files
           command: node scripts/ci/validate-metadata-icons.js
+      - run:
+          when: always
+          name: Check if all SVG files are optimized
+          command: yarn run clean-up-svg-icons --verify-only
       - run:
           when: always
           name: Validate manual test directories

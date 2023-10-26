@@ -7,7 +7,7 @@ modified_at: 2023-03-06
 
 # UI components
 
-The CKEditor&nbsp;5 framework provides several UI components that can be helpful when developing a new user interface. All UI classes come with the `set()` method, which sets the properties of the components, such as labels, icons, placeholders, etc.
+The CKEditor&nbsp;5 framework provides several UI components that can be helpful when developing a new user interface. All UI classes come with the {@link module:ui/view~View.set `set()`} method, which sets the properties of the components, such as labels, icons, placeholders, etc.
 
 <info-box>
     This article lists all available components and their variants. If you want to understand the implementation details check {@link framework/architecture/ui-library the UI library guide}.
@@ -17,7 +17,7 @@ The CKEditor&nbsp;5 framework provides several UI components that can be helpful
 
 {@snippet framework/ui/ui-balloon}
 
-A balloon panel is a floating component that can appear depending on the context. It can be pinned to a specific position or added dynamically at the caret position. You can use it to display any UI within the editor. You can create a balloon panel as an instance of the `BalloonPanelView` class.
+A balloon panel is a floating component that can appear depending on the context. It can be pinned to a specific position or added dynamically at the caret position. You can use it to display any UI within the editor. You can create a balloon panel as an instance of the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView `BalloonPanelView`} class.
 
 ```js
 import { BalloonPanelView, ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -36,48 +36,48 @@ balloon.pin( {
     positions: [ positions.southArrowNorth ]
 } );
 
-document.getElementById( 'balloon' ).append( balloon.element );
+document.body.append( balloon.element );
 ```
 
 Two positions describe the placement of the ballon. The first one describes the relationship between the element and the pinned balloon. The second one is the position of the balloon arrow. It creates many possible balloon positions:
 
-- `northWestArrowSouthWest`
-- `northWestArrowSouthMiddleWest`
-- `northWestArrowSouth`
-- `northWestArrowSouthMiddleEast`
-- `northWestArrowSouthEast`
-- `northArrowSouthWest`
-- `northArrowSouthMiddleWest`
-- `northArrowSouth`
-- `northArrowSouthMiddleEast`
-- `northArrowSouthEast`
-- `northEastArrowSouthWest`
-- `northEastArrowSouthMiddleWest`
-- `northEastArrowSouth`
-- `northEastArrowSouthMiddleEast`
-- `northEastArrowSouthEast`
-- `southWestArrowNorthWest`
-- `southWestArrowNorthMiddleWest`
-- `southWestArrowNorth`
-- `southWestArrowNorthMiddleEast`
-- `southWestArrowNorthEast`
-- `southArrowNorthWest`
-- `southArrowNorthMiddleWest`
-- `southArrowNorth`
-- `southArrowNorthMiddleEast`
-- `southArrowNorthEast`
-- `southEastArrowNorthWest`
-- `southEastArrowNorthMiddleWest`
-- `southEastArrowNorth`
-- `southEastArrowNorthMiddleEast`
-- `southEastArrowNorthEast`
-- `viewportStickyNorth`
+* `northWestArrowSouthWest`
+* `northWestArrowSouthMiddleWest`
+* `northWestArrowSouth`
+* `northWestArrowSouthMiddleEast`
+* `northWestArrowSouthEast`
+* `northArrowSouthWest`
+* `northArrowSouthMiddleWest`
+* `northArrowSouth`
+* `northArrowSouthMiddleEast`
+* `northArrowSouthEast`
+* `northEastArrowSouthWest`
+* `northEastArrowSouthMiddleWest`
+* `northEastArrowSouth`
+* `northEastArrowSouthMiddleEast`
+* `northEastArrowSouthEast`
+* `southWestArrowNorthWest`
+* `southWestArrowNorthMiddleWest`
+* `southWestArrowNorth`
+* `southWestArrowNorthMiddleEast`
+* `southWestArrowNorthEast`
+* `southArrowNorthWest`
+* `southArrowNorthMiddleWest`
+* `southArrowNorth`
+* `southArrowNorthMiddleEast`
+* `southArrowNorthEast`
+* `southEastArrowNorthWest`
+* `southEastArrowNorthMiddleWest`
+* `southEastArrowNorth`
+* `southEastArrowNorthMiddleEast`
+* `southEastArrowNorthEast`
+* `viewportStickyNorth`
 
 ## Button
 
 {@snippet framework/ui/ui-button}
 
-There are two basic buttons in CKEditor&nbsp;5 UI library: a standard button and a switch. You can instantiate the standard button with the `ButtonView` class. By modifying the passed config, you can get different button variants and states.
+There are two basic buttons in CKEditor&nbsp;5 UI library: a standard button and a switch. You can instantiate the standard button with the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class. By modifying the passed config, you can get different button variants and states.
 
 ### Action
 
@@ -159,7 +159,7 @@ document.getElementById( 'button-icon' ).append( saveButton.element );
 
 ### Keystrokes
 
-To get a button with a shortcut, add the keystroke property. To display the shortcut on the button, set the `withKeystroke` property to `true`. If you also add a label, it will display next to the shortcut. You don't need to worry about different shortcuts for different OSes - the shortcut is relative to the OS. For example, "CTRL+I" shortcut, Mac OS will display as "⌘+I".
+To get a button with a shortcut, add the keystroke property. To display the shortcut on the button, set the {@link module:ui/button/button~Button#withKeystroke `withKeystroke`} property to `true`. If you also add a label, it will display next to the shortcut. You don't need to worry about different shortcuts for different OSes - the shortcut is relative to the OS. For example, "CTRL+I" shortcut, Mac OS will display as "⌘+I".
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -197,16 +197,16 @@ tooltipButton.render();
 document.getElementById( 'button-tooltip' ).append( tooltipButton.element );
 ```
 
-By default, the tooltip will appear to the south of the button. However, you can adjust its position by the `tooltipPosition` property. You can set the property to:
+By default, the tooltip will appear to the south of the button. However, you can adjust its position by the {@link module:ui/tooltipmanager~TooltipPosition `tooltipPosition`} property. You can set the property to:
 
-- `n` &ndash; North
-- `w` &ndash; West
-- `s` &ndash; South
-- `e` &ndash; East
-- `se` &ndash; South-east
-- `sw` &ndash; South-west
+* `n` &ndash; North
+* `w` &ndash; West
+* `s` &ndash; South
+* `e` &ndash; East
+* `se` &ndash; South-east
+* `sw` &ndash; South-west
 
-A tooltip needs the `TooltipManager` to work correctly. You need to add it during CKEditor creation.
+A tooltip needs the {@link module:ui/tooltipmanager~TooltipManager `TooltipManager`} to work correctly. You need to add it during CKEditor creation.
 
 ```js
 ClassicEditor
@@ -231,7 +231,7 @@ There are properties you can set to get various button states.
 
 #### Enabled
 
-Buttons are enabled and clickable by default. You can also set the state explicitly by adding the `isEnabled` property with a `true` value.
+Buttons are enabled and clickable by default. You can also set the state explicitly by adding the {@link module:ui/button/button~Button#isEnabled `isEnabled`} property with a `true` value.
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -250,7 +250,7 @@ document.getElementById( 'button-enabled' ).append( enabledButton.element );
 
 #### Disabled
 
-To disable a button, set the `isEnabled` property to `false`.
+To disable a button, set the {@link module:ui/button/button~Button#isEnabled `isEnabled`} property to `false`.
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -269,7 +269,7 @@ document.getElementById( 'button-disabled' ).append( disabledButton.element );
 
 #### On
 
-Some actions in the editor can constantly be active. To indicate them, you can set the `isOn` property to `true`.
+Some actions in the editor can constantly be active. To indicate them, you can set the {@link module:ui/button/button~Button#isOn `isOn`} property to `true`.
 
 ```js
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
@@ -286,7 +286,7 @@ document.getElementById( 'button-on' ).append( onButton.element );
 
 {@snippet framework/ui/ui-switch}
 
-You need a different class to instantiate a switch button - `SwitchButtonView`. To make it work properly, you also need to add an event listener with the `on()` method. Every click triggers the flip of the `isOn` property - it's responsible for turning the button on and off.
+You need a different class to instantiate a switch button - {@link module:ui/button/switchbuttonview~SwitchButtonView `SwitchButtonView`}. To make it work properly, you also need to add an event listener with the {@link module:ui/button/switchbuttonview~SwitchButtonView#on `on()`} method. Every click triggers the flip of the {@link module:ui/button/switchbuttonview~SwitchButtonView#isOn `isOn`} property - it's responsible for turning the button on and off.
 
 ```js
 import { SwitchButtonView } from '@ckeditor/ckeditor5-ui';
@@ -308,11 +308,11 @@ document.getElementById( 'button-switch' ).append( switchButton.element );
 
 {@snippet framework/ui/ui-dropdown}
 
-A dropdown consists of two elements: a button and a panel. The button expands the dropdown menu. The dropdown panel can hold any UI element. You can use the `createDropdown` helper method to create a dropdown. By default, it uses the `DropdownButtonView` class. But you can replace it with the `ButtonView` or `SplitButtonView` class.
+A dropdown consists of two elements: a button and a panel. The button expands the dropdown menu. The dropdown panel can hold any UI element. You can use the {@link module:ui/dropdown/utils#createDropdown `createDropdown()`} helper method to create a dropdown. By default, it uses the {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView `DropdownButtonView`} class. But you can replace it with the {@link module:ui/button/buttonview~ButtonView `ButtonView`} or {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView `SplitButtonView`} class.
 
 ### List
 
-Inside a dropdown, you can put a list. To do so, you can use the `addListToDropdown` helper function. Also, you must add items to a collection before putting them inside the dropdown.
+Inside a dropdown, you can put a list. To do so, you can use the {@link module:ui/dropdown/utils#addListToDropdown `addListToDropdown()`} helper function. Also, you must add items to a collection before putting them inside the dropdown.
 
 ```js
 import { 
@@ -353,7 +353,7 @@ document.getElementById( 'dropdown-list' ).append( listDropdown.element );
 
 ### Toolbar
 
-You can use the `addToolbarToDropdown` helper function to add a toolbar to the dropdown. Inside the toolbar, you can put buttons.
+You can use the {@link module:ui/dropdown/utils#addToolbarToDropdown `addToolbarToDropdown()`} helper function to add a toolbar to the dropdown. Inside the toolbar, you can put buttons.
 
 ```js
 import {
@@ -430,7 +430,7 @@ Dropdowns use buttons. Because of that, states and properties remain the same.
 
 #### Enabled
 
-Buttons in dropdowns are enabled and clickable by default. You can also set the state explicitly by adding the `isEnabled` property with a `true` value.
+Buttons in dropdowns are enabled and clickable by default. You can also set the state explicitly by adding the {@link module:ui/dropdown/button/dropdownbutton~DropdownButton#isEnabled `isEnabled`} property with a `true` value.
 
 ```js
 import { createDropdown } from '@ckeditor/ckeditor5-ui';
@@ -451,7 +451,7 @@ document.getElementById( 'dropdown-enabled' ).append( enabledDropdown.element );
 
 #### Disabled
 
-To disable a button, set the `isEnabled` property to `false`. It prevents the dropdown from being expanded.
+To disable a button, set the {@link module:ui/dropdown/button/dropdownbutton~DropdownButton#isEnabled `isEnabled`} property to `false`. It prevents the dropdown from being expanded.
 
 ```js
 import { createDropdown } from '@ckeditor/ckeditor5-ui';
@@ -474,7 +474,7 @@ document.getElementById( 'dropdown-disabled' ).append( disabledDropdown.element 
 
 {@snippet framework/ui/ui-icons}
 
-The CKEditor&nbsp;5 library has a collection of icons representing different editor functionalities. Icons are SVG files and follow the style of the surrounding text. You can instantiate an icon with the `IconView` class. The `content` property stores the SVG source of the icon.
+The CKEditor&nbsp;5 library has a collection of icons representing different editor functionalities. Icons are SVG files and follow the style of the surrounding text. You can instantiate an icon with the {@link module:ui/icon/iconview~IconView `IconView`} class. The {@link module:ui/icon/iconview~IconView#content `content`} property stores the SVG source of the icon.
 
 ```js
 import { IconView } from '@ckeditor/ckeditor5-ui';
@@ -601,7 +601,7 @@ There are also inputs in the CKEditor&nbsp;5 UI library. There are a few use cas
 
 ### Text
 
-You can use the `LabaledFieldView` class to instantiate an input. It takes two parameters: `locale` and a helper function. Pass the `createLabeledInputText` helper function to create a text input.
+You can use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class to instantiate an input. It takes two parameters: {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} and a helper function. Pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function to create a text input.
 
 ```js
 import { createLabeledInputText, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
@@ -618,7 +618,7 @@ document.getElementById( 'input-text' ).append( textInput.element );
 
 ### Number
 
-You can use the `LabaledFieldView` class to instantiate an input. It takes two parameters: `locale` and a helper function. Pass the `createLabeledInputNumber` helper function to create a number input.
+You can use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class to instantiate an input. It takes two parameters: {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} and a helper function. Pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function to create a number input.
 
 ```js
 import { createLabeledInputNumber, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
@@ -641,7 +641,7 @@ Similarly to buttons, inputs can be enabled or disabled. The property names rema
 
 #### Enbaled
 
-Inputs are enabled by default. You can also set the state explicitly by adding the `isEnabled` property with a `true` value.
+Inputs are enabled by default. You can also set the state explicitly by adding the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#isEnabled `isEnabled`} property with a `true` value.
 
 ```js
 import { createLabeledInputText, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
@@ -658,7 +658,7 @@ document.getElementById( 'input-enabled' ).append( enabledInput.element );
 
 #### Disabled
 
-To disable an input, set the `isEnabled` property to `false`. It prevents the input from getting users' data.
+To disable an input, set the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#isEnabled `isEnabled`} property to `false`. It prevents the input from getting users' data.
 
 ```js
 import { createLabeledInputText, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
@@ -675,13 +675,13 @@ document.getElementById( 'input-disabled' ).append( disabledInput.element );
 
 ## Toolbar
 
-A toolbar is a base for other components. Usually, you would put other UI elements inside it. But it can also be nested inside a balloon or dropdown. You can use the `ToolbarView` class to instantiate a toolbar.
+A toolbar is a base for other components. Usually, you would put other UI elements inside it. But it can also be nested inside a balloon or dropdown. You can use the {@link module:ui/toolbar/toolbarview~ToolbarView `ToolbarView`} class to instantiate a toolbar.
 
 ### Text
 
 {@snippet framework/ui/ui-toolbar-text}
 
-As mentioned earlier, you can put different UI elements inside a toolbar. A simple text node is one example. You can use the `items` property to add a component to a toolbar.
+As mentioned earlier, you can put different UI elements inside a toolbar. A simple text node is one example. You can use the {@link module:ui/toolbar/toolbarview~ToolbarView#items `items`} property to add a component to a toolbar.
 
 ```js
 import { ToolbarView, View } from '@ckeditor/ckeditor5-ui';
@@ -753,7 +753,7 @@ document.getElementById( 'toolbar-wrap' ).append( toolbarWrap.element );
 
 {@snippet framework/ui/ui-toolbar-separator}
 
-You can divide toolbar elements with a separator to create logically connected groups. To instantiate a separator, use the `ToolbarSeparatorView` class. Adding the created instance between desired components will separate them visually.
+You can divide toolbar elements with a separator to create logically connected groups. To instantiate a separator, use the {@link module:ui/toolbar/toolbarseparatorview~ToolbarSeparatorView `ToolbarSeparatorView`} class. Adding the created instance between desired components will separate them visually.
 
 ```js
 import { ButtonView, ToolbarSeparatorView, ToolbarView,  } from '@ckeditor/ckeditor5-ui';
@@ -782,7 +782,7 @@ document.getElementById( 'toolbar-separator' ).append( toolbarSeparator.element 
 
 {@snippet framework/ui/ui-toolbar-multirow}
 
-By default, a toolbar has one row. However, it can span into multiple rows. You can instantiate a line break with the `ToolbarLineBreakView` class. Adding the created instance after a desired component will place the following UI elements into the next row.
+By default, a toolbar has one row. However, it can span into multiple rows. You can instantiate a line break with the {@link module:ui/toolbar/toolbarlinebreakview~ToolbarLineBreakView `ToolbarLineBreakView`} class. Adding the created instance after a desired component will place the following UI elements into the next row.
 
 ```js
 import { ButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
@@ -812,7 +812,7 @@ document.getElementById( 'toolbar-multirow' ).append( toolbarMultiRow.element );
 
 {@snippet framework/ui/ui-toolbar-compact}
 
-There is also a smaller version of a toolbar. To get a compact toolbar, set the `isCompact` property to `true`.
+There is also a smaller version of a toolbar. To get a compact toolbar, set the {@link module:ui/toolbar/toolbarview~ToolbarView#isCompact `isCompact`} property to `true`.
 
 ```js
 import { ButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
