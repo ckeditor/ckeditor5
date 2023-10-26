@@ -37,11 +37,11 @@ ClassicEditor
 				'linkImage'
 			],
 			insert: { 
+				// If this setting is omitted, the editor defaults to `'block'`.
+				// See explanation below.
 				type: 'auto'
 			}
-			// If this setting is omitted, the editor defaults to `block`.
-			// See explanation below.
-		},
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -89,9 +89,9 @@ By default, the {@link module:image/image~Image} plugin available in all {@link 
 	</table>
 </figure>
 
-By default, all images inserted into the content are treated as block images. It means, that inserting an image inside a paragraph (or inside other content blocks) will split the paragraph and add a new block for the image. Once inserted, the image can be turned into an inline image with the use of the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
+By default, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
 
-To change this default behavior, you can use the `type` setting in the editor configuration:
+If you wish to modify this behavior, the type setting in the editor configuration can be used:
 
 ```js
 ClassicEditor.create( element, {
@@ -103,7 +103,15 @@ ClassicEditor.create( element, {
 } );
 ```
 
-There are three possible options: `auto`, `block`, and `inline`. The `auto` option uses the default setting, while the other two force the use of the selected image type at insert. If this setting is omitted in the configuration, the editor defaults to `block`.
+The type setting accepts three values:
+
+- `'auto'`: The editor determines the image type based on the cursor's position. For example, if you insert an image in the middle of a paragraph, it will be inserted as inline. If you insert it at the end or beginning of a paragraph, it becomes a block image.
+- `'block'`: Always insert images as block elements, placing them below or above the current paragraph or block.
+- `'inline'`: Always insert images as inline elements within the current paragraph or block.
+
+If the type setting is omitted from the configuration, the behavior defaults to inserting images as block.
+
+**Important**: If only one type of image plugin is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the supported image type will be used.
 
 ## Contribute
 
