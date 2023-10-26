@@ -9,16 +9,19 @@ import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditUI from '../../src/ckboximageedit/ckboximageeditui';
 
 describe( 'CKBoxImageEditUI', () => {
+	testUtils.createSinonSandbox();
+
 	let editor, model, element, button, command;
 
 	beforeEach( () => {

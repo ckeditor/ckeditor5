@@ -13,12 +13,14 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 
 import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
 
 describe( 'CKBoxImageEditCommand', () => {
+	testUtils.createSinonSandbox();
+
 	let editor, domElement, command;
 
 	beforeEach( async () => {
