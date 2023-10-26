@@ -14,12 +14,19 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Image } from '@ckeditor/ckeditor5-image';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
+import CKBoxEditing from '../../src/ckboxediting';
 
 import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
 import { blurHashToDataUrl } from '../../src/utils';
+
+const CKBOX_API_URL = 'https://upload.example.com';
 
 describe( 'CKBoxImageEditCommand', () => {
 	testUtils.createSinonSandbox();
@@ -49,9 +56,15 @@ describe( 'CKBoxImageEditCommand', () => {
 				Heading,
 				Image,
 				CloudServices,
-				Essentials
+				Essentials,
+				LinkEditing,
+				PictureEditing,
+				ImageUploadEditing,
+				ImageUploadProgress,
+				CKBoxEditing
 			],
 			ckbox: {
+				serviceOrigin: CKBOX_API_URL,
 				tokenUrl: 'foo'
 			},
 			substitutePlugins: [
@@ -219,10 +232,56 @@ describe( 'CKBoxImageEditCommand', () => {
 		} );
 
 		describe( 'saving edited asset', () => {
-			let onSave;
+			let onSave, sinonXHR;
 
 			beforeEach( () => {
 				onSave = command._prepareOptions().onSave;
+				sinonXHR = testUtils.sinon.useFakeServer();
+				sinonXHR.autoRespond = true;
+			} );
+
+			it( 'should update image', () => {
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				const clock = sinon.useFakeTimers();
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					200,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'success'
+						}
+					} )
+				] );
+
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+
+				onSave( dataMock );
+
+				clock.tick( 10000 );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock alt="" ckboxImageId="image-id1" sources="[object Object]"' +
+						' src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+					'</imageBlock>]'
+				);
+
+				clock.restore();
 			} );
 
 			it( 'should fire "ckboxImageEditor:save" and "ckboxImageEditor:processed" ' +

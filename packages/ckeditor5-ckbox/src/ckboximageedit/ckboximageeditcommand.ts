@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals AbortController, FormData, URL, XMLHttpRequest, window */
+
 /**
  * @module ckbox/ckboximageedit/ckboximageeditcommand
  */
@@ -10,11 +12,13 @@
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { createElement, global } from 'ckeditor5/src/utils';
 import { prepareAssets } from '../ckboxcommand';
+import CKBoxEditing from '../ckboxediting';
 
 import type {
 	CKBoxAssetDefinition,
 	CKBoxAssetImageAttributesDefinition,
-	CKBoxRawAssetDefinition
+	CKBoxRawAssetDefinition,
+	CKBoxRawAssetDataDefinition
 } from '../ckboxconfig';
 
 /**
@@ -126,6 +130,8 @@ export default class CKBoxImageEditCommand extends Command {
 
 			global.document.body.appendChild( this._wrapper );
 
+			console.log( this._ckboxImageId );
+
 			window.CKBox.mountImageEditor(
 				this._wrapper,
 				{
@@ -147,48 +153,138 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, { data } ) => {
-			const imageCommand = editor.commands.get( 'insertImage' )!;
+			const url = new URL( 'assets/' + data.id, editor.config.get( 'ckbox.serviceOrigin' )! );
+			const formData = new FormData();
+			const requestConfig = {
+				url,
+				data: formData
+			} as const;
 
-			const preparedAsset: CKBoxAssetDefinition = prepareAssets( {
-				assets: [ { data } ],
-				isImageAllowed: imageCommand.isEnabled,
-				isLinkAllowed: false
-			} )[ 0 ];
+			let limit = 10;
 
-			const {
-				imageFallbackUrl,
-				imageSources,
-				imageTextAlternative,
-				imageWidth,
-				imageHeight,
-				imagePlaceholder
-			} = preparedAsset.attributes as CKBoxAssetImageAttributesDefinition;
+			const setIntervalId = setInterval( () => {
+				this._sendHttpRequest( requestConfig ).then( res => {
+					if ( res.metadata.metadataProcessingStatus === 'success' ) {
+						this.updateImage( data );
+						clearInterval( setIntervalId );
+					}
 
-			// Timeout for demo purpose.
-			setTimeout( () => {
-				editor.model.change( writer => {
-					imageCommand.execute( {
-						source: {
-							src: imageFallbackUrl,
-							sources: imageSources,
-							alt: imageTextAlternative,
-							width: imageWidth,
-							height: imageHeight,
-							...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
-						}
-					} );
+					if ( limit === 0 ) {
+						clearInterval( setIntervalId );
+					}
 
-					const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
-
-					writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
-
-					this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', { data } );
+					limit--;
 				} );
-			}, 3000 );
+			}, 1000 );
+		} );
+	}
+
+	/**
+	 * Updates image in model.
+	 *
+	 * @param config.data Data assets definitions.
+	 */
+	public updateImage( data: CKBoxRawAssetDataDefinition ): void {
+		const editor = this.editor;
+		const imageCommand = editor.commands.get( 'insertImage' )!;
+
+		const preparedAsset: CKBoxAssetDefinition = prepareAssets( {
+			assets: [ { data } ],
+			isImageAllowed: imageCommand.isEnabled,
+			isLinkAllowed: false
+		} )[ 0 ];
+
+		const {
+			imageFallbackUrl,
+			imageSources,
+			imageTextAlternative,
+			imageWidth,
+			imageHeight,
+			imagePlaceholder
+		} = preparedAsset.attributes as CKBoxAssetImageAttributesDefinition;
+
+		editor.model.change( writer => {
+			imageCommand.execute( {
+				source: {
+					src: imageFallbackUrl,
+					sources: imageSources,
+					alt: imageTextAlternative,
+					width: imageWidth,
+					height: imageHeight,
+					...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
+				}
+			} );
+
+			const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+
+			writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
+
+			this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', { data } );
 		} );
 
 		this.on<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', ( evt, data ) => {
 			// TODO: finish the process (remove the indicator, etc.).
+		} );
+	}
+
+	/**
+	 * Sends the HTTP request.
+	 *
+	 * @param config.url the URL where the request will be sent.
+	 * @param config.method The HTTP method.
+	 * @param config.data Additional data to send.
+	 */
+	private _sendHttpRequest( { url, method = 'GET', data }: {
+		url: URL;
+		method?: 'GET' | 'POST';
+		data?: FormData | null;
+	} ) {
+		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
+		const controller = new AbortController();
+		const signal = controller.signal;
+		const xhr = new XMLHttpRequest();
+
+		xhr.open( method, url.toString(), true );
+		xhr.setRequestHeader( 'Authorization', ckboxEditing.getToken().value );
+		xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
+		xhr.responseType = 'json';
+
+		// The callback is attached to the `signal#abort` event.
+		const abortCallback = () => {
+			xhr.abort();
+		};
+
+		return new Promise<any>( ( resolve, reject ) => {
+			signal.addEventListener( 'abort', abortCallback );
+
+			xhr.addEventListener( 'loadstart', () => {
+				signal.addEventListener( 'abort', abortCallback );
+			} );
+
+			xhr.addEventListener( 'loadend', () => {
+				signal.removeEventListener( 'abort', abortCallback );
+			} );
+
+			xhr.addEventListener( 'error', () => {
+				reject();
+			} );
+
+			xhr.addEventListener( 'abort', () => {
+				reject();
+			} );
+
+			xhr.addEventListener( 'load', async () => {
+				const response = xhr.response;
+
+				if ( !response || response.statusCode >= 400 ) {
+					return reject( response && response.message );
+				}
+
+				return resolve( response );
+			} );
+
+			// Send the request.
+			xhr.send( data );
 		} );
 	}
 }
