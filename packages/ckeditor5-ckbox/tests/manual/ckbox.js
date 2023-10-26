@@ -14,10 +14,11 @@ import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import { TOKEN_URL } from '../_utils/ckbox-config';
 import CKBox from '../../src/ckbox';
+import CKBoxImageEdit from '../../src/ckboximageedit';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, PictureEditing, ImageUpload, LinkImageEditing, ImageInsert, CloudServices, CKBox ],
+		plugins: [ ArticlePluginSet, PictureEditing, ImageUpload, LinkImageEditing, ImageInsert, CloudServices, CKBox, CKBoxImageEdit ],
 		toolbar: [
 			'heading',
 			'|',
@@ -30,7 +31,9 @@ ClassicEditor
 			'undo',
 			'redo',
 			'|',
-			'ckbox'
+			'ckbox',
+			'|',
+			'ckboxImageEdit'
 		],
 		image: {
 			toolbar: [
@@ -39,7 +42,9 @@ ClassicEditor
 				'imageStyle:side',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		ckbox: {
