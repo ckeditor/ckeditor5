@@ -590,8 +590,8 @@ import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
 
-import history from "@ckeditor/ckeditor5-core/theme/icons/history.svg"
-import loupe from "@ckeditor/ckeditor5-core/theme/icons/loupe.svg"
+import history from '@ckeditor/ckeditor5-core/theme/icons/history.svg';
+import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
 ```
 
 ## Input
@@ -673,6 +673,52 @@ disabledInput.render();
 
 document.getElementById( 'input-disabled' ).append( disabledInput.element );
 ```
+
+## Search
+
+{@snippet framework/ui/ui-search}
+
+A search component allows you to filter a list of items based on a specified query. The component consists of several components and interfaces:
+
+* To create it, use the main {@link module:ui/search/text/searchtextview~SearchTextView `SearchTextView`} class.
+* The {@link module:ui/search/text/searchtextview~SearchTextView#queryView `queryView`} property allows the user to enter the search query.
+* The {@link module:ui/search/text/searchtextview~SearchTextView#infoView `infoView`} property displays additional information about the search results.
+* The {@link module:ui/search/text/searchtextview~SearchTextView#filteredView `filteredView`} is a view filtered by the search query. Remember to specify the {@link module:ui/search/filteredview~FilteredView#filter `filter()`} and {@link module:ui/search/filteredview~FilteredView#focus `focus()`} methods for this view.
+
+Some sub-components and classes can help with better result presentation:
+
+* The {@link module:ui/search/searchresultsview~SearchResultsView `SearchResultsView`} hosts the filtered and the information views. It is a sub-component of the {@link module:ui/search/text/searchtextview~SearchTextView `SearchTextView`}.
+* The {@link module:ui/autocomplete/autocompleteview~AutocompleteView `AutocompleteView`} component lists proposed results when the user starts typing and hides them when it's out of focus. It extends the {@link module:ui/search/text/searchtextview~SearchTextView `SearchTextView`} class.
+* To group list items, you can use the {@link module:ui/list/listitemgroupview~ListItemGroupView `ListItemGroupView`} class.
+* To highlight some results (or some text in general), you can use the {@link module:ui/highlightedtext/highlightedtextview~HighlightedTextView `HighlightedTextView`} class.
+
+```js
+import { ListView, SearchTextView } from '@ckeditor/ckeditor5-ui';
+import { Locale } from '@ckeditor/ckeditor5-utils';
+
+const locale = new Locale();
+
+const filteredView = new ListView();
+filteredView.filter = () => {
+    return {
+        resultsCount: 1,
+        totalItemsCount: 5
+    };
+};
+
+const searchView = new SearchTextView( locale, {
+    filteredView,
+    queryView: {
+        label: 'Label'
+    }
+} );
+
+searchView.render();
+
+document.querySelector( '.ui-search' ).append( searchView.element );
+```
+
+Check our {@link features/ai-assistant AI Assistant feature} to see how all the UI pieces work together in a more complex setup.
 
 ## Spinner
 

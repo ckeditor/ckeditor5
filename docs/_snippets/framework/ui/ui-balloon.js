@@ -10,7 +10,9 @@ import {
 	ButtonView,
 	IconView,
 	LabeledFieldView,
+	ListView,
 	Model,
+	SearchTextView,
 	SpinnerView,
 	SplitButtonView,
 	SwitchButtonView,
@@ -39,7 +41,9 @@ window.BalloonPanelView = BalloonPanelView;
 window.ButtonView = ButtonView;
 window.IconView = IconView;
 window.LabeledFieldView = LabeledFieldView;
+window.ListView = ListView;
 window.Model = Model;
+window.SearchTextView = SearchTextView;
 window.SpinnerView = SpinnerView;
 window.SplitButtonView = SplitButtonView;
 window.SwitchButtonView = SwitchButtonView;
