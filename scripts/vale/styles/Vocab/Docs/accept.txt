@@ -51,6 +51,7 @@ Kieffer
 Koss
 Kulykov
 Laravel
+Lesha
 Libre
 localizable
 Lodash
@@ -84,6 +85,7 @@ Serhii
 shortcode
 sidenote
 Sinon
+Socket.IO
 Spotify
 [Ss]trikethrough
 Stylelint
