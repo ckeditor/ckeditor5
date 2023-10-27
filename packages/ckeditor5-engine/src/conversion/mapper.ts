@@ -362,7 +362,7 @@ export default class Mapper extends EmitterMixin() {
 	 * @returns Corresponding model position.
 	 */
 	public toModelPosition( viewPosition: ViewPosition ): ModelPosition {
-		const data: MapperViewToModelPositionEvent[ 'args' ][ 0 ] = {
+		const data: MapperViewToModelPositionEventData = {
 			viewPosition,
 			mapper: this
 		};
@@ -386,7 +386,7 @@ export default class Mapper extends EmitterMixin() {
 		modelPosition: ModelPosition,
 		options: { isPhantom?: boolean } = {}
 	): ViewPosition {
-		const data: MapperModelToViewPositionEvent[ 'args' ][ 0 ] = {
+		const data: MapperModelToViewPositionEventData = {
 			modelPosition,
 			mapper: this,
 			isPhantom: options.isPhantom

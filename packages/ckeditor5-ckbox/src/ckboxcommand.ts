@@ -22,7 +22,7 @@ import type {
 	CKBoxRawAssetDefinition
 } from './ckboxconfig';
 
-import { getImageUrls } from './utils';
+import { blurHashToDataUrl, getImageUrls } from './utils';
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -281,13 +281,23 @@ export default class CKBoxCommand extends Command {
 	 */
 	private _insertImage( asset: CKBoxAssetImageDefinition ) {
 		const editor = this.editor;
-		const { imageFallbackUrl, imageSources, imageTextAlternative } = asset.attributes;
+		const {
+			imageFallbackUrl,
+			imageSources,
+			imageTextAlternative,
+			imageWidth,
+			imageHeight,
+			imagePlaceholder
+		} = asset.attributes;
 
 		editor.execute( 'insertImage', {
 			source: {
 				src: imageFallbackUrl,
 				sources: imageSources,
-				alt: imageTextAlternative
+				alt: imageTextAlternative,
+				width: imageWidth,
+				height: imageHeight,
+				...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
 			}
 		} );
 	}
@@ -365,16 +375,19 @@ function prepareAssets(
 
 /**
  * Parses the assets attributes into the internal data format.
- *
- * @param origin The base URL for assets inserted into the editor.
  */
 function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
 	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
+	const { description, width, height, blurHash } = asset.data.metadata!;
+	const imagePlaceholder = blurHashToDataUrl( blurHash );
 
 	return {
 		imageFallbackUrl,
 		imageSources,
-		imageTextAlternative: asset.data.metadata!.description || ''
+		imageTextAlternative: description || '',
+		imageWidth: width,
+		imageHeight: height,
+		...( imagePlaceholder ? { imagePlaceholder } : null )
 	};
 }
 

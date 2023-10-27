@@ -6,13 +6,16 @@
 import ListItemView from '../../src/list/listitemview';
 import ListItemGroupView from '../../src/list/listitemgroupview';
 import ViewCollection from '../../src/viewcollection';
+import { LabelView, View } from '../../src';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ListItemGroupView', () => {
-	let view;
+	let view, locale;
 
 	beforeEach( () => {
 		view = new ListItemGroupView();
 		view.label = 'Foo';
+		locale = new Locale();
 
 		return view.render();
 	} );
@@ -29,10 +32,8 @@ describe( 'ListItemGroupView', () => {
 				expect( view.element.classList.contains( 'ck-list__group' ) ).to.be.true;
 			} );
 
-			it( 'creates a label element as a first child', () => {
-				const labelElement = view.element.firstChild;
-
-				expect( labelElement.textContent ).to.equal( 'Foo' );
+			it( 'creates a #labelView element as a first child', () => {
+				expect( view.children.first ).to.equal( view.labelView );
 			} );
 
 			it( 'should have #children view collection with a label and a nested list', () => {
@@ -55,6 +56,59 @@ describe( 'ListItemGroupView', () => {
 					const listElement = view.element.lastChild;
 
 					expect( listElement.attributes[ 'aria-labelledby' ].value ).to.equal( view.element.firstChild.id );
+				} );
+			} );
+
+			describe( '#labelView', () => {
+				it( 'uses LabelView by default', () => {
+					expect( view.labelView ).to.be.instanceOf( LabelView );
+
+					view.set( {
+						label: 'bar'
+					} );
+
+					expect( view.labelView.id ).to.equal( view.children.last.element.getAttribute( 'aria-labelledby' ) );
+					expect( view.labelView.element.textContent ).to.equal( 'bar' );
+				} );
+
+				it( 'accepts a custom label instance that implements the same label interface', () => {
+					class CustomLabel extends View {
+						constructor() {
+							super();
+
+							const bind = this.bindTemplate;
+
+							this.set( {
+								text: undefined,
+								id: '1234'
+							} );
+
+							this.setTemplate( {
+								tag: 'span',
+								attributes: {
+									id: bind.to( 'id' )
+								},
+								children: [
+									{ text: bind.to( 'text' ) }
+								]
+							} );
+						}
+					}
+
+					const view = new ListItemGroupView( locale, new CustomLabel() );
+
+					view.set( {
+						label: 'bar'
+					} );
+
+					view.render();
+
+					expect( view.labelView ).to.be.instanceOf( CustomLabel );
+					expect( view.labelView.element.id ).to.equal( view.children.last.element.getAttribute( 'aria-labelledby' ) );
+					expect( view.children.last.element.getAttribute( 'aria-labelledby' ) ).to.equal( '1234' );
+					expect( view.labelView.element.textContent ).to.equal( 'bar' );
+
+					view.destroy();
 				} );
 			} );
 		} );

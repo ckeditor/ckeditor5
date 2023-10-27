@@ -331,7 +331,7 @@ export default class DowncastDispatcher extends EmitterMixin() {
 	): void {
 		if ( !options.doNotAddConsumables ) {
 			// Collect a list of things that can be consumed, consisting of nodes and their attributes.
-			this._addConsumablesForInsert( conversionApi.consumable, Array.from( range ) );
+			this._addConsumablesForInsert( conversionApi.consumable, range );
 		}
 
 		// Fire a separate insert event for each node and text fragment contained in the range.

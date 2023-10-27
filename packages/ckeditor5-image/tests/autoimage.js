@@ -31,7 +31,8 @@ describe( 'AutoImage - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Typing, Paragraph, Link, Image, LinkImage, ImageCaption, AutoImage ]
+				plugins: [ Typing, Paragraph, Link, Image, LinkImage, ImageCaption, AutoImage ],
+				image: { insert: { type: 'auto' } }
 			} )
 			.then( newEditor => {
 				editor = newEditor;

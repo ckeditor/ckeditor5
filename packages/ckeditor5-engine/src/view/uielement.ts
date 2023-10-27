@@ -106,7 +106,10 @@ export default class UIElement extends Element {
 	 *
 	 * @param domConverter Instance of the DomConverter used to optimize the output.
 	 */
-	public render( domDocument: DomDocument, domConverter: DomConverter ): DomElement {
+	public render(
+		domDocument: DomDocument,
+		domConverter: DomConverter // eslint-disable-line @typescript-eslint/no-unused-vars
+	): DomElement {
 		// Provide basic, default output.
 		return this.toDomElement( domDocument );
 	}
