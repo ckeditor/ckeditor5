@@ -160,7 +160,10 @@ export default class CKBoxImageEditCommand extends Command {
 			const {
 				imageFallbackUrl,
 				imageSources,
-				imageTextAlternative
+				imageTextAlternative,
+				imageWidth,
+				imageHeight,
+				imagePlaceholder
 			} = preparedAsset.attributes as CKBoxAssetImageAttributesDefinition;
 
 			editor.model.change( writer => {
@@ -168,7 +171,10 @@ export default class CKBoxImageEditCommand extends Command {
 					source: {
 						src: imageFallbackUrl,
 						sources: imageSources,
-						alt: imageTextAlternative
+						alt: imageTextAlternative,
+						width: imageWidth,
+						height: imageHeight,
+						...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
 					}
 				} );
 

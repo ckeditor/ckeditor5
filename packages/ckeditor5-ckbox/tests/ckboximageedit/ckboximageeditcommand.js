@@ -19,6 +19,7 @@ import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 
 import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
+import { blurHashToDataUrl } from '../../src/utils';
 
 describe( 'CKBoxImageEditCommand', () => {
 	testUtils.createSinonSandbox();
@@ -256,7 +257,8 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should replace image with saved one', () => {
 				const clock = sinon.useFakeTimers();
 
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
+					' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
 
 				const dataMock = {
 					data: {
@@ -274,12 +276,60 @@ describe( 'CKBoxImageEditCommand', () => {
 						url: 'https://example.com/workspace1/assets/image-id1/file'
 					}
 				};
+
 				onSave( dataMock );
 
 				clock.tick( 4000 );
 
 				expect( getModelData( model ) ).to.equal(
-					'[<imageBlock alt="" ckboxImageId="image-id1" src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
+			} );
+
+			it( 'should replace image with saved one (with blurHash placeholder)', () => {
+				const clock = sinon.useFakeTimers();
+
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
+					' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
+
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100,
+							blurHash: 'KTF55N=ZR4PXSirp5ZOZW9'
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+
+				const placeholder = blurHashToDataUrl( dataMock.data.metadata.blurHash );
+
+				onSave( dataMock );
+
+				clock.tick( 4000 );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'placeholder="' + placeholder + '" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
 					'</imageBlock>]'
 				);
 			} );
