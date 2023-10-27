@@ -10,7 +10,7 @@ const textarea = new TextareaView();
 textarea.set( {
 	minRows: 4,
 	maxRows: 10,
-	resize: 'none'
+	resize: 'horizontal'
 } );
 textarea.render();
 
