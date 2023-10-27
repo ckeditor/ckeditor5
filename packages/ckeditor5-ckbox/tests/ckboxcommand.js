@@ -1201,6 +1201,7 @@ function createTestEditor( config = {} ) {
 		substitutePlugins: [
 			CloudServicesCoreMock
 		],
+		image: { insert: { type: 'auto' } },
 		...config
 	} );
 }

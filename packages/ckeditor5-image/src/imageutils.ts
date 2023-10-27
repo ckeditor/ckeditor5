@@ -105,7 +105,7 @@ export default class ImageUtils extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 
-		imageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
+		const determinedImageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
 
 		// Mix declarative attributes with selection attributes because the new image should "inherit"
 		// the latter for best UX. For instance, inline images inserted into existing links
@@ -116,20 +116,20 @@ export default class ImageUtils extends Plugin {
 		};
 
 		for ( const attributeName in attributes ) {
-			if ( !model.schema.checkAttribute( imageType, attributeName ) ) {
+			if ( !model.schema.checkAttribute( determinedImageType, attributeName ) ) {
 				delete attributes[ attributeName ];
 			}
 		}
 
 		return model.change( writer => {
 			const { setImageSizes = true } = options;
-			const imageElement = writer.createElement( imageType!, attributes );
+			const imageElement = writer.createElement( determinedImageType, attributes );
 
 			model.insertObject( imageElement, selectable, null, {
 				setSelection: 'on',
 				// If we want to insert a block image (for whatever reason) then we don't want to split text blocks.
 				// This applies only when we don't have the selectable specified (i.e., we insert multiple block images at once).
-				findOptimalPosition: !selectable && imageType != 'imageInline' ? 'auto' : undefined
+				findOptimalPosition: !selectable && determinedImageType != 'imageInline' ? 'auto' : undefined
 			} );
 
 			// Inserting an image might've failed due to schema regulations.
@@ -381,7 +381,7 @@ function determineImageTypeForInsertion(
 		return 'imageInline';
 	}
 
-	if ( configImageInsertType === 'block' ) {
+	if ( configImageInsertType !== 'auto' ) {
 		return 'imageBlock';
 	}
 

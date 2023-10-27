@@ -64,7 +64,8 @@ describe( 'ImageUploadEditing', () => {
 				plugins: [
 					ImageBlockEditing, ImageInlineEditing, ImageUploadEditing,
 					Paragraph, UndoEditing, UploadAdapterPluginMock, ClipboardPipeline
-				]
+				],
+				image: { insert: { type: 'auto' } }
 			} )
 			.then( newEditor => {
 				editor = newEditor;
