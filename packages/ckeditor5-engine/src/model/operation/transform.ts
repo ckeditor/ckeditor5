@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module engine/model/operation/transform
+ */
+
 import InsertOperation from './insertoperation';
 import AttributeOperation from './attributeoperation';
 import RenameOperation from './renameoperation';
@@ -25,10 +29,6 @@ import { compareArrays } from '@ckeditor/ckeditor5-utils';
 type TransformationFunction = ( a: Operation, b: Operation, context: TransformationContext ) => Array<Operation>;
 
 const transformations = new Map<Function, Map<Function, TransformationFunction>>();
-
-/**
- * @module engine/model/operation/transform
- */
 
 /**
  * Sets a transformation function to be be used to transform instances of class `OperationA` by instances of class `OperationB`.

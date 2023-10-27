@@ -68,7 +68,7 @@ const balloon = new BalloonPanelView();
 balloon.render();
 balloon.content.add( balloonButton );
 
-document.querySelector( '.ui-balloon' ).append( balloon.element );
+document.body.append( balloon.element );
 
 const positions = BalloonPanelView.defaultPositions;
 balloon.pin( {

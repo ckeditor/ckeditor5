@@ -379,7 +379,7 @@ DocumentFragment.prototype.is = function( type: string ): boolean {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( nodes: string | Item | Iterable<string | Item> ): Iterable<Node> {
+function normalize( nodes: string | Item | Iterable<string | Item> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( nodes ) ];
