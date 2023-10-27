@@ -49,7 +49,8 @@ const { execSync } = require( 'child_process' );
 // because, for instance, CSS animations may depend on it.
 const EXCLUDED_ICONS = [
 	'return-arrow.svg',
-	'project-logo.svg'
+	'project-logo.svg',
+	'low-vision.svg'
 ];
 
 // A pattern to match all the icons.
