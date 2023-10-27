@@ -105,15 +105,16 @@ import ListItemGroupView from '../list/listitemgroupview';
  * {@link module:ui/dropdown/utils~addToolbarToDropdown} utils.
  *
  * @param locale The locale instance.
- * @param ButtonClass The dropdown button view class. Needs to implement the
+ * @param ButtonClassOrInstance The dropdown button view class. Needs to implement the
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface.
  * @returns The dropdown view instance.
  */
 export function createDropdown(
 	locale: Locale | undefined,
-	ButtonClass: new ( locale?: Locale ) => DropdownButton & FocusableView = DropdownButtonView
+	ButtonClassOrInstance:
+		( new ( locale?: Locale ) => DropdownButton & FocusableView ) | DropdownButton & FocusableView = DropdownButtonView
 ): DropdownView {
-	const buttonView = new ButtonClass( locale );
+	const buttonView = typeof ButtonClassOrInstance == 'function' ? new ButtonClassOrInstance( locale ) : ButtonClassOrInstance;
 
 	const panelView = new DropdownPanelView( locale );
 	const dropdownView = new DropdownView( locale, buttonView, panelView );

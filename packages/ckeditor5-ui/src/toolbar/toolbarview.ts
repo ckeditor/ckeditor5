@@ -8,7 +8,7 @@
  */
 
 import View from '../view';
-import FocusCycler from '../focuscycler';
+import FocusCycler, { type FocusableView } from '../focuscycler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import ToolbarLineBreakView from './toolbarlinebreakview';
 import preventDefault from '../bindings/preventdefault';
@@ -19,7 +19,8 @@ import type ComponentFactory from '../componentfactory';
 import type ViewCollection from '../viewcollection';
 import type DropdownView from '../dropdown/dropdownview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
-import ButtonView from '../button/buttonview';
+import type ButtonView from '../button/buttonview';
+import type DropdownButton from '../dropdown/button/dropdownbutton';
 import SplitButtonView from '../dropdown/button/splitbuttonview';
 
 import {
@@ -509,28 +510,17 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		}
 
 		const locale = this.locale;
-		let DropdownButtonClass = undefined;
+		let dropdownButton:
+			( new ( locale?: Locale ) => DropdownButton & FocusableView ) | DropdownButton & FocusableView = SplitButtonView;
 
 		if ( 'actionItem' in definition ) {
-			const ActionButtonClass = class extends ButtonView {
-				constructor( locale?: Locale ) {
-					super( locale );
+			const actionButton = componentFactory.create( definition.actionItem ) as ButtonView;
+			// TODO verify if item is a ButtonView
 
-					// TODO verify if item is a ButtonView
-					return componentFactory.create( definition.actionItem ) as ButtonView;
-				}
-			};
-
-			DropdownButtonClass = class extends SplitButtonView {
-				constructor( locale?: Locale ) {
-					super( locale );
-
-					return new SplitButtonView( locale, ActionButtonClass );
-				}
-			};
+			dropdownButton = new SplitButtonView( locale, actionButton );
 		}
 
-		const dropdownView = createDropdown( locale, DropdownButtonClass );
+		const dropdownView = createDropdown( locale, dropdownButton );
 
 		if ( !label ) {
 			/**

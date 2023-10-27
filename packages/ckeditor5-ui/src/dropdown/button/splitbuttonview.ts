@@ -171,7 +171,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale?: Locale, ActionButtonClass?: new ( locale?: Locale ) => ButtonView & FocusableView ) {
+	constructor( locale?: Locale, actionButton?: ButtonView & FocusableView ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -194,7 +194,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 		this.set( 'withText', false );
 
 		this.children = this.createCollection();
-		this.actionView = this._createActionView( ActionButtonClass );
+		this.actionView = this._createActionView( actionButton );
 		this.arrowView = this._createArrowView();
 		this.keystrokes = new KeystrokeHandler();
 		this.focusTracker = new FocusTracker();
@@ -270,14 +270,10 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #actionView} and binds it with main split button
 	 * attributes.
 	 */
-	private _createActionView( ActionButtonClass?: new ( locale?: Locale ) => ButtonView & FocusableView ) {
-		let actionView: ButtonView & FocusableView | undefined;
+	private _createActionView( actionButton?: ButtonView & FocusableView ) {
+		const actionView = actionButton || new ButtonView();
 
-		if ( ActionButtonClass ) {
-			actionView = new ActionButtonClass();
-		} else {
-			actionView = new ButtonView();
-
+		if ( !actionButton ) {
 			actionView.bind(
 				'icon',
 				'isEnabled',
