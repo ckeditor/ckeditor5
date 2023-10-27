@@ -155,6 +155,8 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	 * 		// Let other post-fixers know that something changed.
 	 * 		return true;
 	 * 	}
+	 *
+	 * 	return false;
 	 * } );
 	 * ```
 	 *
@@ -175,7 +177,7 @@ export default class Document extends BubblingEmitterMixin( ObservableMixin() ) 
 	 * Destroys this instance. Makes sure that all observers are destroyed and listeners removed.
 	 */
 	public destroy(): void {
-		this.roots.map( root => root.destroy() );
+		this.roots.forEach( root => root.destroy() );
 		this.stopListening();
 	}
 
@@ -218,8 +220,6 @@ export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
  * * `children` - for child list changes,
  * * `attributes` - for element attributes changes,
  * * `text` - for text nodes changes.
- *
- * @typedef {String} module:engine/view/document~ChangeType
  */
 export type ChangeType = 'children' | 'attributes' | 'text';
 

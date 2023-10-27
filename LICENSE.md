@@ -20,6 +20,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * turndown - turndown is copyright © Dom Christie and released under the MIT license.
 * turndown-plugin-gfm - turndown-plugin-gfm is copyright © Dom Christie and released under the MIT license.
 * vanilla-colorful - Copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com> (MIT license).
+* blurhash - Copyright (c) 2018 Wolt Enterprises (MIT license).
 
 Trademarks
 ----------

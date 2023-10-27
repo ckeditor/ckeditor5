@@ -110,5 +110,9 @@
 
 	/* -- Search result highlight ---------------------------------------------------------------- */
 
-	--ck-color-highlight-background:							hsl(60, 100%, 50%)
+	--ck-color-highlight-background:							hsl(60, 100%, 50%);
+
+	/* -- Generic colors ------------------------------------------------------------------------- */
+
+	--ck-color-light-red:										hsl(0, 100%, 90%);
 }
