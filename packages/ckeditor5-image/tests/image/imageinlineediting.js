@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document, Event, setTimeout */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -148,34 +148,12 @@ describe( 'ImageInlineEditing', () => {
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
 				setModelData( model,
 					'<paragraph>' +
-						'<imageInline src="/assets/sample.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
+						'<imageInline src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
 				);
 
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
 					'<p><img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img></p>'
-				);
-			} );
-
-			it( 'should convert srcset attribute to width, srcset and add sizes attribute', () => {
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
-				);
-
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<p>' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</p>'
 				);
 			} );
 
@@ -190,19 +168,19 @@ describe( 'ImageInlineEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
 				);
 
 				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png" alt="alt text"></p>' );
 			} );
 
-			it( 'should not convert srcset attribute if has wrong data', () => {
+			it( 'should not convert srcset attribute if has no data', () => {
 				setModelData( model,
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "foo":"bar" }\'>' +
+						'srcset="">' +
 					'</imageInline></paragraph>' );
 
 				const imageInline = doc.getRoot().getChild( 0 ).getChild( 0 );
@@ -323,24 +301,10 @@ describe( 'ImageInlineEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+							'<imageInline alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 							'</imageInline>' +
 						'</paragraph>'
 					);
-			} );
-
-			it( 'should convert image with srcset and width attributes', () => {
-				editor.setData(
-					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" /></p>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><imageInline ' +
-						'alt="alt text" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
-					'</imageInline></paragraph>'
-				);
 			} );
 
 			it( 'should ignore sizes attribute', () => {
@@ -351,7 +315,7 @@ describe( 'ImageInlineEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+							'<imageInline alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 							'</imageInline>' +
 						'</paragraph>'
 					);
@@ -579,7 +543,7 @@ describe( 'ImageInlineEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
@@ -589,12 +553,12 @@ describe( 'ImageInlineEditing', () => {
 				);
 			} );
 
-			it( 'should not convert srcset attribute if has wrong data', () => {
+			it( 'should not convert srcset attribute if has no data', () => {
 				setModelData( model,
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "foo":"bar" }\'>' +
+						'srcset="">' +
 					'</imageInline></paragraph>' );
 
 				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
@@ -609,52 +573,11 @@ describe( 'ImageInlineEditing', () => {
 				);
 			} );
 
-			it( 'should convert srcset attribute to srcset, width and sizes', () => {
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
-					'</imageInline></paragraph>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</span></p>'
-				);
-			} );
-
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model,
 					'<paragraph>' +
-						'<imageInline src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></imageInline>' +
+						'<imageInline src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" ></imageInline>' +
 					'</paragraph>'
-				);
-				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img src="/assets/sample.png"></img>' +
-					'</span></p>'
-				);
-			} );
-
-			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( model,
-					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageInline></paragraph>'
 				);
 				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
@@ -680,7 +603,7 @@ describe( 'ImageInlineEditing', () => {
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
 				);
 
@@ -791,7 +714,8 @@ describe( 'ImageInlineEditing', () => {
 				domTarget: domNode,
 				target: viewElement,
 				dataTransfer,
-				targetRanges: [ targetViewRange ]
+				targetRanges: [ targetViewRange ],
+				domEvent: sinon.spy()
 			} );
 
 			expect( getModelData( model ) ).to.equal(
@@ -911,8 +835,46 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>f<imageInline src="/assets/sample.png" width="25%"></imageInline>[]oo</paragraph>'
+				'<paragraph>f<imageInline resizedWidth="25%" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
 			);
+		} );
+
+		it( 'should add image width and height on image paste', done => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<img src="/assets/sample.png" />'
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'paste' } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>f<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>[]oo</paragraph>'
+				);
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should not add image width and height on image method other than paste', done => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<img src="/assets/sample.png" />'
+			} );
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'foo' } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>f<imageInline src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+				);
+
+				done();
+			}, 100 );
 		} );
 	} );
 

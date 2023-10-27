@@ -24,6 +24,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ListEditing from '../../src/list/listediting';
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
 import DocumentListSplitCommand from '../../src/documentlist/documentlistsplitcommand';
+import { isFirstBlockOfListItem } from '../../src/documentlist/utils/model';
 
 import stubUid from './_utils/uid';
 import { modelList, prepareTest } from './_utils/utils';
@@ -75,6 +76,12 @@ describe( 'DocumentListEditing', () => {
 		expect( editor.plugins.get( DocumentListEditing ) ).to.be.instanceOf( DocumentListEditing );
 	} );
 
+	it( 'should define config', () => {
+		expect( editor.config.get( 'list' ) ).to.deep.equal( {
+			multiBlock: true
+		} );
+	} );
+
 	it( 'should throw if loaded alongside ListEditing plugin', async () => {
 		let caughtError;
 
@@ -90,6 +97,9 @@ describe( 'DocumentListEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listItemId' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).to.be.false;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listItemId' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listIndent' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$root', 'paragraph' ], 'listType' ) ).to.be.true;
@@ -782,9 +792,219 @@ describe( 'DocumentListEditing - registerDowncastStrategy()', () => {
 		);
 	} );
 
+	describe( 'should allow registering strategy for list items markers', () => {
+		describe( 'without first block wrapper', () => {
+			beforeEach( async () => {
+				await createEditor( class CustomPlugin extends Plugin {
+					init() {
+						this.editor.plugins.get( 'DocumentListEditing' ).registerDowncastStrategy( {
+							scope: 'itemMarker',
+							attributeName: 'someFoo',
+
+							createElement( writer, modelElement, { dataPipeline } ) {
+								return writer.createEmptyElement( 'input', {
+									type: 'checkbox',
+									value: modelElement.getAttribute( 'someFoo' ),
+									...( dataPipeline ? { disabled: 'disabled' } : null )
+								} );
+							}
+						} );
+					}
+				} );
+			} );
+
+			it( 'single block in a list item', () => {
+				setModelData( model, modelList( `
+					* <paragraph someFoo="123">foo</paragraph>
+					* <paragraph someFoo="321">bar</paragraph>
+				` ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<ul>' +
+						'<li><input type="checkbox" value="123"></input><span class="ck-list-bogus-paragraph">foo</span></li>' +
+						'<li><input type="checkbox" value="321"></input><span class="ck-list-bogus-paragraph">bar</span></li>' +
+					'</ul>'
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<ul>' +
+						'<li><input type="checkbox" value="123" disabled="disabled">foo</li>' +
+						'<li><input type="checkbox" value="321" disabled="disabled">bar</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'multiple blocks in a single list item', () => {
+				setModelData( model, modelList( `
+					* <paragraph someFoo="123">foo</paragraph>
+					  <paragraph someFoo="321">bar</paragraph>
+				` ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<ul>' +
+						'<li>' +
+							'<input type="checkbox" value="123"></input>' +
+							'<p>foo</p>' +
+							'<p>bar</p>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<ul>' +
+						'<li>' +
+							'<input type="checkbox" value="123" disabled="disabled">' +
+							'<p>foo</p>' +
+							'<p>bar</p>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+		} );
+
+		describe( 'with first block wrapper', () => {
+			beforeEach( async () => {
+				await createEditor( class CustomPlugin extends Plugin {
+					init() {
+						this.editor.plugins.get( 'DocumentListEditing' ).registerDowncastStrategy( {
+							scope: 'itemMarker',
+							attributeName: 'someFoo',
+
+							createElement( writer, modelElement, { dataPipeline } ) {
+								return writer.createEmptyElement( 'input', {
+									type: 'checkbox',
+									value: modelElement.getAttribute( 'someFoo' ),
+									...( dataPipeline ? { disabled: 'disabled' } : null )
+								} );
+							},
+
+							canWrapElement( modelElement ) {
+								return isFirstBlockOfListItem( modelElement ) && modelElement.is( 'element', 'paragraph' );
+							},
+
+							createWrapperElement( writer, modelElement, { dataPipeline } ) {
+								return writer.createAttributeElement( dataPipeline ? 'label' : 'span', { class: 'label' } );
+							}
+						} );
+
+						this.editor.conversion.for( 'downcast' ).elementToElement( {
+							model: 'paragraph',
+							view: ( element, { writer } ) => {
+								if ( isFirstBlockOfListItem( element ) ) {
+									return writer.createContainerElement( 'span', { class: 'description' } );
+								}
+							},
+							converterPriority: 'highest'
+						} );
+					}
+				} );
+			} );
+
+			it( 'single block in a list item', () => {
+				setModelData( model, modelList( `
+					* <paragraph someFoo="123">foo</paragraph>
+					* <paragraph someFoo="321">bar</paragraph>
+				` ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<ul>' +
+						'<li>' +
+							'<span class="label">' +
+								'<input type="checkbox" value="123"></input>' +
+								'<span class="description">foo</span>' +
+							'</span>' +
+						'</li>' +
+						'<li>' +
+							'<span class="label">' +
+								'<input type="checkbox" value="321"></input>' +
+								'<span class="description">bar</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<ul>' +
+						'<li>' +
+							'<label class="label">' +
+								'<input type="checkbox" value="123" disabled="disabled">' +
+								'<span class="description">foo</span>' +
+							'</label>' +
+						'</li>' +
+						'<li>' +
+							'<label class="label">' +
+								'<input type="checkbox" value="321" disabled="disabled">' +
+								'<span class="description">bar</span>' +
+							'</label>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'multiple blocks in a single list item', () => {
+				setModelData( model, modelList( `
+					* <paragraph someFoo="123">foo</paragraph>
+					  <paragraph someFoo="321">bar</paragraph>
+				` ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<ul>' +
+						'<li>' +
+							'<span class="label">' +
+								'<input type="checkbox" value="123"></input>' +
+								'<span class="description">foo</span>' +
+							'</span>' +
+							'<p>bar</p>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<ul>' +
+						'<li>' +
+							'<label class="label">' +
+								'<input type="checkbox" value="123" disabled="disabled">' +
+								'<span class="description">foo</span>' +
+							'</label>' +
+							'<p>bar</p>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'single block (non paragraph) in a list item', () => {
+				setModelData( model, modelList( `
+					* <heading1 someFoo="123">foo</heading1>
+				` ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<ul>' +
+						'<li>' +
+							'<span class="label">' +
+								'<input type="checkbox" value="123"></input>' +
+							'</span>' +
+							'<h2>foo</h2>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<ul>' +
+						'<li>' +
+							'<label class="label">' +
+								'<input type="checkbox" value="123" disabled="disabled">' +
+							'</label>' +
+							'<h2>foo</h2>' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+		} );
+	} );
+
 	async function createEditor( extraPlugin ) {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ extraPlugin, Paragraph, DocumentListEditing, UndoEditing ]
+			plugins: [ extraPlugin, Paragraph, DocumentListEditing, UndoEditing, HeadingEditing ]
 		} );
 
 		model = editor.model;

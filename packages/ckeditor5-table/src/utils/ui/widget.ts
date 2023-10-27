@@ -12,6 +12,19 @@ import type { ViewDocumentFragment, ViewDocumentSelection, ViewElement, ViewNode
 import { isWidget } from 'ckeditor5/src/widget';
 
 /**
+ * Depending on the position of the selection either return the selected table or the table higher in the hierarchy.
+ */
+export function getSelectionAffectedTableWidget( selection: ViewDocumentSelection ): ViewElement | null {
+	const selectedTable = getSelectedTableWidget( selection );
+
+	if ( selectedTable ) {
+		return selectedTable;
+	}
+
+	return getTableWidgetAncestor( selection );
+}
+
+/**
  * Returns a table widget editing view element if one is selected.
  */
 export function getSelectedTableWidget( selection: ViewDocumentSelection ): ViewElement | null {

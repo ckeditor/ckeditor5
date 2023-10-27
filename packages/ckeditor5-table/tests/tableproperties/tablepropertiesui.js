@@ -283,6 +283,34 @@ describe( 'table properties', () => {
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
+			it( 'should not hide if the table is selected on EditorUI#update', () => {
+				tablePropertiesButton.fire( 'execute' );
+				tablePropertiesView = tablePropertiesUI.view;
+
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+
+				editor.model.change( writer => {
+					// Set selection in the paragraph.
+					writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'on' );
+				} );
+
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+			} );
+
+			it( 'should not hide if the selection is in the table on EditorUI#update', () => {
+				tablePropertiesButton.fire( 'execute' );
+				tablePropertiesView = tablePropertiesUI.view;
+
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+
+				editor.model.change( writer => {
+					// Set selection in the paragraph.
+					writer.setSelection( editor.model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] ), 'in' );
+				} );
+
+				expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+			} );
+
 			it( 'should reposition if table is still selected on on EditorUI#update', () => {
 				tablePropertiesButton.fire( 'execute' );
 				tablePropertiesView = tablePropertiesUI.view;

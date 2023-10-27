@@ -209,6 +209,9 @@ export default class DropdownView extends View<HTMLDivElement> {
 		this.set( 'id', undefined );
 		this.set( 'panelPosition', 'auto' );
 
+		// Toggle the visibility of the panel when the dropdown becomes open.
+		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
+
 		this.keystrokes = new KeystrokeHandler();
 		this.focusTracker = new FocusTracker();
 
@@ -256,9 +259,6 @@ export default class DropdownView extends View<HTMLDivElement> {
 			this.isOpen = !this.isOpen;
 		} );
 
-		// Toggle the visibility of the panel when the dropdown becomes open.
-		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
-
 		// Let the dropdown control the position of the panel. The position must
 		// be updated every time the dropdown is open.
 		this.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
@@ -269,12 +269,16 @@ export default class DropdownView extends View<HTMLDivElement> {
 			// If "auto", find the best position of the panel to fit into the viewport.
 			// Otherwise, simply assign the static position.
 			if ( this.panelPosition === 'auto' ) {
-				this.panelView.position = DropdownView._getOptimalPosition( {
+				const optimalPanelPosition = DropdownView._getOptimalPosition( {
 					element: this.panelView.element!,
 					target: this.buttonView.element!,
 					fitInViewport: true,
 					positions: this._panelPositions
-				} ).name as PanelPosition;
+				} );
+
+				this.panelView.position = (
+					optimalPanelPosition ? optimalPanelPosition.name : this._panelPositions[ 0 ].name
+				) as PanelPosition;
 			} else {
 				this.panelView.position = this.panelPosition;
 			}

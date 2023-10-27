@@ -3,15 +3,16 @@ category: alternative-setups
 meta-title: Integrating CKEditor 5 from source using Webpack | CKEditor 5 documentation
 order: 10
 ---
+
 # Integrating from source using webpack
 
 <info-box>
-	CKEditor&nbsp;5 is currently built using [webpack@5](https://webpack.js.org/). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor&nbsp;5 using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. However, there is integration for {@link installation/advanced/integrating-from-source-vite Vite}. It is still in an experimental phase and supports a limited number of features. For example, the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows to localize the editor is only available for webpack. More work on this subject will be done in the future.
+	CKEditor&nbsp;5 is currently built using [webpack@5](https://webpack.js.org/). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor&nbsp;5 using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. However, there is integration for {@link installation/advanced/integrating-from-source-vite Vite}. It is still in an experimental phase and supports a limited number of features. For example, the [`@ckeditor/ckeditor5-dev-translations`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations) that allows localizing the editor is only available for webpack. More work on this subject will be done in the future.
 
 	Therefore, a prerequisite to this guide is that you are using webpack as your build tool.
 </info-box>
 
-This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
+This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds anymore, but instead build CKEditor&nbsp;5 from the source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
 <info-box>
 	Similar results to what this method allows can be achieved by {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor&nbsp;5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
@@ -34,7 +35,7 @@ npm install --save @ckeditor/ckeditor5-theme-lark \
   @ckeditor/ckeditor5-paragraph
 ```
 
-The second step is to install dependencies needed to build the editor. The list may differ if you want to customize the webpack configuration, but this is a typical setup:
+The second step is to install the dependencies needed to build the editor. The list may differ if you want to customize the webpack configuration, but this is a typical setup:
 
 ```bash
 npm install --save \
@@ -75,10 +76,10 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	entry: './main.js',
-    output: {
-        path: path.resolve( __dirname, 'dist' ),
-        filename: 'bundle.js'
-    },
+	output: {
+		path: path.resolve( __dirname, 'dist' ),
+		filename: 'bundle.js'
+	},
 	plugins: [
 		// More plugins.
 		// ...
@@ -126,7 +127,7 @@ module.exports = {
 ```
 
 <info-box>
-    If you cannot use the latest webpack (at the moment of writing this guide, it is 5), the provided configuration will also work with webpack 4.
+	If you cannot use the latest webpack (at the moment of writing this guide, it is 5), the provided configuration will also work with webpack 4.
 </info-box>
 
 ### TypeScript
@@ -141,12 +142,12 @@ const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-transla
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
-    entry: './main.ts',
-    output: {
-        path: path.resolve( __dirname, 'dist' ),
-        filename: 'bundle.js'
-    },
-    plugins: [
+	entry: './main.ts',
+	output: {
+		path: path.resolve( __dirname, 'dist' ),
+		filename: 'bundle.js'
+	},
+	plugins: [
 		// More plugins.
 		// ...
 
@@ -155,49 +156,49 @@ module.exports = {
 			language: 'pl'
 		} )
 	],
-    resolve: {
-        extensions: [ '.js', '.ts' ]
-    },
-    module: {
-        rules: [
-            {
-                test: /\.ts/,
-                use: [ 'ts-loader' ]
-            },
-            {
-                test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+	resolve: {
+		extensions: [ '.js', '.ts' ]
+	},
+	module: {
+		rules: [
+			{
+				test: /\.ts/,
+				use: [ 'ts-loader' ]
+			},
+			{
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 
-                use: [ 'raw-loader' ]
-            },
-            {
-                test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
+				use: [ 'raw-loader' ]
+			},
+			{
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 
-                use: [
-                    {
-                        loader: 'style-loader',
-                        options: {
-                            injectType: 'singletonStyleTag',
-                            attributes: {
-                                'data-cke': true
-                            }
-                        }
-                    },
-                    'css-loader',
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            postcssOptions: styles.getPostCssConfig( {
-                                themeImporter: {
-                                    themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-                                },
-                                minify: true
-                            } )
-                        }
-                    }
-                ]
-            }
-        ]
-    }
+				use: [
+					{
+						loader: 'style-loader',
+						options: {
+							injectType: 'singletonStyleTag',
+							attributes: {
+								'data-cke': true
+							}
+						}
+					},
+					'css-loader',
+					{
+						loader: 'postcss-loader',
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
+					}
+				]
+			}
+		]
+	}
 };
 ```
 
@@ -218,13 +219,13 @@ Encore.
 		language: 'pl'
 	} ) )
 
-	// Use raw-loader for CKEditor&nbsp;5 SVG files.
+	// Use raw-loader for CKEditor 5 SVG files.
 	.addRule( {
 		test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 		loader: 'raw-loader'
 	} )
 
-	// Configure other image loaders to exclude CKEditor&nbsp;5 SVG files.
+	// Configure other image loaders to exclude CKEditor 5 SVG files.
 	.configureLoaderRule( 'images', loader => {
 		loader.exclude = /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/;
 	} )
@@ -252,34 +253,28 @@ If you want to use TypeScript, add the `tsconfig.json` file at the root of your 
 // tsconfig.json
 
 {
-  "compilerOptions": {
-    "lib": [
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "outDir": "lib",
-    "removeComments": true,
-	"module": "es6",
-    "target": "es2019",
-    "baseUrl": "./",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "paths": {},
-    "sourceMap": true,
-    "sourceRoot": "/",
-    "alwaysStrict": true,
-    "allowUnreachableCode": false,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "noImplicitReturns": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
-  },
-  "include": ["./**/*.ts"],
-  "exclude": [
-    "node_modules/**/*"
-  ]
+	"compilerOptions": {
+		"types": [],
+		"lib": [
+		"ES2019",
+		"ES2020.String",
+		"DOM",
+		"DOM.Iterable"
+		],
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"strict": true,
+		"module": "es6",
+		"target": "es2019",
+		"sourceMap": true,
+		"allowJs": true,
+		"moduleResolution": "node",
+		"skipLibCheck": true
+	},
+	"include": ["./**/*.ts"],
+	"exclude": [
+		"node_modules/**/*"
+	]
 }
 ```
 
@@ -305,37 +300,37 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 export default class ClassicEditor extends ClassicEditorBase {}
 
 ClassicEditor.builtinPlugins = [
-    Essentials,
-    Autoformat,
-    Bold,
-    Italic,
-    BlockQuote,
-    Heading,
-    Link,
-    List,
-    Paragraph
+	Essentials,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
+	Heading,
+	Link,
+	List,
+	Paragraph
 ];
 
 ClassicEditor.defaultConfig = {
-    toolbar: {
-        items: [
-            'heading',
-            '|',
-            'bold',
-            'italic',
-            'link',
-            'bulletedList',
-            'numberedList',
-            'blockQuote',
-            'undo',
-            'redo'
-        ]
-    },
-    language: 'en'
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'undo',
+			'redo'
+		]
+	},
+	language: 'en'
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use the configured editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}.
+This module will export an editor creator class which has all the plugins and configuration settings that you need already built-in. To use the configured editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}.
 
 ```js
 // main.js
@@ -373,33 +368,33 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 export default class CustomEditor extends ClassicEditor {}
 
 CustomEditor.builtinPlugins = [
-    Essentials,
-    Autoformat,
-    Bold,
-    Italic,
-    BlockQuote,
-    Heading,
-    Link,
-    List,
-    Paragraph
+	Essentials,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
+	Heading,
+	Link,
+	List,
+	Paragraph
 ];
 
 CustomEditor.defaultConfig = {
-    toolbar: {
-        items: [
-            'heading',
-            '|',
-            'bold',
-            'italic',
-            'link',
-            'bulletedList',
-            'numberedList',
-            'blockQuote',
-            'undo',
-            'redo'
-        ]
-    },
-    language: 'en'
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'undo',
+			'redo'
+		]
+	},
+	language: 'en'
 };
 ```
 
@@ -411,21 +406,21 @@ Then, you can use the configured editor with TypeScript in your application.
 import ClassicEditor from './ckeditor';
 
 ClassicEditor
-    // Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
-    .create( document.querySelector( '#app' ) as HTMLElement )
-    .then( editor => {
-        console.log( 'Editor was initialized', editor );
-    } )
-    .catch( error => {
-        console.error( error.stack );
-    } );
+	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
+	.create( document.querySelector( '#app' ) as HTMLElement )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
 ```
 
 ## Running the editor – method 2
 
 ### JavaScript
 
-The second variant how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
+The second variant of how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
 
 ```js
 // main.js
@@ -441,39 +436,39 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
-    .create( document.querySelector( '#app'), {
-        // The plugins are now passed directly to .create().
-        plugins: [
-            Essentials,
-            Autoformat,
-            Bold,
-            Italic,
-            BlockQuote,
-            Heading,
-            Link,
-            List,
-            Paragraph,
-        ],
+	.create( document.querySelector( '#app'), {
+		// The plugins are now passed directly to .create().
+		plugins: [
+			Essentials,
+			Autoformat,
+			Bold,
+			Italic,
+			BlockQuote,
+			Heading,
+			Link,
+			List,
+			Paragraph,
+		],
 
-        // So is the rest of the default configuration.
-        toolbar: [
-            'heading',
-            'bold',
-            'italic',
-            'link',
-            'bulletedList',
-            'numberedList',
-            'blockQuote',
-            'undo',
-            'redo'
-        ]
-    } )
-    .then( editor => {
-        console.log( editor );
-    } )
-    .catch( error => {
-        console.error( error );
-    } );
+		// So is the rest of the default configuration.
+		toolbar: [
+			'heading',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'undo',
+			'redo'
+		]
+	} )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 ### TypeScript
@@ -494,39 +489,39 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
-    .create( document.querySelector( '#app') as HTMLElement, {
-        // The plugins are now passed directly to .create().
-        plugins: [
-            Essentials,
-            Autoformat,
-            Bold,
-            Italic,
-            BlockQuote,
-            Heading,
-            Link,
-            List,
-            Paragraph
-        ],
+	.create( document.querySelector( '#app') as HTMLElement, {
+		// The plugins are now passed directly to .create().
+		plugins: [
+			Essentials,
+			Autoformat,
+			Bold,
+			Italic,
+			BlockQuote,
+			Heading,
+			Link,
+			List,
+			Paragraph
+		],
 
-        // So is the rest of the default configuration.
-        toolbar: [
-            'heading',
-            'bold',
-            'italic',
-            'link',
-            'bulletedList',
-            'numberedList',
-            'blockQuote',
-            'undo',
-            'redo'
-        ]
-    } )
-    .then( editor => {
-        console.log( editor );
-    } )
-    .catch( error => {
-        console.error( error );
-    } );
+		// So is the rest of the default configuration.
+		toolbar: [
+			'heading',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'undo',
+			'redo'
+		]
+	} )
+	.then( editor => {
+		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
 ```
 
 ## Building
@@ -538,8 +533,8 @@ Finally, you can build your application. Add the build command to the scripts of
 
 {
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+	"test": "echo \"Error: no test specified\" && exit 1",
+	"build": "webpack"
   }
 }
 ```
@@ -650,7 +645,7 @@ module: {
 }
 ```
 
-And load [`regenerator-runtime`](https://www.npmjs.com/package/regenerator-runtime) (needed to make ES6 generators work after transpilation) by adding it as the first [entry point](https://webpack.js.org/configuration/entry-context/#entry):
+Then, load [`regenerator-runtime`](https://www.npmjs.com/package/regenerator-runtime) (needed to make ES6 generators work after transpilation) by adding it as the first [entry point](https://webpack.js.org/configuration/entry-context/#entry):
 
 ```js
 entry: [
@@ -666,5 +661,5 @@ entry: [
 </info-box>
 
 <info-box>
-	The [`babel-preset-env`](https://github.com/babel/babel-preset-env) package lets you choose the environment that you want to support and transpiles ES6+ features to match that environment's capabilities. Without configuration it will produce ES5 builds.
+	The [`babel-preset-env`](https://github.com/babel/babel-preset-env) package lets you choose the environment that you want to support and transpiles ES6+ features to match that environment's capabilities. Without configuration, it will produce ES5 builds.
 </info-box>

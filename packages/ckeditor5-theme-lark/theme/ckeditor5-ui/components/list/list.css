@@ -6,6 +6,7 @@
 @import "../../../mixins/_disabled.css";
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_shadow.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-list {
 	@mixin ck-rounded-corners;
@@ -21,8 +22,15 @@
 	& .ck-button {
 		min-height: unset;
 		width: 100%;
-		text-align: left;
 		border-radius: 0;
+
+		@mixin ck-dir ltr {
+			text-align: left;
+		}
+
+		@mixin ck-dir rtl {
+			text-align: right;
+		}
 
 		/* List items should have the same height. Use absolute units to make sure it is so
 		   because e.g. different heading styles may have different height
@@ -74,6 +82,21 @@
 				color: inherit;
 			}
 		}
+	}
+}
+
+.ck-list .ck-list__group {
+	padding-top: var(--ck-spacing-medium);
+
+	/* The group should have a border when it's not the first item. */
+	*:not(.ck-hidden) ~ & {
+		border-top: 1px solid var(--ck-color-base-border);
+	}
+
+	& > .ck-label {
+		font-size: 11px;
+		font-weight: bold;
+		padding: var(--ck-spacing-medium) var(--ck-spacing-medium) 0 var(--ck-spacing-medium);
 	}
 }
 

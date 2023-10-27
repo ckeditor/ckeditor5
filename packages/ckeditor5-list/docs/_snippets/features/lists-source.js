@@ -5,7 +5,7 @@
 
 /* globals window */
 
-import { ListProperties, DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
+import { ListProperties, DocumentList, DocumentListProperties, TodoDocumentList } from '@ckeditor/ckeditor5-list';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
@@ -19,4 +19,5 @@ window.ClassicEditor = ClassicEditor;
 window.ListProperties = ListProperties;
 window.DocumentList = DocumentList;
 window.DocumentListProperties = DocumentListProperties;
+window.TodoDocumentList = TodoDocumentList;
 window.ImageResize = ImageResize;

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document, Event, setTimeout */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -140,35 +140,13 @@ describe( 'ImageBlockEditing', () => {
 
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
 				setModelData( model,
-					'<imageBlock src="/assets/sample.png" alt="alt text" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'>' +
+					'<imageBlock src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>'
 				);
 
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
 					'<figure class="image">' +
 						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should convert srcset attribute to width, srcset and add sizes attribute', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageBlock>'
-				);
-
-				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<figure class="image">' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
 					'</figure>'
 				);
 			} );
@@ -184,7 +162,7 @@ describe( 'ImageBlockEditing', () => {
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>'
 				);
 
@@ -195,12 +173,12 @@ describe( 'ImageBlockEditing', () => {
 				);
 			} );
 
-			it( 'should not convert srcset attribute if has wrong data', () => {
+			it( 'should not convert srcset attribute if has no data', () => {
 				setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "foo":"bar" }\'>' +
+						'srcset="">' +
 					'</imageBlock>' );
 
 				const image = doc.getRoot().getChild( 0 );
@@ -344,25 +322,9 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 						'</imageBlock>'
 					);
-			} );
-
-			it( 'should convert image with srcset and width attributes', () => {
-				editor.setData(
-					'<figure class="image">' +
-					'<img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" width="1024" />' +
-					'</figure>'
-				);
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<imageBlock ' +
-						'alt="alt text" ' +
-						'src="/assets/sample.png" ' +
-						'srcset="{"data":"small.png 148w, big.png 1024w","width":"1024"}">' +
-					'</imageBlock>'
-				);
 			} );
 
 			it( 'should ignore sizes attribute', () => {
@@ -374,7 +336,7 @@ describe( 'ImageBlockEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
-						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="{"data":"small.png 148w, big.png 1024w"}">' +
+						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 						'</imageBlock>'
 					);
 			} );
@@ -552,7 +514,7 @@ describe( 'ImageBlockEditing', () => {
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
@@ -562,12 +524,12 @@ describe( 'ImageBlockEditing', () => {
 				);
 			} );
 
-			it( 'should not convert srcset attribute if has wrong data', () => {
+			it( 'should not convert srcset attribute if has no data', () => {
 				setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "foo":"bar" }\'>' +
+						'srcset="">' +
 					'</imageBlock>' );
 
 				const image = doc.getRoot().getChild( 0 );
@@ -582,30 +544,9 @@ describe( 'ImageBlockEditing', () => {
 				);
 			} );
 
-			it( 'should convert srcset attribute to srcset, width and sizes', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'alt="alt text" ' +
-						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
-					'</imageBlock>' );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget image" contenteditable="false">' +
-						'<img ' +
-							'alt="alt text" ' +
-							'sizes="100vw" ' +
-							'src="/assets/sample.png" ' +
-							'srcset="small.png 148w, big.png 1024w" ' +
-							'width="1024">' +
-						'</img>' +
-					'</figure>'
-				);
-			} );
-
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model,
-					'<imageBlock src="/assets/sample.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></imageBlock>'
+					'<imageBlock src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" ></imageBlock>'
 				);
 				const image = doc.getRoot().getChild( 0 );
 
@@ -616,26 +557,6 @@ describe( 'ImageBlockEditing', () => {
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="/assets/sample.png"></img>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should remove width, sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( model,
-					'<imageBlock ' +
-						'src="/assets/sample.png" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
-					'</imageBlock>'
-				);
-				const image = doc.getRoot().getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'srcset', image );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck-widget image" contenteditable="false">' +
-					'<img src="/assets/sample.png"></img>' +
 					'</figure>'
 				);
 			} );
@@ -651,7 +572,7 @@ describe( 'ImageBlockEditing', () => {
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
-						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
+						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>'
 				);
 
@@ -751,7 +672,8 @@ describe( 'ImageBlockEditing', () => {
 				domTarget: domNode,
 				target: viewElement,
 				dataTransfer,
-				targetRanges: [ targetViewRange ]
+				targetRanges: [ targetViewRange ],
+				domEvent: sinon.spy()
 			} );
 
 			expect( getModelData( model ) ).to.equal(
@@ -787,6 +709,44 @@ describe( 'ImageBlockEditing', () => {
 			expect( getModelData( model ) ).to.equal(
 				'[<imageBlock alt="abc" src="/assets/sample.png"></imageBlock>]'
 			);
+		} );
+
+		it( 'should add image width and height on image paste', done => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'paste' } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock height="96" src="/assets/sample.png" width="96"></imageBlock>]'
+				);
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should not add image width and height on image method other than paste', done => {
+			const dataTransfer = new DataTransfer( {
+				types: [ 'text/html' ],
+				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+			} );
+
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			viewDocument.fire( 'clipboardInput', { dataTransfer, method: 'foo' } );
+
+			setTimeout( () => {
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock src="/assets/sample.png"></imageBlock>]'
+				);
+
+				done();
+			}, 100 );
 		} );
 	} );
 } );

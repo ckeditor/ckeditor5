@@ -5,8 +5,7 @@ meta-title: Image upload overview | CKEditor 5 Documentation
 order: 10
 ---
 
-{@snippet features/build-ckbox-source}
-
+{@snippet features/build-image-upload-source}
 # Image upload overview
 
 Inserting {@link features/images-overview images} into content created with CKEditor&nbsp;5 is a very common task. In a properly configured rich-text editor, there are several ways for the end user to insert images:
@@ -17,24 +16,26 @@ Inserting {@link features/images-overview images} into content created with CKEd
 * Selecting an image from the **media management tool** in your application.
 * **Pasting** a URL to an image, either into the editor dialog or directly into the content.
 
-Except for pasting URLs, all other solutions require the image to be uploaded to a server. The server will then be responsible for providing the image URL used by CKEditor&nbsp;5 to display the image in the document.
+## Demo
 
-The software that makes the image upload possible is called an **upload adapter**. It is a callback that tells the WYSIWYG editor how to send the file to the server. There are two main strategies for getting the image upload to work that you can adopt in your project:
+This demo is configured to use {@link features/ckbox CKBox} for image upload and management. Use the image upload button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} to upload images or the CKBox button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to browse and select existing images from the file manager. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
 
-* [**Official upload adapters**](#official-upload-adapters) &ndash; There are several features like CKBox providing upload adapters developed and maintained by the CKEditor team. Pick the best one for your integration and let it handle the image upload in your project.
+{@snippet features/image-upload}
+
+<info-box info>
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</info-box>
+
+## How it works
+
+Except for pasting URLs to images, all other solutions mentioned above require the image to be uploaded to a server. The server will then be responsible for providing the image URL used by CKEditor&nbsp;5 to display the image in the document. The software that makes the image upload possible is called an **upload adapter**. It is a callback that tells the WYSIWYG editor how to send the file to the server. There are two main strategies for getting the image upload to work that you can adopt in your project:
+
+* [**Official upload adapters**](#official-upload-adapters) &ndash; There are several features providing upload adapters developed and maintained by the CKEditor team. Some of these are simple and only enable uploading, while some, like the {@link features/ckbox CKBox asset manager}, let you upload, browse, manage, and edit images. Pick the best one for your integration and let it handle the image upload in your project.
 * [**Custom upload adapters**](#implementing-your-own-upload-adapter) &ndash; You can also create your upload adapter from scratch using the open API architecture of CKEditor&nbsp;5.
-
-Read our comprehensive blog post about [Managing images with CKEditor&nbsp;5](https://ckeditor.com/blog/managing-images-with-ckeditor-5/) to find out more details about image upload and management, and to compare the available options.
 
 <info-box>
 	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/deep-dive/upload-adapter "Custom image upload adapter" deep dive guide} covering this topic.
 </info-box>
-
-## Demo
-
-The demo below is configured to use {@link features/ckbox CKBox} for image upload and management. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
-
-{@snippet features/ckbox}
 
 ## Official upload adapters
 
@@ -42,11 +43,11 @@ The demo below is configured to use {@link features/ckbox CKBox} for image uploa
 
 CKBox is the most complete solution for not just image upload but also file management in CKEditor&nbsp;5.
 
-It is a modern file uploader with a clean interface, automatic support for responsive images, and top-notch UX.
+It is a modern file uploader with a clean interface, automatic support for responsive images, and top-notch UX. It also provides editing capabilities like cropping, rotating, or flipping.
 
-Thanks to the native CKEditor&nbsp;5 integration, CKBox supports drag&drop file upload as well as pasting images from the clipboard, Microsoft Word, or Google Docs.
+Thanks to the native CKEditor&nbsp;5 integration, CKBox supports drag and drop file upload as well as pasting images from the clipboard, Microsoft Word, or Google Docs.
 
-With CKBox, users can upload files and categorize them into different groups. They can also change the way the files are displayed, for example, by setting the image thumbnail size or deciding how many files are shown on one page. Files can be uploaded, deleted, renamed, and tagged. File properties like dimensions, upload date, or size are also easily accessible and can be used to sort the files view alongside a regular search.
+With CKBox, users can upload files and categorize them into different groups. They can also change the way the files are displayed, for example, by setting the image thumbnail size or deciding how many files are shown on one page. Files can be uploaded, deleted, renamed, and tagged. File properties like dimensions, upload date, or size are also easily accessible and can be used to sort the file view alongside a regular search.
 
 {@link features/ckbox **Learn how to use CKBox in your project**}.
 

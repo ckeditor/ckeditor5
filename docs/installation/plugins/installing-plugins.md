@@ -17,7 +17,7 @@ CKEditor&nbsp;5 plugins, responsible for various features, are distributed throu
 
 To enrich the CKEditor&nbsp;5 by installing plugins, you will require:
 
-* [Node.js](https://nodejs.org/en/) 16.0.0+
+* [Node.js](https://nodejs.org/en/) 18.0.0+
 * [npm](https://www.npmjs.com/) 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 <info-box warning>
