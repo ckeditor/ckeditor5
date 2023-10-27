@@ -537,7 +537,7 @@ describe( 'ImageUtils plugin', () => {
 				console.warn.restore();
 			} );
 
-			it( 'should use block the image type when there is only ImageBlockEditing plugin enabled', async () => {
+			it( 'should use the block image type when there is only ImageBlockEditing plugin enabled', async () => {
 				const consoleWarnStub = sinon.stub( console, 'warn' );
 
 				await editor.destroy();
@@ -699,6 +699,14 @@ describe( 'ImageUtils plugin', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 			} );
 
+			it( 'should use the inline image type in an empty paragraph', () => {
+				setModelData( model, '<paragraph>[]</paragraph>' );
+
+				editor.plugins.get( 'ImageUtils' ).insertImage();
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+			} );
+
 			it( 'should use the block image type when ImageInlineEditing plugin is not enabled', async () => {
 				const consoleWarnStub = sinon.stub( console, 'warn' );
 
@@ -759,7 +767,7 @@ describe( 'ImageUtils plugin', () => {
 				console.warn.restore();
 			} );
 
-			it( 'should use block the image type by default', () => {
+			it( 'should use the block image type by default', () => {
 				setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();

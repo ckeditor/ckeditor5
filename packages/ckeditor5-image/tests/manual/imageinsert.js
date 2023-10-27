@@ -54,7 +54,7 @@ function createEditor( elementId, imageType ) {
 		.then( editor => {
 			window[ elementId ] = editor;
 
-			CKEditorInspector.attach( imageType, editor );
+			CKEditorInspector.attach( { [ imageType ]: editor } );
 		} )
 		.catch( err => {
 			console.error( err );
