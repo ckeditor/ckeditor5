@@ -720,7 +720,7 @@ export default class Element extends Node {
 	 * @internal
 	 * @fires change
 	 */
-	public _removeClass( className: string | Array<string> ): void {
+	public _removeClass( className: ArrayOrItem<string> ): void {
 		this._fireChange( 'attributes', this );
 
 		for ( const name of toArray( className ) ) {
