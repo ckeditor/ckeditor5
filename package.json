@@ -153,9 +153,6 @@
     "wait-on": "^6.0.1",
     "webpack": "^5.58.1"
   },
-  "resolutions": {
-    "acorn": "~8.10.0"
-  },
   "engines": {
     "node": ">=18.0.0"
   },
