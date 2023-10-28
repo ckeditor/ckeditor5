@@ -41,7 +41,9 @@ import {
 import {
 	icons,
 	type ToolbarConfig,
-	type ToolbarConfigItem
+	type ToolbarConfigItem,
+	type ToolbarConfigCustomItem,
+	type ToolbarConfigDropdownItem
 } from '@ckeditor/ckeditor5-core';
 
 import { isObject } from 'lodash-es';
@@ -341,8 +343,10 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		const normalizedRemoveItems = removeItems || config.removeItems;
 		const itemsToAdd = this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
 			.map( item => {
-				if ( isObject( item ) ) {
+				if ( isObject( item ) && 'items' in item ) {
 					return this._createNestedToolbarDropdown( item, factory, normalizedRemoveItems );
+				} else if ( isObject( item ) ) {
+					return this._createCustomizedItem( item, factory );
 				} else if ( item === '|' ) {
 					return new ToolbarSeparatorView();
 				} else if ( item === '-' ) {
@@ -437,6 +441,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 					return false;
 				}
 
+				// TODO add validation for ToolbarConfigCustomItem
+
 				return true;
 			} );
 
@@ -496,7 +502,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * of the nested toolbar.
 	 */
 	private _createNestedToolbarDropdown(
-		definition: Exclude<ToolbarConfigItem, string>,
+		definition: ToolbarConfigDropdownItem,
 		componentFactory: ComponentFactory,
 		removeItems: Array<string>
 	) {
@@ -510,8 +516,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		}
 
 		const locale = this.locale;
-		let dropdownButton:
-			( new ( locale?: Locale ) => DropdownButton & FocusableView ) | DropdownButton & FocusableView = SplitButtonView;
+
+		let dropdownButton: ( new ( locale?: Locale ) => DropdownButton & FocusableView ) | DropdownButton & FocusableView | undefined;
 
 		if ( 'actionItem' in definition ) {
 			const actionButton = componentFactory.create( definition.actionItem ) as ButtonView;
@@ -575,6 +581,34 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		), { isVertical: definition.isVertical } );
 
 		return dropdownView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createCustomizedItem(
+		definition: ToolbarConfigCustomItem,
+		componentFactory: ComponentFactory
+	) {
+		const itemView = componentFactory.create( definition.actionItem );
+
+		if ( definition.withText && 'withText' in itemView ) {
+			itemView.withText = true;
+		}
+
+		if ( definition.icon && 'icon' in itemView ) {
+			itemView.icon = definition.icon;
+		}
+
+		if ( definition.label && 'label' in itemView ) {
+			itemView.label = definition.label;
+		}
+
+		if ( definition.tooltip && 'tooltip' in itemView ) {
+			itemView.tooltip = definition.tooltip;
+		}
+
+		return itemView;
 	}
 }
 

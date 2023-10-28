@@ -584,7 +584,17 @@ export type ToolbarConfig = Array<ToolbarConfigItem> | {
 	icon?: string;
 };
 
-export type ToolbarConfigItem = string | {
+export type ToolbarConfigItem = string | ToolbarConfigCustomItem | ToolbarConfigDropdownItem;
+
+export type ToolbarConfigCustomItem = {
+	actionItem: string;
+	label?: string;
+	icon?: string | false;
+	withText?: boolean;
+	tooltip?: boolean | string | ( ( label: string, keystroke: string | undefined ) => string );
+};
+
+export type ToolbarConfigDropdownItem = {
 	items: Array<ToolbarConfigItem>;
 	label: string;
 	icon?: string | false;
