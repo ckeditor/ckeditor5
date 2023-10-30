@@ -254,6 +254,43 @@ for ( const value of range.getWalker() ) {
 }
 ```
 
+### How to find words in a document, and get their ranges?
+
+```
+const model = editor.model;
+const rootElement = model.document.getRoot();
+const rootRange = model.createRangeIn( rootElement );
+const wordRanges = [];
+
+for ( const item of rootRange.getItems() ) {
+	// Find `$block` elements (those accept text).
+	if ( item.is( 'element' ) && model.schema.checkChild( item, '$text' ) ) {
+		// Get the whole text from block.
+		// Inline elements (like softBreak or imageInline) are replaced
+		// with a single whitespace to keep the position offset correct.
+		const blockText = Array.from( item.getChildren() )
+			.reduce( ( rangeText, item ) => rangeText + ( item.is( '$text' ) ? item.data : ' ' ), '' );
+
+		// Find all words.
+		for ( const match of blockText.matchAll( /\b\S+\b/g ) ) {
+			// The position in a text node is always parented by the block element.
+			const startPosition = model.createPositionAt( item, match.index );
+			const endPosition = model.createPositionAt( item, match.index + match[ 0 ].length );
+
+			wordRanges.push( model.createRange( startPosition, endPosition ) );
+		}
+	}
+}
+
+// Example usage of the collected words:
+for ( const range of wordRanges ) {
+	const fragment = model.getSelectedContent( model.createSelection( range ) );
+	const html = editor.data.stringify( fragment );
+
+	console.log( `[${ range.start.path }] - [${ range.end.path }]`, html );
+}
+```
+
 ### How to listen on a double click (e.g. link elements)?
 
 ```js
