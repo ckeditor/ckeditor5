@@ -40,6 +40,7 @@ ClassicEditor
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative',
+				'|',
 				'ckboxImageEdit'
 			]
 		},

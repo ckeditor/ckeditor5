@@ -102,6 +102,7 @@ ClassicEditor
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative',
+				'|',
 				'ckboxImageEdit'
 			]
 		},
