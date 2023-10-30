@@ -282,6 +282,18 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			describe( '("ckboxImageEditor:save")', () => {
 				it( 'should fire "ckboxImageEditor:save" event after hit "Save" button in the CKBox Image Editor dialog', () => {
+					const spySave = sinon.spy();
+
+					command.on( 'ckboxImageEditor:save', spySave );
+
+					onSave( dataMock );
+
+					expect( spySave.callCount ).to.equal( 1 );
+				} );
+			} );
+
+			describe( '"ckboxImageEditor:processed"', () => {
+				it( 'should fire "ckboxImageEditor:processed" event after hit "Save" button in the CKBox Image Editor dialog', () => {
 					const spyProcessed = sinon.spy();
 
 					const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
@@ -291,9 +303,7 @@ describe( 'CKBoxImageEditCommand', () => {
 						expect( spyProcessed.callCount ).to.equal( 1 );
 					} );
 				} );
-			} );
 
-			describe( '"ckboxImageEditor:processed"', () => {
 				it( 'should replace image with saved one', () => {
 					setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
 						' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
