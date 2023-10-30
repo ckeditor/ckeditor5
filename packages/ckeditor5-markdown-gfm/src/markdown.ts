@@ -51,13 +51,43 @@ export default class Markdown extends Plugin {
 		} );
 
 		this.listenTo<ClipboardInputTransformationEvent>( clipboardPipeline, 'inputTransformation', ( evt, data ) => {
-			if ( data.dataTransfer.getData( 'text/html' ) || shiftPressed ) {
+			const dataAsTextHtml = data.dataTransfer.getData( 'text/html' );
+			const markdownFromHtml = this.parseMarkdownFromHtml( dataAsTextHtml );
+
+			if ( shiftPressed ) {
 				return;
 			}
 
-			const dataStr = data.dataTransfer.getData( 'text/plain' );
+			if ( !dataAsTextHtml ) {
+				const dataAsTextPlain = data.dataTransfer.getData( 'text/plain' );
+				data.content = editor.data.processor.toView( dataAsTextPlain );
 
-			data.content = editor.data.processor.toView( dataStr );
+				return;
+			}
+
+			if ( markdownFromHtml ) {
+				data.content = editor.data.processor.toView( markdownFromHtml );
+			}
 		} );
+	}
+
+	private parseMarkdownFromHtml( htmlString: string ) {
+		// Removing <meta> tag present on Mac.
+		const withoutMetaTag = htmlString.replace( /^<meta\b[^>]*>/, '' ).trim();
+		// Removing <html> tag present on Windows.
+		const withoutHtmlTag = withoutMetaTag.replace( /^<html>/, '' ).replace( /<\/html>$/, '' ).trim();
+		// Removing <body> tag present on Windows.
+		const withoutBodyTag = withoutHtmlTag.replace( /^<body>/, '' ).replace( /<\/body>$/, '' ).trim();
+		// Removing <!--StartFragment--> tag present on Windows.
+		const withoutFragmentTag = withoutBodyTag.replace( /^<!--StartFragment-->/, '' ).replace( /<!--EndFragment-->$/, '' ).trim();
+		// Removing a wrapper HTML tag if exists.
+		const withoutWrapperTag = withoutFragmentTag.replace( /^<(\w+)\b[^>]*>\s*([\s\S]*?)\s*<\/\1>/, '$2' ).trim();
+		const containsAnyRemainingHtmlTags = /<[^>]+>[\s\S]*<[^>]+>/.test( withoutWrapperTag );
+
+		if ( containsAnyRemainingHtmlTags ) {
+			return null;
+		}
+
+		return withoutWrapperTag;
 	}
 }
