@@ -146,7 +146,7 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, asset ) => {
-			waitForAssetProcess( asset ).then( () => {
+			this._waitForAssetProcess( asset ).then( () => {
 				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
 			} );
 		} );
@@ -181,13 +181,13 @@ export default class CKBoxImageEditCommand extends Command {
 			} );
 		} );
 	}
-}
 
-function waitForAssetProcess( asset: CKBoxRawAssetDefinition ): Promise<void> {
-	// Timeout for demo purposes.
-	return new Promise( resolve => {
-		setTimeout( resolve, 3000 );
-	} );
+	private _waitForAssetProcess( asset: CKBoxRawAssetDefinition ): Promise<void> {
+		// Timeout for demo purposes.
+		return new Promise( resolve => {
+			setTimeout( resolve, 3000 );
+		} );
+	}
 }
 
 /**
