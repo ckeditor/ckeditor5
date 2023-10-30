@@ -8,7 +8,14 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { ButtonView, CssTransitionDisablerMixin, type DropdownView, type ViewWithCssTransitionDisabler } from 'ckeditor5/src/ui';
+import {
+	ButtonView,
+	CssTransitionDisablerMixin,
+	type DropdownView,
+	type ViewWithCssTransitionDisabler,
+	type FocusCyclerForwardCycleEvent,
+	type FocusCyclerBackwardCycleEvent
+} from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 import loupeIcon from '../theme/icons/find-replace.svg';
@@ -183,8 +190,15 @@ export default class FindAndReplaceUI extends Plugin {
 			}
 		} );
 
-		formView.focusCycler.on( 'forwardCycle', () => modal.view.focusNext() );
-		formView.focusCycler.on( 'backwardCycle', () => modal.view.focusPrevious() );
+		formView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
+			modal.view.focusNext();
+			evt.stop();
+		} );
+
+		formView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
+			modal.view.focusPrevious();
+			evt.stop();
+		} );
 	}
 }
 

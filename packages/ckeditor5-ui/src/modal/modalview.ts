@@ -8,7 +8,7 @@ import ViewCollection from '../viewcollection';
 import View from '../view';
 import FormHeaderView from '../formheader/formheaderview';
 import ButtonView from '../button/buttonview';
-import FocusCycler from '../focuscycler';
+import FocusCycler, { type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
 
 import ModalActionsView, { type ModalActionButtonDefinition } from './modalactionsview';
 
@@ -94,8 +94,14 @@ export default class ModalView extends View {
 		 * TODO
 		 */
 		this.actionsView = new ModalActionsView( locale );
-		this.actionsView.focusCycler.on( 'forwardCycle', () => this._focusCycler.focusNext() );
-		this.actionsView.focusCycler.on( 'backwardCycle', () => this._focusCycler.focusPrevious() );
+		this.actionsView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
+			this._focusCycler.focusNext();
+			evt.stop();
+		} );
+		this.actionsView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
+			this._focusCycler.focusPrevious();
+			evt.stop();
+		} );
 
 		/**
 		 * TODO

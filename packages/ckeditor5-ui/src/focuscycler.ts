@@ -237,6 +237,9 @@ export default class FocusCycler extends EmitterMixin() {
 		const next = this.next;
 
 		if ( next && this.focusables.getIndex( next ) === this.current ) {
+			// TBD
+			this.fire<FocusCyclerForwardCycleEvent>( 'forwardCycle' );
+
 			return;
 		}
 
@@ -256,6 +259,9 @@ export default class FocusCycler extends EmitterMixin() {
 		const previous = this.previous;
 
 		if ( previous && this.focusables.getIndex( previous ) === this.current ) {
+			// TBD
+			this.fire<FocusCyclerBackwardCycleEvent>( 'backwardCycle' );
+
 			return;
 		}
 
@@ -274,7 +280,8 @@ export default class FocusCycler extends EmitterMixin() {
 	 * @returns
 	 */
 	private _focus( view: FocusableView | null, direction: 1 | -1 ) {
-		if ( view ) {
+		// TBD
+		if ( view && this.focusTracker.focusedElement !== view.element ) {
 			view.focus( direction );
 		}
 	}
