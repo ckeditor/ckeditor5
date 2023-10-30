@@ -2,8 +2,8 @@
 category: framework
 order: 10
 menu-title: Overview
-meta-title: CKEditor 5 Framework documentation
-meta-description: Learn how to install, integrate, configure, and develop CKEditor&nbsp;5 Framework. Browse through API documentation and online samples.
+meta-title: CKEditor 5 Framework documentation | CKEditor 5 Framework Documentation
+meta-description: Learn how to install, integrate, configure, and develop CKEditor 5 Framework. Browse through the API documentation and online samples.
 ---
 
 # CKEditor&nbsp;5 Framework overview
@@ -63,4 +63,4 @@ To start using the framework refer to:
 
 * The {@link framework/quick-start Quick start} guide.
 * The {@link framework/architecture/intro Introduction to the framework architecture} guide.
-* The {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide.
+* The {@link tutorials/crash-course/editor step-by-step crash course}.

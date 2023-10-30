@@ -96,7 +96,7 @@ describe( 'table utils', () => {
 			} );
 
 			describe( 'with respect to the entire table', () => {
-				it( 'should re-position the ContextualBalloon when the table is selected', () => {
+				it( 'should re-position the ContextualBalloon when the selection is in the table', () => {
 					const spy = sinon.spy( balloon, 'updatePosition' );
 					const defaultPositions = BalloonPanelView.defaultPositions;
 					const view = new View();
@@ -118,6 +118,44 @@ describe( 'table utils', () => {
 					repositionContextualBalloon( editor, 'table' );
 
 					const modelTable = editor.model.document.selection.getFirstPosition().findAncestor( 'table' );
+					const viewTable = editor.editing.mapper.toViewElement( modelTable );
+
+					sinon.assert.calledWithExactly( spy, {
+						target: editingView.domConverter.mapViewToDom( viewTable ),
+						positions: [
+							defaultPositions.northArrowSouth,
+							defaultPositions.northArrowSouthWest,
+							defaultPositions.northArrowSouthEast,
+							defaultPositions.southArrowNorth,
+							defaultPositions.southArrowNorthWest,
+							defaultPositions.southArrowNorthEast,
+							defaultPositions.viewportStickyNorth
+						]
+					} );
+				} );
+
+				it( 'should re-position the ContextualBalloon when the selection is over the table', () => {
+					const spy = sinon.spy( balloon, 'updatePosition' );
+					const defaultPositions = BalloonPanelView.defaultPositions;
+					const view = new View();
+
+					view.element = global.document.createElement( 'div' );
+
+					balloon.add( {
+						view,
+						position: {
+							target: global.document.body
+						}
+					} );
+
+					setData( editor.model,
+						'[<table><tableRow>' +
+						'<tableCell><paragraph>foo</paragraph></tableCell>' +
+						'<tableCell><paragraph>bar</paragraph></tableCell>' +
+						'</tableRow></table>]' );
+					repositionContextualBalloon( editor, 'table' );
+
+					const modelTable = editor.model.document.selection.getSelectedElement();
 					const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
 					sinon.assert.calledWithExactly( spy, {

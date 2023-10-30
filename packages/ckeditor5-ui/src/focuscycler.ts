@@ -140,6 +140,9 @@ export default class FocusCycler extends EmitterMixin() {
 				}
 			}
 		}
+
+		this.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', () => this.focusFirst(), { priority: 'low' } );
+		this.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', () => this.focusLast(), { priority: 'low' } );
 	}
 
 	/**
@@ -233,10 +236,14 @@ export default class FocusCycler extends EmitterMixin() {
 	public focusNext(): void {
 		const next = this.next;
 
-		this._focus( next, 1 );
+		if ( next && this.focusables.getIndex( next ) === this.current ) {
+			return;
+		}
 
-		if ( next == this.first ) {
-			this.fire( 'forwardCycle' );
+		if ( next === this.first ) {
+			this.fire<FocusCyclerForwardCycleEvent>( 'forwardCycle' );
+		} else {
+			this._focus( next, 1 );
 		}
 	}
 
@@ -248,36 +255,28 @@ export default class FocusCycler extends EmitterMixin() {
 	public focusPrevious(): void {
 		const previous = this.previous;
 
-		this._focus( previous, -1 );
+		if ( previous && this.focusables.getIndex( previous ) === this.current ) {
+			return;
+		}
 
-		if ( previous == this.last ) {
-			this.fire( 'backwardCycle' );
+		if ( previous === this.last ) {
+			this.fire<FocusCyclerBackwardCycleEvent>( 'backwardCycle' );
+		} else {
+			this._focus( previous, -1 );
 		}
 	}
 
 	/**
 	 * Focuses the given view if it exists.
+	 *
+	 * @param view The view to be focused
+	 * @param direction The direction of the focus if the view has focusable children.
+	 * @returns
 	 */
 	private _focus( view: FocusableView | null, direction: 1 | -1 ) {
-		if ( !view ) {
-			return;
+		if ( view ) {
+			view.focus( direction );
 		}
-
-		if ( isCompoundFocusable( view ) ) {
-			if ( direction === 1 ) {
-				view.focusFirst();
-
-				return;
-			}
-
-			if ( direction === -1 ) {
-				view.focusLast();
-
-				return;
-			}
-		}
-
-		view.focus();
 	}
 
 	/**
@@ -308,7 +307,7 @@ export default class FocusCycler extends EmitterMixin() {
 			const view = this.focusables.get( index )!;
 
 			if ( isFocusable( view ) ) {
-				return view as FocusableView;
+				return view;
 			}
 
 			// Cycle in both directions.
@@ -319,16 +318,23 @@ export default class FocusCycler extends EmitterMixin() {
 	}
 }
 
-export type FocusableView = StandaloneFocusableView	| CompoundFocusableView;
+/**
+ * A view that can be focused.
+ */
+export type FocusableView = View & {
 
-type StandaloneFocusableView = View & {
-	focus(): void;
-};
-
-type CompoundFocusableView = View & {
-	focus(): void;
-	focusFirst(): void;
-	focusLast(): void;
+	/**
+	 * Focuses the view.
+	 *
+	 * @param direction This optional parameter helps improve the UX by providing additional information about the direction the focus moved
+	 * (e.g. in a complex view or a form). It is useful for views that host multiple focusable children (e.g. lists, toolbars):
+	 * * `1` indicates that the focus moved forward and, in most cases, the first child of the focused view should get focused,
+	 * * `-1` indicates that the focus moved backwards, and the last focusable child should get focused
+	 *
+	 * See {@link module:ui/focuscycler~FocusCycler#event:forwardCycle} and {@link module:ui/focuscycler~FocusCycler#event:backwardCycle}
+	 * to learn more.
+	 */
+	focus( direction?: 1 | -1 ): void;
 };
 
 export interface FocusCyclerActions {
@@ -339,19 +345,32 @@ export interface FocusCyclerActions {
 }
 
 /**
+ * Fired when the focus cycler is about to move the focus from the last focusable item
+ * to the first one.
+ *
+ * @eventName ~FocusCycler#forwardCycle
+ */
+export type FocusCyclerForwardCycleEvent = {
+	name: 'forwardCycle';
+	args: [];
+};
+
+/**
+ * Fired when the focus cycler is about to move the focus from the first focusable item
+ * to the last one.
+ *
+ * @eventName ~FocusCycler#backwardCycle
+ */
+export type FocusCyclerBackwardCycleEvent = {
+	name: 'backwardCycle';
+	args: [];
+};
+
+/**
  * Checks whether a view is focusable.
  *
  * @param view A view to be checked.
  */
-function isFocusable( view: View ): view is StandaloneFocusableView {
+function isFocusable( view: View ): view is FocusableView {
 	return !!( 'focus' in view && isVisible( view.element ) );
-}
-
-/**
- * TODO
- * @param view
- * @returns
- */
-function isCompoundFocusable( view: View ): view is CompoundFocusableView {
-	return isFocusable( view ) && 'focusFirst' in view && 'focusLast' in view;
 }

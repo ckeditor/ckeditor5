@@ -2,6 +2,7 @@
 category: examples-framework
 order: 90
 toc: false
+meta-title: Theme customization example | CKEditor 5 Documentation
 classes: main__content--no-toc
 ---
 

@@ -11,7 +11,8 @@ import { Command } from 'ckeditor5/src/core';
 import type { Writer } from 'ckeditor5/src/engine';
 import type TableCaptionEditing from './tablecaptionediting';
 
-import { getCaptionFromTableModelElement, getSelectionAffectedTable } from './utils';
+import { getCaptionFromTableModelElement } from './utils';
+import { getSelectionAffectedTable } from '../utils/common';
 
 /**
  * The toggle table caption command.

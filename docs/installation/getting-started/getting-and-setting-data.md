@@ -1,5 +1,6 @@
 ---
 category: getting-started
+meta-title: Getting and setting data | CKEditor 5 documentation
 order: 70
 ---
 
@@ -10,10 +11,57 @@ order: 70
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/editor-lifecycle previous tutorial} you have learned about lifecycle methods. Having the editor created, you can now set or get its data.
+In the {@link installation/getting-started/editor-lifecycle previous guide} you have learned about lifecycle methods. Having the editor created, you can now set or get its data.
 </info-box>
 
-CKEditor&nbsp;5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
+CKEditor 5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
+
+## Manually retrieving the data
+
+When you:
+
+* Use Ajax requests instead of the classic integration with HTML forms,
+* Implement a single-page application,
+* Use a different editor type than the Classic editor (and hence, cannot use the previous method),
+
+### Getting the editor data with `getData()`
+
+If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, use the `getData()` method:
+
+```js
+const data = editor.getData();
+```
+<!-- You can retrieve the data from the editor by using the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method. -->
+
+### Setting the editor data with `setData()`
+
+To replace the editor content with new data, use the `setData()` method:
+
+```js
+editor.setData( '<p>Some text.</p>' );
+```
+
+For that, you need to store the reference to the `editor` because there is no global `CKEDITOR.instances` property. You can do that in multiple ways, for example by assigning the `editor` to a variable defined outside the `then()`'s callback:
+
+```js
+let editor;
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ) )
+	.then( newEditor => {
+		editor = newEditor;
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
+
+// Assuming there is a <button id="submit">Submit</button> in your application.
+document.querySelector( '#submit' ).addEventListener( 'click', () => {
+	const editorData = editor.getData();
+
+	// ...
+} );
+```
 
 ## Automatic integration with HTML forms
 
@@ -26,7 +74,7 @@ This approach is only available in the {@link installation/getting-started/prede
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor&nbsp;5 - Classic editor</title>
+	<title>CKEditor 5 - Classic editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
@@ -59,87 +107,40 @@ In your HTTP server, you can now read the editor data from the `content` variabl
 ```
 
 <info-box>
-	Please note that the replaced `<textarea>` element is updated automatically by CKEditor straight before the submission. If you need to access the `<textarea>` value programmatically with JavaScript (e.g. in the `onsubmit` handler to validate the entered data), there is a chance that the `<textarea>` element would still store the original data. In order to update the value of the replaced `<textarea>`, use the {@link module:editor-classic/classiceditor~ClassicEditor#updateSourceElement `editor.updateSourceElement()`} method.
+Please note that the replaced `<textarea>` element is updated automatically by CKEditor straight before the submission. If you need to access the `<textarea>` value programmatically with JavaScript (e.g. in the `onsubmit` handler to validate the entered data), there is a chance that the `<textarea>` element would still store the original data. In order to update the value of the replaced `<textarea>`, use the {@link module:editor-classic/classiceditor~ClassicEditor#updateSourceElement `editor.updateSourceElement()`} method.
 
-	If you need to get the actual data from CKEditor at any moment using JavaScript, use the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method as described in the next section.
+If you need to get the actual data from CKEditor at any moment using JavaScript, use the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method as described in the next section.
 </info-box>
 
 <info-box>
-	When you print the data from the database to a `<textarea>` element in an HTML page, you need to encode it correctly. For instance, if you use PHP then a minimal solution would look like this:
+When you print the data from the database to a `<textarea>` element in an HTML page, you need to encode it correctly. For instance, if you use PHP then a minimal solution would look like this:
 
-	```php
-	<?php
-		$data = str_replace( '&', '&amp;', $data );
-	?>
+```php
+&lt;?php
+	$data = str_replace( '&', '&amp;', $data );
+?>
 
-	<textarea name="content" id="editor"><?= $data ?></textarea>
-	```
+&lt;textarea name="content" id="editor">&lt;?= $data ?>&lt;/textarea>
+```
 
-	Thanks to that, the `<textarea>` will be printed out like this:
+Thanks to that, the `<textarea>` will be printed out like this:
 
-	```html
-	<textarea>&lt;p>This is some sample content.&lt;/p></textarea>
-	```
+```html
+&lt;textarea>&lt;p>This is some sample content.&lt;/p>&lt/textarea>
+```
 
-	Instead of being printed like this:
+Instead of being printed like this:
 
-	```html
-	<textarea><p>This is some sample content.</p></textarea>
-	```
+```html
+&lt;textarea>&lt;p>This is some sample content.&lt;/p>&lt;/textarea>
+```
 
-	While simple content like that mentioned above does not itself require to be encoded, encoding the data will prevent losing text like "&lt;" or "&lt;img&gt;".
+While simple content like that mentioned above does not itself require to be encoded, encoding the data will prevent losing text like "&lt;" or "&lt;img&gt;".
 </info-box>
-
-## Manually retrieving the data
-
-When you:
-
-* Use Ajax requests instead of the classic integration with HTML forms,
-* Implement a single-page application,
-* Use a different editor type than the Classic editor (and hence, cannot use the previous method),
-
-### Getting the editor data with `getData()`
-
-If the editor content needs to be retrieved for any reason, like for sending it to the server through an Ajax call, use the `getData()` method:
-
-```js
-const data = editor.getData();
-```
-<!-- you can retrieve the data from the editor by using the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method. -->
-
-### Setting the editor data with `setData()`
-
-To replace the editor content with new data, use the `setData()` method:
-
-```js
-editor.setData( '<p>Some text.</p>' );
-```
-
-For that, you need to store the reference to the `editor` because there is no global `CKEDITOR.instances` property. You can do that in multiple ways, for example by assigning the `editor` to a variable defined outside the `then()`'s callback:
-
-```js
-let editor;
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ) )
-	.then( newEditor => {
-		editor = newEditor;
-	} )
-	.catch( error => {
-		console.error( error );
-	} );
-
-// Assuming there is a <button id="submit">Submit</button> in your application.
-document.querySelector( '#submit' ).addEventListener( 'click', () => {
-	const editorData = editor.getData();
-
-	// ...
-} );
-```
 
 ## Updating the source element
 
-If the source element is not `<textarea>`, CKEditor&nbsp;5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
+If the source element is not `<textarea>`, CKEditor 5 clears its content after the editor is destroyed. However, if you would like to enable updating the source element with the output coming from the data pipeline, you can use the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option.
 
 ```js
 ClassicEditor.create( document.querySelector( '#editor' ), {
@@ -154,18 +155,18 @@ Enabling the `updateSourceElementOnDestroy` option in your configuration might h
 
 ## Autosave feature
 
-The {@link module:autosave/autosave~Autosave} feature allows you to automatically save the data (e.g. send it to the server) when needed. This can happen, for example, when the user changed the content.
+The {@link module:autosave/autosave~Autosave} feature allows you to automatically save the data (e.g. send it to the server) when needed. This can happen, for example, when the user changes the content.
 
 Please refer to the {@link features/autosave Autosave} guide for details.
 
 ## Handling users exiting the page
 
-An additional concern when integrating the editor in your website is that the user may mistakenly leave before saving the data. This problem is automatically handled by the {@link features/autosave autosave feature}, but if you do not use it and instead chose different integration methods, you should consider handling these two scenarios:
+An additional concern when integrating the editor into your website is that the user may mistakenly leave before saving the data. This problem is automatically handled by the {@link features/autosave autosave feature}, but if you do not use it and instead choose different integration methods, you should consider handling these two scenarios:
 
 * The user leaves the page before saving the data (e.g. mistakenly closes a tab or clicks some link).
 * The user saved the data, but there are some pending actions like an image upload.
 
-To handle the former situation you can listen to the native [`window#beforeunload`](https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload) event. The latter situation can be handled by using CKEditor&nbsp;5 {@link module:core/pendingactions~PendingActions} plugin.
+To handle the former situation you can listen to the native [`window#beforeunload`](https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload) event. The latter situation can be handled by using the CKEditor%nbsp;5 {@link module:core/pendingactions~PendingActions} plugin.
 
 ### Demo
 
@@ -287,7 +288,6 @@ How to understand this demo:
 <info-box hint>
 **What's next?**
 
-Having read this guide, you know how to communicate with the editor, but remember that CKEditor&nbsp;5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
+Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link installation/getting-started/api-and-events API and events guide} for more.
 
-If you would like to integrate your CKEditor&nbsp;5 installation with the Angular, React, and Vue.js JavaScript frameworks, {@link installation/integrations/overview we have dedicated guides for that}.
 </info-box>

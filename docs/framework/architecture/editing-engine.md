@@ -1,5 +1,6 @@
 ---
 category: framework-architecture
+meta-title: Editing engine | CKEditor 5 Framework Documentation
 order: 30
 ---
 
@@ -8,7 +9,7 @@ order: 30
 The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package is by far the biggest package of all. Therefore, this guide will only scratch the surface here by introducing the main architecture layers and concepts. More detailed guides will follow.
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Overview
@@ -371,7 +372,7 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 
 A more in-depth introduction with examples can be found in the {@link framework/deep-dive/conversion/intro dedicated conversion guide}.
 
-For additional information, you can also check out the {@link framework/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
+For additional information, you can also check out the {@link tutorials/widgets/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link tutorials/widgets/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
 
 <!--TODO: upcasting, downcasting, mapping nodes and positions, API.
 

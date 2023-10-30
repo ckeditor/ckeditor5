@@ -1,5 +1,6 @@
 ---
 title: Autoformatting
+meta-title: Autoformatting | CKEditor 5 Documentation
 category: features
 ---
 

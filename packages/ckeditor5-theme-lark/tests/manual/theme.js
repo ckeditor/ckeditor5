@@ -30,6 +30,7 @@ import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import { SpinnerView } from '@ckeditor/ckeditor5-ui';
 
 const locale = new Locale();
 
@@ -71,6 +72,7 @@ const ui = testUtils.createTestUIView( {
 	'buttonResponsive2': '#button-responsive-2',
 	'buttonResponsive3': '#button-responsive-3',
 	'buttonTooltip': '#button-tooltip',
+	'buttonSpinner': '#button-spinner',
 
 	listDropdown: '#list-dropdown',
 	buttonDropdown: '#button-dropdown',
@@ -272,6 +274,22 @@ function renderButton() {
 			tooltip: true,
 			tooltipPosition: 'sw'
 		} )
+	] ) );
+
+	// --- With spinner ------------------------------------------------------------
+
+	const buttonWithSpinner = button( {
+		label: 'Button with spinner',
+		withText: false
+	} );
+
+	const spinnerView = new SpinnerView();
+	spinnerView.isVisible = true;
+
+	buttonWithSpinner.children.add( spinnerView );
+
+	ui.buttonSpinner.add( toolbar( [
+		buttonWithSpinner
 	] ) );
 }
 

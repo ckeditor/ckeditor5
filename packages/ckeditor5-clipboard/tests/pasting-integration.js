@@ -191,11 +191,38 @@ describe( 'Pasting – integration', () => {
 				} );
 		} );
 	} );
+
+	describe( 'links', () => {
+		// See https://github.com/ckeditor/ckeditor5/issues/15036.
+		it( 'should not convert parts of the link address which look like HTML entities', () => {
+			return ClassicTestEditor
+				.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Link ] } )
+				.then( editor => {
+					setData( editor.model, '<paragraph>[]</paragraph>' );
+
+					pasteText( editor, 'https://example.com?x=1&quot=2&timestamp=t' );
+
+					expect( getData( editor.model ) ).to.equal(
+						'<paragraph>https://example.com?x=1&quot=2&timestamp=t[]</paragraph>' // keeps "&quot" and "&times" unchanged
+					);
+
+					return editor.destroy();
+				} );
+		} );
+	} );
 } );
 
 function pasteHtml( editor, html ) {
 	editor.editing.view.document.fire( 'paste', {
 		dataTransfer: createDataTransfer( { 'text/html': html } ),
+		stopPropagation() {},
+		preventDefault() {}
+	} );
+}
+
+function pasteText( editor, text ) {
+	editor.editing.view.document.fire( 'paste', {
+		dataTransfer: createDataTransfer( { 'text/plain': text } ),
 		stopPropagation() {},
 		preventDefault() {}
 	} );

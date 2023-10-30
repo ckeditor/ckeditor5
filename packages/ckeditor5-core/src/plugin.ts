@@ -211,7 +211,7 @@ export interface PluginInterface {
 	 *
 	 * **Note:** This method is optional. A plugin instance does not need to have it defined.
 	 */
-	destroy(): Promise<unknown> | null | undefined | void;
+	destroy?(): Promise<unknown> | null | undefined | void;
 }
 
 /**

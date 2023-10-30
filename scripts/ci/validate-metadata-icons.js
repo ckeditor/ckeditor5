@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
@@ -10,10 +12,21 @@
 const fs = require( 'fs-extra' );
 const { glob } = require( 'glob' );
 const upath = require( 'upath' );
+const minimist = require( 'minimist' );
 const { table, getBorderCharacters } = require( 'table' );
-const { red, green, magenta } = require( './ansi-colors' );
+const { red, green, magenta } = require( 'chalk' );
 
-module.exports = async function validateMetadataIcons( { cwd = process.cwd() } = {} ) {
+main()
+	.catch( err => {
+		console.error( err );
+
+		process.exit( 1 );
+	} );
+
+async function main() {
+	const options = getOptions( process.argv.slice( 2 ) );
+	const cwd = upath.resolve( options.cwd );
+
 	console.log( magenta( 'Validating icon paths in plugins\' metadata...' ) );
 
 	const globPattern = upath.join( cwd, 'packages', '*', 'ckeditor5-metadata.json' );
@@ -53,7 +66,7 @@ module.exports = async function validateMetadataIcons( { cwd = process.cwd() } =
 	console.log( red( 'Detected invalid icon paths in following packages:' ) );
 	console.log( red( table( missingIcons, { border: getBorderCharacters( 'ramac' ) } ) ) );
 	process.exit( 1 );
-};
+}
 
 /**
  * Gets plugins from metadata file at provided path.
@@ -88,4 +101,20 @@ function getPluginIconPaths( result, plugin ) {
 	result[ plugin.packageName ].push( ...iconPaths );
 
 	return result;
+}
+
+/**
+ * @param {Array.<String>} argv
+ * @returns {Object} options
+ * @returns {String} options.cwd
+ */
+function getOptions( argv ) {
+	return minimist( argv, {
+		string: [
+			'cwd'
+		],
+		default: {
+			cwd: process.cwd()
+		}
+	} );
 }

@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Responsive images
-meta-title: Responsive images in CKEditor&nbsp;5
+meta-title: Responsive images | CKEditor 5 Documentation
 meta-description: Learn how responsive images can make your content better.
 order: 55
 modified_at: 2023-06-30

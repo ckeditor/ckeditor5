@@ -428,6 +428,307 @@ describe( 'Widget', () => {
 		);
 	} );
 
+	describe( 'triple click', () => {
+		it( 'should set selection on entire paragraph', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<paragraph>foo bar</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 1 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[foo bar]</paragraph>'
+			);
+		} );
+
+		it( 'should set selection on entire paragraph with attributes in text', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<paragraph>foo <$text attr="true">bar</$text></paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 1 );
+			const bold = paragraph.getChild( 1 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( bold ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[foo <$text attr="true">bar</$text>]</paragraph>'
+			);
+		} );
+
+		it( 'should extend selection to include start of next text block', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<paragraph>foo bar</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 1 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[foo bar</paragraph>' +
+				'<paragraph>]baz</paragraph>'
+			);
+		} );
+
+		it( 'should not extend selection to include following block widget', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<paragraph>foo bar</paragraph>' +
+				'<widget><nested>foo bar</nested></widget>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 1 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[foo bar]</paragraph>' +
+				'<widget><nested>foo bar</nested></widget>'
+			);
+		} );
+
+		it( 'should extend selection to include start of next text block in block quote', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<paragraph>foo bar</paragraph>' +
+				'<blockQuote><paragraph>foo bar</paragraph></blockQuote>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 1 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[foo bar</paragraph>' +
+				'<blockQuote><paragraph>]foo bar</paragraph></blockQuote>'
+			);
+		} );
+
+		it( 'should extend selection starting in block quote', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<blockQuote><paragraph>foo bar</paragraph></blockQuote>' +
+				'<paragraph>foo bar</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const blockQuote = viewRoot.getChild( 1 );
+			const paragraph = blockQuote.getChild( 0 );
+			const preventDefault = sinon.spy();
+
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote><paragraph>[foo bar</paragraph></blockQuote>' +
+				'<paragraph>]foo bar</paragraph>'
+			);
+		} );
+
+		it( 'should set selection on entire parqgraph with inline inside', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<paragraph>foo<inline></inline>bar</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 1 );
+			const preventDefault = sinon.spy();
+
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[foo<inline></inline>bar]</paragraph>'
+			);
+		} );
+
+		it( 'should extend selection with inline in paragraph', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<paragraph>foo<inline></inline>bar</paragraph>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 1 );
+			const preventDefault = sinon.spy();
+
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( paragraph ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[foo<inline></inline>bar</paragraph>' +
+				'<paragraph>]foo</paragraph>'
+			);
+		} );
+
+		it( 'should extend selection with inline in paragraph (when inline widget clicked)', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<paragraph>foo<inline></inline>bar</paragraph>' +
+				'<paragraph>foo</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const paragraph = viewRoot.getChild( 1 );
+			const inline = paragraph.getChild( 1 );
+			const preventDefault = sinon.spy();
+
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( inline ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>[foo<inline></inline>bar</paragraph>' +
+				'<paragraph>]foo</paragraph>'
+			);
+		} );
+
+		it( 'should not extend selection inside widget', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<widget><nested>foo bar</nested></widget>' +
+				'<paragraph>foo bar</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const widget = viewRoot.getChild( 1 );
+			const nested = widget.getChild( 0 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( nested ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<widget><nested>[foo bar]</nested></widget>' +
+				'<paragraph>foo bar</paragraph>'
+			);
+		} );
+
+		it( 'should not extend selection outside limit element', () => {
+			setModelData( model,
+				'<paragraph>f[o]o</paragraph>' +
+				'<widget>foo</widget>' +
+				'<paragraph>foo bar</paragraph>'
+			);
+
+			const viewRoot = viewDocument.getRoot();
+			const widget = viewRoot.getChild( 1 );
+			const preventDefault = sinon.spy();
+			const domEventDataMock = new DomEventData( view, {
+				target: view.domConverter.mapViewToDom( widget ),
+				preventDefault,
+				detail: 3
+			} );
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			sinon.assert.called( preventDefault );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<widget>[foo]</widget>' +
+				'<paragraph>foo bar</paragraph>'
+			);
+		} );
+	} );
+
 	describe( 'keys handling', () => {
 		describe( 'arrows', () => {
 			test(

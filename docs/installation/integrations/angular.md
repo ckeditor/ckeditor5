@@ -1,5 +1,6 @@
 ---
 menu-title: Angular
+meta-title: Angular rich text editor component | CKEditor 5 documentation
 category: integrations
 order: 20
 ---
@@ -299,13 +300,16 @@ export class AppComponent {
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application &mdash; see [Using a custom CKEditor&nbsp;5 build](#using-a-custom-ckeditor-5-build).
 
-For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in Angular applications:
+<info-box>
+	For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
 
-- [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+	* [CKEditor&nbsp;5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
+	* [CKEditor&nbsp;5 with real-time collaboration and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-revision-history-for-angular)
+	* [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
+	* [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
 
-- [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
-
-It is not mandatory to build applications on top of the above samples, however, they should help you to get started.
+	It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+</info-box>
 
 ## Integration with `ngModel`
 
@@ -530,7 +534,11 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes (except of crashes during the editor initialization). Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+Fired when the editor crashes. Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+
+<info-box>
+	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
+</info-box>
 
 ## Styling
 

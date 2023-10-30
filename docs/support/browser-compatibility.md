@@ -1,10 +1,6 @@
 ---
-# Scope:
-# * Explain browser compatibility of CKEditor&nbsp;5.
-# * Document known compatibility issues and missing features.
-# * Discuss support for mobile environments.
-
 category: support
+meta-title: Browser compatibility | CKEditor 5 Documentation
 order: 20
 ---
 

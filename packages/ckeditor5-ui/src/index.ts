@@ -16,7 +16,9 @@ export { default as addKeyboardHandlingForGrid } from './bindings/addkeyboardhan
 export { default as BodyCollection } from './editorui/bodycollection';
 
 export { type ButtonExecuteEvent } from './button/button';
+export { type default as ButtonLabel } from './button/buttonlabel';
 export { default as ButtonView } from './button/buttonview';
+export { default as ButtonLabelView } from './button/buttonlabelview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 
 export * from './colorgrid/utils';
@@ -47,19 +49,27 @@ export { default as BoxedEditorUIView } from './editorui/boxed/boxededitoruiview
 export { default as InlineEditableUIView } from './editableui/inline/inlineeditableuiview';
 
 export { default as FormHeaderView } from './formheader/formheaderview';
-export { default as FocusCycler, type FocusableView } from './focuscycler';
+export {
+	default as FocusCycler,
+	type FocusableView,
+	type FocusCyclerForwardCycleEvent,
+	type FocusCyclerBackwardCycleEvent
+} from './focuscycler';
 
 export { default as IconView } from './icon/iconview';
 export { default as InputView } from './input/inputview';
 export { default as InputTextView } from './inputtext/inputtextview';
 export { default as InputNumberView } from './inputnumber/inputnumberview';
 
+export { default as TextareaView, type TextareaViewUpdateEvent } from './textarea/textareaview';
+
 export { default as IframeView } from './iframe/iframeview';
 
 export { default as LabelView } from './label/labelview';
-export { default as LabeledFieldView } from './labeledfield/labeledfieldview';
+export { type LabeledFieldViewCreator, default as LabeledFieldView } from './labeledfield/labeledfieldview';
 export * from './labeledfield/utils';
 
+export { default as ListItemGroupView } from './list/listitemgroupview';
 export { default as ListItemView } from './list/listitemview';
 export { default as ListView } from './list/listview';
 
@@ -70,8 +80,16 @@ export { default as BalloonPanelView } from './panel/balloon/balloonpanelview';
 export { default as ContextualBalloon } from './panel/balloon/contextualballoon';
 export { default as StickyPanelView } from './panel/sticky/stickypanelview';
 
+export { default as AutocompleteView, type AutocompleteViewConfig, type AutocompleteResultsView } from './autocomplete/autocompleteview';
+export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchTextViewConfig } from './search/text/searchtextview';
+export { default as SearchInfoView } from './search/searchinfoview';
+export { default as FilteredView, type FilteredViewExecuteEvent } from './search/filteredview';
+export { default as HighlightedTextView } from './highlightedtext/highlightedtextview';
+
 export { default as TooltipManager } from './tooltipmanager';
 export { default as Template, type TemplateDefinition } from './template';
+
+export { default as SpinnerView } from './spinner/spinnerview';
 
 export { default as ToolbarView } from './toolbar/toolbarview';
 export { default as ToolbarLineBreakView } from './toolbar/toolbarlinebreakview';

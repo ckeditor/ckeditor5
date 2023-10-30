@@ -29,6 +29,7 @@ import ListItemView from '../../src/list/listitemview';
 import ListSeparatorView from '../../src/list/listseparatorview';
 import ListView from '../../src/list/listview';
 import ViewCollection from '../../src/viewcollection';
+import { ListItemGroupView } from '../../src';
 
 describe( 'utils', () => {
 	let locale, dropdownView;
@@ -909,6 +910,12 @@ describe( 'utils', () => {
 					expect( button.foo ).to.equal( 'bar' );
 					expect( button.baz ).to.equal( 'qux' );
 
+					button.isOn = true;
+					expect( button.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
+
+					button.isOn = false;
+					expect( button.element.hasAttribute( 'aria-checked' ) ).to.be.false;
+
 					def.model.baz = 'foo?';
 					expect( button.baz ).to.equal( 'foo?' );
 				} );
@@ -991,6 +998,71 @@ describe( 'utils', () => {
 					definitions.add( { type: 'separator' } );
 
 					expect( listItems.first ).to.be.instanceOf( ListSeparatorView );
+				} );
+			} );
+
+			describe( 'with ListGroupView', () => {
+				let definitionsWithGroups;
+
+				beforeEach( () => {
+					definitionsWithGroups = [
+						{
+							type: 'button',
+							model: new Model( { label: 'a', labelStyle: 'x' } )
+						},
+						{
+							type: 'group',
+							label: 'b',
+							items: new Collection( [
+								{
+									type: 'button',
+									model: new Model( { label: 'b.a', labelStyle: 'y' } )
+								},
+								{
+									type: 'button',
+									model: new Model( { label: 'b.b', labelStyle: 'z' } )
+								}
+							] )
+						}
+					];
+				} );
+
+				it( 'is populated using item definitions', () => {
+					definitions.addMany( definitionsWithGroups );
+
+					expect( listItems ).to.have.length( 2 );
+					expect( listItems.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.first.children.first ).to.be.instanceOf( ButtonView );
+					expect( listItems.first.children.first.labelView.text ).to.equal( 'a' );
+
+					expect( listItems.last ).to.be.instanceOf( ListItemGroupView );
+
+					expect( listItems.last.items.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.last.items.first.children.first ).to.be.instanceOf( ButtonView );
+					expect( listItems.last.items.first.children.first.labelView.text ).to.equal( 'b.a' );
+					expect( listItems.last.items.first.children.first.labelView.style ).to.equal( 'y' );
+
+					expect( listItems.last.items.last ).to.be.instanceOf( ListItemView );
+					expect( listItems.last.items.last.children.first ).to.be.instanceOf( ButtonView );
+					expect( listItems.last.items.last.children.first.labelView.text ).to.equal( 'b.b' );
+					expect( listItems.last.items.last.children.first.labelView.style ).to.equal( 'z' );
+				} );
+
+				it( 'delegates #execute event from the ListGroupView children to the DropdownView', done => {
+					definitions.addMany( definitionsWithGroups );
+
+					dropdownView.on( 'execute', evt => {
+						expect( evt.source ).to.equal( listItems.last.items.first.children.first );
+						expect( evt.path ).to.deep.equal( [
+							listItems.last.items.first.children.first,
+							listItems.last.items.first,
+							dropdownView
+						] );
+
+						done();
+					} );
+
+					listItems.last.items.first.children.first.fire( 'execute' );
 				} );
 			} );
 		} );

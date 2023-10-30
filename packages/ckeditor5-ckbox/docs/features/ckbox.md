@@ -1,8 +1,8 @@
 ---
 category: features-file-management
 menu-title: CKBox
-meta-title: CKBox file manager in CKEditor&nbsp;5
-meta-description: Learn all about using the CKBox file manager and service with CKEditor&nbsp;5
+meta-title: CKBox file manager | CKEditor 5 Documentation
+meta-description: Learn all about using the CKBox file manager and service with CKEditor 5
 modified_at: 2022-06-20
 order: 10
 badges: [ premium ]
@@ -21,13 +21,11 @@ CKBox is a dedicated asset manager supporting file and image upload. The CKBox f
 	* You have other licensing questions.
 
 	You can also sign up for the [CKEditor Premium Features 30-day free trial](https://orders.ckeditor.com/trial/premium-features) to test the feature.
-
-	This feature is enabled by default in all [predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 ## How CKBox enhances CKEditor&nbsp;5
 
-As a full-fledged file manager, CKBox also replaces the basic CKEditor&nbsp;5 image upload feature. It provides images and files upload and management capabilities:
+As a full-fledged file manager, CKBox also replaces the basic CKEditor&nbsp;5 image upload feature. It provides image and file upload and management capabilities:
 
 * Enables drag & drop uploads of images and other files.
 * Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
@@ -37,7 +35,7 @@ As a full-fledged file manager, CKBox also replaces the basic CKEditor&nbsp;5 im
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
 
-To find out more about CKBox, the brand-new file manager, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
+To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
 
 ## Demo
 
@@ -279,7 +277,7 @@ The {@link module:ckbox/ckbox~CKBox} plugin registers:
 	```
 
 <info-box>
-	We recommend using the official {@link framework/development-tools#ckeditor-5-inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?

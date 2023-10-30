@@ -39,6 +39,7 @@ import {
 
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
+import ListItemGroupView from '../list/listitemgroupview';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -345,38 +346,14 @@ function addListToOpenDropdown(
 		role?: string;
 	}
 ): void {
-	const locale = dropdownView.locale;
-
+	const locale = dropdownView.locale!;
 	const listView = dropdownView.listView = new ListView( locale );
 	const items = typeof itemsOrCallback == 'function' ? itemsOrCallback() : itemsOrCallback;
 
 	listView.ariaLabel = options.ariaLabel;
 	listView.role = options.role;
 
-	listView.items.bindTo( items ).using( def => {
-		if ( def.type === 'separator' ) {
-			return new ListSeparatorView( locale );
-		} else if ( def.type === 'button' || def.type === 'switchbutton' ) {
-			const listItemView = new ListItemView( locale );
-			let buttonView;
-
-			if ( def.type === 'button' ) {
-				buttonView = new ButtonView( locale );
-			} else {
-				buttonView = new SwitchButtonView( locale );
-			}
-
-			// Bind all model properties to the button view.
-			buttonView.bind( ...Object.keys( def.model ) as Array<keyof ButtonView> ).to( def.model );
-			buttonView.delegate( 'execute' ).to( listItemView );
-
-			listItemView.children.add( buttonView );
-
-			return listItemView;
-		}
-
-		return null;
-	} );
+	bindViewCollectionItemsToDefinitions( dropdownView, listView.items, items, locale );
 
 	dropdownView.panelView.children.add( listView );
 
@@ -548,10 +525,67 @@ function focusDropdownPanelOnOpen( dropdownView: DropdownView ) {
 }
 
 /**
+ * This helper populates a dropdown list with items and groups according to the
+ * collection of item definitions. A permanent binding is created in this process allowing
+ * dynamic management of the dropdown list content.
+ *
+ * @param dropdownView
+ * @param listItems
+ * @param definitions
+ * @param locale
+ */
+function bindViewCollectionItemsToDefinitions(
+	dropdownView: DropdownView,
+	listItems: ViewCollection,
+	definitions: Collection<ListDropdownItemDefinition>,
+	locale: Locale
+) {
+	listItems.bindTo( definitions ).using( def => {
+		if ( def.type === 'separator' ) {
+			return new ListSeparatorView( locale );
+		} else if ( def.type === 'group' ) {
+			const groupView = new ListItemGroupView( locale );
+
+			groupView.set( { label: def.label } );
+
+			bindViewCollectionItemsToDefinitions( dropdownView, groupView.items, def.items, locale );
+
+			groupView.items.delegate( 'execute' ).to( dropdownView );
+
+			return groupView;
+		} else if ( def.type === 'button' || def.type === 'switchbutton' ) {
+			const listItemView = new ListItemView( locale );
+			let buttonView;
+
+			if ( def.type === 'button' ) {
+				buttonView = new ButtonView( locale );
+				buttonView.extendTemplate( {
+					attributes: {
+						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
+					}
+				} );
+			} else {
+				buttonView = new SwitchButtonView( locale );
+			}
+
+			// Bind all model properties to the button view.
+			buttonView.bind( ...Object.keys( def.model ) as Array<keyof ButtonView> ).to( def.model );
+			buttonView.delegate( 'execute' ).to( listItemView );
+
+			listItemView.children.add( buttonView );
+
+			return listItemView;
+		}
+
+		return null;
+	} );
+}
+
+/**
  * A definition of the list item used by the {@link module:ui/dropdown/utils~addListToDropdown}
  * utility.
  */
-export type ListDropdownItemDefinition = ListDropdownSeparatorDefinition | ListDropdownButtonDefinition;
+export type ListDropdownItemDefinition = ListDropdownSeparatorDefinition | ListDropdownButtonDefinition | ListDropdownGroupDefinition;
 
 /**
  * A definition of the 'separator' list item.
@@ -570,4 +604,21 @@ export type ListDropdownButtonDefinition = {
 	 * Model of the item. Its properties fuel the newly created list item (or its children, depending on the `type`).
 	 */
 	model: Model;
+};
+
+/**
+ * A definition of the group inside the list. A group can contain one or more list items (buttons).
+ */
+export type ListDropdownGroupDefinition = {
+	type: 'group';
+
+	/**
+	 * The visible label of the group.
+	 */
+	label: string;
+
+	/**
+	 * The collection of the child list items inside this group.
+	 */
+	items: Collection<ListDropdownButtonDefinition>;
 };

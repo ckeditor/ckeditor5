@@ -1,5 +1,6 @@
 ---
 category: examples-builds
+meta-title: Balloon block editor build example | CKEditor 5 Documentation
 order: 40
 toc: false
 classes: main__content--no-toc
@@ -9,14 +10,14 @@ classes: main__content--no-toc
 
 {@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block editor} lets you create your content directly in its target location with the help of two toolbars:
 
-* a balloon toolbar that appears next to the selected editable document element (offering inline content formatting tools),
-* a {@link features/blocktoolbar block toolbar} accessible using a button attached to the editable content area and following the selection in the document (bringing additional block formatting tools).
+* A balloon toolbar that appears next to the selected editable document element (offering inline content formatting tools).
+* A {@link features/blocktoolbar block toolbar} accessible using the toolbar handle button {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator}  attached to the editable content area and following the selection in the document (bringing additional block formatting tools). The {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} button is also a handle that can be used to drag and drop blocks around the content.
 
 {@snippet examples/balloon-block-editor}
 
 ## Editor example configuration
 
-Check out the {@link installation/getting-started/predefined-builds#installation-example-4 Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
+Check out the {@link installation/getting-started/predefined-builds#installation-example-4 Quick start} guide to learn more about implementing this kind of editor. You will find the implementation steps there. You can see this example editor’s code below.
 
 <details>
 <summary>View editor configuration script</summary>

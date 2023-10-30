@@ -44,7 +44,7 @@ import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 //
 
 import {
-	DragDropExperimental,
+	DragDrop,
 	DragDropBlockToolbar
 } from '@ckeditor/ckeditor5-clipboard';
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
@@ -141,14 +141,14 @@ ClassicEditor.defaultConfig = defaultConfig;
 class ClassicEditorExperimental extends ClassicEditorBase {}
 ClassicEditorExperimental.builtinPlugins = [
 	...defaultPlugins,
-	DragDropExperimental
+	DragDrop
 ];
 ClassicEditorExperimental.defaultConfig = defaultConfig;
 
 class BalloonEditorExperimental extends BalloonEditorBase {}
 BalloonEditorExperimental.builtinPlugins = [
 	...defaultPlugins,
-	DragDropExperimental,
+	DragDrop,
 	DragDropBlockToolbar,
 	BlockToolbar
 ];

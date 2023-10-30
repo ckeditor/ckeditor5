@@ -15,6 +15,7 @@ msgstr ""
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "The label for the image widget."
 msgid "image widget"
@@ -70,7 +71,7 @@ msgstr "Inserir imagem"
 
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "Falha ao subir arquivo"
+msgstr "Falha ao enviar arquivo"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"

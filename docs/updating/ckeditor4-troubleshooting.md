@@ -4,8 +4,8 @@
 
 category: ckeditor4-migration
 menu-title: Troubleshooting
-meta-title: CKEditor 4 migration - Troubleshooting
-meta-description: Overcoming possible obstacles during your migration to CKEditor&nbsp;5.
+meta-title: Migration from CKEditor 4 - Troubleshooting | CKEditor 5 Documentation
+meta-description: Overcoming possible obstacles during your migration to CKEditor 5.
 order: 50
 modified_at: 2023-03-21
 ---
@@ -32,8 +32,8 @@ You can find the full list of editor content styles in the {@link installation/a
 
 ## Where are the `editor.insertHtml()` and `editor.insertText()` methods? How to insert some content?
 
-Refer to {@link support/faq#how-to-insert-some-content-into-the-editor this CKEditor&nbsp;5 FAQ question}.
+Refer to {@link examples/how-tos#how-to-insert-some-content-into-the-editor this CKEditor&nbsp;5 How-to question}.
 
 ## What happened to the global `window.CKEDITOR`? How to list all instances of the editor?
 
-Refer to {@link support/faq#how-to-list-all-instances-of-the-editor this CKEditor&nbsp;5 FAQ question}.
+Refer to {@link examples/how-tos#how-to-list-all-instances-of-the-editor this CKEditor&nbsp;5 How-to question}.

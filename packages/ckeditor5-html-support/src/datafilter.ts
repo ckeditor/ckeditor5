@@ -132,17 +132,11 @@ export default class DataFilter extends Plugin {
 		super( editor );
 
 		this._dataSchema = editor.plugins.get( 'DataSchema' );
-
 		this._allowedAttributes = new Matcher();
-
 		this._disallowedAttributes = new Matcher();
-
 		this._allowedElements = new Set();
-
 		this._disallowedElements = new Set();
-
 		this._dataInitialized = false;
-
 		this._coupledAttributes = null;
 
 		this._registerElementsAfterInit();

@@ -2,6 +2,7 @@
 category: features
 order: -999
 feedback-widget: false
+meta-title: CKEditor 5 features overview | CKEditor 5 Documentation
 ---
 
 # CKEditor&nbsp;5 features overview
@@ -58,7 +59,7 @@ Additionally, CKEditor&nbsp;5 offers the {@link features/restricted-editing rest
 
 {@img assets/img/features-collaboration.png 800 CKEditor&nbsp;5 collaboration features.}
 
-You can also easily track the progress and changes done in the content with the {@link features/revision-history revision history feature} {@icon @ckeditor/ckeditor5-revision-history/theme/icons/revision-history.svg Revision history}. This modern and robust document versioning tool lets you create named versions, compare changes, and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
+You can also easily track the progress and changes done in the content with the {@link features/revision-history revision history feature} {@icon @ckeditor/ckeditor5-core/theme/icons/history.svg Revision history}. This modern and robust document versioning tool lets you create named versions, compare changes, and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
 
 {@img assets/img/features-revision-history.png 800 CKEditor&nbsp;5 document versioning feature.}
 
@@ -81,6 +82,8 @@ The {@link features/productivity-pack productivity pack} is a set of exclusive p
 Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link installation/index editor build} to suit your needs.
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
+
+Our {@link features/ai-assistant AI Assistant} {@icon @ckeditor/ckeditor5-ai/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the already existing content to match your needs, or even come up with a completely new one!
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spell and grammar check} to ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
@@ -120,6 +123,14 @@ Each rich-text editor feature is presented on a separate page, with one or more 
 	**In most feature demos the number of features enabled is limited** to make the currently highlighted piece of functionality stand out more, as shown in the screenshots above. However, in your CKEditor&nbsp;5 WYSIWYG editor implementation, you are free to choose and combine any features you like from those available. This can be easily and conveniently done in the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 </info-box>
 
+## Why does the editor filter out my content (styles, classes, elements)?
+
+CKEditor 5 implements a custom {@link framework/architecture/editing-engine data model}. This means that every piece of content that is loaded into the editor needs to be converted to that model and then rendered back to the view.
+
+Each kind of content must be handled by some feature. For example, the [`ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package handles HTML elements such as `<b>`, `<i>`, `<u>`, etc. along with their representation in the model. The feature defines the two–way conversion between the HTML (view) and the editor model.
+
+If you load some content unknown to any editor feature, it will be dropped. If you want all the HTML5 elements to be supported, you need to write plugins to support them or use {@link features/general-html-support general HTML support} feature. Once you do that, CKEditor 5 will not filter anything out.
+
 ## Looking for more?
 
 The examples mentioned above do not present all features included in CKEditor&nbsp;5, nor does the list on the left panel. For example, some end-user features like undo and redo are quite self-explanatory and therefore only mentioned in the keyboard shortcuts guide.
@@ -129,6 +140,7 @@ CKEditor&nbsp;5 is in active development now and new features are added all the 
 ## How about creating your own features?
 
 Probably the most exciting features are the ones you can develop on top of CKEditor&nbsp;5 Framework!
-We are gradually enhancing the {@link framework/index CKEditor&nbsp;5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link framework/creating-simple-plugin-timestamp creating custom features}.
+
+We are gradually enhancing the {@link framework/index CKEditor&nbsp;5 Framework documentation} together with {@link api/index API documentation}, hoping to give you a solid base for {@link tutorials/crash-course/editor creating custom features}.
 
 The official add-ons repository for CKEditor 4 reached an impressive number of over 300 add-ons created and published by the community. Now it is time for you to add your contributions to the brand new CKEditor&nbsp;5!

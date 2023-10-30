@@ -9,6 +9,7 @@
 
 import type { Batch, Element } from 'ckeditor5/src/engine';
 import { Command, type Editor } from 'ckeditor5/src/core';
+import { getSelectionAffectedTable } from '../../utils/common';
 
 export interface TablePropertyCommandExecuteOptions {
 	batch?: Batch;
@@ -55,7 +56,7 @@ export default class TablePropertyCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = selection.getFirstPosition()!.findAncestor( 'table' )!;
+		const table = getSelectionAffectedTable( selection );
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );
@@ -76,7 +77,7 @@ export default class TablePropertyCommand extends Command {
 
 		const { value, batch } = options;
 
-		const table = selection.getFirstPosition()!.findAncestor( 'table' )!;
+		const table = getSelectionAffectedTable( selection );
 		const valueToSet = this._getValueToSet( value );
 
 		model.enqueueChange( batch, writer => {

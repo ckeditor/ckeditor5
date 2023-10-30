@@ -15,9 +15,14 @@ msgstr ""
 "Language-Team: Gujarati (https://app.transifex.com/ckeditor/teams/11143/gu/)\n"
 "Language: gu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
+msgstr ""
+
+msgctxt "Label for the Clear button."
+msgid "Clear"
 msgstr ""
 
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."

@@ -1,6 +1,7 @@
 ---
 title: Editor toolbar
 category: features-toolbar
+meta-title: Editor toolbar | CKEditor 5 Documentation
 order: 10
 ---
 {@snippet features/build-toolbar-source}
@@ -205,6 +206,8 @@ You can use one of the icons listed below for your dropdown:
 | `'paragraph'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/paragraph.svg Paragraph}        |
 | `'text'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/text.svg Text}                  |
 | `'plus'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/plus.svg Plus}                  |
+| `'dragIndicator'` | {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} |
+| `'pilcrow'`       | {@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg Pilcrow}            |
 
 * The default icons are loaded from the `ckeditor5-core` package.
 * If no icon is specified, `'threeVerticalDots'` will be used as a default.
@@ -279,7 +282,7 @@ Array.from( editor.ui.componentFactory.names() );
 
 ## Adding a custom button
 
-Refer to the {@link framework/creating-simple-plugin-timestamp Creating a simple plugin} guide to learn how to build your own plugin, register its button and add it to the toolbar configuration.
+Refer to the {@link tutorials/crash-course/editor step-by-step tutorial} to learn how to build your own plugin, register its button and add it to the toolbar configuration.
 
 ## Block toolbar
 

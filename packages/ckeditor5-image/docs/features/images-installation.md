@@ -1,7 +1,7 @@
 ---
 category: features-images
 menu-title: Installation
-meta-title: Installation and configuration of image features in CKEditor&nbsp;5
+meta-title: Installation and configuration of the image features | CKEditor 5 Documentation
 meta-description: Learn how to install and configure various image-related CKEdiotr 5 plugins.
 order: 15
 modified_at: 2021-06-17
@@ -17,7 +17,7 @@ npm install --save @ckeditor/ckeditor5-image
 	You may want to install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package if you want to use the {@link features/images-linking `LinkImage`} plugin in your editor.
 </info-box>
 
-Next add the {@link features/images-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
+Next, add the {@link features/images-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
 
 ```js
 import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
@@ -35,7 +35,12 @@ ClassicEditor
 				'imageTextAlternative',
 				'|',
 				'linkImage'
-			]
+			],
+			insert: { 
+				// If this setting is omitted, the editor defaults to 'block'.
+				// See explanation below.
+				type: 'auto'
+			}
 		}
 	} )
 	.then( /* ... */ )
@@ -84,11 +89,29 @@ By default, the {@link module:image/image~Image} plugin available in all {@link 
 	</table>
 </figure>
 
-<info-box info>
-	Up to CKEditor&nbsp;5 v[27.1.0], only **block** images were supported. The support for **inline** images started in v[28.0.0] in all editor builds loading the `Image` plugin.
+By default, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
 
-	If your integration depends on a ready–to–use editor build and you want to take advantage of updated CKEditor&nbsp;5 but **without the support for inline images** (e.g. to maintain content compatibility), check out the {@link updating/update-to-29 official migration guide} that will help you configure the editor.
-</info-box>
+If you wish to modify this behavior, the `type` setting in the editor configuration can be used:
+
+```js
+ClassicEditor.create( element, {
+	image: {
+		insert: {
+			type: 'auto'
+		}
+	}
+} );
+```
+
+The `type` setting accepts the following three values:
+
+* `'auto'`: The editor determines the image type based on the cursor's position. For example, if you insert an image in the middle of a paragraph, it will be inserted as inline. If you insert it at the end or beginning of a paragraph, it becomes a block image.
+* `'block'`: Always insert images as block elements, placing them below or above the current paragraph or block.
+* `'inline'`: Always insert images as inline elements within the current paragraph or block.
+
+If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
+
+**Important**: If only one type of image plugin is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the supported image type will be used.
 
 ## Contribute
 
