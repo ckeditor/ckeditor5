@@ -153,21 +153,28 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, { data } ) => {
+			const url = new URL( 'assets/' + data.id, editor.config.get( 'ckbox.serviceOrigin' )! );
+			const formData = new FormData();
+			const requestConfig = {
+				url,
+				data: formData
+			} as const;
+
 			let limit = 10;
 
 			const setIntervalId = setInterval( () => {
 				this.getAssetStatusFromServer( data ).then( res => {
-					if ( res && res.status === 'success' ) {
+					if ( res.status === 'success' ) {
 						this.updateImage( data );
 						clearInterval( setIntervalId );
 					}
+
+					if ( limit === 0 ) {
+						clearInterval( setIntervalId );
+					}
+
+					limit--;
 				} );
-
-				if ( limit === 1 ) {
-					clearInterval( setIntervalId );
-				}
-
-				limit--;
 			}, 1000 );
 		} );
 	}
@@ -189,7 +196,7 @@ export default class CKBoxImageEditCommand extends Command {
 				status: res.metadata.metadataProcessingStatus
 			};
 		} ).catch( err => {
-			return err && Promise.reject( err.message );
+			return Promise.reject( err.message );
 		} );
 	}
 
@@ -217,10 +224,6 @@ export default class CKBoxImageEditCommand extends Command {
 			imagePlaceholder
 		} = preparedAsset.attributes as CKBoxAssetImageAttributesDefinition;
 
-		this.on<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', ( evt, data ) => {
-			// TODO: finish the process (remove the indicator, etc.).
-		} );
-
 		editor.model.change( writer => {
 			imageCommand.execute( {
 				source: {
@@ -238,6 +241,10 @@ export default class CKBoxImageEditCommand extends Command {
 			writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
 
 			this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', { data } );
+		} );
+
+		this.on<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', ( evt, data ) => {
+			// TODO: finish the process (remove the indicator, etc.).
 		} );
 	}
 

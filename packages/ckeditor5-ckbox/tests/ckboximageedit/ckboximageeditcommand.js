@@ -247,7 +247,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should pool data for edited image and if success status, save it', done => {
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-				const clock = sinon.useFakeTimers();
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
@@ -280,19 +279,20 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				editor.listenTo( command, 'updateImage', () => {
 					expect( getModelData( model ) ).to.equal(
-						'[<imageBlock alt="" ckboxImageId="image-id1" height="100" sources="[object Object]"' +
-							' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
+						'[<imageBlock alt="" ckboxImageId="image-id1" sources="[object Object]"' +
+							' src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
 						'</imageBlock>]'
 					);
 					done();
 				} );
 
 				onSave( dataMock );
-				clock.tick( 1500 );
 			} );
 
 			it( 'should stop pooling if limit was reached', () => {
 				const clock = sinon.useFakeTimers();
+
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
 				const respondSpy = sinon.spy( sinonXHR, 'respond' );
 
@@ -366,22 +366,10 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should fire "ckboxImageEditor:save" and "ckboxImageEditor:processed" ' +
-				'event after hit "Save" button in the CKBox Image Editor dialog', done => {
+				'event after hit "Save" button in the CKBox Image Editor dialog', () => {
 				const clock = sinon.useFakeTimers();
 				const spyBeginProcess = sinon.spy();
 				const spyFinishProcess = sinon.spy();
-
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
-					200,
-					{ 'Content-Type': 'application/json' },
-					JSON.stringify( {
-						metadata: {
-							metadataProcessingStatus: 'success'
-						}
-					} )
-				] );
 
 				command.on( 'ckboxImageEditor:save', spyBeginProcess );
 				command.on( 'ckboxImageEditor:processed', spyFinishProcess );
@@ -402,33 +390,57 @@ describe( 'CKBoxImageEditCommand', () => {
 						url: 'https://example.com/workspace1/assets/image-id1/file'
 					}
 				};
-
-				command.on( 'ckboxImageEditor:processed', () => {
-					expect( spyBeginProcess.callCount ).to.equal( 1 );
-					expect( spyFinishProcess.callCount ).to.equal( 1 );
-					done();
-				} );
-
 				onSave( dataMock );
 
 				clock.tick( 4000 );
+
+				expect( spyBeginProcess.callCount ).to.equal( 1 );
+				expect( spyFinishProcess.callCount ).to.equal( 1 );
 			} );
 
-			it( 'should replace image with saved one (with blurHash placeholder)', done => {
+			it( 'should replace image with saved one', () => {
 				const clock = sinon.useFakeTimers();
 
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
 					' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
-					200,
-					{ 'Content-Type': 'application/json' },
-					JSON.stringify( {
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
 						metadata: {
-							metadataProcessingStatus: 'success'
-						}
-					} )
-				] );
+							width: 100,
+							height: 100
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+
+				onSave( dataMock );
+
+				clock.tick( 4000 );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
+			} );
+
+			it( 'should replace image with saved one (with blurHash placeholder)', () => {
+				const clock = sinon.useFakeTimers();
+
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
+					' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
 
 				const dataMock = {
 					data: {
@@ -450,37 +462,20 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const placeholder = blurHashToDataUrl( dataMock.data.metadata.blurHash );
 
-				command.decorate( 'updateImage' );
-
-				editor.listenTo( command, 'updateImage', () => {
-					expect( getModelData( model ) ).to.equal(
-						'[<imageBlock ' +
-						'alt="" ' +
-						'ckboxImageId="image-id1" ' +
-						'height="100" ' +
-						'placeholder="' + placeholder + '" ' +
-						'sources="[object Object]" ' +
-						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-						'width="100">' +
-					'</imageBlock>]'
-					);
-					done();
-				} );
-
 				onSave( dataMock );
 
 				clock.tick( 4000 );
 
-				// expect( getModelData( model ) ).to.equal(
-				// 	'[<imageBlock ' +
-				// 		'alt="" ' +
-				// 		'ckboxImageId="image-id1" ' +
-				// 		'height="100" ' +
-				// 		'placeholder="' + placeholder + '" ' +
-				// 		'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-				// 		'width="100">' +
-				// 	'</imageBlock>]'
-				// );
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'placeholder="' + placeholder + '" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
 			} );
 		} );
 	} );
