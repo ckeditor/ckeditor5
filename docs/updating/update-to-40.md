@@ -33,13 +33,15 @@ This release introduces changes to the {@link features/images-overview image fea
 * The `aspect-ratio` attribute has been added to the image's properties to handle situations when the file is resized or scaled with a tweaked aspect ratio.
 
 Image output HTML before:
+
 ```html
 <p>
 	<img src="image.jpg" alt="">
 </p>
 ```
 
-Image output HTML after (added `width` and `height` attributes):
+Image output HTML after (added the `width` and `height` attributes):
+
 ```html
 <p>
 	<img src="image.jpg" alt="" width="400" height="300">
@@ -47,13 +49,15 @@ Image output HTML after (added `width` and `height` attributes):
 ```
 
 Resized image output HTML before:
+
 ```html
 <p>
 	<img class="image_resized" style="width:50%;" src="image.jpg" alt="">
 </p>
 ```
 
-Resized image output HTML after (added `aspect-ratio` style and `width` and `height` attributes):
+Resized image output HTML after (added the `aspect-ratio` style and the `width` and `height` attributes):
+
 ```html
 <p>
 	<img class="image_resized" style="aspect-ratio:400/300;width:50%;" src="image.jpg" alt="" width="400" height="300">
@@ -75,6 +79,7 @@ Therefore, the relation between styles and attributes toward model attributes lo
 * Attribute `height` → model `height` (new).
 
 Given the following input HTML:
+
 ```html
 <p>
 	<img src="image.jpg" style="width:50%;" width="400" height="300" alt="">
@@ -82,6 +87,7 @@ Given the following input HTML:
 ```
 
 Previously, the model would set the resized value in the `width` model attribute and ignore the input `width` and `height` attributes:
+
 ```html
 <paragraph>
 	<imageInline src="image.jpg" width="50%"></imageInline>
@@ -89,6 +95,7 @@ Previously, the model would set the resized value in the `width` model attribute
 ```
 
 And now the resized value is stored in the `resizedWidth` attribute (the `width` attribute is now reserved for the natural width value):
+
 ```html
 <paragraph>
 	<imageInline src="image.jpg" resizedWidth="50%" width="400" height="300"></imageInline>
@@ -101,7 +108,7 @@ The `srcset` model attribute which provides parameters for responsive images, ha
 
 #### Changes to content styles
 
-Last but not least, content styles have been updated with this release, which means you need to update them in your editor implementation to avoid any discrepancies. Please refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the stylesheet.
+Last but not least, content styles have been updated with this release, which means you need to update them in your editor implementation to avoid any discrepancies. Please refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
 
 ### Changes to the comments feature
 
