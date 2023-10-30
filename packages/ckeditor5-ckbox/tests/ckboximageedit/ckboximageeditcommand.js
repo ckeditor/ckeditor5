@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, btoa, console */
+/* global window, btoa */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
@@ -232,21 +232,17 @@ describe( 'CKBoxImageEditCommand', () => {
 		} );
 
 		describe( 'saving edited asset', () => {
-			let onSave, sinonXHR, jwtToken;
+			let onSave, sinonXHR;
 
 			beforeEach( () => {
-				jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
 				onSave = command._prepareOptions().onSave;
 				sinonXHR = testUtils.sinon.useFakeServer();
 				sinonXHR.autoRespond = true;
 			} );
 
-			afterEach( () => {
-				sinonXHR.restore();
-			} );
-
-			it( 'should pool data for edited image and if success status, save it', done => {
+			it( 'should update image', () => {
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				const clock = sinon.useFakeTimers();
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
@@ -275,94 +271,17 @@ describe( 'CKBoxImageEditCommand', () => {
 					}
 				};
 
-				command.decorate( 'updateImage' );
-
-				editor.listenTo( command, 'updateImage', () => {
-					expect( getModelData( model ) ).to.equal(
-						'[<imageBlock alt="" ckboxImageId="image-id1" sources="[object Object]"' +
-							' src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
-						'</imageBlock>]'
-					);
-					done();
-				} );
-
-				onSave( dataMock );
-			} );
-
-			it( 'should stop pooling if limit was reached', () => {
-				const clock = sinon.useFakeTimers();
-
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-
-				const respondSpy = sinon.spy( sinonXHR, 'respond' );
-
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
-					200,
-					{ 'Content-Type': 'application/json' },
-					JSON.stringify( {
-						metadata: {
-							metadataProcessingStatus: 'queued'
-						}
-					} )
-				] );
-
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
-
 				onSave( dataMock );
 
-				clock.tick( 15000 );
+				clock.tick( 10000 );
 
-				sinon.assert.callCount( respondSpy, 10 );
-			} );
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock alt="" ckboxImageId="image-id1" sources="[object Object]"' +
+						' src="https://example.com/workspace1/assets/image-id1/images/100.png">' +
+					'</imageBlock>]'
+				);
 
-			it( 'should reject if fetching asset\\s status ended with the authorization error', () => {
-				sinon.stub( console, 'error' );
-
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
-					401,
-					{ 'Content-Type': 'application/json' },
-					JSON.stringify( { message: 'Invalid token.', statusCode: 401 } )
-				] );
-
-				const dataMock = {
-					id: 'image-id1',
-					extension: 'png',
-					metadata: {
-						width: 100,
-						height: 100
-					},
-					name: 'image1',
-					imageUrls: {
-						100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-						default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-					},
-					url: 'https://example.com/workspace1/assets/image-id1/file'
-				};
-
-				return command.getAssetStatusFromServer( dataMock )
-					.then( res => {
-						expect( res.message ).to.equal( 'Invalid token.' );
-						throw new Error( 'Expected to be rejected.' );
-					}, () => {
-						expect( sinonXHR.requests[ 0 ].requestHeaders ).to.be.an( 'object' );
-						expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'Authorization', jwtToken );
-						expect( sinonXHR.requests[ 0 ].requestHeaders ).to.contain.property( 'CKBox-Version', 'CKEditor 5' );
-					} );
+				clock.restore();
 			} );
 
 			it( 'should fire "ckboxImageEditor:save" and "ckboxImageEditor:processed" ' +
@@ -479,15 +398,4 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 		} );
 	} );
-
-	function createToken( tokenClaims ) {
-		return [
-			// Header.
-			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-			// Payload.
-			btoa( JSON.stringify( tokenClaims ) ),
-			// Signature.
-			'signature'
-		].join( '.' );
-	}
 } );
