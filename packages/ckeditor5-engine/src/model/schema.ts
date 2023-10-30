@@ -880,7 +880,13 @@ export default class Schema extends ObservableMixin() {
 				for ( const position of positionsInRange ) {
 					const item = position.nodeBefore || position.parent;
 
-					removeDisallowedAttributeFromNode( this, item as any, writer );
+					// Root elements can contain attributes that are not registered in their schema and
+					// should be ignored during the filtering process.
+					//
+					// See: https://github.com/ckeditor/ckeditor5/issues/15246.
+					if ( !item.is( 'rootElement' ) ) {
+						removeDisallowedAttributeFromNode( this, item as any, writer );
+					}
 				}
 			}
 		}

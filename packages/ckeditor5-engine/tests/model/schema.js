@@ -2063,6 +2063,22 @@ describe( 'Schema', () => {
 					.to.equal( '<div><$text a="1">foo</$text>bar<$text a="1">biz</$text></div>' );
 			} );
 		} );
+
+		it( 'should do not filter out root elements', () => {
+			const foo = new Text( 'foo' );
+			const div = new Element( 'div', [], [ foo ] );
+
+			root._appendChild( [ div ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'test', 'value', root );
+
+				schema.removeDisallowedAttributes( [ root ], writer );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<div>foo</div>' );
+				expect( root.getAttribute( 'test' ) ).to.equal( 'value' );
+			} );
+		} );
 	} );
 
 	describe( 'getAttributesWithProperty()', () => {

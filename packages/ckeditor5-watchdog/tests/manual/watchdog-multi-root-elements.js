@@ -69,6 +69,10 @@ const editorConfig = {
 			'mergeTableCells'
 		]
 	},
+	rootsAttributes: {
+		header: { foo: 'bar' },
+		content: { foo: 'bar' }
+	},
 	lazyRoots
 };
 
