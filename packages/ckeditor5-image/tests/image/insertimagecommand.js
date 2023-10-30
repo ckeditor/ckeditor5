@@ -17,7 +17,8 @@ describe( 'InsertImageCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ]
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph ],
+				image: { insert: { type: 'auto' } }
 			} )
 			.then( newEditor => {
 				editor = newEditor;

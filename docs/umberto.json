@@ -93,6 +93,7 @@
 		"builds/guides/integration/installation.html": "installation/getting-started/quick-start.html",
 		"builds/guides/integration/installing-plugins.html": "installation/pluginsinstalling-plugins.html",
 		"builds/guides/integration/saving-data.html": "installation/getting-started/getting-and-setting-data.html",
+		"installation/integrations/drupal.html": "installation/integrations/drupal-real-time-collaboration.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
 		"builds/guides/migrate.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-from-ckeditor-4.html": "updating/ckeditor4/migration-from-ckeditor-4.html",
