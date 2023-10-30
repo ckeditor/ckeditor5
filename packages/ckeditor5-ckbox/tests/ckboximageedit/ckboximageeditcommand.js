@@ -225,14 +225,14 @@ describe( 'CKBoxImageEditCommand', () => {
 				onSave = command._prepareOptions().onSave;
 			} );
 
-			it( 'should fire "ckboxImageEditor:beginSaveProcess" and "ckboxImageEditor:finishSaveProcess" ' +
+			it( 'should fire "ckboxImageEditor:save" and "ckboxImageEditor:processed" ' +
 				'event after hit "Save" button in the CKBox Image Editor dialog', () => {
 				const clock = sinon.useFakeTimers();
 				const spyBeginProcess = sinon.spy();
 				const spyFinishProcess = sinon.spy();
 
-				command.on( 'ckboxImageEditor:beginSaveProcess', spyBeginProcess );
-				command.on( 'ckboxImageEditor:finishSaveProcess', spyFinishProcess );
+				command.on( 'ckboxImageEditor:save', spyBeginProcess );
+				command.on( 'ckboxImageEditor:processed', spyFinishProcess );
 
 				const dataMock = {
 					data: {
