@@ -99,10 +99,8 @@ export default class CKBoxImageEditCommand extends Command {
 		return {
 			tokenUrl: ckboxConfig.tokenUrl,
 			onClose: () => this.fire<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close' ),
-			// Timeout for demo purpose.
-			onSave: ( data: CKBoxRawAssetDefinition ) => setTimeout( () =>
-				this.fire<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', data )
-			, 3000 )
+			onSave: ( data: CKBoxRawAssetDefinition ) =>
+				this.fire<CKBoxImageEditorEvent<'beginSaveProcess'>>( 'ckboxImageEditor:beginSaveProcess', data )
 		};
 	}
 
@@ -148,7 +146,7 @@ export default class CKBoxImageEditCommand extends Command {
 			editor.editing.view.focus();
 		} );
 
-		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, { data } ) => {
+		this.on<CKBoxImageEditorEvent<'beginSaveProcess'>>( 'ckboxImageEditor:beginSaveProcess', ( evt, { data } ) => {
 			const imageCommand = editor.commands.get( 'insertImage' )!;
 
 			const preparedAsset: CKBoxAssetDefinition = prepareAssets( {
@@ -166,22 +164,31 @@ export default class CKBoxImageEditCommand extends Command {
 				imagePlaceholder
 			} = preparedAsset.attributes as CKBoxAssetImageAttributesDefinition;
 
-			editor.model.change( writer => {
-				imageCommand.execute( {
-					source: {
-						src: imageFallbackUrl,
-						sources: imageSources,
-						alt: imageTextAlternative,
-						width: imageWidth,
-						height: imageHeight,
-						...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
-					}
+			// Timeout for demo purpose.
+			setTimeout( () => {
+				editor.model.change( writer => {
+					imageCommand.execute( {
+						source: {
+							src: imageFallbackUrl,
+							sources: imageSources,
+							alt: imageTextAlternative,
+							width: imageWidth,
+							height: imageHeight,
+							...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
+						}
+					} );
+
+					const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+
+					writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
+
+					this.fire<CKBoxImageEditorEvent<'finishSaveProcess'>>( 'ckboxImageEditor:finishSaveProcess', { data } );
 				} );
+			}, 3000 );
+		} );
 
-				const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
-
-				writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
-			} );
+		this.on<CKBoxImageEditorEvent<'finishSaveProcess'>>( 'ckboxImageEditor:finishSaveProcess', ( evt, data ) => {
+			// TODO: finish the process (remove the indicator, etc.).
 		} );
 	}
 }
@@ -191,7 +198,7 @@ export default class CKBoxImageEditCommand extends Command {
  *
  * @eventName ~CKBoxImageEditCommand#ckboxImageEditor
  */
-type CKBoxImageEditorEvent<Name extends '' | 'save' | 'open' | 'close' = ''> = {
+type CKBoxImageEditorEvent<Name extends '' | 'beginSaveProcess' | 'finishSaveProcess' | 'open' | 'close' = ''> = {
 	name: Name extends '' ? 'ckboxImageEditor' : `ckboxImageEditor:${ Name }`;
-	args: Name extends 'save' ? [ data: CKBoxRawAssetDefinition ] : [];
+	args: Name extends 'beginSaveProcess' | 'finishSaveProcess' ? [ data: CKBoxRawAssetDefinition ] : [];
 };

@@ -218,18 +218,21 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 		} );
 
-		describe( 'saving asset ("ckboxImageEditor:save")', () => {
+		describe( 'saving edited asset', () => {
 			let onSave;
 
 			beforeEach( () => {
 				onSave = command._prepareOptions().onSave;
 			} );
 
-			it( 'should fire "ckboxImageEditor:save" event after closing the CKBox Image Editor dialog', () => {
+			it( 'should fire "ckboxImageEditor:beginSaveProcess" and "ckboxImageEditor:finishSaveProcess" ' +
+				'event after hit "Save" button in the CKBox Image Editor dialog', () => {
 				const clock = sinon.useFakeTimers();
-				const spy = sinon.spy();
+				const spyBeginProcess = sinon.spy();
+				const spyFinishProcess = sinon.spy();
 
-				command.on( 'ckboxImageEditor:save', spy );
+				command.on( 'ckboxImageEditor:beginSaveProcess', spyBeginProcess );
+				command.on( 'ckboxImageEditor:finishSaveProcess', spyFinishProcess );
 
 				const dataMock = {
 					data: {
@@ -251,7 +254,8 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				clock.tick( 4000 );
 
-				expect( spy.callCount ).to.equal( 1 );
+				expect( spyBeginProcess.callCount ).to.equal( 1 );
+				expect( spyFinishProcess.callCount ).to.equal( 1 );
 			} );
 
 			it( 'should replace image with saved one', () => {
