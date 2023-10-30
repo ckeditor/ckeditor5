@@ -9,13 +9,12 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core';
 import { createElement, global } from 'ckeditor5/src/utils';
-import { prepareAssets } from '../ckboxcommand';
+import { prepareImageAssetAttributes } from '../ckboxcommand';
 
 import type {
-	CKBoxAssetDefinition,
-	CKBoxAssetImageAttributesDefinition,
 	CKBoxRawAssetDefinition
 } from '../ckboxconfig';
+import type { InsertImageCommand } from '@ckeditor/ckeditor5-image';
 
 /**
  * The CKBox edit image command.
@@ -99,8 +98,8 @@ export default class CKBoxImageEditCommand extends Command {
 		return {
 			tokenUrl: ckboxConfig.tokenUrl,
 			onClose: () => this.fire<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close' ),
-			onSave: ( data: CKBoxRawAssetDefinition ) =>
-				this.fire<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', data )
+			onSave: ( asset: CKBoxRawAssetDefinition ) =>
+				this.fire<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', asset )
 		};
 	}
 
@@ -146,14 +145,14 @@ export default class CKBoxImageEditCommand extends Command {
 			editor.editing.view.focus();
 		} );
 
-		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, { data } ) => {
-			const imageCommand = editor.commands.get( 'insertImage' )!;
+		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, asset ) => {
+			waitForAssetProcess( asset ).then( () => {
+				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
+			} );
+		} );
 
-			const preparedAsset: CKBoxAssetDefinition = prepareAssets( {
-				assets: [ { data } ],
-				isImageAllowed: imageCommand.isEnabled,
-				isLinkAllowed: false
-			} )[ 0 ];
+		this.on<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', ( evt, asset ) => {
+			const imageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
 
 			const {
 				imageFallbackUrl,
@@ -162,35 +161,33 @@ export default class CKBoxImageEditCommand extends Command {
 				imageWidth,
 				imageHeight,
 				imagePlaceholder
-			} = preparedAsset.attributes as CKBoxAssetImageAttributesDefinition;
+			} = prepareImageAssetAttributes( asset );
 
-			// Timeout for demo purpose.
-			setTimeout( () => {
-				editor.model.change( writer => {
-					imageCommand.execute( {
-						source: {
-							src: imageFallbackUrl,
-							sources: imageSources,
-							alt: imageTextAlternative,
-							width: imageWidth,
-							height: imageHeight,
-							...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
-						}
-					} );
-
-					const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
-
-					writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
-
-					this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', { data } );
+			editor.model.change( writer => {
+				imageCommand.execute( {
+					source: {
+						src: imageFallbackUrl,
+						sources: imageSources,
+						alt: imageTextAlternative,
+						width: imageWidth,
+						height: imageHeight,
+						...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
+					}
 				} );
-			}, 3000 );
-		} );
 
-		this.on<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', ( evt, data ) => {
-			// TODO: finish the process (remove the indicator, etc.).
+				const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+
+				writer.setAttribute( 'ckboxImageId', asset.data.id, selectedImageElement );
+			} );
 		} );
 	}
+}
+
+function waitForAssetProcess( asset: CKBoxRawAssetDefinition ): Promise<void> {
+	// Timeout for demo purposes.
+	return new Promise( resolve => {
+		setTimeout( resolve, 3000 );
+	} );
 }
 
 /**
