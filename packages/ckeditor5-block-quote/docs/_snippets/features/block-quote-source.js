@@ -5,7 +5,7 @@
 
 /* globals window */
 
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
@@ -19,7 +19,8 @@ ClassicEditor.defaultConfig = {
 		ImageResize,
 		AutoImage,
 		LinkImage,
-		CKBox
+		CKBox,
+		CKBoxImageEdit
 	] ),
 	cloudServices: CS_CONFIG,
 	toolbar: {
@@ -36,7 +37,7 @@ ClassicEditor.defaultConfig = {
 		}
 	},
 	image: {
-		toolbar: [ 'imageTextAlternative' ]
+		toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
 	}
 };
 
