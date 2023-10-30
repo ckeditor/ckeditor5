@@ -342,8 +342,6 @@ export default class CKBoxCommand extends Command {
 
 /**
  * Parses the chosen assets into the internal data format. Filters out chosen assets that are not allowed.
- *
- * @internal
 */
 export function prepareAssets(
 	{ assets, isImageAllowed, isLinkAllowed }: {
@@ -370,8 +368,10 @@ export function prepareAssets(
 
 /**
  * Parses the assets attributes into the internal data format.
+ *
+ * @internal
  */
-function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
+export function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
 	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
 	const { description, width, height, blurHash } = asset.data.metadata!;
 	const imagePlaceholder = blurHashToDataUrl( blurHash );
