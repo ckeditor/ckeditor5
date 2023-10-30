@@ -100,7 +100,7 @@ export default class CKBoxImageEditCommand extends Command {
 			tokenUrl: ckboxConfig.tokenUrl,
 			onClose: () => this.fire<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close' ),
 			onSave: ( data: CKBoxRawAssetDefinition ) =>
-				this.fire<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', data )
+				this.fire<CKBoxImageEditorEvent<'beginSaveProcess'>>( 'ckboxImageEditor:beginSaveProcess', data )
 		};
 	}
 
@@ -146,7 +146,7 @@ export default class CKBoxImageEditCommand extends Command {
 			editor.editing.view.focus();
 		} );
 
-		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, { data } ) => {
+		this.on<CKBoxImageEditorEvent<'beginSaveProcess'>>( 'ckboxImageEditor:beginSaveProcess', ( evt, { data } ) => {
 			const imageCommand = editor.commands.get( 'insertImage' )!;
 
 			const preparedAsset: CKBoxAssetDefinition = prepareAssets( {
@@ -182,12 +182,12 @@ export default class CKBoxImageEditCommand extends Command {
 
 					writer.setAttribute( 'ckboxImageId', data.id, selectedImageElement );
 
-					this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', { data } );
+					this.fire<CKBoxImageEditorEvent<'finishSaveProcess'>>( 'ckboxImageEditor:finishSaveProcess', { data } );
 				} );
 			}, 3000 );
 		} );
 
-		this.on<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', ( evt, data ) => {
+		this.on<CKBoxImageEditorEvent<'finishSaveProcess'>>( 'ckboxImageEditor:finishSaveProcess', ( evt, data ) => {
 			// TODO: finish the process (remove the indicator, etc.).
 		} );
 	}
@@ -198,7 +198,7 @@ export default class CKBoxImageEditCommand extends Command {
  *
  * @eventName ~CKBoxImageEditCommand#ckboxImageEditor
  */
-type CKBoxImageEditorEvent<Name extends '' | 'save' | 'processed' | 'open' | 'close' = ''> = {
+type CKBoxImageEditorEvent<Name extends '' | 'beginSaveProcess' | 'finishSaveProcess' | 'open' | 'close' = ''> = {
 	name: Name extends '' ? 'ckboxImageEditor' : `ckboxImageEditor:${ Name }`;
-	args: Name extends 'save' | 'processed' ? [ data: CKBoxRawAssetDefinition ] : [];
+	args: Name extends 'beginSaveProcess' | 'finishSaveProcess' ? [ data: CKBoxRawAssetDefinition ] : [];
 };
