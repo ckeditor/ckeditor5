@@ -42,7 +42,6 @@ export default class Markdown extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		// TODO think about adding the paste logic only if ClipboardPipeline pluggin is added or make it required
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 
 		let shiftPressed = false;
