@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals AbortController, FormData, URL, XMLHttpRequest, window */
+/* globals FormData, URL, XMLHttpRequest, window */
 
 /**
  * @module ckbox/ckboximageedit/ckboximageeditcommand
@@ -163,8 +163,8 @@ export default class CKBoxImageEditCommand extends Command {
 			let limit = 10;
 
 			const setIntervalId = setInterval( () => {
-				this._sendHttpRequest( requestConfig ).then( res => {
-					if ( res.metadata.metadataProcessingStatus === 'success' ) {
+				this.getAssetStatusFromServer( data ).then( res => {
+					if ( res.status === 'success' ) {
 						this.updateImage( data );
 						clearInterval( setIntervalId );
 					}
@@ -176,6 +176,27 @@ export default class CKBoxImageEditCommand extends Command {
 					limit--;
 				} );
 			}, 1000 );
+		} );
+	}
+
+	public getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ):
+		Promise<{
+			status: string;
+		}>
+	{
+		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
+		const formData = new FormData();
+		const requestConfig = {
+			url,
+			data: formData
+		} as const;
+
+		return this._sendHttpRequest( requestConfig ).then( async res => {
+			return {
+				status: res.metadata.metadataProcessingStatus
+			};
+		} ).catch( err => {
+			return Promise.reject( err.message );
 		} );
 	}
 
@@ -240,8 +261,6 @@ export default class CKBoxImageEditCommand extends Command {
 		data?: FormData | null;
 	} ) {
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
-		const controller = new AbortController();
-		const signal = controller.signal;
 		const xhr = new XMLHttpRequest();
 
 		xhr.open( method, url.toString(), true );
@@ -249,30 +268,7 @@ export default class CKBoxImageEditCommand extends Command {
 		xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
 		xhr.responseType = 'json';
 
-		// The callback is attached to the `signal#abort` event.
-		const abortCallback = () => {
-			xhr.abort();
-		};
-
 		return new Promise<any>( ( resolve, reject ) => {
-			signal.addEventListener( 'abort', abortCallback );
-
-			xhr.addEventListener( 'loadstart', () => {
-				signal.addEventListener( 'abort', abortCallback );
-			} );
-
-			xhr.addEventListener( 'loadend', () => {
-				signal.removeEventListener( 'abort', abortCallback );
-			} );
-
-			xhr.addEventListener( 'error', () => {
-				reject();
-			} );
-
-			xhr.addEventListener( 'abort', () => {
-				reject();
-			} );
-
 			xhr.addEventListener( 'load', async () => {
 				const response = xhr.response;
 
