@@ -146,7 +146,7 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, asset ) => {
-			this._waitForAssetProcess( asset ).then( () => {
+			this._waitForAssetProcessed( asset ).then( () => {
 				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
 			} );
 		} );
@@ -182,7 +182,7 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 	}
 
-	private _waitForAssetProcess( asset: CKBoxRawAssetDefinition ): Promise<void> {
+	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<void> {
 		// Timeout for demo purposes.
 		return new Promise( resolve => {
 			setTimeout( resolve, 3000 );
@@ -197,5 +197,5 @@ export default class CKBoxImageEditCommand extends Command {
  */
 type CKBoxImageEditorEvent<Name extends '' | 'save' | 'processed' | 'open' | 'close' = ''> = {
 	name: Name extends '' ? 'ckboxImageEditor' : `ckboxImageEditor:${ Name }`;
-	args: Name extends 'save' | 'processed' ? [ data: CKBoxRawAssetDefinition ] : [];
+	args: Name extends 'save' | 'processed' ? [ asset: CKBoxRawAssetDefinition ] : [];
 };
