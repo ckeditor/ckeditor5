@@ -470,17 +470,6 @@ describe( 'CKBoxImageEditCommand', () => {
 				onSave( dataMock );
 
 				clock.tick( 4000 );
-
-				// expect( getModelData( model ) ).to.equal(
-				//  '[<imageBlock ' +
-				//      'alt="" ' +
-				//      'ckboxImageId="image-id1" ' +
-				//      'height="100" ' +
-				//      'placeholder="' + placeholder + '" ' +
-				//      'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-				//      'width="100">' +
-				//  '</imageBlock>]'
-				// );
 			} );
 		} );
 	} );
