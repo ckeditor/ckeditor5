@@ -284,8 +284,9 @@ ClassicEditor
 
 ### Configuring image overwriting
 
-Sets whether to show the 'Overwrite file' checkbox in image editor, you can configure it via {@link module:ckbox/ckboxconfig~CKBoxImageEditingConfig#allowOverwrite `config.ckbox.imageEditing.allowOverwrite`} option.
-By default, the checkbox option is shown.
+This option lets you set whether to show the 'Overwrite file' checkbox in image editor. You can configure it via the {@link module:ckbox/ckboxconfig~CKBoxImageEditingConfig#allowOverwrite `config.ckbox.imageEditing.allowOverwrite`} option.
+
+By default, the "Overwrite file" checkbox option is shown.
 
 ```js
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
