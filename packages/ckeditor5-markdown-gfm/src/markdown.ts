@@ -71,7 +71,7 @@ export default class Markdown extends Plugin {
 		} );
 	}
 
-	private parseMarkdownFromHtml( htmlString: string ) {
+	private parseMarkdownFromHtml( htmlString = '' ) {
 		// Removing <meta> tag present on Mac.
 		const withoutMetaTag = htmlString.replace( /^<meta\b[^>]*>/, '' ).trim();
 		// Removing <html> tag present on Windows.
