@@ -63,7 +63,7 @@ export default class FindAndReplaceUI extends Plugin {
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
 			const buttonView = new ButtonView( locale );
 			const formView = this.formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
-			const modal = editor.plugins.get( 'Modal' );
+			const dialog = editor.plugins.get( 'Dialog' );
 			const t = editor.locale.t;
 
 			buttonView.set( {
@@ -76,17 +76,17 @@ export default class FindAndReplaceUI extends Plugin {
 			// Button should be disabled when in source editing mode. See #10001.
 			buttonView.bind( 'isEnabled' ).to( editor.commands.get( 'find' )! );
 
-			// Every time a modal is opened, the search text field should get focused and selected for better UX.
-			// Each time a modal is closed, move the focus back to the find and replace toolbar button
+			// Every time a dialog is opened, the search text field should get focused and selected for better UX.
+			// Each time a dialog is closed, move the focus back to the find and replace toolbar button
 			// and let the find and replace editing feature know that all search results can be invalidated
 			// and no longer should be marked in the content.
 			buttonView.on( 'execute', () => {
-				modal.show( {
+				dialog.show( {
 					isDraggable: true,
 
-					onShow: modal => {
-						modal.view.children.add( formView );
-						modal.view.showHeader( t( 'Find and replace' ) );
+					onShow: dialog => {
+						dialog.view.children.add( formView );
+						dialog.view.showHeader( t( 'Find and replace' ) );
 
 						formView.disableCssTransitions();
 
@@ -146,7 +146,7 @@ export default class FindAndReplaceUI extends Plugin {
 		const findAndReplaceEditing: FindAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
 		const editingState = findAndReplaceEditing.state!;
 		const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
-		const modal = this.editor.plugins.get( 'Modal' );
+		const dialog = this.editor.plugins.get( 'Dialog' );
 
 		// Let the form know which result is being highlighted.
 		formView.bind( 'highlightOffset' ).to( editingState, 'highlightedResult', highlightedResult => {
@@ -191,12 +191,12 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 
 		formView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-			modal.view.focusNext();
+			dialog.view.focusNext();
 			evt.stop();
 		} );
 
 		formView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-			modal.view.focusPrevious();
+			dialog.view.focusPrevious();
 			evt.stop();
 		} );
 	}

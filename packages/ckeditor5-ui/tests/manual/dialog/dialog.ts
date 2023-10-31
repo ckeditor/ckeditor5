@@ -11,7 +11,32 @@ import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandrepl
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import { ButtonView, Modal, View } from '../../../src';
+import { ButtonView, Dialog, View } from '../../../src';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ) as HTMLElement, {
+		plugins: [
+			ArticlePluginSet,
+			FindAndReplace,
+			SpecialCharacters,
+			SpecialCharactersEssentials,
+			SpecialCharactersEmoji,
+			SourceEditing,
+			Dialog,
+			ModalWithText
+		],
+		toolbar: [
+			'heading', '|', 'bold', 'italic', 'link',
+			'|',
+			'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText'
+		]
+	} )
+	.then( editor => {
+		Object.assign( window, { editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
@@ -130,11 +155,11 @@ function ModalWithText( editor ) {
 		} );
 
 		buttonView.on( 'execute', () => {
-			const modal = editor.plugins.get( 'Modal' );
+			const dialog = editor.plugins.get( 'Dialog' );
 
-			modal.show( {
-				onShow: modal => {
-					modal.view.showHeader( t( 'Modal with text' ) );
+			dialog.show( {
+				onShow: dialog => {
+					dialog.view.showHeader( t( 'Modal with text' ) );
 
 					const textView = new View( locale );
 
@@ -146,9 +171,9 @@ function ModalWithText( editor ) {
 								whiteSpace: 'initial',
 								width: '100%',
 								maxWidth: '500px'
-							}
+							},
+							tabindex: -1
 						},
-						tabindex: -1,
 						children: [
 							`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
 							magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
@@ -158,18 +183,18 @@ function ModalWithText( editor ) {
 						]
 					} );
 
-					modal.view.children.add( textView );
-					modal.view.setActionButtons( [
+					dialog.view.children.add( textView );
+					dialog.view.setActionButtons( [
 						{
 							label: t( 'Let\'s do this!' ),
 							class: 'ck-button-action',
 							withText: true,
-							onExecute: () => modal.hide()
+							onExecute: () => dialog.hide()
 						},
 						{
 							label: t( 'Cancel' ),
 							withText: true,
-							onExecute: () => modal.hide()
+							onExecute: () => dialog.hide()
 						}
 					] );
 				}
@@ -179,35 +204,3 @@ function ModalWithText( editor ) {
 		return buttonView;
 	} );
 }
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			ArticlePluginSet,
-			FindAndReplace,
-			SpecialCharacters,
-			SpecialCharactersEssentials,
-			SpecialCharactersEmoji,
-			SourceEditing,
-			Modal,
-			ModalWithText
-		],
-		toolbar: [
-			'heading', '|', 'bold', 'italic', 'link',
-			'|',
-			'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingModal', 'modalWithText'
-		],
-		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-
-		// editor.ui.view.toolbar.items.get( 6 ).fire( 'execute' );
-		// editor.ui.view.toolbar.items.get( 7 ).fire( 'execute' );
-		// editor.ui.view.toolbar.items.last.fire( 'execute' );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );

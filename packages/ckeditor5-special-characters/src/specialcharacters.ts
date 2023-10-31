@@ -89,7 +89,7 @@ export default class SpecialCharacters extends Plugin {
 		// Add the `specialCharacters` dropdown button to feature components.
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {
 			const buttonView = new ButtonView( locale );
-			const modal = editor.plugins.get( 'Modal' );
+			const dialog = editor.plugins.get( 'Dialog' );
 			let dropdownPanelContent: DropdownPanelContent, specialCharactersView: SpecialCharactersView;
 
 			buttonView.set( {
@@ -113,27 +113,27 @@ export default class SpecialCharacters extends Plugin {
 					// Insert a special character when a tile was clicked.
 					dropdownPanelContent.gridView.on<CharacterGridViewExecuteEvent>( 'execute', ( evt, data ) => {
 						editor.execute( 'insertText', { text: data.character } );
-						modal.hide();
+						dialog.hide();
 						editor.editing.view.focus();
 					} );
 
 					specialCharactersView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-						modal.view.focusNext();
+						dialog.view.focusNext();
 						evt.stop();
 					} );
 
 					specialCharactersView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-						modal.view.focusPrevious();
+						dialog.view.focusPrevious();
 						evt.stop();
 					} );
 				}
 
-				modal.show( {
+				dialog.show( {
 					isDraggable: true,
 
-					onShow: modal => {
-						modal.view.children.add( specialCharactersView );
-						modal.view.showHeader( t( 'Special Characters' ) );
+					onShow: dialog => {
+						dialog.view.children.add( specialCharactersView );
+						dialog.view.showHeader( t( 'Special Characters' ) );
 
 						dropdownPanelContent.infoView.set( {
 							character: null,

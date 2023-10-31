@@ -73,7 +73,7 @@ export default class MediaEmbedUI extends Plugin {
 		command: MediaEmbedCommand
 	) {
 		const editor = this.editor;
-		const modal = editor.plugins.get( 'Modal' );
+		const dialog = editor.plugins.get( 'Dialog' );
 		const t = editor.t;
 
 		buttonView.bind( 'isEnabled' ).to( command );
@@ -85,19 +85,19 @@ export default class MediaEmbedUI extends Plugin {
 		} );
 
 		buttonView.on( 'execute', () => {
-			modal.show( {
+			dialog.show( {
 				isDraggable: true,
 
-				onShow: modal => {
+				onShow: dialog => {
 					mediaForm.disableCssTransitions();
 
-					modal.view.children.add( mediaForm );
-					modal.view.showHeader( t( 'Insert media' ) );
-					modal.view.setActionButtons( [
+					dialog.view.children.add( mediaForm );
+					dialog.view.showHeader( t( 'Insert media' ) );
+					dialog.view.setActionButtons( [
 						{
 							label: t( 'Cancel' ),
 							withText: true,
-							onExecute: () => modal.hide()
+							onExecute: () => dialog.hide()
 						},
 						{
 							label: t( 'Save' ),
@@ -132,12 +132,12 @@ export default class MediaEmbedUI extends Plugin {
 	 * @param {module:media-embed/mediaembedcommand~MediaEmbedCommand} command
 	 */
 	private _setUpForm( form: MediaFormView, command: MediaEmbedCommand ) {
-		const modal = this.editor.plugins.get( 'Modal' );
+		const dialog = this.editor.plugins.get( 'Dialog' );
 
 		form.on( 'submit', () => {
 			if ( form.isValid() ) {
 				this.editor.execute( 'mediaEmbed', form.url );
-				modal.hide();
+				dialog.hide();
 			}
 		} );
 
@@ -147,12 +147,12 @@ export default class MediaEmbedUI extends Plugin {
 		form.urlInputView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 		form.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-			modal.view.focusNext();
+			dialog.view.focusNext();
 			evt.stop();
 		} );
 
 		form.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-			modal.view.focusPrevious();
+			dialog.view.focusPrevious();
 			evt.stop();
 		} );
 	}

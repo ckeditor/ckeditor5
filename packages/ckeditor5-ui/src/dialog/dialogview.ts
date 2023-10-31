@@ -10,7 +10,7 @@ import FormHeaderView from '../formheader/formheaderview';
 import ButtonView from '../button/buttonview';
 import FocusCycler, { type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
 
-import ModalActionsView, { type ModalActionButtonDefinition } from './modalactionsview';
+import ModalActionsView, { type ModalActionButtonDefinition } from './dialogactionsview';
 
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 

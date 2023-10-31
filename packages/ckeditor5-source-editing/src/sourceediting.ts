@@ -129,7 +129,7 @@ export default class SourceEditing extends Plugin {
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'sourceEditingModal', locale => {
+		editor.ui.componentFactory.add( 'sourceEditingDialog', locale => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
@@ -169,14 +169,14 @@ export default class SourceEditing extends Plugin {
 			);
 
 			this.listenTo( buttonView, 'execute', () => {
-				const modal = editor.plugins.get( 'Modal' );
+				const dialog = editor.plugins.get( 'Dialog' );
 
-				modal.show( {
+				dialog.show( {
 					isDraggable: true,
 
-					onShow: modal => {
+					onShow: dialog => {
 						// modal.view.children.add( specialCharactersView );
-						modal.view.showHeader( t( 'Source Editing' ) );
+						dialog.view.showHeader( t( 'Source Editing' ) );
 
 						const data = formatSource( editor.data.get( { rootName: 'main' } ) );
 						const textareaView = new View( locale );
@@ -184,7 +184,7 @@ export default class SourceEditing extends Plugin {
 						textareaView.setTemplate( {
 							tag: 'textarea',
 							attributes: {
-								class: [ 'ck', 'ck-source-editing-modal-source' ],
+								class: [ 'ck', 'ck-source-editing-dialog-source' ],
 								rows: '1',
 								'aria-label': 'Source code editing area'
 							}
@@ -202,21 +202,21 @@ export default class SourceEditing extends Plugin {
 							}
 						} );
 
-						modal.view.children.add( textareaView );
-						modal.view.setActionButtons( [
+						dialog.view.children.add( textareaView );
+						dialog.view.setActionButtons( [
 							{
 								label: t( 'Save' ),
 								class: 'ck-button-action',
 								withText: true,
 								onExecute: () => {
 									editor.data.set( textareaDomElement.value );
-									modal.hide();
+									dialog.hide();
 								}
 							},
 							{
 								label: t( 'Cancel' ),
 								withText: true,
-								onExecute: () => modal.hide()
+								onExecute: () => dialog.hide()
 							}
 						] );
 

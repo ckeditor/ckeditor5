@@ -4,23 +4,23 @@
  */
 
 /**
- * @module ui/modal/modal
+ * @module ui/dialog/dialog
  */
 
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
-import ModalView from './modalview';
+import DialogView from './dialogview';
 
-import '../../theme/components/modal/modal.css';
+import '../../theme/components/dialog/dialog.css';
 
-export default class Modal extends Plugin {
-	public readonly view: ModalView;
-	private _onHide: ( ( modal: Modal ) => void ) | undefined;
+export default class Dialog extends Plugin {
+	public readonly view: DialogView;
+	private _onHide: ( ( dialog: Dialog ) => void ) | undefined;
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'Modal' as const;
+		return 'Dialog' as const;
 	}
 
 	/**
@@ -32,7 +32,7 @@ export default class Modal extends Plugin {
 		/**
 		 * TODO
 		 */
-		this.view = new ModalView( editor.locale );
+		this.view = new DialogView( editor.locale );
 
 		this.view.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this.hide();
@@ -53,8 +53,8 @@ export default class Modal extends Plugin {
 	 * @param childView
 	 */
 	public show( { onShow, onHide, className, isDraggable = false }: {
-		onShow?: ( modal: Modal ) => void;
-		onHide?: ( modal: Modal ) => void;
+		onShow?: ( dialog: Dialog ) => void;
+		onHide?: ( dialog: Dialog ) => void;
 		className?: string;
 		isDraggable: boolean;
 	} ): void {

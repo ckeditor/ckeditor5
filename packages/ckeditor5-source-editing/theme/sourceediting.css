@@ -51,7 +51,7 @@
 	}
 }
 
-.ck.ck-source-editing-modal-source {
+.ck.ck-source-editing-dialog-source {
 	@mixin ck-rounded-corners;
 
 	width: 600px;
