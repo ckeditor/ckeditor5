@@ -130,8 +130,6 @@ export default class CKBoxImageEditCommand extends Command {
 
 			global.document.body.appendChild( this._wrapper );
 
-			console.log( this._ckboxImageId );
-
 			window.CKBox.mountImageEditor(
 				this._wrapper,
 				{
