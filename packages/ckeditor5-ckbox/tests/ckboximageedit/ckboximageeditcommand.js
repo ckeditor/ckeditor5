@@ -31,7 +31,7 @@ const CKBOX_API_URL = 'https://upload.example.com';
 describe( 'CKBoxImageEditCommand', () => {
 	testUtils.createSinonSandbox();
 
-	let editor, domElement, command, model;
+	let editor, domElement, command, model, dataMock, dataWithBlurHashMock;
 
 	beforeEach( async () => {
 		TokenMock.initialToken = [
@@ -76,6 +76,41 @@ describe( 'CKBoxImageEditCommand', () => {
 		command.isEnabled = true;
 		editor.commands.add( 'ckboxImageEdit', command );
 		model = editor.model;
+
+		dataMock = {
+			data: {
+				id: 'image-id1',
+				extension: 'png',
+				metadata: {
+					width: 100,
+					height: 100
+				},
+				name: 'image1',
+				imageUrls: {
+					100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+					default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+				},
+				url: 'https://example.com/workspace1/assets/image-id1/file'
+			}
+		};
+
+		dataWithBlurHashMock = {
+			data: {
+				id: 'image-id1',
+				extension: 'png',
+				metadata: {
+					width: 100,
+					height: 100,
+					blurHash: 'KTF55N=ZR4PXSirp5ZOZW9'
+				},
+				name: 'image1',
+				imageUrls: {
+					100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+					default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+				},
+				url: 'https://example.com/workspace1/assets/image-id1/file'
+			}
+		};
 	} );
 
 	afterEach( async () => {
@@ -276,9 +311,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					}
 				};
 
-				command.decorate( 'updateImage' );
-
-				editor.listenTo( command, 'updateImage', () => {
+				command.on( 'ckboxImageEditor:processed', () => {
 					expect( getModelData( model ) ).to.equal(
 						'[<imageBlock alt="" ckboxImageId="image-id1" height="100" sources="[object Object]"' +
 							' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
@@ -366,110 +399,91 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should fire "ckboxImageEditor:save" and "ckboxImageEditor:processed" ' +
-				'event after hit "Save" button in the CKBox Image Editor dialog', done => {
-				const clock = sinon.useFakeTimers();
-				const spyBeginProcess = sinon.spy();
-				const spyFinishProcess = sinon.spy();
+				'event after hit "Save" button in the CKBox Image Editor dialog', () => {
+				const spySave = sinon.spy();
+				const spyProcessed = sinon.spy();
 
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
+					() => Promise.resolve( command.fire( 'ckboxImageEditor:processed', dataMock ) ) );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
-					200,
-					{ 'Content-Type': 'application/json' },
-					JSON.stringify( {
-						metadata: {
-							metadataProcessingStatus: 'success'
-						}
-					} )
-				] );
-
-				command.on( 'ckboxImageEditor:save', spyBeginProcess );
-				command.on( 'ckboxImageEditor:processed', spyFinishProcess );
-
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
-
-				command.on( 'ckboxImageEditor:processed', () => {
-					expect( spyBeginProcess.callCount ).to.equal( 1 );
-					expect( spyFinishProcess.callCount ).to.equal( 1 );
-					done();
-				} );
+				command.on( 'ckboxImageEditor:save', spySave );
+				command.on( 'ckboxImageEditor:processed', spyProcessed );
 
 				onSave( dataMock );
 
-				clock.tick( 4000 );
+				expect( spySave.callCount ).to.equal( 1 );
+
+				stub( dataMock ).then( () => {
+					expect( spyProcessed.callCount ).to.equal( 1 );
+				} );
 			} );
 
-			it( 'should replace image with saved one (with blurHash placeholder)', done => {
-				const clock = sinon.useFakeTimers();
+			describe( '("ckboxImageEditor:save")', () => {
+				it( 'should fire "ckboxImageEditor:save" event after hit "Save" button in the CKBox Image Editor dialog', () => {
+					const spySave = sinon.spy();
 
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
-					' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
+					command.on( 'ckboxImageEditor:save', spySave );
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
-					200,
-					{ 'Content-Type': 'application/json' },
-					JSON.stringify( {
-						metadata: {
-							metadataProcessingStatus: 'success'
-						}
-					} )
-				] );
+					onSave( dataMock );
 
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100,
-							blurHash: 'KTF55N=ZR4PXSirp5ZOZW9'
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
+					expect( spySave.callCount ).to.equal( 1 );
+				} );
+			} );
 
-				const placeholder = blurHashToDataUrl( dataMock.data.metadata.blurHash );
+			describe( '"ckboxImageEditor:processed"', () => {
+				it( 'should fire "ckboxImageEditor:processed" event after hit "Save" button in the CKBox Image Editor dialog', () => {
+					const spyProcessed = sinon.spy();
 
-				command.decorate( 'updateImage' );
+					const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
+						() => Promise.resolve( command.fire( 'ckboxImageEditor:processed', dataMock ) ) );
 
-				editor.listenTo( command, 'updateImage', () => {
-					expect( getModelData( model ) ).to.equal(
-						'[<imageBlock ' +
-						'alt="" ' +
-						'ckboxImageId="image-id1" ' +
-						'height="100" ' +
-						'placeholder="' + placeholder + '" ' +
-						'sources="[object Object]" ' +
-						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-						'width="100">' +
-					'</imageBlock>]'
-					);
-					done();
+					stub( dataMock ).then( () => {
+						expect( spyProcessed.callCount ).to.equal( 1 );
+					} );
 				} );
 
-				onSave( dataMock );
+				it( 'should replace image with saved one', () => {
+					setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
+						' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
 
-				clock.tick( 4000 );
+					const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
+						() => Promise.resolve( command.fire( 'ckboxImageEditor:processed', dataMock ) ) );
+
+					stub( dataMock ).then( () => {
+						expect( getModelData( model ) ).to.equal(
+							'[<imageBlock ' +
+								'alt="" ' +
+								'ckboxImageId="image-id1" ' +
+								'height="100" ' +
+								'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+								'width="100">' +
+							'</imageBlock>]'
+						);
+					} );
+				} );
+
+				it( 'should replace image with saved one (with blurHash placeholder)', () => {
+					setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
+						' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
+
+					const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
+						() => Promise.resolve( command.fire( 'ckboxImageEditor:processed', dataWithBlurHashMock ) ) );
+
+					const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
+
+					stub( dataWithBlurHashMock ).then( () => {
+						expect( getModelData( model ) ).to.equal(
+							'[<imageBlock ' +
+								'alt="" ' +
+								'ckboxImageId="image-id1" ' +
+								'height="100" ' +
+								'placeholder="' + placeholder + '" ' +
+								'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+								'width="100">' +
+							'</imageBlock>]'
+						);
+					} );
+				} );
 			} );
 		} );
 	} );
