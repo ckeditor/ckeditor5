@@ -8,12 +8,22 @@
  */
 
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
-import DialogView from './dialogview';
+import DialogView, { type DialogViewCloseEvent } from './dialogview';
 
 import '../../theme/components/dialog/dialog.css';
 
+/**
+ * TODO
+ */
 export default class Dialog extends Plugin {
+	/**
+	 * TODO
+	 */
 	public readonly view: DialogView;
+
+	/**
+	 * TODO
+	 */
 	private _onHide: ( ( dialog: Dialog ) => void ) | undefined;
 
 	/**
@@ -29,17 +39,9 @@ export default class Dialog extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		/**
-		 * TODO
-		 */
 		this.view = new DialogView( editor.locale );
 
-		this.view.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.hide();
-			cancel();
-		} );
-
-		this.view.on( 'close', () => {
+		this.view.on<DialogViewCloseEvent>( 'close', () => {
 			this.hide();
 		} );
 
@@ -49,10 +51,13 @@ export default class Dialog extends Plugin {
 
 	/**
 	 * TODO
-	 *
-	 * @param childView
 	 */
-	public show( { onShow, onHide, className, isDraggable = false }: {
+	public show( {
+		onShow,
+		onHide,
+		className,
+		isDraggable = false
+	}: {
 		onShow?: ( dialog: Dialog ) => void;
 		onHide?: ( dialog: Dialog ) => void;
 		className?: string;
@@ -60,7 +65,11 @@ export default class Dialog extends Plugin {
 	} ): void {
 		this.hide();
 
-		this.view.isVisible = true;
+		this.view.set( {
+			isVisible: true,
+			className,
+			isDraggable
+		} );
 
 		this.view.addContentPart();
 
@@ -68,8 +77,6 @@ export default class Dialog extends Plugin {
 			onShow( this );
 		}
 
-		this.view.className = className;
-		this.view.isDraggable = isDraggable;
 		this.view.focus();
 
 		this._onHide = onHide;

@@ -3,14 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { type EventInfo, type Locale, KeystrokeHandler, global, FocusTracker, type CollectionChangeEvent } from '@ckeditor/ckeditor5-utils';
+/**
+ * @module ui/dialog/dialogview
+ */
+
+import {
+	type EventInfo,
+	type Locale,
+	type CollectionChangeEvent,
+	KeystrokeHandler,
+	FocusTracker
+} from '@ckeditor/ckeditor5-utils';
 import ViewCollection from '../viewcollection';
 import View from '../view';
 import FormHeaderView from '../formheader/formheaderview';
 import ButtonView from '../button/buttonview';
 import FocusCycler, { type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
-
-import ModalActionsView, { type ModalActionButtonDefinition } from './dialogactionsview';
+import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin';
+import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview';
 
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
@@ -18,21 +28,75 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
  * TODO
  */
 export default class ModalView extends View {
+	/**
+	 * TODO
+	 */
 	public readonly parts: ViewCollection;
+
+	/**
+	 * TODO
+	 */
 	public readonly children: ViewCollection;
-	public readonly headerView: FormHeaderView;
+
+	/**
+	 * TODO
+	 */
+	public headerView?: FormHeaderView & DraggableView;
+
+	/**
+	 * TODO
+	 */
+	public closeButtonView?: ButtonView;
+
+	/**
+	 * TODO
+	 */
+	public actionsView?: DialogActionsView;
+
+	/**
+	 * TODO
+	 */
 	public readonly contentView: View;
-	public readonly closeButtonView: ButtonView;
-	public readonly actionsView: ModalActionsView;
-	private _transformDelta: { x: number; y: number };
+
+	/**
+	 * TODO
+	 */
+	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * TODO
+	 */
+	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * TODO
+	 */
 	declare public isVisible: boolean;
+
+	/**
+	 * TODO
+	 */
 	declare public isDraggable: boolean;
+
+	/**
+	 * TODO
+	 */
 	declare public className: string | undefined;
 
-	public readonly keystrokes: KeystrokeHandler;
-	public readonly focusTracker: FocusTracker;
-	private readonly _focusables: ViewCollection;
-	private readonly _focusCycler: FocusCycler;
+	/**
+	 * TODO
+	 */
+	private readonly focusables: ViewCollection;
+
+	/**
+	 * TODO
+	 */
+	private readonly focusCycler: FocusCycler;
+
+	/**
+	 * TODO
+	 */
+	declare public _transform: string;
 
 	/**
 	 * @inheritDoc
@@ -41,104 +105,23 @@ export default class ModalView extends View {
 		super( locale );
 
 		const bind = this.bindTemplate;
-		const t = locale.t;
 
-		this._transformDelta = { x: 0, y: 0 };
-
-		/**
-		 * TODO
-		 */
 		this.set( 'isVisible', false );
-
-		/**
-		 * TODO
-		 */
 		this.set( 'className', '' );
-
-		/**
-		 * TODO
-		 */
 		this.set( 'isDraggable', false );
+		this.set( '_transform', '' );
 
-		/**
-		 * TODO
-		 */
 		this.children = this.createCollection();
-
 		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
 
-		/**
-		 * TODO
-		 */
 		this.parts = this.createCollection();
+		this.contentView = this._createContentView();
 
-		/**
-		 * TODO
-		 */
-		this.headerView = new FormHeaderView( locale );
-		this.headerView.bind( 'class' ).to( this, 'isDraggable', isDraggable => isDraggable ? 'ck-form__header_draggable' : '' );
-
-		this.closeButtonView = new ButtonView( locale );
-
-		this.closeButtonView.set( {
-			label: t( 'Close' ),
-			tooltip: true,
-			icon: cancelIcon
-		} );
-
-		this.closeButtonView.on( 'execute', () => this.fire( 'close' ) );
-
-		this.headerView.children.add( this.closeButtonView );
-
-		/**
-		 * TODO
-		 */
-		this.actionsView = new ModalActionsView( locale );
-		this.actionsView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-			this._focusCycler.focusNext();
-			evt.stop();
-		} );
-		this.actionsView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-			this._focusCycler.focusPrevious();
-			evt.stop();
-		} );
-
-		/**
-		 * TODO
-		 */
-		this.contentView = new View( locale );
-
-		this.contentView.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [ 'ck', 'ck-modal__content' ]
-			},
-			children: this.children
-		} );
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * TODO
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * TODO
-		 */
-		this._focusables = new ViewCollection();
-
-		/**
-		 * TODO
-		 */
-		this._focusCycler = new FocusCycler( {
-			focusables: this._focusables,
+		this.focusables = new ViewCollection();
+		this.focusCycler = new FocusCycler( {
+			focusables: this.focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
@@ -155,8 +138,8 @@ export default class ModalView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-modal-overlay',
-					bind.if( 'isDraggable', 'ck-modal-overlay__transparent' ),
+					'ck-dialog-overlay',
+					bind.if( 'isDraggable', 'ck-dialog-overlay__transparent' ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				],
 				// Prevent from editor losing focus when clicking on the modal overlay.
@@ -169,9 +152,12 @@ export default class ModalView extends View {
 						tabindex: '-1',
 						class: [
 							'ck',
-							'ck-modal',
+							'ck-dialog',
 							bind.to( 'className' )
-						]
+						],
+						style: {
+							transform: bind.to( '_transform' )
+						}
 					},
 					children: this.parts
 				}
@@ -179,71 +165,20 @@ export default class ModalView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override render(): void {
 		super.render();
 
 		this._updateFocusCycleableItems();
 
-		this.keystrokes.listenTo( this.element! );
-
-		const headerView = this.headerView;
-
-		// Support for dragging the modal.
-		// TODO: Don't allow dragging beyond the edge of the viewport.
-		// TODO: Disable dragging when the mobile view is on.
-		headerView.on( 'render', () => {
-			let isDragging = false;
-			let startCoordinates: { x: number; y: number } = { x: 0, y: 0 };
-
-			const onDragStart = ( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) => {
-				if ( !this.isDraggable ) {
-					return;
-				}
-
-				const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-				const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
-
-				startCoordinates = {
-					x: x - this._transformDelta.x,
-					y: y - this._transformDelta.y
-				};
-
-				isDragging = true;
-			};
-
-			const onDragEnd = () => {
-				if ( !this.isDraggable ) {
-					return;
-				}
-
-				isDragging = false;
-			};
-
-			const onDrag = ( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) => {
-				if ( !this.isDraggable || !isDragging ) {
-					return;
-				}
-
-				const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-				const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
-
-				this._transformDelta = {
-					x: Math.round( x - startCoordinates.x ),
-					y: Math.round( y - startCoordinates.y )
-				};
-
-				( this.element!.querySelector( '.ck-modal' )! as HTMLElement ).style.transform =
-					`translate3d( ${ this._transformDelta.x }px, ${ this._transformDelta.y }px, 0)`;
-			};
-
-			this.listenTo( headerView.element!, 'mousedown', onDragStart );
-			this.listenTo( global.document!, 'mouseup', onDragEnd );
-			this.listenTo( global.document!, 'mousemove', onDrag );
-
-			this.listenTo( headerView.element!, 'touchstart', onDragStart );
-			this.listenTo( global.document!, 'touchend', onDragEnd );
-			this.listenTo( global.document!, 'touchmove', onDrag );
+		this.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this.fire<DialogViewCloseEvent>( 'close' );
+			cancel();
 		} );
+
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -258,55 +193,176 @@ export default class ModalView extends View {
 			this.parts.remove( 0 );
 		}
 
-		this.actionsView.clear();
+		if ( this.actionsView ) {
+			this.actionsView.reset();
+		}
 
-		( this.element!.querySelector( '.ck-modal' )! as HTMLElement ).style.transform = '';
-		this._transformDelta = { x: 0, y: 0 };
+		if ( this.headerView ) {
+			this.headerView.reset();
+		}
+
+		this._transform = '';
 	}
 
 	/**
 	 * TODO
 	 */
 	public showHeader( label: string ): void {
+		if ( !this.headerView ) {
+			this.headerView = this._createHeaderView();
+			this._updateFocusCycleableItems();
+		}
+
 		this.parts.add( this.headerView, 0 );
 		this.headerView.label = label;
 	}
 
-	public setActionButtons( definitions: Array<ModalActionButtonDefinition> ): void {
-		this.parts.add( this.actionsView );
+	/**
+	 * TODO
+	 */
+	public setActionButtons( definitions: Array<DialogActionButtonDefinition> ): void {
+		if ( !this.actionsView ) {
+			this.actionsView = this._createActionsView();
+			this._updateFocusCycleableItems();
+		}
 
+		this.parts.add( this.actionsView );
 		this.actionsView.setButtons( definitions );
 	}
 
+	/**
+	 * TODO
+	 */
 	public addContentPart(): void {
 		this.parts.add( this.contentView );
 	}
 
+	/**
+	 * TODO
+	 */
 	public focus(): void {
-		this._focusCycler.focusFirst();
+		this.focusCycler.focusFirst();
 	}
 
+	/**
+	 * TODO
+	 */
 	public focusNext(): void {
-		this._focusCycler.focusNext();
+		this.focusCycler.focusNext();
 	}
 
+	/**
+	 * TODO
+	 */
 	public focusPrevious(): void {
-		this._focusCycler.focusPrevious();
+		this.focusCycler.focusPrevious();
 	}
 
 	/**
 	 * TODO
 	 */
 	private _updateFocusCycleableItems() {
-		for ( const focusable of this._focusables ) {
+		for ( const focusable of this.focusables ) {
 			this.focusTracker.remove( focusable.element! );
 		}
 
-		this._focusables.clear();
+		this.focusables.clear();
 
-		[ ...this.children, this.actionsView, this.closeButtonView ].forEach( v => {
-			this._focusables.add( v );
+		const focusables = [ ...this.children ];
+
+		if ( this.actionsView ) {
+			focusables.push( this.actionsView );
+		}
+
+		if ( this.closeButtonView ) {
+			focusables.push( this.closeButtonView );
+		}
+
+		focusables.forEach( v => {
+			this.focusables.add( v );
 			this.focusTracker.add( v.element! );
 		} );
 	}
+
+	/**
+	 * TODO
+	 */
+	private _createCloseButton(): ButtonView {
+		const buttonView = new ButtonView( this.locale );
+		const t = this.locale!.t;
+
+		buttonView.set( {
+			label: t( 'Close' ),
+			tooltip: true,
+			icon: cancelIcon
+		} );
+
+		buttonView.on( 'execute', () => this.fire<DialogViewCloseEvent>( 'close' ) );
+
+		return buttonView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createHeaderView(): FormHeaderView & DraggableView {
+		const headerView = new ( DraggableViewMixin( FormHeaderView ) )( this.locale );
+
+		headerView.bind( 'class' ).to( this, 'isDraggable', isDraggable => isDraggable ? 'ck-form__header_draggable' : '' );
+		headerView.bind( 'isDraggable' ).to( this );
+
+		// Support for dragging the modal.
+		// TODO: Don't allow dragging beyond the edge of the viewport.
+		// TODO: Disable dragging when the mobile view is on.
+		headerView.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { transformDelta } ) => {
+			this._transform = `translate3d( ${ transformDelta.x }px, ${ transformDelta.y }px, 0)`;
+		} );
+
+		this.closeButtonView = this._createCloseButton();
+
+		headerView.children.add( this.closeButtonView );
+
+		return headerView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createActionsView(): DialogActionsView {
+		const actionsView = new DialogActionsView( this.locale );
+
+		actionsView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
+			this.focusCycler.focusNext();
+			evt.stop();
+		} );
+
+		actionsView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
+			this.focusCycler.focusPrevious();
+			evt.stop();
+		} );
+
+		return actionsView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createContentView(): View {
+		const contentView = new View( this.locale );
+
+		contentView.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [ 'ck', 'ck-dialog__content' ]
+			},
+			children: this.children
+		} );
+
+		return contentView;
+	}
 }
+
+export type DialogViewCloseEvent = {
+	name: 'close';
+	args: [];
+};

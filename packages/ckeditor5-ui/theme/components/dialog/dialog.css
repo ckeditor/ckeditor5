@@ -10,10 +10,10 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 :root {
-	--ck-modal-overlay-background-color: hsla( 0, 0%, 0%, .5 )
+	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 )
 }
 
-.ck.ck-modal-overlay {
+.ck.ck-dialog-overlay {
 	display: flex;
 	flex: 100%;
 	align-items: center;
@@ -21,8 +21,8 @@
 	user-select: none;
 	overscroll-behavior: none;
 
-	animation: ck-modal-fade-in .3s;
-	background: var(--ck-modal-overlay-background-color);
+	animation: ck-dialog-fade-in .3s;
+	background: var(--ck-dialog-overlay-background-color);
 
 	position: fixed;
 	bottom: 0;
@@ -32,14 +32,14 @@
 
 	z-index: 999999999999;
 
-	&.ck-modal-overlay__transparent {
+	&.ck-dialog-overlay__transparent {
 		pointer-events: none;
 		animation: none;
 		background: none;
 	}
 }
 
-.ck.ck-modal {
+.ck.ck-dialog {
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 
@@ -67,7 +67,7 @@
 		}
 	}
 
-	& .ck.ck-modal__actions {
+	& .ck.ck-dialog__actions {
 		display: flex;
 		justify-content: flex-end;
 		padding: var(--ck-spacing-large);
@@ -77,17 +77,17 @@
 		}
 	}
 
-	@nest .ck.ck-modal-overlay.ck-modal-overlay__transparent & {
+	@nest .ck.ck-dialog-overlay.ck-dialog-overlay__transparent & {
 		pointer-events: all;
 	}
 }
 
-@keyframes ck-modal-fade-in {
+@keyframes ck-dialog-fade-in {
 	0% {
 		background: hsla( 0, 0%, 0%, 0 );
 	}
 
 	100% {
-		background: var(--ck-modal-overlay-background-color);
+		background: var(--ck-dialog-overlay-background-color);
 	}
 }

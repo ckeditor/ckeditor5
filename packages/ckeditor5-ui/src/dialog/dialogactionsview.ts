@@ -3,7 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { FocusTracker, KeystrokeHandler, type Locale, type CollectionChangeEvent } from '@ckeditor/ckeditor5-utils';
+/**
+ * @module ui/dialog/dialogactionsview
+ */
+
+import {
+	FocusTracker,
+	KeystrokeHandler,
+	type Locale,
+	type CollectionChangeEvent
+} from '@ckeditor/ckeditor5-utils';
 import type Button from '../button/button';
 import ButtonView from '../button/buttonview';
 import View from '../view';
@@ -13,12 +22,30 @@ import FocusCycler from '../focuscycler';
 /**
  * TODO
  */
-export default class ModalActionsView extends View {
+export default class DialogActionsView extends View {
+	/**
+	 * TODO
+	 */
 	public readonly children: ViewCollection;
 
+	/**
+	 * TODO
+	 */
 	public readonly keystrokes: KeystrokeHandler;
+
+	/**
+	 * TODO
+	 */
 	public readonly focusTracker: FocusTracker;
+
+	/**
+	 * TODO
+	 */
 	public readonly focusCycler: FocusCycler;
+
+	/**
+	 * TODO
+	 */
 	private readonly _focusables: ViewCollection;
 
 	/**
@@ -27,34 +54,11 @@ export default class ModalActionsView extends View {
 	constructor( locale?: Locale ) {
 		super( locale );
 
-		/**
-		 * TODO
-		 */
 		this.children = this.createCollection<ButtonView>();
-
 		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
-
-		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
 		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * TODO
-		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * TODO
-		 */
 		this._focusables = new ViewCollection();
-
-		/**
-		 * TODO
-		 */
 		this.focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
@@ -73,13 +77,16 @@ export default class ModalActionsView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-modal__actions'
+					'ck-dialog__actions'
 				]
 			},
 			children: this.children
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public override render(): void {
 		super.render();
 
@@ -91,7 +98,7 @@ export default class ModalActionsView extends View {
 	/**
 	 * TODO
 	 */
-	public clear(): void {
+	public reset(): void {
 		while ( this.children.length ) {
 			this.children.remove( 0 );
 		}
@@ -99,14 +106,12 @@ export default class ModalActionsView extends View {
 
 	/**
 	 * TODO
-	 *
-	 * @param definitions
 	 */
-	public setButtons( definitions: Array<ModalActionButtonDefinition> ): void {
+	public setButtons( definitions: Array<DialogActionButtonDefinition> ): void {
 		for ( const definition of definitions ) {
 			const button = new ButtonView( this.locale );
 
-			let property: keyof ModalActionButtonDefinition;
+			let property: keyof DialogActionButtonDefinition;
 
 			for ( property in definition ) {
 				if ( property == 'onExecute' ) {
@@ -158,7 +163,7 @@ export default class ModalActionsView extends View {
 	}
 }
 
-export type ModalActionButtonDefinition =
+export type DialogActionButtonDefinition =
 	Pick<Button, 'label'> &
 	Partial<Pick<Button, 'withText' | 'class' | 'icon'>> &
 	{ onExecute: Function };
