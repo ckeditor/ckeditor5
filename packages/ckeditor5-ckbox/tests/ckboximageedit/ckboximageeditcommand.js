@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, btoa */
+/* global window, btoa, setTimeout */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
@@ -261,12 +261,13 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should fire "ckboxImageEditor:save" and "ckboxImageEditor:processed" ' +
-				'event after hit "Save" button in the CKBox Image Editor dialog', () => {
+				'event after hit "Save" button in the CKBox Image Editor dialog', async () => {
 				const spySave = sinon.spy();
 				const spyProcessed = sinon.spy();
 
-				const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
-					() => Promise.resolve( command.fire( 'ckboxImageEditor:processed', dataMock ) ) );
+				const [ assetProcessedPromise, resolveAssetProcessed ] = createPromise();
+
+				sinon.stub( command, '_waitForAssetProcessed' ).returns( assetProcessedPromise );
 
 				command.on( 'ckboxImageEditor:save', spySave );
 				command.on( 'ckboxImageEditor:processed', spyProcessed );
@@ -275,78 +276,84 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( spySave.callCount ).to.equal( 1 );
 
-				stub( dataMock ).then( () => {
-					expect( spyProcessed.callCount ).to.equal( 1 );
-				} );
+				await wait( 0 );
+
+				expect( spyProcessed.callCount ).to.equal( 0 );
+
+				resolveAssetProcessed();
+
+				await wait( 0 );
+
+				expect( spyProcessed.callCount ).to.equal( 1 );
 			} );
 
-			describe( '("ckboxImageEditor:save")', () => {
-				it( 'should fire "ckboxImageEditor:save" event after hit "Save" button in the CKBox Image Editor dialog', () => {
-					const spySave = sinon.spy();
+			it( 'should not replace image with saved one before it is processed', () => {
+				const modelData =
+					'[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]';
 
-					command.on( 'ckboxImageEditor:save', spySave );
+				setModelData( model, modelData );
 
-					onSave( dataMock );
+				command.fire( 'ckboxImageEditor:save', dataMock );
 
-					expect( spySave.callCount ).to.equal( 1 );
-				} );
+				expect( getModelData( model ) ).to.equal( modelData );
 			} );
 
-			describe( '"ckboxImageEditor:processed"', () => {
-				it( 'should fire "ckboxImageEditor:processed" event after hit "Save" button in the CKBox Image Editor dialog', () => {
-					const spyProcessed = sinon.spy();
+			it( 'should replace image with saved one after it is processed', () => {
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
 
-					const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
-						() => Promise.resolve( command.fire( 'ckboxImageEditor:processed', dataMock ) ) );
+				command.fire( 'ckboxImageEditor:processed', dataMock );
 
-					stub( dataMock ).then( () => {
-						expect( spyProcessed.callCount ).to.equal( 1 );
-					} );
-				} );
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
+			} );
 
-				it( 'should replace image with saved one', () => {
-					setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
-						' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
+			it( 'should replace image with saved one (with blurHash placeholder) after it is processed', () => {
+				const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
 
-					const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
-						() => Promise.resolve( command.fire( 'ckboxImageEditor:processed', dataMock ) ) );
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
 
-					stub( dataMock ).then( () => {
-						expect( getModelData( model ) ).to.equal(
-							'[<imageBlock ' +
-								'alt="" ' +
-								'ckboxImageId="image-id1" ' +
-								'height="100" ' +
-								'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-								'width="100">' +
-							'</imageBlock>]'
-						);
-					} );
-				} );
+				command.fire( 'ckboxImageEditor:processed', dataWithBlurHashMock );
 
-				it( 'should replace image with saved one (with blurHash placeholder)', () => {
-					setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" ' +
-						' width="50" height="50" src="/assets/sample.png"></imageBlock>]' );
-
-					const stub = sinon.stub( command, '_waitForAssetProcessed' ).callsFake(
-						() => Promise.resolve( command.fire( 'ckboxImageEditor:processed', dataWithBlurHashMock ) ) );
-
-					const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
-
-					stub( dataWithBlurHashMock ).then( () => {
-						expect( getModelData( model ) ).to.equal(
-							'[<imageBlock ' +
-								'alt="" ' +
-								'ckboxImageId="image-id1" ' +
-								'height="100" ' +
-								'placeholder="' + placeholder + '" ' +
-								'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-								'width="100">' +
-							'</imageBlock>]'
-						);
-					} );
-				} );
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'placeholder="' + placeholder + '" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
 			} );
 		} );
 	} );
 } );
+
+function wait( time ) {
+	return new Promise( resolve => {
+		setTimeout( resolve, time );
+	} );
+}
+
+function createPromise() {
+	let resolve;
+
+	const promise = new Promise( res => {
+		resolve = res;
+	} );
+
+	return [ promise, resolve ];
+}
