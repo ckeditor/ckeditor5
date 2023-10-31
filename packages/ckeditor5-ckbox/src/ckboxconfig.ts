@@ -345,6 +345,11 @@ export interface CKBoxRawAssetMetadataDefinition {
 	 * The blurhash placeholder value.
 	 */
 	blurHash?: string;
+
+	/**
+	 * The processing status of the asset.
+	 */
+	metadataProcessingStatus?: string;
 }
 
 /**
