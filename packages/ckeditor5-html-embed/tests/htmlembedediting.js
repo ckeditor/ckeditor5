@@ -191,6 +191,8 @@ describe( 'HtmlEmbedEditing', () => {
 					if ( ctx.endsWith( '$root' ) && childDef.name == 'rawHtml' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				editor.conversion.elementToElement( { model: 'div', view: 'div' } );

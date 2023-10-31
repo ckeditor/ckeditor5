@@ -491,7 +491,9 @@ export default class Schema extends ObservableMixin() {
 	 * 	if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'heading1' ) {
 	 * 		return false;
 	 * 	}
-	 * } );
+	 *
+	 * 	 return undefined;
+	 * 	} );
 	 * ```
 	 *
 	 * Which translates to:

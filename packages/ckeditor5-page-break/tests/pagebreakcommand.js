@@ -101,6 +101,8 @@ describe( 'PageBreakCommand', () => {
 				if ( childDefinition.name === 'pageBreak' && context.last.name === 'block' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
@@ -137,6 +139,8 @@ describe( 'PageBreakCommand', () => {
 				if ( childDefinition.name === 'paragraph' && context.last.name === '$root' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			setModelData( model, '[]' );

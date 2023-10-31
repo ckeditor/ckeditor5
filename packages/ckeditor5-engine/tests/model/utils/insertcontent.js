@@ -432,6 +432,8 @@ describe( 'DataController utils', () => {
 					if ( childDef.name == 'paragraph' && ctx.endsWith( '$root' ) ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				const content = new DocumentFragment( [

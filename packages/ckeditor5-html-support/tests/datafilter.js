@@ -1560,6 +1560,8 @@ describe( 'DataFilter', () => {
 				if ( context.endsWith( 'paragraph' ) && childDefinition.isObject ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 			dataFilter.allowEmptyElement( 'i' );
 			dataFilter.allowElement( 'i' );

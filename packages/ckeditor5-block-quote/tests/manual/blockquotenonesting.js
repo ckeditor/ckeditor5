@@ -13,6 +13,8 @@ function DisallowNestingBlockQuotes( editor ) {
 		if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'blockQuote' ) {
 			return false;
 		}
+
+		return undefined;
 	} );
 }
 

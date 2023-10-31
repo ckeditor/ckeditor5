@@ -103,6 +103,8 @@ describe( 'HorizontalLineCommand', () => {
 				if ( childDefinition.name === 'horizontalLine' && context.last.name === 'block' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
@@ -139,6 +141,8 @@ describe( 'HorizontalLineCommand', () => {
 				if ( childDefinition.name === 'paragraph' && context.last.name === '$root' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			setModelData( model, '[]' );

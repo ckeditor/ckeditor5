@@ -234,6 +234,8 @@ describe( 'ImageInlineEditing', () => {
 					if ( childDef.name == 'imageInline' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				editor.conversion.elementToElement( { model: 'div', view: 'div' } );

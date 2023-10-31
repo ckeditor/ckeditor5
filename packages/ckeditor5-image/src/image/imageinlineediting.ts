@@ -72,6 +72,8 @@ export default class ImageInlineEditing extends Plugin {
 			if ( context.endsWith( 'caption' ) && childDefinition.name === 'imageInline' ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 
 		this._setupConversion();

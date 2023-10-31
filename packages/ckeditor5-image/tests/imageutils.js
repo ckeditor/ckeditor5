@@ -464,6 +464,8 @@ describe( 'ImageUtils plugin', () => {
 				if ( childDefinition.name === 'imageInline' && context.last.name === 'paragraph' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 

@@ -3142,6 +3142,8 @@ describe( 'Schema', () => {
 					if ( childDef.name == 'blockQuote' && ctx.endsWith( 'blockQuote' ) ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 			},
 			() => {

@@ -339,6 +339,8 @@ describe( 'DeleteCommand', () => {
 				if ( ctx.endsWith( '$root' ) && childDef.name == 'paragraph' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			setData( model, '<heading1>[]</heading1>' );
@@ -383,6 +385,8 @@ describe( 'DeleteCommand', () => {
 					if ( ctx.endsWith( '$root' ) && childDef.name == 'paragraph' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				setData( model, '<heading1>[]</heading1><heading1>foo</heading1>' );

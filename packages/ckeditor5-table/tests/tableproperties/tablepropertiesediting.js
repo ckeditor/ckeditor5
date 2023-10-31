@@ -397,6 +397,8 @@ describe( 'table properties', () => {
 								if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
 									return false;
 								}
+
+								return undefined;
 							} );
 						} );
 

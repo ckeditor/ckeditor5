@@ -277,6 +277,8 @@ class ComplexBox extends Plugin {
 			if ( [ ...context.getNames() ].includes( 'sideCard' ) && childDefinition.name === 'sideCard' ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 
 		// A text-only title.

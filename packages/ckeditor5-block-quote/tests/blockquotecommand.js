@@ -120,6 +120,8 @@ describe( 'BlockQuoteCommand', () => {
 					if ( childDef.name == 'blockQuote' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				setModelData( model, '<paragraph>x[]x</paragraph>' );
@@ -382,6 +384,8 @@ describe( 'BlockQuoteCommand', () => {
 					if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'fooBlock' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'fooBlock', view: 'fooblock' } );

@@ -122,6 +122,8 @@ describe( 'ParagraphCommand', () => {
 				if ( ctx.endsWith( 'restricted' ) && childDef.name == 'paragraph' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			setData(

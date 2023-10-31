@@ -183,6 +183,8 @@ describe( 'Paragraph feature', () => {
 					if ( ctx.endsWith( '$root paragraph' ) && childDef.name == '$text' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				const modelFragment = editor.data.parse( 'foo' );
@@ -422,6 +424,8 @@ describe( 'Paragraph feature', () => {
 				if ( ctx.endsWith( '$root' ) && childDef.name == 'paragraph' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			model.change( writer => {

@@ -160,6 +160,8 @@ describe( 'BlockQuoteEditing', () => {
 				if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'blockQuote' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 		} );
 

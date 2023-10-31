@@ -153,6 +153,8 @@ export default class CodeBlockEditing extends Plugin {
 			if ( context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 
 		// Conversion.

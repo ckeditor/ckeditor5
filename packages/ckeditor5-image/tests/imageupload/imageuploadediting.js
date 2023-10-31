@@ -376,6 +376,8 @@ describe( 'ImageUploadEditing', () => {
 			if ( childDefinition.name.startsWith( 'imageBlock' ) && context.last.name === 'other' ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 
 		editor.conversion.elementToElement( { model: 'other', view: 'p' } );

@@ -65,6 +65,8 @@ ClassicEditor
 			if ( ctx.endsWith( '$root' ) && childDef.name == 'heading3' ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 	} )
 	.catch( err => {

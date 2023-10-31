@@ -35,6 +35,8 @@ describe( 'ListCommand', () => {
 			if ( ctx.endsWith( 'widget' ) && childDef.name == 'listItem' ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 
 		setData(

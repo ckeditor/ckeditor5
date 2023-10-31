@@ -243,6 +243,8 @@ describe( 'ImageBlockEditing', () => {
 					if ( ctx.endsWith( '$root' ) && childDef.name == 'imageBlock' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				editor.conversion.elementToElement( { model: 'div', view: 'div' } );

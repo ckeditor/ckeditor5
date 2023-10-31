@@ -607,6 +607,8 @@ describe( 'MediaEmbedEditing', () => {
 							if ( ctx.endsWith( '$root' ) && childDef.name == 'media' ) {
 								return false;
 							}
+
+							return undefined;
 						} );
 
 						editor.conversion.elementToElement( { model: 'blockquote', view: 'blockquote' } );
@@ -809,6 +811,8 @@ describe( 'MediaEmbedEditing', () => {
 							if ( ctx.endsWith( '$root' ) && childDef.name == 'media' ) {
 								return false;
 							}
+
+							return undefined;
 						} );
 
 						editor.conversion.elementToElement( { model: 'blockquote', view: 'blockquote' } );
@@ -982,6 +986,8 @@ describe( 'MediaEmbedEditing', () => {
 								if ( ctx.endsWith( '$root' ) && childDef.name == 'media' ) {
 									return false;
 								}
+
+								return undefined;
 							} );
 
 							editor.conversion.elementToElement( { model: 'div', view: 'div' } );

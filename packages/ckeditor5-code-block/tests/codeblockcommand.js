@@ -130,6 +130,8 @@ describe( 'CodeBlockCommand', () => {
 				if ( context.endsWith( 'blockQuote' ) && childDef.name === 'codeBlock' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			setModelData( model, '<blockQuote><paragraph>f[o]o</paragraph></blockQuote>' );

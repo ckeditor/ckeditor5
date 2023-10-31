@@ -1183,6 +1183,8 @@ describe( 'upcast-converters', () => {
 				if ( ( childDef.name == '$text' || childDef.name == 'paragraph' ) && ctx.endsWith( '$root' ) ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			const viewText = new ViewText( viewDocument, 'foobar' );
@@ -1206,6 +1208,8 @@ describe( 'upcast-converters', () => {
 				if ( ( childDef.name == '$text' ) && ctx.endsWith( '$root' ) ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			const viewText = new ViewText( viewDocument, 'foobar' );
@@ -1230,6 +1234,8 @@ describe( 'upcast-converters', () => {
 				if ( childDef.name == '$text' && ctx.endsWith( '$root' ) ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			const viewText = new ViewText( viewDocument, 'foobar' );

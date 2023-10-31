@@ -85,6 +85,8 @@ describe( 'CKFinderCommand', () => {
 				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
@@ -384,6 +386,8 @@ describe( 'CKFinderCommand', () => {
 				if ( childDefinition.name === 'imageBlock' && context.last.name === 'block' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );

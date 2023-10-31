@@ -232,6 +232,8 @@ describe( 'ImageTypeCommand', () => {
 					if ( childDefinition.name == 'imageBlock' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
@@ -491,6 +493,8 @@ describe( 'ImageTypeCommand', () => {
 					if ( childDefinition.name == 'imageInline' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				setModelData( model, `<block>[<imageBlock src="${ imgSrc }"></imageBlock>]</block>` );

@@ -205,6 +205,8 @@ describe( 'InsertParagraphCommand', () => {
 				if ( context.endsWith( '$root' ) && childDefinition.name == 'paragraph' ) {
 					return false;
 				}
+
+				return undefined;
 			} );
 
 			setData( model, '<heading1>foo[]</heading1>' );

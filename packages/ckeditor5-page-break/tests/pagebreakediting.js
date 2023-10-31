@@ -110,6 +110,8 @@ describe( 'PageBreakEditing', () => {
 					if ( ctx.endsWith( '$root' ) && childDef.name == 'pageBreak' ) {
 						return false;
 					}
+
+					return undefined;
 				} );
 
 				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
