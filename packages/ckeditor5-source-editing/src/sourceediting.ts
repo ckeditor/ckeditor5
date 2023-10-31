@@ -10,7 +10,7 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
-import { ButtonView, View } from 'ckeditor5/src/ui';
+import { ButtonView, Dialog, TextareaView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
 
@@ -39,7 +39,7 @@ export default class SourceEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ PendingActions ] as const;
+		return [ PendingActions, Dialog ] as const;
 	}
 
 	/**
@@ -172,44 +172,29 @@ export default class SourceEditing extends Plugin {
 				const dialog = editor.plugins.get( 'Dialog' );
 
 				dialog.show( {
-					isDraggable: true,
+					className: 'ck-source-editing-dialog',
 
 					onShow: dialog => {
-						// modal.view.children.add( specialCharactersView );
 						dialog.view.showHeader( t( 'Source Editing' ) );
 
 						const data = formatSource( editor.data.get( { rootName: 'main' } ) );
-						const textareaView = new View( locale );
-
-						textareaView.setTemplate( {
-							tag: 'textarea',
-							attributes: {
-								class: [ 'ck', 'ck-source-editing-dialog-source' ],
-								rows: '1',
-								'aria-label': 'Source code editing area'
-							}
-						} );
-
-						textareaView.render();
-
-						const textareaDomElement = textareaView.element as HTMLTextAreaElement;
-						textareaDomElement.value = data;
-
-						// TODO: Proper class for textareaview.
-						Object.assign( textareaView, {
-							focus() {
-								textareaDomElement.focus();
-							}
-						} );
+						const textareaView = new TextareaView( locale );
 
 						dialog.view.children.add( textareaView );
+
+						textareaView.set( {
+							minRows: 5,
+							maxRows: 15,
+							value: data
+						} );
+
 						dialog.view.setActionButtons( [
 							{
 								label: t( 'Save' ),
 								class: 'ck-button-action',
 								withText: true,
 								onExecute: () => {
-									editor.data.set( textareaDomElement.value );
+									editor.data.set( textareaView.element!.value );
 									dialog.hide();
 								}
 							},
@@ -220,7 +205,7 @@ export default class SourceEditing extends Plugin {
 							}
 						] );
 
-						textareaDomElement.setSelectionRange( 0, 0 );
+						textareaView.element!.setSelectionRange( 0, 0 );
 					}
 				} );
 			} );

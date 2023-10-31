@@ -51,21 +51,14 @@
 	}
 }
 
-.ck.ck-source-editing-dialog-source {
-	@mixin ck-rounded-corners;
+.ck.ck-source-editing-dialog {
+	& .ck-dialog__content {
+		padding: var(--ck-spacing-large) var(--ck-spacing-large) 0;
 
-	width: 600px;
-	max-width: 100%;
-	height: 300px;
-	font-family: monospace;
-	padding: var(--ck-spacing-large);
-	border: 1px solid transparent;
-	border: 1px solid var(--ck-color-base-border);
-	resize: none;
-	margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
-
-	&:not([readonly]):focus {
-		@mixin ck-focus-ring;
-		@mixin ck-box-shadow var(--ck-inner-shadow);
+		& textarea {
+			width: 600px;
+			max-width: 100%;
+			font-family: monospace;
+		}
 	}
 }
