@@ -9,9 +9,9 @@
 
 import { type Editor, Plugin } from 'ckeditor5/src/core';
 import {
+	Dialog,
 	ButtonView,
 	CssTransitionDisablerMixin,
-	type DropdownView,
 	type ViewWithCssTransitionDisabler,
 	type FocusCyclerForwardCycleEvent,
 	type FocusCyclerBackwardCycleEvent
@@ -32,6 +32,13 @@ import type ReplaceAllCommand from './replaceallcommand';
  * that uses the {@link module:find-and-replace/findandreplace~FindAndReplace FindAndReplace} plugin API.
  */
 export default class FindAndReplaceUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ Dialog ] as const;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -110,28 +117,6 @@ export default class FindAndReplaceUI extends Plugin {
 			this._setupFormView( formView );
 
 			return buttonView;
-		} );
-	}
-
-	/**
-	 * Sets up the find and replace button.
-	 */
-	private _setupDropdownButton( dropdown: DropdownView ) {
-		const editor = this.editor;
-		const t = editor.locale.t;
-
-		dropdown.buttonView.set( {
-			icon: loupeIcon,
-			label: t( 'Find and replace' ),
-			keystroke: 'CTRL+F',
-			tooltip: true
-		} );
-
-		editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-			if ( dropdown.isEnabled ) {
-				dropdown.isOpen = true;
-				cancelEvent();
-			}
 		} );
 	}
 

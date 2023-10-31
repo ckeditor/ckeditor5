@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import {
 	ButtonView,
 	CssTransitionDisablerMixin,
+	Dialog,
 	type FocusCyclerBackwardCycleEvent,
 	type FocusCyclerForwardCycleEvent,
 	type ViewWithCssTransitionDisabler
@@ -31,7 +32,7 @@ export default class MediaEmbedUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ MediaEmbedEditing ] as const;
+		return [ MediaEmbedEditing, Dialog ] as const;
 	}
 
 	/**
@@ -86,8 +87,6 @@ export default class MediaEmbedUI extends Plugin {
 
 		buttonView.on( 'execute', () => {
 			dialog.show( {
-				isDraggable: true,
-
 				onShow: dialog => {
 					mediaForm.disableCssTransitions();
 

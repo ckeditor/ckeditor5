@@ -10,6 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Typing } from 'ckeditor5/src/typing';
 import {
+	Dialog,
 	ButtonView,
 	type FocusCyclerBackwardCycleEvent,
 	type FocusCyclerForwardCycleEvent
@@ -55,7 +56,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Typing ] as const;
+		return [ Typing, Dialog ] as const;
 	}
 
 	/**
@@ -129,8 +130,6 @@ export default class SpecialCharacters extends Plugin {
 				}
 
 				dialog.show( {
-					isDraggable: true,
-
 					onShow: dialog => {
 						dialog.view.children.add( specialCharactersView );
 						dialog.view.showHeader( t( 'Special Characters' ) );
