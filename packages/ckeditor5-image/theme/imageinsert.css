@@ -21,3 +21,35 @@
 	margin: 0;
 	border: none;
 }
+
+.ck.ck-image-insert-form {
+	&:focus {
+		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
+		outline: none;
+	}
+}
+
+.ck.ck-form__row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+
+	/* Ignore labels that work as fieldset legends */
+	& > *:not(.ck-label) {
+		flex-grow: 1;
+	}
+
+	&.ck-image-insert-form__action-row {
+		margin-top: var(--ck-spacing-standard);
+
+		& .ck-button-save,
+		& .ck-button-cancel {
+			justify-content: center;
+		}
+
+		& .ck-button .ck-button__label {
+			color: var(--ck-color-text);
+		}
+	}
+}

@@ -7,16 +7,22 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import { Plugin, icons, type Command } from 'ckeditor5/src/core';
+import { Plugin, icons } from 'ckeditor5/src/core';
 import type { Locale } from 'ckeditor5/src/utils';
-import { SplitButtonView, createDropdown, type DropdownView, type LabeledFieldView, CollapsibleView } from 'ckeditor5/src/ui';
+import {
+	SplitButtonView,
+	createDropdown,
+	CollapsibleView,
+	type DropdownView,
+	type View,
+	type ButtonView
+} from 'ckeditor5/src/ui';
 
 import ImageInsertPanelView from './ui/imageinsertpanelview';
-import { prepareIntegrations } from './utils';
-import type ImageUtils from '../imageutils';
 import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
 import type UploadImageCommand from '../imageupload/uploadimagecommand';
 import type InsertImageCommand from '../image/insertimagecommand';
+import ImageInsertUrlView from './ui/imageinserturlview';
 
 /**
  * The image insert dropdown plugin.
@@ -54,7 +60,7 @@ export default class ImageInsertUI extends Plugin {
 		editor.ui.componentFactory.add( 'imageInsert', componentCreator );
 
 		editor.ui.componentFactory.add( 'insertImageView', locale => {
-			const imageInsertView = new ImageInsertPanelView( locale, prepareIntegrations( editor ) );
+			const imageInsertView = new ImageInsertPanelView( locale, this._prepareIntegrations() );
 			const collapsibleView = new CollapsibleView( locale, [ imageInsertView ] );
 			const t = locale.t;
 
@@ -79,107 +85,54 @@ export default class ImageInsertUI extends Plugin {
 		const uploadImageCommand: UploadImageCommand | undefined = editor.commands.get( 'uploadImage' );
 		const insertImageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
 
-		this.dropdownView = createDropdown( locale, uploadImageCommand ? SplitButtonView : undefined );
+		let dropdownButton;
 
-		const buttonView = this.dropdownView.buttonView;
-		const panelView = this.dropdownView.panelView;
+		if ( uploadImageCommand ) {
+			const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as ButtonView;
 
-		buttonView.set( {
-			label: t( 'Insert image' ),
-			icon: icons.image,
-			tooltip: true
-		} );
+			uploadImageButton.extendTemplate( {
+				attributes: {
+					class: 'ck ck-button'
+				}
+			} );
 
-		panelView.extendTemplate( {
+			dropdownButton = new SplitButtonView( locale, uploadImageButton );
+		}
+
+		const dropdownView = createDropdown( locale, dropdownButton );
+
+		if ( !uploadImageCommand ) {
+			dropdownView.buttonView.set( {
+				label: t( 'Insert image' ),
+				icon: icons.image,
+				tooltip: true
+			} );
+		}
+
+		dropdownView.panelView.extendTemplate( {
 			attributes: {
 				class: 'ck-image-insert__panel'
 			}
 		} );
 
-		if ( uploadImageCommand ) {
-			const splitButtonView = this.dropdownView.buttonView as SplitButtonView;
+		this.dropdownView = dropdownView;
 
-			// We are injecting custom button replacement to readonly field.
-			( splitButtonView as any ).actionView = editor.ui.componentFactory.create( 'uploadImage' );
-			// After we replaced action button with `uploadImage` component,
-			// we have lost a proper styling and some minor visual quirks have appeared.
-			// Brining back original split button classes helps fix the button styling
-			// See https://github.com/ckeditor/ckeditor5/issues/7986.
-			splitButtonView.actionView.extendTemplate( {
-				attributes: {
-					class: 'ck ck-button ck-splitbutton__action'
-				}
-			} );
-		}
-
-		return this._setUpDropdown( uploadImageCommand || insertImageCommand );
-	}
-
-	/**
-	 * Sets up the dropdown view.
-	 *
-	 * @param command An uploadImage or insertImage command.
-	 */
-	private _setUpDropdown( command: Command ): DropdownView {
-		const editor = this.editor;
-		const t = editor.t;
-		const dropdownView = this.dropdownView!;
-		const panelView = dropdownView.panelView;
-		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
-		const replaceImageSourceCommand: ReplaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
-
-		let imageInsertView: ImageInsertPanelView;
-
-		dropdownView.bind( 'isEnabled' ).to( command );
+		dropdownView.bind( 'isEnabled' ).to( uploadImageCommand || insertImageCommand );
 
 		dropdownView.once( 'change:isOpen', () => {
-			imageInsertView = new ImageInsertPanelView( editor.locale, prepareIntegrations( editor ) );
+			const imageInsertPanelView = new ImageInsertPanelView( editor.locale, this._prepareIntegrations() );
 
-			imageInsertView.delegate( 'submit', 'cancel' ).to( dropdownView );
-			panelView.children.add( imageInsertView );
+			imageInsertPanelView.delegate( 'submit', 'cancel' ).to( dropdownView );
+			dropdownView.panelView.children.add( imageInsertPanelView );
 		} );
-
-		dropdownView.on( 'change:isOpen', () => {
-			const selectedElement = editor.model.document.selection.getSelectedElement()!;
-			const insertButtonView = imageInsertView.insertButtonView;
-			const insertImageViaUrlForm = imageInsertView.getIntegration( 'insertImageViaUrl' ) as LabeledFieldView;
-
-			if ( dropdownView.isOpen ) {
-				if ( imageUtils.isImage( selectedElement ) ) {
-					imageInsertView.imageURLInputValue = replaceImageSourceCommand.value!;
-					insertButtonView.label = t( 'Update' );
-					insertImageViaUrlForm.label = t( 'Update image URL' );
-				} else {
-					imageInsertView.imageURLInputValue = '';
-					insertButtonView.label = t( 'Insert' );
-					insertImageViaUrlForm.label = t( 'Insert image via URL' );
-				}
-			}
-		// Note: Use the low priority to make sure the following listener starts working after the
-		// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
-		// invisible form/input cannot be focused/selected.
-		}, { priority: 'low' } );
-
-		this.delegate( 'cancel' ).to( dropdownView );
 
 		dropdownView.on( 'submit', () => {
 			closePanel();
-			onSubmit();
 		} );
 
 		dropdownView.on( 'cancel', () => {
 			closePanel();
 		} );
-
-		function onSubmit() {
-			const selectedElement = editor.model.document.selection.getSelectedElement()!;
-
-			if ( imageUtils.isImage( selectedElement ) ) {
-				editor.execute( 'replaceImageSource', { source: imageInsertView.imageURLInputValue } );
-			} else {
-				editor.execute( 'insertImage', { source: imageInsertView.imageURLInputValue } );
-			}
-		}
 
 		function closePanel() {
 			editor.editing.view.focus();
@@ -187,5 +140,88 @@ export default class ImageInsertUI extends Plugin {
 		}
 
 		return dropdownView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _prepareIntegrations(): Array<View> {
+		const editor = this.editor;
+		const items = editor.config.get( 'image.insert.integrations' ) || [ 'insertImageViaUrl' ];
+
+		return items.map( item => {
+			if ( item == 'insertImageViaUrl' ) {
+				return this._createInsertUrlView();
+			}
+			else if ( item == 'openCKFinder' && editor.ui.componentFactory.has( 'ckfinder' ) ) {
+				return this._createCKFinderView();
+			}
+			else {
+				return this._createGenericIntegration( item );
+			}
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createInsertUrlView() {
+		const replaceImageSourceCommand: ReplaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
+		const imageInsertUrlView = new ImageInsertUrlView( this.editor.locale );
+
+		imageInsertUrlView.delegate( 'submit', 'cancel' ).to( this.dropdownView! );
+		imageInsertUrlView.bind( 'isImageSelected' ).to( replaceImageSourceCommand, 'isEnabled' );
+
+		// Set initial value because integrations are created on first dropdown open.
+		imageInsertUrlView.imageURLInputValue = replaceImageSourceCommand.value || '';
+
+		this.dropdownView!.on( 'change:isOpen', () => {
+			if ( this.dropdownView!.isOpen ) {
+				// Make sure that each time the panel shows up, the URL field remains in sync with the value of
+				// the command. If the user typed in the input, then canceled and re-opened it without changing
+				// the value of the media command (e.g. because they didn't change the selection), they would see
+				// the old value instead of the actual value of the command.
+				imageInsertUrlView.imageURLInputValue = replaceImageSourceCommand.value || '';
+			}
+
+			// Note: Use the low priority to make sure the following listener starts working after the
+			// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
+			// invisible form/input cannot be focused/selected.
+		}, { priority: 'low' } );
+
+		this.dropdownView!.on( 'submit', () => {
+			if ( replaceImageSourceCommand.isEnabled ) {
+				this.editor.execute( 'replaceImageSource', { source: imageInsertUrlView.imageURLInputValue } );
+			} else {
+				this.editor.execute( 'insertImage', { source: imageInsertUrlView.imageURLInputValue } );
+			}
+		} );
+
+		return imageInsertUrlView;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createCKFinderView() {
+		const ckFinderButton = this._createGenericIntegration( 'ckfinder' );
+
+		ckFinderButton.set( 'class', 'ck-image-insert__ck-finder-button' );
+
+		return ckFinderButton;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _createGenericIntegration( name: string ) {
+		const button = this.editor.ui.componentFactory.create( name ) as ButtonView;
+
+		button.set( 'withText', true );
+
+		// We want to close the dropdown panel view when user clicks the ckFinderButton.
+		button.delegate( 'execute' ).to( this.dropdownView!, 'cancel' );
+
+		return button;
 	}
 }

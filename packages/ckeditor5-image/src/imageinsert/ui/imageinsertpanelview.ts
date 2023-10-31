@@ -7,15 +7,17 @@
  * @module image/imageinsert/ui/imageinsertpanelview
  */
 
-import { icons } from 'ckeditor5/src/core';
-import { ButtonView, View, ViewCollection, submitHandler, FocusCycler, type InputTextView, type LabeledFieldView } from 'ckeditor5/src/ui';
-import { Collection, FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-
-import ImageInsertFormRowView from './imageinsertformrowview';
+import {
+	View,
+	ViewCollection,
+	submitHandler,
+	FocusCycler,
+	FocusCyclerForwardCycleEvent,
+	FocusCyclerBackwardCycleEvent
+} from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
 import '../../../theme/imageinsert.css';
-
-export type ViewWithName = View & { name: string };
 
 /**
  * The insert an image via URL view controller class.
@@ -23,23 +25,6 @@ export type ViewWithName = View & { name: string };
  * See {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
  */
 export default class ImageInsertPanelView extends View {
-	/**
-	 * The "insert/update" button view.
-	 */
-	public insertButtonView: ButtonView;
-
-	/**
-	 * The "cancel" button view.
-	 */
-	public cancelButtonView: ButtonView;
-
-	/**
-	 * The value of the URL input.
-	 *
-	 * @observable
-	 */
-	declare public imageURLInputValue: string;
-
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
@@ -62,10 +47,8 @@ export default class ImageInsertPanelView extends View {
 
 	/**
 	 * A collection of the defined integrations for inserting the images.
-	 *
-	 * @private
 	 */
-	declare public _integrations: Collection<ViewWithName>;
+	private readonly children: ViewCollection;
 
 	/**
 	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
@@ -73,22 +56,13 @@ export default class ImageInsertPanelView extends View {
 	 * @param locale The localization services instance.
 	 * @param integrations An integrations object that contains components (or tokens for components) to be shown in the panel view.
 	 */
-	constructor( locale: Locale, integrations: Record<string, View> = {} ) {
+	constructor( locale: Locale, integrations: Array<View> = [] ) {
 		super( locale );
 
-		const { insertButtonView, cancelButtonView } = this._createActionButtons( locale );
-
-		this.insertButtonView = insertButtonView;
-
-		this.cancelButtonView = cancelButtonView;
-
-		this.set( 'imageURLInputValue', '' );
-
 		this.focusTracker = new FocusTracker();
-
 		this.keystrokes = new KeystrokeHandler();
-
 		this._focusables = new ViewCollection();
+		this.children = this.createCollection();
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -103,22 +77,21 @@ export default class ImageInsertPanelView extends View {
 			}
 		} );
 
-		this.set( '_integrations', new Collection<ViewWithName>() );
+		this.children.addMany( integrations );
 
-		for ( const [ integration, integrationView ] of Object.entries( integrations ) ) {
-			if ( integration === 'insertImageViaUrl' ) {
-				( integrationView as LabeledFieldView<InputTextView> ).fieldView
-					.bind( 'value' ).to( this, 'imageURLInputValue', ( value: string ) => value || '' );
-
-				( integrationView as LabeledFieldView<InputTextView> ).fieldView.on( 'input', () => {
-					this.imageURLInputValue = ( integrationView as LabeledFieldView<InputTextView> ).fieldView.element!.value.trim();
-				} );
-			}
-
-			( integrationView as ViewWithName ).name = integration;
-
-			this._integrations.add( integrationView as ViewWithName );
-		}
+		// for ( const view of this.children ) {
+		// 	if ( 'focusCycler' in view ) {
+		// 		view.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
+		// 			this._focusCycler.focusNext();
+		// 			evt.stop();
+		// 		} );
+		//
+		// 		view.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
+		// 			this._focusCycler.focusPrevious();
+		// 			evt.stop();
+		// 		} );
+		// 	}
+		// }
 
 		this.setTemplate( {
 			tag: 'form',
@@ -127,21 +100,10 @@ export default class ImageInsertPanelView extends View {
 				class: [
 					'ck',
 					'ck-image-insert-form'
-				],
-
-				tabindex: '-1'
+				]
 			},
 
-			children: [
-				...this._integrations,
-				new ImageInsertFormRowView( locale, {
-					children: [
-						this.insertButtonView,
-						this.cancelButtonView
-					],
-					class: 'ck-image-insert-form__action-row'
-				} )
-			]
+			children: this.children
 		} );
 	}
 
@@ -155,32 +117,16 @@ export default class ImageInsertPanelView extends View {
 			view: this
 		} );
 
-		const childViews = [
-			...this._integrations,
-			this.insertButtonView,
-			this.cancelButtonView
-		];
-
-		childViews.forEach( v => {
+		this.children.forEach( view => {
 			// Register the view as focusable.
-			this._focusables.add( v );
+			this._focusables.add( view );
 
 			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element! );
+			this.focusTracker.add( view.element! );
 		} );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
-
-		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
-
-		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
-		// keystroke handler would take over the key management in the URL input. We need to prevent
-		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
-		this.keystrokes.set( 'arrowright', stopPropagation );
-		this.keystrokes.set( 'arrowleft', stopPropagation );
-		this.keystrokes.set( 'arrowup', stopPropagation );
-		this.keystrokes.set( 'arrowdown', stopPropagation );
 	}
 
 	/**
@@ -194,51 +140,6 @@ export default class ImageInsertPanelView extends View {
 	}
 
 	/**
-	 * Returns a view of the integration.
-	 *
-	 * @param name The name of the integration.
-	 */
-	public getIntegration( name: string ): View {
-		return this._integrations.find( integration => integration.name === name )!;
-	}
-
-	/**
-	 * Creates the following form controls:
-	 *
-	 * * {@link #insertButtonView},
-	 * * {@link #cancelButtonView}.
-	 *
-	 * @param locale The localization services instance.
-	 */
-	private _createActionButtons( locale: Locale ): { insertButtonView: ButtonView; cancelButtonView: ButtonView } {
-		const t = locale.t;
-		const insertButtonView = new ButtonView( locale );
-		const cancelButtonView = new ButtonView( locale );
-
-		insertButtonView.set( {
-			label: t( 'Insert' ),
-			icon: icons.check,
-			class: 'ck-button-save',
-			type: 'submit',
-			withText: true,
-			isEnabled: this.imageURLInputValue
-		} );
-
-		cancelButtonView.set( {
-			label: t( 'Cancel' ),
-			icon: icons.cancel,
-			class: 'ck-button-cancel',
-			withText: true
-		} );
-
-		insertButtonView.bind( 'isEnabled' ).to( this, 'imageURLInputValue', value => !!value );
-		insertButtonView.delegate( 'execute' ).to( this, 'submit' );
-		cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
-
-		return { insertButtonView, cancelButtonView };
-	}
-
-	/**
 	 * Focuses the first {@link #_focusables focusable} in the form.
 	 */
 	public focus(): void {
@@ -247,8 +148,7 @@ export default class ImageInsertPanelView extends View {
 }
 
 /**
- * Fired when the form view is submitted (when one of the children triggered the submit event),
- * e.g. by a click on {@link ~ImageInsertPanelView#insertButtonView}.
+ * TODO
  *
  * @eventName ~ImageInsertPanelView#submit
  */
@@ -258,7 +158,7 @@ export type SubmitEvent = {
 };
 
 /**
- * Fired when the form view is canceled, e.g. by a click on {@link ~ImageInsertPanelView#cancelButtonView}.
+ * TODO
  *
  * @eventName ~ImageInsertPanelView#cancel
  */

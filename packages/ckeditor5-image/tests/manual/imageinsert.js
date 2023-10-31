@@ -35,8 +35,8 @@ ClassicEditor
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
 			insert: {
 				integrations: [
-					'insertImageViaUrl',
-					'openCKFinder'
+					'openCKFinder',
+					'insertImageViaUrl'
 				]
 			}
 		},
