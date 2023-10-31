@@ -359,6 +359,8 @@ function DisallowNestingTables( editor ) {
 		if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
 			return false;
 		}
+
+		return undefined;
 	} );
 }
 

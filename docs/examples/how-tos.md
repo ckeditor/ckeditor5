@@ -367,6 +367,8 @@ class Forms extends Plugin {
 			) {
 				return false;
 			}
+
+			return undefined;
 		} );
 
 		// Data upcast. Convert a single element loaded by the editor to a structure of model elements.

@@ -108,6 +108,8 @@ class SimpleBoxEditing extends Plugin {
 			if ( context.endsWith( 'simpleBoxDescription' ) && childDefinition.name == 'simpleBox' ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 	}
 

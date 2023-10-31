@@ -629,6 +629,8 @@ schema.addChildCheck( ( context, childDefinition ) => {
 	if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'blockQuote' ) {
 		return false;
 	}
+
+	return undefined;
 } );
 ```
 <!--

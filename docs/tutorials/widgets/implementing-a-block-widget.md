@@ -894,6 +894,8 @@ export default class SimpleBoxEditing extends Plugin {
 			if ( context.endsWith( 'simpleBoxDescription' ) && childDefinition.name == 'simpleBox' ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 	}
 
@@ -1090,6 +1092,8 @@ class SimpleBoxEditing extends Plugin {
 			if ( context.endsWith( 'simpleBoxDescription' ) && childDefinition.name == 'simpleBox' ) {
 				return false;
 			}
+
+			return undefined;
 		} );
 	}
 
