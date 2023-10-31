@@ -203,6 +203,44 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
 			} );
+
+			it( 'should prepare options for the CKBox Image Editing dialog instance', () => {
+				const options = command._prepareOptions();
+
+				expect( options ).to.have.property( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).to.be.true;
+				expect( options.onSave ).to.be.a( 'function' );
+				expect( options.onClose ).to.be.a( 'function' );
+			} );
+
+			it( 'should prepare `imageEditing.allowOverwrite` option based on `ckbox` config.', async () => {
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [
+						CloudServices
+					],
+					ckbox: {
+						tokenUrl: 'foo',
+						imageEditing: {
+							allowOverwrite: false
+						}
+					},
+					substitutePlugins: [
+						CloudServicesCoreMock
+					]
+				} );
+
+				const command = new CKBoxImageEditCommand( editor );
+				command.isEnabled = true;
+				editor.commands.add( 'ckboxImageEdit', command );
+
+				const options = command._prepareOptions();
+
+				expect( options ).to.have.property( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).to.be.false;
+
+				domElement.remove();
+				await editor.destroy();
+			} );
 		} );
 
 		describe( 'closing dialog ("ckboxImageEditor:close")', () => {

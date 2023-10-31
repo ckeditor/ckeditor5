@@ -113,6 +113,11 @@ export interface CKBoxConfig {
 	 * Defaults to {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`}
 	 */
 	language?: string;
+
+	/**
+	 * Configures the CKBox image editor.
+	 */
+	imageEditing?: CKBoxImageEditingConfig;
 }
 
 /**
@@ -340,4 +345,17 @@ export interface CKBoxRawAssetMetadataDefinition {
 	 * The blurhash placeholder value.
 	 */
 	blurHash?: string;
+}
+
+/**
+ * CKBox Image editing config options.
+ *
+ * The config contain `allowOverwrite` definition.
+ */
+export interface CKBoxImageEditingConfig {
+
+	/**
+	 * Sets whether to show the 'Overwrite file' checkbox in image editor. By default, the option is shown.
+	 */
+	allowOverwrite?: boolean;
 }
