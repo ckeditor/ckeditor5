@@ -5,31 +5,139 @@
 
 /* globals console, window, document */
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Image, ImageCaption, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import { ButtonView, Dialog, View } from '../../../src';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+import { icons } from '@ckeditor/ckeditor5-ui';
+
+class ModalWithText extends Plugin {
+	public static get requires() {
+		return [ Dialog ] as const;
+	}
+
+	public init(): void {
+		const t = this.editor.locale.t;
+
+		this.editor.ui.componentFactory.add( 'modalWithText', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Show modal' ),
+				tooltip: true,
+				withText: true
+			} );
+
+			buttonView.on( 'execute', () => {
+				const dialog = this.editor.plugins.get( 'Dialog' );
+
+				dialog.show( {
+					onShow: dialog => {
+						dialog.view.showHeader( t( 'Modal with text' ) );
+
+						const textView = new View( locale );
+
+						textView.setTemplate( {
+							tag: 'div',
+							attributes: {
+								style: {
+									padding: 'var(--ck-spacing-large)',
+									whiteSpace: 'initial',
+									width: '100%',
+									maxWidth: '500px'
+								},
+								tabindex: -1
+							},
+							children: [
+								`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+								dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+								commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+								nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+								anim id est laborum.`
+							]
+						} );
+
+						dialog.view.children.add( textView );
+						dialog.view.setActionButtons( [
+							{
+								label: t( 'Let\'s do this!' ),
+								class: 'ck-button-action',
+								withText: true,
+								onExecute: () => dialog.hide()
+							},
+							{
+								label: t( 'Test button' ),
+								withText: false,
+								icon: icons.colorPaletteIcon,
+								onExecute: () => console.log( 'Test button' )
+							},
+							{
+								label: t( 'Cancel' ),
+								withText: true,
+								onExecute: () => dialog.hide()
+							}
+						] );
+					}
+				} );
+			} );
+
+			return buttonView;
+		} );
+	}
+}
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ) as HTMLElement, {
 		plugins: [
-			ArticlePluginSet,
+			Essentials,
+			Autoformat,
+			BlockQuote,
+			Bold,
+			Heading,
+			Image,
+			ImageCaption,
+			ImageStyle,
+			ImageToolbar,
+			Indent,
+			Italic,
+			Link,
+			List,
+			MediaEmbed,
+			Paragraph,
+			Table,
+			TableToolbar,
+
 			FindAndReplace,
 			SpecialCharacters,
 			SpecialCharactersEssentials,
 			SpecialCharactersEmoji,
 			SourceEditing,
-			Dialog,
 			ModalWithText
 		],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link',
 			'|',
 			'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText'
-		]
+		],
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		}
 	} )
 	.then( editor => {
 		Object.assign( window, { editor } );
@@ -140,67 +248,4 @@ function SpecialCharactersEmoji( editor ) {
 		{ character: '💩', title: 'Pile of Poo' },
 		{ character: '✅', title: 'Check Mark Button' }
 	] );
-}
-
-function ModalWithText( editor ) {
-	const t = editor.locale.t;
-
-	editor.ui.componentFactory.add( 'modalWithText', locale => {
-		const buttonView = new ButtonView( locale );
-
-		buttonView.set( {
-			label: t( 'Show modal' ),
-			tooltip: true,
-			withText: true
-		} );
-
-		buttonView.on( 'execute', () => {
-			const dialog = editor.plugins.get( 'Dialog' );
-
-			dialog.show( {
-				onShow: dialog => {
-					dialog.view.showHeader( t( 'Modal with text' ) );
-
-					const textView = new View( locale );
-
-					textView.setTemplate( {
-						tag: 'div',
-						attributes: {
-							style: {
-								padding: 'var(--ck-spacing-large)',
-								whiteSpace: 'initial',
-								width: '100%',
-								maxWidth: '500px'
-							},
-							tabindex: -1
-						},
-						children: [
-							`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-							magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-							commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-							nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-							anim id est laborum.`
-						]
-					} );
-
-					dialog.view.children.add( textView );
-					dialog.view.setActionButtons( [
-						{
-							label: t( 'Let\'s do this!' ),
-							class: 'ck-button-action',
-							withText: true,
-							onExecute: () => dialog.hide()
-						},
-						{
-							label: t( 'Cancel' ),
-							withText: true,
-							onExecute: () => dialog.hide()
-						}
-					] );
-				}
-			} );
-		} );
-
-		return buttonView;
-	} );
 }
