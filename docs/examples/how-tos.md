@@ -256,7 +256,9 @@ for ( const value of range.getWalker() ) {
 
 ### How to find words in a document, and get their ranges?
 
-```
+If you need to search a text fragment and remap it to its model position, use the following example. It will find all words available in the document root, create a model range based on these and feed them into the console.
+
+```js
 const model = editor.model;
 const rootElement = model.document.getRoot();
 const rootRange = model.createRangeIn( rootElement );
