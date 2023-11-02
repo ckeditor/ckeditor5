@@ -208,12 +208,12 @@ describe( 'CKBoxImageEditCommand', () => {
 				const options = command._prepareOptions();
 
 				expect( options ).to.have.property( 'tokenUrl', 'foo' );
-				expect( options.imageEditing.allowOverwrite ).to.be.true;
+				expect( options.imageEditing.allowOverwrite ).to.be.false;
 				expect( options.onSave ).to.be.a( 'function' );
 				expect( options.onClose ).to.be.a( 'function' );
 			} );
 
-			it( 'should prepare `imageEditing.allowOverwrite` option based on `ckbox` config.', async () => {
+			it( 'should overwrite `imageEditing.allowOverwrite` option to `false` if it\'s set in `ckbox` config.', async () => {
 				const editor = await ClassicTestEditor.create( domElement, {
 					plugins: [
 						CloudServices
@@ -221,7 +221,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					ckbox: {
 						tokenUrl: 'foo',
 						imageEditing: {
-							allowOverwrite: false
+							allowOverwrite: true
 						}
 					},
 					substitutePlugins: [

@@ -95,12 +95,9 @@ export default class CKBoxImageEditCommand extends Command {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
 
-		const allowOverwrite = ( 'imageEditing' in ckboxConfig && 'allowOverwrite' in ckboxConfig.imageEditing! ) ?
-			ckboxConfig.imageEditing.allowOverwrite : true;
-
 		return {
 			imageEditing: {
-				allowOverwrite
+				allowOverwrite: false
 			},
 			tokenUrl: ckboxConfig.tokenUrl,
 			onClose: () => this.fire<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close' ),
