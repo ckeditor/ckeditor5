@@ -24,7 +24,7 @@ describe( 'utils', () => {
 
 			const promise = retry( callback, {
 				retryDelay: () => 10,
-				maxRetries: 2
+				maxAttempts: 3
 			} );
 
 			const result = await promise;
@@ -42,7 +42,7 @@ describe( 'utils', () => {
 
 			const promise = retry( callback, {
 				retryDelay: () => 10,
-				maxRetries: 5
+				maxAttempts: 6
 			} );
 
 			await clock.tickAsync( 100 );
@@ -53,7 +53,7 @@ describe( 'utils', () => {
 			expect( callback.callCount ).to.equal( 3 );
 		} );
 
-		it( 'should return failure after `maxRetries`', async () => {
+		it( 'should return failure after `maxAttempts`', async () => {
 			const callback = sinon.stub();
 
 			callback.onCall( 0 ).returns( Promise.reject( new Error( '1st failure' ) ) );
@@ -63,7 +63,7 @@ describe( 'utils', () => {
 
 			const promise = retry( callback, {
 				retryDelay: () => 10,
-				maxRetries: 2
+				maxAttempts: 3
 			} );
 
 			await clock.tickAsync( 100 );
@@ -115,7 +115,7 @@ describe( 'utils', () => {
 
 			retry( callback, {
 				retryDelay: attempt => ( attempt + 1 ) * 5,
-				maxRetries: 2
+				maxAttempts: 3
 			} );
 
 			expect( attempt, 'after 0ms' ).to.equal( 1 );
@@ -192,7 +192,7 @@ describe( 'utils', () => {
 			expect( attempt, 'after 15000ms' ).to.equal( 4 );
 		} );
 
-		it( 'should exponentially back off by default (custom `maxRetries`)', async () => {
+		it( 'should exponentially back off by default (custom `maxAttempts`)', async () => {
 			let attempt = 0;
 			const callback = sinon.stub();
 
@@ -203,7 +203,7 @@ describe( 'utils', () => {
 			} );
 
 			retry( callback, {
-				maxRetries: 5
+				maxAttempts: 6
 			} );
 
 			expect( attempt, 'after 0ms' ).to.equal( 1 );
@@ -265,7 +265,7 @@ describe( 'utils', () => {
 
 			retry( callback, {
 				retryDelay: attempt => ( attempt + 1 ) * 10,
-				maxRetries: 2
+				maxAttempts: 3
 			} );
 
 			expect( attempt, 'after 0ms' ).to.equal( 1 );
@@ -289,6 +289,29 @@ describe( 'utils', () => {
 			await clock.tickAsync( 35 );
 
 			expect( attempt, 'after 75ms' ).to.equal( 3 );
+		} );
+
+		it( 'should not delay after `maxAttempts` is reached', async () => {
+			const promiseFailed = sinon.stub();
+			const callback = sinon.stub();
+
+			callback.onCall( 0 ).returns( Promise.reject( new Error( '1st failure' ) ) );
+			callback.onCall( 1 ).returns( Promise.reject( new Error( '2nd failure' ) ) );
+
+			const promise = retry( callback, {
+				retryDelay: () => 10,
+				maxAttempts: 2
+			} );
+
+			promise.catch( promiseFailed );
+
+			await clock.tickAsync( 10 );
+
+			expect( callback.callCount, 'callback count' ).to.equal( 2 );
+
+			await clock.tickAsync( 1 );
+
+			expect( promiseFailed.calledOnce, 'promise resolved' ).to.be.true;
 		} );
 	} );
 

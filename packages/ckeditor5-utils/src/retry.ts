@@ -19,32 +19,30 @@
 export default async function retry<TResult>(
 	callback: () => Promise<TResult>,
 	options: {
-		maxRetries?: number;
+		maxAttempts?: number;
 		retryDelay?: ( attempt: number ) => number;
 	} = {}
 ): Promise<TResult> {
 	const {
-		maxRetries = 3,
+		maxAttempts = 4,
 		retryDelay = exponentialDelay()
 	} = options;
 
-	const maxAttempts = maxRetries + 1;
-
-	let lastError;
-
-	for ( let attempt = 0; attempt < maxAttempts; attempt++ ) {
+	for ( let attempt = 0; ; attempt++ ) {
 		try {
 			return await callback();
 		} catch ( err ) {
-			lastError = err;
+			const isLast = attempt + 1 >= maxAttempts;
+
+			if ( isLast ) {
+				throw err;
+			}
 		}
 
 		await new Promise( resolve => {
 			setTimeout( resolve, retryDelay( attempt ) );
 		} );
 	}
-
-	throw lastError;
 }
 
 /**
