@@ -27,7 +27,7 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 /**
  * TODO
  */
-export default class DialogView extends View {
+export default class DialogView extends DraggableViewMixin( View ) implements DraggableView {
 	/**
 	 * TODO
 	 */
@@ -41,7 +41,7 @@ export default class DialogView extends View {
 	/**
 	 * TODO
 	 */
-	public headerView?: FormHeaderView & DraggableView;
+	public headerView?: FormHeaderView;
 
 	/**
 	 * TODO
@@ -153,6 +153,7 @@ export default class DialogView extends View {
 						class: [
 							'ck',
 							'ck-dialog',
+							bind.if( 'isDraggable', 'ck-dialog_draggable' ),
 							bind.to( 'className' )
 						],
 						style: {
@@ -178,7 +179,25 @@ export default class DialogView extends View {
 			cancel();
 		} );
 
+		// Support for dragging the modal.
+		// TODO: Don't allow dragging beyond the edge of the viewport.
+		// TODO: Disable dragging when the mobile view is on.
+		this.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { transformDelta } ) => {
+			this._transform = `translate3d( ${ transformDelta.x }px, ${ transformDelta.y }px, 0)`;
+		} );
+
 		this.keystrokes.listenTo( this.element! );
+	}
+
+	/**
+	 * TODO
+	 */
+	public override get dragHandleElement(): HTMLElement | null {
+		if ( this.headerView ) {
+			return this.headerView.element;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -198,7 +217,7 @@ export default class DialogView extends View {
 		}
 
 		if ( this.headerView ) {
-			this.headerView.resetDrag();
+			this.resetDrag();
 		}
 
 		this._transform = '';
@@ -305,18 +324,8 @@ export default class DialogView extends View {
 	/**
 	 * TODO
 	 */
-	private _createHeaderView(): FormHeaderView & DraggableView {
-		const headerView = new ( DraggableViewMixin( FormHeaderView ) )( this.locale );
-
-		headerView.bind( 'class' ).to( this, 'isDraggable', isDraggable => isDraggable ? 'ck-form__header_draggable' : '' );
-		headerView.bind( 'isDraggable' ).to( this );
-
-		// Support for dragging the modal.
-		// TODO: Don't allow dragging beyond the edge of the viewport.
-		// TODO: Disable dragging when the mobile view is on.
-		headerView.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { transformDelta } ) => {
-			this._transform = `translate3d( ${ transformDelta.x }px, ${ transformDelta.y }px, 0)`;
-		} );
+	private _createHeaderView(): FormHeaderView {
+		const headerView = new FormHeaderView( this.locale );
 
 		this.closeButtonView = this._createCloseButton();
 
