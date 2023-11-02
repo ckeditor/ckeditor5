@@ -27,7 +27,7 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 /**
  * TODO
  */
-export default class ModalView extends View {
+export default class DialogView extends View {
 	/**
 	 * TODO
 	 */
@@ -184,7 +184,7 @@ export default class ModalView extends View {
 	/**
 	 * TODO
 	 */
-	public clear(): void {
+	public reset(): void {
 		while ( this.children.length ) {
 			this.children.remove( 0 );
 		}
@@ -198,7 +198,7 @@ export default class ModalView extends View {
 		}
 
 		if ( this.headerView ) {
-			this.headerView.reset();
+			this.headerView.resetDrag();
 		}
 
 		this._transform = '';

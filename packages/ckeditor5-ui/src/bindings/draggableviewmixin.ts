@@ -53,7 +53,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 			}
 		}
 
-		public reset(): void {
+		public resetDrag(): void {
 			this._transformDelta = { x: 0, y: 0 };
 		}
 
@@ -130,7 +130,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
  */
 export interface DraggableView extends View {
 	isDraggable: boolean;
-	reset(): void;
+	resetDrag(): void;
 }
 
 /**

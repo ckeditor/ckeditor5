@@ -89,7 +89,7 @@ export default class Dialog extends Plugin {
 		this.editor.editing.view.focus();
 
 		this.view.isVisible = false;
-		this.view.clear();
+		this.view.reset();
 
 		if ( this._onHide ) {
 			this._onHide( this );
