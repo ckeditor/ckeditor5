@@ -4,19 +4,36 @@
  */
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import View from '../view';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from '../viewcollection';
+import View from '../view';
 
-enum AriaLiveAnnouncerPoliteness {
+/**
+ * The politeness level of an `aria-live` announcement.
+ *
+ * See https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#Politeness_levels
+ */
+export enum AriaLiveAnnouncerPoliteness {
 	POLITE = 'polite',
 	ASSERTIVE = 'assertive'
 }
 
 /**
- * TODO
+ * An accessibility helper that manages all ARIA live regions associated with an editor instance. ARIA live regions announce changes
+ * to the state of the editor features.
+ *
+ * These announcements are consumed and propagated by screen readers and give users a better understanding of the current
+ * state of the editor.
+ *
+ * To announce a state change to an editor feature named `'Some feature'`, use the {@link #setText} method:
+ * ```ts
+ * editor.ui.ariaLiveAnnouncer.setText( 'Some feature', 'Text of an announcement.' );
+ * ```
  */
 export default class AriaLiveAnnouncer {
+	/**
+	 * The view that aggregates all `aria-live` regions.
+	 */
 	public readonly view: AriaLiveAnnouncerView;
 
 	constructor( editor: Editor ) {
@@ -27,6 +44,11 @@ export default class AriaLiveAnnouncer {
 		} );
 	}
 
+	/**
+	 * Sets an announcement text to an aria region associated with a specific editor feature.
+	 *
+	 * If the aria region of a given name does not exist, it will be created and can be re-used later.
+	 */
 	public setText( regionName: string, text: string, politeness: AriaLiveAnnouncerPoliteness = AriaLiveAnnouncerPoliteness.POLITE ): void {
 		let regionView = this.view.regionViews.find( view => view.regionName === regionName );
 
@@ -43,7 +65,13 @@ export default class AriaLiveAnnouncer {
 	}
 }
 
+/**
+ * The view that aggregates all `aria-live` regions.
+ */
 class AriaLiveAnnouncerView extends View {
+	/**
+	 * A collection of all views that represent individual `aria-live` regions.
+	 */
 	public readonly regionViews: ViewCollection<AriaLiveAnnouncerRegionView>;
 
 	constructor( locale: Locale ) {
@@ -64,9 +92,23 @@ class AriaLiveAnnouncerView extends View {
 	}
 }
 
+/**
+ * The view that represents a single `aria-live` region (e.g. for a specific editor feature).
+ */
 class AriaLiveAnnouncerRegionView extends View {
+	/**
+	 * Current text of the region.
+	 */
 	declare public text: string;
+
+	/**
+	 * Current politeness level of the region.
+	 */
 	declare public politeness: AriaLiveAnnouncerPoliteness;
+
+	/**
+	 * A unique name of the region, usually associated with a specific editor feature or system.
+	 */
 	declare public regionName: string;
 
 	constructor( locale: Locale ) {

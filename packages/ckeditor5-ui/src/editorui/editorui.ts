@@ -12,6 +12,7 @@
 import ComponentFactory from '../componentfactory';
 import TooltipManager from '../tooltipmanager';
 import PoweredBy from './poweredby';
+import AriaLiveAnnouncer from './arialiveannouncer';
 
 import type EditorUIView from './editoruiview';
 import type ToolbarView from '../toolbar/toolbarview';
@@ -26,7 +27,6 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
-import AriaLiveAnnouncer from './arialiveannouncer';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -60,7 +60,8 @@ export default abstract class EditorUI extends ObservableMixin() {
 	public readonly poweredBy: PoweredBy;
 
 	/**
-	 * TODO
+	 * A helper that manages the content of an `aria-live` regions used by editor features to announce status changes
+	 * to screen readers.
 	 */
 	public readonly ariaLiveAnnouncer: AriaLiveAnnouncer;
 
