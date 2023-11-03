@@ -62,7 +62,7 @@ export default class AriaLiveAnnouncer {
 	 * Using multiple regions allows for many announcements to be emitted in a short period of time. Changes to ARIA-live announcements
 	 * are captured by a screen reader and read out in the order they were emitted.
 	 *
-	 * The default announcement politeness level is {@link ~AriaLiveAnnouncerPoliteness.POLITE}.
+	 * The default announcement politeness level is `'polite'`.
 	 *
 	 * ```ts
 	 * // Most screen readers will queue announcements from multiple aria-live regions and read them out in the order they were emitted.
