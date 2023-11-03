@@ -11,9 +11,7 @@ import { Command, type Editor } from 'ckeditor5/src/core';
 import { createElement, global } from 'ckeditor5/src/utils';
 import { prepareImageAssetAttributes } from '../ckboxcommand';
 
-import type {
-	CKBoxRawAssetDefinition
-} from '../ckboxconfig';
+import type { CKBoxRawAssetDefinition } from '../ckboxconfig';
 import type { InsertImageCommand } from '@ckeditor/ckeditor5-image';
 
 /**

@@ -133,17 +133,11 @@ export default class CKBoxCommand extends Command {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
 
-		const allowOverwrite = ( 'imageEditing' in ckboxConfig && 'allowOverwrite' in ckboxConfig.imageEditing! ) ?
-			ckboxConfig.imageEditing.allowOverwrite : true;
-
 		return {
 			theme: ckboxConfig.theme,
 			language: ckboxConfig.language,
 			tokenUrl: ckboxConfig.tokenUrl,
 			serviceOrigin: ckboxConfig.serviceOrigin,
-			imageEditing: {
-				allowOverwrite
-			},
 			dialog: {
 				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' )
 			},
@@ -348,7 +342,7 @@ export default class CKBoxCommand extends Command {
 
 /**
  * Parses the chosen assets into the internal data format. Filters out chosen assets that are not allowed.
-*/
+ */
 function prepareAssets(
 	{ assets, isImageAllowed, isLinkAllowed }: {
 		assets: Array<CKBoxRawAssetDefinition>;

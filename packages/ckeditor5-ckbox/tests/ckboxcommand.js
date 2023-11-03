@@ -215,10 +215,7 @@ describe( 'CKBoxCommand', () => {
 						language: 'es',
 						serviceOrigin: 'https://service.ckeditor.com',
 						tokenUrl: 'token-url',
-						unsupportedOption: 'bar',
-						imageEditing: {
-							allowOverwrite: false
-						}
+						unsupportedOption: 'bar'
 					}
 				} );
 
@@ -240,7 +237,6 @@ describe( 'CKBoxCommand', () => {
 				expect( options ).to.not.have.property( 'unsupportedOption' );
 				expect( options.dialog.onClose ).to.be.a( 'function' );
 				expect( options.assets.onChoose ).to.be.a( 'function' );
-				expect( options.imageEditing.allowOverwrite ).to.be.false;
 
 				await editor.destroy();
 			} );
