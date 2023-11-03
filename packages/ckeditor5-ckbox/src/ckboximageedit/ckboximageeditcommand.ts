@@ -10,7 +10,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import { createElement, global } from 'ckeditor5/src/utils';
+import { createElement, global, retry } from 'ckeditor5/src/utils';
 import CKBoxEditing from '../ckboxediting';
 
 import { prepareImageAssetAttributes } from '../ckboxcommand';
@@ -187,7 +187,13 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 	}
 
-	public getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ):
+	/**
+	 * Get asset's status on server. If server respond with "success" status then
+	 * image is already proceeded and ready for saving.
+	 *
+	 * @param data Data about certain asset.
+	 */
+	public _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ):
 		Promise<{
 			status: string;
 		}>
@@ -208,28 +214,23 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 	}
 
-	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<void> {
-		// Timeout for demo purposes.
-		return new Promise( resolve => {
-			let limit = 10;
-
-			const setIntervalId = setInterval( () => {
-				this.getAssetStatusFromServer( asset.data ).then( res => {
-					if ( res && res.status === 'success' ) {
-						this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
-						clearInterval( setIntervalId );
-						resolve();
-					}
-				} );
-
-				if ( limit === 1 ) {
-					clearInterval( setIntervalId );
-					resolve();
+	/**
+	 * Waiting until asset is being processed.
+	 *
+	 * @param asset Data about certain asset.
+	 */
+	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<{ status: string }> {
+		return retry( () => new Promise( ( resolve, reject ) => {
+			this._getAssetStatusFromServer( asset.data ).then( ( data: {
+				status: string;
+			} ) => {
+				if ( data.status === 'success' ) {
+					resolve( data );
+				} else {
+					reject();
 				}
-
-				limit--;
-			}, 1000 );
-		} );
+			} ).catch( err => reject( err ) );
+		} ) );
 	}
 
 	/**

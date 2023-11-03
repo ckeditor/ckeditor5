@@ -324,7 +324,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				clock.tick( 1500 );
 			} );
 
-			it( 'should stop pooling if limit was reached', () => {
+			it( 'should stop pooling if limit was reached', async () => {
 				const clock = sinon.useFakeTimers();
 
 				const respondSpy = sinon.spy( sinonXHR, 'respond' );
@@ -358,9 +358,9 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				onSave( dataMock );
 
-				clock.tick( 15000 );
+				await clock.tickAsync( 15000 );
 
-				sinon.assert.callCount( respondSpy, 10 );
+				sinon.assert.callCount( respondSpy, 4 );
 			} );
 
 			it( 'should reject if fetching asset\\s status ended with the authorization error', () => {
@@ -387,7 +387,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					url: 'https://example.com/workspace1/assets/image-id1/file'
 				};
 
-				return command.getAssetStatusFromServer( dataMock )
+				return command._getAssetStatusFromServer( dataMock )
 					.then( res => {
 						expect( res.message ).to.equal( 'Invalid token.' );
 						throw new Error( 'Expected to be rejected.' );
