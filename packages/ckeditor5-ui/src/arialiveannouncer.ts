@@ -95,8 +95,6 @@ export default class AriaLiveAnnouncer {
 
 /**
  * The view that aggregates all `aria-live` regions.
- *
- * @internal
  */
 export class AriaLiveAnnouncerView extends View {
 	/**
@@ -123,9 +121,7 @@ export class AriaLiveAnnouncerView extends View {
 }
 
 /**
- * The view that represents a single `aria-live` region (e.g. for a specific editor feature).
- *
- * @internal
+ * The view that represents a single `aria-live` region (e.g. for a specific editor feature) and its text.
  */
 export class AriaLiveAnnouncerRegionView extends View {
 	/**
