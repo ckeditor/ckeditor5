@@ -12,7 +12,6 @@ import type { Locale } from 'ckeditor5/src/utils';
 import {
 	SplitButtonView,
 	createDropdown,
-	CollapsibleView,
 	type DropdownView,
 	type View,
 	type ButtonView
@@ -58,19 +57,6 @@ export default class ImageInsertUI extends Plugin {
 		// Register `insertImage` dropdown and add `imageInsert` dropdown as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'insertImage', componentCreator );
 		editor.ui.componentFactory.add( 'imageInsert', componentCreator );
-
-		editor.ui.componentFactory.add( 'insertImageView', locale => {
-			const imageInsertView = new ImageInsertPanelView( locale, this._prepareIntegrations() );
-			const collapsibleView = new CollapsibleView( locale, [ imageInsertView ] );
-			const t = locale.t;
-
-			collapsibleView.set( {
-				label: t( 'Insert with link' ),
-				isCollapsed: true
-			} );
-
-			return collapsibleView;
-		} );
 	}
 
 	/**

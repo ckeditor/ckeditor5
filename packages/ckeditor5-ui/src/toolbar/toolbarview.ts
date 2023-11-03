@@ -8,7 +8,7 @@
  */
 
 import View from '../view';
-import FocusCycler, { type FocusableView } from '../focuscycler';
+import FocusCycler from '../focuscycler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import ToolbarLineBreakView from './toolbarlinebreakview';
 import preventDefault from '../bindings/preventdefault';
@@ -19,9 +19,6 @@ import type ComponentFactory from '../componentfactory';
 import type ViewCollection from '../viewcollection';
 import type DropdownView from '../dropdown/dropdownview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
-import type ButtonView from '../button/buttonview';
-import type DropdownButton from '../dropdown/button/dropdownbutton';
-import SplitButtonView from '../dropdown/button/splitbuttonview';
 
 import {
 	FocusTracker,
@@ -41,9 +38,7 @@ import {
 import {
 	icons,
 	type ToolbarConfig,
-	type ToolbarConfigItem,
-	type ToolbarConfigCustomItem,
-	type ToolbarConfigDropdownItem
+	type ToolbarConfigItem
 } from '@ckeditor/ckeditor5-core';
 
 import { isObject } from 'lodash-es';
@@ -343,10 +338,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		const normalizedRemoveItems = removeItems || config.removeItems;
 		const itemsToAdd = this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
 			.map( item => {
-				if ( isObject( item ) && 'items' in item ) {
+				if ( isObject( item ) ) {
 					return this._createNestedToolbarDropdown( item, factory, normalizedRemoveItems );
-				} else if ( isObject( item ) ) {
-					return this._createCustomizedItem( item, factory );
 				} else if ( item === '|' ) {
 					return new ToolbarSeparatorView();
 				} else if ( item === '-' ) {
@@ -441,8 +434,6 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 					return false;
 				}
 
-				// TODO add validation for ToolbarConfigCustomItem
-
 				return true;
 			} );
 
@@ -502,7 +493,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * of the nested toolbar.
 	 */
 	private _createNestedToolbarDropdown(
-		definition: ToolbarConfigDropdownItem,
+		definition: Exclude<ToolbarConfigItem, string>,
 		componentFactory: ComponentFactory,
 		removeItems: Array<string>
 	) {
@@ -516,17 +507,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		}
 
 		const locale = this.locale;
-
-		let dropdownButton: ( new ( locale?: Locale ) => DropdownButton & FocusableView ) | DropdownButton & FocusableView | undefined;
-
-		if ( 'actionItem' in definition ) {
-			const actionButton = componentFactory.create( definition.actionItem ) as ButtonView;
-			// TODO verify if item is a ButtonView
-
-			dropdownButton = new SplitButtonView( locale, actionButton );
-		}
-
-		const dropdownView = createDropdown( locale, dropdownButton );
+		const dropdownView = createDropdown( locale );
 
 		if ( !label ) {
 			/**
@@ -551,64 +532,27 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		}
 
 		dropdownView.class = 'ck-toolbar__nested-toolbar-dropdown';
+		dropdownView.buttonView.set( {
+			label,
+			tooltip,
+			withText: !!withText
+		} );
 
-		if ( 'actionItem' in definition ) {
-			dropdownView.buttonView.set( {
-				label,
-				tooltip
-			} );
-			// TODO withText and icon are not used
-		} else {
-			dropdownView.buttonView.set( {
-				label,
-				tooltip,
-				withText: !!withText
-			} );
-
-			// Allow disabling icon by passing false.
-			if ( icon !== false ) {
-				// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-				dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || threeVerticalDots;
-			}
-			// If the icon is disabled, display the label automatically.
-			else {
-				dropdownView.buttonView.withText = true;
-			}
+		// Allow disabling icon by passing false.
+		if ( icon !== false ) {
+			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || threeVerticalDots;
+		}
+		// If the icon is disabled, display the label automatically.
+		else {
+			dropdownView.buttonView.withText = true;
 		}
 
 		addToolbarToDropdown( dropdownView, () => (
 			dropdownView.toolbarView!._buildItemsFromConfig( items, componentFactory, removeItems )
-		), { isVertical: definition.isVertical } );
+		) );
 
 		return dropdownView;
-	}
-
-	/**
-	 * TODO
-	 */
-	private _createCustomizedItem(
-		definition: ToolbarConfigCustomItem,
-		componentFactory: ComponentFactory
-	) {
-		const itemView = componentFactory.create( definition.actionItem );
-
-		if ( definition.withText && 'withText' in itemView ) {
-			itemView.withText = true;
-		}
-
-		if ( definition.icon && 'icon' in itemView ) {
-			itemView.icon = definition.icon;
-		}
-
-		if ( definition.label && 'label' in itemView ) {
-			itemView.label = definition.label;
-		}
-
-		if ( definition.tooltip && 'tooltip' in itemView ) {
-			itemView.tooltip = definition.tooltip;
-		}
-
-		return itemView;
 	}
 }
 

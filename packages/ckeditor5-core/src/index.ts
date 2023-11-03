@@ -23,8 +23,6 @@ export type {
 	LanguageConfig,
 	ToolbarConfig,
 	ToolbarConfigItem,
-	ToolbarConfigCustomItem,
-	ToolbarConfigDropdownItem,
 	UiConfig
 } from './editor/editorconfig';
 
