@@ -44,7 +44,8 @@ describe( 'Inserting widgets in document lists', () => {
 			plugins: [
 				Paragraph, CodeBlockEditing, DocumentListEditing, IndentEditing, BlockQuoteEditing, MediaEmbedEditing,
 				Table, Image, HtmlEmbed, PageBreak, HorizontalLine, Widget
-			]
+			],
+			image: { insert: { type: 'auto' } }
 		} );
 
 		model = editor.model;

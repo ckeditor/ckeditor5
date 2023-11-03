@@ -51,6 +51,7 @@ import type {
 import {
 	CKEditorError,
 	toArray,
+	type ArrayOrItem,
 	type EventInfo,
 	type PriorityString
 } from '@ckeditor/ckeditor5-utils';
@@ -2292,29 +2293,31 @@ function downcastMarkerToHighlight( config: {
  */
 function normalizeModelElementConfig( model: string | {
 	name: string;
-	attributes?: string | Array<string>;
+	attributes?: ArrayOrItem<string>;
 	children?: boolean;
 } ): NormalizedModelElementConfig {
 	if ( typeof model == 'string' ) {
 		model = { name: model };
 	}
 
-	// List of attributes that should trigger reconversion.
-	if ( !model.attributes ) {
-		model.attributes = [];
-	} else if ( !Array.isArray( model.attributes ) ) {
-		model.attributes = [ model.attributes ];
-	}
-
-	// Whether a children insertion/deletion should trigger reconversion.
-	model.children = !!model.children;
-
-	return model as any;
+	return {
+		name: model.name,
+		attributes: model.attributes ? toArray( model.attributes ) : [],
+		children: !!model.children
+	};
 }
 
 interface NormalizedModelElementConfig {
 	name: string;
+
+	/**
+	 * List of attributes that should trigger reconversion.
+	 */
 	attributes: Array<string>;
+
+	/**
+	 * Whether children insertion/deletion should trigger reconversion.
+	 */
 	children: boolean;
 }
 
@@ -2603,7 +2606,7 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
  * @returns Function exposed by writer as createSlot().
  */
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
-	return ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => {
+	return ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
 		let children: Array<ModelNode> | null = null;

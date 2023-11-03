@@ -290,8 +290,7 @@ export default class Document extends EmitterMixin() {
 	 * @param includeDetached Specified whether detached roots should be returned as well.
 	 */
 	public getRoots( includeDetached = false ): Array<RootElement> {
-		return Array.from( this.roots )
-			.filter( root => root != this.graveyard && ( includeDetached || root.isAttached() ) && root._isLoaded );
+		return this.roots.filter( root => root != this.graveyard && ( includeDetached || root.isAttached() ) && root._isLoaded );
 	}
 
 	/**
