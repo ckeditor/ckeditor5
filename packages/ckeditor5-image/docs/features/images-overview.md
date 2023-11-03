@@ -37,7 +37,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link features/images-resizing Image resizing} lets the user control the dimensions of images in the content.
 * {@link features/images-linking Linking images} makes it possible to use them as URL anchors.
 * A selection of {@link features/image-upload image upload methods} allows for the most convenient way of adding images. These include support for {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor inserting an image via a URL} and even {@link features/images-inserting#inserting-images-via-a-source-url via pasting a URL into the editor} along with custom integrations.
-* The {@link features/ckbox CKBox management platform} provides support for {@link features/images-responsive responsive images} in CKEdito&nbsp;5. Responsive images will display correctly on any viewport, enhancing the accessibility, reach, and user experience.
+* The {@link features/ckbox CKBox management platform} provides support for {@link features/images-responsive responsive images} in CKEditor&nbsp;5. Responsive images will display correctly on any viewport, enhancing the accessibility, reach, and user experience.
 * CKBox also provides basic editing capabilities, like cropping, resizing, rotating, and flipping right from the image contextual toolbar.
 
 The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
@@ -213,8 +213,8 @@ Starting with v40.0.0, the image's `width` and `height` attributes are retained 
 The attributes are now handled as follows:
 
 * Upon {@link features/image-upload uploading an image file} or {@link features/images-inserting inserting it} into the editor content, the CKEditor 5 image feature fetches these dimensions from the file. The editor then adds these properties to the markup, just like the {@link features/images-text-alternative text alternative tag}.
-	* If the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
-* The editor will not change already existing content. It means, loading HTML (i.e., `setData`) with images does not set up these attributes.
+* If the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
+* The editor will not change already existing content. It means, loading HTML (that is `setData`) with images does not set up these attributes.
 * Changes to an image (such as resize, etc.) will trigger the creation of those attributes. These attributes are crucial to proper content handling, and actions on a current image that does not have these improve this image's markup.
 * The `aspect-ratio` attribute has been added to the image's properties to handle situations when the file is resized or scaled with a tweaked aspect ratio.
 
@@ -231,6 +231,10 @@ To type before or after an image easily, select the image, then press the Arrow 
 You can also use the **Insert paragraph** handles on the bottom or top edge of the selected image to add a paragraph below or above the image, respectively.
 
 {@img assets/img/image-insert-paragraph.png 640 Paragraph insertion handles.}
+
+## Image editing
+
+While the image feature does not provide native image editing support, the {@link features/ckbox CKBox premium feature} provides basic editing capabilities such as cropping or flipping. These can, however, only be applied to images served by the CKBox service.
 
 ## Contribute
 
