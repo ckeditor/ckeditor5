@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imageinsert/ui/imageinsertpanelview
+ * @module image/imageinsert/ui/imageinsertformview
  */
 
 import {
@@ -12,19 +12,19 @@ import {
 	ViewCollection,
 	submitHandler,
 	FocusCycler,
-	FocusCyclerForwardCycleEvent,
-	FocusCyclerBackwardCycleEvent
+	type FocusCyclerForwardCycleEvent,
+	type FocusCyclerBackwardCycleEvent
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
 import '../../../theme/imageinsert.css';
 
 /**
- * The insert an image via URL view controller class.
+ * TODO
  *
- * See {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
+ * See {@link module:image/imageinsert/ui/imageinsertformview~ImageInsertFormView}.
  */
-export default class ImageInsertPanelView extends View {
+export default class ImageInsertFormView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
@@ -79,19 +79,19 @@ export default class ImageInsertPanelView extends View {
 
 		this.children.addMany( integrations );
 
-		// for ( const view of this.children ) {
-		// 	if ( 'focusCycler' in view ) {
-		// 		view.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-		// 			this._focusCycler.focusNext();
-		// 			evt.stop();
-		// 		} );
-		//
-		// 		view.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-		// 			this._focusCycler.focusPrevious();
-		// 			evt.stop();
-		// 		} );
-		// 	}
-		// }
+		for ( const view of this.children ) {
+			if ( isViewWithFocusCycler( view ) ) {
+				view.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
+					this._focusCycler.focusNext();
+					evt.stop();
+				} );
+
+				view.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
+					this._focusCycler.focusPrevious();
+					evt.stop();
+				} );
+			}
+		}
 
 		this.setTemplate( {
 			tag: 'form',
@@ -147,22 +147,6 @@ export default class ImageInsertPanelView extends View {
 	}
 }
 
-/**
- * TODO
- *
- * @eventName ~ImageInsertPanelView#submit
- */
-export type SubmitEvent = {
-	name: 'submit';
-	args: [];
-};
-
-/**
- * TODO
- *
- * @eventName ~ImageInsertPanelView#cancel
- */
-export type CancelEvent = {
-	name: 'cancel';
-	args: [];
-};
+function isViewWithFocusCycler( view: View ): view is View & { focusCycler: FocusCycler } {
+	return 'focusCycler' in view;
+}

@@ -17,11 +17,14 @@ import {
 	type ButtonView
 } from 'ckeditor5/src/ui';
 
-import ImageInsertPanelView from './ui/imageinsertpanelview';
+import ImageInsertFormView from './ui/imageinsertformview';
 import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
 import type UploadImageCommand from '../imageupload/uploadimagecommand';
 import type InsertImageCommand from '../image/insertimagecommand';
-import ImageInsertUrlView from './ui/imageinserturlview';
+import ImageInsertUrlView, {
+	type ImageInsertUrlViewCancelEvent,
+	type ImageInsertUrlViewSubmitEvent
+} from './ui/imageinserturlview';
 
 /**
  * The image insert dropdown plugin.
@@ -95,35 +98,14 @@ export default class ImageInsertUI extends Plugin {
 			} );
 		}
 
-		dropdownView.panelView.extendTemplate( {
-			attributes: {
-				class: 'ck-image-insert__panel'
-			}
-		} );
-
 		this.dropdownView = dropdownView;
 
 		dropdownView.bind( 'isEnabled' ).to( uploadImageCommand || insertImageCommand );
 
 		dropdownView.once( 'change:isOpen', () => {
-			const imageInsertPanelView = new ImageInsertPanelView( editor.locale, this._prepareIntegrations() );
-
-			imageInsertPanelView.delegate( 'submit', 'cancel' ).to( dropdownView );
-			dropdownView.panelView.children.add( imageInsertPanelView );
+			const imageInsertFormView = new ImageInsertFormView( editor.locale, this._prepareIntegrations() );
+			dropdownView.panelView.children.add( imageInsertFormView );
 		} );
-
-		dropdownView.on( 'submit', () => {
-			closePanel();
-		} );
-
-		dropdownView.on( 'cancel', () => {
-			closePanel();
-		} );
-
-		function closePanel() {
-			editor.editing.view.focus();
-			dropdownView.isOpen = false;
-		}
 
 		return dropdownView;
 	}
@@ -155,7 +137,6 @@ export default class ImageInsertUI extends Plugin {
 		const replaceImageSourceCommand: ReplaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
 		const imageInsertUrlView = new ImageInsertUrlView( this.editor.locale );
 
-		imageInsertUrlView.delegate( 'submit', 'cancel' ).to( this.dropdownView! );
 		imageInsertUrlView.bind( 'isImageSelected' ).to( replaceImageSourceCommand, 'isEnabled' );
 
 		// Set initial value because integrations are created on first dropdown open.
@@ -175,13 +156,17 @@ export default class ImageInsertUI extends Plugin {
 			// invisible form/input cannot be focused/selected.
 		}, { priority: 'low' } );
 
-		this.dropdownView!.on( 'submit', () => {
+		imageInsertUrlView.on<ImageInsertUrlViewSubmitEvent>( 'submit', () => {
 			if ( replaceImageSourceCommand.isEnabled ) {
 				this.editor.execute( 'replaceImageSource', { source: imageInsertUrlView.imageURLInputValue } );
 			} else {
 				this.editor.execute( 'insertImage', { source: imageInsertUrlView.imageURLInputValue } );
 			}
+
+			this._closePanel();
 		} );
+
+		imageInsertUrlView.on<ImageInsertUrlViewCancelEvent>( 'cancel', () => this._closePanel() );
 
 		return imageInsertUrlView;
 	}
@@ -192,7 +177,7 @@ export default class ImageInsertUI extends Plugin {
 	private _createCKFinderView() {
 		const ckFinderButton = this._createGenericIntegration( 'ckfinder' );
 
-		ckFinderButton.set( 'class', 'ck-image-insert__ck-finder-button' );
+		ckFinderButton.class = 'ck-image-insert__ck-finder-button';
 
 		return ckFinderButton;
 	}
@@ -203,11 +188,21 @@ export default class ImageInsertUI extends Plugin {
 	private _createGenericIntegration( name: string ) {
 		const button = this.editor.ui.componentFactory.create( name ) as ButtonView;
 
-		button.set( 'withText', true );
+		button.withText = true;
 
 		// We want to close the dropdown panel view when user clicks the ckFinderButton.
-		button.delegate( 'execute' ).to( this.dropdownView!, 'cancel' );
+		button.on( 'execute', () => {
+			this._closePanel();
+		} );
 
 		return button;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _closePanel(): void {
+		this.editor.editing.view.focus();
+		this.dropdownView!.isOpen = false;
 	}
 }

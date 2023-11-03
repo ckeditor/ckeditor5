@@ -7,7 +7,7 @@
 
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
 
-import ImageInsertPanelView from '../../../src/imageinsert/ui/imageinsertpanelview';
+import ImageInsertFormView from '../../../src/imageinsert/ui/imageinsertformview';
 import ImageUploadFormRowView from '../../../src/imageinsert/ui/imageinsertformrowview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -23,11 +23,11 @@ import { createLabeledInputView } from '../../../src/imageinsert/utils';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'ImageInsertPanelView', () => {
+describe( 'ImageInsertFormView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new ImageInsertPanelView( { t: val => val }, {
+		view = new ImageInsertFormView( { t: val => val }, {
 			'insertImageViaUrl': createLabeledInputView( { t: val => val } )
 		} );
 		view.render();
@@ -60,8 +60,8 @@ describe( 'ImageInsertPanelView', () => {
 		} );
 
 		describe( 'integrations', () => {
-			it( 'should contain 2 integrations when they were passed to the ImageInsertPanelView as integrations object', () => {
-				const view = new ImageInsertPanelView( { t: val => val }, {
+			it( 'should contain 2 integrations when they were passed to the ImageInsertFormView as integrations object', () => {
+				const view = new ImageInsertFormView( { t: val => val }, {
 					'integration1': new View(),
 					'integration2': new ButtonView()
 				} );
@@ -71,7 +71,7 @@ describe( 'ImageInsertPanelView', () => {
 			} );
 
 			it( 'should contain insertImageViaUrl view when it is passed via integrations object', () => {
-				const view = new ImageInsertPanelView( { t: val => val }, {
+				const view = new ImageInsertFormView( { t: val => val }, {
 					'insertImageViaUrl': createLabeledInputView( { t: val => val } ),
 					'integration1': new View(),
 					'integration2': new ButtonView()
@@ -83,7 +83,7 @@ describe( 'ImageInsertPanelView', () => {
 			} );
 
 			it( 'should contain no integrations when they were not provided', () => {
-				const view = new ImageInsertPanelView( { t: val => val } );
+				const view = new ImageInsertFormView( { t: val => val } );
 
 				expect( view._integrations ).to.be.instanceOf( Collection );
 				expect( view._integrations.length ).to.equal( 0 );
@@ -153,7 +153,7 @@ describe( 'ImageInsertPanelView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker with no integrations', () => {
-			const view = new ImageInsertPanelView( { t: () => {} } );
+			const view = new ImageInsertFormView( { t: () => {} } );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 			view.render();
@@ -165,7 +165,7 @@ describe( 'ImageInsertPanelView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker with "insertImageViaUrl" integration', () => {
-			const view = new ImageInsertPanelView( { t: () => {} }, {
+			const view = new ImageInsertFormView( { t: () => {} }, {
 				'insertImageViaUrl': createLabeledInputView( { t: val => val } )
 			} );
 
@@ -181,7 +181,7 @@ describe( 'ImageInsertPanelView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new ImageInsertPanelView( { t: () => {} } );
+			const view = new ImageInsertFormView( { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 

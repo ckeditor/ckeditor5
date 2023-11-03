@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-image-insert__panel {
-	padding: var(--ck-spacing-large);
-}
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-image-insert__ck-finder-button {
 	display: block;
@@ -23,29 +21,38 @@
 }
 
 .ck.ck-image-insert-form {
+	padding: var(--ck-spacing-large);
+
 	&:focus {
 		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
 		outline: none;
 	}
 }
 
-.ck.ck-form__row {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: space-between;
+.ck.ck-image-insert-url {
+	& .ck-image-insert-url__action-row {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-between;
 
-	/* Ignore labels that work as fieldset legends */
-	& > *:not(.ck-label) {
-		flex-grow: 1;
-	}
-
-	&.ck-image-insert-form__action-row {
-		margin-top: var(--ck-spacing-standard);
+		margin-top: var(--ck-spacing-large);
 
 		& .ck-button-save,
 		& .ck-button-cancel {
 			justify-content: center;
+			flex-grow: 1;
+
+			/* TODO: CSS grid */
+			& + * {
+				@mixin ck-dir ltr {
+					margin-left: var(--ck-spacing-large);
+				}
+
+				@mixin ck-dir rtl {
+					margin-right: var(--ck-spacing-large);
+				}
+			}
 		}
 
 		& .ck-button .ck-button__label {

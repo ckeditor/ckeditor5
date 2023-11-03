@@ -22,7 +22,7 @@ import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils
 /**
  * The insert an image via URL view controller class.
  *
- * See {@link module:image/imageinsert/ui/imageinsertpanelview~ImageInsertPanelView}.
+ * See {@link module:image/imageinsert/ui/imageinsertformview~ImageInsertFormView}.
  */
 export default class ImageInsertUrlView extends View {
 	/**
@@ -109,16 +109,21 @@ export default class ImageInsertUrlView extends View {
 		this.setTemplate( {
 			tag: 'div',
 
+			attributes: {
+				class: [
+					'ck',
+					'ck-image-insert-url'
+				]
+			},
+
 			children: [
 				this.urlInputView,
 				{
 					tag: 'div',
-
 					attributes: {
 						class: [
 							'ck',
-							'ck-form__row',
-							'ck-image-insert-form__action-row'
+							'ck-image-insert-url__action-row'
 						]
 					},
 
@@ -241,10 +246,14 @@ export default class ImageInsertUrlView extends View {
 	}
 
 	/**
-	 * Focuses the first {@link #_focusables focusable} in the form.
+	 * Focuses the view.
 	 */
-	public focus(): void {
-		this.focusCycler.focusFirst();
+	public focus( direction: 1 | -1 ): void {
+		if ( direction === -1 ) {
+			this.focusCycler.focusLast();
+		} else {
+			this.focusCycler.focusFirst();
+		}
 	}
 }
 
@@ -253,7 +262,7 @@ export default class ImageInsertUrlView extends View {
  *
  * @eventName ~ImageInsertUrlView#submit
  */
-export type SubmitEvent = {
+export type ImageInsertUrlViewSubmitEvent = {
 	name: 'submit';
 	args: [];
 };
@@ -263,7 +272,7 @@ export type SubmitEvent = {
  *
  * @eventName ~ImageInsertUrlView#cancel
  */
-export type CancelEvent = {
+export type ImageInsertUrlViewCancelEvent = {
 	name: 'cancel';
 	args: [];
 };
