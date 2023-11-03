@@ -92,9 +92,7 @@ BalloonEditor.defaultConfig = {
 			'imageStyle:side',
 			'|',
 			'toggleImageCaption',
-			'imageTextAlternative',
-			'|',
-			'ckboxImageEdit'
+			'imageTextAlternative'
 		]
 	},
 	table: {
