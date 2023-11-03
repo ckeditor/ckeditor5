@@ -14,11 +14,13 @@ swap:
   boolean: Boolean
   bugfix: bug fix
   bugfixes: bug fixes
+  byproduct: by-product
   builtin|built in: built-in
   can not: cannot
   check box: checkbox
   Ckeditor|CKeditor|CK Editor|CK editor: CKEditor
   Cksource|CKsource|CK Source: CKSource
+  clean-up: cleanup
   click on: click|click in
   config: configuration
   data are: data is
@@ -73,3 +75,4 @@ swap:
   utils: utilities
   webpage: web page|page|website
   web site: website
+  yarn: Yarn

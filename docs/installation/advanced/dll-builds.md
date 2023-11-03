@@ -15,7 +15,7 @@ So far, the two most common integration methods included:
 * Using pre-compiled builds. This can be either one of the official builds or a custom build. In this case, adding a plugin requires recompiling the entire build.
 * Integrating the editor from source. In this case, if you want to add a plugin, your application needs to be recompiled.
 
-In some advanced use cases, the list of available plugins cannot be limited &mdash; it should be possible to add plugins without any access to Node.js. In other words, plugins should be built (compiled) separately from the editor's core.
+In some advanced use cases, the list of available plugins cannot be limited &ndash; it should be possible to add plugins without any access to Node.js. In other words, plugins should be built (compiled) separately from the editor's core.
 
 This is where the DLL builds come to the rescue.
 

@@ -104,14 +104,14 @@ Once the CKEditor script is loaded, you can {@link installation/getting-started/
 
 ### Classic editor
 
-Classic editor is what most users traditionally learnt to associate with a rich-text editor &mdash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+Classic editor is what most users traditionally learnt to associate with a rich-text editor &ndash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
 During its initialization the editor hides the used editable element on the page and renders "instead" of it. This is why it is usually used to replace `<textarea>` elements.
 
 In CKEditor&nbsp;5 the concept of the "boxed" editor was reinvented:
 
  * The toolbar is now always visible when the user scrolls the page down.
- * The editor content is now placed inline in the page (without the surrounding `<iframe>` element) &mdash; it is now much easier to style it.
+ * The editor content is now placed inline in the page (without the surrounding `<iframe>` element). It is now much easier to style it.
  * By default the editor now grows automatically with the content.
 
 {@img assets/img/editor-classic.png 778 Screenshot of a classic editor.}

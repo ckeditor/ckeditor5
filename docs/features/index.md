@@ -59,13 +59,13 @@ Additionally, CKEditor&nbsp;5 offers the {@link features/restricted-editing rest
 
 {@img assets/img/features-collaboration.png 800 CKEditor&nbsp;5 collaboration features.}
 
-You can also easily track the progress and changes done in the content with the {@link features/revision-history revision history feature} {@icon @ckeditor/ckeditor5-core/theme/icons/history.svg Revision history}. This modern and robust document versioning tool lets you create named versions, compare changes, and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
+You can also easily track the progress and changes done in the content with the {@link features/revision-history revision history feature} {@icon @ckeditor/ckeditor5-core/theme/icons/history.svg Revision history}. This modern and robust document versioning tool lets you create named versions, compare changes, and restore previous document versions at ease, tracking all progress &ndash; also when multiple editors work together.
 
 {@img assets/img/features-revision-history.png 800 CKEditor&nbsp;5 document versioning feature.}
 
 ### Document conversion
 
-If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-export-pdf/theme/icons/exportpdf.svg Export to PDF} to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word feature} {@icon @ckeditor/ckeditor5-export-word/theme/icons/exportword.svg Export to Word} instead &mdash; and keep your comments and changes in the resulting document, ready to be edited further. These two are accompanied by the {@link features/pagination pagination feature} {@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-up.svg Previous page}{@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-down.svg Next page}, to ensure all produced documents will always look the way they should.
+If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-export-pdf/theme/icons/exportpdf.svg Export to PDF} to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word feature} {@icon @ckeditor/ckeditor5-export-word/theme/icons/exportword.svg Export to Word} instead &ndash; and keep your comments and changes in the resulting document, ready to be edited further. These two are accompanied by the {@link features/pagination pagination feature} {@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-up.svg Previous page}{@icon @ckeditor/ckeditor5-pagination/theme/icons/arrow-down.svg Next page}, to ensure all produced documents will always look the way they should.
 
 ### HTML and Markdown output
 
