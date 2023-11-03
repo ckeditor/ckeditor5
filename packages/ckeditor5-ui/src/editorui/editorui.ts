@@ -12,7 +12,7 @@
 import ComponentFactory from '../componentfactory';
 import TooltipManager from '../tooltipmanager';
 import PoweredBy from './poweredby';
-import AriaLiveAnnouncer from './arialiveannouncer';
+import AriaLiveAnnouncer from '../arialiveannouncer';
 
 import type EditorUIView from './editoruiview';
 import type ToolbarView from '../toolbar/toolbarview';

@@ -3,10 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module ui/arialiveannouncer
+ */
+
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type ViewCollection from '../viewcollection';
-import View from '../view';
+import type ViewCollection from './viewcollection';
+import View from './view';
 
 /**
  * The politeness level of an `aria-live` announcement.
@@ -32,24 +36,48 @@ export enum AriaLiveAnnouncerPoliteness {
  */
 export default class AriaLiveAnnouncer {
 	/**
+	 * The editor instance.
+	 */
+	public readonly editor: Editor;
+
+	/**
 	 * The view that aggregates all `aria-live` regions.
 	 */
-	public readonly view: AriaLiveAnnouncerView;
+	public view?: AriaLiveAnnouncerView;
 
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
-		this.view = new AriaLiveAnnouncerView( editor.locale );
-
-		editor.on( 'ready', () => {
-			editor.ui.view.body.add( this.view );
-		} );
+		this.editor = editor;
 	}
 
 	/**
-	 * Sets an announcement text to an aria region associated with a specific editor feature.
+	 * Sets an announcement text to an aria region associated with a specific editor feature. The text is then
+	 * announced by a screen reader to the user.
 	 *
-	 * If the aria region of a given name does not exist, it will be created and can be re-used later.
+	 * If the aria region of a given name does not exist, it will be created and can be re-used later. The name of the region
+	 * groups announcements originating from a specific editor feature and does not get announced by a screen reader.
+	 *
+	 * Using multiple regions allows for many announcements to be emitted in a short period of time. Changes to ARIA-live announcements
+	 * are captured by a screen reader and read out in the order they were emitted.
+	 *
+	 * The default announcement politeness level is {@link ~AriaLiveAnnouncerPoliteness.POLITE}.
+	 *
+	 * ```ts
+	 * // Most screen readers will queue announcements from multiple aria-live regions and read them out in the order they were emitted.
+ 	 * editor.ui.ariaLiveAnnouncer.setText( 'FeatureA', 'Text of feature A announcement.' );
+ 	 * editor.ui.ariaLiveAnnouncer.setText( 'FeatureB', 'Text of feature A announcement.' );
+ 	 * ```
 	 */
 	public setText( regionName: string, text: string, politeness: AriaLiveAnnouncerPoliteness = AriaLiveAnnouncerPoliteness.POLITE ): void {
+		const editor = this.editor;
+
+		if ( !this.view ) {
+			this.view = new AriaLiveAnnouncerView( editor.locale );
+			editor.ui.view.body.add( this.view );
+		}
+
 		let regionView = this.view.regionViews.find( view => view.regionName === regionName );
 
 		if ( !regionView ) {
@@ -67,8 +95,10 @@ export default class AriaLiveAnnouncer {
 
 /**
  * The view that aggregates all `aria-live` regions.
+ *
+ * @internal
  */
-class AriaLiveAnnouncerView extends View {
+export class AriaLiveAnnouncerView extends View {
 	/**
 	 * A collection of all views that represent individual `aria-live` regions.
 	 */
@@ -94,8 +124,10 @@ class AriaLiveAnnouncerView extends View {
 
 /**
  * The view that represents a single `aria-live` region (e.g. for a specific editor feature).
+ *
+ * @internal
  */
-class AriaLiveAnnouncerRegionView extends View {
+export class AriaLiveAnnouncerRegionView extends View {
 	/**
 	 * Current text of the region.
 	 */
