@@ -18,7 +18,6 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import { icons } from '@ckeditor/ckeditor5-core';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -69,33 +68,6 @@ ClassicEditor
 					icon: 'plus',
 					items: [
 						'insertImage', 'insertTable', 'mediaEmbed'
-					]
-				},
-				{
-					actionItem: 'bold',
-					label: 'Some custom split button',
-					isVertical: true,
-					items: [
-						{
-							actionItem: 'strikethrough',
-							withText: true,
-							icon: icons.cog
-						}, {
-							actionItem: 'underline',
-							withText: true,
-							label: 'foooo',
-							tooltip: 'Just testing'
-						}, {
-							actionItem: 'code',
-							withText: true
-						}, {
-							actionItem: 'subscript',
-							withText: true
-						}, {
-							actionItem: 'superscript',
-							withText: true
-						},
-						'insertImageView'
 					]
 				},
 				'-',
