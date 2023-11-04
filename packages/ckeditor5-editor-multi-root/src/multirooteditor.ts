@@ -644,17 +644,18 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Registers given string as a root attribute key. Registered root attributes are added to
 	 * {@link module:engine/model/schema~Schema schema}, and also returned by
-	 * {@link ~#getRootAttributes `getRootAttributes`} and {@link ~#getRootsAttributes `getRootsAttributes`}.
+	 * {@link ~#getRootAttributes `getRootAttributes()`} and {@link ~#getRootsAttributes `getRootsAttributes()`}.
 	 *
 	 * Note: attributes passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes`} are
 	 * automatically registered as the editor is initialized. However, registering the same attribute twice does not have any negative
 	 * impact, so it is recommended to use this method in any feature that uses roots attributes.
 	 */
 	public registerRootAttribute( key: string ): void {
-		if ( !this._registeredRootsAttributesKeys.has( key ) ) {
-			this._registeredRootsAttributesKeys.add( key );
+		if ( this._registeredRootsAttributesKeys.has( key ) ) {
+			return;
 		}
 
+		this._registeredRootsAttributesKeys.add( key );
 		this.editing.model.schema.extend( '$root', { allowAttributes: key } );
 	}
 
