@@ -426,7 +426,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 				this.registerRootAttribute( key );
 				writer.setAttribute( key, attributes[ key ], root );
 			}
-		}
+		};
 
 		if ( isUndoable ) {
 			this.model.change( _addRoot );
