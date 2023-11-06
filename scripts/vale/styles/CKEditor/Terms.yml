@@ -69,7 +69,7 @@ swap:
   Typescript: TypeScript
   (?i)typings: types|type definitions
   "un(?:check|select)": clear
-  url: URL
+  url(?!-parse): URL
   utils: utilities
   webpage: web page|page|website
   web site: website
