@@ -459,6 +459,7 @@ describe( 'CKBoxImageEditCommand', () => {
 						'alt="" ' +
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
+						'sources="[object Object]" ' +
 						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
 						'width="100">' +
 					'</imageBlock>]'
@@ -480,6 +481,7 @@ describe( 'CKBoxImageEditCommand', () => {
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
 						'placeholder="' + placeholder + '" ' +
+						'sources="[object Object]" ' +
 						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
 						'width="100">' +
 					'</imageBlock>]'
