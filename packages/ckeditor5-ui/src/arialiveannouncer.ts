@@ -12,6 +12,8 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from './viewcollection';
 import View from './view';
 
+import '../theme/components/arialiveannouncer/arialiveannouncer.css';
+
 /**
  * The politeness level of an `aria-live` announcement.
  *
