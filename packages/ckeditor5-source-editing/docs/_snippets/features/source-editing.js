@@ -35,7 +35,9 @@ ClassicEditor
 				'imageStyle:side',
 				'|',
 				'imageTextAlternative',
-				'toggleImageCaption'
+				'toggleImageCaption',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		htmlSupport: {

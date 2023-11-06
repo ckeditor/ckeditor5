@@ -19,6 +19,7 @@ import type {
 	CKBoxRawAssetDefinition,
 	CKBoxRawAssetDataDefinition
 } from '../ckboxconfig';
+
 import type { InsertImageCommand } from '@ckeditor/ckeditor5-image';
 
 /**
@@ -101,6 +102,9 @@ export default class CKBoxImageEditCommand extends Command {
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
 
 		return {
+			imageEditing: {
+				allowOverwrite: false
+			},
 			tokenUrl: ckboxConfig.tokenUrl,
 			onClose: () => this.fire<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close' ),
 			onSave: ( asset: CKBoxRawAssetDefinition ) =>

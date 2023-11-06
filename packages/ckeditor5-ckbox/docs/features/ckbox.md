@@ -30,7 +30,7 @@ As a full-fledged file manager, CKBox also replaces the basic CKEditor&nbsp;5 im
 * Enables drag & drop uploads of images and other files.
 * Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
 * Adds a separate dedicated toolbar button to open the CKBox UI to manage and reuse uploaded files.
-* Provides {@link @ckbox features/images/editing basic editing capabilities}, like crop, resize, rotate, and flip right from the {@link features/images-overview#image-contextual-toolbar image contextual toolbar}.
+* Provides {@link @ckbox features/images/editing basic editing capabilities}, like crop, resize, rotate, and flip right from the {@link features/images-overview#image-contextual-toolbar image contextual toolbar} for images served by CKBox.
 * Supports workspaces that allow separating assets for different users.
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
@@ -39,7 +39,7 @@ To find out more about CKBox, the brand-new file manager and image editor, visit
 
 ## Demo
 
-To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image. 
+To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
 
 Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} will now also upload images right into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
 
@@ -110,7 +110,7 @@ Further in the document, the dependency plugins will be omitted in code listings
 
 ### Adding the image editing button to the image toolbar
 
-To invoke the CKBox image editor straight from the image contextual toolbar (availabne at right-click on an image), it needs to be added to the toolbar configuration.
+To invoke the CKBox image editor straight from the image contextual toolbar (available at right-click in an image), it needs to be added to the toolbar configuration.
 
 {@img assets/img/toolbar-items.png 402 An extended contextual toolbar.}
 

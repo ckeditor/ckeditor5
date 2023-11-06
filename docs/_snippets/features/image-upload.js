@@ -29,7 +29,9 @@ ClassicEditor
 				'|',
 				'resizeImage:25',
 				'resizeImage:50',
-				'resizeImage:original'
+				'resizeImage:original',
+				'|',
+				'ckboxImageEdit'
 			],
 			resizeOptions: [
 				{

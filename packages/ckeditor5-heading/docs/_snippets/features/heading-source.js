@@ -7,7 +7,7 @@
 
 import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 
@@ -21,6 +21,7 @@ ClassicEditor.builtinPlugins.push(
 	ImageResize,
 	AutoImage,
 	LinkImage,
-	CKBox
+	CKBox,
+	CKBoxImageEdit
 );
 window.ClassicEditor = ClassicEditor;
