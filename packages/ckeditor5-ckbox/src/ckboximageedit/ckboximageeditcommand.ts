@@ -197,10 +197,7 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param data Data about certain asset.
 	 */
-	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ):
-		Promise<{
-			status?: string;
-		}>
+	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<{ status?: string }>
 	{
 		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 
@@ -238,7 +235,7 @@ export default class CKBoxImageEditCommand extends Command {
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
 		const xhr = new XMLHttpRequest();
 
-		xhr.open( 'GET', url.toString(), true );
+		xhr.open( 'GET', url );
 		xhr.setRequestHeader( 'Authorization', ckboxEditing.getToken().value );
 		xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
 		xhr.responseType = 'json';
