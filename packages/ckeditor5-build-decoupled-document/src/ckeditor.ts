@@ -80,6 +80,7 @@ import { StyledLink } from './plugins/styledLink/index';
 import { FullScreen } from './plugins/fullScreen/index';
 import { Source } from './plugins/source/index';
 import { RemoveBlockStyle } from './plugins/removeBlockStyle/index';
+import { HtmlInsert } from './plugins/htmlInsert/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -140,6 +141,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Underline,
 		UploadAdapter,
 		RemoveBlockStyle,
+		HtmlInsert,
 	];
 
 	public static override defaultConfig = {
@@ -188,6 +190,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'styledLink',
 				'fullScreen',
 				'source',
+				'htmlInsert',
 			],
 		},
 		image: {
