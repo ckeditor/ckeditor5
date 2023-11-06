@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals FormData, URL, XMLHttpRequest, window */
+/* globals AbortController, URL, XMLHttpRequest, window */
 
 /**
  * @module ckbox/ckboximageedit/ckboximageeditcommand
@@ -34,6 +34,11 @@ export default class CKBoxImageEditCommand extends Command {
 	declare public value: boolean;
 
 	/**
+	 * The abort controller for aborting asynchronous processes.
+	 */
+	public controller: AbortController;
+
+	/**
 	 * The DOM element that acts as a mounting point for the CKBox Edit Image dialog.
 	 */
 	private _wrapper: Element | null = null;
@@ -50,6 +55,7 @@ export default class CKBoxImageEditCommand extends Command {
 		super( editor );
 
 		this.value = false;
+		this.controller = new AbortController();
 
 		this._prepareListeners();
 	}
@@ -201,10 +207,23 @@ export default class CKBoxImageEditCommand extends Command {
 	{
 		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 
-		const response = await this._sendHttpRequest( url );
+		let response;
+
+		try {
+			response = await this._sendHttpRequest( url );
+			const status = response.metadata.metadataProcessingStatus;
+
+			if ( !status || status == 'queued' ) {
+				throw new Error( 'Image has not been processed yet.' );
+			}
+		} catch ( err ) {
+			this.controller.signal.throwIfAborted();
+
+			throw new Error( 'Something went wrong.' );
+		}
 
 		return {
-			status: response.metadata.metadataProcessingStatus
+			status
 		};
 	}
 
@@ -213,15 +232,17 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param asset Data about certain asset.
 	 */
-	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<{ status?: string }> {
-		return retry( async () => {
-			const data = await this._getAssetStatusFromServer( asset.data );
-			if ( !data.status || data.status == 'queued' ) {
-				throw new Error( 'Image has not been processed yet.' );
-			}
+	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<{ status?: string } | undefined> {
+		return retry( () => this._getAssetStatusFromServer( asset.data ) );
+	}
 
-			return data;
-		} );
+	/**
+	 * Aborts the upload process.
+	 *
+	 * @see module:upload/filerepository~UploadAdapter#abort
+	 */
+	public abort(): void {
+		this.controller.abort();
 	}
 
 	/**
@@ -233,6 +254,7 @@ export default class CKBoxImageEditCommand extends Command {
 	 */
 	private _sendHttpRequest( url: URL ) {
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
+		const signal = this.controller.signal;
 		const xhr = new XMLHttpRequest();
 
 		xhr.open( 'GET', url );
@@ -240,7 +262,30 @@ export default class CKBoxImageEditCommand extends Command {
 		xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
 		xhr.responseType = 'json';
 
+		// The callback is attached to the `signal#abort` event.
+		const abortCallback = () => {
+			xhr.abort();
+		};
+
 		return new Promise<any>( ( resolve, reject ) => {
+			signal.addEventListener( 'abort', abortCallback );
+
+			xhr.addEventListener( 'loadstart', () => {
+				signal.addEventListener( 'abort', abortCallback );
+			} );
+
+			xhr.addEventListener( 'loadend', () => {
+				signal.removeEventListener( 'abort', abortCallback );
+			} );
+
+			xhr.addEventListener( 'error', () => {
+				reject();
+			} );
+
+			xhr.addEventListener( 'abort', () => {
+				reject();
+			} );
+
 			xhr.addEventListener( 'load', () => {
 				const response = xhr.response;
 
