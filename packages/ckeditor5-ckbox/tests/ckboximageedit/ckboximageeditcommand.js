@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, btoa */
+/* global window, btoa, setTimeout */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
@@ -11,17 +11,20 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Image } from '@ckeditor/ckeditor5-image';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 
 import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
+import { blurHashToDataUrl } from '../../src/utils';
 
 describe( 'CKBoxImageEditCommand', () => {
 	testUtils.createSinonSandbox();
 
-	let editor, domElement, command;
+	let editor, domElement, command, model, dataMock, dataWithBlurHashMock;
 
 	beforeEach( async () => {
 		TokenMock.initialToken = [
@@ -44,6 +47,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			plugins: [
 				Paragraph,
 				Heading,
+				Image,
 				CloudServices,
 				Essentials
 			],
@@ -58,6 +62,42 @@ describe( 'CKBoxImageEditCommand', () => {
 		command = new CKBoxImageEditCommand( editor );
 		command.isEnabled = true;
 		editor.commands.add( 'ckboxImageEdit', command );
+		model = editor.model;
+
+		dataMock = {
+			data: {
+				id: 'image-id1',
+				extension: 'png',
+				metadata: {
+					width: 100,
+					height: 100
+				},
+				name: 'image1',
+				imageUrls: {
+					100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+					default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+				},
+				url: 'https://example.com/workspace1/assets/image-id1/file'
+			}
+		};
+
+		dataWithBlurHashMock = {
+			data: {
+				id: 'image-id1',
+				extension: 'png',
+				metadata: {
+					width: 100,
+					height: 100,
+					blurHash: 'KTF55N=ZR4PXSirp5ZOZW9'
+				},
+				name: 'image1',
+				imageUrls: {
+					100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+					default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+				},
+				url: 'https://example.com/workspace1/assets/image-id1/file'
+			}
+		};
 	} );
 
 	afterEach( async () => {
@@ -163,6 +203,15 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
 			} );
+
+			it( 'should prepare options for the CKBox Image Editing dialog instance', () => {
+				const options = command._prepareOptions();
+
+				expect( options ).to.have.property( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).to.be.false;
+				expect( options.onSave ).to.be.a( 'function' );
+				expect( options.onClose ).to.be.a( 'function' );
+			} );
 		} );
 
 		describe( 'closing dialog ("ckboxImageEditor:close")', () => {
@@ -213,21 +262,107 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 		} );
 
-		describe( 'saving asset ("ckboxImageEditor:save")', () => {
+		describe( 'saving edited asset', () => {
 			let onSave;
 
 			beforeEach( () => {
 				onSave = command._prepareOptions().onSave;
 			} );
 
-			it( 'should fire "ckboxImageEditor:save" event after closing the CKBox Image Editor dialog', () => {
-				const spy = sinon.spy();
+			it( 'should fire "ckboxImageEditor:save" and "ckboxImageEditor:processed" ' +
+				'event after hit "Save" button in the CKBox Image Editor dialog', async () => {
+				const spySave = sinon.spy();
+				const spyProcessed = sinon.spy();
 
-				command.on( 'ckboxImageEditor:save', spy );
-				onSave();
+				const [ assetProcessedPromise, resolveAssetProcessed ] = createPromise();
 
-				expect( spy.callCount ).to.equal( 1 );
+				sinon.stub( command, '_waitForAssetProcessed' ).returns( assetProcessedPromise );
+
+				command.on( 'ckboxImageEditor:save', spySave );
+				command.on( 'ckboxImageEditor:processed', spyProcessed );
+
+				onSave( dataMock );
+
+				expect( spySave.callCount ).to.equal( 1 );
+
+				await wait( 0 );
+
+				expect( spyProcessed.callCount ).to.equal( 0 );
+
+				resolveAssetProcessed();
+
+				await wait( 0 );
+
+				expect( spyProcessed.callCount ).to.equal( 1 );
+			} );
+
+			it( 'should not replace image with saved one before it is processed', () => {
+				const modelData =
+					'[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]';
+
+				setModelData( model, modelData );
+
+				command.fire( 'ckboxImageEditor:save', dataMock );
+
+				expect( getModelData( model ) ).to.equal( modelData );
+			} );
+
+			it( 'should replace image with saved one after it is processed', () => {
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
+				command.fire( 'ckboxImageEditor:processed', dataMock );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
+			} );
+
+			it( 'should replace image with saved one (with blurHash placeholder) after it is processed', () => {
+				const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
+
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
+				command.fire( 'ckboxImageEditor:processed', dataWithBlurHashMock );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'placeholder="' + placeholder + '" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
 			} );
 		} );
 	} );
 } );
+
+function wait( time ) {
+	return new Promise( resolve => {
+		setTimeout( resolve, time );
+	} );
+}
+
+function createPromise() {
+	let resolve;
+
+	const promise = new Promise( res => {
+		resolve = res;
+	} );
+
+	return [ promise, resolve ];
+}
