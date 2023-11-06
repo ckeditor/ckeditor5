@@ -197,25 +197,18 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param data Data about certain asset.
 	 */
-	public _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ):
+	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ):
 		Promise<{
-			status: string;
+			status?: string;
 		}>
 	{
 		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
-		const formData = new FormData();
-		const requestConfig = {
-			url,
-			data: formData
-		} as const;
 
-		return this._sendHttpRequest( requestConfig ).then( async res => {
-			return {
-				status: res.metadata.metadataProcessingStatus
-			};
-		} ).catch( err => {
-			return err && Promise.reject( err.message );
-		} );
+		const response = await this._sendHttpRequest( url );
+
+		return {
+			status: response.metadata.metadataProcessingStatus
+		};
 	}
 
 	/**
@@ -223,18 +216,15 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param asset Data about certain asset.
 	 */
-	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<{ status: string }> {
-		return retry( () => new Promise( ( resolve, reject ) => {
-			this._getAssetStatusFromServer( asset.data ).then( ( data: {
-				status: string;
-			} ) => {
-				if ( data.status === 'success' ) {
-					resolve( data );
-				} else {
-					reject();
-				}
-			} ).catch( err => reject( err ) );
-		} ) );
+	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<{ status?: string }> {
+		return retry( async () => {
+			const data = await this._getAssetStatusFromServer( asset.data );
+			if ( !data.status || data.status == 'queued' ) {
+				throw new Error( 'Image has not been processed yet.' );
+			}
+
+			return data;
+		} );
 	}
 
 	/**
@@ -244,21 +234,17 @@ export default class CKBoxImageEditCommand extends Command {
 	 * @param config.method The HTTP method.
 	 * @param config.data Additional data to send.
 	 */
-	private _sendHttpRequest( { url, method = 'GET', data }: {
-		url: URL;
-		method?: 'GET' | 'POST';
-		data?: FormData | null;
-	} ) {
+	private _sendHttpRequest( url: URL ) {
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
 		const xhr = new XMLHttpRequest();
 
-		xhr.open( method, url.toString(), true );
+		xhr.open( 'GET', url.toString(), true );
 		xhr.setRequestHeader( 'Authorization', ckboxEditing.getToken().value );
 		xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
 		xhr.responseType = 'json';
 
 		return new Promise<any>( ( resolve, reject ) => {
-			xhr.addEventListener( 'load', async () => {
+			xhr.addEventListener( 'load', () => {
 				const response = xhr.response;
 
 				if ( !response || response.statusCode >= 400 ) {
@@ -269,7 +255,7 @@ export default class CKBoxImageEditCommand extends Command {
 			} );
 
 			// Send the request.
-			xhr.send( data );
+			xhr.send();
 		} );
 	}
 }
