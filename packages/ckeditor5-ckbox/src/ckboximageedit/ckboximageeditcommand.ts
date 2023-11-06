@@ -208,10 +208,11 @@ export default class CKBoxImageEditCommand extends Command {
 		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 
 		let response;
+		let status;
 
 		try {
 			response = await this._sendHttpRequest( url );
-			const status = response.metadata.metadataProcessingStatus;
+			status = response.metadata.metadataProcessingStatus;
 
 			if ( !status || status == 'queued' ) {
 				throw new Error( 'Image has not been processed yet.' );
