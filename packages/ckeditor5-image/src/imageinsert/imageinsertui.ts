@@ -8,19 +8,19 @@
  */
 
 import { Plugin, icons } from 'ckeditor5/src/core';
-import type { Locale } from 'ckeditor5/src/utils';
+import { logWarning, type Locale } from 'ckeditor5/src/utils';
 import {
+	ButtonView,
 	SplitButtonView,
+	DropdownButtonView,
 	createDropdown,
 	type DropdownView,
 	type View,
-	type ButtonView
+	type FocusableView
 } from 'ckeditor5/src/ui';
 
 import ImageInsertFormView from './ui/imageinsertformview';
 import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
-import type UploadImageCommand from '../imageupload/uploadimagecommand';
-import type InsertImageCommand from '../image/insertimagecommand';
 import ImageInsertUrlView, {
 	type ImageInsertUrlViewCancelEvent,
 	type ImageInsertUrlViewSubmitEvent
@@ -49,6 +49,11 @@ export default class ImageInsertUI extends Plugin {
 	public dropdownView?: DropdownView;
 
 	/**
+	 * TODO
+	 */
+	private _integrations = new Map<string, IntegrationCallback>();
+
+	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
@@ -60,6 +65,37 @@ export default class ImageInsertUI extends Plugin {
 		// Register `insertImage` dropdown and add `imageInsert` dropdown as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'insertImage', componentCreator );
 		editor.ui.componentFactory.add( 'imageInsert', componentCreator );
+
+		this.registerIntegration( 'url', type => {
+			if ( type == 'formView' ) {
+				return this._createInsertUrlView();
+			} else {
+				const button = new ButtonView( editor.locale );
+				const t = editor.locale.t;
+
+				button.set( {
+					label: t( 'Insert image' ), // TODO or Update image
+					icon: icons.image,
+					tooltip: true
+				} );
+
+				return button;
+			}
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	public registerIntegration( name: string, callback: IntegrationCallback ): void {
+		if ( this._integrations.has( name ) ) {
+			/**
+			 * TODO
+			 */
+			logWarning( 'image-insert-zzzzz', { name } );
+		}
+
+		this._integrations.set( name, callback );
 	}
 
 	/**
@@ -69,41 +105,35 @@ export default class ImageInsertUI extends Plugin {
 	 */
 	private _createDropdownView( locale: Locale ): DropdownView {
 		const editor = this.editor;
-		const t = locale.t;
 
-		const uploadImageCommand: UploadImageCommand | undefined = editor.commands.get( 'uploadImage' );
-		const insertImageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
+		const integrations = this._prepareIntegrations();
+		let dropdownButton: SplitButtonView | DropdownButtonView | undefined;
 
-		let dropdownButton;
+		if ( integrations.length > 1 ) {
+			// TODO remove cast as ButtonView & FocusableView
+			dropdownButton = new SplitButtonView( locale, integrations[ 0 ]( 'toolbarButton' ) as ButtonView & FocusableView );
+		} else if ( integrations.length == 1 ) {
+			dropdownButton = new DropdownButtonView( locale );
 
-		if ( uploadImageCommand ) {
-			const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as ButtonView;
+			// TODO remove cast as ButtonView
+			// TODO how to make it without reference button
+			const referenceButton = integrations[ 0 ]( 'toolbarButton' ) as ButtonView;
 
-			uploadImageButton.extendTemplate( {
-				attributes: {
-					class: 'ck ck-button'
-				}
-			} );
-
-			dropdownButton = new SplitButtonView( locale, uploadImageButton );
-		}
-
-		const dropdownView = createDropdown( locale, dropdownButton );
-
-		if ( !uploadImageCommand ) {
-			dropdownView.buttonView.set( {
-				label: t( 'Insert image' ),
-				icon: icons.image,
-				tooltip: true
+			dropdownButton.set( {
+				label: referenceButton.label,
+				icon: referenceButton.icon,
+				tooltip: referenceButton.tooltip
 			} );
 		}
 
-		this.dropdownView = dropdownView;
+		const dropdownView = this.dropdownView = createDropdown( locale, dropdownButton );
 
-		dropdownView.bind( 'isEnabled' ).to( uploadImageCommand || insertImageCommand );
+		// TODO
+		// dropdownView.bind( 'isEnabled' ).to( uploadImageCommand || insertImageCommand );
 
 		dropdownView.once( 'change:isOpen', () => {
-			const imageInsertFormView = new ImageInsertFormView( editor.locale, this._prepareIntegrations() );
+			const integrationsView = integrations.map( callback => callback( 'formView' ) );
+			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationsView );
 			dropdownView.panelView.children.add( imageInsertFormView );
 		} );
 
@@ -113,21 +143,27 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _prepareIntegrations(): Array<View> {
+	private _prepareIntegrations(): Array<IntegrationCallback> {
 		const editor = this.editor;
-		const items = editor.config.get( 'image.insert.integrations' ) || [ 'insertImageViaUrl' ];
+		const items = editor.config.get( 'image.insert.integrations' )!;
+		const result: Array<IntegrationCallback> = [];
 
-		return items.map( item => {
-			if ( item == 'insertImageViaUrl' ) {
-				return this._createInsertUrlView();
+		for ( const item of items ) {
+			if ( !this._integrations.has( item ) ) {
+				if ( ![ 'upload', 'assetManager', 'url' ].includes( item ) ) {
+					/**
+					 * TODO
+					 */
+					logWarning( 'image-insert-zzzzzz', { item } );
+				}
+
+				continue;
 			}
-			else if ( item == 'openCKFinder' && editor.ui.componentFactory.has( 'ckfinder' ) ) {
-				return this._createCKFinderView();
-			}
-			else {
-				return this._createGenericIntegration( item );
-			}
-		} );
+
+			result.push( this._integrations.get( item )! );
+		}
+
+		return result;
 	}
 
 	/**
@@ -174,35 +210,13 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _createCKFinderView() {
-		const ckFinderButton = this._createGenericIntegration( 'ckfinder' );
-
-		ckFinderButton.class = 'ck-image-insert__ck-finder-button';
-
-		return ckFinderButton;
-	}
-
-	/**
-	 * TODO
-	 */
-	private _createGenericIntegration( name: string ) {
-		const button = this.editor.ui.componentFactory.create( name ) as ButtonView;
-
-		button.withText = true;
-
-		// We want to close the dropdown panel view when user clicks the ckFinderButton.
-		button.on( 'execute', () => {
-			this._closePanel();
-		} );
-
-		return button;
-	}
-
-	/**
-	 * TODO
-	 */
 	private _closePanel(): void {
 		this.editor.editing.view.focus();
 		this.dropdownView!.isOpen = false;
 	}
 }
+
+/**
+ * TODO
+ */
+export type IntegrationCallback = ( type: 'toolbarButton' | 'formView' ) => View;

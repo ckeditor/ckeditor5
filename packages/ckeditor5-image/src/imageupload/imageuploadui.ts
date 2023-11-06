@@ -12,6 +12,7 @@ import { Plugin, icons } from 'ckeditor5/src/core';
 import { FileDialogButtonView } from 'ckeditor5/src/upload';
 import { createImageTypeRegExp } from './utils';
 import type UploadImageCommand from './uploadimagecommand';
+import type ImageInsertUI from '../imageinsert/imageinsertui';
 
 /**
  * The image upload button plugin.
@@ -70,5 +71,33 @@ export default class ImageUploadUI extends Plugin {
 		// Setup `uploadImage` button and add `imageUpload` button as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'uploadImage', componentCreator );
 		editor.ui.componentFactory.add( 'imageUpload', componentCreator );
+
+		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
+			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
+
+			imageInsertUI.registerIntegration( 'upload', type => {
+				const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
+
+				if ( type == 'formView' ) {
+					uploadImageButton.extendTemplate( {
+						attributes: {
+							class: [ 'ck', 'ck-button', 'ck-image-insert__ck-finder-button' ]
+						}
+					} );
+
+					uploadImageButton.buttonView.withText = true;
+					uploadImageButton.buttonView.label = t( 'Upload from computer' ); // TODO add to context
+					// TODO this should change to 'Replace from computer' if image is selected
+				} else {
+					uploadImageButton.extendTemplate( {
+						attributes: {
+							class: 'ck ck-button'
+						}
+					} );
+				}
+
+				return uploadImageButton;
+			} );
+		}
 	}
 }

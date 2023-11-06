@@ -34,10 +34,11 @@ ClassicEditor
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
 			insert: {
-				integrations: [
-					'openCKFinder',
-					'insertImageViaUrl'
-				]
+				// integrations: [
+				// 	'upload',
+				// 	'fileManager',
+				// 	'url'
+				// ]
 			}
 		},
 		ckfinder: {
