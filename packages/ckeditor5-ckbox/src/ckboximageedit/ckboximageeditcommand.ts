@@ -12,7 +12,7 @@ import { createElement, global } from 'ckeditor5/src/utils';
 import { prepareImageAssetAttributes } from '../ckboxcommand';
 
 import type { CKBoxRawAssetDefinition } from '../ckboxconfig';
-import type { InsertImageCommand } from '@ckeditor/ckeditor5-image';
+import type { InsertImageCommand, ImageUtils } from '@ckeditor/ckeditor5-image';
 
 /**
  * The CKBox edit image command.
@@ -147,6 +147,8 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, asset ) => {
+			this._showImageProcessingIndicator( asset );
+
 			this._waitForAssetProcessed( asset ).then( () => {
 				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
 			} );
@@ -187,6 +189,26 @@ export default class CKBoxImageEditCommand extends Command {
 		// Timeout for demo purposes.
 		return new Promise( resolve => {
 			setTimeout( resolve, 3000 );
+		} );
+	}
+
+	private _showImageProcessingIndicator( asset: CKBoxRawAssetDefinition ): void {
+		const editor = this.editor;
+		const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+
+		editor.editing.view.change( writer => {
+			const imageElementView = editor.editing.mapper.toViewElement( selectedImageElement )!;
+			const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
+
+			const img = imageUtils.findViewImgElement( imageElementView )!;
+
+			writer.setAttribute( 'width', asset.data.metadata!.width, img );
+			writer.setAttribute( 'height', asset.data.metadata!.height, img );
+
+			writer.setStyle( 'width', `${ asset.data.metadata!.width }px`, img );
+			writer.setStyle( 'height', `${ asset.data.metadata!.height }px`, img );
+
+			writer.addClass( 'image-processing', imageElementView );
 		} );
 	}
 }

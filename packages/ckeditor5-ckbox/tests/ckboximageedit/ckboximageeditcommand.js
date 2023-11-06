@@ -274,6 +274,10 @@ describe( 'CKBoxImageEditCommand', () => {
 				const spySave = sinon.spy();
 				const spyProcessed = sinon.spy();
 
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
 				const [ assetProcessedPromise, resolveAssetProcessed ] = createPromise();
 
 				sinon.stub( command, '_waitForAssetProcessed' ).returns( assetProcessedPromise );

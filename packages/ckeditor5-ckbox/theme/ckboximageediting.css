@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-image-processing-background-color: hsl(0, 0%, 93%);
+	--ck-image-processing-highlight-color: hsl(0, 0%, 87%);
+}
+
+.ck.ck-editor__editable {
+	& .image {
+		&.image-processing {
+			position: relative;
+
+			&:before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				background: linear-gradient(
+					90deg,
+					var(--ck-image-processing-background-color) 25%,
+					var(--ck-image-processing-highlight-color) 50%,
+					var(--ck-image-processing-background-color) 75%);
+
+				background-size: 200% 100%;
+				animation: ck-skeleton-animation 2s linear 0.5s infinite;
+			}
+
+			& img {
+				height: 100%;
+			}
+		}
+	}
+}
+
+
+@keyframes ck-skeleton-animation {
+	0% {
+		background-position: 200% 0;
+	}
+	100% {
+		background-position: -200% 0;
+	}
+}
