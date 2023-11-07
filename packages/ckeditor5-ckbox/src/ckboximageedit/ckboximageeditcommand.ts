@@ -3,16 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals AbortController, URL, window */
+
 /**
  * @module ckbox/ckboximageedit/ckboximageeditcommand
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core';
-import { createElement, global } from 'ckeditor5/src/utils';
+import { createElement, global, retry } from 'ckeditor5/src/utils';
+import CKBoxEditing from '../ckboxediting';
+
 import { prepareImageAssetAttributes } from '../ckboxcommand';
 
-import type { CKBoxRawAssetDefinition } from '../ckboxconfig';
+import type {
+	CKBoxRawAssetDefinition,
+	CKBoxRawAssetDataDefinition
+} from '../ckboxconfig';
+
 import type { InsertImageCommand } from '@ckeditor/ckeditor5-image';
+import { sendHttpRequest } from '../utils';
 
 /**
  * The CKBox edit image command.
@@ -183,11 +192,42 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 	}
 
-	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<void> {
-		// Timeout for demo purposes.
-		return new Promise( resolve => {
-			setTimeout( resolve, 3000 );
+	/**
+	 * Get asset's status on server. If server respond with "success" status then
+	 * image is already proceeded and ready for saving.
+	 *
+	 * @param data Data about certain asset.
+	 */
+	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<CKBoxRawAssetDataDefinition> {
+		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
+		const abortController = new AbortController();
+		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
+
+		const response = await sendHttpRequest( {
+			url,
+			signal: abortController.signal,
+			authorization: ckboxEditing.getToken().value
 		} );
+		const status = response.metadata.metadataProcessingStatus;
+
+		if ( !status || status == 'queued' ) {
+			throw new Error( 'Image has not been processed yet.' );
+		}
+
+		return response;
+	}
+
+	/**
+	 * Waiting until asset is being processed.
+	 *
+	 * @param asset Data about certain asset.
+	 */
+	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDataDefinition | undefined> {
+		try {
+			return await retry( () => this._getAssetStatusFromServer( asset.data ) );
+		} catch ( err ) {
+			// TODO: Handle error;
+		}
 	}
 }
 

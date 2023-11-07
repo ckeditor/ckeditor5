@@ -116,3 +116,80 @@ export function blurHashToDataUrl( hash?: string ): string | undefined {
 		return undefined;
 	}
 }
+
+/**
+ * Sends the HTTP request.
+ *
+ * @internal
+ * @param config.url the URL where the request will be sent.
+ * @param config.method The HTTP method.
+ * @param config.data Additional data to send.
+ * @param config.onUploadProgress A callback informing about the upload progress.
+ */
+export function sendHttpRequest( {
+	url,
+	method = 'GET',
+	data,
+	onUploadProgress,
+	signal,
+	authorization
+}: {
+	url: URL;
+	signal: AbortSignal;
+	authorization: string;
+	method?: 'GET' | 'POST';
+	data?: FormData | null;
+	onUploadProgress?: ( evt: ProgressEvent ) => void;
+} ): Promise<any> {
+	const xhr = new XMLHttpRequest();
+
+	xhr.open( method, url.toString(), true );
+	xhr.setRequestHeader( 'Authorization', authorization );
+	xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
+	xhr.responseType = 'json';
+
+	// The callback is attached to the `signal#abort` event.
+	const abortCallback = () => {
+		xhr.abort();
+	};
+
+	return new Promise<any>( ( resolve, reject ) => {
+		signal.addEventListener( 'abort', abortCallback );
+
+		xhr.addEventListener( 'loadstart', () => {
+			signal.addEventListener( 'abort', abortCallback );
+		} );
+
+		xhr.addEventListener( 'loadend', () => {
+			signal.removeEventListener( 'abort', abortCallback );
+		} );
+
+		xhr.addEventListener( 'error', () => {
+			reject();
+		} );
+
+		xhr.addEventListener( 'abort', () => {
+			reject();
+		} );
+
+		xhr.addEventListener( 'load', () => {
+			const response = xhr.response;
+
+			if ( !response || response.statusCode >= 400 ) {
+				return reject( response && response.message );
+			}
+
+			resolve( response );
+		} );
+
+		/* istanbul ignore else -- @preserve */
+		if ( onUploadProgress ) {
+			xhr.upload.addEventListener( 'progress', evt => {
+				onUploadProgress( evt );
+			} );
+		}
+
+		// Send the request.
+		xhr.send( data );
+	} );
+}

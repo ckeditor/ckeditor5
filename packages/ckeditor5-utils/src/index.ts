@@ -84,6 +84,7 @@ export { default as KeystrokeHandler } from './keystrokehandler';
 export { default as toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray';
 export { default as toMap } from './tomap';
 export { default as priorities, type PriorityString } from './priorities';
+export { default as retry, exponentialDelay } from './retry';
 export { default as insertToPriorityArray } from './inserttopriorityarray';
 export { default as spliceArray } from './splicearray';
 
