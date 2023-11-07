@@ -372,7 +372,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				sinon.assert.callCount( respondSpy, 4 );
 			} );
 
-			it( 'should reject if fetching asset\\s status ended with the authorization error', () => {
+			it( 'should reject if fetching asset\'s status ended with the authorization error', () => {
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					401,
 					{ 'Content-Type': 'application/json' },
