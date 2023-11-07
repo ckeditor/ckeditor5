@@ -75,7 +75,11 @@ export { default as NoOperation } from './model/operation/nooperation';
 export { transformSets } from './model/operation/transform';
 
 // Model.
-export { default as DocumentSelection, type DocumentSelectionChangeRangeEvent } from './model/documentselection';
+export {
+	default as DocumentSelection,
+	type DocumentSelectionChangeRangeEvent,
+	type DocumentSelectionChangeMarkerEvent
+} from './model/documentselection';
 export { default as Range } from './model/range';
 export { default as LiveRange, type LiveRangeChangeRangeEvent } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';

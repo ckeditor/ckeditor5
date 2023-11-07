@@ -9,7 +9,7 @@ import ComponentFactory from '../../src/componentfactory';
 import ToolbarView from '../../src/toolbar/toolbarview';
 import TooltipManager from '../../src/tooltipmanager';
 import PoweredBy from '../../src/editorui/poweredby';
-
+import AriaLiveAnnouncer from '../../src/arialiveannouncer';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -53,6 +53,10 @@ describe( 'EditorUI', () => {
 
 		it( 'should create #poweredBy', () => {
 			expect( ui.poweredBy ).to.be.instanceOf( PoweredBy );
+		} );
+
+		it( 'should create the aria live announcer instance', () => {
+			expect( ui.ariaLiveAnnouncer ).to.be.instanceOf( AriaLiveAnnouncer );
 		} );
 
 		it( 'should have #element getter', () => {
