@@ -46,7 +46,7 @@ If the `type` setting is omitted from the configuration, the behavior defaults t
 
 ### Updated image text alternative icon
 
-The {@link features/images-text-alternative image text alternative} (the alt attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/low-vision.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
+The {@link features/images-text-alternative image text alternative} (the alt attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
 
 ## Update to CKEditor&nbsp;5 v40.0.0
 

@@ -85,7 +85,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 			view.set( {
 				label: t( 'Change image text alternative' ),
-				icon: icons.lowVision,
+				icon: icons.textAlternative,
 				tooltip: true
 			} );
 
