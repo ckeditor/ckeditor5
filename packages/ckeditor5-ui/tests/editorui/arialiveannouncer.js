@@ -26,11 +26,11 @@ describe( 'AriaLiveAnnouncer', () => {
 		await editor.destroy();
 	} );
 
-	describe( 'setText()', () => {
+	describe( 'announce()', () => {
 		it( 'should create, then add the view to the body collection', () => {
 			expect( announcer.view ).to.be.undefined;
 
-			announcer.setText( 'foo', 'bar' );
+			announcer.announce( 'foo', 'bar' );
 
 			expect( announcer.view ).to.be.instanceOf( AriaLiveAnnouncerView );
 			expect( announcer.view.regionViews.length ).to.equal( 1 );
@@ -38,7 +38,7 @@ describe( 'AriaLiveAnnouncer', () => {
 		} );
 
 		it( 'should create the view from template upon first use', () => {
-			announcer.setText( 'foo', 'bar' );
+			announcer.announce( 'foo', 'bar' );
 
 			expect( announcer.view.element.tagName ).to.equal( 'DIV' );
 			expect( announcer.view.element.className.includes( 'ck' ) ).to.be.true;
@@ -46,7 +46,7 @@ describe( 'AriaLiveAnnouncer', () => {
 		} );
 
 		it( 'should create a new region (if does not exist) and set its text', () => {
-			announcer.setText( 'foo', 'bar' );
+			announcer.announce( 'foo', 'bar' );
 
 			expect( announcer.view.regionViews.length ).to.equal( 1 );
 
@@ -65,8 +65,8 @@ describe( 'AriaLiveAnnouncer', () => {
 		} );
 
 		it( 'should set a new text in an existing region', () => {
-			announcer.setText( 'foo', 'bar' );
-			announcer.setText( 'foo', 'baz' );
+			announcer.announce( 'foo', 'bar' );
+			announcer.announce( 'foo', 'baz' );
 
 			expect( announcer.view.regionViews.length ).to.equal( 1 );
 
@@ -85,8 +85,8 @@ describe( 'AriaLiveAnnouncer', () => {
 		} );
 
 		it( 'should be able to create more than a single region', () => {
-			announcer.setText( 'foo', 'bar' );
-			announcer.setText( 'baz', 'qux' );
+			announcer.announce( 'foo', 'bar' );
+			announcer.announce( 'baz', 'qux' );
 
 			expect( announcer.view.regionViews.length ).to.equal( 2 );
 
@@ -105,7 +105,7 @@ describe( 'AriaLiveAnnouncer', () => {
 		} );
 
 		it( 'should be able to set the politeness of the announcement', () => {
-			announcer.setText( 'foo', 'bar', 'assertive' );
+			announcer.announce( 'foo', 'bar', 'assertive' );
 
 			const firstRegion = announcer.view.regionViews.first;
 

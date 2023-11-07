@@ -31,9 +31,9 @@ export enum AriaLiveAnnouncerPoliteness {
  * These announcements are consumed and propagated by screen readers and give users a better understanding of the current
  * state of the editor.
  *
- * To announce a state change to an editor feature named `'Some feature'`, use the {@link #setText} method:
+ * To announce a state change to an editor feature named `'Some feature'`, use the {@link #announce} method:
  * ```ts
- * editor.ui.ariaLiveAnnouncer.setText( 'Some feature', 'Text of an announcement.' );
+ * editor.ui.ariaLiveAnnouncer.announce( 'Some feature', 'Text of an announcement.' );
  * ```
  */
 export default class AriaLiveAnnouncer {
@@ -68,11 +68,15 @@ export default class AriaLiveAnnouncer {
 	 *
 	 * ```ts
 	 * // Most screen readers will queue announcements from multiple aria-live regions and read them out in the order they were emitted.
- 	 * editor.ui.ariaLiveAnnouncer.setText( 'FeatureA', 'Text of feature A announcement.' );
- 	 * editor.ui.ariaLiveAnnouncer.setText( 'FeatureB', 'Text of feature A announcement.' );
+ 	 * editor.ui.ariaLiveAnnouncer.announce( 'image', 'Image uploaded.' );
+ 	 * editor.ui.ariaLiveAnnouncer.announce( 'network', 'Connection lost. Reconnecting.' );
  	 * ```
 	 */
-	public setText( regionName: string, text: string, politeness: AriaLiveAnnouncerPoliteness = AriaLiveAnnouncerPoliteness.POLITE ): void {
+	public announce(
+		regionName: string,
+		announcementText: string,
+		politeness: AriaLiveAnnouncerPoliteness = AriaLiveAnnouncerPoliteness.POLITE
+	): void {
 		const editor = this.editor;
 
 		if ( !this.view ) {
@@ -87,9 +91,11 @@ export default class AriaLiveAnnouncer {
 			this.view.regionViews.add( regionView );
 		}
 
+		console.log( '[Announcer]', regionName, announcementText );
+
 		regionView.set( {
 			regionName,
-			text,
+			text: announcementText,
 			politeness
 		} );
 	}
