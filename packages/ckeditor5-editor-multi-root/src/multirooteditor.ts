@@ -388,7 +388,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 *
 	 * Note that attributes added together with a root are automatically registered.
 	 *
-	 * See also {@link ~#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
+	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
 	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
 	 *
 	 * By setting `isUndoable` flag to `true`, you can allow for detaching the root using the undo feature.
@@ -550,7 +550,7 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	 *
 	 * Note that attributes loaded together with a root are automatically registered.
 	 *
-	 * See also {@link ~#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
+	 * See also {@link ~MultiRootEditor#registerRootAttribute `MultiRootEditor#registerRootAttribute()`} and
 	 * {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes` configuration option}.
 	 *
 	 * When this method is used in real-time collaboration environment, its effects become asynchronous as the editor will first synchronize
@@ -609,8 +609,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Returns attributes for all attached roots.
 	 *
-	 * Note: all and only {@link ~#registerRootAttribute registered} roots attributes will be returned. If a registered root attribute
-	 * is not set for a given root, `null` will be returned.
+	 * Note: all and only {@link ~MultiRootEditor#registerRootAttribute registered} roots attributes will be returned.
+	 * If a registered root attribute is not set for a given root, `null` will be returned.
 	 *
 	 * @returns Object with roots attributes. Keys are roots names, while values are attributes set on given root.
 	 */
@@ -627,8 +627,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Returns attributes for the specified root.
 	 *
-	 * Note: all and only {@link ~#registerRootAttribute registered} roots attributes will be returned. If a registered root attribute
-	 * is not set for a given root, `null` will be returned.
+	 * Note: all and only {@link ~MultiRootEditor#registerRootAttribute registered} roots attributes will be returned.
+	 * If a registered root attribute is not set for a given root, `null` will be returned.
 	 */
 	public getRootAttributes( rootName: string ): RootAttributes {
 		const rootAttributes: RootAttributes = {};
@@ -644,7 +644,8 @@ export default class MultiRootEditor extends DataApiMixin( Editor ) {
 	/**
 	 * Registers given string as a root attribute key. Registered root attributes are added to
 	 * {@link module:engine/model/schema~Schema schema}, and also returned by
-	 * {@link ~#getRootAttributes `getRootAttributes()`} and {@link ~#getRootsAttributes `getRootsAttributes()`}.
+	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
+	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
 	 *
 	 * Note: attributes passed in {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes `config.rootsAttributes`} are
 	 * automatically registered as the editor is initialized. However, registering the same attribute twice does not have any negative
