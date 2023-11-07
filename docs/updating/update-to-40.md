@@ -44,8 +44,6 @@ If the `type` setting is omitted from the configuration, the behavior defaults t
 
 **Important**: If only one type of image plugin is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the supported image type will be used.
 
-### Redone `imageInsert` command
-
 ### Updated image text alternative icon
 
 The {@link features/images-text-alternative image text alternative} (the alt attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/low-vision.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
