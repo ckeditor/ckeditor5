@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals AbortController, URL, XMLHttpRequest, window */
+/* globals AbortController, URL, window */
 
 /**
  * @module ckbox/ckboximageedit/ckboximageeditcommand
@@ -35,11 +35,6 @@ export default class CKBoxImageEditCommand extends Command {
 	declare public value: boolean;
 
 	/**
-	 * The abort controller for aborting asynchronous processes.
-	 */
-	public controller: AbortController;
-
-	/**
 	 * The DOM element that acts as a mounting point for the CKBox Edit Image dialog.
 	 */
 	private _wrapper: Element | null = null;
@@ -56,7 +51,6 @@ export default class CKBoxImageEditCommand extends Command {
 		super( editor );
 
 		this.value = false;
-		this.controller = new AbortController();
 
 		this._prepareListeners();
 	}

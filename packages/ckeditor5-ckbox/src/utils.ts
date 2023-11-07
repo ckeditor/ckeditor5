@@ -172,14 +172,14 @@ export function sendHttpRequest( {
 			reject();
 		} );
 
-		xhr.addEventListener( 'load', async () => {
+		xhr.addEventListener( 'load', () => {
 			const response = xhr.response;
 
 			if ( !response || response.statusCode >= 400 ) {
 				return reject( response && response.message );
 			}
 
-			return resolve( response );
+			resolve( response );
 		} );
 
 		/* istanbul ignore else -- @preserve */
