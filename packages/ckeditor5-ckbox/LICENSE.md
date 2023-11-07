@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor&nbsp;5 CKBox feature** – https://github.com/ckeditor/ckeditor5-ckbox <br>
-Copyright (c) 2003-2023, [CKSource Holding sp. z o.o.](http://cksource.com) All rights reserved.
+Copyright (c) 2003–2023, [CKSource Holding sp. z o.o.](http://cksource.com) All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
 
@@ -18,4 +18,4 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 Trademarks
 ----------
 
-**CKEditor** is a trademark of [CKSource Holding sp. z o.o.](http://cksource.com) All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
+**CKEditor** is a trademark of [CKSource Holding sp. z o.o.](http://cksource.com) All other brand and product names are trademarks, registered trademarks, or service marks of their respective holders.

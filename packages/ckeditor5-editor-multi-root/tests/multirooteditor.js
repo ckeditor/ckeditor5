@@ -484,12 +484,17 @@ describe( 'MultiRootEditor', () => {
 		} );
 
 		it( 'should add a model root with given attributes', () => {
+			sinon.spy( editor, 'registerRootAttribute' );
+
 			editor.addRoot( 'bar', { attributes: { order: 20, isLocked: true } } );
 
 			const root = editor.model.document.getRoot( 'bar' );
 
 			expect( root.getAttribute( 'order' ) ).to.equal( 20 );
 			expect( root.getAttribute( 'isLocked' ) ).to.be.true;
+
+			expect( editor.registerRootAttribute.calledWithExactly( 'order' ) );
+			expect( editor.registerRootAttribute.calledWithExactly( 'isLocked' ) );
 		} );
 
 		it( 'should add a model root which can be undone by undo feature if `isUndoable` is set to `true`', () => {
@@ -619,11 +624,15 @@ describe( 'MultiRootEditor', () => {
 			} );
 
 			it( 'should set not-loaded root as loaded and set initial data and attributes', () => {
+				sinon.spy( editor, 'registerRootAttribute' );
+
 				editor.loadRoot( 'foo', { data: '<p>Foo</p>', attributes: { order: 100 } } );
 
 				expect( root._isLoaded ).to.be.true;
 				expect( editor.getData( { rootName: 'foo' } ) ).to.equal( '<p>Foo</p>' );
 				expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( { order: 100 } );
+
+				expect( editor.registerRootAttribute.calledWithExactly( 'order' ) );
 			} );
 
 			it( 'should load an empty root', () => {
@@ -1055,6 +1064,25 @@ describe( 'MultiRootEditor', () => {
 			await editor.destroy();
 		} );
 
+		it( 'should register all root attributes passed in the config', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10 },
+					bar: { isLocked: false }
+				}
+			} );
+
+			expect( editor.getRootsAttributes() ).to.deep.equal( {
+				foo: { order: 10, isLocked: null },
+				bar: { order: null, isLocked: false }
+			} );
+
+			expect( editor.editing.model.schema.checkAttribute( '$root', 'order' ) ).to.be.true;
+			expect( editor.editing.model.schema.checkAttribute( '$root', 'isLocked' ) ).to.be.true;
+
+			await editor.destroy();
+		} );
+
 		it( 'should throw when trying to set an attribute on non-existing root', done => {
 			MultiRootEditor.create( { foo: '', bar: '' }, {
 				rootsAttributes: {
@@ -1100,7 +1128,34 @@ describe( 'MultiRootEditor', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should not return roots attributes that were not specified in config', async () => {
+		it( 'should return roots attributes that were registered', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10 },
+					bar: {}
+				}
+			} );
+
+			editor.registerRootAttribute( 'isLocked' );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'bar' ) );
+			} );
+
+			expect( editor.getRootAttributes( 'foo' ) ).to.deep.equal( {
+				isLocked: null,
+				order: 10
+			} );
+
+			expect( editor.getRootAttributes( 'bar' ) ).to.deep.equal( {
+				isLocked: true,
+				order: null
+			} );
+
+			await editor.destroy();
+		} );
+
+		it( 'should not return roots attributes that were not registered', async () => {
 			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
 				rootsAttributes: {
 					foo: { order: 10, isLocked: true },
@@ -1205,6 +1260,38 @@ describe( 'MultiRootEditor', () => {
 
 			expect( editor.getRootAttributes.calledWith( 'foo' ) ).to.be.true;
 			expect( editor.getRootAttributes.calledWith( 'bar' ) ).to.be.true;
+
+			await editor.destroy();
+		} );
+
+		it( 'should return all and only roots attributes that were registered', async () => {
+			editor = await MultiRootEditor.create( { foo: '', bar: '' }, {
+				rootsAttributes: {
+					foo: { order: 10 },
+					bar: {}
+				}
+			} );
+
+			editor.registerRootAttribute( 'isLocked' );
+
+			editor.model.change( writer => {
+				writer.setAttribute( 'isLocked', true, editor.model.document.getRoot( 'bar' ) );
+
+				// Not registered:
+				writer.setAttribute( 'abc', true, editor.model.document.getRoot( 'foo' ) );
+				writer.setAttribute( 'abc', false, editor.model.document.getRoot( 'bar' ) );
+			} );
+
+			expect( editor.getRootsAttributes( 'foo' ) ).to.deep.equal( {
+				foo: {
+					isLocked: null,
+					order: 10
+				},
+				bar: {
+					isLocked: true,
+					order: null
+				}
+			} );
 
 			await editor.destroy();
 		} );
