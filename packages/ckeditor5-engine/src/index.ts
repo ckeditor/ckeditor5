@@ -142,7 +142,7 @@ export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
 export { default as ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './view/treewalker';
-export type { default as ViewElementDefinition } from './view/elementdefinition';
+export type { default as ViewElementDefinition, ElementObjectDefinition } from './view/elementdefinition';
 export type { default as ViewDocumentSelection } from './view/documentselection';
 export { default as AttributeElement } from './view/attributeelement';
 export type { default as ViewItem } from './view/item';
