@@ -1873,7 +1873,8 @@ describe( 'PictureEditing', () => {
 					ImageBlockEditing, ImageInlineEditing,
 					LinkImageEditing, ImageResizeEditing, ImageCaptionEditing, ImageUploadEditing,
 					UploadAdapterPluginMock
-				]
+				],
+				image: { insert: { type: 'auto' } }
 			} );
 
 			model = editor.model;

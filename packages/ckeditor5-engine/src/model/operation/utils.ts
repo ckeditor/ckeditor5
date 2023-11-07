@@ -171,8 +171,11 @@ export function _normalizeNodes( nodes: NodeSet ): Array<Node> {
 			for ( const node of nodes ) {
 				convert( node );
 			}
+		} else {
+			// Skip unrecognized type.
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const unreachable: never = nodes;
 		}
-		// Skip unrecognized type.
 	}
 
 	convert( nodes );

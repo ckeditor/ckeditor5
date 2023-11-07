@@ -158,9 +158,8 @@ export default class ImageSizeAttributes extends Plugin {
 
 				const width = data.item.getAttribute( 'width' );
 				const height = data.item.getAttribute( 'height' );
-				const aspectRatio = img.getStyle( 'aspect-ratio' );
 
-				if ( width && height && !aspectRatio ) {
+				if ( width && height ) {
 					viewWriter.setStyle( 'aspect-ratio', `${ width }/${ height }`, img );
 				}
 			} );

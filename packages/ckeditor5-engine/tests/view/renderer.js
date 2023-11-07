@@ -328,6 +328,34 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes[ 0 ] ).to.equal( domImg );
 		} );
 
+		it( 'should change element if it is the same but requested to not reuse', () => {
+			const viewImg = new ViewElement( viewDocument, 'img' );
+			viewRoot._appendChild( viewImg );
+
+			// This should not be changed during the render.
+			const domImg = document.createElement( 'img' );
+			domRoot.appendChild( domImg );
+
+			domConverter.bindElements( domImg, viewImg );
+
+			viewImg._setCustomProperty( 'editingPipeline:doNotReuseOnce', true );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ] ).to.not.equal( domImg );
+
+			// Verify if only once.
+			const newDomImg = domRoot.childNodes[ 0 ];
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ] ).to.equal( newDomImg );
+		} );
+
 		it( 'should remove any comment from the DOM element', () => {
 			// This comment should be cleared during render.
 			const domComment = document.createComment( 'some comment from the user-land' );
