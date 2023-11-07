@@ -25,7 +25,7 @@ Copy some text from one of the styled paragraphs below and press <kbd>Ctrl</kbd>
 
 The plain text pasting feature is implemented by the `PastePlainText` plugin which is a part of the `Clipboard` plugin.
 
-It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &mdash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
+It detects the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke during the paste and causes the pasted text to inherit the styles of the content it was pasted into. In this sense, the feature can also be described as "pasting without formatting" &ndash; the source formatting of the pasted text gets replaced with the target formatting of the text it was pasted into.
 
 Pasting plain text with a double line break will turn the break into a paragraph. A single line break will instead be turned into a soft break upon pasting.
 

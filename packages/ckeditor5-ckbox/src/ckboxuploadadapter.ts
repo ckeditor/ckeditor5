@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals AbortController, FormData, URL, XMLHttpRequest, window */
+/* globals AbortController, FormData, URL, window */
 
 /**
  * @module ckbox/ckboxuploadadapter
@@ -22,7 +22,7 @@ import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/cke
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
-import { getImageUrls, getWorkspaceId } from './utils';
+import { getImageUrls, getWorkspaceId, sendHttpRequest } from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -162,7 +162,11 @@ class Adapter implements UploadAdapter {
 		categoryUrl.searchParams.set( 'offset', offset.toString() );
 		categoryUrl.searchParams.set( 'workspaceId', this.getWorkspaceId() );
 
-		return this._sendHttpRequest( { url: categoryUrl } )
+		return sendHttpRequest( {
+			url: categoryUrl,
+			signal: this.controller.signal,
+			authorization: this.token.value
+		} )
 			.then( async data => {
 				const remainingItems = data.totalCount - ( offset + ITEMS_PER_REQUEST );
 
@@ -265,10 +269,12 @@ class Adapter implements UploadAdapter {
 					this.loader.uploadTotal = evt.total;
 					this.loader.uploaded = evt.loaded;
 				}
-			}
+			},
+			signal: this.controller.signal,
+			authorization: this.token.value
 		} as const;
 
-		return this._sendHttpRequest( requestConfig )
+		return sendHttpRequest( requestConfig )
 			.then( async data => {
 				const imageUrls = getImageUrls( data.imageUrls );
 
@@ -292,74 +298,6 @@ class Adapter implements UploadAdapter {
 	 */
 	public abort(): void {
 		this.controller.abort();
-	}
-
-	/**
-	 * Sends the HTTP request.
-	 *
-	 * @param config.url the URL where the request will be sent.
-	 * @param config.method The HTTP method.
-	 * @param config.data Additional data to send.
-	 * @param config.onUploadProgress A callback informing about the upload progress.
-	 */
-	private _sendHttpRequest( { url, method = 'GET', data, onUploadProgress }: {
-		url: URL;
-		method?: 'GET' | 'POST';
-		data?: FormData | null;
-		onUploadProgress?: ( evt: ProgressEvent ) => void;
-	} ) {
-		const signal = this.controller.signal;
-
-		const xhr = new XMLHttpRequest();
-		xhr.open( method, url.toString(), true );
-		xhr.setRequestHeader( 'Authorization', this.token.value );
-		xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
-		xhr.responseType = 'json';
-
-		// The callback is attached to the `signal#abort` event.
-		const abortCallback = () => {
-			xhr.abort();
-		};
-
-		return new Promise<any>( ( resolve, reject ) => {
-			signal.addEventListener( 'abort', abortCallback );
-
-			xhr.addEventListener( 'loadstart', () => {
-				signal.addEventListener( 'abort', abortCallback );
-			} );
-
-			xhr.addEventListener( 'loadend', () => {
-				signal.removeEventListener( 'abort', abortCallback );
-			} );
-
-			xhr.addEventListener( 'error', () => {
-				reject();
-			} );
-
-			xhr.addEventListener( 'abort', () => {
-				reject();
-			} );
-
-			xhr.addEventListener( 'load', async () => {
-				const response = xhr.response;
-
-				if ( !response || response.statusCode >= 400 ) {
-					return reject( response && response.message );
-				}
-
-				return resolve( response );
-			} );
-
-			/* istanbul ignore else -- @preserve */
-			if ( onUploadProgress ) {
-				xhr.upload.addEventListener( 'progress', evt => {
-					onUploadProgress( evt );
-				} );
-			}
-
-			// Send the request.
-			xhr.send( data );
-		} );
 	}
 }
 
