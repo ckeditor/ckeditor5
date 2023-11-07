@@ -13,13 +13,6 @@
 	border-radius: var(--ck-border-radius);
 }
 
-/* https://github.com/ckeditor/ckeditor5/issues/7986 */
-.ck.ck-splitbutton > .ck-file-dialog-button.ck-button {
-	padding: 0;
-	margin: 0;
-	border: none;
-}
-
 .ck.ck-image-insert-form {
 	padding: var(--ck-spacing-large);
 

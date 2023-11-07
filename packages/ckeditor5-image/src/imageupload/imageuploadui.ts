@@ -47,13 +47,13 @@ export default class ImageUploadUI extends Plugin {
 				allowMultipleFiles: true
 			} );
 
-			view.buttonView.set( {
+			view.set( {
 				label: t( 'Insert image' ),
 				icon: icons.image,
 				tooltip: true
 			} );
 
-			view.buttonView.bind( 'isEnabled' ).to( command );
+			view.bind( 'isEnabled' ).to( command );
 
 			view.on( 'done', ( evt, files: FileList ) => {
 				const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
@@ -81,19 +81,17 @@ export default class ImageUploadUI extends Plugin {
 				if ( type == 'formView' ) {
 					uploadImageButton.extendTemplate( {
 						attributes: {
-							class: [ 'ck', 'ck-button', 'ck-image-insert__ck-finder-button' ]
+							class: 'ck-image-insert__ck-finder-button'
 						}
 					} );
 
-					uploadImageButton.buttonView.withText = true;
-					uploadImageButton.buttonView.label = t( 'Upload from computer' ); // TODO add to context
-					// TODO this should change to 'Replace from computer' if image is selected
-				} else {
-					uploadImageButton.extendTemplate( {
-						attributes: {
-							class: 'ck ck-button'
-						}
-					} );
+					uploadImageButton.withText = true;
+
+					// TODO add to context (note that it's shared with CKBox)
+					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace from computer' ) :
+						t( 'Upload from computer' )
+					);
 				}
 
 				return uploadImageButton;

@@ -15,7 +15,6 @@ import {
 	DropdownButtonView,
 	createDropdown,
 	type DropdownView,
-	type View,
 	type FocusableView
 } from 'ckeditor5/src/ui';
 
@@ -25,6 +24,7 @@ import ImageInsertUrlView, {
 	type ImageInsertUrlViewCancelEvent,
 	type ImageInsertUrlViewSubmitEvent
 } from './ui/imageinserturlview';
+import type ImageUtils from '../imageutils';
 
 /**
  * The image insert dropdown plugin.
@@ -50,6 +50,13 @@ export default class ImageInsertUI extends Plugin {
 
 	/**
 	 * TODO
+	 *
+	 * @observable
+	 */
+	declare public isImageSelected: boolean;
+
+	/**
+	 * TODO
 	 */
 	private _integrations = new Map<string, IntegrationCallback>();
 
@@ -57,6 +64,8 @@ export default class ImageInsertUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
+		this.set( 'isImageSelected', false );
+
 		const editor = this.editor;
 		const componentCreator = ( locale: Locale ) => {
 			return this._createDropdownView( locale );
@@ -81,6 +90,13 @@ export default class ImageInsertUI extends Plugin {
 
 				return button;
 			}
+		} );
+
+		this.listenTo( editor.model.document, 'change', () => {
+			const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+			const element = this.editor.model.document.selection.getSelectedElement();
+
+			this.isImageSelected = imageUtils.isImage( element );
 		} );
 	}
 
@@ -134,6 +150,7 @@ export default class ImageInsertUI extends Plugin {
 		dropdownView.once( 'change:isOpen', () => {
 			const integrationsView = integrations.map( callback => callback( 'formView' ) );
 			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationsView );
+
 			dropdownView.panelView.children.add( imageInsertFormView );
 		} );
 
@@ -173,7 +190,7 @@ export default class ImageInsertUI extends Plugin {
 		const replaceImageSourceCommand: ReplaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
 		const imageInsertUrlView = new ImageInsertUrlView( this.editor.locale );
 
-		imageInsertUrlView.bind( 'isImageSelected' ).to( replaceImageSourceCommand, 'isEnabled' );
+		imageInsertUrlView.bind( 'isImageSelected' ).to( this );
 
 		// Set initial value because integrations are created on first dropdown open.
 		imageInsertUrlView.imageURLInputValue = replaceImageSourceCommand.value || '';
@@ -219,4 +236,4 @@ export default class ImageInsertUI extends Plugin {
 /**
  * TODO
  */
-export type IntegrationCallback = ( type: 'toolbarButton' | 'formView' ) => View;
+export type IntegrationCallback = ( type: 'toolbarButton' | 'formView' ) => FocusableView;

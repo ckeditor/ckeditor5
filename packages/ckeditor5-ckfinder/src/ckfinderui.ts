@@ -64,8 +64,13 @@ export default class CKFinderUI extends Plugin {
 				if ( type == 'formView' ) {
 					button.class = 'ck-image-insert__ck-finder-button';
 					button.withText = true;
-					button.label = t( 'Insert with a File manager' ); // TODO add to context (note that it's shared with CKBox)
-					// TODO this should change to 'Replace with a File manager' if image is selected
+					// button.label = t( 'Insert with a File manager' );
+
+					// TODO add to context (note that it's shared with CKBox)
+					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace with a File manager' ) :
+						t( 'Insert with a File manager' )
+					);
 				}
 
 				return button;
