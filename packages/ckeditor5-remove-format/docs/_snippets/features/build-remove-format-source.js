@@ -9,7 +9,7 @@ import { Bold, Italic, Code, Strikethrough, Underline, Subscript, Superscript } 
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Font } from '@ckeditor/ckeditor5-font';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 
@@ -31,6 +31,7 @@ ClassicEditor.builtinPlugins.push(
 	ImageResize,
 	AutoImage,
 	LinkImage,
-	CKBox );
+	CKBox,
+	CKBoxImageEdit );
 
 window.ClassicEditor = ClassicEditor;

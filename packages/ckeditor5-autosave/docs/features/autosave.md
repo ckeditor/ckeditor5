@@ -23,7 +23,7 @@ How to understand this demo:
 	* The editor is also busy when saving the content is in progress (the `save()`'s promise was not resolved).
 * The autosave feature has a throttling mechanism that groups frequent changes (e.g. typing) into batches.
 * The autosave itself does not check whether the data has actually changed. It bases on changes in the {@link framework/architecture/editing-engine#model model} that sometimes may not be "visible" in the data. You can add such a check yourself if you would like to avoid sending the same data to the server twice.
-* You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and typing something. These actions will make the editor busy for a longer time &mdash; try leaving the page then.
+* You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and typing something. These actions will make the editor busy for a longer time &ndash; try leaving the page then.
 
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
