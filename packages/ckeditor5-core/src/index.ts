@@ -40,6 +40,7 @@ import cog from './../theme/icons/cog.svg';
 import eraser from './../theme/icons/eraser.svg';
 import history from './../theme/icons/history.svg';
 import lowVision from './../theme/icons/low-vision.svg';
+import textAlternative from './../theme/icons/text-alternative.svg';
 import loupe from './../theme/icons/loupe.svg';
 import image from './../theme/icons/image.svg';
 
@@ -86,6 +87,7 @@ export const icons = {
 	history,
 	image,
 	lowVision,
+	textAlternative,
 	loupe,
 	importExport,
 	paragraph,
