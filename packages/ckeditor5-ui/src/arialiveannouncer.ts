@@ -91,8 +91,6 @@ export default class AriaLiveAnnouncer {
 			this.view.regionViews.add( regionView );
 		}
 
-		console.log( '[Announcer]', regionName, announcementText );
-
 		regionView.set( {
 			regionName,
 			text: announcementText,
