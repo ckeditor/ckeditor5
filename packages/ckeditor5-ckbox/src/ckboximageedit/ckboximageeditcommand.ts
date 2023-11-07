@@ -21,6 +21,7 @@ import type {
 } from '../ckboxconfig';
 
 import type { InsertImageCommand } from '@ckeditor/ckeditor5-image';
+import { sendHttpRequest } from '../utils';
 
 /**
  * The CKBox edit image command.
@@ -203,29 +204,23 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param data Data about certain asset.
 	 */
-	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<{ status?: string }>
-	{
+	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<CKBoxRawAssetDataDefinition> {
 		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
+		const abortController = new AbortController();
+		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
 
-		let response;
-		let status;
+		const response = await sendHttpRequest( {
+			url,
+			signal: abortController.signal,
+			authorization: ckboxEditing.getToken().value
+		} );
+		const status = response.metadata.metadataProcessingStatus;
 
-		try {
-			response = await this._sendHttpRequest( url );
-			status = response.metadata.metadataProcessingStatus;
-
-			if ( !status || status == 'queued' ) {
-				throw new Error( 'Image has not been processed yet.' );
-			}
-		} catch ( err ) {
-			this.controller.signal.throwIfAborted();
-
-			throw new Error( 'Something went wrong.' );
+		if ( !status || status == 'queued' ) {
+			throw new Error( 'Image has not been processed yet.' );
 		}
 
-		return {
-			status
-		};
+		return response;
 	}
 
 	/**
@@ -233,73 +228,12 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param asset Data about certain asset.
 	 */
-	private _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<{ status?: string } | undefined> {
-		return retry( () => this._getAssetStatusFromServer( asset.data ) );
-	}
-
-	/**
-	 * Aborts the upload process.
-	 *
-	 * @see module:upload/filerepository~UploadAdapter#abort
-	 */
-	public abort(): void {
-		this.controller.abort();
-	}
-
-	/**
-	 * Sends the HTTP request.
-	 *
-	 * @param config.url the URL where the request will be sent.
-	 * @param config.method The HTTP method.
-	 * @param config.data Additional data to send.
-	 */
-	private _sendHttpRequest( url: URL ) {
-		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
-		const signal = this.controller.signal;
-		const xhr = new XMLHttpRequest();
-
-		xhr.open( 'GET', url );
-		xhr.setRequestHeader( 'Authorization', ckboxEditing.getToken().value );
-		xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
-		xhr.responseType = 'json';
-
-		// The callback is attached to the `signal#abort` event.
-		const abortCallback = () => {
-			xhr.abort();
-		};
-
-		return new Promise<any>( ( resolve, reject ) => {
-			signal.addEventListener( 'abort', abortCallback );
-
-			xhr.addEventListener( 'loadstart', () => {
-				signal.addEventListener( 'abort', abortCallback );
-			} );
-
-			xhr.addEventListener( 'loadend', () => {
-				signal.removeEventListener( 'abort', abortCallback );
-			} );
-
-			xhr.addEventListener( 'error', () => {
-				reject();
-			} );
-
-			xhr.addEventListener( 'abort', () => {
-				reject();
-			} );
-
-			xhr.addEventListener( 'load', () => {
-				const response = xhr.response;
-
-				if ( !response || response.statusCode >= 400 ) {
-					return reject( response && response.message );
-				}
-
-				return resolve( response );
-			} );
-
-			// Send the request.
-			xhr.send();
-		} );
+	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDataDefinition | undefined> {
+		try {
+			return await retry( () => this._getAssetStatusFromServer( asset.data ) );
+		} catch ( err ) {
+			// TODO: Handle error;
+		}
 	}
 }
 
