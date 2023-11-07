@@ -291,6 +291,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should pool data for edited image and if success status, save it', done => {
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
 				const clock = sinon.useFakeTimers();
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
@@ -303,40 +304,27 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
-
 				command.on( 'ckboxImageEditor:processed', () => {
 					expect( getModelData( model ) ).to.equal(
 						'[<imageBlock alt="" ckboxImageId="image-id1" height="100" sources="[object Object]"' +
 							' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
 						'</imageBlock>]'
 					);
-					done();
 				} );
 
 				onSave( dataMock );
 				clock.tick( 1500 );
+				done();
 			} );
 
 			it( 'should stop pooling if limit was reached', async () => {
 				const clock = sinon.useFakeTimers();
 
 				const respondSpy = sinon.spy( sinonXHR, 'respond' );
+
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
@@ -347,23 +335,6 @@ describe( 'CKBoxImageEditCommand', () => {
 						}
 					} )
 				] );
-
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
 
 				onSave( dataMock );
 
@@ -378,21 +349,6 @@ describe( 'CKBoxImageEditCommand', () => {
 					{ 'Content-Type': 'application/json' },
 					JSON.stringify( { message: 'Invalid token.', statusCode: 401 } )
 				] );
-
-				const dataMock = {
-					id: 'image-id1',
-					extension: 'png',
-					metadata: {
-						width: 100,
-						height: 100
-					},
-					name: 'image1',
-					imageUrls: {
-						100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-						default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-					},
-					url: 'https://example.com/workspace1/assets/image-id1/file'
-				};
 
 				return command._getAssetStatusFromServer( dataMock )
 					.then( res => {
@@ -429,7 +385,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( spyProcessed.callCount ).to.equal( 0 );
 
-				resolveAssetProcessed();
+				resolveAssetProcessed( dataMock );
 
 				await wait( 0 );
 
@@ -458,7 +414,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
-						'alt="" ' +
+						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
 						'sources="[object Object]" ' +
@@ -479,7 +435,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
-						'alt="" ' +
+						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
 						'placeholder="' + placeholder + '" ' +

@@ -153,8 +153,8 @@ export default class CKBoxImageEditCommand extends Command {
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, asset ) => {
 			this._showImageProcessingIndicator( asset );
 
-			this._waitForAssetProcessed( asset ).then( () => {
-				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
+			this._waitForAssetProcessed( asset ).then( processedAsset => {
+				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', processedAsset! );
 			} );
 		} );
 
@@ -164,25 +164,26 @@ export default class CKBoxImageEditCommand extends Command {
 			const {
 				imageFallbackUrl,
 				imageSources,
-				imageTextAlternative,
 				imageWidth,
 				imageHeight,
 				imagePlaceholder
 			} = prepareImageAssetAttributes( asset );
+
+			let selectedImageElement = editor.model.document.selection.getSelectedElement()!;
 
 			editor.model.change( writer => {
 				imageCommand.execute( {
 					source: {
 						src: imageFallbackUrl,
 						sources: imageSources,
-						alt: imageTextAlternative,
+						alt: selectedImageElement.getAttribute( 'alt' ),
 						width: imageWidth,
 						height: imageHeight,
 						...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
 					}
 				} );
 
-				const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+				selectedImageElement = editor.model.document.selection.getSelectedElement()!;
 
 				writer.setAttribute( 'ckboxImageId', asset.data.id, selectedImageElement );
 			} );
@@ -195,23 +196,23 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param data Data about certain asset.
 	 */
-	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<CKBoxRawAssetDataDefinition> {
+	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<CKBoxRawAssetDefinition> {
 		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 		const abortController = new AbortController();
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
 
-		const response = await sendHttpRequest( {
+		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal: abortController.signal,
 			authorization: ckboxEditing.getToken().value
 		} );
-		const status = response.metadata.metadataProcessingStatus;
+		const status = response.metadata!.metadataProcessingStatus;
 
 		if ( !status || status == 'queued' ) {
 			throw new Error( 'Image has not been processed yet.' );
 		}
 
-		return response;
+		return { data: { ...response } };
 	}
 
 	/**
@@ -219,7 +220,7 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param asset Data about certain asset.
 	 */
-	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDataDefinition | undefined> {
+	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDefinition | undefined> {
 		try {
 			return await retry( () => this._getAssetStatusFromServer( asset.data ) );
 		} catch ( err ) {
@@ -234,7 +235,6 @@ export default class CKBoxImageEditCommand extends Command {
 		editor.editing.view.change( writer => {
 			const imageElementView = editor.editing.mapper.toViewElement( selectedImageElement )!;
 			const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
-
 			const img = imageUtils.findViewImgElement( imageElementView )!;
 
 			writer.setAttribute( 'width', asset.data.metadata!.width, img );
