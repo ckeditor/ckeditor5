@@ -113,10 +113,7 @@ async function executeAndSave( chunks ) {
 
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
-	const collectedValeData = {
-		timestamp: Date.now(),
-		files: []
-	};
+	const filesData = [];
 
 	for ( let i = 0; i < chunks.length; i++ ) {
 		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...` ) );
@@ -157,7 +154,7 @@ async function executeAndSave( chunks ) {
 				data.readability[ readabilityMetric ] = readabilityScore;
 			}
 
-			collectedValeData.files.push( data );
+			filesData.push( data );
 		}
 	}
 
@@ -165,13 +162,13 @@ async function executeAndSave( chunks ) {
 
 	await restoreConfigFiles();
 
-	const resultPath = upath.join( RESULTS_DIR, `${ format( new Date(), 'yyyy-MM-dd--HH-mm-ss' ) }.json` );
+	const resultPath = upath.join( RESULTS_DIR, `${ format( new Date(), 'yyyy-MM-dd--HH-mm-ss' ) }.csv` );
 
 	console.log( chalk.blue( '\nResult file saved:' ) );
 	console.log( chalk.underline( resultPath ) + '\n' );
 
 	await fs.ensureDir( RESULTS_DIR );
-	await fs.writeFile( resultPath, JSON.stringify( collectedValeData, null, '\t' ), 'utf-8' );
+	await fs.writeFile( resultPath, filesDataToCsv( filesData ), 'utf-8' );
 }
 
 async function executeAndLog( chunks ) {
@@ -308,4 +305,16 @@ async function restoreConfigFiles() {
 
 		await fs.writeFile( filePath, originalFileContent, 'utf-8' );
 	}
+}
+
+function filesDataToCsv( filesData ) {
+	const headers = Object.keys( filesData[ 0 ] ).filter( header => header !== 'readability' );
+	const readabilityMetrics = Object.keys( filesData[ 0 ].readability ).sort();
+
+	const data = filesData.map( fileData => [
+		...headers.map( header => fileData[ header ] ),
+		...readabilityMetrics.map( metric => fileData.readability[ metric ] )
+	].join( ',' ) );
+
+	return [ [ headers, readabilityMetrics ].join( ',' ), ...data ].join( '\n' );
 }
