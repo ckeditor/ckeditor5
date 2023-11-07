@@ -509,6 +509,7 @@ import check from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cog from '@ckeditor/ckeditor5-core/theme/icons/cog.svg';
 import eraser from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import lowVision from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
+import textAlternative from '@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg';
 import image from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import alignBottom from '@ckeditor/ckeditor5-core/theme/icons/align-bottom.svg';
 import alignMiddle from '@ckeditor/ckeditor5-core/theme/icons/align-middle.svg';
