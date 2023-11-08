@@ -228,6 +228,11 @@ export default class CKBoxImageEditCommand extends Command {
 		}
 	}
 
+	/**
+	 * Shows processing indicator while image is processing.
+	 *
+	 * @param asset Data about certain asset.
+	 */
 	private _showImageProcessingIndicator( asset: CKBoxRawAssetDefinition ): void {
 		const editor = this.editor;
 		const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
@@ -237,6 +242,7 @@ export default class CKBoxImageEditCommand extends Command {
 			const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 			const img = imageUtils.findViewImgElement( imageElementView )!;
 
+			writer.removeStyle( 'aspect-ratio', img );
 			writer.setAttribute( 'width', asset.data.metadata!.width, img );
 			writer.setAttribute( 'height', asset.data.metadata!.height, img );
 
