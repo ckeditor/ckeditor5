@@ -24,7 +24,8 @@ import {
 	getImgViewElementMatcher,
 	createInlineImageViewElement,
 	determineImageTypeForInsertionAtSelection
-} from '../image/utils';
+} from './utils';
+import ImagePlaceholder from './imageplaceholder';
 
 /**
  * The image inline plugin.
@@ -41,7 +42,7 @@ export default class ImageInlineEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ClipboardPipeline ] as const;
+		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ImagePlaceholder, ClipboardPipeline ] as const;
 	}
 
 	/**

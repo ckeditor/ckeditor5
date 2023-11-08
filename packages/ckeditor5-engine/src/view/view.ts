@@ -23,7 +23,7 @@ import type { default as Observer, ObserverConstructor } from './observer/observ
 import type { ViewDocumentSelectionChangeEvent } from './documentselection';
 import type { StylesProcessor } from './stylesmap';
 import type Element from './element';
-import type Node from './node';
+import type { default as Node, ViewNodeChangeEvent } from './node';
 import type Item from './item';
 
 import KeyObserver from './observer/keyobserver';
@@ -295,10 +295,10 @@ export default class View extends ObservableMixin() {
 		this._renderer.markToSync( 'attributes', viewRoot );
 		this._renderer.domDocuments.add( domRoot.ownerDocument );
 
-		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
-		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
-		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
-		viewRoot.on( 'change:isReadOnly', () => this.change( updateContenteditableAttribute ) );
+		viewRoot.on<ViewNodeChangeEvent>( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
+		viewRoot.on<ViewNodeChangeEvent>( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
+		viewRoot.on<ViewNodeChangeEvent>( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
+		viewRoot.on<ObservableChangeEvent>( 'change:isReadOnly', () => this.change( updateContenteditableAttribute ) );
 
 		viewRoot.on( 'change', () => {
 			this._hasChangedSinceTheLastRendering = true;

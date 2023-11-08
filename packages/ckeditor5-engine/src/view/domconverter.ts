@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals Node, NodeFilter, DOMParser, Text */
+/* globals Node, NodeFilter, DOMParser */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -146,6 +146,11 @@ export default class DomConverter {
 	 * Matcher for inline object view elements. This is an extension of a simple {@link #inlineObjectElements} array of element names.
 	 */
 	private readonly _inlineObjectElementMatcher = new Matcher();
+
+	/**
+	 * Set of elements with temporary custom properties that require clearing after render.
+	 */
+	private readonly _elementsWithTemporaryCustomProperties = new Set<ViewElement | ViewDocumentFragment>();
 
 	/**
 	 * Creates a DOM converter.
@@ -344,6 +349,26 @@ export default class DomConverter {
 		domElement.append( fragment );
 	}
 
+	public viewToDom(
+		viewNode: ViewText,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomText;
+
+	public viewToDom(
+		viewNode: ViewElement,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomElement;
+
+	public viewToDom(
+		viewNode: ViewNode,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomNode;
+
+	public viewToDom(
+		viewNode: ViewDocumentFragment,
+		options?: { bind?: boolean; withChildren?: boolean }
+	): DomDocumentFragment;
+
 	/**
 	 * Converts the view to the DOM. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments the method will return corresponding items.
@@ -363,75 +388,83 @@ export default class DomConverter {
 
 			return this._domDocument.createTextNode( textData );
 		} else {
-			if ( this.mapViewToDom( viewNode as ViewElement ) ) {
-				return this.mapViewToDom( viewNode as ViewElement )!;
+			const viewElementOrFragment = viewNode as ViewElement | ViewDocumentFragment;
+
+			if ( this.mapViewToDom( viewElementOrFragment ) ) {
+				// Do not reuse element that is marked to not reuse (for example an IMG element
+				// so it can immediately display a placeholder background instead of waiting for the new src to load).
+				if ( viewElementOrFragment.getCustomProperty( 'editingPipeline:doNotReuseOnce' ) ) {
+					this._elementsWithTemporaryCustomProperties.add( viewElementOrFragment );
+				} else {
+					return this.mapViewToDom( viewElementOrFragment )!;
+				}
 			}
 
 			let domElement: DomElement | DomDocumentFragment | DomComment;
 
-			if ( viewNode.is( 'documentFragment' ) ) {
+			if ( viewElementOrFragment.is( 'documentFragment' ) ) {
 				// Create DOM document fragment.
 				domElement = this._domDocument.createDocumentFragment();
 
 				if ( options.bind ) {
-					this.bindDocumentFragments( domElement, viewNode );
+					this.bindDocumentFragments( domElement, viewElementOrFragment );
 				}
-			} else if ( viewNode.is( 'uiElement' ) ) {
-				if ( viewNode.name === '$comment' ) {
-					domElement = this._domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) as string );
+			} else if ( viewElementOrFragment.is( 'uiElement' ) ) {
+				if ( viewElementOrFragment.name === '$comment' ) {
+					domElement = this._domDocument.createComment( viewElementOrFragment.getCustomProperty( '$rawContent' ) as string );
 				} else {
 					// UIElement has its own render() method (see #799).
-					domElement = viewNode.render( this._domDocument, this );
+					domElement = viewElementOrFragment.render( this._domDocument, this );
 				}
 
 				if ( options.bind ) {
-					this.bindElements( domElement as DomElement, viewNode );
+					this.bindElements( domElement as DomElement, viewElementOrFragment );
 				}
 
 				return domElement;
 			} else {
 				// Create DOM element.
-				if ( this._shouldRenameElement( ( viewNode as ViewElement ).name ) ) {
-					_logUnsafeElement( ( viewNode as ViewElement ).name );
+				if ( this._shouldRenameElement( viewElementOrFragment.name ) ) {
+					_logUnsafeElement( viewElementOrFragment.name );
 
-					domElement = this._createReplacementDomElement( ( viewNode as ViewElement ).name );
-				} else if ( ( viewNode as ViewElement ).hasAttribute( 'xmlns' ) ) {
+					domElement = this._createReplacementDomElement( viewElementOrFragment.name );
+				} else if ( viewElementOrFragment.hasAttribute( 'xmlns' ) ) {
 					domElement = this._domDocument.createElementNS(
-						( viewNode as ViewElement ).getAttribute( 'xmlns' )!,
-						( viewNode as ViewElement ).name
+						viewElementOrFragment.getAttribute( 'xmlns' )!,
+						viewElementOrFragment.name
 					) as HTMLElement;
 				} else {
-					domElement = this._domDocument.createElement( ( viewNode as ViewElement ).name );
+					domElement = this._domDocument.createElement( viewElementOrFragment.name );
 				}
 
 				// RawElement take care of their children in RawElement#render() method which can be customized
 				// (see https://github.com/ckeditor/ckeditor5/issues/4469).
-				if ( viewNode.is( 'rawElement' ) ) {
-					viewNode.render( domElement, this );
+				if ( viewElementOrFragment.is( 'rawElement' ) ) {
+					viewElementOrFragment.render( domElement, this );
 				}
 
 				if ( options.bind ) {
-					this.bindElements( domElement, ( viewNode as ViewElement ) );
+					this.bindElements( domElement, viewElementOrFragment );
 				}
 
 				// Copy element's attributes.
-				for ( const key of ( viewNode as ViewElement ).getAttributeKeys() ) {
+				for ( const key of viewElementOrFragment.getAttributeKeys() ) {
 					this.setDomElementAttribute(
 						domElement,
 						key,
-						( viewNode as ViewElement ).getAttribute( key )!,
-						( viewNode as ViewElement )
+						viewElementOrFragment.getAttribute( key )!,
+						viewElementOrFragment
 					);
 				}
 			}
 
 			if ( options.withChildren !== false ) {
-				for ( const child of this.viewChildrenToDom( viewNode as ViewElement, options ) ) {
-					domElement!.appendChild( child );
+				for ( const child of this.viewChildrenToDom( viewElementOrFragment, options ) ) {
+					domElement.appendChild( child );
 				}
 			}
 
-			return domElement!;
+			return domElement;
 		}
 	}
 
@@ -510,7 +543,7 @@ export default class DomConverter {
 	 * @returns DOM nodes.
 	 */
 	public* viewChildrenToDom(
-		viewElement: ViewElement,
+		viewElement: ViewElement | ViewDocumentFragment,
 		options: { bind?: boolean; withChildren?: boolean } = {}
 	): IterableIterator<Node> {
 		const fillerPositionOffset = viewElement.getFillerOffset && viewElement.getFillerOffset();
@@ -1242,6 +1275,19 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Clear temporary custom properties.
+	 *
+	 * @internal
+	 */
+	public _clearTemporaryCustomProperties(): void {
+		for ( const element of this._elementsWithTemporaryCustomProperties ) {
+			element._removeCustomProperty( 'editingPipeline:doNotReuseOnce' );
+		}
+
+		this._elementsWithTemporaryCustomProperties.clear();
+	}
+
+	/**
 	 * Returns the block {@link module:engine/view/filler filler} node based on the current {@link #blockFillerMode} setting.
 	 */
 	private _getBlockFiller(): DomNode {
@@ -1748,7 +1794,7 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 	let node: DomElement | null = element;
 
 	while ( node ) {
-		callback( node as DomElement );
+		callback( node );
 		node = node.parentElement;
 	}
 }

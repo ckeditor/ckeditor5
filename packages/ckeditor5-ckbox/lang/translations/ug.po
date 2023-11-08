@@ -27,4 +27,4 @@ msgstr "يۈكلەيدىغان ھۆججەتنىڭ تۈرىنى جەزملىيە�
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "كۆڭۈلدىكى خىزمەت بوشلۇقىنى زىيارەت قىلالمايدۇ"

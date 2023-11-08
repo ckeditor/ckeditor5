@@ -2063,6 +2063,21 @@ describe( 'Schema', () => {
 					.to.equal( '<div><$text a="1">foo</$text>bar<$text a="1">biz</$text></div>' );
 			} );
 		} );
+
+		// Related to https://github.com/ckeditor/ckeditor5/issues/15246.
+		it( 'should filter out only non-allowed root attributes', () => {
+			schema.extend( '$root', { allowAttributes: 'allowed' } );
+
+			model.change( writer => {
+				writer.setAttribute( 'allowed', 'value', root );
+				writer.setAttribute( 'other', true, root );
+
+				schema.removeDisallowedAttributes( [ root ], writer );
+			} );
+
+			expect( root.getAttribute( 'allowed' ) ).to.equal( 'value' );
+			expect( root.getAttribute( 'other' ) ).to.be.undefined;
+		} );
 	} );
 
 	describe( 'getAttributesWithProperty()', () => {

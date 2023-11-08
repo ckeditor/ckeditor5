@@ -235,10 +235,10 @@ export default class MarkerCollection extends EmitterMixin() implements Iterable
 	 * Iterates over all markers that starts with given `prefix`.
 	 *
 	 * ```ts
-	 * const markerFooA = markersCollection.set( 'foo:a', rangeFooA );
-	 * const markerFooB = markersCollection.set( 'foo:b', rangeFooB );
-	 * const markerBarA = markersCollection.set( 'bar:a', rangeBarA );
-	 * const markerFooBarA = markersCollection.set( 'foobar:a', rangeFooBarA );
+	 * const markerFooA = markersCollection._set( 'foo:a', rangeFooA );
+	 * const markerFooB = markersCollection._set( 'foo:b', rangeFooB );
+	 * const markerBarA = markersCollection._set( 'bar:a', rangeBarA );
+	 * const markerFooBarA = markersCollection._set( 'foobar:a', rangeFooBarA );
 	 * Array.from( markersCollection.getMarkersGroup( 'foo' ) ); // [ markerFooA, markerFooB ]
 	 * Array.from( markersCollection.getMarkersGroup( 'a' ) ); // []
 	 * ```

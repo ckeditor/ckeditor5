@@ -8,7 +8,7 @@
  */
 
 export { default as Heading } from './heading';
-export type { HeadingOption } from './headingconfig';
+export type { HeadingOption, HeadingElementOption } from './headingconfig';
 export { default as HeadingEditing } from './headingediting';
 export { default as HeadingUI } from './headingui';
 export { default as HeadingButtonsUI } from './headingbuttonsui';

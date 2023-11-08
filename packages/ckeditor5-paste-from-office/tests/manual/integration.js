@@ -22,6 +22,7 @@ import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperti
 import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import PasteFromOffice from '../../src/pastefromoffice';
 
@@ -41,6 +42,7 @@ ClassicEditor
 			ArticlePluginSet,
 			Strikethrough,
 			Underline,
+			GeneralHtmlSupport,
 			Table,
 			TableToolbar,
 			PageBreak,
@@ -61,7 +63,17 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		htmlSupport: {
+			allow: [
+				{
+					name: /.*/,
+					attributes: true,
+					classes: true,
+					styles: true
+				}
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -52,7 +52,8 @@ describe( 'ImageUploadProgress', () => {
 				plugins: [
 					ImageBlockEditing, ImageInlineEditing, Paragraph, ImageUploadEditing,
 					ImageUploadProgress, UploadAdapterPluginMock, ClipboardPipeline
-				]
+				],
+				image: { insert: { type: 'auto' } }
 			} )
 			.then( newEditor => {
 				editor = newEditor;
