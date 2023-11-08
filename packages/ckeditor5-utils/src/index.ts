@@ -91,6 +91,7 @@ export { default as spliceArray } from './splicearray';
 export { default as uid } from './uid';
 export { default as delay, type DelayedFunc } from './delay';
 export { default as verifyLicense } from './verifylicense';
+export { default as wait } from './wait';
 export * from './unicode';
 
 export { default as version, releaseDate } from './version';
