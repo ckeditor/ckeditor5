@@ -12,6 +12,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Image } from '@ckeditor/ckeditor5-image';
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
@@ -370,6 +371,51 @@ describe( 'CKBoxImageEditCommand', () => {
 				await clock.tickAsync( 15000 );
 
 				sinon.assert.callCount( respondSpy, 4 );
+			} );
+
+			it( 'should add a pending action after a change and wait on the server response', done => {
+				const pendingActions = editor.plugins.get( PendingActions );
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				const clock = sinon.useFakeTimers();
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					200,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'success'
+						}
+					} )
+				] );
+
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+
+				command.on( 'ckboxImageEditor:processed', () => {
+					expect( pendingActions.hasAny ).to.be.false;
+					done();
+				} );
+
+				onSave( dataMock );
+
+				expect( pendingActions.hasAny ).to.be.true;
+				expect( pendingActions.first.message ).to.equal( 'Edited image is processing.' );
+
+				clock.tick( 1500 );
 			} );
 
 			it( 'should reject if fetching asset\'s status ended with the authorization error', () => {
