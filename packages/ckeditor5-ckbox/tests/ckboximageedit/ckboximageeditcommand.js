@@ -19,6 +19,7 @@ import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 import CKBoxEditing from '../../src/ckboxediting';
@@ -313,7 +314,9 @@ describe( 'CKBoxImageEditCommand', () => {
 				} );
 
 				onSave( dataMock );
+
 				clock.tick( 1500 );
+
 				done();
 			} );
 
@@ -443,6 +446,29 @@ describe( 'CKBoxImageEditCommand', () => {
 						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
 						'width="100">' +
 					'</imageBlock>]'
+				);
+			} );
+
+			it( 'should change <img> size attributes and add CSS class `image-processing` for skeleton loader', async () => {
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
+						'<img alt="alt text" height="50" src="/assets/sample.png" style="aspect-ratio:50/50" width="50"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>'
+				);
+
+				onSave( dataMock );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
+						'contenteditable="false" data-ckbox-resource-id="example-id">' +
+						'<img alt="alt text" height="100" src="/assets/sample.png" style="height:100px;width:100px" width="100"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>'
 				);
 			} );
 		} );
