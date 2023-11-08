@@ -50,7 +50,7 @@ const { execSync } = require( 'child_process' );
 const EXCLUDED_ICONS = [
 	'return-arrow.svg',
 	'project-logo.svg',
-	'low-vision.svg'
+	'text-alternative.svg'
 ];
 
 // A pattern to match all the icons.

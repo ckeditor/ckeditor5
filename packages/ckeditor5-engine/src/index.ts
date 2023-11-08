@@ -75,7 +75,11 @@ export { default as NoOperation } from './model/operation/nooperation';
 export { transformSets } from './model/operation/transform';
 
 // Model.
-export { default as DocumentSelection, type DocumentSelectionChangeRangeEvent } from './model/documentselection';
+export {
+	default as DocumentSelection,
+	type DocumentSelectionChangeRangeEvent,
+	type DocumentSelectionChangeMarkerEvent
+} from './model/documentselection';
 export { default as Range } from './model/range';
 export { default as LiveRange, type LiveRangeChangeRangeEvent } from './model/liverange';
 export { default as LivePosition } from './model/liveposition';
@@ -138,7 +142,7 @@ export { default as ViewRawElement } from './view/rawelement';
 export { default as ViewUIElement } from './view/uielement';
 export { default as ViewDocumentFragment } from './view/documentfragment';
 export { default as ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './view/treewalker';
-export type { default as ViewElementDefinition } from './view/elementdefinition';
+export type { default as ViewElementDefinition, ElementObjectDefinition } from './view/elementdefinition';
 export type { default as ViewDocumentSelection } from './view/documentselection';
 export { default as AttributeElement } from './view/attributeelement';
 export type { default as ViewItem } from './view/item';
