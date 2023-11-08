@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-09-26
+modified_at: 2023-11-07
 ---
 
 # Update to CKEditor&nbsp;5 v40.x
@@ -13,6 +13,40 @@ modified_at: 2023-09-26
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v40.1.0
+
+### New way to handle images inserted into content
+
+Inline images can be inserted in the middle of a paragraph or a link just like regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables, or media. Being larger and existing as standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc.
+
+Introduced in the latest version comes a handy `image.insert.type` configuration setting that lets the integrators set up the way newly uploaded ar pasted images are handled in the editor content. By default, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
+
+If you wish to modify this behavior, the `type` setting in the editor configuration can be used:
+
+```js
+ClassicEditor.create( element, {
+	image: {
+		insert: {
+			type: 'auto'
+		}
+	}
+} );
+```
+
+The `type` setting accepts the following three values:
+
+* `'auto'`: The editor determines the image type based on the cursor's position. For example, if you insert an image in the middle of a paragraph, it will be inserted as inline. If you insert it at the end or beginning of a paragraph, it becomes a block image.
+* `'block'`: Always insert images as block elements, placing them below or above the current paragraph or block.
+* `'inline'`: Always insert images as inline elements within the current paragraph or block.
+
+If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
+
+**Important**: If only one type of image plugin is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the supported image type will be used.
+
+### Updated image text alternative icon
+
+The {@link features/images-text-alternative image text alternative} (the alt attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
 
 ## Update to CKEditor&nbsp;5 v40.0.0
 

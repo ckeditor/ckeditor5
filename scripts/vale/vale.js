@@ -17,6 +17,12 @@ const { globSync } = require( 'glob' );
 const { format } = require( 'date-fns' );
 const { spawn } = require( 'child_process' );
 
+const VALE_ALERT_LEVELS = {
+	error: chalk.red( 'error' ),
+	warning: chalk.yellow( 'warning' ),
+	suggestion: chalk.blue( 'suggestion' )
+};
+
 const ARGS_CHAR_LIMIT = 8000;
 const CKEDITOR5_ROOT = upath.join( __dirname, '..', '..' );
 const RESULTS_DIR = upath.join( CKEDITOR5_ROOT, 'scripts', 'vale', 'results' );
@@ -40,16 +46,19 @@ const defaultPatterns = [
 
 const minimistOptions = {
 	string: [
+		'alert',
 		'directory'
 	],
 	boolean: [
 		'save'
 	],
 	alias: {
+		a: 'alert',
 		d: 'directory',
 		s: 'save'
 	},
 	default: {
+		alert: 'warning',
 		directory: '',
 		save: false
 	}
@@ -70,9 +79,20 @@ const globOptions = {
 
 const args = minimist( process.argv.slice( 2 ), minimistOptions );
 
-main();
+main()
+	.catch( err => {
+		console.log( chalk.red( '\nScript threw an error:' ) );
+		console.log( err );
+	} )
+	.finally( () => {
+		console.log( chalk.blue( 'Restoring config files...\n' ) );
+
+		return restoreConfigFiles();
+	} );
 
 async function main() {
+	validateArgs();
+
 	const patterns = args.directory ? [ `**/${ args.directory }/**/*.md` ] : args._;
 	const files = [];
 
@@ -92,31 +112,23 @@ async function main() {
 
 	const chunks = splitFilesIntoChunks( files );
 
+	console.log( chalk.blue( '\nPreparing config files...' ) );
+
+	await prepareMainConfigFile();
+
 	if ( args.save ) {
-		return executeAndSave( chunks ).catch( err => {
-			console.log( chalk.red( '\nScript threw an error:' ) );
-			console.log( err );
+		await prepareReadabilityConfigFiles();
 
-			console.log( chalk.blue( '\nRestoring config files...\n' ) );
-
-			return restoreConfigFiles();
-		} );
+		return executeAndSave( chunks );
 	}
 
 	return executeAndLog( chunks );
 }
 
 async function executeAndSave( chunks ) {
-	console.log( chalk.blue( '\nPreparing config files...' ) );
-
-	await prepareConfigFiles();
-
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
-	const collectedValeData = {
-		timestamp: Date.now(),
-		files: []
-	};
+	const filesData = [];
 
 	for ( let i = 0; i < chunks.length; i++ ) {
 		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...` ) );
@@ -157,21 +169,17 @@ async function executeAndSave( chunks ) {
 				data.readability[ readabilityMetric ] = readabilityScore;
 			}
 
-			collectedValeData.files.push( data );
+			filesData.push( data );
 		}
 	}
 
-	console.log( chalk.blue( '\nRestoring config files...' ) );
-
-	await restoreConfigFiles();
-
-	const resultPath = upath.join( RESULTS_DIR, `${ format( new Date(), 'yyyy-MM-dd--HH-mm-ss' ) }.json` );
+	const resultPath = upath.join( RESULTS_DIR, `${ format( new Date(), 'yyyy-MM-dd--HH-mm-ss' ) }.csv` );
 
 	console.log( chalk.blue( '\nResult file saved:' ) );
 	console.log( chalk.underline( resultPath ) + '\n' );
 
 	await fs.ensureDir( RESULTS_DIR );
-	await fs.writeFile( resultPath, JSON.stringify( collectedValeData, null, '\t' ), 'utf-8' );
+	await fs.writeFile( resultPath, filesDataToCsv( filesData ), 'utf-8' );
 }
 
 async function executeAndLog( chunks ) {
@@ -195,16 +203,7 @@ async function executeAndLog( chunks ) {
 		}
 	}
 
-	console.log( [
-		chalk.blue( '\nVale execution complete.\n' ),
-		collectedValeData.text,
-		chalk.red( `\n${ collectedValeData.errors } errors` ),
-		', ',
-		chalk.yellow( `${ collectedValeData.warnings } warnings` ),
-		' and ',
-		chalk.blue( `${ collectedValeData.suggestions } suggestions` ),
-		` in ${ collectedValeData.files } files.\n`
-	].join( '' ) );
+	console.log( getSummary( collectedValeData ) );
 }
 
 function splitFilesIntoChunks( files ) {
@@ -281,14 +280,16 @@ function runVale( files ) {
 	} );
 }
 
-async function prepareConfigFiles() {
+async function prepareMainConfigFile() {
 	originalFileContents[ VALE_CONFIG_PATH ] = await fs.readFile( VALE_CONFIG_PATH, 'utf-8' );
 
 	const parsedIniFile = ini.parse( originalFileContents[ VALE_CONFIG_PATH ] );
-	parsedIniFile.MinAlertLevel = 'warning';
+	parsedIniFile.MinAlertLevel = args.alert;
 
 	await fs.writeFile( VALE_CONFIG_PATH, ini.stringify( parsedIniFile ), 'utf-8' );
+}
 
+async function prepareReadabilityConfigFiles() {
 	const readabilityFilePaths = globSync( READABILITY_FILES_GLOB, globOptions ).map( upath.toUnix );
 
 	for ( const readabilityFilePath of readabilityFilePaths ) {
@@ -308,4 +309,56 @@ async function restoreConfigFiles() {
 
 		await fs.writeFile( filePath, originalFileContent, 'utf-8' );
 	}
+}
+
+function filesDataToCsv( filesData ) {
+	const headers = Object.keys( filesData[ 0 ] ).filter( header => header !== 'readability' );
+	const readabilityMetrics = Object.keys( filesData[ 0 ].readability ).sort();
+
+	const data = filesData.map( fileData => [
+		...headers.map( header => fileData[ header ] ),
+		...readabilityMetrics.map( metric => fileData.readability[ metric ] )
+	].join( ',' ) );
+
+	return [ [ headers, readabilityMetrics ].join( ',' ), ...data ].join( '\n' );
+}
+
+function validateArgs() {
+	const allowedValeAlertLevels = Object.keys( VALE_ALERT_LEVELS );
+
+	if ( !allowedValeAlertLevels.includes( args.alert ) ) {
+		const stringifiedAlertLevels = allowedValeAlertLevels.map( level => `"${ chalk.bold( level ) }"` ).join( ', ' );
+
+		console.error( chalk.red( `\nInvalid "alert" option value. Valid values: ${ stringifiedAlertLevels }.\n` ) );
+
+		process.exit( 1 );
+	}
+
+	if ( args.save && args.alert !== 'warning' ) {
+		console.error( chalk.red( '\nWhile using the "save" option, "alert" option has to be set to its default value: "warning".\n' ) );
+
+		process.exit( 1 );
+	}
+}
+
+function getSummary( collectedValeData ) {
+	const formatter = new Intl.ListFormat( 'en', { style: 'long', type: 'conjunction' } );
+
+	const alerts = [ chalk.red( `${ collectedValeData.errors } errors` ) ];
+
+	if ( args.alert === 'warning' || args.alert === 'suggestion' ) {
+		alerts.push( chalk.yellow( `${ collectedValeData.warnings } warnings` ) );
+	}
+
+	if ( args.alert === 'suggestion' ) {
+		alerts.push( chalk.blue( `${ collectedValeData.suggestions } suggestions` ) );
+	}
+
+	return [
+		chalk.blue( '\nVale execution complete.\n' ),
+		collectedValeData.text,
+		`\n[Minimal alert level: ${ VALE_ALERT_LEVELS[ args.alert ] }]\n`,
+		formatter.format( alerts ),
+		` in ${ collectedValeData.files } files.\n`
+	].join( '' );
 }
