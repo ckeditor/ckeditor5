@@ -373,7 +373,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				sinon.assert.callCount( respondSpy, 4 );
 			} );
 
-			it( 'should add a pending action after a change and wait on the server response', done => {
+			it( 'should add a pending action after a change and remove after server response', done => {
 				const pendingActions = editor.plugins.get( PendingActions );
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				const clock = sinon.useFakeTimers();
@@ -405,17 +405,45 @@ describe( 'CKBoxImageEditCommand', () => {
 					}
 				};
 
+				const dataMock2 = {
+					data: {
+						id: 'image-id2',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100
+						},
+						name: 'image2',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id2/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id2/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id2/file'
+					}
+				};
+
 				command.on( 'ckboxImageEditor:processed', () => {
 					expect( pendingActions.hasAny ).to.be.false;
+					expect( pendingActions._actions.length ).to.equal( 0 );
 					done();
 				} );
+
+				expect( pendingActions._actions.length ).to.equal( 0 );
 
 				onSave( dataMock );
 
 				expect( pendingActions.hasAny ).to.be.true;
+				expect( pendingActions._actions.length ).to.equal( 1 );
 				expect( pendingActions.first.message ).to.equal( 'Edited image is processing.' );
 
-				clock.tick( 1500 );
+				onSave( dataMock2 );
+
+				expect( pendingActions.hasAny ).to.be.true;
+				expect( pendingActions._actions.length ).to.equal( 2 );
+				expect( pendingActions.first.message ).to.equal( 'Edited image is processing.' );
+				expect( pendingActions._actions.get( 1 ).message ).to.equal( 'Edited image is processing.' );
+
+				clock.tickAsync( 8000 );
 			} );
 
 			it( 'should reject if fetching asset\'s status ended with the authorization error', () => {
