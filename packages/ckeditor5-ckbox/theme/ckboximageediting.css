@@ -14,26 +14,26 @@
 		&.image-processing {
 			position: relative;
 
-			&:before,
-			&:after {
+			&:before {
 				content: '';
+
 				position: absolute;
 				top: 0;
 				left: 0;
+				z-index: 1;
+
 				height: 100%;
 				width: 100%;
-			}
 
-			&:before {
-				z-index: 1;
-				background: linear-gradient(90deg, transparent, var(--ck-image-processing-highlight-color), transparent);
+				background: linear-gradient(
+					90deg,
+					var(--ck-image-processing-background-color),
+					var(--ck-image-processing-highlight-color),
+					var(--ck-image-processing-background-color)
+				);
 				background-size: 200% 100%;
-				animation: ck-image-processing-animation 2s linear infinite;
-			}
 
-			&:after {
-				z-index: 0;
-				background-color: var(--ck-image-processing-background-color);
+				animation: ck-image-processing-animation 2s linear infinite;
 			}
 
 			& img {
