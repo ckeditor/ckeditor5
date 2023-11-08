@@ -7,8 +7,10 @@
  * @module ckbox/ckboxui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { icons, Plugin } from 'ckeditor5/src/core';
 import { ButtonView } from 'ckeditor5/src/ui';
+
+import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
 import browseFilesIcon from '../theme/icons/browse-files.svg';
 import type CKBoxCommand from './ckboxcommand';
@@ -57,5 +59,28 @@ export default class CKBoxUI extends Plugin {
 
 			return button;
 		} );
+
+		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
+			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
+
+			imageInsertUI.registerIntegration( 'assetManager', command, type => {
+				const button = this.editor.ui.componentFactory.create( 'ckbox' ) as ButtonView;
+
+				button.icon = icons.imageFolder;
+
+				if ( type == 'formView' ) {
+					button.class = 'ck-image-insert__ck-finder-button';
+					button.withText = true;
+
+					// TODO add to context (note that it's shared with CKFinder)
+					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace with File Manager' ) :
+						t( 'Insert with File Manager' )
+					);
+				}
+
+				return button;
+			} );
+		}
 	}
 }

@@ -55,6 +55,13 @@ export default class ImageInsertUrlView extends View {
 	declare public isImageSelected: boolean;
 
 	/**
+	 * TODO
+	 *
+	 * @observable
+	 */
+	declare public isEnabled: boolean;
+
+	/**
 	 * Tracks information about DOM focus in the form.
 	 */
 	public readonly focusTracker: FocusTracker;
@@ -84,6 +91,7 @@ export default class ImageInsertUrlView extends View {
 
 		this.set( 'imageURLInputValue', '' );
 		this.set( 'isImageSelected', false );
+		this.set( 'isEnabled', true );
 
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
@@ -192,6 +200,8 @@ export default class ImageInsertUrlView extends View {
 			value => value ? t( 'Update image URL' ) : t( 'Insert image via URL' )
 		);
 
+		urlInputView.bind( 'isEnabled' ).to( this );
+
 		urlInputView.fieldView.placeholder = 'https://example.com/image.png';
 
 		urlInputView.fieldView.bind( 'value' ).to( this, 'imageURLInputValue', ( value: string ) => value || '' );
@@ -218,7 +228,9 @@ export default class ImageInsertUrlView extends View {
 		} );
 
 		insertButtonView.bind( 'label' ).to( this, 'isImageSelected', value => value ? t( 'Update' ) : t( 'Insert' ) );
-		insertButtonView.bind( 'isEnabled' ).to( this, 'imageURLInputValue', value => !!value );
+		insertButtonView.bind( 'isEnabled' ).to( this, 'imageURLInputValue', this, 'isEnabled',
+			( ...values ) => values.every( value => value )
+		);
 
 		insertButtonView.delegate( 'execute' ).to( this, 'submit' );
 
@@ -239,6 +251,8 @@ export default class ImageInsertUrlView extends View {
 			class: 'ck-button-cancel',
 			withText: true
 		} );
+
+		cancelButtonView.bind( 'isEnabled' ).to( this );
 
 		cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
 

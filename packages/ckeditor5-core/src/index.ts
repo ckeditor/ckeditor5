@@ -42,6 +42,8 @@ import history from './../theme/icons/history.svg';
 import lowVision from './../theme/icons/low-vision.svg';
 import loupe from './../theme/icons/loupe.svg';
 import image from './../theme/icons/image.svg';
+import imageUpload from './../theme/icons/image-upload.svg';
+import imageFolder from './../theme/icons/image-folder.svg';
 
 import alignBottom from './../theme/icons/align-bottom.svg';
 import alignMiddle from './../theme/icons/align-middle.svg';
@@ -85,6 +87,8 @@ export const icons = {
 	eraser,
 	history,
 	image,
+	imageUpload,
+	imageFolder,
 	lowVision,
 	loupe,
 	importExport,

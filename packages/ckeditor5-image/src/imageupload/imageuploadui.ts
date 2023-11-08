@@ -36,6 +36,7 @@ export default class ImageUploadUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
+
 		const componentCreator = ( locale: Locale ) => {
 			const view = new FileDialogButtonView( locale );
 			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
@@ -74,9 +75,12 @@ export default class ImageUploadUI extends Plugin {
 
 		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
 			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
+			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
 
-			imageInsertUI.registerIntegration( 'upload', type => {
+			imageInsertUI.registerIntegration( 'upload', command, type => {
 				const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
+
+				uploadImageButton.icon = icons.imageUpload;
 
 				if ( type == 'formView' ) {
 					uploadImageButton.extendTemplate( {

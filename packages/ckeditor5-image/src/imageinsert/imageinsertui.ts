@@ -8,7 +8,7 @@
  */
 
 import { Plugin, icons } from 'ckeditor5/src/core';
-import { logWarning, type Locale } from 'ckeditor5/src/utils';
+import { logWarning, type Locale, type Observable } from 'ckeditor5/src/utils';
 import {
 	ButtonView,
 	SplitButtonView,
@@ -20,11 +20,12 @@ import {
 
 import ImageInsertFormView from './ui/imageinsertformview';
 import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
+import type ImageUtils from '../imageutils';
+import type InsertImageCommand from '../image/insertimagecommand';
 import ImageInsertUrlView, {
 	type ImageInsertUrlViewCancelEvent,
 	type ImageInsertUrlViewSubmitEvent
 } from './ui/imageinserturlview';
-import type ImageUtils from '../imageutils';
 
 /**
  * The image insert dropdown plugin.
@@ -58,7 +59,7 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _integrations = new Map<string, IntegrationCallback>();
+	private _integrations = new Map<string, IntegrationData>();
 
 	/**
 	 * @inheritDoc
@@ -75,22 +76,11 @@ export default class ImageInsertUI extends Plugin {
 		editor.ui.componentFactory.add( 'insertImage', componentCreator );
 		editor.ui.componentFactory.add( 'imageInsert', componentCreator );
 
-		this.registerIntegration( 'url', type => {
-			if ( type == 'formView' ) {
-				return this._createInsertUrlView();
-			} else {
-				const button = new ButtonView( editor.locale );
-				const t = editor.locale.t;
+		const insertImageCommand: InsertImageCommand = this.editor.commands.get( 'insertImage' )!;
 
-				button.set( {
-					label: t( 'Insert image' ), // TODO or Update image
-					icon: icons.image,
-					tooltip: true
-				} );
-
-				return button;
-			}
-		} );
+		this.registerIntegration( 'url', insertImageCommand,
+			type => type == 'formView' ? this._createInsertUrlView() : this._createInsertButton()
+		);
 
 		this.listenTo( editor.model.document, 'change', () => {
 			const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
@@ -103,7 +93,7 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	public registerIntegration( name: string, callback: IntegrationCallback ): void {
+	public registerIntegration( name: string, observable: IntegrationData[ 'observable' ], callback: IntegrationCallback ): void {
 		if ( this._integrations.has( name ) ) {
 			/**
 			 * TODO
@@ -111,7 +101,7 @@ export default class ImageInsertUI extends Plugin {
 			logWarning( 'image-insert-zzzzz', { name } );
 		}
 
-		this._integrations.set( name, callback );
+		this._integrations.set( name, { observable, callback } );
 	}
 
 	/**
@@ -126,29 +116,20 @@ export default class ImageInsertUI extends Plugin {
 		let dropdownButton: SplitButtonView | DropdownButtonView | undefined;
 
 		if ( integrations.length > 1 ) {
-			// TODO remove cast as ButtonView & FocusableView
-			dropdownButton = new SplitButtonView( locale, integrations[ 0 ]( 'toolbarButton' ) as ButtonView & FocusableView );
+			dropdownButton = new SplitButtonView( locale, integrations[ 0 ].callback( 'toolbarButton' ) as ButtonView & FocusableView );
 		} else if ( integrations.length == 1 ) {
-			dropdownButton = new DropdownButtonView( locale );
-
-			// TODO remove cast as ButtonView
-			// TODO how to make it without reference button
-			const referenceButton = integrations[ 0 ]( 'toolbarButton' ) as ButtonView;
-
-			dropdownButton.set( {
-				label: referenceButton.label,
-				icon: referenceButton.icon,
-				tooltip: referenceButton.tooltip
-			} );
+			dropdownButton = this._createInsertButton( DropdownButtonView );
 		}
 
 		const dropdownView = this.dropdownView = createDropdown( locale, dropdownButton );
+		const observables = integrations.map( ( { observable } ) => observable );
 
-		// TODO
-		// dropdownView.bind( 'isEnabled' ).to( uploadImageCommand || insertImageCommand );
+		dropdownView.bind( 'isEnabled' ).toMany( observables, 'isEnabled', ( ...isEnabled ) => (
+			isEnabled.some( isEnabled => isEnabled )
+		) );
 
 		dropdownView.once( 'change:isOpen', () => {
-			const integrationsView = integrations.map( callback => callback( 'formView' ) );
+			const integrationsView = integrations.map( ( { callback } ) => callback( 'formView' ) );
 			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationsView );
 
 			dropdownView.panelView.children.add( imageInsertFormView );
@@ -160,10 +141,10 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _prepareIntegrations(): Array<IntegrationCallback> {
+	private _prepareIntegrations(): Array<IntegrationData> {
 		const editor = this.editor;
 		const items = editor.config.get( 'image.insert.integrations' )!;
-		const result: Array<IntegrationCallback> = [];
+		const result: Array<IntegrationData> = [];
 
 		for ( const item of items ) {
 			if ( !this._integrations.has( item ) ) {
@@ -186,11 +167,15 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _createInsertUrlView() {
+	private _createInsertUrlView(): FocusableView {
 		const replaceImageSourceCommand: ReplaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
+		const insertImageCommand: InsertImageCommand = this.editor.commands.get( 'insertImage' )!;
 		const imageInsertUrlView = new ImageInsertUrlView( this.editor.locale );
 
 		imageInsertUrlView.bind( 'isImageSelected' ).to( this );
+		imageInsertUrlView.bind( 'isEnabled' ).toMany( [ insertImageCommand, replaceImageSourceCommand ], 'isEnabled', ( ...isEnabled ) => (
+			isEnabled.some( isCommandEnabled => isCommandEnabled )
+		) );
 
 		// Set initial value because integrations are created on first dropdown open.
 		imageInsertUrlView.imageURLInputValue = replaceImageSourceCommand.value || '';
@@ -224,6 +209,34 @@ export default class ImageInsertUI extends Plugin {
 		return imageInsertUrlView;
 	}
 
+	private _createInsertButton<T extends ButtonView | DropdownButtonView>(
+		ButtonClass: new ( locale?: Locale ) => T
+	): T;
+	private _createInsertButton(): ButtonView;
+
+	/**
+	 * TODO
+	 */
+	private _createInsertButton(
+		ButtonClass: new ( locale?: Locale ) => ButtonView = ButtonView
+	): ButtonView {
+		const editor = this.editor;
+		const button = new ButtonClass( editor.locale );
+		const t = editor.locale.t;
+
+		button.set( {
+			icon: icons.image,
+			tooltip: true
+		} );
+
+		// TODO add 'Replace image' to context
+		button.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
+			t( 'Replace image' ) : t( 'Insert image' )
+		);
+
+		return button;
+	}
+
 	/**
 	 * TODO
 	 */
@@ -237,3 +250,8 @@ export default class ImageInsertUI extends Plugin {
  * TODO
  */
 export type IntegrationCallback = ( type: 'toolbarButton' | 'formView' ) => FocusableView;
+
+type IntegrationData = {
+	observable: Observable & { isEnabled: boolean };
+	callback: IntegrationCallback;
+};
