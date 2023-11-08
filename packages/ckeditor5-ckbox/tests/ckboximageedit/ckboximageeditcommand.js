@@ -449,7 +449,8 @@ describe( 'CKBoxImageEditCommand', () => {
 				);
 			} );
 
-			it( 'should change <img> size attributes and add CSS class `image-processing` while waiting on processed image', async () => {
+			it( 'should change <img> size attributes and add `image-processing` CSS class ' +
+				'while waiting for the processed image', async () => {
 				setModelData( model, '[<imageBlock ' +
 						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
 					'</imageBlock>]' );
