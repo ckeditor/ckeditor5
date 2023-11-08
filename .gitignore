@@ -36,6 +36,7 @@ yalc.lock
 packages/*/src/**/*.d.ts
 packages/*/src/**/*.js
 packages/*/src/**/*.js.map
+packages/*/dist
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts

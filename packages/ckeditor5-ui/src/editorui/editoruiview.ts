@@ -13,8 +13,6 @@ import type EditableUIView from '../editableui/editableuiview';
 
 import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
-import '../../theme/components/editorui/editorui.css';
-
 /**
  * The editor UI view class. Base class for the editor main views.
  */

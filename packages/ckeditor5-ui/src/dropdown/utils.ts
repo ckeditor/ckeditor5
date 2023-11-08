@@ -38,7 +38,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/toolbardropdown.css';
-import '../../theme/components/dropdown/listdropdown.css';
 import ListItemGroupView from '../list/listitemgroupview';
 
 /**

@@ -10,8 +10,6 @@
 import { type Locale } from '@ckeditor/ckeditor5-utils';
 import InputBase from './inputbase';
 
-import '../../theme/components/input/input.css';
-
 /**
  * The input view class.
  */

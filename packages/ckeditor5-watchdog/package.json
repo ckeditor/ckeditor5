@@ -9,6 +9,7 @@
     "ckeditor5-lib",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
     "lodash-es": "4.17.21"
@@ -22,7 +23,7 @@
     "@ckeditor/ckeditor5-utils": "40.0.0",
     "@ckeditor/ckeditor5-track-changes": "40.0.0",
     "ckeditor5": "40.0.0",
-    "typescript": "^4.8.4"
+    "typescript": "^5.2.2"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
@@ -42,6 +43,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
+    "rollup": "rollup -c ../../scripts/build.mjs",
     "build": "tsc -p ./tsconfig.json"
   }
 }
