@@ -4,8 +4,9 @@
  */
 
 :root {
-	--ck-image-processing-background-color: hsl(0, 0%, 93%);
-	--ck-image-processing-highlight-color: hsl(0, 0%, 87%);
+	/* Based on default CKBox theme colors */
+	--ck-image-processing-highlight-color: hsl(220, 10%, 98%);
+	--ck-image-processing-background-color: hsl(220, 10%, 90%);
 }
 
 .ck.ck-editor__editable {
@@ -13,21 +14,26 @@
 		&.image-processing {
 			position: relative;
 
-			&:before {
+			&:before,
+			&:after {
 				content: '';
 				position: absolute;
 				top: 0;
 				left: 0;
 				height: 100%;
 				width: 100%;
-				background: linear-gradient(
-					90deg,
-					var(--ck-image-processing-background-color) 25%,
-					var(--ck-image-processing-highlight-color) 50%,
-					var(--ck-image-processing-background-color) 75%);
+			}
 
+			&:before {
+				z-index: 1;
+				background: linear-gradient(90deg, transparent, var(--ck-image-processing-highlight-color), transparent);
 				background-size: 200% 100%;
-				animation: ck-skeleton-animation 2s linear 0.5s infinite;
+				animation: ck-image-processing-animation 2s linear infinite;
+			}
+
+			&:after {
+				z-index: 0;
+				background-color: var(--ck-image-processing-background-color);
 			}
 
 			& img {
@@ -37,8 +43,7 @@
 	}
 }
 
-
-@keyframes ck-skeleton-animation {
+@keyframes ck-image-processing-animation {
 	0% {
 		background-position: 200% 0;
 	}
