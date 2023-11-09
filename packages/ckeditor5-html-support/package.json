@@ -14,6 +14,7 @@
     "generic html support",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
     "ckeditor5": "40.0.0",
@@ -69,6 +70,7 @@
     "directory": "packages/ckeditor5-html-support"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -79,6 +81,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
+    "rollup": "rollup -c ../../scripts/build.mjs",
     "build": "tsc -p ./tsconfig.json"
   }
 }

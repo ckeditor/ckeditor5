@@ -10,6 +10,7 @@
     "ckeditor5-plugin",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
     "lodash-es": "4.17.21",
@@ -45,6 +46,7 @@
     "directory": "packages/ckeditor5-word-count"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
@@ -55,6 +57,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
+    "rollup": "rollup -c ../../scripts/build.mjs",
     "build": "tsc -p ./tsconfig.json"
   }
 }

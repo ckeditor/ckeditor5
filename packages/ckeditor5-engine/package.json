@@ -62,6 +62,7 @@
     "directory": "packages/ckeditor5-engine"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",

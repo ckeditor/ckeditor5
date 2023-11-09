@@ -1,8 +1,12 @@
 {
-  "extends": "../../tsconfig.release.json",
+  "extends": "../../tsconfig.kowalski.json",
+  "compilerOptions": {
+    "types": [
+      "../../typings/types"
+    ]
+  },
   "include": [
-    "src",
-    "../../typings"
+    "src"
   ],
   "exclude": [
     "tests"

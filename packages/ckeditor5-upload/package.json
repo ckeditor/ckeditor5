@@ -31,6 +31,7 @@
     "directory": "packages/ckeditor5-upload"
   },
   "files": [
+    "dist",
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
