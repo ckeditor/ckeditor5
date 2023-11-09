@@ -6,7 +6,8 @@
 /* globals ClassicEditor, console, window, document, setTimeout */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-markdown' ), {
+	.create( document.querySelector( '#snippet-paste-from-markdown' ), {
+		plugins: [ ...ClassicEditor.builtinPlugins, window.CKEditorPlugins.PasteFromMarkdownExperimental ],
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
@@ -36,7 +37,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const outputElement = document.querySelector( '#snippet-markdown-output' );
+		const outputElement = document.querySelector( '#snippet-paste-from-markdown-output' );
 
 		editor.model.document.on( 'change', () => {
 			outputElement.innerText = editor.getData();

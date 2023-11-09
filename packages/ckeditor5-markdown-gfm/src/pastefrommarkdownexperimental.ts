@@ -15,7 +15,7 @@ import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 /**
  * The GitHub Flavored Markdown (GFM) paste plugin.
  *
- * // TDODO add correct link to the guide.
+ * // TODO add correct link to the guide.
  */
 export default class PasteFromMarkdownExperimental extends Plugin {
 	/**

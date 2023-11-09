@@ -4,6 +4,8 @@ meta-title: Markdown output | CKEditor 5 Documentation
 category: features
 ---
 
+{@snippet features/build-markdown-source}
+
 The Markdown plugin lets you switch the default output from HTML to Markdown. This way you can produce lightweight text documents with a simple formatting syntax that is popular among developers.
 
 ## Demo
@@ -48,6 +50,12 @@ When converting the output produced by this data processor, make sure to use a c
 
 	And please do remember &mdash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
 </info-box>
+
+## Paste from markdown
+
+[//]: # (TODO add description here)
+
+{@snippet features/paste-from-markdown}
 
 ## Installation
 
