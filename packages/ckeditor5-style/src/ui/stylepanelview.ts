@@ -14,8 +14,6 @@ import StyleGroupView from './stylegroupview';
 import type StyleGridView from './stylegridview';
 import type { NormalizedStyleDefinitions } from '../styleutils';
 
-import '../../theme/stylepanel.css';
-
 /**
  * A class representing a panel with available content styles. It renders styles in button grids, grouped
  * in categories.

@@ -33,8 +33,6 @@ import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph
 import tableHeadingsRefreshHandler from './converters/table-headings-refresh-handler';
 import tableCellRefreshHandler from './converters/table-cell-refresh-handler';
 
-import '../theme/tableediting.css';
-
 /**
  * The table editing feature.
  */

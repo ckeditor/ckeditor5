@@ -51,8 +51,6 @@ import {
 	type NormalizedLinkDecoratorManualDefinition
 } from './utils';
 
-import '../theme/link.css';
-
 const HIGHLIGHT_CLASS = 'ck-link_selected';
 const DECORATOR_AUTOMATIC = 'automatic';
 const DECORATOR_MANUAL = 'manual';

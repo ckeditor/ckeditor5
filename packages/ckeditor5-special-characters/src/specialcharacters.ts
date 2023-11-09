@@ -22,8 +22,6 @@ import SpecialCharactersView from './ui/specialcharactersview';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 
-import '../theme/specialcharacters.css';
-
 const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
 
 /**

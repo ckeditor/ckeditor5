@@ -30,8 +30,6 @@ import CollapsibleView from './collapsibleview';
 
 import type { ListPropertiesConfig } from '../../listconfig';
 
-import '../../../theme/listproperties.css';
-
 /**
  * The list properties view to be displayed in the list dropdown.
  *

@@ -29,8 +29,6 @@ import TableUtils from './tableutils';
 
 import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure';
 
-import '../theme/tableselection.css';
-
 /**
  * This plugin enables the advanced table cells, rows and columns selection.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.

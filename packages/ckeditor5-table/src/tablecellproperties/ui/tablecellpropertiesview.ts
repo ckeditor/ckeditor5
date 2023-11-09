@@ -44,7 +44,6 @@ import FormRowView from '../../ui/formrowview';
 import type ColorInputView from '../../ui/colorinputview';
 import type { TableCellPropertiesOptions } from '../../tableconfig';
 
-import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
 

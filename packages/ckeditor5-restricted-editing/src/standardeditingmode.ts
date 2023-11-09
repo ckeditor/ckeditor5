@@ -12,8 +12,6 @@ import { Plugin } from 'ckeditor5/src/core';
 import StandardEditingModeEditing from './standardeditingmodeediting';
 import StandardEditingModeUI from './standardeditingmodeui';
 
-import '../theme/restrictedediting.css';
-
 /**
  * The standard editing mode plugin.
  *

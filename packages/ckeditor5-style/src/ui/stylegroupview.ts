@@ -13,8 +13,6 @@ import type { Locale } from 'ckeditor5/src/utils';
 import StyleGridView from './stylegridview';
 import type { NormalizedStyleDefinition } from '../styleutils';
 
-import '../../theme/stylegroup.css';
-
 /**
  * A class representing a group of styles (e.g. "block" or "inline").
  *

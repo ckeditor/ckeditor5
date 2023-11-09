@@ -1,10 +1,14 @@
-/*
- * The configuration is used when releasing the `ckeditor5` package.
- */
 {
-  "extends": "./tsconfig.release.json",
+  "extends": "./tsconfig.kowalski.json",
+  "compilerOptions": {
+    "types": [
+      "./typings/types"
+    ]
+  },
   "include": [
-    "./src/",
-    "./typings/"
+    "src"
+  ],
+  "exclude": [
+    "tests"
   ]
 }

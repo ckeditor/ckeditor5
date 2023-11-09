@@ -33,6 +33,7 @@ mrgit.json
 yalc.lock
 
 # Ignore compiled TypeScript files.
+dist
 packages/*/src/**/*.d.ts
 packages/*/src/**/*.js
 packages/*/src/**/*.js.map
