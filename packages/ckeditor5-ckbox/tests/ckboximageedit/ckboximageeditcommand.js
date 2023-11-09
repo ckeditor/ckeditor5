@@ -373,20 +373,10 @@ describe( 'CKBoxImageEditCommand', () => {
 				sinon.assert.callCount( respondSpy, 4 );
 			} );
 
-			it( 'should add a pending action after a change and remove after server response', done => {
+			it( 'should add a pending action after a change and remove after server response', async () => {
 				const pendingActions = editor.plugins.get( PendingActions );
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				const clock = sinon.useFakeTimers();
-
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
-					200,
-					{ 'Content-Type': 'application/json' },
-					JSON.stringify( {
-						metadata: {
-							metadataProcessingStatus: 'success'
-						}
-					} )
-				] );
 
 				const dataMock = {
 					data: {
@@ -422,28 +412,52 @@ describe( 'CKBoxImageEditCommand', () => {
 					}
 				};
 
-				command.on( 'ckboxImageEditor:processed', () => {
-					expect( pendingActions.hasAny ).to.be.false;
-					expect( pendingActions._actions.length ).to.equal( 0 );
-					done();
-				} );
-
 				expect( pendingActions._actions.length ).to.equal( 0 );
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					200,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'queued'
+						}
+					} )
+				] );
 
 				onSave( dataMock );
 
 				expect( pendingActions.hasAny ).to.be.true;
 				expect( pendingActions._actions.length ).to.equal( 1 );
-				expect( pendingActions.first.message ).to.equal( 'Edited image is processing.' );
+				expect( pendingActions.first.message ).to.equal( 'Processing the edited image.' );
+
+				await clock.tickAsync( 1000 );
 
 				onSave( dataMock2 );
 
 				expect( pendingActions.hasAny ).to.be.true;
 				expect( pendingActions._actions.length ).to.equal( 2 );
-				expect( pendingActions.first.message ).to.equal( 'Edited image is processing.' );
-				expect( pendingActions._actions.get( 1 ).message ).to.equal( 'Edited image is processing.' );
+				expect( pendingActions.first.message ).to.equal( 'Processing the edited image.' );
+				expect( pendingActions._actions.get( 1 ).message ).to.equal( 'Processing the edited image.' );
 
-				clock.tickAsync( 8000 );
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					200,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'success'
+						}
+					} )
+				] );
+
+				await clock.tickAsync( 1000 );
+
+				expect( pendingActions.hasAny ).to.be.true;
+				expect( pendingActions._actions.length ).to.equal( 1 );
+
+				await clock.tickAsync( 7000 );
+
+				expect( pendingActions.hasAny ).to.be.false;
+				expect( pendingActions._actions.length ).to.equal( 0 );
 			} );
 
 			it( 'should reject if fetching asset\'s status ended with the authorization error', () => {

@@ -225,7 +225,7 @@ export default class CKBoxImageEditCommand extends Command {
 	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDataDefinition | undefined> {
 		const t = this.editor.locale.t;
 		const pendingActions = this.editor.plugins.get( PendingActions );
-		const action = pendingActions.add( t( 'Edited image is processing.' ) );
+		const action = pendingActions.add( t( 'Processing the edited image.' ) );
 
 		try {
 			return await retry( () => this._getAssetStatusFromServer( asset.data ) );
