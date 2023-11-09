@@ -3,5 +3,5 @@
   "Cannot determine a category for the uploaded file.": "A message is displayed when CKEditor 5 cannot associate an image with any of the categories defined in CKBox while uploading an asset.",
   "Cannot access default workspace.": "A message is displayed when the user is not authorised to access the CKBox workspace configured as default one.",
   "Edit image": "Image toolbar button tooltip for opening a dialog to manipulate the image.",
-  "Processing the edited image.": "A message that image editing is in progress."
+  "Processing the edited image.": "A message stating that image editing is in progress."
 }
