@@ -80,7 +80,7 @@ export default class ImageInsertUI extends Plugin {
 		const insertImageCommand: InsertImageCommand = this.editor.commands.get( 'insertImage' )!;
 
 		this.registerIntegration( 'url', insertImageCommand,
-			type => type == 'formView' ? this._createInsertUrlView() : this._createInsertButton()
+			( type, isOnlyOne ) => type == 'formView' ? this._createInsertUrlView( isOnlyOne ) : this._createInsertButton()
 		);
 
 		this.listenTo( editor.model.document, 'change', () => {
@@ -117,7 +117,9 @@ export default class ImageInsertUI extends Plugin {
 		let dropdownButton: SplitButtonView | DropdownButtonView | undefined;
 
 		if ( integrations.length > 1 ) {
-			dropdownButton = new SplitButtonView( locale, integrations[ 0 ].callback( 'toolbarButton' ) as ButtonView & FocusableView );
+			const actionButton = integrations[ 0 ].callback( 'toolbarButton', false ) as ButtonView & FocusableView;
+
+			dropdownButton = new SplitButtonView( locale, actionButton );
 		} else if ( integrations.length == 1 ) {
 			dropdownButton = this._createInsertButton( DropdownButtonView );
 		}
@@ -130,7 +132,7 @@ export default class ImageInsertUI extends Plugin {
 		) );
 
 		dropdownView.once( 'change:isOpen', () => {
-			const integrationsView = integrations.map( ( { callback } ) => callback( 'formView' ) );
+			const integrationsView = integrations.map( ( { callback } ) => callback( 'formView', integrations.length == 1 ) );
 			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationsView );
 
 			dropdownView.panelView.children.add( imageInsertFormView );
@@ -168,7 +170,7 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _createInsertUrlView(): FocusableView {
+	private _createInsertUrlView( isOnlyOne: boolean ): FocusableView {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const t = locale.t;
@@ -177,7 +179,7 @@ export default class ImageInsertUI extends Plugin {
 		const insertImageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
 
 		const imageInsertUrlView = new ImageInsertUrlView( locale );
-		const collapsibleView = new CollapsibleView( locale, [ imageInsertUrlView ] );
+		const collapsibleView = isOnlyOne ? null : new CollapsibleView( locale, [ imageInsertUrlView ] );
 
 		imageInsertUrlView.bind( 'isImageSelected' ).to( this );
 		imageInsertUrlView.bind( 'isEnabled' ).toMany( [ insertImageCommand, replaceImageSourceCommand ], 'isEnabled', ( ...isEnabled ) => (
@@ -196,7 +198,9 @@ export default class ImageInsertUI extends Plugin {
 				imageInsertUrlView.imageURLInputValue = replaceImageSourceCommand.value || '';
 
 				// TODO should we reset it to the collapsed state? List properties does not collapse.
-				collapsibleView.isCollapsed = true;
+				if ( collapsibleView ) {
+					collapsibleView.isCollapsed = true;
+				}
 			}
 
 			// Note: Use the low priority to make sure the following listener starts working after the
@@ -216,16 +220,20 @@ export default class ImageInsertUI extends Plugin {
 
 		imageInsertUrlView.on<ImageInsertUrlViewCancelEvent>( 'cancel', () => this._closePanel() );
 
-		collapsibleView.set( {
-			isCollapsed: true
-		} );
+		if ( collapsibleView ) {
+			collapsibleView.set( {
+				isCollapsed: true
+			} );
 
-		collapsibleView.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
-			t( 'Replace with link' ) : // TODO context
-			t( 'Insert with link' ) // TODO context
-		);
+			collapsibleView.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
+				t( 'Replace with link' ) : // TODO context
+				t( 'Insert with link' ) // TODO context
+			);
 
-		return collapsibleView;
+			return collapsibleView;
+		}
+
+		return imageInsertUrlView;
 	}
 
 	private _createInsertButton<T extends ButtonView | DropdownButtonView>(
@@ -268,7 +276,7 @@ export default class ImageInsertUI extends Plugin {
 /**
  * TODO
  */
-export type IntegrationCallback = ( type: 'toolbarButton' | 'formView' ) => FocusableView;
+export type IntegrationCallback = ( type: 'toolbarButton' | 'formView', isOnlyOne: boolean ) => FocusableView;
 
 type IntegrationData = {
 	observable: Observable & { isEnabled: boolean };

@@ -76,6 +76,10 @@ export default class CKBoxUI extends Plugin {
 						t( 'Replace with file manager' ) :
 						t( 'Insert with file manager' )
 					);
+
+					button.on( 'execute', () => {
+						imageInsertUI.dropdownView!.isOpen = false;
+					} );
 				}
 
 				return button;

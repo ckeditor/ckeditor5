@@ -90,6 +90,10 @@ export default class ImageUploadUI extends Plugin {
 						t( 'Replace from computer' ) :
 						t( 'Upload from computer' )
 					);
+
+					uploadImageButton.on( 'execute', () => {
+						imageInsertUI.dropdownView!.isOpen = false;
+					} );
 				}
 
 				return uploadImageButton;
