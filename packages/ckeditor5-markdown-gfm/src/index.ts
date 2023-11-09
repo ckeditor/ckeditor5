@@ -8,5 +8,6 @@
  */
 
 export { default as Markdown } from './markdown';
+export { default as PasteFromMarkdownExperimental } from './pastefrommarkdownexperimental';
 
 import './augmentation';
