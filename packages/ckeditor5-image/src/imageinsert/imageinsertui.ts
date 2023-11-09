@@ -13,6 +13,7 @@ import {
 	ButtonView,
 	SplitButtonView,
 	DropdownButtonView,
+	CollapsibleView,
 	createDropdown,
 	type DropdownView,
 	type FocusableView
@@ -168,9 +169,15 @@ export default class ImageInsertUI extends Plugin {
 	 * TODO
 	 */
 	private _createInsertUrlView(): FocusableView {
-		const replaceImageSourceCommand: ReplaceImageSourceCommand = this.editor.commands.get( 'replaceImageSource' )!;
-		const insertImageCommand: InsertImageCommand = this.editor.commands.get( 'insertImage' )!;
-		const imageInsertUrlView = new ImageInsertUrlView( this.editor.locale );
+		const editor = this.editor;
+		const locale = editor.locale;
+		const t = locale.t;
+
+		const replaceImageSourceCommand: ReplaceImageSourceCommand = editor.commands.get( 'replaceImageSource' )!;
+		const insertImageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
+
+		const imageInsertUrlView = new ImageInsertUrlView( locale );
+		const collapsibleView = new CollapsibleView( locale, [ imageInsertUrlView ] );
 
 		imageInsertUrlView.bind( 'isImageSelected' ).to( this );
 		imageInsertUrlView.bind( 'isEnabled' ).toMany( [ insertImageCommand, replaceImageSourceCommand ], 'isEnabled', ( ...isEnabled ) => (
@@ -187,6 +194,9 @@ export default class ImageInsertUI extends Plugin {
 				// the value of the media command (e.g. because they didn't change the selection), they would see
 				// the old value instead of the actual value of the command.
 				imageInsertUrlView.imageURLInputValue = replaceImageSourceCommand.value || '';
+
+				// TODO should we reset it to the collapsed state? List properties does not collapse.
+				collapsibleView.isCollapsed = true;
 			}
 
 			// Note: Use the low priority to make sure the following listener starts working after the
@@ -196,9 +206,9 @@ export default class ImageInsertUI extends Plugin {
 
 		imageInsertUrlView.on<ImageInsertUrlViewSubmitEvent>( 'submit', () => {
 			if ( replaceImageSourceCommand.isEnabled ) {
-				this.editor.execute( 'replaceImageSource', { source: imageInsertUrlView.imageURLInputValue } );
+				editor.execute( 'replaceImageSource', { source: imageInsertUrlView.imageURLInputValue } );
 			} else {
-				this.editor.execute( 'insertImage', { source: imageInsertUrlView.imageURLInputValue } );
+				editor.execute( 'insertImage', { source: imageInsertUrlView.imageURLInputValue } );
 			}
 
 			this._closePanel();
@@ -206,7 +216,16 @@ export default class ImageInsertUI extends Plugin {
 
 		imageInsertUrlView.on<ImageInsertUrlViewCancelEvent>( 'cancel', () => this._closePanel() );
 
-		return imageInsertUrlView;
+		collapsibleView.set( {
+			isCollapsed: true
+		} );
+
+		collapsibleView.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
+			t( 'Replace with link' ) : // TODO context
+			t( 'Insert with link' ) // TODO context
+		);
+
+		return collapsibleView;
 	}
 
 	private _createInsertButton<T extends ButtonView | DropdownButtonView>(

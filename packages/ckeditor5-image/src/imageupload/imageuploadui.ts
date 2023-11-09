@@ -83,12 +83,6 @@ export default class ImageUploadUI extends Plugin {
 				uploadImageButton.icon = icons.imageUpload;
 
 				if ( type == 'formView' ) {
-					uploadImageButton.extendTemplate( {
-						attributes: {
-							class: 'ck-image-insert__ck-finder-button'
-						}
-					} );
-
 					uploadImageButton.withText = true;
 
 					// TODO add to context (note that it's shared with CKBox)

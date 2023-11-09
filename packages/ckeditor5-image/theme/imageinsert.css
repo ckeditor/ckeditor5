@@ -5,20 +5,22 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
-.ck.ck-image-insert__ck-finder-button {
-	display: block;
-	width: 100%;
-	margin: var(--ck-spacing-standard) auto;
-	border: 1px solid hsl(0, 0%, 80%);
-	border-radius: var(--ck-border-radius);
-}
-
 .ck.ck-image-insert-form {
-	padding: var(--ck-spacing-large);
+	& > .ck.ck-button {
+		display: block;
+		width: 100%;
 
-	&:focus {
-		/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */
-		outline: none;
+		@mixin ck-dir ltr {
+			text-align: left;
+		}
+
+		@mixin ck-dir rtl {
+			text-align: right;
+		}
+	}
+
+	& > .ck.ck-collapsible {
+		border-top: 1px solid var(--ck-color-base-border);
 	}
 }
 

@@ -12,6 +12,7 @@ import {
 	ViewCollection,
 	submitHandler,
 	FocusCycler,
+	CollapsibleView,
 	type FocusCyclerForwardCycleEvent,
 	type FocusCyclerBackwardCycleEvent
 } from 'ckeditor5/src/ui';
@@ -77,9 +78,16 @@ export default class ImageInsertFormView extends View {
 			}
 		} );
 
-		this.children.addMany( integrations );
+		for ( const view of integrations ) {
+			this.children.add( view );
+			this._focusables.add( view );
 
-		for ( const view of this.children ) {
+			if ( view instanceof CollapsibleView ) {
+				this._focusables.addMany( view.children );
+			}
+		}
+
+		for ( const view of this._focusables ) {
 			if ( isViewWithFocusCycler( view ) ) {
 				view.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
 					this._focusCycler.focusNext();
@@ -117,13 +125,9 @@ export default class ImageInsertFormView extends View {
 			view: this
 		} );
 
-		this.children.forEach( view => {
-			// Register the view as focusable.
-			this._focusables.add( view );
-
-			// Register the view in the focus tracker.
+		for ( const view of this._focusables ) {
 			this.focusTracker.add( view.element! );
-		} );
+		}
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
