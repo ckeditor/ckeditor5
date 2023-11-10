@@ -110,17 +110,6 @@ While the Markdown plugin is stable and ready to use, some issues are still bein
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
 * The Markdown code generated with the Markdown output feature will not properly render {@link features/tables#nesting-tables nested tables}. GitHub issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
 
-### Paste from markdown
-
-TODOs:
-
-* Description what the PasteFromMarkdownExperimental is. What does it do, and why is it marked as experimental?
-* How to use it?
-* Demo (see below). It would be good to have some predefined content: “Copy and paste to see results.”.
-* Please, share your feedback that may impact the final shape of the plugin.
-
-{@snippet features/paste-from-markdown}
-
 ## Related features
 
 Some other ways to output the edited content include:
@@ -129,6 +118,7 @@ Some other ways to output the edited content include:
 * {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
 * {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
+* {@link features/paste-from-markdown Paste from Markdown} &ndash; Paste Markdown formatted content straight into the editor!
 
 ## Contribute
 
