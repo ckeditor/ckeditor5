@@ -4,7 +4,7 @@
  */
 
 /**
- * @module markdown-gfm/markdown
+ * @module markdown-gfm/pastefrommarkdownexperimental
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
@@ -15,7 +15,7 @@ import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 /**
  * The GitHub Flavored Markdown (GFM) paste plugin.
  *
- * For a detailed overview, check the {@glink features/markdown##paste-from-markdown Markdown feature} guide.
+ * For a detailed overview, check the {@glink features/markdown#paste-from-markdown Markdown feature} guide.
  */
 export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
