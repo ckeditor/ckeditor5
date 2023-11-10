@@ -60,4 +60,8 @@
 		min-width: var(--ck-image-insert-insert-by-url-width);
 		padding: var(--ck-spacing-large);
 	}
+
+	&:focus {
+		outline: none;
+	}
 }

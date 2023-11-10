@@ -110,7 +110,8 @@ export default class ImageInsertFormView extends View {
 				class: [
 					'ck',
 					'ck-image-insert-form'
-				]
+				],
+				tabindex: -1
 			},
 
 			children: this.children

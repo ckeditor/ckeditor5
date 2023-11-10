@@ -136,10 +136,6 @@ export default class ImageInsertUI extends Plugin {
 			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationViews );
 
 			dropdownView.panelView.children.add( imageInsertFormView );
-
-			// Add panelView to keystrokes handling, so it can handle Tab and Shift+Tab while the panel itself is focused.
-			imageInsertFormView.keystrokes.listenTo( dropdownView.panelView.element! );
-			// TODO should this be handled this way or by adding `tabindex="-1"` to the ImageInsertFormView?
 		} );
 
 		return dropdownView;
