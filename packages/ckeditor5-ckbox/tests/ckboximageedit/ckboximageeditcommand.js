@@ -278,7 +278,7 @@ describe( 'CKBoxImageEditCommand', () => {
 		} );
 
 		describe( 'saving edited asset', () => {
-			let onSave, sinonXHR, jwtToken;
+			let onSave, sinonXHR, jwtToken, clock;
 
 			beforeEach( () => {
 				jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
@@ -289,12 +289,16 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			afterEach( () => {
 				sinonXHR.restore();
+
+				if ( clock ) {
+					clock.restore();
+				}
 			} );
 
 			it( 'should pool data for edited image and if success status, save it', done => {
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
-				const clock = sinon.useFakeTimers();
+				clock = sinon.useFakeTimers();
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
@@ -322,7 +326,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should stop pooling if limit was reached', async () => {
-				const clock = sinon.useFakeTimers();
+				clock = sinon.useFakeTimers();
 
 				const respondSpy = sinon.spy( sinonXHR, 'respond' );
 
@@ -352,7 +356,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
-				const clock = sinon.useFakeTimers();
+				clock = sinon.useFakeTimers();
 
 				const dataMock2 = {
 					data: {
