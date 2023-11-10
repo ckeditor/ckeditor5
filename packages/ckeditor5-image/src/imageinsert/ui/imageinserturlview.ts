@@ -114,6 +114,12 @@ export default class ImageInsertUrlView extends View {
 		this.insertButtonView = this._createInsertButton();
 		this.cancelButtonView = this._createCancelButton();
 
+		this._focusables.addMany( [
+			this.urlInputView,
+			this.insertButtonView,
+			this.cancelButtonView
+		] );
+
 		this.setTemplate( {
 			tag: 'div',
 
@@ -150,32 +156,12 @@ export default class ImageInsertUrlView extends View {
 	public override render(): void {
 		super.render();
 
-		const childViews = [
-			this.urlInputView,
-			this.insertButtonView,
-			this.cancelButtonView
-		];
-
-		childViews.forEach( view => {
-			// Register the view as focusable.
-			this._focusables.add( view );
-
-			// Register the view in the focus tracker.
+		for ( const view of this._focusables ) {
 			this.focusTracker.add( view.element! );
-		} );
+		}
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
-
-		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
-
-		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
-		// keystroke handler would take over the key management in the URL input. We need to prevent
-		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
-		this.keystrokes.set( 'arrowright', stopPropagation );
-		this.keystrokes.set( 'arrowleft', stopPropagation );
-		this.keystrokes.set( 'arrowup', stopPropagation );
-		this.keystrokes.set( 'arrowdown', stopPropagation );
 	}
 
 	/**

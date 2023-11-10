@@ -133,6 +133,16 @@ export default class ImageInsertFormView extends View {
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
+
+		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
+
+		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
+		// keystroke handler would take over the key management in the URL input. We need to prevent
+		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
+		this.keystrokes.set( 'arrowright', stopPropagation );
+		this.keystrokes.set( 'arrowleft', stopPropagation );
+		this.keystrokes.set( 'arrowup', stopPropagation );
+		this.keystrokes.set( 'arrowdown', stopPropagation );
 	}
 
 	/**
