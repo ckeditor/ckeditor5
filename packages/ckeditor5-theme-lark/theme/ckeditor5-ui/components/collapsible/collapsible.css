@@ -11,7 +11,7 @@
 	& > .ck.ck-button {
 		width: 100%;
 		font-weight: bold;
-		padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+		padding: var(--ck-list-button-padding);
 		border-radius: 0;
 		color: inherit;
 
@@ -32,7 +32,7 @@
 	}
 
 	& > .ck-collapsible__children {
-		padding: 0 var(--ck-spacing-large) var(--ck-spacing-large);
+		padding: var(--ck-spacing-medium) var(--ck-spacing-large) var(--ck-spacing-large);
 	}
 
 	&.ck-collapsible_collapsed {
