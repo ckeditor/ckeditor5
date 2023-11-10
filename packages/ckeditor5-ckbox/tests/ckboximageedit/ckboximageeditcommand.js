@@ -506,11 +506,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				await clock.tickAsync( 1000 );
 
-				expect( pendingActions.hasAny ).to.be.true;
-				expect( pendingActions._actions.length ).to.equal( 1 );
-
-				await clock.tickAsync( 7000 );
-
 				expect( pendingActions.hasAny ).to.be.false;
 				expect( pendingActions._actions.length ).to.equal( 0 );
 			} );
