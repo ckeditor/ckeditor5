@@ -51,12 +51,6 @@ When converting the output produced by this data processor, make sure to use a c
 	And please do remember &mdash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
 </info-box>
 
-## Paste from markdown
-
-[//]: # (TODO add description here)
-
-{@snippet features/paste-from-markdown}
-
 ## Installation
 
 <info-box info>
@@ -115,6 +109,17 @@ While the Markdown plugin is stable and ready to use, some issues are still bein
 
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
 * The Markdown code generated with the Markdown output feature will not properly render {@link features/tables#nesting-tables nested tables}. GitHub issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
+
+### Paste from markdown
+
+TODOs:
+
+* Description what the PasteFromMarkdownExperimental is. What does it do, and why is it marked as experimental?
+* How to use it?
+* Demo (see below). It would be good to have some predefined content: “Copy and paste to see results.”.
+* Please, share your feedback that may impact the final shape of the plugin.
+
+{@snippet features/paste-from-markdown}
 
 ## Related features
 

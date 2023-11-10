@@ -6,34 +6,45 @@
 /* globals window */
 
 import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { TodoList } from '@ckeditor/ckeditor5-list';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-
+import { List, TodoList, DocumentList, TodoDocumentList, AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
 import { Markdown, PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( ArticlePluginSet, SourceEditing, CKBox, ImageUpload, PictureEditing, CloudServices, Markdown,
-	Code, CodeBlock, TodoList, Strikethrough, HorizontalLine );
+ClassicEditor.builtinPlugins = ClassicEditor.builtinPlugins
+	// Remove the `List` plugin as in a single demo we want to use the Document list feature.
+	.filter( pluginConstructor => {
+		if ( pluginConstructor.pluginName === 'List' ) {
+			return false;
+		}
+
+		return true;
+	} )
+	// Then, add Markdown-specific features.
+	.concat( [
+		SourceEditing,
+		Code, Strikethrough,
+		Markdown,
+		CodeBlock,
+		HorizontalLine
+	] );
 
 ClassicEditor.defaultConfig = {
-	cloudServices: CS_CONFIG,
 	toolbar: {
 		items: [
 			'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
 			'|', 'bold', 'italic', 'strikethrough', 'code',
 			'-', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 			'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
-		]
+		],
+		shouldNotGroupWhenFull: true
 	},
+	cloudServices: CS_CONFIG,
 	image: {
 		toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 	},
@@ -54,17 +65,7 @@ ClassicEditor.defaultConfig = {
 
 window.ClassicEditor = ClassicEditor;
 window.CKEditorPlugins = {
-	ArticlePluginSet,
-	SourceEditing,
-	CKBox,
-	ImageUpload,
-	PictureEditing,
-	CloudServices,
-	Markdown,
-	PasteFromMarkdownExperimental,
-	Code,
-	CodeBlock,
-	TodoList,
-	Strikethrough,
-	HorizontalLine
+	List, TodoList,
+	DocumentList, TodoDocumentList, AdjacentListsSupport,
+	PasteFromMarkdownExperimental
 };

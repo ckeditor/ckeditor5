@@ -8,14 +8,14 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Clipboard, type ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
 import GFMDataProcessor from './gfmdataprocessor';
-import type { ClipboardPipeline, ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
 import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 
 /**
  * The GitHub Flavored Markdown (GFM) paste plugin.
  *
- * // TODO add correct link to the guide.
+ * For a detailed overview, check the {@glink features/markdown##paste-from-markdown Markdown feature} guide.
  */
 export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
@@ -43,7 +43,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'ClipboardPipeline' ] as const;
+		return [ Clipboard ] as const;
 	}
 
 	/**
@@ -63,12 +63,11 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 		} );
 
 		this.listenTo<ClipboardInputTransformationEvent>( clipboardPipeline, 'inputTransformation', ( evt, data ) => {
-			const dataAsTextHtml = data.dataTransfer.getData( 'text/html' );
-			const markdownFromHtml = this.parseMarkdownFromHtml( dataAsTextHtml );
-
 			if ( shiftPressed ) {
 				return;
 			}
+
+			const dataAsTextHtml = data.dataTransfer.getData( 'text/html' );
 
 			if ( !dataAsTextHtml ) {
 				const dataAsTextPlain = data.dataTransfer.getData( 'text/plain' );
@@ -76,6 +75,8 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 
 				return;
 			}
+
+			const markdownFromHtml = this.parseMarkdownFromHtml( dataAsTextHtml );
 
 			if ( markdownFromHtml ) {
 				data.content = this._gfmDataProcessor.toView( markdownFromHtml );
@@ -89,11 +90,10 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * Then removes a single wrapper HTML tag, and if there are no more tags left, returns the remaining text.
 	 * Returns null, if there are any remaining HTML tags detected.
 	 *
-	 * @param {String} htmlString Clipboard content in `text/html` type format.
 	 * @private
-	 * @returns String | null
+	 * @param htmlString Clipboard content in `text/html` type format.
 	 */
-	private parseMarkdownFromHtml( htmlString = '' ) {
+	private parseMarkdownFromHtml( htmlString: string ): string | null {
 		// Removing <meta> tag present on Mac.
 		const withoutMetaTag = htmlString.replace( /^<meta\b[^>]*>/, '' ).trim();
 		// Removing <html> tag present on Windows.

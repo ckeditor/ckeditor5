@@ -15,7 +15,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import PasteFromMarkdownExperimental from '../src/pastefrommarkdownexperimental';
 
-describe( 'PasteFromMarkdown', () => {
+describe( 'PasteFromMarkdownExperimental', () => {
 	let editorElement, editor;
 
 	beforeEach( () => {
@@ -76,7 +76,7 @@ describe( 'PasteFromMarkdown', () => {
 		expect( toViewStub.callCount ).to.equal( 1 );
 	} );
 
-	// TODO add Chrome, Firefox, Safari, Edge clipboard examples
+	// TODO add Chrome, Firefox, Safari, Edge clipboard examples.
 	it( 'should parse correctly Mac type clipboard', () => {
 		setData( editor.model, '<paragraph>[]</paragraph>' );
 		pasteHtml( editor, '<meta charset="utf8"><span>foo **bar** [baz](https://ckeditor.com).</span>' );
