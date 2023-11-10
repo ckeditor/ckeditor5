@@ -9,7 +9,7 @@
  * @module ckbox/ckboximageedit/ckboximageeditcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
+import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
 import { createElement, global, retry } from 'ckeditor5/src/utils';
 import CKBoxEditing from '../ckboxediting';
 import { prepareImageAssetAttributes } from '../ckboxcommand';
@@ -221,10 +221,16 @@ export default class CKBoxImageEditCommand extends Command {
 	 * @param asset Data about certain asset.
 	 */
 	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDefinition | undefined> {
+		const t = this.editor.locale.t;
+		const pendingActions = this.editor.plugins.get( PendingActions );
+		const action = pendingActions.add( t( 'Processing the edited image.' ) );
+
 		try {
 			return await retry( () => this._getAssetStatusFromServer( asset.data ) );
 		} catch ( err ) {
 			// TODO: Handle error;
+		} finally {
+			pendingActions.remove( action );
 		}
 	}
 

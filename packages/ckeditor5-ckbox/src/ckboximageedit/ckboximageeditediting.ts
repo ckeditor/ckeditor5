@@ -7,7 +7,7 @@
  * @module ckbox/ckboximageedit/ckboximageeditediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { PendingActions, Plugin } from 'ckeditor5/src/core';
 import CKBoxImageEditCommand from './ckboximageeditcommand';
 
 /**
@@ -19,6 +19,13 @@ export default class CKBoxImageEditEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'CKBoxImageEditEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ PendingActions ] as const;
 	}
 
 	/**

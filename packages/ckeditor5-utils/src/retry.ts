@@ -7,26 +7,34 @@
  * @module utils/retry
  */
 
+import wait from './wait';
+
 /**
  * Tries calling the given callback until it sucessfully resolves.
  *
  * If the callback fails `maxRetries` times, the returned promise is rejected with the last error.
  *
  * @typeParam TResult The result of a successful callback invocation.
+ * @param callback The function to call until it succeeds.
  * @param options.maxRetries Maximum number of retries.
  * @param options.retryDelay The time in miliseconds between attempts. By default it implements exponential back-off policy.
+ * @param options.signal The signal to abort further retries. The callback itself is not aborted automatically.
  */
 export default async function retry<TResult>(
 	callback: () => Promise<TResult>,
 	options: {
 		maxAttempts?: number;
 		retryDelay?: ( attempt: number ) => number;
+		signal?: AbortSignal;
 	} = {}
 ): Promise<TResult> {
 	const {
 		maxAttempts = 4,
-		retryDelay = exponentialDelay()
+		retryDelay = exponentialDelay(),
+		signal = ( new AbortController() ).signal
 	} = options;
+
+	signal.throwIfAborted();
 
 	for ( let attempt = 0; ; attempt++ ) {
 		try {
@@ -39,9 +47,7 @@ export default async function retry<TResult>(
 			}
 		}
 
-		await new Promise( resolve => {
-			setTimeout( resolve, retryDelay( attempt ) );
-		} );
+		await wait( retryDelay( attempt ), { signal } );
 	}
 }
 

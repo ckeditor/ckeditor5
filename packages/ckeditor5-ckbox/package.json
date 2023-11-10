@@ -16,6 +16,7 @@
     "blurhash": "^2.0.5"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-autosave": "40.0.0",
     "@ckeditor/ckeditor5-basic-styles": "40.0.0",
     "@ckeditor/ckeditor5-core": "40.0.0",
     "@ckeditor/ckeditor5-clipboard": "40.0.0",
