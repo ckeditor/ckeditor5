@@ -13,6 +13,12 @@
 			"**/index.html"
 		]
 	},
+	"permalinkDisableDomains": [
+		"ckeditor5.github.io",
+		"fake.ckeditor.com",
+		"localhost",
+		"127.0.0.1"
+	],
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
 	"extraScripts": "assets/buildwarningbanner.js",
