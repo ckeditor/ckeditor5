@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, btoa, setTimeout */
+/* global window, btoa */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
@@ -334,7 +334,62 @@ describe( 'CKBoxImageEditCommand', () => {
 				clock.tick( 1500 );
 			} );
 
+			it( 'should abort when image was removed while processing on server', async () => {
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				const clock = sinon.useFakeTimers();
+
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					200,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'queued'
+						}
+					} )
+				] );
+
+				onSave( dataMock );
+
+				await clock.tickAsync( 100 );
+
+				const selection = model.document.selection;
+
+				model.deleteContent( selection );
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					200,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'success'
+						}
+					} )
+				] );
+
+				await clock.tickAsync( 1000 );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
 			it( 'should stop pooling if limit was reached', async () => {
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				const clock = sinon.useFakeTimers();
 
 				const respondSpy = sinon.spy( sinonXHR, 'respond' );
@@ -497,6 +552,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				'event after hit "Save" button in the CKBox Image Editor dialog', async () => {
 				const spySave = sinon.spy();
 				const spyProcessed = sinon.spy();
+				const clock = sinon.useFakeTimers();
 
 				const [ assetProcessedPromise, resolveAssetProcessed ] = createPromise();
 
@@ -509,13 +565,13 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( spySave.callCount ).to.equal( 1 );
 
-				await wait( 0 );
+				await clock.tickAsync( 0 );
 
 				expect( spyProcessed.callCount ).to.equal( 0 );
 
-				resolveAssetProcessed();
+				resolveAssetProcessed( {} );
 
-				await wait( 0 );
+				await clock.tickAsync( 10000 );
 
 				expect( spyProcessed.callCount ).to.equal( 1 );
 			} );
@@ -523,7 +579,8 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should not replace image with saved one before it is processed', () => {
 				const modelData =
 					'[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" ' +
+						'tempServerAssetId="image-id1" width="50">' +
 					'</imageBlock>]';
 
 				setModelData( model, modelData );
@@ -576,12 +633,6 @@ describe( 'CKBoxImageEditCommand', () => {
 		} );
 	} );
 } );
-
-function wait( time ) {
-	return new Promise( resolve => {
-		setTimeout( resolve, time );
-	} );
-}
 
 function createPromise() {
 	let resolve;

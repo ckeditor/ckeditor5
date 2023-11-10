@@ -11,6 +11,7 @@
 
 import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
 import { createElement, global, retry } from 'ckeditor5/src/utils';
+import type { Item } from 'ckeditor5/src/engine';
 import CKBoxEditing from '../ckboxediting';
 
 import { prepareImageAssetAttributes } from '../ckboxcommand';
@@ -156,8 +157,10 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, asset ) => {
-			this._waitForAssetProcessed( asset ).then( () => {
-				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
+			this._waitForAssetProcessed( asset ).then( response => {
+				if ( response ) {
+					this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
+				}
 			} );
 		} );
 
@@ -226,14 +229,72 @@ export default class CKBoxImageEditCommand extends Command {
 		const t = this.editor.locale.t;
 		const pendingActions = this.editor.plugins.get( PendingActions );
 		const action = pendingActions.add( t( 'Processing the edited image.' ) );
+		const editor = this.editor;
+		const model = editor.model;
+		const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+		const controller = new AbortController();
+
+		this._setTempServerAssetId( selectedImageElement, asset );
+		this._setupAbortOnImageDeleteListener( controller, asset );
 
 		try {
-			return await retry( () => this._getAssetStatusFromServer( asset.data ) );
+			const response = await retry(
+				() => this._getAssetStatusFromServer( asset.data ),
+				{
+					signal: controller.signal
+				}
+			);
+
+			return response;
 		} catch ( err ) {
 			// TODO: Handle error;
 		} finally {
 			pendingActions.remove( action );
+
+			/**
+			 * Remove temporarily asset id from image.
+			 */
+			model.change( writer => {
+				writer.removeAttribute( 'tempServerAssetId', selectedImageElement );
+			} );
 		}
+	}
+
+	/**
+	 * Due asset which is returned from server has different id than image in model
+	 * we temporarily assigning new attribute to match them in case image deleting.
+	 *
+	 * @param image Image which should be assigned id to.
+	 * @param asset Data about certain asset.
+	 */
+	private _setTempServerAssetId( image: Item, asset: CKBoxRawAssetDefinition ) {
+		const model = this.editor.model;
+
+		model.change( writer => {
+			writer.setAttribute( 'tempServerAssetId', asset.data.id, image );
+		} );
+	}
+
+	/**
+	 * Abort waiting if image was deleted while processing on server.
+	 *
+	 * @param controller Abort image saving.
+	 * @param asset Data about certain asset.
+	 */
+	private _setupAbortOnImageDeleteListener( controller: AbortController, asset: CKBoxRawAssetDefinition ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const document = model.document;
+
+		document.on( 'change:data', ( ) => {
+			const graveyardChildren = Array.from( document.graveyard.getChildren() );
+			const matchedImage = graveyardChildren.find( item => item.getAttribute( 'tempServerAssetId' ) );
+
+			if ( matchedImage && matchedImage.getAttribute( 'tempServerAssetId' ) === asset.data.id ) {
+				controller.abort( 'Processed image was removed.' );
+				document.stopListening( document );
+			}
+		} );
 	}
 }
 
