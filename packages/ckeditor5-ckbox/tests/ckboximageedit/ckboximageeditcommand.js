@@ -349,25 +349,10 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should add a pending action after a change and remove after server response', async () => {
 				const pendingActions = editor.plugins.get( PendingActions );
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-				const clock = sinon.useFakeTimers();
 
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
+				const clock = sinon.useFakeTimers();
 
 				const dataMock2 = {
 					data: {
