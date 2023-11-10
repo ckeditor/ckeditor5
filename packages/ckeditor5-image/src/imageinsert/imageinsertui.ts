@@ -132,8 +132,8 @@ export default class ImageInsertUI extends Plugin {
 		) );
 
 		dropdownView.once( 'change:isOpen', () => {
-			const integrationsView = integrations.map( ( { callback } ) => callback( 'formView', integrations.length == 1 ) );
-			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationsView );
+			const integrationViews = integrations.map( ( { callback } ) => callback( 'formView', integrations.length == 1 ) );
+			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationViews );
 
 			dropdownView.panelView.children.add( imageInsertFormView );
 		} );
