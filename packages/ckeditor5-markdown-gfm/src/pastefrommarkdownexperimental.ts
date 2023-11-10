@@ -7,8 +7,8 @@
  * @module markdown-gfm/pastefrommarkdownexperimental
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Clipboard, type ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
+import { type Editor, Plugin } from 'ckeditor5/src/core';
+import { Clipboard, type ClipboardInputTransformationEvent, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import GFMDataProcessor from './gfmdataprocessor';
 import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 
@@ -87,29 +87,99 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * Determines if code copied from a website in `text/html` type can be parsed as markdown.
 	 * It removes any OS specific HTML tags e.g. <meta> on Mac OS and <!--StartFragment--> on Windows.
-	 * Then removes a single wrapper HTML tag, and if there are no more tags left, returns the remaining text.
-	 * Returns null, if there are any remaining HTML tags detected.
+	 * Then removes a single wrapper HTML tag or wrappers for sibling tags, and if there are no more tags left,
+	 * returns the remaining text. Returns null, if there are any remaining HTML tags detected.
 	 *
 	 * @private
 	 * @param htmlString Clipboard content in `text/html` type format.
 	 */
 	private parseMarkdownFromHtml( htmlString: string ): string | null {
+		const withoutOsSpecificTags = this.removeOsSpecificTags( htmlString );
+
+		const withoutWrapperTag = this.isHtmlList( withoutOsSpecificTags ) ?
+			this.removeListWrapperTagsAndBrs( withoutOsSpecificTags ) :
+			this.removeWrapperTag( withoutOsSpecificTags );
+
+		if ( this.containsAnyRemainingHtmlTags( withoutWrapperTag ) ) {
+			return null;
+		}
+
+		return withoutWrapperTag;
+	}
+
+	/**
+	 * Removes OS specific tags.
+	 *
+	 * @private
+	 * @param htmlString Clipboard content in `text/html` type format.
+	 */
+	private removeOsSpecificTags( htmlString: string ): string {
 		// Removing <meta> tag present on Mac.
 		const withoutMetaTag = htmlString.replace( /^<meta\b[^>]*>/, '' ).trim();
 		// Removing <html> tag present on Windows.
 		const withoutHtmlTag = withoutMetaTag.replace( /^<html>/, '' ).replace( /<\/html>$/, '' ).trim();
 		// Removing <body> tag present on Windows.
 		const withoutBodyTag = withoutHtmlTag.replace( /^<body>/, '' ).replace( /<\/body>$/, '' ).trim();
-		// Removing <!--StartFragment--> tag present on Windows.
-		const withoutFragmentTag = withoutBodyTag.replace( /^<!--StartFragment-->/, '' ).replace( /<!--EndFragment-->$/, '' ).trim();
-		// Removing a wrapper HTML tag if exists.
-		const withoutWrapperTag = withoutFragmentTag.replace( /^<(\w+)\b[^>]*>\s*([\s\S]*?)\s*<\/\1>/, '$2' ).trim();
-		const containsAnyRemainingHtmlTags = /<[^>]+>[\s\S]*<[^>]+>/.test( withoutWrapperTag );
 
-		if ( containsAnyRemainingHtmlTags ) {
-			return null;
+		// Removing <!--StartFragment--> tag present on Windows.
+		return withoutBodyTag.replace( /^<!--StartFragment-->/, '' ).replace( /<!--EndFragment-->$/, '' ).trim();
+	}
+
+	/**
+	 * Removes a single HTML wrapper tag from string.
+	 *
+	 * @private
+	 * @param htmlString Clipboard content without any OS specific tags.
+	 */
+	private removeWrapperTag( htmlString: string ): string {
+		return htmlString.replace( /^<(\w+)\b[^>]*>\s*([\s\S]*?)\s*<\/\1>/, '$2' ).trim();
+	}
+
+	/**
+	 * Removes multiple HTML wrapper tags from a list of sibling HTML tags.
+	 *
+	 * @private
+	 * @param htmlString Clipboard content without any OS specific tags.
+	 */
+	private removeListWrapperTagsAndBrs( htmlString: string ): string {
+		const tempDiv = document.createElement( 'div' );
+		tempDiv.innerHTML = htmlString;
+
+		const outerElements = tempDiv.querySelectorAll( ':not(:empty)' );
+		const brElements = tempDiv.querySelectorAll( 'br' );
+
+		for ( const element of outerElements ) {
+			const elementClone = element.cloneNode( true );
+			element.replaceWith( ...elementClone.childNodes );
 		}
 
-		return withoutWrapperTag;
+		for ( const br of brElements ) {
+			br.replaceWith( '\n' );
+		}
+
+		return tempDiv.innerHTML;
+	}
+
+	/**
+	 * Determines if sting contains sibling HTML tags at root level.
+	 *
+	 * @private
+	 * @param htmlString Clipboard content without any OS specific tags.
+	 */
+	private isHtmlList( htmlString: string ): boolean {
+		const tempDiv = document.createElement( 'div' );
+		tempDiv.innerHTML = htmlString;
+
+		return tempDiv.children.length > 1;
+	}
+
+	/**
+	 * Determines if string contains any HTML tags.
+	 *
+	 * @private
+	 * @param str
+	 */
+	private containsAnyRemainingHtmlTags( str: string ): boolean {
+		return /<[^>]+>[\s\S]*<[^>]+>/.test( str );
 	}
 }
