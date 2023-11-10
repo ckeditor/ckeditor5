@@ -12,43 +12,59 @@ import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import ImageInsert from '../../src/imageinsert';
 import AutoImage from '../../src/autoimage';
+import { ListProperties } from '@ckeditor/ckeditor5-list';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder ],
-		toolbar: [
-			'heading',
-			'|',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'blockQuote',
-			'insertImage',
-			'insertTable',
-			'mediaEmbed',
-			'undo',
-			'redo'
-		],
-		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
-			insert: {
-				integrations: [
-					'upload',
-					'assetManager',
-					'url'
-				]
+createEditor( '#editor-all', [
+	'upload',
+	'assetManager',
+	'url'
+] );
+
+createEditor( '#editor-just-url', [
+	'url'
+] );
+
+function createEditor( elementId, integrations ) {
+	ClassicEditor
+		.create( document.querySelector( elementId ), {
+			plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder, ListProperties ],
+			toolbar: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'blockQuote',
+				'insertImage',
+				'insertTable',
+				'mediaEmbed',
+				'undo',
+				'redo'
+			],
+			list: {
+				properties: {
+					styles: true,
+					startIndex: true,
+					reversed: true
+				}
+			},
+			image: {
+				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
+				insert: {
+					integrations
+				}
+			},
+			ckfinder: {
+				// eslint-disable-next-line max-len
+				uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 			}
-		},
-		ckfinder: {
-			// eslint-disable-next-line max-len
-			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+		} )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+}
