@@ -16,10 +16,16 @@ modified_at: 2023-11-07
 
 ## Update to CKEditor&nbsp;5 v40.1.0
 
-### New way to handle images inserted into content
+### Changes to the default insert image action
 
+We changed how the images are inserted by default. For long time, the image insert action detected where the selection is placed, and then inserted an inline image or a block one. This caused confusion in some cases, and led to suboptimal experience. From now on, the image will be inserted as a block one by default.
+
+This of course depends on how an integrator set up the editor. If only `ImageInline` plugin is used, the editor will automatically insert images as inlined. If you load the `Image` plugin, and wish to restore the previous behaviorm you only need to change the config.
+
+// Not sure if section below is needed:
 Inline images can be inserted in the middle of a paragraph or a link just like regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables, or media. Being larger and existing as standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc.
 
+// This config was aleardy there, we just renamed `undefined` to `auto`.
 Introduced in the latest version comes a handy `image.insert.type` configuration setting that lets the integrators set up the way newly uploaded ar pasted images are handled in the editor content. By default, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
 
 If you wish to modify this behavior, the `type` setting in the editor configuration can be used:
@@ -154,7 +160,7 @@ The new approach has an impact on how revision history (or loading legacy docume
 
 #### New `CommentThread#unlinkedAt` property
 
-A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property and returns it together with other `CommentThread` data.  
+A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property and returns it together with other `CommentThread` data.
 
 #### Changes impacting custom features
 
@@ -205,7 +211,7 @@ This change was reflected in the {@link features/comments-outside-editor comment
 
 Previously, in a real-time collaboration environment, deleted comment threads were fetched and added to `CommentsRepository` when the editor re-connected to Cloud Services. This was an incorrect behavior and was fixed.
 
-If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it. 
+If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it.
 
 ### New Balloon Block editor icon
 
