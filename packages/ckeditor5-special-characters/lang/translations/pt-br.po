@@ -927,7 +927,7 @@ msgstr "Diferencial parcial"
 
 msgctxt "A label for the \"for all\" symbol."
 msgid "For all"
-msgstr "Para todos"
+msgstr "Para todo"
 
 msgctxt "A label for the \"there exists\" symbol."
 msgid "There exists"

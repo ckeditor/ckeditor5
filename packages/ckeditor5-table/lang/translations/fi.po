@@ -251,12 +251,12 @@ msgstr "Värin valitsin"
 
 msgctxt "The button label for the table toolbar hiding caption attached to the table."
 msgid "Toggle caption off"
-msgstr "Ota tekstitykset pois päältä"
+msgstr "Poista taulukon kuvaus"
 
 msgctxt "The button label for the table toolbar showing caption attached to the table."
 msgid "Toggle caption on"
-msgstr "Ota tekstitys käyttöön"
+msgstr "Lisää taulukon kuvaus"
 
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
-msgstr "Ota taulukon tekstitys käyttöön"
+msgstr "Syötä taulukon kuvaus"
