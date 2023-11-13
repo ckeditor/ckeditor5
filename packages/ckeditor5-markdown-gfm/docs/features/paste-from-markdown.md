@@ -3,6 +3,7 @@ menu-title: Paste from Markdown
 meta-title: Paste from Markdown | CKEditor 5 Documentation
 category: features-pasting
 order: 40
+modified_at: 2023-11-10
 ---
 
 {@snippet features/build-markdown-source}
