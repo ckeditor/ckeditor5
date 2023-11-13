@@ -10,16 +10,15 @@ modified_at: 2023-11-10
 
 # Paste from Markdown
 
-xxxTODOs:
+The paste from Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
 
-* Description what the PasteFromMarkdownExperimental is. What does it do, and why is it marked as experimental?
-* How to use it?
-* Demo (see below). It would be good to have some predefined content: “Copy and paste to see results.”
-* Please, share your feedback that may impact the final shape of the plugin.
+<info-box warning>
+	This feature is still experimental. See the [known issue](#known-issues) section to learn more.
+</info-box>
 
 ## Demo
 
-xxx
+Simply paste some Markdown-formatted content into the demo editor below and see it turn into rich text on the fly. You can copy [this document](#) for convenience.
 
 {@snippet features/paste-from-markdown}
 
@@ -80,6 +79,7 @@ ClassicEditor
 ## Related features
 
 CKEditor&nbsp;5 supports a wider range of paste features, including:
+* {@link features/autoformat Autoformatting} &ndash; Format your content on the go with Markdown-like shortcodes
 * {@link features/paste-from-office Paste from Office} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
