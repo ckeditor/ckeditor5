@@ -232,7 +232,10 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			this._updateFocusCycleableItems();
 		}
 
-		this.parts.add( this.headerView, 0 );
+		if ( !this.parts.has( this.headerView ) ) {
+			this.parts.add( this.headerView, 0 );
+		}
+
 		this.headerView.label = label;
 	}
 

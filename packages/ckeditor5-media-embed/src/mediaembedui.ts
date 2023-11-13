@@ -87,24 +87,23 @@ export default class MediaEmbedUI extends Plugin {
 
 		buttonView.on( 'execute', () => {
 			dialog.show( {
-				onShow: dialog => {
+				title: t( 'Insert media' ),
+				content: mediaForm,
+				actionButtons: [
+					{
+						label: t( 'Cancel' ),
+						withText: true,
+						onExecute: () => dialog.hide()
+					},
+					{
+						label: t( 'Save' ),
+						class: 'ck-button-action',
+						withText: true,
+						onExecute: () => mediaForm.fire( 'submit' )
+					}
+				],
+				onShow: () => {
 					mediaForm.disableCssTransitions();
-
-					dialog.view.children.add( mediaForm );
-					dialog.view.showHeader( t( 'Insert media' ) );
-					dialog.view.setActionButtons( [
-						{
-							label: t( 'Cancel' ),
-							withText: true,
-							onExecute: () => dialog.hide()
-						},
-						{
-							label: t( 'Save' ),
-							class: 'ck-button-action',
-							withText: true,
-							onExecute: () => mediaForm.fire( 'submit' )
-						}
-					] );
 
 					// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 					// the command. If the user typed in the input, then canceled (`urlInputView#fieldView#value` stays

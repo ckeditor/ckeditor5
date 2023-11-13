@@ -46,55 +46,92 @@ class ModalWithText extends Plugin {
 
 			buttonView.on( 'execute', () => {
 				const dialog = this.editor.plugins.get( 'Dialog' );
+				const textView = new View( locale );
+
+				textView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							padding: 'var(--ck-spacing-large)',
+							whiteSpace: 'initial',
+							width: '100%',
+							maxWidth: '500px'
+						},
+						tabindex: -1
+					},
+					children: [
+						`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+						dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+						commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+						nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+						anim id est laborum.`
+					]
+				} );
 
 				dialog.show( {
 					isModal: true,
-					onShow: dialog => {
-						dialog.view.showHeader( t( 'Modal with text' ) );
+					title: t( 'Modal with text' ),
+					content: textView,
+					actionButtons: [
+						{
+							label: t( 'Let\'s do this!' ),
+							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => dialog.hide()
+						},
+						{
+							label: t( 'Test button' ),
+							withText: false,
+							icon: icons.colorPaletteIcon,
+							onExecute: () => console.log( 'Test button' )
+						},
+						{
+							label: t( 'Cancel' ),
+							withText: true,
+							onExecute: () => dialog.hide()
+						}
+					]
+				} );
+			} );
 
-						const textView = new View( locale );
+			return buttonView;
+		} );
+	}
+}
 
-						textView.setTemplate( {
-							tag: 'div',
-							attributes: {
-								style: {
-									padding: 'var(--ck-spacing-large)',
-									whiteSpace: 'initial',
-									width: '100%',
-									maxWidth: '500px'
-								},
-								tabindex: -1
-							},
-							children: [
-								`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-								dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-								commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-								nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-								anim id est laborum.`
-							]
-						} );
+class BareDialog extends Plugin {
+	public static get requires() {
+		return [ Dialog ] as const;
+	}
 
-						dialog.view.children.add( textView );
-						dialog.view.setActionButtons( [
-							{
-								label: t( 'Let\'s do this!' ),
-								class: 'ck-button-action',
-								withText: true,
-								onExecute: () => dialog.hide()
-							},
-							{
-								label: t( 'Test button' ),
-								withText: false,
-								icon: icons.colorPaletteIcon,
-								onExecute: () => console.log( 'Test button' )
-							},
-							{
-								label: t( 'Cancel' ),
-								withText: true,
-								onExecute: () => dialog.hide()
-							}
-						] );
-					}
+	public init(): void {
+		const t = this.editor.locale.t;
+
+		this.editor.ui.componentFactory.add( 'bareDialog', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Bare dialog' ),
+				tooltip: true,
+				withText: true
+			} );
+
+			buttonView.on( 'execute', () => {
+				const dialog = this.editor.plugins.get( 'Dialog' );
+				const textView = new View( locale );
+
+				textView.setTemplate( {
+					tag: 'p',
+					attributes: {
+						tabindex: -1
+					},
+					children: [
+						'This dialog has no title and no action buttons. It\'s up to the develop to handle its behavior.'
+					]
+				} );
+
+				dialog.show( {
+					content: textView
 				} );
 			} );
 
@@ -129,12 +166,13 @@ ClassicEditor
 			SpecialCharactersEssentials,
 			SpecialCharactersEmoji,
 			SourceEditing,
-			ModalWithText
+			ModalWithText,
+			BareDialog
 		],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link',
 			'|',
-			'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText'
+			'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText', 'bareDialog'
 		],
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]

@@ -89,15 +89,12 @@ export default class FindAndReplaceUI extends Plugin {
 			// and no longer should be marked in the content.
 			buttonView.on( 'execute', () => {
 				dialog.show( {
-					onShow: dialog => {
-						dialog.view.children.add( formView );
-						dialog.view.showHeader( t( 'Find and replace' ) );
-
+					title: t( 'Find and replace' ),
+					content: formView,
+					onShow: () => {
 						formView.disableCssTransitions();
-
 						formView.reset();
 						formView._findInputView.fieldView.select();
-
 						formView.enableCssTransitions();
 					},
 

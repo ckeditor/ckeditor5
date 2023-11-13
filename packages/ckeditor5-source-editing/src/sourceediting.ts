@@ -171,40 +171,35 @@ export default class SourceEditing extends Plugin {
 			this.listenTo( buttonView, 'execute', () => {
 				const dialog = editor.plugins.get( 'Dialog' );
 
+				const textareaView = new TextareaView( locale );
+
+				textareaView.set( {
+					minRows: 5,
+					maxRows: 15
+				} );
+
 				dialog.show( {
+					title: t( 'Source Editing' ),
 					className: 'ck-source-editing-dialog',
-
-					onShow: dialog => {
-						dialog.view.showHeader( t( 'Source Editing' ) );
-
-						const data = formatSource( editor.data.get( { rootName: 'main' } ) );
-						const textareaView = new TextareaView( locale );
-
-						dialog.view.children.add( textareaView );
-
-						textareaView.set( {
-							minRows: 5,
-							maxRows: 15,
-							value: data
-						} );
-
-						dialog.view.setActionButtons( [
-							{
-								label: t( 'Save' ),
-								class: 'ck-button-action',
-								withText: true,
-								onExecute: () => {
-									editor.data.set( textareaView.element!.value );
-									dialog.hide();
-								}
-							},
-							{
-								label: t( 'Cancel' ),
-								withText: true,
-								onExecute: () => dialog.hide()
+					content: textareaView,
+					actionButtons: [
+						{
+							label: t( 'Save' ),
+							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => {
+								editor.data.set( textareaView.element!.value );
+								dialog.hide();
 							}
-						] );
-
+						},
+						{
+							label: t( 'Cancel' ),
+							withText: true,
+							onExecute: () => dialog.hide()
+						}
+					],
+					onShow: () => {
+						textareaView.value = formatSource( editor.data.get( { rootName: 'main' } ) );
 						textareaView.element!.setSelectionRange( 0, 0 );
 					}
 				} );

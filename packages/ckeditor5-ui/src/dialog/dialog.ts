@@ -11,6 +11,8 @@ import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent } from './dialogview';
 
 import '../../theme/components/dialog/dialog.css';
+import View from '../view';
+import type { DialogActionButtonDefinition } from './dialogactionsview';
 
 /**
  * TODO
@@ -53,15 +55,21 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public show( {
-		onShow,
-		onHide,
+		title,
+		content,
+		actionButtons,
 		className,
-		isModal = false
+		isModal = false,
+		onShow,
+		onHide
 	}: {
-		onShow?: ( dialog: Dialog ) => void;
-		onHide?: ( dialog: Dialog ) => void;
+		content?: View | Array<View>;
+		actionButtons?: Array<DialogActionButtonDefinition>;
+		title?: string;
 		className?: string;
 		isModal?: boolean;
+		onShow?: ( dialog: Dialog ) => void;
+		onHide?: ( dialog: Dialog ) => void;
 	} ): void {
 		this.hide();
 
@@ -71,7 +79,23 @@ export default class Dialog extends Plugin {
 			isDraggable: !isModal
 		} );
 
+		if ( title ) {
+			this.setTitle( title );
+		}
+
 		this.view.addContentPart();
+
+		if ( content ) {
+			if ( content instanceof View ) {
+				content = [ content ];
+			}
+
+			this.view.children.addMany( content );
+		}
+
+		if ( actionButtons ) {
+			this.view.setActionButtons( actionButtons );
+		}
 
 		if ( onShow ) {
 			onShow( this );
@@ -94,5 +118,12 @@ export default class Dialog extends Plugin {
 		if ( this._onHide ) {
 			this._onHide( this );
 		}
+	}
+
+	/**
+	 * TODO
+	 */
+	public setTitle( title: string ): void {
+		this.view.showHeader( title );
 	}
 }

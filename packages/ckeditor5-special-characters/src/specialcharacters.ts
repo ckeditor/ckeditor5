@@ -130,10 +130,9 @@ export default class SpecialCharacters extends Plugin {
 				}
 
 				dialog.show( {
-					onShow: dialog => {
-						dialog.view.children.add( specialCharactersView );
-						dialog.view.showHeader( t( 'Special Characters' ) );
-
+					title: t( 'Special Characters' ),
+					content: specialCharactersView,
+					onShow: () => {
 						dropdownPanelContent.infoView.set( {
 							character: null,
 							name: t( 'Select a character to learn more...' )
