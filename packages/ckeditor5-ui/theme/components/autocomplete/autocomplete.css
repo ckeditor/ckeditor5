@@ -8,7 +8,7 @@
 
 	& > .ck-search__results {
 		position: absolute;
-		z-index: var(--ck-z-modal);
+		z-index: var(--ck-z-panel);
 
 		&.ck-search__results_n {
 			bottom: 100%;

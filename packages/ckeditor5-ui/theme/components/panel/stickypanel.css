@@ -5,7 +5,7 @@
 
 .ck.ck-sticky-panel {
 	& .ck-sticky-panel__content_sticky {
-		z-index: var(--ck-z-modal); /* #315 */
+		z-index: var(--ck-z-panel); /* #315 */
 		position: fixed;
 		top: 0;
 	}
