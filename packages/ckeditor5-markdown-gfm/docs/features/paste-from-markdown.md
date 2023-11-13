@@ -6,8 +6,6 @@ order: 40
 modified_at: 2023-11-10
 ---
 
-{@snippet features/build-markdown-source}
-
 # Paste from Markdown
 
 The paste from Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
@@ -48,12 +46,12 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 // More imports.
 // ...
 
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
+import { PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
-			Markdown,
+			PasteFromMarkdownExperimental,
 			Essentials,
 			Bold,
 			Italic,

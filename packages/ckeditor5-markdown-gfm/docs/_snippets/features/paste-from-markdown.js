@@ -3,16 +3,70 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals ClassicEditor, console, window, document, setTimeout */
+/* globals console, window, document, setTimeout */
+
+import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { DocumentList, TodoDocumentList, AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
+import { Markdown, PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
+
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
+
+const plugins = ClassicEditor.builtinPlugins
+	// Remove the `List` plugin as in a single demo we want to use the Document list feature.
+	.filter( pluginConstructor => {
+		if ( pluginConstructor.pluginName === 'List' ) {
+			return false;
+		}
+
+		return true;
+	} )
+	// Then, add Markdown-specific features.
+	.concat( [
+		SourceEditing,
+		Code, Strikethrough,
+		Markdown,
+		CodeBlock,
+		HorizontalLine,
+		DocumentList,
+		TodoDocumentList,
+		AdjacentListsSupport,
+		PasteFromMarkdownExperimental
+	] );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-paste-from-markdown' ), {
-		extraPlugins: [
-			window.CKEditorPlugins.DocumentList,
-			window.CKEditorPlugins.TodoDocumentList,
-			window.CKEditorPlugins.AdjacentListsSupport,
-			window.CKEditorPlugins.PasteFromMarkdownExperimental
-		]
+		plugins,
+		toolbar: {
+			items: [
+				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
+				'|', 'bold', 'italic', 'strikethrough', 'code',
+				'-', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
+				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
+			],
+			shouldNotGroupWhenFull: true
+		},
+		cloudServices: CS_CONFIG,
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+		},
+		codeBlock: {
+			languages: [
+				{ language: 'css', label: 'CSS' },
+				{ language: 'html', label: 'HTML' },
+				{ language: 'javascript', label: 'JavaScript' },
+				{ language: 'php', label: 'PHP' }
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
