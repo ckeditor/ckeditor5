@@ -4,11 +4,6 @@
  */
 
 
-.ck-editor__editable .ck-horizontal-line {
-	/* Necessary to render properly next to floated objects, e.g. side image case. */
-	display: flow-root;
-}
-
 .ck-content hr {
 	margin: 15px 0;
 	height: 4px;

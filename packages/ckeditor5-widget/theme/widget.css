@@ -89,3 +89,8 @@
 		transform: translate(-50%);
 	}
 }
+
+.ck-editor__editable .ck-widget {
+	/* Necessary to render properly next to floated objects, e.g. side image case. */
+	display: flow-root;
+}
