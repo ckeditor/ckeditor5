@@ -13,6 +13,8 @@ import CKBoxEditing from './ckboxediting';
 import CKBoxImageEditEditing from './ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditUI from './ckboximageedit/ckboximageeditui';
 
+import '../theme/ckboximageediting.css';
+
 /**
  * The CKBox image edit feature.
  */

@@ -12,15 +12,10 @@
 import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
 import { createElement, global, retry } from 'ckeditor5/src/utils';
 import CKBoxEditing from '../ckboxediting';
-
 import { prepareImageAssetAttributes } from '../ckboxcommand';
+import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig';
 
-import type {
-	CKBoxRawAssetDefinition,
-	CKBoxRawAssetDataDefinition
-} from '../ckboxconfig';
-
-import type { InsertImageCommand } from '@ckeditor/ckeditor5-image';
+import type { InsertImageCommand, ImageUtils } from '@ckeditor/ckeditor5-image';
 import { sendHttpRequest } from '../utils';
 
 /**
@@ -156,8 +151,10 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 
 		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, asset ) => {
-			this._waitForAssetProcessed( asset ).then( () => {
-				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
+			this._showImageProcessingIndicator( asset );
+
+			this._waitForAssetProcessed( asset ).then( processedAsset => {
+				this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', processedAsset! );
 			} );
 		} );
 
@@ -167,25 +164,26 @@ export default class CKBoxImageEditCommand extends Command {
 			const {
 				imageFallbackUrl,
 				imageSources,
-				imageTextAlternative,
 				imageWidth,
 				imageHeight,
 				imagePlaceholder
 			} = prepareImageAssetAttributes( asset );
+
+			let selectedImageElement = editor.model.document.selection.getSelectedElement()!;
 
 			editor.model.change( writer => {
 				imageCommand.execute( {
 					source: {
 						src: imageFallbackUrl,
 						sources: imageSources,
-						alt: imageTextAlternative,
+						alt: selectedImageElement.getAttribute( 'alt' ),
 						width: imageWidth,
 						height: imageHeight,
 						...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
 					}
 				} );
 
-				const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+				selectedImageElement = editor.model.document.selection.getSelectedElement()!;
 
 				writer.setAttribute( 'ckboxImageId', asset.data.id, selectedImageElement );
 			} );
@@ -198,23 +196,23 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param data Data about certain asset.
 	 */
-	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<CKBoxRawAssetDataDefinition> {
+	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<CKBoxRawAssetDefinition> {
 		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 		const abortController = new AbortController();
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
 
-		const response = await sendHttpRequest( {
+		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal: abortController.signal,
 			authorization: ckboxEditing.getToken().value
 		} );
-		const status = response.metadata.metadataProcessingStatus;
+		const status = response.metadata!.metadataProcessingStatus;
 
 		if ( !status || status == 'queued' ) {
 			throw new Error( 'Image has not been processed yet.' );
 		}
 
-		return response;
+		return { data: { ...response } };
 	}
 
 	/**
@@ -222,7 +220,7 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param asset Data about certain asset.
 	 */
-	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDataDefinition | undefined> {
+	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDefinition | undefined> {
 		const t = this.editor.locale.t;
 		const pendingActions = this.editor.plugins.get( PendingActions );
 		const action = pendingActions.add( t( 'Processing the edited image.' ) );
@@ -234,6 +232,31 @@ export default class CKBoxImageEditCommand extends Command {
 		} finally {
 			pendingActions.remove( action );
 		}
+	}
+
+	/**
+	 * Shows processing indicator while image is processing.
+	 *
+	 * @param asset Data about certain asset.
+	 */
+	private _showImageProcessingIndicator( asset: CKBoxRawAssetDefinition ): void {
+		const editor = this.editor;
+		const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
+
+		editor.editing.view.change( writer => {
+			const imageElementView = editor.editing.mapper.toViewElement( selectedImageElement )!;
+			const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
+			const img = imageUtils.findViewImgElement( imageElementView )!;
+
+			writer.removeStyle( 'aspect-ratio', img );
+			writer.setAttribute( 'width', asset.data.metadata!.width, img );
+			writer.setAttribute( 'height', asset.data.metadata!.height, img );
+
+			writer.setStyle( 'width', `${ asset.data.metadata!.width }px`, img );
+			writer.setStyle( 'height', `${ asset.data.metadata!.height }px`, img );
+
+			writer.addClass( 'image-processing', imageElementView );
+		} );
 	}
 }
 
