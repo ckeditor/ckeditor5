@@ -17,17 +17,17 @@ Highlights placeholder 2 - description.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `config.aiAssistant.uiCssClass` configuration has been renamed to `config.aiAssistant.useTheme` and changed its function. A new complementary `.ck-ai-assistant-ui_theme` CSS class has also been introduced to the AI Assistant's UI elements. Please refer to the API documentation and the UI customization guide to learn more.
-* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: If you have a custom plugin that uses roots attributes, it is recommended to use the newly added `MultiRootEditor#registerRootAttribute()` method to register a custom root attribute.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `config.aiAssistant.uiCssClass` configuration has been replaced by `config.aiAssistant.useTheme` which also changed its function. A new complementary `.ck-ai-assistant-ui_theme` CSS class has also been introduced to the AI Assistant's UI elements. Please refer to the API documentation and the UI customization guide to learn more.
+* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: If you have a custom plugin that uses roots attributes, it is highly recommended to use the newly added `MultiRootEditor#registerRootAttribute()` method to register a custom root attribute.
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: By default, images are inserted as block images (not inline). To switch to the previous behavior (determining image type by insertion context), set the editor configuration `image.insert.type` to `'auto'`.
 * **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Introduced the new `config.importWord.formatting` configuration property which is an object accepting the following properties: `resets`, `defaults`, `styles`, and `comments`. The old properties: `config.importWord.defaultStyles` and `config.importWord.commentsStyles` were removed. Use `formatting.defaults` and `formatting.comments` instead.
 
 ### Features
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Allowed for ordering groups and commands in the AI Assistant's dropdown configuration through the `order` property. See the `AIAssistantConfig` API documentation for details.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Allowed configuring whether the AI Assistant should use streaming or not.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Enabled AI Assistant integration with the Azure OpenAI service.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Allowed executing pre-defined AI commands on a collapsed selection.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Enabled AI Assistant integration with the Azure OpenAI API.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Allowed for ordering groups and commands in the AI Assistant's dropdown configuration through the `order` property. See the `AIAssistantConfig` API documentation for details.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced `config.aiAssistant.requestParameters.stream` to configure whether the AI Assistant should use streaming or not.
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Images inserted by CKBox should set the provided dimensions and use the blurhash to indicate image loading. Closes [#15090](https://github.com/ckeditor/ckeditor5/issues/15090). ([commit](https://github.com/ckeditor/ckeditor5/commit/6ee2867becd7de50366bb01eb9a1b4f9f664faa3))
 * **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: Added `MultiRootEditor#registerRootAttribute()`. All roots attributes used by features should now be registered. Roots attributes passed in editor configuration are now automatically registered. Closes [#15246](https://github.com/ckeditor/ckeditor5/issues/15246). ([commit](https://github.com/ckeditor/ckeditor5/commit/5404c1ae6393e995adc391f4433327f22d7b7a54))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Images inserted by CKBox should set the provided dimensions and use the blurhash to indicate image loading. Closes [#15090](https://github.com/ckeditor/ckeditor5/issues/15090). ([commit](https://github.com/ckeditor/ckeditor5/commit/6ee2867becd7de50366bb01eb9a1b4f9f664faa3))
@@ -38,15 +38,13 @@ Highlights placeholder 2 - description.
 
 ### Bug fixes
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Secured the AI Assistant response content area from unsafe content.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Executing an AI command from the dropdown should update the prompt field in the AI Assistant pop-up.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI content area should stop auto scrolling once the user interacts with it.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The pre-defined command label should be displayed in the AI Assistant's prompt field.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI content area should stop auto-scrolling once the user interacts with it.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant balloon should be closed when user presses the `Esc` key.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI commands dropdown should reset its scroll when reopened.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant's model streaming should be terminated after closing the balloon.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant's prompt view should not log warnings when detached from the DOM.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Made sure the AI Assistant's balloon anchor point stays put while the balloon grows.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Assistant's copy to clipboard button did not work correctly on Firefox when general HTML support plugin was loaded.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI pre-defined commands dropdown should reset its scroll when reopened.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant should not log unnecessary warnings when detached from the DOM.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant's balloon anchor point should stay at a correct position when the balloon grows.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant's copy to clipboard button did not work correctly on Firefox when general HTML support plugin was loaded.
 * **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Pasting a link address should not convert its parts that look like HTML entities. Closes [#15036](https://github.com/ckeditor/ckeditor5/issues/15036). ([commit](https://github.com/ckeditor/ckeditor5/commit/89eb0652fc34aaac6541a7ef0cf4cbdd9d7d6690))
 * **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Improved drop marker visibility to only display in permissible drop locations. Closes [#14709](https://github.com/ckeditor/ckeditor5/issues/14709). ([commit](https://github.com/ckeditor/ckeditor5/commit/28331316629e97a22cac6f87c81bf058d65ffcd7))
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Prevented a crash happening when importing Word file when comments plugin is loaded.
