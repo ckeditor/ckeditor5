@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-11-07
+modified_at: 2023-11-13
 ---
 
 # Update to CKEditor&nbsp;5 v40.x
@@ -18,17 +18,11 @@ modified_at: 2023-11-07
 
 ### Changes to the default insert image action
 
-We changed how the images are inserted by default. For long time, the image insert action detected where the selection is placed, and then inserted an inline image or a block one. This caused confusion in some cases, and led to suboptimal experience. From now on, the image will be inserted as a block one by default.
+We changed how the images are inserted by default. For long time, the image insert action detected where the selection is placed, and depending on that inserted an inline image or a block one. This caused confusion in some cases, and led to suboptimal experience. From now on, the images will be inserted as block ones by default.
 
-This of course depends on how an integrator set up the editor. If only `ImageInline` plugin is used, the editor will automatically insert images as inlined. If you load the `Image` plugin, and wish to restore the previous behaviorm you only need to change the config.
+Changes introduced in the latest version affect the `image.insert.type` configuration setting that lets the integrators set up the way newly uploaded ar pasted images are handled in the editor content. We renamed the `undefined` option to `auto` (see further details below). Now, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
 
-// Not sure if section below is needed:
-Inline images can be inserted in the middle of a paragraph or a link just like regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables, or media. Being larger and existing as standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc.
-
-// This config was aleardy there, we just renamed `undefined` to `auto`.
-Introduced in the latest version comes a handy `image.insert.type` configuration setting that lets the integrators set up the way newly uploaded ar pasted images are handled in the editor content. By default, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
-
-If you wish to modify this behavior, the `type` setting in the editor configuration can be used:
+If you wish to modify this behavior, the `type` setting in the editor configuration can be easily adjusted to meet your needs:
 
 ```js
 ClassicEditor.create( element, {
@@ -40,15 +34,15 @@ ClassicEditor.create( element, {
 } );
 ```
 
-The `type` setting accepts the following three values:
+The `type` setting accepts the following values:
 
-* `'auto'`: The editor determines the image type based on the cursor's position. For example, if you insert an image in the middle of a paragraph, it will be inserted as inline. If you insert it at the end or beginning of a paragraph, it becomes a block image.
-* `'block'`: Always insert images as block elements, placing them below or above the current paragraph or block.
-* `'inline'`: Always insert images as inline elements within the current paragraph or block.
+* `'auto'`: The editor determines the image type based on the cursor's position, just as it was before. For example, if you insert an image in the middle of a paragraph, it will be inserted as inline. If you insert it at the end or beginning of a paragraph, it will become a block image.
+* `'block'`: Always inserts images as block elements, placing them below or above the current paragraph or block.
+* `'inline'`: Always inserts images as inline elements within the current paragraph or block.
 
 If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
 
-**Important**: If only one type of image plugin is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the supported image type will be used.
+**Important**: If only one type of {@loink features/images-installation#inline-and-block-images image plugin} is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
 
 ### Updated image text alternative icon
 
