@@ -1,14 +1,26 @@
 Changelog
 =========
 
-## [40.1.0](https://github.com/ckeditor/ckeditor5/compare/v40.0.0...v40.1.0) (2023-11-13)
+## [40.1.0](https://github.com/ckeditor/ckeditor5/compare/v40.0.0...v40.1.0) (2023-11-15)
+
+We are happy to announce the release of CKEditor 5 v40.1.0.
+
+### Release highlights
+
+#### Highlights placeholder 1
+
+Highlights placeholder 1 - description.
+
+#### Highlights placeholder 2
+
+Highlights placeholder 2 - description.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The config.aiAssistant.uiCssClass configuration has been renamed to config.aiAssistant.useTheme and changed its function. A new complementary .ck-ai-assistant-ui_theme CSS class has also been introduced to the AI Assistant's UI elements. Please refer to the API docs and the UI customization guide to learn more.
-* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: If you use a custom plugin that uses roots attributes, it is recommended to use newly added `MultiRootEditor#registerRootAttribute()` to register the custom root attribute.
-* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: By default, images are inserted as block images (not inline). To switch to the previous behavior (determining image type by insertion context), set the editor config image.insert.type to "auto".
-* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Introduced new config property `config.importWord.formatting` which is an object accepting the following properties: `resets`, `defaults`, `styles`, and `comments`. The old properties: `config.importWord.defaultStyles` and `config.importWord.commentsStyles` are removed. Use `formatting.defaults` and `formatting.comments` instead.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `config.aiAssistant.uiCssClass` configuration has been renamed to `config.aiAssistant.useTheme` and changed its function. A new complementary `.ck-ai-assistant-ui_theme` CSS class has also been introduced to the AI Assistant's UI elements. Please refer to the API docs and the UI customization guide to learn more.
+* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: If you use a custom plugin that uses roots attributes, it is recommended to use the newly added `MultiRootEditor#registerRootAttribute()` method to register the custom root attribute.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: By default, images are inserted as block images (not inline). To switch to the previous behavior (determining image type by insertion context), set the editor configuration `image.insert.type` to `'auto'`.
+* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Introduced the new configuration property `config.importWord.formatting` which is an object accepting the following properties: `resets`, `defaults`, `styles`, and `comments`. The old properties: `config.importWord.defaultStyles` and `config.importWord.commentsStyles` are removed. Use `formatting.defaults` and `formatting.comments` instead.
 
 ### Features
 
@@ -19,7 +31,7 @@ Changelog
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Images inserted by CKBox should set the provided dimensions and use the blurhash to indicate image loading. Closes [#15090](https://github.com/ckeditor/ckeditor5/issues/15090). ([commit](https://github.com/ckeditor/ckeditor5/commit/6ee2867becd7de50366bb01eb9a1b4f9f664faa3))
 * **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: Added `MultiRootEditor#registerRootAttribute()`. All roots attributes used by features should now be registered. Roots attributes passed in editor config are now automatically registered. Closes [#15246](https://github.com/ckeditor/ckeditor5/issues/15246). ([commit](https://github.com/ckeditor/ckeditor5/commit/5404c1ae6393e995adc391f4433327f22d7b7a54))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Images inserted by CKBox should set the provided dimensions and use the blurhash to indicate image loading. Closes [#15090](https://github.com/ckeditor/ckeditor5/issues/15090). ([commit](https://github.com/ckeditor/ckeditor5/commit/6ee2867becd7de50366bb01eb9a1b4f9f664faa3))
-* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Introduced new config property `config.importWord.formatting`  in place of `config.importWord.defaultStyles` and `config.importWord.commentsStyles`.
+* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Introduced new config property `config.importWord.formatting` in place of `config.importWord.defaultStyles` and `config.importWord.commentsStyles`.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Styling changes made while in track changes mode will now be immediately reflected in the editor content in addition to creating a suggestion. This applies only to newly created suggestions.
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Introduced new suggestion type `'attribute'` which indicates that an attribute on a model node has changed and allows to show the change immediately in the content.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Introduced `AriaLiveAnnouncer` class that allows for using aria-live regions to inform screen readers about changes in editor state. `AriaLiveAnnouncer` instance is available under `EditorUI#ariaLiveAnnouncer`. ([commit](https://github.com/ckeditor/ckeditor5/commit/a263afd62f53172f562ce66fa92523bc986bbc47))
@@ -39,7 +51,7 @@ Changelog
 * **[clipboard](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)**: Improved drop marker visibility to only display in permissible drop locations. Closes [#14709](https://github.com/ckeditor/ckeditor5/issues/14709). ([commit](https://github.com/ckeditor/ckeditor5/commit/28331316629e97a22cac6f87c81bf058d65ffcd7))
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Prevented a crash happening when importing Word file when comments plugin is loaded.
 * **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Fixes typings in `ToolbarConfig` by adding optional `icon` parameter. Closes [#15151](https://github.com/ckeditor/ckeditor5/issues/15151). ([commit](https://github.com/ckeditor/ckeditor5/commit/b304ee954e1a48e612170ccf96aa126633656796))
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Additional attributes for the link element (e.g. CSS class) should not be applied after pressing Enter. Closes [#14683](https://github.com/ckeditor/ckeditor5/issues/14683). ([commit](https://github.com/ckeditor/ckeditor5/commit/9c02cc4419054ba0ded05a989ffe6464b354e9cf))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Additional attributes for the link element (e.g., CSS class) should not be applied after pressing Enter. Closes [#14683](https://github.com/ckeditor/ckeditor5/issues/14683). ([commit](https://github.com/ckeditor/ckeditor5/commit/9c02cc4419054ba0ded05a989ffe6464b354e9cf))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The aspect ratio should be updated on the image replace. Closes [#15179](https://github.com/ckeditor/ckeditor5/issues/15179). ([commit](https://github.com/ckeditor/ckeditor5/commit/629ff3be0f92921d1c74cc132967b1993125beac))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Remove outdated image attributes when an image is replaced by a URL. Closes [#15093](https://github.com/ckeditor/ckeditor5/issues/15093). ([commit](https://github.com/ckeditor/ckeditor5/commit/70d75935cb8226e643bfcf2bb7a33b3d9d4561b4))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Pasting plain text content should not break the lists. Closes [#13826](https://github.com/ckeditor/ckeditor5/issues/13826). ([commit](https://github.com/ckeditor/ckeditor5/commit/0ba85c176b1cee0cab37d6937ebae6c33af0ae7e))
@@ -64,8 +76,9 @@ Changelog
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: When multiple files are selected, add each one of them in a separate paragraph. Closes [#15094](https://github.com/ckeditor/ckeditor5/issues/15094). ([commit](https://github.com/ckeditor/ckeditor5/commit/93f01bb869a1adcb118954e5216e45b944ff9cf1))
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Sets the default CKBox theme to `lark`. Closes [#15096](https://github.com/ckeditor/ckeditor5/issues/15096). ([commit](https://github.com/ckeditor/ckeditor5/commit/ab601563a284bc0e1fac4feee5f1b2adb6ee22b0))
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Users using assistive technologies will be now notified when their selection enters or leaves a comment or suggestion in the editor content.
-* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Makes `PluginInterface.destroy` method optional. ([commit](https://github.com/ckeditor/ckeditor5/commit/f1a686efdfa50727cc9cd694c5c1adf25099cef6))
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Makes the `PluginInterface.destroy()` method optional. ([commit](https://github.com/ckeditor/ckeditor5/commit/f1a686efdfa50727cc9cd694c5c1adf25099cef6))
 * **[format-painter](https://www.npmjs.com/package/@ckeditor/ckeditor5-format-painter)**: Users using assistive technologies will be now notified when the formatting is being copied or pasted.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Changed the icon of the alternative text to be more accurate and describe its purposes. Closes [#12410](https://github.com/ckeditor/ckeditor5/issues/12410). ([commit](https://github.com/ckeditor/ckeditor5/commit/1c5bcf0d0e9f5dba437812465791e0a2a2c207ab))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Changes default `image.insert.type` configuration to `"block"` and adds `"auto"` option. Closes [#15158](https://github.com/ckeditor/ckeditor5/issues/15158). ([commit](https://github.com/ckeditor/ckeditor5/commit/fc95cba8814e872cba0b9a74b9672dcf8f7827e8))
 * **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Created a custom property for a shared light red color. Closes [#15217](https://github.com/ckeditor/ckeditor5/issues/15217). ([commit](https://github.com/ckeditor/ckeditor5/commit/f01f4a1c2bd6198bdfcd1b12477e63db0896a3cb))
 * **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: Improved RTL layout support in some of the UI components (`FormHeaderView`, `ButtonView`, and `ListItemView`). ([commit](https://github.com/ckeditor/ckeditor5/commit/e86147ad6c6208db0de9414e898c1d47c7886c9e))
@@ -75,7 +88,6 @@ Changelog
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `ListItemGroupView` should allow using a custom label. ([commit](https://github.com/ckeditor/ckeditor5/commit/67ca8d4cde303c2a9793f8e14ad3ca2481664215))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Improved RTL layout support in some of the UI components (`FormHeaderView`, `ButtonView`, and `ListItemView`). ([commit](https://github.com/ckeditor/ckeditor5/commit/e86147ad6c6208db0de9414e898c1d47c7886c9e))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/f43de84a80e8677b25161d1c60bb35de048dc394))
-* Adding text alternative icon. ([commit](https://github.com/ckeditor/ckeditor5/commit/1c5bcf0d0e9f5dba437812465791e0a2a2c207ab))
 
 ### Released packages
 
