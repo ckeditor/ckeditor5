@@ -67,8 +67,8 @@ Highlights placeholder 2 - description.
 ### Other changes
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Simplified CSS customization in the AI Assistant's UI.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: It should be possible to filter AI commands by group names.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Assistant's `Replace` button should be labeled `Insert` if the selection is collapsed.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Pre-defined commands dropdown search filter will now also include group names.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant's `Replace` button should be labeled `Insert` if the selection is collapsed.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Improved the layout of the AI Assistant in the editor using a right-to-left UI language.
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Should focus the editor after choosing an asset or closing CKBox. Closes [#15091](https://github.com/ckeditor/ckeditor5/issues/15091). ([commit](https://github.com/ckeditor/ckeditor5/commit/c6d1028e7d32165efea22af52bffa62d6f804fad))
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: When multiple files are selected, adds each one of them in a separate paragraph. Closes [#15094](https://github.com/ckeditor/ckeditor5/issues/15094). ([commit](https://github.com/ckeditor/ckeditor5/commit/93f01bb869a1adcb118954e5216e45b944ff9cf1))
