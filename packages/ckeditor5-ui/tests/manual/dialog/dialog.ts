@@ -48,7 +48,7 @@ class ModalWithText extends Plugin {
 				const dialog = this.editor.plugins.get( 'Dialog' );
 
 				dialog.show( {
-					isDraggable: false,
+					isModal: true,
 					onShow: dialog => {
 						dialog.view.showHeader( t( 'Modal with text' ) );
 

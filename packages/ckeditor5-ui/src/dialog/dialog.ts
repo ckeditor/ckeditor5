@@ -56,19 +56,19 @@ export default class Dialog extends Plugin {
 		onShow,
 		onHide,
 		className,
-		isDraggable = true
+		isModal = false
 	}: {
 		onShow?: ( dialog: Dialog ) => void;
 		onHide?: ( dialog: Dialog ) => void;
 		className?: string;
-		isDraggable?: boolean;
+		isModal?: boolean;
 	} ): void {
 		this.hide();
 
 		this.view.set( {
 			isVisible: true,
 			className,
-			isDraggable
+			isDraggable: !isModal
 		} );
 
 		this.view.addContentPart();

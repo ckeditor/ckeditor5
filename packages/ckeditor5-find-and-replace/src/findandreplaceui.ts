@@ -89,8 +89,6 @@ export default class FindAndReplaceUI extends Plugin {
 			// and no longer should be marked in the content.
 			buttonView.on( 'execute', () => {
 				dialog.show( {
-					isDraggable: true,
-
 					onShow: dialog => {
 						dialog.view.children.add( formView );
 						dialog.view.showHeader( t( 'Find and replace' ) );
