@@ -142,6 +142,7 @@
     "node-fetch": "^2.6.7",
     "nyc": "^15.0.1",
     "postcss-loader": "^4.3.0",
+    "pofile": "^1.1.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rimraf": "^3.0.2",

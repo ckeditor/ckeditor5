@@ -18,6 +18,8 @@ import postcssNesting from 'postcss-nesting';
 import postcssMixins from 'postcss-mixins';
 import postcssImport from 'postcss-import';
 
+import po2js from './translations/po2js.mjs';
+
 // Indicates whether to emit source maps
 const sourceMap = process.env.DEVELOPMENT || false;
 
@@ -35,7 +37,7 @@ const external = [
 
 // Banner added to the top of the output files
 const banner =
-`/*!
+`/**
  * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */`;
@@ -83,6 +85,11 @@ export default [
 					declarationMap: false, // TODO
 				},
 				sourceMap
+			} ),
+			po2js( {
+				sourceFolder: `${cwd}/lang/translations`,
+				destFolder: `${cwd}/dist/translations`,
+				banner
 			} )
 		]
 	},
