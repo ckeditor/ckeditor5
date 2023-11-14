@@ -5,13 +5,17 @@
 
 /* globals console, window, document, setTimeout */
 
-import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
+import { Code, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { DocumentList, TodoDocumentList, AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
 import { Markdown, PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
+import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { Font } from '@ckeditor/ckeditor5-font';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
@@ -27,15 +31,8 @@ const plugins = ClassicEditor.builtinPlugins
 	} )
 	// Then, add Markdown-specific features.
 	.concat( [
-		SourceEditing,
-		Code, Strikethrough,
-		Markdown,
-		CodeBlock,
-		HorizontalLine,
-		DocumentList,
-		TodoDocumentList,
-		AdjacentListsSupport,
-		PasteFromMarkdownExperimental
+		SourceEditing, Code, Strikethrough, Underline, Markdown, CodeBlock, HorizontalLine, DocumentList, TodoDocumentList,
+		AdjacentListsSupport, PasteFromMarkdownExperimental, CKBox, PictureEditing, ImageResize, AutoImage, LinkImage, Font
 	] );
 
 ClassicEditor
@@ -44,11 +41,10 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
-				'|', 'bold', 'italic', 'strikethrough', 'code',
-				'-', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
+				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
-			],
-			shouldNotGroupWhenFull: true
+			]
 		},
 		cloudServices: CS_CONFIG,
 		image: {

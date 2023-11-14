@@ -11,7 +11,7 @@ modified_at: 2023-11-10
 The paste from Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
 
 <info-box warning>
-	This feature is still experimental. See the [known issue](#known-issues) section to learn more.
+	This feature is still in the experimental phase. See the [known issue](#known-issues) section to learn more.
 </info-box>
 
 ## Demo
@@ -72,17 +72,16 @@ ClassicEditor
 
 ## Known issues
 
-* list issues
+While the Paste from Markdown feature is already stable enough to use it, please remember it still needs some more testing. We are now mostly concentrating on testing it in connection with other tools and plugins. If you have any observations, suggestions or other piece of information you want to share with us, feel free to put them in [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2321).
 
 ## Related features
 
 CKEditor&nbsp;5 supports a wider range of paste features, including:
-* {@link features/autoformat Autoformatting} &ndash; Format your content on the go with Markdown-like shortcodes
 * {@link features/paste-from-office Paste from Office} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
-* {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
+* {@link features/autoformat Autoformatting} &ndash; Format your content on the go with Markdown-like shortcodes.
 
 ## Contribute
 
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-markdown-gfm)
