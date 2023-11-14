@@ -11,7 +11,7 @@ modified_at: 2023-11-10
 The paste from Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
 
 <info-box warning>
-	This feature is still in the experimental phase. See the [known issue](#known-issues) section to learn more.
+	This feature is still in the experimental phase. See the [known issues](#known-issues) section to learn more.
 </info-box>
 
 ## Demo
