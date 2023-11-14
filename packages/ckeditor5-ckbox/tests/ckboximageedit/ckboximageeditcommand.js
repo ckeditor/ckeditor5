@@ -20,6 +20,7 @@ import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 import CKBoxEditing from '../../src/ckboxediting';
@@ -277,7 +278,7 @@ describe( 'CKBoxImageEditCommand', () => {
 		} );
 
 		describe( 'saving edited asset', () => {
-			let onSave, sinonXHR, jwtToken;
+			let onSave, sinonXHR, jwtToken, clock;
 
 			beforeEach( () => {
 				jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
@@ -288,11 +289,16 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			afterEach( () => {
 				sinonXHR.restore();
+
+				if ( clock ) {
+					clock.restore();
+				}
 			} );
 
 			it( 'should pool data for edited image and if success status, save it', done => {
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-				const clock = sinon.useFakeTimers();
+
+				clock = sinon.useFakeTimers();
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
@@ -304,34 +310,19 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
-
 				command.on( 'ckboxImageEditor:processed', () => {
 					expect( getModelData( model ) ).to.equal(
 						'[<imageBlock alt="" ckboxImageId="image-id1" height="100" sources="[object Object]"' +
 							' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
 						'</imageBlock>]'
 					);
-					done();
 				} );
 
 				onSave( dataMock );
+
 				clock.tick( 1500 );
+
+				done();
 			} );
 
 			it( 'should abort when image was removed while processing on server', async () => {
@@ -389,10 +380,13 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should stop pooling if limit was reached', async () => {
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-				const clock = sinon.useFakeTimers();
+				clock = sinon.useFakeTimers();
 
 				const respondSpy = sinon.spy( sinonXHR, 'respond' );
+
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
@@ -404,23 +398,6 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
-
 				onSave( dataMock );
 
 				await clock.tickAsync( 15000 );
@@ -430,25 +407,10 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should add a pending action after a change and remove after server response', async () => {
 				const pendingActions = editor.plugins.get( PendingActions );
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-				const clock = sinon.useFakeTimers();
 
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
+				clock = sinon.useFakeTimers();
 
 				const dataMock2 = {
 					data: {
@@ -517,21 +479,6 @@ describe( 'CKBoxImageEditCommand', () => {
 					JSON.stringify( { message: 'Invalid token.', statusCode: 401 } )
 				] );
 
-				const dataMock = {
-					id: 'image-id1',
-					extension: 'png',
-					metadata: {
-						width: 100,
-						height: 100
-					},
-					name: 'image1',
-					imageUrls: {
-						100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-						default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-					},
-					url: 'https://example.com/workspace1/assets/image-id1/file'
-				};
-
 				return command._getAssetStatusFromServer( dataMock )
 					.then( res => {
 						expect( res.message ).to.equal( 'Invalid token.' );
@@ -549,6 +496,10 @@ describe( 'CKBoxImageEditCommand', () => {
 				const spyProcessed = sinon.spy();
 				const clock = sinon.useFakeTimers();
 
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
 				const [ assetProcessedPromise, resolveAssetProcessed ] = createPromise();
 
 				sinon.stub( command, '_waitForAssetProcessed' ).returns( assetProcessedPromise );
@@ -564,7 +515,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( spyProcessed.callCount ).to.equal( 0 );
 
-				resolveAssetProcessed( {} );
+				resolveAssetProcessed( dataMock );
 
 				await clock.tickAsync( 10000 );
 
@@ -594,7 +545,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
-						'alt="" ' +
+						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
 						'sources="[object Object]" ' +
@@ -615,7 +566,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
-						'alt="" ' +
+						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
 						'placeholder="' + placeholder + '" ' +
@@ -623,6 +574,30 @@ describe( 'CKBoxImageEditCommand', () => {
 						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
 						'width="100">' +
 					'</imageBlock>]'
+				);
+			} );
+
+			it( 'should change <img> size attributes and add `image-processing` CSS class ' +
+				'while waiting for the processed image', async () => {
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
+						'<img alt="alt text" height="50" src="/assets/sample.png" style="aspect-ratio:50/50" width="50"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>'
+				);
+
+				onSave( dataMock );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
+						'contenteditable="false" data-ckbox-resource-id="example-id">' +
+						'<img alt="alt text" height="100" src="/assets/sample.png" style="height:100px;width:100px" width="100"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>'
 				);
 			} );
 		} );

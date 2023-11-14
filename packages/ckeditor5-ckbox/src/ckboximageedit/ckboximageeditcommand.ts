@@ -12,17 +12,14 @@
 import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
 import { createElement, global, retry } from 'ckeditor5/src/utils';
 import type { Element as ModelElement } from 'ckeditor5/src/engine';
+import { Notification } from 'ckeditor5/src/ui';
+
 import CKBoxEditing from '../ckboxediting';
-
-import { prepareImageAssetAttributes } from '../ckboxcommand';
-
-import type {
-	CKBoxRawAssetDefinition,
-	CKBoxRawAssetDataDefinition
-} from '../ckboxconfig';
-
-import type { InsertImageCommand } from '@ckeditor/ckeditor5-image';
 import { sendHttpRequest } from '../utils';
+import { prepareImageAssetAttributes } from '../ckboxcommand';
+import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig';
+
+import type { InsertImageCommand, ImageUtils } from '@ckeditor/ckeditor5-image';
 
 /**
  * The CKBox edit image command.
@@ -41,9 +38,9 @@ export default class CKBoxImageEditCommand extends Command {
 	private _wrapper: Element | null = null;
 
 	/**
-	 * Stores the value of `ckboxImageId` when image with this attribute is selected.
+	 * TODO
 	 */
-	private _ckboxImageId: string | null = null;
+	private _processInProgress = new Map<string, ProcessingState>();
 
 	/**
 	 * TODO
@@ -70,15 +67,17 @@ export default class CKBoxImageEditCommand extends Command {
 		this.value = this._getValue();
 
 		const selectedElement = editor.model.document.selection.getSelectedElement();
-		const isImageElement = selectedElement && ( selectedElement.is( 'element', 'imageInline' ) ||
-			selectedElement.is( 'element', 'imageBlock' ) );
+		const isImageElement = selectedElement && (
+			selectedElement.is( 'element', 'imageInline' ) ||
+			selectedElement.is( 'element', 'imageBlock' )
+		);
+		const isBeingProcessed = Array.from( this._processInProgress.values() )
+			.some( ( { element } ) => element == selectedElement );
 
-		if ( isImageElement && ( selectedElement.hasAttribute( 'ckboxImageId' ) ) ) {
+		if ( isImageElement && selectedElement.hasAttribute( 'ckboxImageId' ) && !isBeingProcessed ) {
 			this.isEnabled = true;
-			this._ckboxImageId = selectedElement.getAttribute( 'ckboxImageId' ) as string;
 		} else {
 			this.isEnabled = false;
-			this._ckboxImageId = null;
 		}
 	}
 
@@ -86,7 +85,38 @@ export default class CKBoxImageEditCommand extends Command {
 	 * Opens the CKBox Image Editor dialog for editing the image.
 	 */
 	public override execute(): void {
-		this.fire<CKBoxImageEditorEvent<'open'>>( 'ckboxImageEditor:open' );
+		// TODO: do we need this? `isEnabled` is handled in base `Command` class.
+		if ( !this.isEnabled || this._getValue() ) {
+			return;
+		}
+
+		this.value = true;
+		this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
+
+		global.document.body.appendChild( this._wrapper );
+
+		const imageElement = this.editor.model.document.selection.getSelectedElement()!;
+		const ckboxImageId = imageElement.getAttribute( 'ckboxImageId' ) as string;
+
+		const processingState: ProcessingState = {
+			ckboxImageId,
+			element: imageElement,
+			controller: new AbortController()
+		};
+
+		window.CKBox.mountImageEditor( this._wrapper, this._prepareOptions( processingState ) );
+
+		this.refresh();
+	}
+
+	public override destroy(): void {
+		this._handleImageEditorOnClose();
+
+		for ( const state of this._processInProgress.values() ) {
+			state.controller.abort();
+		}
+
+		super.destroy();
 	}
 
 	/**
@@ -104,18 +134,18 @@ export default class CKBoxImageEditCommand extends Command {
 	 * - onClose The callback function invoked after closing the CKBox dialog.
 	 * - onSave The callback function invoked after saving the edited image.
 	 */
-	private _prepareOptions() {
+	private _prepareOptions( state: ProcessingState ) {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
 
 		return {
+			assetId: state.ckboxImageId,
 			imageEditing: {
 				allowOverwrite: false
 			},
 			tokenUrl: ckboxConfig.tokenUrl,
-			onClose: () => this.fire<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close' ),
-			onSave: ( asset: CKBoxRawAssetDefinition ) =>
-				this.fire<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', asset )
+			onClose: () => this._handleImageEditorOnClose(),
+			onSave: ( asset: CKBoxRawAssetDefinition ) => this._handleImageEditorOnSave( state, asset )
 		};
 	}
 
@@ -124,80 +154,61 @@ export default class CKBoxImageEditCommand extends Command {
 	 * because all functionality of the `ckboxImageEditor` command is event-based.
 	 */
 	private _prepareListeners(): void {
-		const editor = this.editor;
-
-		// Refresh the command after firing the `ckboxImageEditor:*` event.
-		this.on<CKBoxImageEditorEvent>( 'ckboxImageEditor', () => {
-			this.refresh();
-		}, { priority: 'low' } );
-
-		this.on<CKBoxImageEditorEvent<'open'>>( 'ckboxImageEditor:open', () => {
-			if ( !this.isEnabled || this._getValue() ) {
-				return;
-			}
-
-			this.value = true;
-			this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
-
-			global.document.body.appendChild( this._wrapper );
-
-			window.CKBox.mountImageEditor(
-				this._wrapper,
-				{
-					assetId: this._ckboxImageId,
-					...this._prepareOptions()
+		// Abort editing processing when the image has been removed.
+		this.listenTo( this.editor.model.document, 'change:data', () => {
+			for ( const state of this._processInProgress.values() ) {
+				if ( state.element.root.rootName == '$graveyard' ) {
+					state.controller.abort();
 				}
-			);
-		} );
-
-		this.on<CKBoxImageEditorEvent<'close'>>( 'ckboxImageEditor:close', () => {
-			if ( !this._wrapper ) {
-				return;
 			}
-
-			this._wrapper.remove();
-			this._wrapper = null;
-
-			editor.editing.view.focus();
 		} );
+	}
 
-		this.on<CKBoxImageEditorEvent<'save'>>( 'ckboxImageEditor:save', ( evt, asset ) => {
-			this._waitForAssetProcessed( asset ).then( response => {
-				if ( response ) {
-					this.fire<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', asset );
-				}
-			} );
-		} );
+	private _handleImageEditorOnClose() {
+		if ( !this._wrapper ) {
+			return;
+		}
 
-		this.on<CKBoxImageEditorEvent<'processed'>>( 'ckboxImageEditor:processed', ( evt, asset ) => {
-			const imageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
+		this._wrapper.remove();
+		this._wrapper = null;
 
-			const {
-				imageFallbackUrl,
-				imageSources,
-				imageTextAlternative,
-				imageWidth,
-				imageHeight,
-				imagePlaceholder
-			} = prepareImageAssetAttributes( asset );
+		this.editor.editing.view.focus();
 
-			editor.model.change( writer => {
-				imageCommand.execute( {
-					source: {
-						src: imageFallbackUrl,
-						sources: imageSources,
-						alt: imageTextAlternative,
-						width: imageWidth,
-						height: imageHeight,
-						...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
+		this.refresh();
+	}
+
+	private _handleImageEditorOnSave( state: ProcessingState, asset: CKBoxRawAssetDefinition ) {
+		const t = this.editor.locale.t;
+		const notification = this.editor.plugins.get( Notification );
+		const pendingActions = this.editor.plugins.get( PendingActions );
+		const action = pendingActions.add( t( 'Processing the edited image.' ) );
+
+		this._processInProgress.set( state.ckboxImageId, state );
+		this._showImageProcessingIndicator( asset );
+
+		this._waitForAssetProcessed( asset.data.id, state.controller.signal )
+			.then(
+				asset => {
+					if ( state.element.root.rootName != '$graveyard' ) {
+						this._replaceImage( state.element, asset );
 					}
-				} );
+				},
+				() => {
+					// Remove processing indicator. It was added only to ViewElement.
+					this.editor.editing.reconvertItem( state.element );
 
-				const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
-
-				writer.setAttribute( 'ckboxImageId', asset.data.id, selectedImageElement );
+					notification.showWarning( t( 'TODO: REPLACE ME' ), {
+						title: t( 'TODO: REPLACE ME' ),
+						namespace: 'ckbox'
+					} );
+				}
+			)
+			.finally( () => {
+				this._processInProgress.delete( state.ckboxImageId );
+				pendingActions.remove( action );
 			} );
-		} );
+
+		this.refresh();
 	}
 
 	/**
@@ -206,61 +217,102 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param data Data about certain asset.
 	 */
-	private async _getAssetStatusFromServer( data: CKBoxRawAssetDataDefinition ): Promise<CKBoxRawAssetDataDefinition> {
-		const url = new URL( 'assets/' + data.id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
-		const abortController = new AbortController();
+	private async _getAssetStatusFromServer( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
+		const url = new URL( 'assets/' + id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
 
-		const response = await sendHttpRequest( {
+		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
-			signal: abortController.signal,
+			signal,
 			authorization: ckboxEditing.getToken().value
 		} );
-		const status = response.metadata.metadataProcessingStatus;
+		const status = response.metadata!.metadataProcessingStatus;
 
 		if ( !status || status == 'queued' ) {
 			throw new Error( 'Image has not been processed yet.' );
 		}
 
-		return response;
+		return { data: { ...response } };
 	}
 
 	/**
 	 * Waiting until asset is being processed.
+	 */
+	private async _waitForAssetProcessed( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
+		const result = await retry(
+			() => this._getAssetStatusFromServer( id, signal ),
+			{
+				signal,
+				maxAttempts: 5
+			}
+		);
+
+		if ( result.data.metadata!.metadataProcessingStatus != 'success' ) {
+			throw new Error( 'Image processing failed.' );
+		}
+
+		return result;
+	}
+
+	/**
+	 * Shows processing indicator while image is processing.
 	 *
 	 * @param asset Data about certain asset.
 	 */
-	private async _waitForAssetProcessed( asset: CKBoxRawAssetDefinition ): Promise<CKBoxRawAssetDataDefinition | undefined> {
-		const t = this.editor.locale.t;
-		const pendingActions = this.editor.plugins.get( PendingActions );
-		const action = pendingActions.add( t( 'Processing the edited image.' ) );
+	private _showImageProcessingIndicator( asset: CKBoxRawAssetDefinition ): void {
 		const editor = this.editor;
 		const selectedImageElement = editor.model.document.selection.getSelectedElement()!;
 
-		const ckboxImageId = selectedImageElement.getAttribute( 'ckboxImageId' );
+		editor.editing.view.change( writer => {
+			const imageElementView = editor.editing.mapper.toViewElement( selectedImageElement )!;
+			const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
+			const img = imageUtils.findViewImgElement( imageElementView )!;
 
-		if ( selectedImageElement.is( 'element' ) && typeof ckboxImageId === 'string' ) {
-			this._processingImages.set( ckboxImageId, selectedImageElement );
-		}
+			writer.removeStyle( 'aspect-ratio', img );
+			writer.setAttribute( 'width', asset.data.metadata!.width, img );
+			writer.setAttribute( 'height', asset.data.metadata!.height, img );
 
-		const controller = new AbortController();
+			writer.setStyle( 'width', `${ asset.data.metadata!.width }px`, img );
+			writer.setStyle( 'height', `${ asset.data.metadata!.height }px`, img );
 
-		this._setupAbortOnImageDeleteListener( controller );
+			writer.addClass( 'image-processing', imageElementView );
+		} );
+	}
 
-		try {
-			const response = await retry(
-				() => this._getAssetStatusFromServer( asset.data ),
-				{
-					signal: controller.signal
+	private _replaceImage( element: ModelElement, asset: CKBoxRawAssetDefinition ) {
+		const editor = this.editor;
+		const imageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
+
+		const {
+			imageFallbackUrl,
+			imageSources,
+			imageWidth,
+			imageHeight,
+			imagePlaceholder
+		} = prepareImageAssetAttributes( asset );
+
+		const previousSelectionRanges = Array.from( editor.model.document.selection.getRanges() );
+
+		editor.model.change( writer => {
+			writer.setSelection( element, 'on' );
+
+			imageCommand.execute( {
+				source: {
+					src: imageFallbackUrl,
+					sources: imageSources,
+					alt: element.getAttribute( 'alt' ),
+					width: imageWidth,
+					height: imageHeight,
+					...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
 				}
-			);
+			} );
 
-			return response;
-		} catch ( err ) {
-			// TODO: Handle error;
-		} finally {
-			pendingActions.remove( action );
-		}
+			element = editor.model.document.selection.getSelectedElement()!;
+
+			writer.setAttribute( 'ckboxImageId', asset.data.id, element );
+
+			writer.setSelection( previousSelectionRanges );
+		} );
 	}
 
 	/**
@@ -299,12 +351,8 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 }
 
-/**
- * Fired when the command is executed, the dialog is closed or the asset is saved.
- *
- * @eventName ~CKBoxImageEditCommand#ckboxImageEditor
- */
-type CKBoxImageEditorEvent<Name extends '' | 'save' | 'processed' | 'open' | 'close' = ''> = {
-	name: Name extends '' ? 'ckboxImageEditor' : `ckboxImageEditor:${ Name }`;
-	args: Name extends 'save' | 'processed' ? [ asset: CKBoxRawAssetDefinition ] : [];
-};
+interface ProcessingState {
+	ckboxImageId: string;
+	element: ModelElement;
+	controller: AbortController;
+}
