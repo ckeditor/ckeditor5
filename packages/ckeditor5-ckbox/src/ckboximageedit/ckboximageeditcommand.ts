@@ -43,11 +43,6 @@ export default class CKBoxImageEditCommand extends Command {
 	private _processInProgress = new Map<string, ProcessingState>();
 
 	/**
-	 * TODO
-	 */
-	private _processingImages = new Map<string, ModelElement>();
-
-	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
@@ -85,7 +80,6 @@ export default class CKBoxImageEditCommand extends Command {
 	 * Opens the CKBox Image Editor dialog for editing the image.
 	 */
 	public override execute(): void {
-		// TODO: do we need this? `isEnabled` is handled in base `Command` class.
 		if ( !this.isEnabled || this._getValue() ) {
 			return;
 		}
@@ -189,16 +183,14 @@ export default class CKBoxImageEditCommand extends Command {
 		this._waitForAssetProcessed( asset.data.id, state.controller.signal )
 			.then(
 				asset => {
-					if ( state.element.root.rootName != '$graveyard' ) {
-						this._replaceImage( state.element, asset );
-					}
+					this._replaceImage( state.element, asset );
 				},
 				() => {
 					// Remove processing indicator. It was added only to ViewElement.
 					this.editor.editing.reconvertItem( state.element );
 
-					notification.showWarning( t( 'TODO: REPLACE ME' ), {
-						title: t( 'TODO: REPLACE ME' ),
+					notification.showWarning( t( 'Processing edited image is stopped.' ), {
+						title: t( 'Processing edited image is stopped.' ),
 						namespace: 'ckbox'
 					} );
 				}
@@ -246,10 +238,6 @@ export default class CKBoxImageEditCommand extends Command {
 				maxAttempts: 5
 			}
 		);
-
-		if ( result.data.metadata!.metadataProcessingStatus != 'success' ) {
-			throw new Error( 'Image processing failed.' );
-		}
 
 		return result;
 	}
@@ -312,41 +300,6 @@ export default class CKBoxImageEditCommand extends Command {
 			writer.setAttribute( 'ckboxImageId', asset.data.id, element );
 
 			writer.setSelection( previousSelectionRanges );
-		} );
-	}
-
-	/**
-	 * Abort waiting if image was deleted while processing on server.
-	 *
-	 * @param controller Abort image saving.
-	 */
-	private _setupAbortOnImageDeleteListener( controller: AbortController ) {
-		const editor = this.editor;
-		const model = editor.model;
-		const document = model.document;
-
-		document.on( 'change:data', ( ) => {
-			const graveyardChildren = Array.from( document.graveyard.getChildren() );
-			const matchedImage = graveyardChildren.find( item => {
-				if ( !item.is( 'element' ) ) {
-					return;
-				}
-
-				const ckboxImageId = item.getAttribute( 'ckboxImageId' );
-
-				if (
-					ckboxImageId &&
-					typeof ckboxImageId === 'string' &&
-					this._processingImages.get( ckboxImageId )
-				) {
-					return this._processingImages.get( ckboxImageId );
-				}
-			} );
-
-			if ( matchedImage ) {
-				controller.abort( 'Processed image was removed.' );
-				document.stopListening( document );
-			}
 		} );
 	}
 }

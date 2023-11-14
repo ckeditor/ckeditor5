@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, btoa */
+/* global window, btoa, AbortController */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
@@ -137,30 +137,16 @@ describe( 'CKBoxImageEditCommand', () => {
 	} );
 
 	describe( 'execute', () => {
-		it( 'should fire "ckboxImageEditor:open" event after command execution', () => {
-			const spy = sinon.spy();
-
-			command.on( 'ckboxImageEditor:open', spy );
+		it( 'should whould open ckbox image editor', () => {
+			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 			command.execute();
 
-			expect( spy.callCount ).to.equal( 1 );
-		} );
-
-		it( 'should fire "ckboxImageEditor:open" event as many times as command executions', () => {
-			const spy = sinon.spy();
-
-			command.on( 'ckboxImageEditor:open', spy );
-
-			for ( let i = 1; i <= 5; i++ ) {
-				command.execute();
-			}
-
-			expect( spy.callCount ).to.equal( 1 );
+			expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
 		} );
 	} );
 
-	describe( 'events', () => {
-		describe( 'opening dialog ("ckboxImageEditor:open")', () => {
+	describe( 'save edited image logic', () => {
+		describe( 'opening dialog', () => {
 			beforeEach( () => {
 				sinon.useFakeTimers( { now: Date.now() } );
 			} );
@@ -170,6 +156,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				command.execute();
 
 				const wrapper = command._wrapper;
@@ -179,6 +166,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should create and mount a wrapper only once', () => {
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				command.execute();
 
 				const wrapper1 = command._wrapper;
@@ -212,6 +200,8 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should open the CKBox Image Editor dialog instance only once', () => {
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
 				command.execute();
 				command.execute();
 				command.execute();
@@ -220,7 +210,19 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should prepare options for the CKBox Image Editing dialog instance', () => {
-				const options = command._prepareOptions();
+				const ckboxImageId = 'example-id';
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} );
 
 				expect( options ).to.have.property( 'tokenUrl', 'foo' );
 				expect( options.imageEditing.allowOverwrite ).to.be.false;
@@ -229,23 +231,22 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 		} );
 
-		describe( 'closing dialog ("ckboxImageEditor:close")', () => {
-			let onClose;
-
-			beforeEach( () => {
-				onClose = command._prepareOptions().onClose;
-			} );
-
-			it( 'should fire "ckboxImageEditor:close" event after closing the CKBox Image Editor dialog', () => {
-				const spy = sinon.spy();
-
-				command.on( 'ckboxImageEditor:close', spy );
-				onClose();
-
-				expect( spy.callCount ).to.equal( 1 );
-			} );
-
+		describe( 'closing dialog', () => {
 			it( 'should remove the wrapper after closing the CKBox Image Editor dialog', () => {
+				const ckboxImageId = 'example-id';
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const onClose = command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} ).onClose;
+
 				command.execute();
 
 				expect( command._wrapper ).not.to.equal( null );
@@ -259,19 +260,25 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should focus view after closing the CKBox Image Editor dialog', () => {
+				const ckboxImageId = 'example-id';
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const onClose = command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} ).onClose;
+
 				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-				const openSpy = sinon.spy();
-				const closeSpy = sinon.spy();
-
-				command.on( 'ckboxImageEditor:open', openSpy );
 				command.execute();
 
-				command.on( 'ckboxImageEditor:close', closeSpy );
 				onClose();
-
-				expect( openSpy.callCount ).to.equal( 1 );
-				expect( closeSpy.callCount ).to.equal( 1 );
 
 				sinon.assert.calledOnce( focusSpy );
 			} );
@@ -281,8 +288,20 @@ describe( 'CKBoxImageEditCommand', () => {
 			let onSave, sinonXHR, jwtToken, clock;
 
 			beforeEach( () => {
+				const ckboxImageId = 'example-id';
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
 				jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
-				onSave = command._prepareOptions().onSave;
+				onSave = command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} ).onSave;
 				sinonXHR = testUtils.sinon.useFakeServer();
 				sinonXHR.autoRespond = true;
 			} );
@@ -466,7 +485,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				await clock.tickAsync( 1000 );
+				await clock.tickAsync( 10000 );
 
 				expect( pendingActions.hasAny ).to.be.false;
 				expect( pendingActions._actions.length ).to.equal( 0 );
@@ -490,38 +509,6 @@ describe( 'CKBoxImageEditCommand', () => {
 					} );
 			} );
 
-			it( 'should fire "ckboxImageEditor:save" and "ckboxImageEditor:processed" ' +
-				'event after hit "Save" button in the CKBox Image Editor dialog', async () => {
-				const spySave = sinon.spy();
-				const spyProcessed = sinon.spy();
-				const clock = sinon.useFakeTimers();
-
-				setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
-					'</imageBlock>]' );
-
-				const [ assetProcessedPromise, resolveAssetProcessed ] = createPromise();
-
-				sinon.stub( command, '_waitForAssetProcessed' ).returns( assetProcessedPromise );
-
-				command.on( 'ckboxImageEditor:save', spySave );
-				command.on( 'ckboxImageEditor:processed', spyProcessed );
-
-				onSave( dataMock );
-
-				expect( spySave.callCount ).to.equal( 1 );
-
-				await clock.tickAsync( 0 );
-
-				expect( spyProcessed.callCount ).to.equal( 0 );
-
-				resolveAssetProcessed( dataMock );
-
-				await clock.tickAsync( 10000 );
-
-				expect( spyProcessed.callCount ).to.equal( 1 );
-			} );
-
 			it( 'should not replace image with saved one before it is processed', () => {
 				const modelData =
 					'[<imageBlock ' +
@@ -541,7 +528,9 @@ describe( 'CKBoxImageEditCommand', () => {
 						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
 					'</imageBlock>]' );
 
-				command.fire( 'ckboxImageEditor:processed', dataMock );
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				command._replaceImage( imageElement, dataMock );
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
@@ -562,7 +551,9 @@ describe( 'CKBoxImageEditCommand', () => {
 						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
 					'</imageBlock>]' );
 
-				command.fire( 'ckboxImageEditor:processed', dataWithBlurHashMock );
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				command._replaceImage( imageElement, dataWithBlurHashMock );
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
@@ -603,16 +594,6 @@ describe( 'CKBoxImageEditCommand', () => {
 		} );
 	} );
 } );
-
-function createPromise() {
-	let resolve;
-
-	const promise = new Promise( res => {
-		resolve = res;
-	} );
-
-	return [ promise, resolve ];
-}
 
 function createToken( tokenClaims ) {
 	return [

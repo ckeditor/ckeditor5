@@ -49,7 +49,7 @@ export function getImageUrls( imageUrls: CKBoxImageUrls ): {
 	} ];
 
 	return {
-		imageFallbackUrl: imageUrls.default,
+		imageFallbackUrl: imageUrls && imageUrls.default,
 		imageSources
 	};
 }
