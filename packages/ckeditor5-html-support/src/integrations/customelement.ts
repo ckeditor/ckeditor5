@@ -56,6 +56,10 @@ export default class CustomElementSupport extends Plugin {
 				isContent: true
 			} );
 
+			// For the `<template>` element we use only raw-content because DOM API exposes its content
+			// only as a document fragment in the `content` property (or innerHTML).
+			editor.data.htmlProcessor.domConverter.registerRawContentMatcher( { name: 'template' } );
+
 			// Being executed on the low priority, it will catch all elements that were not caught by other converters.
 			conversion.for( 'upcast' ).elementToElement( {
 				view: /.*/,
@@ -95,10 +99,21 @@ export default class CustomElementSupport extends Plugin {
 						conversionApi.writer.setAttribute( 'htmlCustomElementAttributes', htmlAttributes, modelElement );
 					}
 
-					// Store the whole element in the attribute so that DomConverter will be able to use the pre like element context.
-					const viewWriter = new UpcastWriter( viewElement.document );
-					const documentFragment = viewWriter.createDocumentFragment( viewElement );
-					const htmlContent = editor.data.processor.toData( documentFragment );
+					let htmlContent;
+
+					// For the `<template>` element we use only raw-content because DOM API exposes its content
+					// only as a document fragment in the `content` property.
+					if ( viewElement.is( 'element', 'template' ) && viewElement.getCustomProperty( '$rawContent' ) ) {
+						htmlContent = viewElement.getCustomProperty( '$rawContent' );
+					} else {
+						// Store the whole element in the attribute so that DomConverter will be able to use the pre like element context.
+						const viewWriter = new UpcastWriter( viewElement.document );
+						const documentFragment = viewWriter.createDocumentFragment( viewElement );
+
+						htmlContent = editor.data.processor.toData( documentFragment );
+
+						htmlContent = htmlContent.replace( /^<\S+(?:\s+\S+="[^"]*")*\s*>(.*)<\/\S+\s*>/, '$1' );
+					}
 
 					conversionApi.writer.setAttribute( 'htmlContent', htmlContent, modelElement );
 
@@ -147,15 +162,20 @@ export default class CustomElementSupport extends Plugin {
 					const viewElement = writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
 						domConverter.setContentOf( domElement, htmlContent );
 
-						// Unwrap the custom element content (it was stored in the attribute as the whole custom element).
-						// See the upcast conversion for the "htmlContent" attribute to learn more.
-						const customElement = domElement.firstChild!;
-
-						customElement.remove();
-
-						while ( customElement.firstChild ) {
-							domElement.appendChild( customElement.firstChild );
-						}
+						// // Unwrap the custom element content (it was stored in the attribute as the whole custom element).
+						// // See the upcast conversion for the "htmlContent" attribute to learn more.
+						// //
+						// // For the `<template>` element there is no childNodes inside that element and the htmlContent
+						// // stores only the raw content of that element so there is nothing to unwrap.
+						// const customElement = domElement.firstChild;
+						//
+						// if ( customElement && viewName != 'template' ) {
+						// 	customElement.remove();
+						//
+						// 	while ( customElement.firstChild ) {
+						// 		domElement.appendChild( customElement.firstChild );
+						// 	}
+						// }
 					} );
 
 					if ( modelElement.hasAttribute( 'htmlCustomElementAttributes' ) ) {
