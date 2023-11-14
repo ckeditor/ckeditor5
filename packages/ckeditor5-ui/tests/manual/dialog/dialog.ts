@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, document */
+
+declare global {
+	interface Window { CKEditorInspector: any }
+}
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -140,50 +144,62 @@ class BareDialog extends Plugin {
 	}
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ) as HTMLElement, {
-		plugins: [
-			Essentials,
-			Autoformat,
-			BlockQuote,
-			Bold,
-			Heading,
-			Image,
-			ImageCaption,
-			ImageStyle,
-			ImageToolbar,
-			Indent,
-			Italic,
-			Link,
-			List,
-			MediaEmbed,
-			Paragraph,
-			Table,
-			TableToolbar,
+function initEditor( editorName ) {
+	ClassicEditor
+		.create( document.querySelector( '#' + editorName ) as HTMLElement, {
+			plugins: [
+				Essentials,
+				Autoformat,
+				BlockQuote,
+				Bold,
+				Heading,
+				Image,
+				ImageCaption,
+				ImageStyle,
+				ImageToolbar,
+				Indent,
+				Italic,
+				Link,
+				List,
+				MediaEmbed,
+				Paragraph,
+				Table,
+				TableToolbar,
 
-			FindAndReplace,
-			SpecialCharacters,
-			SpecialCharactersEssentials,
-			SpecialCharactersEmoji,
-			SourceEditing,
-			ModalWithText,
-			BareDialog
-		],
-		toolbar: [
-			'heading', '|', 'bold', 'italic', 'link',
-			'|',
-			'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText', 'bareDialog'
-		],
-		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
-		}
-	} )
-	.then( editor => {
-		Object.assign( window, { editor } );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+				FindAndReplace,
+				SpecialCharacters,
+				SpecialCharactersEssentials,
+				SpecialCharactersEmoji,
+				SourceEditing,
+				ModalWithText,
+				BareDialog
+			],
+			toolbar: [
+				'heading', '|', 'bold', 'italic', 'link',
+				'|',
+				'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText', 'bareDialog'
+			],
+			image: {
+				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			},
+			ui: {
+				viewportOffset: {
+					top: 50
+				}
+			}
+		} )
+		.then( editor => {
+			Object.assign( window, { [ editorName ]: editor } );
+
+			window.CKEditorInspector.attach( { [ editorName ]: editor } );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+}
+
+initEditor( 'editor-default' );
+initEditor( 'editor-narrow' );
 
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [

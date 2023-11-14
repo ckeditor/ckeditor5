@@ -34,17 +34,12 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		/**
 		 * TODO
 		 */
-		private _transformDelta = { x: 0, y: 0 };
-
-		/**
-		 * TODO
-		 */
 		private _isDragging: boolean = false;
 
 		/**
 		 * TODO
 		 */
-		private _startCoordinates: { x: number; y: number } = { x: 0, y: 0 };
+		private _currentCoordinates: { x: number; y: number } = { x: 0, y: 0 };
 
 		/**
 		 * TODO
@@ -61,10 +56,6 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 					this._attachListeners();
 				} );
 			}
-		}
-
-		public resetDrag(): void {
-			this._transformDelta = { x: 0, y: 0 };
 		}
 
 		/**
@@ -108,10 +99,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 			const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
 			const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
 
-			this._startCoordinates = {
-				x: x - this._transformDelta.x,
-				y: y - this._transformDelta.y
-			};
+			this._currentCoordinates = { x, y };
 
 			this._isDragging = true;
 		}
@@ -127,14 +115,12 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 			const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
 			const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
 
-			this._transformDelta = {
-				x: Math.round( x - this._startCoordinates.x ),
-				y: Math.round( y - this._startCoordinates.y )
-			};
-
 			this.fire<DraggableViewDragEvent>( 'drag', {
-				transformDelta: { ...this._transformDelta }
+				x: Math.round( x - this._currentCoordinates.x ),
+				y: Math.round( y - this._currentCoordinates.y )
 			} );
+
+			this._currentCoordinates = { x, y };
 		}
 
 		/**
@@ -183,6 +169,7 @@ export interface DraggableView extends View {
 export type DraggableViewDragEvent = {
 	name: 'drag';
 	args: [ {
-		transformDelta: { x: number; y: number };
+		x: number;
+		y: number;
 	} ];
 };
