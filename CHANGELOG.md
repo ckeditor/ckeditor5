@@ -7,13 +7,31 @@ We are happy to announce the release of CKEditor 5 v40.1.0.
 
 ### Release highlights
 
-#### Highlights placeholder 1
+### Styling suggestions reflected in the content
 
-Highlights placeholder 1 - description.
+This release introduces an important user experience improvement for the track changes feature. From now on, styling changes made in the track changes mode will be also reflected in the editor content, instead of just being marked with a blue suggestion highlight.
 
-#### Highlights placeholder 2
+Below is a summary of the important changes related to this improvement: 
 
-Highlights placeholder 2 - description.
+* A new suggestion type `'attribute'` was introduced. All integrated features will now create `'attribute'` suggestions.
+* Formatting suggestions in existing documents are still supported, and will work as they used to.
+* With the new suggestions, multiple changes are put into a single suggestion if possible, to avoid bloating sidebar with too many annotations.
+* For asynchronous collaboration integrations, make sure that you save and provide the `SuggestionData#attributes` property, as it is used by the new suggestions.
+
+We will continue further work on this improvement, including integrating the new solution with the list feature.
+
+### Azure OpenAI service support
+
+We have introduced necessary changes to make sure that the AI Assistant can be used with the Azure OpenAI service. Please refer to the [AI Assistant documentation](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant.html#azure-openai-service) for details.
+
+### Other notable improvements
+
+* **Fixed triple click before widgets:** the beloved triple click to select content works correctly before tables, images, and other widgets.
+* Several **CKBox integration improvements** include a significantly enhanced image insertion mechanism from [CKBox](https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html), offering a less jumpy experience. The release also addresses key issues, such as including the proper replacement of images when URLs are edited, better focus management post-image insertion, and a fixed **`tokenUrl`** configuration for more seamless integration.
+* **Paste from Office enhanced:** our [advanced format preserver](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-office-enhanced.html) for Office kept too many unnecessary attributes, styles, etc., in combination with General HTML support plugin. Now we fully clean up the markup before pasting.
+* **Accessibility Enhancements for markers:** users aided by assistive technologies will now be notified when the selection enters or leaves a comment or a suggestion in the editor content.
+* **AI Assistant:** the predefined commands can now be used when no content is selected (previously it was disabled). When used like this, the whole focused block (paragraph, list item, etc.) is passed as the context for the command.
+* **AI Assistant:** the response streaming is now configurable and can be turned off.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
