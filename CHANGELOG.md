@@ -7,7 +7,7 @@ We are happy to announce the release of CKEditor 5 v40.1.0.
 
 ### Release highlights
 
-### Styling suggestions reflected in the content
+#### Styling suggestions reflected in the content
 
 This release introduces an important user experience improvement for the track changes feature. From now on, styling changes made in the track changes mode will be also reflected in the editor content, instead of just being marked with a blue suggestion highlight.
 
@@ -20,11 +20,11 @@ Below is a summary of the important changes related to this improvement:
 
 We will continue further work on this improvement, including integrating the new solution with the list feature.
 
-### Azure OpenAI service support
+#### Azure OpenAI service support
 
 We have introduced necessary changes to make sure that the AI Assistant can be used with the Azure OpenAI service. Please refer to the [AI Assistant documentation](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant.html#azure-openai-service) for details.
 
-### Other notable improvements
+#### Other notable improvements
 
 * **Fixed triple click before widgets:** the beloved triple click to select content works correctly before tables, images, and other widgets.
 * Several **CKBox integration improvements** include a significantly enhanced image insertion mechanism from [CKBox](https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html), offering a less jumpy experience. The release also addresses key issues, such as including the proper replacement of images when URLs are edited, better focus management post-image insertion, and a fixed **`tokenUrl`** configuration for more seamless integration.
