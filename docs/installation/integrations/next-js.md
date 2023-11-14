@@ -1,7 +1,7 @@
 ---
 menu-title: Next.js
 meta-title: Compatibility with Next.js | CKEditor 5 documentation
-meta-description: "Learn how to integrate the Next.js framework with the rich text editor - CKEditor 5 - using both routing strategies: App Router and Pages Router."
+meta-description: Learn how to integrate the Next.js framework with the rich text editor - CKEditor 5 - using both the App Router and Pages Router routing strategies.
 category: integrations
 order: 100
 modified_at: 2023-11-14
@@ -13,19 +13,19 @@ Next.js is a React meta-framework that helps create full-stack web apps for prod
 
 Next.js 13 introduced a new App Router as an alternative to the previous Pages Router. App Router supports server components and is more server-centric than Pages Router, which is client-side oriented.
 
-CKEditor&nbsp;5 doesn't support server-side rendering yet, but it's possible to integrate it with the Next.js framework. In this guide, we will add the editor to the Next.js project using both routing paradigms. For this purpose, we will need [Next.js CLI](https://nextjs.org/docs/pages/api-reference/create-next-app), CKEditor [online builder](https://ckeditor.com/ckeditor-5/online-builder/), and the official CKEditor {@link installation/integrations/react React component}.
+CKEditor&nbsp;5 does not support server-side rendering yet, but it is possible to integrate it with the Next.js framework. In this guide, we will add the editor to a Next.js project using both routing paradigms. For this purpose, we will need [Next.js CLI](https://nextjs.org/docs/pages/api-reference/create-next-app), [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), and the official {CKEditor&nbsp;5 @link installation/integrations/react React component}.
 
 ## Preparing a build
 
-In this guide, we will use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a web UI that lets you create a custom build of CKEditor&nbsp;5 and download the code as a zip package.
+First, we will use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a web UI that lets you create a custom build of CKEditor&nbsp;5 and download the code as a zip package.
 
-The online builder is a powerful tool that lets you effortlessly create a rich text editor personalized to your needs. With the online builder, you can choose the desired editor type and plugins, configure the toolbar, and choose the UI language for your editor.
+The online builder is a powerful tool that lets you effortlessly create a rich text editor tailored to your needs. With the online builder, you can choose the desired editor type and plugins, configure the toolbar, and choose the UI language for your editor.
 
-You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in our {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
+You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
 
 ## Setting up the project
 
-This guide assumes you will use the official CLI tool for Next.js - `create-next-app`. Refer to the [Next.js documentation](https://nextjs.org/docs/pages/api-reference/create-next-app) to learn how to set up your project.
+This guide assumes you will use the official CLI tool for Next.js &ndash; `create-next-app`. Refer to the [Next.js documentation](https://nextjs.org/docs/pages/api-reference/create-next-app) to learn how to set up your project.
 
 The CLI will ask you some questions. Depending on your choices, the folder structure in your project may differ.
 
@@ -41,7 +41,7 @@ Would you like to customize the default import alias (@/*)?  No / Yes
 
 ### Page Router
 
-If you chose the Page Router, your folder structure may look similar to the one below.
+If you chose the Page Router, your folder structure should look similar to the one below.
 
 ```plain
 ├── pages
@@ -65,7 +65,7 @@ If you chose the Page Router, your folder structure may look similar to the one 
 
 ### App Router
 
-If you chose the App Router, your folder structure may look similar to the one below.
+If you chose the App Router, your folder structure should look similar to the one below.
 
 ```plain
 ├── app
@@ -85,19 +85,19 @@ If you chose the App Router, your folder structure may look similar to the one b
 
 ## Integrating the build in your Next.js project
 
-Having the setup finished, let's move to the actual integration. First, put your unzipped custom build at the project root in the `ckeditor5` folder. Then, add it as a local dependency using the yarn command:
+With the Next.js setup done, let's move to the actual integration. First, put your unzipped custom build at the project root in the `ckeditor5` folder. Then, add it as a local dependency using the yarn command:
 
 ```bash
 yarn add file:./ckeditor5
 ```
 
-The dependency should be visible in the `package.json` file as `ckeditor5-custom-build`. Additionally, we need an external dependency - the CKEditor React component. Next.js extends React, and hence, the component is valid here. You can install it using the following command.
+The dependency should be visible in the `package.json` file as `ckeditor5-custom-build`. Additionally, we need an external dependency &ndash; the CKEditor&nbsp;5 React component. Next.js extends React, and hence, the component is valid here. You can install it using the following command:
 
 ```bash
 yarn add @ckeditor/ckeditor5-react
 ```
 
-Next, we will use installed dependencies in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor React component with a proper configuration.
+Next, we will use the installed dependencies in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor&nbsp;5 React component with a proper configuration.
 
 ```jsx
 // components/custom-editor.js
@@ -149,7 +149,7 @@ Our `CustomEditor` component is ready to be used inside a page. The usage will d
 
 ### Page Router
 
-You can create a second page inside the `pages` directory or replace the content of the existing `index.js` page - we'll go with the second option. CKEditor&nbsp;5 is a client-side text editor and relies on browser APIs, so we need to disable SSR for our custom component. We can lazily load the component using the `dynamic()` function built into Next.js.
+You can create a second page inside the `pages` directory or replace the content of the existing `index.js` page &ndash; we will go with the second option. CKEditor&nbsp;5 is a client-side text editor and relies on the browser APIs, so we need to disable SSR for our custom component. We can lazily load the component using the `dynamic()` function built into Next.js.
 
 ```jsx
 // pages/index.js
