@@ -35,6 +35,10 @@ export default function po2js( options = {} ) {
 				}
 			}
 
+			if ( translationFilesFromFolder.length ) {
+				console.log( `${ translationFilesFromFolder.length } translation files were successfully converted.` );
+			}
+
 			return null;
 		}
 	};
@@ -43,9 +47,9 @@ export default function po2js( options = {} ) {
 function po2json( filePath, targetPath, banner ) {
 	PO.load( filePath, function( err, pof ) {
 		const translationsObject = convertPoIntoJson( pof );
-		const data = `${ banner }\n\nexport default ${ JSON.stringify( translationsObject ) };\n`;
+		const dataToWrite = `${ banner }\n\nexport default ${ JSON.stringify( translationsObject ) };\n`;
 
-		writeFile( targetPath, data, { encoding: 'utf8' }, err => {
+		writeFile( targetPath, dataToWrite, { encoding: 'utf8' }, err => {
 			if ( err ) {
 				console.log( err );
 			} /* else {
