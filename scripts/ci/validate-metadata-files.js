@@ -41,7 +41,7 @@ async function main() {
 
 	for ( const packageData of packagesWithMetadata ) {
 		const missingExports = getMissingExports( packageData );
-		const missingIcons = await getMissingIcons( packageData, options );
+		const missingIcons = getMissingIcons( packageData, options );
 
 		if ( ![ ...missingExports, ...missingIcons ].length ) {
 			continue;
@@ -88,19 +88,14 @@ async function main() {
 async function getPackageData( packagePath ) {
 	const name = packagePath.split( '/' ).at( -1 );
 
+	const pkgJsonPath = upath.join( packagePath, 'package.json' );
+	const pkgJsonContent = await fs.readJSON( pkgJsonPath );
+
 	const metadataPath = upath.join( packagePath, 'ckeditor5-metadata.json' );
-	const indexPath = upath.join( packagePath, 'src', 'index.ts' );
+	const indexPath = upath.join( packagePath, pkgJsonContent.main );
 
-	let metadata = null;
-	let index = null;
-
-	if ( await fs.exists( metadataPath ) ) {
-		metadata = await fs.readJSON( metadataPath );
-	}
-
-	if ( await fs.exists( indexPath ) ) {
-		index = await fs.readFile( indexPath, 'utf-8' );
-	}
+	const metadata = await fs.exists( metadataPath ) ? await fs.readJSON( metadataPath ) : null;
+	const index = await fs.exists( indexPath ) ? await fs.readFile( indexPath, 'utf-8' ) : null;
 
 	return { name, metadata, index };
 }
@@ -129,42 +124,29 @@ function getMissingExports( packageData ) {
 	return requiredExports.filter( requiredExport => !exports.includes( requiredExport ) );
 }
 
-async function getMissingIcons( packageData, options ) {
-	const missingIcons = [];
-
-	for ( const pluginData of packageData.metadata.plugins ) {
-		if ( !pluginData.uiComponents ) {
-			continue;
-		}
-
-		const iconPaths = pluginData.uiComponents.map( uiComponent => uiComponent.iconPath ).filter( Boolean );
-
-		if ( !iconPaths.length ) {
-			continue;
-		}
-
-		for ( let iconPath of iconPaths ) {
-			let missing = false;
-
+function getMissingIcons( packageData, options ) {
+	return packageData.metadata.plugins
+		.filter( plugin => plugin.uiComponents )
+		.flatMap( plugin => plugin.uiComponents.map( uiComponent => uiComponent.iconPath ) )
+		.filter( Boolean )
+		.map( iconPath => {
 			if ( iconPath.startsWith( '@ckeditor/' ) ) {
-				try {
-					require.resolve( iconPath );
-				} catch ( err ) {
-					missing = true;
-				}
-			} else {
-				iconPath = upath.join( options.cwd, 'packages', packageData.name, iconPath );
-
-				missing = !( await fs.exists( iconPath ) );
+				return iconPath;
 			}
 
-			if ( missing ) {
-				missingIcons.push( iconPath );
-			}
-		}
+			return upath.join( options.cwd, 'packages', packageData.name, iconPath );
+		} )
+		.filter( isIconMissing );
+}
+
+function isIconMissing( iconPath ) {
+	try {
+		require.resolve( iconPath );
+
+		return false;
+	} catch ( err ) {
+		return true;
 	}
-
-	return missingIcons;
 }
 
 /**
