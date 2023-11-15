@@ -14,7 +14,7 @@ The image resize feature lets you change the width of images in your content. It
 
 ## Methods to resize images
 
-The editor offers different ways to resize images either by using "resize handles" or by using dedicated UI components &mdash; either a dropdown or standalone buttons.
+The editor offers different ways to resize images either by using "resize handles" or by using dedicated UI components &ndash; either a dropdown or standalone buttons.
 
 The {@link module:image/imageresize~ImageResize} plugin enables the four resize handles displayed over the selected image. The user can freely resize the image by dragging them. The feature can be configured to use either percentage (default) or pixel values.
 

@@ -145,7 +145,7 @@ The availability of these plugins varies in different {@link installation/gettin
 
 The {@link module:table/tableselection~TableSelection} plugin introduces support for the custom selection system for tables that lets you:
 
-* Select an arbitrary rectangular table fragment &mdash; a few cells from different rows, a column (or a few of them) or a row (or multiple rows).
+* Select an arbitrary rectangular table fragment &ndash; a few cells from different rows, a column (or a few of them) or a row (or multiple rows).
 * Apply formatting or add a link to all selected cells at once.
 
 The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demo above](#demo).
@@ -195,7 +195,7 @@ The table feature allows for creating block content (like paragraphs, lists, hea
 This means that a table cell can have two states: with inline content or with block content. The reason for this differentiation is that most tables contain only inline content (e.g. in the [demo](#demo) above) and it is common for "data tables" to not contain any block content. In such a scenario, printing out `<p>` elements would be semantically incorrect and also unnecessary. There are, however, scenarios where the user wants to create, for example, a list inside a table cell and then the support for block content is necessary.
 
 <info-box>
-	"Rendering" here refers to the view layer. In the model, a cell is always filled with at least a `<paragraph>`. This is because of consistency, as &mdash; since a cell always has some block content &mdash; the text is never directly inside the `<tableCell>`. This also allows features like <kbd>Enter</kbd> support to work out of the box (since a `<paragraph>` exists in the model, it can be split despite the fact that it is not present in the view).
+	"Rendering" here refers to the view layer. In the model, a cell is always filled with at least a `<paragraph>`. This is because of consistency, as &ndash; since a cell always has some block content &ndash; the text is never directly inside the `<tableCell>`. This also allows features like <kbd>Enter</kbd> support to work out of the box (since a `<paragraph>` exists in the model, it can be split despite the fact that it is not present in the view).
 </info-box>
 
 ### Inline content

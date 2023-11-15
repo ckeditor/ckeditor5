@@ -61,7 +61,7 @@ Listed below are the most important changes that require your attention when upg
 This release introduces changes to the {@link features/images-overview image feature} connected with the image `width` and `height` attributes. The changes include:
 
 * Upon {@link features/image-upload uploading an image file} or {@link features/images-inserting inserting it} into the editor content, the CKEditor 5 image feature fetches these dimensions from the file. The editor then adds these properties to the markup, just like the {@link features/images-text-alternative text alternative tag}.
-	* The editor **will not change already existing content**. It means, loading HTML (i.e., `setData`) with images does not set up these attributes.
+	* The editor **will not change already existing content**. It means, loading HTML (that is, `setData`) with images does not set up these attributes.
 	* If the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
 * Changes to an image (such as resize, etc.) will trigger the creation of those attributes. These attributes are crucial to proper content handling, and actions on a current image that does not have these improve this image's markup.
 * The `aspect-ratio` attribute has been added to the image's properties to handle situations when the file is resized or scaled with a tweaked aspect ratio.

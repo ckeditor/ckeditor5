@@ -5,7 +5,7 @@ CKEditor&nbsp;5 lark theme
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 
-This package implements lark theme &mdash; the default CKEditor&nbsp;5 theme.
+This package implements lark theme &ndash; the default CKEditor&nbsp;5 theme.
 
 ## Documentation
 
