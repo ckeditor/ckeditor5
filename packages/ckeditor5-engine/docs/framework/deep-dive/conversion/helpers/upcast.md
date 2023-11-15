@@ -7,7 +7,7 @@ since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Upcast helpers &mdash; view to model conversion
+# Upcast helpers &ndash; view to model conversion
 
 This article lists all editor helpers available in the {@link framework/deep-dive/conversion/upcast upcast conversion}.
 

@@ -8,7 +8,7 @@ order: 10
 {@snippet features/build-image-upload-source}
 # Image upload overview
 
-Inserting {@link features/images-overview images} into content created with CKEditor&nbsp;5 is a very common task. In a properly configured rich-text editor, there are several ways for the end user to insert images:
+Inserting {@link features/images-overview images} into content created with CKEditor&nbsp;5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images:
 
 * **Pasting** an image from the clipboard.
 * **Dragging** a file from the file system.
@@ -41,7 +41,7 @@ Except for pasting URLs to images, all other solutions mentioned above require t
 
 ### CKBox
 
-CKBox is the most complete solution for not just image upload but also file management in CKEditor&nbsp;5.
+CKBox is the ultimate solution for not just image upload but also file management in CKEditor&nbsp;5.
 
 It is a modern file uploader with a clean interface, automatic support for responsive images, and top-notch UX. It also provides editing capabilities like cropping, rotating, or flipping.
 
@@ -73,7 +73,7 @@ The {@link features/simple-upload-adapter simple upload adapter} allows uploadin
 The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}.
 
 <info-box warning>
-	Please remember that while `Base64` upload is a very easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. We recommend using alternative ways to upload images into CKEditor&nbsp;5.
+	Please remember that while `Base64` upload is an easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. We recommend using alternative ways to upload images into CKEditor&nbsp;5.
 </info-box>
 
 {@link features/base64-upload-adapter **Learn how to use Base64–encoded images in CKEditor&nbsp;5**}.
