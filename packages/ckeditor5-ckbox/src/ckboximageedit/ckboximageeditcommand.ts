@@ -13,6 +13,7 @@ import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
 import { createElement, global, retry } from 'ckeditor5/src/utils';
 import type { Element as ModelElement } from 'ckeditor5/src/engine';
 import { Notification } from 'ckeditor5/src/ui';
+import { isEqual } from 'lodash-es';
 
 import CKBoxEditing from '../ckboxediting';
 import { sendHttpRequest } from '../utils';
@@ -67,7 +68,7 @@ export default class CKBoxImageEditCommand extends Command {
 			selectedElement.is( 'element', 'imageBlock' )
 		);
 		const isBeingProcessed = Array.from( this._processInProgress.values() )
-			.some( ( { element } ) => element == selectedElement );
+			.some( ( { element } ) => isEqual( element, selectedElement ) );
 
 		if ( isImageElement && selectedElement.hasAttribute( 'ckboxImageId' ) && !isBeingProcessed ) {
 			this.isEnabled = true;
@@ -188,7 +189,8 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
-	 * In case server respond with "success" replace with edited image otherwise show notification error.
+	 * Save edited image. In case server respond with "success" replace with edited image
+	 * otherwise show notification error.
 	 */
 	private _handleImageEditorOnSave( state: ProcessingState, asset: CKBoxRawAssetDefinition ) {
 		const t = this.editor.locale.t;

@@ -23,6 +23,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { Notification } from 'ckeditor5/src/ui';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import _ from 'lodash-es';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 import CKBoxEditing from '../../src/ckboxediting';
 
@@ -316,8 +317,6 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should pool data for edited image and if success status, save it', done => {
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-
 				clock = sinon.useFakeTimers();
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
@@ -340,25 +339,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should abort when image was removed while processing on server', async () => {
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				const clock = sinon.useFakeTimers();
-
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
@@ -394,28 +375,11 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should display notification in case fail', async () => {
-				const notification = editor.plugins.get( Notification );
-
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
+				const notification = editor.plugins.get( Notification );
 				const clock = sinon.useFakeTimers();
 				const spy = sinon.spy( notification, 'showWarning' );
-
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,
@@ -434,27 +398,34 @@ describe( 'CKBoxImageEditCommand', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
+			it( 'should disable command for images being processed', async () => {
+				const clock = sinon.useFakeTimers();
+
+				sinon.stub( _, 'isEqual' ).returns( true );
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					500,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'queued'
+						}
+					} )
+				] );
+
+				expect( command.isEnabled ).to.be.true;
+
+				onSave( dataMock );
+
+				await clock.tickAsync( 10 );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
 			it( 'should abort on CKBoxImageEditCommand destroy', async () => {
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				const clock = sinon.useFakeTimers();
 				const spy = sinon.spy( editor.editing, 'reconvertItem' );
-
-				const dataMock = {
-					data: {
-						id: 'image-id1',
-						extension: 'png',
-						metadata: {
-							width: 100,
-							height: 100
-						},
-						name: 'image1',
-						imageUrls: {
-							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
-							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
-						},
-						url: 'https://example.com/workspace1/assets/image-id1/file'
-					}
-				};
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,
