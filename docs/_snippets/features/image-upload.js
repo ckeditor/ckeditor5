@@ -56,7 +56,8 @@ ClassicEditor
 			}
 		},
 		ckbox: {
-			tokenUrl: TOKEN_URL
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

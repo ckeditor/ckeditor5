@@ -62,6 +62,9 @@ ClassicEditor
 				'mergeTableCells'
 			]
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
