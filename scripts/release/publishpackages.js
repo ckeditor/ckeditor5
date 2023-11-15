@@ -72,7 +72,11 @@ const tasks = new Listr( [
 						// Like in defaults, this package does not define features.
 						'ckeditor5-metadata.json'
 					]
-				}
+				},
+				requireEntryPoint: true,
+				optionalEntryPointPackages: [
+					'ckeditor5'
+				]
 			} );
 		},
 		retry: 3

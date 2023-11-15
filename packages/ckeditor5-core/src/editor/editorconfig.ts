@@ -581,6 +581,7 @@ export type ToolbarConfig = Array<ToolbarConfigItem> | {
 	items?: Array<ToolbarConfigItem>;
 	removeItems?: Array<string>;
 	shouldNotGroupWhenFull?: boolean;
+	icon?: string;
 };
 
 export type ToolbarConfigItem = string | {

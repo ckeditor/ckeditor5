@@ -879,6 +879,19 @@ describe( 'Collection', () => {
 		} );
 	} );
 
+	describe( 'forEach()', () => {
+		it( 'uses native forEach', () => {
+			const spy = testUtils.sinon.stub( Array.prototype, 'forEach' ).returns( undefined );
+			const ctx = {};
+
+			collection.forEach( callback, ctx );
+
+			sinon.assert.calledWithExactly( spy, callback, ctx );
+
+			function callback() {}
+		} );
+	} );
+
 	describe( 'find()', () => {
 		it( 'uses native find', () => {
 			const needl = getItem( 'foo' );

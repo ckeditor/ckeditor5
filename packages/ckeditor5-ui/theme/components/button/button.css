@@ -4,6 +4,7 @@
  */
 
 @import "../../mixins/_unselectable.css";
+@import "../../mixins/_dir.css";
 
 .ck.ck-button,
 a.ck.ck-button {
@@ -12,7 +13,14 @@ a.ck.ck-button {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
-	justify-content: left;
+
+	@mixin ck-dir ltr {
+		justify-content: left;
+	}
+
+	@mixin ck-dir rtl {
+		justify-content: right;
+	}
 
 	& .ck-button__label {
 		display: none;

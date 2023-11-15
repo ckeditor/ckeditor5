@@ -4,7 +4,6 @@
  */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -15,7 +14,6 @@ import TableEditing from '../../src/tableediting';
 import {
 	getCaptionFromModelSelection,
 	getCaptionFromTableModelElement,
-	getSelectionAffectedTable,
 	isTable,
 	matchTableCaptionViewElement
 } from '../../src/tablecaption/utils';
@@ -210,25 +208,6 @@ describe( 'table caption utils', () => {
 
 				expect( matchTableCaptionViewElement( element ) ).to.deep.equal( { name: true } );
 			} );
-		} );
-	} );
-
-	describe( 'getSelectionAffectedTable', () => {
-		it( 'should return null if table is not present', () => {
-			setModelData( model, '<paragraph>Foo[]</paragraph>' );
-			const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
-
-			const tableElement = getSelectionAffectedTable( selection );
-
-			expect( tableElement ).to.be.null;
-		} );
-
-		it( 'should return table if present higher in the model tree', () => {
-			const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
-
-			const tableElement = getSelectionAffectedTable( selection );
-
-			expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
 		} );
 	} );
 } );

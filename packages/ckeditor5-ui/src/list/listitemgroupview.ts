@@ -10,8 +10,9 @@
 import View from '../view';
 import type ViewCollection from '../viewcollection';
 import ListView from './listview';
+import LabelView from '../label/labelview';
 
-import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
+import { type Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The list item group view class.
@@ -24,6 +25,14 @@ export default class ListItemGroupView extends View {
 	 * @default ''
 	 */
 	declare public label: string;
+
+	/**
+	 * Label of the group view. Its text is configurable using the {@link #label label attribute}.
+	 *
+	 * If a custom label view is not passed in `ListItemGroupView` constructor, the label is an instance
+	 * of {@link module:ui/label/labelview~LabelView}.
+	 */
+	public readonly labelView: LabelView;
 
 	/**
 	 * Collection of the child list items inside this group.
@@ -45,26 +54,32 @@ export default class ListItemGroupView extends View {
 	declare public isVisible: boolean;
 
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the list item group view class.
+	 *
+	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param labelView The instance of the group's label. If not provided, an instance of
+	 * {@link module:ui/label/labelview~LabelView} is used.
 	 */
-	constructor( locale?: Locale ) {
+	constructor( locale?: Locale, labelView: LabelView = new LabelView() ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
-		const groupLabelId = `ck-editor__label_${ uid() }`;
 		const nestedList = new ListView( locale );
-
-		this.children = this.createCollection();
-		this.children.addMany( [ this._createLabel( groupLabelId ), nestedList ] );
 
 		this.set( {
 			label: '',
 			isVisible: true
 		} );
 
+		this.labelView = labelView;
+		this.labelView.bind( 'text' ).to( this, 'label' );
+
+		this.children = this.createCollection();
+		this.children.addMany( [ this.labelView, nestedList ] );
+
 		nestedList.set( {
 			role: 'group',
-			ariaLabelledBy: groupLabelId
+			ariaLabelledBy: labelView.id
 		} );
 
 		// Disable focus tracking and accessible navigation in the child list.
@@ -87,26 +102,6 @@ export default class ListItemGroupView extends View {
 
 			children: this.children
 		} );
-	}
-
-	/**
-	 * Creates a label for the group.
-	 */
-	private _createLabel( groupLabelId: string ): View {
-		const labelView = new View( this.locale );
-		const bind = this.bindTemplate;
-
-		labelView.setTemplate( {
-			tag: 'span',
-			attributes: {
-				id: groupLabelId
-			},
-			children: [
-				{ text: bind.to( 'label' ) }
-			]
-		} );
-
-		return labelView;
 	}
 
 	/**
