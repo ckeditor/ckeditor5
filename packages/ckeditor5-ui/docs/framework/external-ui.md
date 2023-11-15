@@ -109,7 +109,7 @@ mix( BootstrapEditor, ElementApiMixin );
 
 ## Creating the Bootstrap UI
 
-Although the editor is ready to use, it is just a bare editable area &mdash; that is not of much use to the users. You need to give it an actual interface with the toolbar and buttons.
+Although the editor is ready to use, it is just a bare editable area &ndash; that is not of much use to the users. You need to give it an actual interface with the toolbar and buttons.
 
 <info-box hint>
 	Refer to the Bootstrap [Getting started](https://getbootstrap.com/docs/4.0/getting-started/introduction/) guide to learn how to include Bootstrap in your web page.

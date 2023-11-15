@@ -18,7 +18,7 @@ The editing engine implements an MVC architecture. The shape of it is not enforc
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-What you can see, are three layers: **model**, **controller** and **view**. There is one **model document** which is {@link framework/deep-dive/conversion/intro **converted**} into separate views &mdash; the [**editing view**](#editing-pipeline) and the [**data view**](#data-pipeline). These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
+What you can see, are three layers: **model**, **controller** and **view**. There is one **model document** which is {@link framework/deep-dive/conversion/intro **converted**} into separate views &ndash; the [**editing view**](#editing-pipeline) and the [**data view**](#data-pipeline). These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
 
 The green blocks are the code introduced by editor features (plugins). These features control what changes are made to the model, how they are converted to the view and how the model needs to be changed based on fired events (the view's and model's ones).
 
@@ -78,7 +78,7 @@ editor.model.change( writer => {
 
 ### Text attributes
 
-Text styles such as "bold" and "italic" are kept in the model not as elements but as text attributes (think &mdash; like element attributes). The following DOM structure:
+Text styles such as "bold" and "italic" are kept in the model not as elements but as text attributes (think &ndash; like element attributes). The following DOM structure:
 
 ```html
 <p>
@@ -109,7 +109,7 @@ Such representation of inline text styling allows to significantly reduce the co
 </p>
 ```
 
-and you have a selection before the letter `"b"` (`"Foo ^bar"`), is this position inside or outside `<strong>`? If you use [native DOM Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection), you may get both positions &mdash; one anchored in `<p>` and the other anchored in `<strong>`. In CKEditor&nbsp;5 this position translates exactly to `"Foo ^bar"`.
+and you have a selection before the letter `"b"` (`"Foo ^bar"`), is this position inside or outside `<strong>`? If you use [native DOM Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection), you may get both positions &ndash; one anchored in `<p>` and the other anchored in `<strong>`. In CKEditor&nbsp;5 this position translates exactly to `"Foo ^bar"`.
 
 ### Selection attributes
 
@@ -180,7 +180,7 @@ This information is then used by the features and the engine to make decisions o
 * To which elements the heading feature can be applied (which blocks can be turned to headings and which elements are blocks in the first place).
 * Which elements can be wrapped with a block quote.
 * Whether the bold button is enabled when the selection is in a heading (and whether the text in this heading can be bolded).
-* Where the selection can be placed (which is &mdash; only in text nodes and on object elements).
+* Where the selection can be placed (which is &ndash; only in text nodes and on object elements).
 * etc.
 
 The schema is, by default, configured by editor plugins. It is recommended that every editor feature comes with rules that enable and preconfigure it in the editor. This will make sure that the plugin user can enable it without worrying to re-configure their schema.
@@ -197,7 +197,7 @@ Let's again take a look at the editing engine's architecture:
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-So far, we talked about the topmost layer of this diagram &mdash; the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate on the model (read from it and change it).
+So far, we talked about the topmost layer of this diagram &ndash; the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate on the model (read from it and change it).
 
 The view, on the other hand, is an abstract representation of the DOM structure which should be presented to the user (for editing) and which should (in most cases) represent the editor's input and output (i.e. the data returned by `editor.getData()`, the data set by `editor.setData()`, pasted content, etc.).
 
@@ -242,7 +242,7 @@ Additionally, you can define {@link module:engine/view/element~Element#getCustom
 
 * Whether an element is a widget (added by {@link module:widget/utils~toWidget `toWidget()`}).
 * How an element should be marked when a [marker](#markers) highlights it.
-* Whether an element belongs to a certain feature &mdash; if it is a link, progress bar, caption, etc.
+* Whether an element belongs to a certain feature &ndash; if it is a link, progress bar, caption, etc.
 
 #### Non-semantic views
 
@@ -269,8 +269,8 @@ editor.editing.view.change( writer => {
 <info-box>
 	There are two view writers:
 
-	* {@link module:engine/view/downcastwriter~DowncastWriter} &mdash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view" so a view structure which differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
-	* {@link module:engine/view/upcastwriter~UpcastWriter} &mdash; a writer to be used when pre-processing the "input" data (e.g. pasted content) which happens usually before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
+	* {@link module:engine/view/downcastwriter~DowncastWriter} &ndash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view" so a view structure which differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
+	* {@link module:engine/view/upcastwriter~UpcastWriter} &ndash; a writer to be used when pre-processing the "input" data (e.g. pasted content) which happens usually before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
 </info-box>
 
 ### Positions
@@ -365,8 +365,8 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 {@link framework/deep-dive/conversion/downcast#downcast-pipelines **Editing downcasting**} is a bit different process than the other two.
 
 * It takes place in the "editing pipeline" (the left branch of the diagram).
-* It does not have its counterpart &mdash; there is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
-* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~Document} view document's for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &mdash; i.e. if the DOM actually differs from the view at this stage).
+* It does not have its counterpart &ndash; there is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
+* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~Document} view document's for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &ndash; i.e. if the DOM actually differs from the view at this stage).
 
 ### More information
 
