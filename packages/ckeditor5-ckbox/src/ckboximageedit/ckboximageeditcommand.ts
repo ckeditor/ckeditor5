@@ -150,14 +150,30 @@ export default class CKBoxImageEditCommand extends Command {
 	private _prepareListeners(): void {
 		// Abort editing processing when the image has been removed.
 		this.listenTo( this.editor.model.document, 'change:data', () => {
-			for ( const state of this._processInProgress.values() ) {
-				if ( state.element.root.rootName == '$graveyard' ) {
-					state.controller.abort();
-				}
+			const processingState = this._getProcessWithDeletedImage();
+
+			if ( processingState ) {
+				processingState.controller.abort();
 			}
 		} );
 	}
 
+	/**
+	 * If in some process there is image which is already removed it returns that process.
+	 */
+	private _getProcessWithDeletedImage(): ProcessingState | undefined {
+		for ( const state of this._processInProgress.values() ) {
+			if ( state.element.root.rootName == '$graveyard' ) {
+				return state;
+			}
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Close image editor.
+	 */
 	private _handleImageEditorOnClose() {
 		if ( !this._wrapper ) {
 			return;
@@ -171,6 +187,9 @@ export default class CKBoxImageEditCommand extends Command {
 		this.refresh();
 	}
 
+	/**
+	 * In case server respond with "success" replace with edited image otherwise show notification error.
+	 */
 	private _handleImageEditorOnSave( state: ProcessingState, asset: CKBoxRawAssetDefinition ) {
 		const t = this.editor.locale.t;
 		const notification = this.editor.plugins.get( Notification );
@@ -186,16 +205,18 @@ export default class CKBoxImageEditCommand extends Command {
 					this._replaceImage( state.element, asset );
 				},
 				() => {
+					const processingState = this._getProcessWithDeletedImage();
+
+					if ( !processingState ) {
+						notification.showWarning( t( 'Something went wrong.' ), {
+							title: t( 'Something went wrong.' ),
+							namespace: 'ckbox'
+						} );
+					}
 					// Remove processing indicator. It was added only to ViewElement.
 					this.editor.editing.reconvertItem( state.element );
-
-					notification.showWarning( t( 'Processing edited image is stopped.' ), {
-						title: t( 'Processing edited image is stopped.' ),
-						namespace: 'ckbox'
-					} );
 				}
-			)
-			.finally( () => {
+			).finally( () => {
 				this._processInProgress.delete( state.ckboxImageId );
 				pendingActions.remove( action );
 			} );
@@ -267,6 +288,9 @@ export default class CKBoxImageEditCommand extends Command {
 		} );
 	}
 
+	/**
+	 * Replace edited image with new one.
+	 */
 	private _replaceImage( element: ModelElement, asset: CKBoxRawAssetDefinition ) {
 		const editor = this.editor;
 		const imageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
