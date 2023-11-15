@@ -86,11 +86,11 @@ export default [
 				},
 				sourceMap
 			} ),
-			po2js( {
-				sourceFolder: `${cwd}/lang/translations`,
-				destFolder: `${cwd}/dist/translations`,
-				banner
-			} )
+			// po2js( {
+			// 	sourceFolder: `${cwd}/lang/translations`,
+			// 	destFolder: `${cwd}/dist/translations`,
+			// 	banner
+			// } )
 		]
 	},
 

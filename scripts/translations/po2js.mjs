@@ -20,6 +20,10 @@ export default function po2js( options = {} ) {
 	return {
 		name: 'ck5-po2js',
 		async buildEnd() {
+			if ( !existsSync( translationsSourceFolderPath ) ) {
+				return null;
+			}
+
 			if ( !existsSync( translationsTargetFolderPath ) ) {
 				await createDestDir( translationsTargetFolderPath );
 			}
