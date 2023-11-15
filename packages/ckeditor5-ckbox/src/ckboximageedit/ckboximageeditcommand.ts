@@ -207,7 +207,7 @@ export default class CKBoxImageEditCommand extends Command {
 				() => {
 					const processingState = this._getProcessWithDeletedImage();
 
-					if ( !processingState ) {
+					if ( processingState ) {
 						notification.showWarning( t( 'Something went wrong.' ), {
 							title: t( 'Something went wrong.' ),
 							namespace: 'ckbox'

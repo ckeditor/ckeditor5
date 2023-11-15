@@ -21,6 +21,7 @@ import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageu
 import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { Notification } from 'ckeditor5/src/ui';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 import CKBoxEditing from '../../src/ckboxediting';
@@ -319,15 +320,9 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				clock = sinon.useFakeTimers();
 
-				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
-					200,
-					{ 'Content-Type': 'application/json' },
-					JSON.stringify( {
-						metadata: {
-							metadataProcessingStatus: 'success'
-						}
-					} )
-				] );
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
+					return xhr.error();
+				} );
 
 				command.on( 'ckboxImageEditor:processed', () => {
 					expect( getModelData( model ) ).to.equal(
@@ -396,6 +391,47 @@ describe( 'CKBoxImageEditCommand', () => {
 				await clock.tickAsync( 1000 );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			it( 'should display notification in case fail', async () => {
+				const notification = editor.plugins.get( Notification );
+
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				const clock = sinon.useFakeTimers();
+				const spy = sinon.spy( notification, 'showWarning' );
+
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					500,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'queued'
+						}
+					} )
+				] );
+
+				onSave( dataMock );
+
+				await clock.tickAsync( 20000 );
+
+				sinon.assert.calledOnce( spy );
 			} );
 
 			it( 'should stop pooling if limit was reached', async () => {
