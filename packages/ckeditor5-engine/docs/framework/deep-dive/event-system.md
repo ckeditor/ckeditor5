@@ -35,7 +35,7 @@ However, a function object is needed if you want to be able to remove the event 
 emitter.off( 'eventName', handler );
 ```
 
-There is also another way to add an event listener &mdash; by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
+There is also another way to add an event listener &ndash; by using {@link module:utils/emittermixin~Emitter#listenTo `listenTo()`}. This way one emitter can listen to events on another emitter:
 
 ```js
 foo.listenTo( bar, 'eventName', ( eventInfo, ...args ) => { /* ... */ } );
@@ -306,7 +306,7 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 
 Bubbling always starts from the virtual `'$capture'` context. All listeners attached to this context are triggered first (and in the order of their priorities).
 
-Then, the real bubbling starts from the selection position (either its anchor or focus &mdash; depending on what is deeper).
+Then, the real bubbling starts from the selection position (either its anchor or focus &ndash; depending on what is deeper).
 
 If text nodes are allowed at the selection position, then the first context is `'$text'`. Then the event bubbles through all elements up to the `'$root'` and finally `'$document'`.
 

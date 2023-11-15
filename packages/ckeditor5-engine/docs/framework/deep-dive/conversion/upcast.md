@@ -7,7 +7,7 @@ since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Upcast conversion &mdash; view to model
+# Upcast conversion &ndash; view to model
 
 ## Introduction
 
