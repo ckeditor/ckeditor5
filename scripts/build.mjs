@@ -18,20 +18,25 @@ import postcssNesting from 'postcss-nesting';
 import postcssMixins from 'postcss-mixins';
 import postcssImport from 'postcss-import';
 
+import path from 'path';
+
 // Indicates whether to emit source maps
 const sourceMap = process.env.DEVELOPMENT || false;
 
 // Current working directory
-const cwd = process.cwd();
+const cwd = path.resolve();
 
 // Content of the `package.json`
-const pkg = JSON.parse( await readFile(`${ cwd }/package.json`) );
+const pkg = JSON.parse( await readFile( path.join( cwd, 'package.json') ) );
 
 // List of external dependencies
 const external = [
-	...Object.keys(pkg.dependencies || {}),
-	...Object.keys(pkg.peerDependencies || {})
+	...Object.keys( pkg.dependencies || {} ),
+	...Object.keys( pkg.peerDependencies || {} )
 ];
+
+const inputPath = path.join( cwd, 'src', 'index.ts');
+const tsConfigPath = path.join( cwd, 'tsconfig.json');
 
 // Banner added to the top of the output files
 const banner =
@@ -43,13 +48,16 @@ const banner =
 /**
  * @type {import('rollup').RollupOptions}
  */
+
+
+
 export default [
 	// Output in a new format for NPM usage
 	{
-		input: `${ cwd }/src/index.ts`,
+		input: inputPath,
 		output: {
 			format: 'esm',
-			file: `${ cwd }/dist/index.js`,
+			file: path.join( cwd, 'dist', 'index.js'),
 			assetFileNames: '[name][extname]',
 			sourcemap: sourceMap,
 			banner
@@ -57,7 +65,7 @@ export default [
 		external,
 		plugins: [
 			del( {
-				targets: `${ cwd }/dist`
+				targets: path.join( cwd, 'dist' )
 			} ),
 			commonjs(),
 			nodeResolve(),
@@ -75,10 +83,10 @@ export default [
 				sourceMap
 			} ),
 			typescriptPlugin( {
-				tsconfig: `${ cwd }/tsconfig.json`,
+				tsconfig: tsConfigPath,
 				typescript,
 				compilerOptions: {
-					declarationDir: `${ cwd }/dist/types`,
+					declarationDir: path.join( cwd, 'dist', 'types'),
 					declaration: true,
 					declarationMap: false, // TODO
 				},
@@ -89,10 +97,10 @@ export default [
 
 	// Output in a new format for CDN usage
 	{
-		input: `${ cwd }/src/index.ts`,
+		input: inputPath,
 		output: {
 			format: 'esm',
-			file: `${ cwd }/dist/index.min.js`,
+			file: path.join( cwd, 'dist', 'index.min.js' ),
 			assetFileNames: '[name][extname]',
 			sourcemap: sourceMap,
 			banner
@@ -118,7 +126,7 @@ export default [
 				sourceMap: false
 			} ),
 			typescriptPlugin( {
-				tsconfig: `${ cwd }/tsconfig.json`,
+				tsconfig: tsConfigPath,
 				typescript,
 				sourceMap: false
 			} ),
