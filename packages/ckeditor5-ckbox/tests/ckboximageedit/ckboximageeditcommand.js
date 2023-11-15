@@ -434,6 +434,49 @@ describe( 'CKBoxImageEditCommand', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
+			it( 'should abort on CKBoxImageEditCommand destroy', async () => {
+				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				const clock = sinon.useFakeTimers();
+				const spy = sinon.spy( editor.editing, 'reconvertItem' );
+
+				const dataMock = {
+					data: {
+						id: 'image-id1',
+						extension: 'png',
+						metadata: {
+							width: 100,
+							height: 100
+						},
+						name: 'image1',
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id1/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id1/images/100.png'
+						},
+						url: 'https://example.com/workspace1/assets/image-id1/file'
+					}
+				};
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					500,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'queued'
+						}
+					} )
+				] );
+
+				onSave( dataMock );
+
+				await clock.tickAsync( 10 );
+
+				command.destroy();
+
+				await clock.tickAsync( 10 );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
 			it( 'should stop pooling if limit was reached', async () => {
 				clock = sinon.useFakeTimers();
 
