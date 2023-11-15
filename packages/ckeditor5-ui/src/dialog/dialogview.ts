@@ -354,6 +354,33 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * TODO
 	 */
 	public moveTo( left: number, top: number ): void {
+		const viewportRect = this._getViewportRect();
+		const dialogRect = this._getDialogRect();
+
+		// Don't let the dialog go beyond the right edge of the viewport.
+		if ( left + dialogRect.width > viewportRect.right ) {
+			left = viewportRect.right - dialogRect.width;
+		}
+
+		// Don't let the dialog go beyond the left edge of the viewport.
+		if ( left < viewportRect.left ) {
+			left = viewportRect.left;
+		}
+
+		// Don't let the dialog go beyond the top edge of the viewport.
+		if ( top < viewportRect.top ) {
+			top = viewportRect.top;
+		}
+
+		// TODO: The same for the bottom edge?
+
+		this._moveTo( left, top );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _moveTo( left: number, top: number ): void {
 		this._left = left;
 		this._top = top;
 	}
@@ -362,37 +389,36 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * TODO
 	 */
 	public moveBy( left: number, top: number ): void {
-		this._left += left;
-		this._top += top;
+		this.moveTo( this._left + left, this._top + top );
 	}
 
 	/**
 	 * TODO
 	 */
 	private _moveOffScreen(): void {
-		this.moveTo( -9999, -9999 );
+		this._moveTo( -9999, -9999 );
 	}
 
 	/**
 	 * TODO
 	 */
 	private _moveToConfiguredPosition(): void {
-		const viewportRect = getConstrainedViewportRect( this._getViewportOffset() );
+		const viewportRect = this._getViewportRect();
 
 		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
 
 		switch ( this.position ) {
 			case DialogViewPosition.CURRENT_ROOT_NE: {
-				const domRootRect = this._getVisibleDomRootViewportIntersectionRect( viewportRect );
-				const dialogViewRect = new Rect( this.element!.firstElementChild as HTMLElement );
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+				const dialogRect = this._getDialogRect();
 
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
 
 				if ( domRootRect ) {
-					this.moveTo( domRootRect.right - dialogViewRect.width - 10, domRootRect.top + 10 );
+					this.moveTo( domRootRect.right - dialogRect.width - 10, domRootRect.top + 10 );
 				} else {
 					this._moveOffScreen();
 				}
@@ -400,7 +426,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.CURRENT_ROOT_NW: {
-				const domRootRect = this._getVisibleDomRootViewportIntersectionRect( viewportRect );
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
 
 				if ( domRootRect ) {
 					this.moveTo( domRootRect.left + 10, domRootRect.top + 10 );
@@ -411,13 +437,13 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.CURRENT_ROOT_CENTER: {
-				const domRootRect = this._getVisibleDomRootViewportIntersectionRect( viewportRect );
-				const dialogViewRect = new Rect( this.element!.firstElementChild as HTMLElement );
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+				const dialogRect = this._getDialogRect();
 
 				if ( domRootRect ) {
 					this.moveTo(
-						Math.round( domRootRect.left + domRootRect.width / 2 - dialogViewRect.width / 2 ),
-						Math.round( domRootRect.top + domRootRect.height / 2 - dialogViewRect.height / 2 )
+						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
+						Math.round( domRootRect.top + domRootRect.height / 2 - dialogRect.height / 2 )
 					);
 				} else {
 					this._moveOffScreen();
@@ -426,17 +452,20 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.SCREEN_CENTER: {
-				const dialogViewRect = new Rect( this.element!.firstElementChild as HTMLElement );
+				const dialogRect = this._getDialogRect();
 
 				this.moveTo(
-					Math.round( ( viewportRect.width - dialogViewRect.width ) / 2 ),
-					Math.round( ( viewportRect.height - dialogViewRect.height ) / 2 )
+					Math.round( ( viewportRect.width - dialogRect.width ) / 2 ),
+					Math.round( ( viewportRect.height - dialogRect.height ) / 2 )
 				);
 			}
 		}
 	}
 
-	private _getVisibleDomRootViewportIntersectionRect( viewportRect: Rect ): Rect | null {
+	/**
+	 * TODO
+	 */
+	private _getVisibleDomRootRect( viewportRect: Rect ): Rect | null {
 		let visibleDomRootRect = new Rect( this._getCurrentDomRoot() ).getVisible();
 
 		if ( !visibleDomRootRect ) {
@@ -450,6 +479,20 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		}
 
 		return visibleDomRootRect;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getDialogRect() {
+		return new Rect( this.element!.firstElementChild as HTMLElement );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getViewportRect() {
+		return getConstrainedViewportRect( this._getViewportOffset() );
 	}
 
 	/**
