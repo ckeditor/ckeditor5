@@ -16,7 +16,7 @@ The paste from Markdown feature lets users paste Markdown-formatted content stra
 
 ## Demo
 
-Simply paste some Markdown-formatted content into the demo editor below and see it turn into rich text on the fly. You can copy [this document](#) for convenience.
+Simply paste some Markdown-formatted content into the demo editor below and see it turn into rich text on the fly. You can copy [this document](%BASE_PATH%/assets/markdown.txt) for convenience.
 
 {@snippet features/paste-from-markdown}
 
