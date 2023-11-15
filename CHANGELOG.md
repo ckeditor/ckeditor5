@@ -40,6 +40,8 @@ We have introduced necessary changes to make sure that the AI Assistant can be u
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: By default, images are inserted as block images (not inline). To switch to the previous behavior (determining image type by insertion context), set the editor configuration `image.insert.type` to `'auto'`.
 * **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Introduced the new `config.importWord.formatting` configuration property which is an object accepting the following properties: `resets`, `defaults`, `styles`, and `comments`. The old properties: `config.importWord.defaultStyles` and `config.importWord.commentsStyles` were removed. Use `formatting.defaults` and `formatting.comments` instead.
 
+Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4010) to learn more about these changes.
+
 ### Features
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Enabled AI Assistant integration with the Azure OpenAI service.
