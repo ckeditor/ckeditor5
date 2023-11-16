@@ -136,7 +136,9 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
-				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+				const isHeading = tableSlot.row < headingRows ||
+					tableSlot.column < headingColumns ||
+					tableCell.getAttribute( 'role' ) == 'heading';
 				const cellElementName = isHeading ? 'th' : 'td';
 
 				result = options.asWidget ?
