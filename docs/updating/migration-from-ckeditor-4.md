@@ -21,7 +21,7 @@ This section of the documentation explains how to migrate to CKEditor&nbsp;5.
 	Contact our Sales team for [more details](https://ckeditor.com/contact/).
 </info-box>
 
-When compared to its predecessor, CKEditor&nbsp;5 should be considered **a totally new editor**. Every single aspect of it was redesigned &mdash; from installation, to integration, to features, to its data model, and finally to its API.
+When compared to its predecessor, CKEditor&nbsp;5 should be considered **a totally new editor**. Every single aspect of it was redesigned &ndash; from installation, to integration, to features, to its data model, and finally to its API.
 
 There is no automatic solution for migrating. This section summarizes the most important aspects you need to consider before you proceed with moving to CKEditor&nbsp;5.
 ## Differences between CKEditor 4 and CKEditor&nbsp;5
@@ -221,7 +221,7 @@ CKEditor&nbsp;5 is a great, modern editing framework so migrating is a fantastic
 
 ## Support
 
-If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &mdash; you can support it by upvoting the issue with &nbsp;👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
 
 The {@link updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4} article answers some frequently asked questions about the migration.
 
