@@ -7,12 +7,12 @@
  * @module ui/dialog/dialog
  */
 
+import View from '../view';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview';
+import type { DialogActionButtonDefinition } from './dialogactionsview';
 
 import '../../theme/components/dialog/dialog.css';
-import View from '../view';
-import type { DialogActionButtonDefinition } from './dialogactionsview';
 
 /**
  * TODO
