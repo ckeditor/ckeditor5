@@ -5,7 +5,7 @@ meta-title: Clipboard | CKEditor 5 Framework Documentation
 
 # Clipboard
 
-The clipboard feature (implemented by the {@link module:clipboard/clipboard~Clipboard} plugin) is responsible for the integration with the native clipboard &mdash; a feature of the operating system and the browser used when the user copies, cuts, pastes, or drags and drops content within the editor or from/to the "outside".
+The clipboard feature (implemented by the {@link module:clipboard/clipboard~Clipboard} plugin) is responsible for the integration with the native clipboard &ndash; a feature of the operating system and the browser used when the user copies, cuts, pastes, or drags and drops content within the editor or from/to the "outside."
 
 CKEditor&nbsp;5 intercepts all native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the rich text editor which would lead to the browser messing it up.
 

@@ -36,7 +36,7 @@ MINOR BREAKING CHANGE (package-name): Another breaking change if needed. Closes 
 | --- | --- | --- | --- |
 | Feature | `minor` | A new feature. | Visible |
 | Fix | `patch` | A bug fix. Should also be used for enhancements if they do not introduce new features at the same time. | Visible |
-| Other | `patch` | An enhancement &mdash; when it is neither a bug fix nor a feature. Example: public API refactoring. Use it also if you do not want to admit that it was a bug ;). | Visible |
+| Other | `patch` | An enhancement &ndash; when it is neither a bug fix nor a feature. Example: public API refactoring. Use it also if you do not want to admit that it was a bug ;). | Visible |
 | Docs | `patch` | Updated documentation. | Hidden |
 | Internal | `patch` | Other kinds of internal changes. | Hidden |
 | Tests | `patch` | Changes in test files. | Hidden |
@@ -223,7 +223,7 @@ Things like:
 
 should be checked and added if missing.
 
-As a reviewer, remember that the message will end up in the changelog and must be understandable in a broad context of the entire editor. It is not for you &mdash; it is for other developers.
+As a reviewer, remember that the message will end up in the changelog and must be understandable in a broad context of the entire editor. It is not for you &ndash; it is for other developers.
 
 When closing a PR, remember to copy the source of the message to the textarea with the merge commit message:
 

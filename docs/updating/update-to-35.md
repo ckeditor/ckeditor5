@@ -283,7 +283,7 @@ ClassicEditor.create( sourceElement, {
 
 Due to the ongoing accessibility improvements the default behavior of the {@link module:ui/dropdown/dropdownview~DropdownView dropdown UI component} has been changed. From now on, by default, after choosing an option from a dropdown (either by mouse or keyboard), the focus will be automatically moved to the dropdown button.
 
-This default behavior of the dropdown component needs to be overridden in scenarios where the focus should be moved back to the editing area. An example of such a feature would be the "Heading" dropdown &mdash; choosing one of the options should result in the focus returning to the editing area instead of the button itself.
+This default behavior of the dropdown component needs to be overridden in scenarios where the focus should be moved back to the editing area. An example of such a feature would be the "Heading" dropdown &ndash; choosing one of the options should result in the focus returning to the editing area instead of the button itself.
 
 This behavior can be customized by using the listener on the dropdown's {@link module:ui/dropdown/dropdownview~DropdownView#event:execute `execute` event}, e.g.:
 
