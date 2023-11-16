@@ -42,7 +42,7 @@ The `type` setting accepts the following values:
 
 If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
 
-**Important**: If only one type of {@loink features/images-installation#inline-and-block-images image plugin} is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
+**Important**: If only one type of {@link features/images-installation#inline-and-block-images image plugin} is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
 
 ### Updated image text alternative icon
 
