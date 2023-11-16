@@ -1,4 +1,4 @@
-<div class="fake-top-bar"></div>
+<div class="fake-top-bar">This element corresponds to editor.config.ui.viewportTopOffset</div>
 <div class="spanner"></div>
 <div id="editor-default">
 	<h2>Heading 1</h2>
@@ -57,6 +57,10 @@
 <div class="spanner"></div>
 
 <style>
+	.ck.ck-editor {
+		width: 800px;
+	}
+
 	.spanner {
 		border: 1px dashed #eee;
 		padding: 10px;
@@ -74,6 +78,8 @@
 		z-index: 999999;
 		backdrop-filter: blur(2px);
 		box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.1);
+		text-align: center;
+		line-height: 50px;
 	}
 
 	#editor-narrow + .ck.ck-editor {
