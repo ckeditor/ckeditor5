@@ -448,6 +448,69 @@ describe( 'CKBoxImageEditCommand', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
+			it( 'should not display notification error on editor destroy', async () => {
+				const notification = editor.plugins.get( Notification );
+				const clock = sinon.useFakeTimers();
+				const spy = sinon.spy( notification, 'showWarning' );
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					500,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'queued'
+						}
+					} )
+				] );
+
+				onSave( dataMock );
+
+				await clock.tickAsync( 10 );
+
+				command.destroy();
+
+				await clock.tickAsync( 10 );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should display notification error if server fail or didnt respond', async () => {
+				const notification = editor.plugins.get( Notification );
+				const clock = sinon.useFakeTimers();
+				const spy = sinon.spy( notification, 'showWarning' );
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
+					return xhr.error();
+				} );
+
+				onSave( dataMock );
+
+				await clock.tickAsync( 20000 );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should reconvert image if server respond with "error" status', async () => {
+				const clock = sinon.useFakeTimers();
+				const spy = sinon.spy( editor.editing, 'reconvertItem' );
+
+				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
+					500,
+					{ 'Content-Type': 'application/json' },
+					JSON.stringify( {
+						metadata: {
+							metadataProcessingStatus: 'error'
+						}
+					} )
+				] );
+
+				onSave( dataMock );
+
+				await clock.tickAsync( 20000 );
+
+				sinon.assert.calledOnce( spy );
+			} );
+
 			it( 'should stop pooling if limit was reached', async () => {
 				clock = sinon.useFakeTimers();
 

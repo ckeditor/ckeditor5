@@ -151,25 +151,27 @@ export default class CKBoxImageEditCommand extends Command {
 	private _prepareListeners(): void {
 		// Abort editing processing when the image has been removed.
 		this.listenTo( this.editor.model.document, 'change:data', () => {
-			const processingState = this._getProcessWithDeletedImage();
+			const processingStates = this._getProcessesWithDeletedImage();
 
-			if ( processingState ) {
+			processingStates.forEach( processingState => {
 				processingState.controller.abort();
-			}
+			} );
 		} );
 	}
 
 	/**
 	 * If in some process there is image which is already removed it returns that process.
 	 */
-	private _getProcessWithDeletedImage(): ProcessingState | undefined {
+	private _getProcessesWithDeletedImage(): Array<ProcessingState> {
+		const states: Array<ProcessingState> = [];
+
 		for ( const state of this._processInProgress.values() ) {
 			if ( state.element.root.rootName == '$graveyard' ) {
-				return state;
+				states.push( state );
 			}
 		}
 
-		return undefined;
+		return states;
 	}
 
 	/**
@@ -189,7 +191,7 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
-	 * Save edited image. In case server respond with "success" replace with edited image
+	 * Save edited image. In case server respond with "success" replace with edited image,
 	 * otherwise show notification error.
 	 */
 	private _handleImageEditorOnSave( state: ProcessingState, asset: CKBoxRawAssetDefinition ) {
@@ -207,14 +209,13 @@ export default class CKBoxImageEditCommand extends Command {
 					this._replaceImage( state.element, asset );
 				},
 				() => {
-					const processingState = this._getProcessWithDeletedImage();
-
-					if ( processingState ) {
-						notification.showWarning( t( 'Something went wrong.' ), {
-							title: t( 'Something went wrong.' ),
+					if ( !state.controller.signal.aborted ) {
+						notification.showWarning( t( 'Server failed image processing or didn\'t respond' ), {
+							title: t( 'Server failed image processing or didn\'t respond' ),
 							namespace: 'ckbox'
 						} );
 					}
+
 					// Remove processing indicator. It was added only to ViewElement.
 					this.editor.editing.reconvertItem( state.element );
 				}
@@ -230,12 +231,12 @@ export default class CKBoxImageEditCommand extends Command {
 	 * Get asset's status on server. If server respond with "success" status then
 	 * image is already proceeded and ready for saving.
 	 *
-	 * @param data Data about certain asset.
+	 * @param id Id of desired asset.
+	 * @param signal Abort connection with server.
 	 */
 	private async _getAssetStatusFromServer( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
 		const url = new URL( 'assets/' + id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
-
 		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal,
@@ -250,9 +251,6 @@ export default class CKBoxImageEditCommand extends Command {
 		return { data: { ...response } };
 	}
 
-	/**
-	 * Waiting until asset is being processed.
-	 */
 	private async _waitForAssetProcessed( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
 		const result = await retry(
 			() => this._getAssetStatusFromServer( id, signal ),
@@ -261,6 +259,10 @@ export default class CKBoxImageEditCommand extends Command {
 				maxAttempts: 5
 			}
 		);
+
+		if ( result.data.metadata!.metadataProcessingStatus != 'success' ) {
+			throw new Error( 'Image processing failed.' );
+		}
 
 		return result;
 	}
@@ -291,7 +293,7 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
-	 * Replace edited image with new one.
+	 * Replace the edited image with the new one.
 	 */
 	private _replaceImage( element: ModelElement, asset: CKBoxRawAssetDefinition ) {
 		const editor = this.editor;
