@@ -29,6 +29,11 @@ export function parseHtml( htmlString: string, stylesProcessor: StylesProcessor 
 	// Remove Word specific "if comments" so content inside is not omitted by the parser.
 	htmlString = htmlString.replace( /<!--\[if gte vml 1]>/g, '' );
 
+	// Clean the <head> section of MS Windows specific tags. See #15333.
+	// The regular expression matches tag <o:SmartTagType> with optional attributes (with or without values),
+	// optional white spaces after attributes and optional `/` before closing.
+	htmlString = htmlString.replace( /<o:SmartTagType(?:\s+[^\s>]+(?:="[^"]*")?)*\s*\/?>/gi, '' );
+
 	const normalizedHtml = normalizeSpacing( cleanContentAfterBody( htmlString ) );
 
 	// Parse htmlString as native Document object.
