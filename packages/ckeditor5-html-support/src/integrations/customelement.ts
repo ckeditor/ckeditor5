@@ -112,7 +112,7 @@ export default class CustomElementSupport extends Plugin {
 
 						htmlContent = editor.data.processor.toData( documentFragment );
 
-						htmlContent = htmlContent.replace( /^<\S+(?:\s+\S+="[^"]*")*\s*>(.*)<\/\S+\s*>/, '$1' );
+						htmlContent = htmlContent.replace( /^<[^\s>]+(?:\s+[^\s>]+(?:="[^"]*")?)*\s*>([\s\S]*)<\/\S+\s*>$/, '$1' );
 					}
 
 					conversionApi.writer.setAttribute( 'htmlContent', htmlContent, modelElement );
