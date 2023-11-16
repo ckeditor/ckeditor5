@@ -70,7 +70,7 @@ export default [
 				targets: path.join( cwd, 'dist' )
 			} ),
 			commonjs(),
-			// nodeResolve(),
+			nodeResolve(),
 			svgPlugin( {
 				stringify: true
 			} ),
