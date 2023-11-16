@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-11-07
+modified_at: 2023-11-13
 ---
 
 # Update to CKEditor&nbsp;5 v40.x
@@ -16,13 +16,13 @@ modified_at: 2023-11-07
 
 ## Update to CKEditor&nbsp;5 v40.1.0
 
-### New way to handle images inserted into content
+### Changes to the default insert image action
 
-Inline images can be inserted in the middle of a paragraph or a link just like regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables, or media. Being larger and existing as standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc.
+We changed how the images are inserted by default. For long time, the image insert action detected where the selection is placed, and depending on that inserted an inline image or a block one. This caused confusion in some cases, and led to suboptimal experience. From now on, the images will be inserted as block ones by default.
 
-Introduced in the latest version comes a handy `image.insert.type` configuration setting that lets the integrators set up the way newly uploaded ar pasted images are handled in the editor content. By default, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
+Changes introduced in the latest version affect the `image.insert.type` configuration setting that lets the integrators set up the way newly uploaded ar pasted images are handled in the editor content. We renamed the `undefined` option to `auto` (see further details below). Now, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
 
-If you wish to modify this behavior, the `type` setting in the editor configuration can be used:
+If you wish to modify this behavior, the `type` setting in the editor configuration can be easily adjusted to meet your needs:
 
 ```js
 ClassicEditor.create( element, {
@@ -34,15 +34,15 @@ ClassicEditor.create( element, {
 } );
 ```
 
-The `type` setting accepts the following three values:
+The `type` setting accepts the following values:
 
-* `'auto'`: The editor determines the image type based on the cursor's position. For example, if you insert an image in the middle of a paragraph, it will be inserted as inline. If you insert it at the end or beginning of a paragraph, it becomes a block image.
-* `'block'`: Always insert images as block elements, placing them below or above the current paragraph or block.
-* `'inline'`: Always insert images as inline elements within the current paragraph or block.
+* `'auto'`: The editor determines the image type based on the cursor's position, just as it was before. For example, if you insert an image in the middle of a paragraph, it will be inserted as inline. If you insert it at the end or beginning of a paragraph, it will become a block image.
+* `'block'`: Always inserts images as block elements, placing them below or above the current paragraph or block.
+* `'inline'`: Always inserts images as inline elements within the current paragraph or block.
 
 If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
 
-**Important**: If only one type of image plugin is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the supported image type will be used.
+**Important**: If only one type of {@link features/images-installation#inline-and-block-images image plugin} is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
 
 ### Updated image text alternative icon
 
@@ -61,7 +61,7 @@ Listed below are the most important changes that require your attention when upg
 This release introduces changes to the {@link features/images-overview image feature} connected with the image `width` and `height` attributes. The changes include:
 
 * Upon {@link features/image-upload uploading an image file} or {@link features/images-inserting inserting it} into the editor content, the CKEditor 5 image feature fetches these dimensions from the file. The editor then adds these properties to the markup, just like the {@link features/images-text-alternative text alternative tag}.
-	* The editor **will not change already existing content**. It means, loading HTML (i.e., `setData`) with images does not set up these attributes.
+	* The editor **will not change already existing content**. It means, loading HTML (that is, `setData`) with images does not set up these attributes.
 	* If the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
 * Changes to an image (such as resize, etc.) will trigger the creation of those attributes. These attributes are crucial to proper content handling, and actions on a current image that does not have these improve this image's markup.
 * The `aspect-ratio` attribute has been added to the image's properties to handle situations when the file is resized or scaled with a tweaked aspect ratio.
@@ -154,7 +154,7 @@ The new approach has an impact on how revision history (or loading legacy docume
 
 #### New `CommentThread#unlinkedAt` property
 
-A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property and returns it together with other `CommentThread` data.  
+A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property and returns it together with other `CommentThread` data.
 
 #### Changes impacting custom features
 
@@ -205,7 +205,7 @@ This change was reflected in the {@link features/comments-outside-editor comment
 
 Previously, in a real-time collaboration environment, deleted comment threads were fetched and added to `CommentsRepository` when the editor re-connected to Cloud Services. This was an incorrect behavior and was fixed.
 
-If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it. 
+If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it.
 
 ### New Balloon Block editor icon
 

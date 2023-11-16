@@ -281,7 +281,7 @@ function updateStatus( editor ) {
 How to understand this demo:
 
 * The button changes to "Saving..." when the data is being sent to the server or there are any other pending actions (e.g. an image being uploaded).
-* You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and clicking the "Save" button. These actions will make the editor "busy" for a longer time &mdash; try leaving the page then.
+* You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and clicking the "Save" button. These actions will make the editor "busy" for a longer time &ndash; try leaving the page then.
 
 {@snippet installation/getting-and-setting-data/manualsave}
 

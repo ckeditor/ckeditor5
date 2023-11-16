@@ -34,7 +34,7 @@ If you need even more, try our experimental plugins, like the integration of the
 
 ## How-tos
 
-There come times when you don't need deep-dive guides, elaborate solutions, and complicated examples. Sometimes, you just need to know how to set the height of CKEditor&nbsp;5. Or, maybe you want to learn how to focus the editor? This is what the {@link examples/how-tos How-to} section is for!
+There come times when you do not need deep-dive guides, elaborate solutions, and complicated examples. Sometimes, you just need to know how to set the height of CKEditor&nbsp;5. Or, maybe you want to learn how to focus the editor? This is what the {@link examples/how-tos How-to} section is for!
 
 
 **Related links**

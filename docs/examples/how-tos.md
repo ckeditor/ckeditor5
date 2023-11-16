@@ -168,7 +168,7 @@ const modelFragment = editor.data.toModel( viewFragment );
 editor.model.insertContent( modelFragment );
 ```
 
-Remember, if some element or attribute does not have declared converters (whether by the dedicated feature or {@link features/html/general-html-support General HTML support) plugin then those won't get inserted.
+Remember, if some element or attribute does not have declared converters (whether by the dedicated feature or {@link features/general-html-support General HTML support}) plugin then those will not get inserted.
 
 ### How to focus the editor?
 
@@ -293,7 +293,7 @@ for ( const range of wordRanges ) {
 }
 ```
 
-### How to listen on a double click (e.g. link elements)?
+### How to listen on a double-click (e.g. link elements)?
 
 ```js
 // Add observer for double click and extend a generic DomEventObserver class by a native DOM dblclick event:
