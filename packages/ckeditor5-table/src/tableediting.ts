@@ -84,6 +84,7 @@ export default class TableEditing extends Plugin {
 
 		schema.register( 'tableRow', {
 			allowIn: 'table',
+			allowAttributes: [ 'rowGroup' ],
 			isLimit: true
 		} );
 
@@ -122,7 +123,12 @@ export default class TableEditing extends Plugin {
 		} );
 
 		// Table row conversion.
-		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
+		conversion.for( 'upcast' ).elementToElement( {
+			view: 'tr',
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( 'tableRow', { rowGroup: viewElement.getCustomProperty( 'rowGroup' ) } );
+			}
+		} );
 		conversion.for( 'upcast' ).add( skipEmptyTableRow() );
 
 		conversion.for( 'downcast' ).elementToElement( {
