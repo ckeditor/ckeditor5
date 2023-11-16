@@ -50,7 +50,6 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "rollup": "rollup -c ../../scripts/build.mjs",
     "dll:build": "webpack",
     "rollup": "rollup -c ../../scripts/build.mjs",
     "build": "tsc -p ./tsconfig.json"
