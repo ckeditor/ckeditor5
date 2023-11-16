@@ -60,20 +60,20 @@ async function main() {
 		return;
 	}
 
-	for ( const x of invalidMetadata ) {
-		console.log( red( `\nPackage "${ x.name }" has invalid metadata entries:` ) );
+	for ( const { name, missingExports, missingIcons } of invalidMetadata ) {
+		console.log( red( `\nPackage "${ name }" has invalid metadata entries:` ) );
 
-		if ( x.missingExports.length ) {
+		if ( missingExports.length ) {
 			console.log( red( [
 				'Missing exports:',
-				...x.missingExports.map( missingExport => ` - ${ missingExport }` )
+				...missingExports.map( missingExport => ` - ${ missingExport }` )
 			].join( '\n' ) ) );
 		}
 
-		if ( x.missingIcons.length ) {
+		if ( missingIcons.length ) {
 			console.log( red( [
 				'Missing icons:',
-				...x.missingIcons.map( missingIcon => ` - ${ missingIcon }` )
+				...missingIcons.map( missingIcon => ` - ${ missingIcon }` )
 			].join( '\n' ) ) );
 		}
 	}
