@@ -271,7 +271,7 @@ export interface CKBoxImageUrls {
 	/**
 	 * A fallback URL for browsers that do not support the "webp" format.
 	 */
-	default: string;
+	default?: string;
 }
 
 /**
