@@ -11,6 +11,7 @@ import {
 	type EventInfo,
 	type Locale,
 	type CollectionChangeEvent,
+	type DecoratedMethodEvent,
 	KeystrokeHandler,
 	FocusTracker,
 	Rect,
@@ -67,6 +68,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * TODO
 	 */
 	public actionsView?: DialogActionsView;
+
+	/**
+	 * TODO
+	 */
+	public static defaultOffset: number = 15;
 
 	/**
 	 * TODO
@@ -155,6 +161,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.set( '_left', 0 );
 		this._getCurrentDomRoot = getCurrentDomRoot;
 		this._getViewportOffset = getViewportOffset;
+
+		this.decorate( 'moveTo' );
 
 		this.children = this.createCollection();
 		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
@@ -404,6 +412,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 */
 	private _moveToConfiguredPosition(): void {
 		const viewportRect = this._getViewportRect();
+		const defaultOffset = DialogView.defaultOffset;
 
 		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
@@ -418,7 +427,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				// @if CK_DEBUG_DIALOG // }
 
 				if ( domRootRect ) {
-					this.moveTo( domRootRect.right - dialogRect.width - 10, domRootRect.top + 10 );
+					this.moveTo( domRootRect.right - dialogRect.width - defaultOffset, domRootRect.top + defaultOffset );
 				} else {
 					this._moveOffScreen();
 				}
@@ -429,7 +438,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				const domRootRect = this._getVisibleDomRootRect( viewportRect );
 
 				if ( domRootRect ) {
-					this.moveTo( domRootRect.left + 10, domRootRect.top + 10 );
+					this.moveTo( domRootRect.left + defaultOffset, domRootRect.top + defaultOffset );
 				} else {
 					this._moveOffScreen();
 				}
@@ -589,10 +598,18 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 }
 
+/**
+ * TODO
+ */
 export type DialogViewCloseEvent = {
 	name: 'close';
 	args: [];
 };
+
+/**
+ * TODO
+ */
+export type DialogViewMoveToEvent = DecoratedMethodEvent<DialogView, 'moveTo'>;
 
 // Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
 // TODO: This is a duplicate from position.ts module. It should either be exported there or land somewhere in utils.
