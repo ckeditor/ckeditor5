@@ -19,7 +19,7 @@ const { addTypeScriptLoader } = require( './utils' );
 
 const DEFAULT_LANGUAGE = 'en';
 const MULTI_LANGUAGE = 'multi-language';
-const SNIPPETS_BUILD_CHUNK_SIZE = 50;
+const SNIPPETS_BUILD_CHUNK_SIZE = 20;
 
 const CKEDITOR5_ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
