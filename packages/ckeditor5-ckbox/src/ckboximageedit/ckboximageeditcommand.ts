@@ -39,7 +39,7 @@ export default class CKBoxImageEditCommand extends Command {
 	private _wrapper: Element | null = null;
 
 	/**
-	 * TODO
+	 * The states of image processing in progress.
 	 */
 	private _processInProgress = new Map<string, ProcessingState>();
 
@@ -123,11 +123,6 @@ export default class CKBoxImageEditCommand extends Command {
 
 	/**
 	 * Creates the options object for the CKBox Image Editor dialog.
-	 *
-	 * @returns The object with properties:
-	 * - tokenUrl The token endpoint URL.
-	 * - onClose The callback function invoked after closing the CKBox dialog.
-	 * - onSave The callback function invoked after saving the edited image.
 	 */
 	private _prepareOptions( state: ProcessingState ) {
 		const editor = this.editor;
@@ -151,7 +146,7 @@ export default class CKBoxImageEditCommand extends Command {
 	private _prepareListeners(): void {
 		// Abort editing processing when the image has been removed.
 		this.listenTo( this.editor.model.document, 'change:data', () => {
-			const processingStates = this._getProcessesWithDeletedImage();
+			const processingStates = this._getProcessingStatesOfDeletedImages();
 
 			processingStates.forEach( processingState => {
 				processingState.controller.abort();
@@ -160,9 +155,9 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
-	 * If in some process there is image which is already removed it returns that process.
+	 * Gets processing states of images that have been deleted in the mean time.
 	 */
-	private _getProcessesWithDeletedImage(): Array<ProcessingState> {
+	private _getProcessingStatesOfDeletedImages(): Array<ProcessingState> {
 		const states: Array<ProcessingState> = [];
 
 		for ( const state of this._processInProgress.values() ) {
@@ -228,11 +223,8 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
-	 * Get asset's status on server. If server respond with "success" status then
+	 * Get asset's status on server. If server responds with "success" status then
 	 * image is already proceeded and ready for saving.
-	 *
-	 * @param id Id of desired asset.
-	 * @param signal Abort connection with server.
 	 */
 	private async _getAssetStatusFromServer( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
 		const url = new URL( 'assets/' + id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
