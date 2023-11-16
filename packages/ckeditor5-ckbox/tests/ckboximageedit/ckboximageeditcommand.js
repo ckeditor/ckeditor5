@@ -594,6 +594,10 @@ describe( 'CKBoxImageEditCommand', () => {
 					JSON.stringify( {
 						metadata: {
 							metadataProcessingStatus: 'success'
+						},
+						imageUrls: {
+							100: 'https://example.com/workspace1/assets/image-id2/images/100.webp',
+							default: 'https://example.com/workspace1/assets/image-id2/images/100.png'
 						}
 					} )
 				] );
