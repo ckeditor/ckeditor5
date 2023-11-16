@@ -714,7 +714,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-widget_keystrokeInsertLineAfter">widget_keystrokeInsertLineAfter</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-widget_keystrokeInsertLineBefore">widget_keystrokeInsertLineBefore</a></td>
-			<td>In CKEditor&nbsp;5 a new paragraph can be inserted directly after a widget with <kbd>Enter</kbd> and directly before a widget &mdash; with <kbd>Shift</kbd> + <kbd>Enter</kbd>.</td>
+			<td>In CKEditor&nbsp;5 a new paragraph can be inserted directly after a widget with <kbd>Enter</kbd> and directly before a widget &ndash; with <kbd>Shift</kbd> + <kbd>Enter</kbd>.</td>
 		</tr>
 		<tr>
 			<td>

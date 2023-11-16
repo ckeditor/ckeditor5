@@ -45,7 +45,7 @@ The heading feature lets you also use a set of heading buttons instead of the dr
 
 You can configure which heading levels the editor will support and how they should be named in the Headings dropdown. Use the {@link module:heading/headingconfig~HeadingConfig#options `heading.options`} configuration option to do so.
 
-For example, the following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
+For example, the following editor will support only two levels of headings &ndash; `<h1>` and `<h2>`:
 
 ```html
 <div id="editor">

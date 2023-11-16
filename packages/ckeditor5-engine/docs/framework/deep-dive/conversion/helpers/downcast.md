@@ -7,7 +7,7 @@ since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Downcast helpers &mdash; model to view conversion
+# Downcast helpers &ndash; model to view conversion
 
 This article lists all editor helpers available in the {@link framework/deep-dive/conversion/downcast downcast conversion}.
 

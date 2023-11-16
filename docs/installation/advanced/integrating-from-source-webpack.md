@@ -247,7 +247,7 @@ Encore.
 
 ## TypeScript configuration
 
-If you want to use TypeScript, add the `tsconfig.json` file at the root of your project. You can copy the below example config or create your own.
+If you want to use TypeScript, add the `tsconfig.json` file at the root of your project. You can copy the below example configuration or create your own.
 
 ```json
 // tsconfig.json
@@ -350,7 +350,7 @@ ClassicEditor
 
 ### TypeScript
 
-If you want to use TypeScript, the `ckeditor` file looks very similar. However, don't forget about the `.ts` extension.
+If you want to use TypeScript, the `ckeditor` file looks very similar. However, do not forget about the `.ts` extension.
 
 ```ts
 // ckeditor.ts
