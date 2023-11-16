@@ -1,4 +1,4 @@
-<div class="fake-top-bar">This element corresponds to editor.config.ui.viewportTopOffset</div>
+<div class="fake-top-bar">This element visualizes editor.config.ui.viewportTopOffset</div>
 <div class="spanner"></div>
 <div id="editor-default">
 	<h2>Heading 1</h2>
@@ -69,17 +69,17 @@
 	}
 
 	.fake-top-bar {
-		background-color: rgb(0 122 237 / 20%);
 		top: 0;
 		left: 0;
+		color: #fff;
 		right: 0;
 		position: fixed;
 		height: 50px;
-		z-index: 999999;
-		backdrop-filter: blur(2px);
-		box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.1);
+		z-index: 9999;
 		text-align: center;
 		line-height: 50px;
+		background: hsl(228.28deg 83.35% 26.68% / 78%);
+		pointer-events: none;
 	}
 
 	#editor-narrow + .ck.ck-editor {
