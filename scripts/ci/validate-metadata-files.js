@@ -30,7 +30,7 @@ main()
 async function main() {
 	const options = getOptions( process.argv.slice( 2 ) );
 
-	console.log( magenta( '\nValidating plugins\' metadata...' ) );
+	console.log( magenta( '\nValidating plugins\' metadata and entry points...' ) );
 
 	const packagesGlobPattern = upath.join( options.cwd, 'packages', '*' );
 	const packagesPaths = ( await glob( packagesGlobPattern ) ).map( upath.toUnix );
@@ -40,15 +40,16 @@ async function main() {
 	const invalidMetadata = [];
 
 	for ( const packageData of packagesWithMetadata ) {
-		const missingExports = getMissingExports( packageData );
+		const { hasEntryPoint, missingExports } = getMissingExports( packageData );
 		const missingIcons = getMissingIcons( packageData, options );
 
-		if ( ![ ...missingExports, ...missingIcons ].length ) {
+		if ( hasEntryPoint && ![ ...missingExports, ...missingIcons ].length ) {
 			continue;
 		}
 
 		invalidMetadata.push( {
 			name: packageData.name,
+			hasEntryPoint,
 			missingExports,
 			missingIcons
 		} );
@@ -60,8 +61,12 @@ async function main() {
 		return;
 	}
 
-	for ( const { name, missingExports, missingIcons } of invalidMetadata ) {
-		console.log( red( `\nPackage "${ name }" has invalid metadata entries:` ) );
+	for ( const { name, hasEntryPoint, missingExports, missingIcons } of invalidMetadata ) {
+		console.log( red( `\nPackage "${ name }" has failed validation:` ) );
+
+		if ( !hasEntryPoint ) {
+			console.log( red( 'The "main" field in "package.json" file is either missing or has invalid path.' ) );
+		}
 
 		if ( missingExports.length ) {
 			console.log( red( [
@@ -86,23 +91,34 @@ async function main() {
  * Additionally, adds `packageName` of the plugin to returned data.
  */
 async function getPackageData( packagePath ) {
-	const name = packagePath.split( '/' ).at( -1 );
+	const name = upath.basename( packagePath );
 
 	const pkgJsonPath = upath.join( packagePath, 'package.json' );
 	const pkgJsonContent = await fs.readJSON( pkgJsonPath );
 
 	const metadataPath = upath.join( packagePath, 'ckeditor5-metadata.json' );
-	const indexPath = upath.join( packagePath, pkgJsonContent.main );
-
 	const metadata = await fs.exists( metadataPath ) ? await fs.readJSON( metadataPath ) : null;
+
+	if ( !pkgJsonContent.main ) {
+		return { name, metadata, index: null };
+	}
+
+	const indexPath = upath.join( packagePath, pkgJsonContent.main );
 	const index = await fs.exists( indexPath ) ? await fs.readFile( indexPath, 'utf-8' ) : null;
 
 	return { name, metadata, index };
 }
 
 function getMissingExports( packageData ) {
+	const output = {
+		hasEntryPoint: true,
+		missingExports: []
+	};
+
 	if ( !packageData.index ) {
-		throw new Error( 'missing index' );
+		output.hasEntryPoint = false;
+
+		return output;
 	}
 
 	const requiredExports = packageData.metadata.plugins.map( plugin => CUSTOM_EXPORT_NAMES[ plugin.className ] || plugin.className );
@@ -121,7 +137,9 @@ function getMissingExports( packageData ) {
 			}
 		} );
 
-	return requiredExports.filter( requiredExport => !exports.includes( requiredExport ) );
+	output.missingExports = requiredExports.filter( requiredExport => !exports.includes( requiredExport ) );
+
+	return output;
 }
 
 function getMissingIcons( packageData, options ) {
