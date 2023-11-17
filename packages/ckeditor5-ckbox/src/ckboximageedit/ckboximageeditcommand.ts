@@ -315,7 +315,13 @@ export default class CKBoxImageEditCommand extends Command {
 				}
 			} );
 
+			const previousChildren = element.getChildren();
+
 			element = editor.model.document.selection.getSelectedElement()!;
+
+			for ( const child of previousChildren ) {
+				writer.append( child, element );
+			}
 
 			writer.setAttribute( 'ckboxImageId', asset.data.id, element );
 

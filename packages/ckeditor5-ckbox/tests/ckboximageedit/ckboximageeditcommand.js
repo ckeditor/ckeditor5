@@ -626,6 +626,44 @@ describe( 'CKBoxImageEditCommand', () => {
 					} );
 			} );
 
+			it( 'should keep caption after image replace', () => {
+				editor.model.schema.register( 'caption', {
+					allowIn: 'imageBlock',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+
+				editor.conversion.elementToElement( {
+					view: 'caption',
+					model: 'caption'
+				} );
+
+				setModelData( model, '[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+							'<caption>' +
+								'caption' +
+							'</caption>' +
+					'</imageBlock>]' );
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				command._replaceImage( imageElement, dataMock );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'alt="alt text" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+							'<caption>' +
+								'caption' +
+							'</caption>' +
+					'</imageBlock>]'
+				);
+			} );
+
 			it( 'should not replace image with saved one before it is processed', () => {
 				const modelData =
 					'[<imageBlock ' +
@@ -635,7 +673,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				setModelData( model, modelData );
 
-				command.fire( 'ckboxImageEditor:save', dataMock );
+				command.execute();
 
 				expect( getModelData( model ) ).to.equal( modelData );
 			} );
