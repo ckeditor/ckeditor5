@@ -14,10 +14,6 @@
 }
 
 .ck.ck-dialog-overlay {
-	display: flex;
-	flex: 100%;
-	align-items: center;
-	justify-content: center;
 	user-select: none;
 	overscroll-behavior: none;
 
@@ -48,6 +44,8 @@
 	max-width: min(90vw, 800px);
 	overscroll-behavior: none;
 	will-change: transform;
+	width: fit-content;
+	position: absolute;
 
 	--ck-drop-shadow: 0px 0px 6px 2px hsl(0deg 0% 0% / 15%);
 	border: 1px solid var(--ck-color-base-border);

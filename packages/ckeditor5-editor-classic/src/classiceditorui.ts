@@ -8,7 +8,13 @@
  */
 
 import type { Editor, ElementApi } from 'ckeditor5/src/core';
-import { EditorUI, normalizeToolbarConfig, type EditorUIReadyEvent } from 'ckeditor5/src/ui';
+import {
+	EditorUI,
+	normalizeToolbarConfig,
+	type EditorUIReadyEvent,
+	type DialogViewMoveToEvent,
+	DialogView
+} from 'ckeditor5/src/ui';
 import {
 	enablePlaceholder,
 	type ViewScrollToTheSelectionEvent
@@ -107,6 +113,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
+		this._initDialogPluginIntegration();
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -207,6 +214,34 @@ export default class ClassicEditorUI extends EditorUI {
 				this.stopListening( stickyPanel, 'change:isSticky', scrollViewportOnPanelGettingSticky );
 			}, 20 );
 		}
+	}
+
+	/**
+	 * Provides an integration between the sticky toolbar and {@link module:ui/dialog the Dialog plugin}.
+	 *
+	 * It ensures that the {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#stickyPanel sticky panel}
+	 * used by the editor UI will not get obscured by the dialog when the dialog uses one of its automatic positions.
+	 */
+	private _initDialogPluginIntegration(): void {
+		if ( !this.editor.plugins.has( 'Dialog' ) ) {
+			return;
+		}
+
+		const dialogView = this.editor.plugins.get( 'Dialog' ).view;
+		const stickyPanel = this.view.stickyPanel;
+
+		dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
+			// Engage only when the panel is sticky, and the dialog is using one of default positions, and the dialog is not a modal.
+			if ( !stickyPanel.isSticky || dialogView.wasMoved || !dialogView.isDraggable ) {
+				return;
+			}
+
+			const stickyPanelContentRect = new Rect( stickyPanel.contentPanel );
+
+			if ( data[ 1 ] < stickyPanelContentRect.bottom + DialogView.defaultOffset ) {
+				data[ 1 ] = stickyPanelContentRect.bottom + DialogView.defaultOffset;
+			}
+		}, { priority: 'high' } );
 	}
 }
 

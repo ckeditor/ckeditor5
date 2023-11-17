@@ -99,6 +99,7 @@ export { default as BalloonToolbar, type BalloonToolbarShowEvent } from './toolb
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar';
 
 export { default as Dialog } from './dialog/dialog';
+export { default as DialogView, DialogViewPosition, type DialogViewMoveToEvent } from './dialog/dialogview';
 
 export { default as View, type UIViewRenderEvent } from './view';
 export { default as ViewCollection } from './viewcollection';

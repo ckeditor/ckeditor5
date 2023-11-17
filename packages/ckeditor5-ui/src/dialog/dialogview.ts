@@ -11,8 +11,12 @@ import {
 	type EventInfo,
 	type Locale,
 	type CollectionChangeEvent,
+	type DecoratedMethodEvent,
 	KeystrokeHandler,
-	FocusTracker
+	FocusTracker,
+	Rect,
+	global,
+	toUnit
 } from '@ckeditor/ckeditor5-utils';
 import ViewCollection from '../viewcollection';
 import View from '../view';
@@ -22,7 +26,19 @@ import FocusCycler, { type FocusCyclerBackwardCycleEvent, type FocusCyclerForwar
 import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin';
 import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview';
 
+// @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
+
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import type EditorUI from '../editorui/editorui';
+
+export enum DialogViewPosition {
+	SCREEN_CENTER = 'screen-center',
+	CURRENT_ROOT_CENTER = 'current-root-center',
+	CURRENT_ROOT_NE = 'current-root-ne',
+	CURRENT_ROOT_NW = 'current-root-nw'
+}
+
+const toPx = toUnit( 'px' );
 
 /**
  * TODO
@@ -56,6 +72,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
+	public static defaultOffset: number = 15;
+
+	/**
+	 * TODO
+	 */
 	public readonly contentView: View;
 
 	/**
@@ -76,12 +97,47 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
+	declare public isTransparent: boolean;
+
+	/**
+	 * TODO
+	 */
 	declare public isDraggable: boolean;
 
 	/**
 	 * TODO
 	 */
+	declare public wasMoved: boolean;
+
+	/**
+	 * TODO
+	 */
 	declare public className: string | undefined;
+
+	/**
+	 * TODO
+	 */
+	declare public _top: number;
+
+	/**
+	 * TODO
+	 */
+	declare public _left: number;
+
+	/**
+	 * TODO
+	 */
+	private _getCurrentDomRoot: () => HTMLElement;
+
+	/**
+	 * TODO
+	 */
+	private _getViewportOffset: () => EditorUI[ 'viewportOffset' ];
+
+	/**
+	 * TODO
+	 */
+	declare public position: DialogViewPosition;
 
 	/**
 	 * TODO
@@ -94,14 +150,9 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	private readonly focusCycler: FocusCycler;
 
 	/**
-	 * TODO
-	 */
-	declare public _transform: string;
-
-	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale ) {
+	constructor( locale: Locale, getCurrentDomRoot: () => HTMLElement, getViewportOffset: () => EditorUI[ 'viewportOffset' ] ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -109,7 +160,15 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.set( 'isVisible', false );
 		this.set( 'className', '' );
 		this.set( 'isDraggable', false );
-		this.set( '_transform', '' );
+		this.set( 'isTransparent', false );
+		this.set( 'wasMoved', false );
+		this.set( 'position', DialogViewPosition.SCREEN_CENTER );
+		this.set( '_top', 0 );
+		this.set( '_left', 0 );
+		this._getCurrentDomRoot = getCurrentDomRoot;
+		this._getViewportOffset = getViewportOffset;
+
+		this.decorate( 'moveTo' );
 
 		this.children = this.createCollection();
 		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
@@ -157,7 +216,9 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 							bind.to( 'className' )
 						],
 						style: {
-							transform: bind.to( '_transform' )
+							top: bind.to( '_top', top => toPx( top ) ),
+							left: bind.to( '_left', left => toPx( left ) ),
+							visibility: bind.if( 'isTransparent', 'hidden' )
 						}
 					},
 					children: this.parts
@@ -182,8 +243,39 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		// Support for dragging the modal.
 		// TODO: Don't allow dragging beyond the edge of the viewport.
 		// TODO: Disable dragging when the mobile view is on.
-		this.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { transformDelta } ) => {
-			this._transform = `translate3d( ${ transformDelta.x }px, ${ transformDelta.y }px, 0)`;
+		this.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { x, y } ) => {
+			this.moveBy( x, y );
+			this.wasMoved = true;
+		} );
+
+		// Update dialog position upon window resize, if the position was not changed manually.
+		this.listenTo( global.window, 'resize', () => {
+			if ( this.isVisible && !this.wasMoved ) {
+				this._moveToConfiguredPosition();
+			}
+		} );
+
+		// Update dialog position upon document scroll, if the position was not changed manually.
+		this.listenTo( global.document, 'scroll', () => {
+			if ( this.isVisible && !this.wasMoved ) {
+				this._moveToConfiguredPosition();
+			}
+		} );
+
+		this.on( 'change:isVisible', ( evt, name, isVisible ) => {
+			if ( isVisible ) {
+				// Let the content render first, then apply the position. Otherwise, the calculated DOM Rects
+				// will not reflect the final look of the dialog. Note that we're not using #_moveOffScreen() here because
+				// it causes a violent movement of the viewport on iOS (because the dialog still keeps the DOM focus).
+				this.isTransparent = true;
+
+				// FYI: RAF is too short. We need to wait a bit longer.
+				setTimeout( () => {
+					this._moveToConfiguredPosition();
+
+					this.isTransparent = false;
+				}, 10 );
+			}
 		} );
 
 		this.keystrokes.listenTo( this.element! );
@@ -216,11 +308,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			this.actionsView.reset();
 		}
 
-		if ( this.headerView ) {
-			this.resetDrag();
-		}
-
-		this._transform = '';
+		this.wasMoved = false;
 	}
 
 	/**
@@ -278,6 +366,152 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 */
 	public focusPrevious(): void {
 		this.focusCycler.focusPrevious();
+	}
+
+	/**
+	 * TODO
+	 */
+	public moveTo( left: number, top: number ): void {
+		const viewportRect = this._getViewportRect();
+		const dialogRect = this._getDialogRect();
+
+		// Don't let the dialog go beyond the right edge of the viewport.
+		if ( left + dialogRect.width > viewportRect.right ) {
+			left = viewportRect.right - dialogRect.width;
+		}
+
+		// Don't let the dialog go beyond the left edge of the viewport.
+		if ( left < viewportRect.left ) {
+			left = viewportRect.left;
+		}
+
+		// Don't let the dialog go beyond the top edge of the viewport.
+		if ( top < viewportRect.top ) {
+			top = viewportRect.top;
+		}
+
+		// TODO: The same for the bottom edge?
+
+		this._moveTo( left, top );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _moveTo( left: number, top: number ): void {
+		this._left = left;
+		this._top = top;
+	}
+
+	/**
+	 * TODO
+	 */
+	public moveBy( left: number, top: number ): void {
+		this.moveTo( this._left + left, this._top + top );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _moveOffScreen(): void {
+		this._moveTo( -9999, -9999 );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _moveToConfiguredPosition(): void {
+		const viewportRect = this._getViewportRect();
+		const defaultOffset = DialogView.defaultOffset;
+
+		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
+		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
+
+		switch ( this.position ) {
+			case DialogViewPosition.CURRENT_ROOT_NE: {
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+				const dialogRect = this._getDialogRect();
+
+				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
+				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
+				// @if CK_DEBUG_DIALOG // }
+
+				if ( domRootRect ) {
+					this.moveTo( domRootRect.right - dialogRect.width - defaultOffset, domRootRect.top + defaultOffset );
+				} else {
+					this._moveOffScreen();
+				}
+
+				break;
+			}
+			case DialogViewPosition.CURRENT_ROOT_NW: {
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+
+				if ( domRootRect ) {
+					this.moveTo( domRootRect.left + defaultOffset, domRootRect.top + defaultOffset );
+				} else {
+					this._moveOffScreen();
+				}
+
+				break;
+			}
+			case DialogViewPosition.CURRENT_ROOT_CENTER: {
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+				const dialogRect = this._getDialogRect();
+
+				if ( domRootRect ) {
+					this.moveTo(
+						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
+						Math.round( domRootRect.top + domRootRect.height / 2 - dialogRect.height / 2 )
+					);
+				} else {
+					this._moveOffScreen();
+				}
+
+				break;
+			}
+			case DialogViewPosition.SCREEN_CENTER: {
+				const dialogRect = this._getDialogRect();
+
+				this.moveTo(
+					Math.round( ( viewportRect.width - dialogRect.width ) / 2 ),
+					Math.round( ( viewportRect.height - dialogRect.height ) / 2 )
+				);
+			}
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getVisibleDomRootRect( viewportRect: Rect ): Rect | null {
+		let visibleDomRootRect = new Rect( this._getCurrentDomRoot() ).getVisible();
+
+		if ( !visibleDomRootRect ) {
+			return null;
+		} else {
+			visibleDomRootRect = viewportRect.getIntersection( visibleDomRootRect );
+
+			if ( !visibleDomRootRect ) {
+				return null;
+			}
+		}
+
+		return visibleDomRootRect;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getDialogRect() {
+		return new Rect( this.element!.firstElementChild as HTMLElement );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getViewportRect() {
+		return getConstrainedViewportRect( this._getViewportOffset() );
 	}
 
 	/**
@@ -374,7 +608,30 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 }
 
+/**
+ * TODO
+ */
 export type DialogViewCloseEvent = {
 	name: 'close';
 	args: [];
 };
+
+/**
+ * TODO
+ */
+export type DialogViewMoveToEvent = DecoratedMethodEvent<DialogView, 'moveTo'>;
+
+// Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
+// TODO: This is a duplicate from position.ts module. It should either be exported there or land somewhere in utils.
+function getConstrainedViewportRect( viewportOffset: EditorUI[ 'viewportOffset' ] ): Rect {
+	viewportOffset = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffset );
+
+	const viewportRect = new Rect( global.window );
+
+	viewportRect.top += viewportOffset.top!;
+	viewportRect.height -= viewportOffset.top!;
+	viewportRect.bottom -= viewportOffset.bottom!;
+	viewportRect.height -= viewportOffset.bottom!;
+
+	return viewportRect;
+}
