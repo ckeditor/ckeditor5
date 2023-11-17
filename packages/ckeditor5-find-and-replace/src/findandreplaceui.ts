@@ -12,9 +12,7 @@ import {
 	Dialog,
 	ButtonView,
 	CssTransitionDisablerMixin,
-	type ViewWithCssTransitionDisabler,
-	type FocusCyclerForwardCycleEvent,
-	type FocusCyclerBackwardCycleEvent
+	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
@@ -126,7 +124,6 @@ export default class FindAndReplaceUI extends Plugin {
 		const findAndReplaceEditing: FindAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
 		const editingState = findAndReplaceEditing.state!;
 		const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
-		const dialog = this.editor.plugins.get( 'Dialog' );
 
 		// Let the form know which result is being highlighted.
 		formView.bind( 'highlightOffset' ).to( editingState, 'highlightedResult', highlightedResult => {
@@ -168,16 +165,6 @@ export default class FindAndReplaceUI extends Plugin {
 			if ( isDirty ) {
 				this.fire( 'searchReseted' );
 			}
-		} );
-
-		formView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-			dialog.view.focusNext();
-			evt.stop();
-		} );
-
-		formView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-			dialog.view.focusPrevious();
-			evt.stop();
 		} );
 	}
 }

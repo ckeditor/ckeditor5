@@ -12,8 +12,6 @@ import {
 	ButtonView,
 	CssTransitionDisablerMixin,
 	Dialog,
-	type FocusCyclerBackwardCycleEvent,
-	type FocusCyclerForwardCycleEvent,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui';
 
@@ -143,16 +141,6 @@ export default class MediaEmbedUI extends Plugin {
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		form.urlInputView.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-		form.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-			dialog.view.focusNext();
-			evt.stop();
-		} );
-
-		form.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-			dialog.view.focusPrevious();
-			evt.stop();
-		} );
 	}
 }
 

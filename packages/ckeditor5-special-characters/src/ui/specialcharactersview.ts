@@ -128,23 +128,13 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	}
 
 	/**
-	 * Focuses the first focusable in {@link #items}.
+	 * @inheritDoc
 	 */
-	public focus(): void {
-		this.focusFirst();
-	}
-
-	/**
-	 * TODO
-	 */
-	public focusFirst(): void {
-		this.focusCycler.focusFirst();
-	}
-
-	/**
-	 * TODO
-	 */
-	public focusLast(): void {
-		this.focusCycler.focusLast();
+	public focus( direction?: 1 | -1 ): void {
+		if ( direction === -1 ) {
+			this.focusCycler.focusLast();
+		} else {
+			this.focusCycler.focusFirst();
+		}
 	}
 }

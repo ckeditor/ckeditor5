@@ -11,9 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core';
 import { Typing } from 'ckeditor5/src/typing';
 import {
 	Dialog,
-	ButtonView,
-	type FocusCyclerBackwardCycleEvent,
-	type FocusCyclerForwardCycleEvent
+	ButtonView
 } from 'ckeditor5/src/ui';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils';
 import CharacterGridView, {
@@ -116,16 +114,6 @@ export default class SpecialCharacters extends Plugin {
 						editor.execute( 'insertText', { text: data.character } );
 						dialog.hide();
 						editor.editing.view.focus();
-					} );
-
-					specialCharactersView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-						dialog.view.focusNext();
-						evt.stop();
-					} );
-
-					specialCharactersView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-						dialog.view.focusPrevious();
-						evt.stop();
 					} );
 				}
 
