@@ -31,16 +31,68 @@ The CLI will ask you some questions. Depending on your choices, the folder struc
 
 ## Integrating the build in your Next.js project
 
-With the Next.js setup done, let's move to the actual integration. First, put your unzipped custom build at the project root in the `ckeditor5` folder. Then, add it as a local dependency using the `npm install --save ./ckeditor5` or yarn command:
+With the Next.js setup done, let's move to the actual integration. First, put your unzipped custom build at the project root in the `ckeditor5` folder.
 
-```bash
-yarn add file:./ckeditor5
+### Page Router
+
+If you chose the Page Router, your final folder structure should look similar to the one below.
+
+```plain
+├── ckeditor5
+├── components
+│      └── custom-editor.js
+├── pages
+│   ├── api
+│      └── hello.js
+│   ├── _app.js
+│   ├── _document.js
+│   └── index.js
+├── public
+│   ├── favicon.ico
+│   ├── next.svg
+│   └── vercel.svg
+├── styles
+│   ├── globals.css
+│   └── Home.module.css
+├── jsconfig.json
+├── next.config.js
+├── package.json
+└── ...
 ```
 
-The dependency should be visible in the `package.json` file as `ckeditor5-custom-build`. Additionally, we need an external dependency &ndash; the CKEditor&nbsp;5 React component. Next.js extends React, and hence, the component is valid here. You can install it using `npm install @ckeditor/ckeditor5-react` or the following command:
+### App Router
+
+If you chose the App Router, your final folder structure should look similar to the one below.
+
+```plain
+├── ckeditor5
+├── components
+│      └── custom-editor.js
+├── app
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.js
+│   ├── page.js
+│   └── page.module.css
+├── public
+│   ├── next.svg
+│   └── vercel.svg
+├── jsconfig.json
+├── next.config.js
+├── package.json
+└── ...
+```
+
+Then, add the folder as a local dependency using the yarn command:
 
 ```bash
-yarn add @ckeditor/ckeditor5-react
+yarn add file:./ckeditor5 # or npm install file:./ckeditor5
+```
+
+The dependency should be visible in the `package.json` file as `ckeditor5-custom-build`. Additionally, we need an external dependency &ndash; the CKEditor&nbsp;5 React component. Next.js extends React, and hence, the component is valid here. You can install it using the following command:
+
+```bash
+yarn add @ckeditor/ckeditor5-react # or npm install @ckeditor/ckeditor5-react
 ```
 
 Next, we will use the installed dependencies in a React component. Create a new component in the components directory, for example, `components/custom-editor.js`. Inside the component file, import all necessary dependencies. Then, create a functional component that returns the CKEditor&nbsp;5 React component. The custom build ships with a default configuration, but you can customize it to your needs, as shown in the snippet below.
@@ -98,6 +150,8 @@ You can create a second page inside the `pages` directory or replace the content
 App Router, by default, uses server components. It means we need to mark a component as client-side explicitly. We can achieve that by using the `'use client'` directive at the top of a file, above your imports. Also, pay attention to the folder structure, which is different now. The `page.js` file should go into the `app` directory.
 
 ```jsx
+// app/page.js (App Router)
+// pages/index.js (Pages Router)
 'use client' // only in App Router
 
 import React from 'react';
@@ -116,56 +170,6 @@ function Home() {
 }
 
 export default Home;
-```
-
-### Page Router
-
-If you chose the Page Router, your final folder structure should look similar to the one below.
-
-```plain
-├── ckeditor5
-├── components
-│      └── custom-editor.js
-├── pages
-│   ├── api
-│      └── hello.js
-│   ├── _app.js
-│   ├── _document.js
-│   └── index.js
-├── public
-│   ├── favicon.ico
-│   ├── next.svg
-│   └── vercel.svg
-├── styles
-│   ├── globals.css
-│   └── Home.module.css
-├── jsconfig.json
-├── next.config.js
-├── package.json
-└── ...
-```
-
-### App Router
-
-If you chose the App Router, your final folder structure should look similar to the one below.
-
-```plain
-├── ckeditor5
-├── components
-│      └── custom-editor.js
-├── app
-│   ├── favicon.ico
-│   ├── globals.css
-│   ├── layout.js
-│   ├── page.js
-│   └── page.module.css
-├── public
-│   ├── next.svg
-│   └── vercel.svg
-├── jsconfig.json
-├── next.config.js
-├── package.json
-└── ...
 ```
 
 Finally, you can run your project. Regardless of your router choice, type `npm run dev` or `yarn run dev` to see your app in the browser. If you have trouble seeing the editor, remember that the Next.js project ships with CSS files that can interfere with the editor. You can remove them or add your styling.
