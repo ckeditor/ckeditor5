@@ -94,6 +94,11 @@ export interface CKBoxConfig {
 	defaultUploadWorkspaceId?: string;
 
 	/**
+	 * Enforces displaying the "Powered by CKBox" link regardless of the CKBox plan used.
+	 */
+	forceDemoLabel?: boolean;
+
+	/**
 	 * Inserts the unique asset ID as the `data-ckbox-resource-id` attribute. To disable this behavior, set it to `true`.
 	 *
 	 * @default false
