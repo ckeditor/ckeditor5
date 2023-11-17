@@ -5,7 +5,7 @@
 ##### h5 Heading
 
 
-## Horizontal Rules
+## Various ways to create horizontal rules
 
 ___
 
@@ -26,12 +26,9 @@ _This is italic text_
 ~~Strikethrough~~
 
 
-## Blockquotes
+## Block quotes
 
-
-> Basic blockquotes 
->> These can also be nested...
-> > > ...more than once.
+> Basic block quotes 
 
 
 ## Lists

@@ -1,14 +1,14 @@
 ---
-menu-title: Paste from Markdown
-meta-title: Paste from Markdown | CKEditor 5 Documentation
+menu-title: Paste Markdown
+meta-title: Paste Markdown | CKEditor 5 Documentation
 category: features-pasting
 order: 40
 modified_at: 2023-11-10
 ---
 
-# Paste from Markdown
+# Paste Markdown
 
-The paste from Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
+The paste Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
 
 <info-box warning>
 	This feature is still in the experimental phase. See the [known issues](#known-issues) section to learn more.
@@ -72,7 +72,7 @@ ClassicEditor
 
 ## Known issues
 
-While the Paste from Markdown feature is already stable enough to use it, please remember it still needs some more testing. We are now mostly concentrating on testing it in connection with other tools and plugins. If you have any observations, suggestions or other piece of information you want to share with us, feel free to put them in [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2321).
+While the Paste Markdown feature is already stable enough to use it, please remember it still needs some more testing. We are now mostly concentrating on testing it in connection with other tools and plugins. If you have any observations, suggestions or other piece of information you want to share with us, feel free to put them in [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/2321).
 
 ## Related features
 

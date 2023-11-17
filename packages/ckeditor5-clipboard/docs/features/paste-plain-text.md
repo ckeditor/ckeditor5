@@ -71,6 +71,7 @@ Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/
 ## Related features
 
 CKEditor&nbsp;5 supports a wider range of paste features, including:
+* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown formatted content straight into the editor.
 * {@link features/paste-from-office Paste from Office} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
 * {@link features/paste-from-google-docs Paste from Google Docs} &ndash; Paste content from Google Docs, maintaining the original formatting and structure.
 * {@link features/import-word Import from Word} &ndash; Convert Word files directly into HTML content.
