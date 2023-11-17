@@ -97,6 +97,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
+	declare public isTransparent: boolean;
+
+	/**
+	 * TODO
+	 */
 	declare public isDraggable: boolean;
 
 	/**
@@ -155,6 +160,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.set( 'isVisible', false );
 		this.set( 'className', '' );
 		this.set( 'isDraggable', false );
+		this.set( 'isTransparent', false );
 		this.set( 'wasMoved', false );
 		this.set( 'position', DialogViewPosition.SCREEN_CENTER );
 		this.set( '_top', 0 );
@@ -211,7 +217,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 						],
 						style: {
 							top: bind.to( '_top', top => toPx( top ) ),
-							left: bind.to( '_left', left => toPx( left ) )
+							left: bind.to( '_left', left => toPx( left ) ),
+							visibility: bind.if( 'isTransparent', 'hidden' )
 						}
 					},
 					children: this.parts
@@ -258,12 +265,15 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.on( 'change:isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
 				// Let the content render first, then apply the position. Otherwise, the calculated DOM Rects
-				// will not reflect the final look of the dialog.
-				this._moveOffScreen();
+				// will not reflect the final look of the dialog. Note that we're not using #_moveOffScreen() here because
+				// it causes a violent movement of the viewport on iOS (because the dialog still keeps the DOM focus).
+				this.isTransparent = true;
 
 				// FYI: RAF is too short. We need to wait a bit longer.
 				setTimeout( () => {
 					this._moveToConfiguredPosition();
+
+					this.isTransparent = false;
 				}, 10 );
 			}
 		} );
