@@ -319,12 +319,16 @@ export default class TwoStepCaretMovement extends Plugin {
 		if ( isBetweenDifferentAttributes( position, attributes ) ) {
 			preventCaretMovement( data );
 
-			// TODO
+			// CLEAR 2-SCM attributes if we are at the end of one 2-SCM and before
+			// the next one with a different value of the same attribute.
+			//
+			//		<paragraph>foo<$text attribute=1>bar{}</$text><$text attribute=2>bar</$text>baz</paragraph>
+			//
 			if (
 				hasAnyAttribute( selection, attributes ) &&
-				isBetweenDifferentAttributeValues( position, attributes )
+				isBetweenDifferentAttributes( position, attributes, true )
 			) {
-				clearDifferentValueSelectionAttributes( model, attributes );
+				clearSelectionAttributes( model, attributes );
 			} else {
 				this._overrideGravity();
 			}
@@ -360,9 +364,13 @@ export default class TwoStepCaretMovement extends Plugin {
 			preventCaretMovement( data );
 			this._restoreGravity();
 
-			// TODO
-			if ( isBetweenDifferentAttributeValues( position, attributes ) ) {
-				clearDifferentValueSelectionAttributes( model, attributes );
+			// CLEAR 2-SCM attributes if we are at the end of one 2-SCM and before
+			// the next one with a different value of the same attribute.
+			//
+			//		<paragraph>foo<$text attribute=1>bar</$text><$text attribute=2>{}bar</$text>baz</paragraph>
+			//
+			if ( isBetweenDifferentAttributes( position, attributes, true ) ) {
+				clearSelectionAttributes( model, attributes );
 			} else {
 				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 			}
@@ -385,10 +393,13 @@ export default class TwoStepCaretMovement extends Plugin {
 				return false;
 			}
 
-			// TODO
+			// SET 2-SCM attributes if we are between nodes with the same attribute but with different values.
+			//
+			//		<paragraph>foo<$text attribute=1>bar</$text>[]<$text attribute=2>bar</$text>baz</paragraph>
+			//
 			if (
 				!hasAnyAttribute( selection, attributes ) &&
-				isBetweenDifferentAttributeValues( position, attributes )
+				isBetweenDifferentAttributes( position, attributes, true )
 			) {
 				preventCaretMovement( data );
 				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
@@ -486,12 +497,15 @@ export default class TwoStepCaretMovement extends Plugin {
 				return;
 			}
 
-			// TODO
-			if ( position.isAtStart ) {
-				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
-			}
-			else if ( isBetweenDifferentAttributeValues( position, attributes ) ) {
-				clearDifferentValueSelectionAttributes( model, attributes );
+			// The selection at the start of a block would use surrounding attributes
+			// from text after the selection so just clear 2-SCM attributes.
+			//
+			// Also, clear attributes for selection between same attribute with different values.
+			if (
+				position.isAtStart ||
+				isBetweenDifferentAttributes( position, attributes, true )
+			) {
+				clearSelectionAttributes( model, attributes );
 			}
 			else if ( !this._isGravityOverridden ) {
 				this._overrideGravity();
@@ -574,6 +588,15 @@ function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<
 }
 
 /**
+ * Removes 2-SCM attributes from the selection.
+ */
+function clearSelectionAttributes( model: Model, attributes: Set<string> ) {
+	model.change( writer => {
+		writer.removeSelectionAttribute( attributes );
+	} );
+}
+
+/**
  * Prevents the caret movement in the view by calling `preventDefault` on the event data.
  *
  * @alias data.preventDefault
@@ -593,12 +616,16 @@ function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<st
 /**
  * Checks whether the given position is between different values of given attributes.
  */
-function isBetweenDifferentAttributes( position: Position, attributes: Set<string> ): boolean {
+function isBetweenDifferentAttributes( position: Position, attributes: Set<string>, isStrict: boolean = false ): boolean {
 	const { nodeBefore, nodeAfter } = position;
 
 	for ( const observedAttribute of attributes ) {
 		const attrBefore = nodeBefore ? nodeBefore.getAttribute( observedAttribute ) : undefined;
 		const attrAfter = nodeAfter ? nodeAfter.getAttribute( observedAttribute ) : undefined;
+
+		if ( isStrict && ( attrBefore === undefined || attrAfter === undefined ) ) {
+			continue;
+		}
 
 		if ( attrAfter !== attrBefore ) {
 			return true;
@@ -606,31 +633,4 @@ function isBetweenDifferentAttributes( position: Position, attributes: Set<strin
 	}
 
 	return false;
-}
-
-/**
- * TODO
- */
-function isBetweenDifferentAttributeValues( position: Position, attributes: Set<string> ): boolean {
-	const { nodeBefore, nodeAfter } = position;
-
-	for ( const observedAttribute of attributes ) {
-		const attrBefore = nodeBefore ? nodeBefore.getAttribute( observedAttribute ) : undefined;
-		const attrAfter = nodeAfter ? nodeAfter.getAttribute( observedAttribute ) : undefined;
-
-		if ( attrBefore !== undefined && attrAfter !== undefined && attrAfter !== attrBefore ) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-/**
- * TODO
- */
-function clearDifferentValueSelectionAttributes( model: Model, attributes: Set<string> ) {
-	model.change( writer => {
-		writer.removeSelectionAttribute( attributes );
-	} );
 }
