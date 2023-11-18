@@ -11,18 +11,15 @@ import {
 	Plugin,
 	type Editor
 } from 'ckeditor5/src/core';
-import {
-	MouseObserver,
-	type Model,
-	type Schema,
-	type Writer,
-	type ViewElement,
-	type ModelDeleteContentEvent,
-	type ModelInsertContentEvent,
-	type ViewDocumentKeyDownEvent,
-	type ViewDocumentMouseDownEvent,
-	type ViewDocumentClickEvent,
-	type ViewDocumentSelectionChangeEvent
+import type {
+	Model,
+	Schema,
+	Writer,
+	ViewElement,
+	ModelDeleteContentEvent,
+	ModelInsertContentEvent,
+	ViewDocumentKeyDownEvent,
+	ViewDocumentClickEvent
 } from 'ckeditor5/src/engine';
 import {
 	Input,
@@ -145,9 +142,6 @@ export default class LinkEditing extends Plugin {
 
 		// Change the attributes of the selection in certain situations after the link was inserted into the document.
 		this._enableInsertContentSelectionAttributesFixer();
-
-		// Handle a click at the beginning/end of a link element.
-		this._enableClickingAfterLink();
 
 		// Handle typing over the link.
 		this._enableTypingOverLink();
@@ -398,62 +392,6 @@ export default class LinkEditing extends Plugin {
 				removeLinkAttributesFromSelection( writer, getLinkAttributesAllowedOnText( model.schema ) );
 			} );
 		}, { priority: 'low' } );
-	}
-
-	/**
-	 * Starts listening to {@link module:engine/view/document~Document#event:mousedown} and
-	 * {@link module:engine/view/document~Document#event:selectionChange} and puts the selection before/after a link node
-	 * if clicked at the beginning/ending of the link.
-	 *
-	 * The purpose of this action is to allow typing around the link node directly after a click.
-	 *
-	 * See https://github.com/ckeditor/ckeditor5/issues/1016.
-	 */
-	private _enableClickingAfterLink(): void {
-		const editor = this.editor;
-		const model = editor.model;
-
-		editor.editing.view.addObserver( MouseObserver );
-
-		let clicked = false;
-
-		// Detect the click.
-		this.listenTo<ViewDocumentMouseDownEvent>( editor.editing.view.document, 'mousedown', () => {
-			clicked = true;
-		} );
-
-		// When the selection has changed...
-		this.listenTo<ViewDocumentSelectionChangeEvent>( editor.editing.view.document, 'selectionChange', () => {
-			if ( !clicked ) {
-				return;
-			}
-
-			// ...and it was caused by the click...
-			clicked = false;
-
-			const selection = model.document.selection;
-
-			// ...and no text is selected...
-			if ( !selection.isCollapsed ) {
-				return;
-			}
-
-			// ...and clicked text is the link...
-			if ( !selection.hasAttribute( 'linkHref' ) ) {
-				return;
-			}
-
-			const position = selection.getFirstPosition()!;
-			const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
-
-			// ...check whether clicked start/end boundary of the link.
-			// If so, remove the `linkHref` attribute.
-			if ( position.isTouching( linkRange.start ) || position.isTouching( linkRange.end ) ) {
-				model.change( writer => {
-					removeLinkAttributesFromSelection( writer, getLinkAttributesAllowedOnText( model.schema ) );
-				} );
-			}
-		} );
 	}
 
 	/**

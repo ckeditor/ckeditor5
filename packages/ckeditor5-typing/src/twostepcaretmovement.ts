@@ -11,13 +11,16 @@ import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import type {
-	DocumentSelection,
-	DocumentSelectionChangeEvent,
-	DomEventData,
-	Model,
-	Position,
-	ViewDocumentArrowKeyEvent
+import {
+	MouseObserver,
+	type DocumentSelection,
+	type DocumentSelectionChangeEvent,
+	type DomEventData,
+	type Model,
+	type Position,
+	type ViewDocumentArrowKeyEvent,
+	type ViewDocumentMouseDownEvent,
+	type ViewDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -256,6 +259,8 @@ export default class TwoStepCaretMovement extends Plugin {
 
 			this._restoreGravity();
 		} );
+
+		this._enableClickingAfterNode();
 	}
 
 	/**
@@ -313,7 +318,16 @@ export default class TwoStepCaretMovement extends Plugin {
 		//
 		if ( isBetweenDifferentAttributes( position, attributes ) ) {
 			preventCaretMovement( data );
-			this._overrideGravity();
+
+			// TODO
+			if (
+				hasAnyAttribute( selection, attributes ) &&
+				isBetweenDifferentAttributeValues( position, attributes )
+			) {
+				clearDifferentValueSelectionAttributes( model, attributes );
+			} else {
+				this._overrideGravity();
+			}
 
 			return true;
 		}
@@ -345,7 +359,13 @@ export default class TwoStepCaretMovement extends Plugin {
 		if ( this._isGravityOverridden ) {
 			preventCaretMovement( data );
 			this._restoreGravity();
-			setSelectionAttributesFromTheNodeBefore( model, attributes, position );
+
+			// TODO
+			if ( isBetweenDifferentAttributeValues( position, attributes ) ) {
+				clearDifferentValueSelectionAttributes( model, attributes );
+			} else {
+				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
+			}
 
 			return true;
 		} else {
@@ -363,6 +383,17 @@ export default class TwoStepCaretMovement extends Plugin {
 				}
 
 				return false;
+			}
+
+			// TODO
+			if (
+				!hasAnyAttribute( selection, attributes ) &&
+				isBetweenDifferentAttributeValues( position, attributes )
+			) {
+				preventCaretMovement( data );
+				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
+
+				return true;
 			}
 
 			// When we are moving from natural gravity, to the position of the 2SCM, we need to override the gravity,
@@ -404,6 +435,68 @@ export default class TwoStepCaretMovement extends Plugin {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Starts listening to {@link module:engine/view/document~Document#event:mousedown} and
+	 * {@link module:engine/view/document~Document#event:selectionChange} and puts the selection before/after a 2-step node
+	 * if clicked at the beginning/ending of the 2-step node.
+	 *
+	 * The purpose of this action is to allow typing around the 2-step node directly after a click.
+	 */
+	private _enableClickingAfterNode(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const document = editor.editing.view.document;
+
+		editor.editing.view.addObserver( MouseObserver );
+
+		let clicked = false;
+
+		// Detect the click.
+		this.listenTo<ViewDocumentMouseDownEvent>( document, 'mousedown', () => {
+			clicked = true;
+		} );
+
+		// When the selection has changed...
+		this.listenTo<ViewDocumentSelectionChangeEvent>( document, 'selectionChange', () => {
+			const attributes = this.attributes;
+
+			if ( !clicked ) {
+				return;
+			}
+
+			// ...and it was caused by the click...
+			clicked = false;
+
+			// ...and no text is selected...
+			if ( !selection.isCollapsed ) {
+				return;
+			}
+
+			// ...and clicked text is the 2-step node...
+			if ( !hasAnyAttribute( selection, attributes ) ) {
+				return;
+			}
+
+			const position = selection.getFirstPosition()!;
+
+			if ( !isBetweenDifferentAttributes( position, attributes ) ) {
+				return;
+			}
+
+			// TODO
+			if ( position.isAtStart ) {
+				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
+			}
+			else if ( isBetweenDifferentAttributeValues( position, attributes ) ) {
+				clearDifferentValueSelectionAttributes( model, attributes );
+			}
+			else if ( !this._isGravityOverridden ) {
+				this._overrideGravity();
+			}
+		} );
 	}
 
 	/**
@@ -458,6 +551,7 @@ function hasAnyAttribute( selection: DocumentSelection, attributes: Set<string> 
  */
 function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<string>, position: Position ) {
 	const nodeBefore = position.nodeBefore;
+
 	model.change( writer => {
 		if ( nodeBefore ) {
 			const attributes: Array<[string, unknown]> = [];
@@ -501,6 +595,7 @@ function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<st
  */
 function isBetweenDifferentAttributes( position: Position, attributes: Set<string> ): boolean {
 	const { nodeBefore, nodeAfter } = position;
+
 	for ( const observedAttribute of attributes ) {
 		const attrBefore = nodeBefore ? nodeBefore.getAttribute( observedAttribute ) : undefined;
 		const attrAfter = nodeAfter ? nodeAfter.getAttribute( observedAttribute ) : undefined;
@@ -509,5 +604,33 @@ function isBetweenDifferentAttributes( position: Position, attributes: Set<strin
 			return true;
 		}
 	}
+
 	return false;
+}
+
+/**
+ * TODO
+ */
+function isBetweenDifferentAttributeValues( position: Position, attributes: Set<string> ): boolean {
+	const { nodeBefore, nodeAfter } = position;
+
+	for ( const observedAttribute of attributes ) {
+		const attrBefore = nodeBefore ? nodeBefore.getAttribute( observedAttribute ) : undefined;
+		const attrAfter = nodeAfter ? nodeAfter.getAttribute( observedAttribute ) : undefined;
+
+		if ( attrBefore !== undefined && attrAfter !== undefined && attrAfter !== attrBefore ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * TODO
+ */
+function clearDifferentValueSelectionAttributes( model: Model, attributes: Set<string> ) {
+	model.change( writer => {
+		writer.removeSelectionAttribute( attributes );
+	} );
 }

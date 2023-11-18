@@ -1281,25 +1281,6 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should not touch other attributes than `linkHref`', () => {
-			setModelData( model, '<paragraph><$text bold="true" linkHref="url">Bar[]</$text></paragraph>' );
-
-			editor.editing.view.document.fire( 'mousedown' );
-			editor.editing.view.document.fire( 'selectionChange', {
-				newSelection: view.document.selection
-			} );
-
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph><$text bold="true" linkHref="url">Bar</$text><$text bold="true">[]</$text></paragraph>'
-			);
-
-			editor.execute( 'insertText', { text: 'Foo' } );
-
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph><$text bold="true" linkHref="url">Bar</$text><$text bold="true">Foo[]</$text></paragraph>'
-			);
-		} );
-
 		it( 'should do nothing if the text was not clicked', () => {
 			setModelData( model, '<paragraph><$text linkHref="url">Bar[]</$text></paragraph>' );
 
