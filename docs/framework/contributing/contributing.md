@@ -30,7 +30,7 @@ Every package repository installs Git hooks that automatically lint and check th
 
 ### Tests
 
-We maintain a **100% code coverage** (including code branches) and pull requests with missing tests will not be accepted. However, keep in mind that 100% is not everything &mdash; every *change* must be tested. This means that if you are fixing a bug and your patch did not change the code coverage, the change itself needs a test anyway.
+We maintain a **100% code coverage** (including code branches) and pull requests with missing tests will not be accepted. However, keep in mind that 100% is not everything &ndash; every *change* must be tested. This means that if you are fixing a bug and your patch did not change the code coverage, the change itself needs a test anyway.
 
 Besides automated tests, you may be asked to create a manual test for the issue. Such manual tests let us quickly validate that the issue was really fixed and are later used during the testing phase (before a release) to make sure no regressions were created.
 
@@ -87,7 +87,7 @@ Assuming that you would like to propose some changes, these are the steps you sh
 
 Some additional things you should keep in mind:
 
-* Your pull request should be minimal &mdash; i.e. change only things described in the ticket. Do not squeeze unrelated changes into your pull request.
+* Your pull request should be minimal &ndash; i.e. change only things described in the ticket. Do not squeeze unrelated changes into your pull request.
 * When making a pull request on GitHub, make sure to specify which ticket(s) your pull request resolves. It is also recommended to provide more information, like how to test the patch, issues that you encountered, decisions you had to make, known problems, etc.
 * Make sure you signed the [Contributor License Agreement (CLA)](#contributor-license-agreement-cla) and that tests pass. Test your changes!
 

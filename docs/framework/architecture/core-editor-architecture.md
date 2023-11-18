@@ -246,7 +246,7 @@ command.on( 'change:value', ( evt, propertyName, newValue, oldValue ) => {
 command.value = true; // -> 'value has changed from undefined to true'
 ```
 
-Observables have one more feature which is widely used by the editor (especially in the UI library) &mdash; the ability to bind the value of one object's property to the value of some other property or properties (of one or more objects). This, of course, can also be processed by callbacks.
+Observables have one more feature which is widely used by the editor (especially in the UI library) &ndash; the ability to bind the value of one object's property to the value of some other property or properties (of one or more objects). This, of course, can also be processed by callbacks.
 
 Assuming that `target` and `source` are observables and that used properties are observable:
 

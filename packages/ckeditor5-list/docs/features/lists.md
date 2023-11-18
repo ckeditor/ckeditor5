@@ -58,7 +58,7 @@ In the editor below, use the ordered {@icon @ckeditor/ckeditor5-list/theme/icons
 
 ### List start index
 
-The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &mdash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
+The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &ndash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
 
 When this feature is {@link module:list/listconfig~ListPropertiesConfig#startIndex enabled}, an additional dropdown option is available in the ordered list toolbar button. Thanks to it, the user may set or change the starting marker.
 
