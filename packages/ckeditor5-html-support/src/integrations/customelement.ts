@@ -109,10 +109,16 @@ export default class CustomElementSupport extends Plugin {
 						// Store the whole element in the attribute so that DomConverter will be able to use the pre like element context.
 						const viewWriter = new UpcastWriter( viewElement.document );
 						const documentFragment = viewWriter.createDocumentFragment( viewElement );
+						const domFragment = editor.data.htmlProcessor.domConverter.viewToDom( documentFragment );
+						const domElement = domFragment.firstChild!;
 
-						htmlContent = editor.data.processor.toData( documentFragment );
+						while ( domElement.firstChild ) {
+							domFragment.appendChild( domElement.firstChild );
+						}
 
-						htmlContent = htmlContent.replace( /^<[^\s>]+(?:\s+[^\s=>]+(?:="[^"]*")?)*\s*>([\s\S]*)<\/\S+\s*>$/, '$1' );
+						domElement.remove();
+
+						htmlContent = editor.data.htmlProcessor.htmlWriter.getHtml( domFragment );
 					}
 
 					conversionApi.writer.setAttribute( 'htmlContent', htmlContent, modelElement );
@@ -161,21 +167,6 @@ export default class CustomElementSupport extends Plugin {
 
 					const viewElement = writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
 						domConverter.setContentOf( domElement, htmlContent );
-
-						// // Unwrap the custom element content (it was stored in the attribute as the whole custom element).
-						// // See the upcast conversion for the "htmlContent" attribute to learn more.
-						// //
-						// // For the `<template>` element there is no childNodes inside that element and the htmlContent
-						// // stores only the raw content of that element so there is nothing to unwrap.
-						// const customElement = domElement.firstChild;
-						//
-						// if ( customElement && viewName != 'template' ) {
-						// 	customElement.remove();
-						//
-						// 	while ( customElement.firstChild ) {
-						// 		domElement.appendChild( customElement.firstChild );
-						// 	}
-						// }
 					} );
 
 					if ( modelElement.hasAttribute( 'htmlCustomElementAttributes' ) ) {
