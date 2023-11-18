@@ -344,6 +344,13 @@ export type FocusableView = View & {
 	focus( direction?: 1 | -1 ): void;
 };
 
+/**
+ * A view that hosts one or more of focusable children being managed by a focus cycler instance.
+ */
+export type ViewWithFocusCycler = FocusableView & {
+	focusCycler: FocusCycler;
+};
+
 export interface FocusCyclerActions {
 	focusFirst?: ArrayOrItem<string>;
 	focusLast?: ArrayOrItem<string>;
@@ -380,4 +387,13 @@ export type FocusCyclerBackwardCycleEvent = {
  */
 function isFocusable( view: View ): view is FocusableView {
 	return !!( 'focus' in view && isVisible( view.element ) );
+}
+
+/**
+ * Checks whether a view is an instance of {@link ~ViewWithFocusCycler}.
+ *
+ * @param view A view to be checked.
+ */
+export function isViewWithFocusCycler( view: View ): view is ViewWithFocusCycler {
+	return 'focusCycler' in view && view.focusCycler instanceof FocusCycler;
 }

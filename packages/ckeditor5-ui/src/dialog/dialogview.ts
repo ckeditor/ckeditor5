@@ -22,7 +22,7 @@ import ViewCollection from '../viewcollection';
 import View from '../view';
 import FormHeaderView from '../formheader/formheaderview';
 import ButtonView from '../button/buttonview';
-import FocusCycler, { type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
+import FocusCycler, { isViewWithFocusCycler, type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
 import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin';
 import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview';
 
@@ -332,7 +332,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 */
 	public setActionButtons( definitions: Array<DialogActionButtonDefinition> ): void {
 		if ( !this.actionsView ) {
-			this.actionsView = this._createActionsView();
+			this.actionsView = new DialogActionsView( this.locale );
 			this._updateFocusCycleableItems();
 		}
 
@@ -520,6 +520,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	private _updateFocusCycleableItems() {
 		for ( const focusable of this.focusables ) {
 			this.focusTracker.remove( focusable.element! );
+
+			if ( isViewWithFocusCycler( focusable ) ) {
+				this.stopListening( focusable.focusCycler, 'forwardCycle' );
+				this.stopListening( focusable.focusCycler, 'backwardCycle' );
+			}
 		}
 
 		this.focusables.clear();
@@ -534,9 +539,21 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			focusables.push( this.closeButtonView );
 		}
 
-		focusables.forEach( v => {
-			this.focusables.add( v );
-			this.focusTracker.add( v.element! );
+		focusables.forEach( focusable => {
+			this.focusables.add( focusable );
+			this.focusTracker.add( focusable.element! );
+
+			if ( isViewWithFocusCycler( focusable ) ) {
+				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {
+					this.focusNext();
+					evt.stop();
+				} );
+
+				this.listenTo<FocusCyclerBackwardCycleEvent>( focusable.focusCycler, 'backwardCycle', evt => {
+					this.focusPrevious();
+					evt.stop();
+				} );
+			}
 		} );
 	}
 
@@ -569,25 +586,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		headerView.children.add( this.closeButtonView );
 
 		return headerView;
-	}
-
-	/**
-	 * TODO
-	 */
-	private _createActionsView(): DialogActionsView {
-		const actionsView = new DialogActionsView( this.locale );
-
-		actionsView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-			this.focusCycler.focusNext();
-			evt.stop();
-		} );
-
-		actionsView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-			this.focusCycler.focusPrevious();
-			evt.stop();
-		} );
-
-		return actionsView;
 	}
 
 	/**
