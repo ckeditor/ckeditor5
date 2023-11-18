@@ -7,12 +7,12 @@
  * @module ui/dialog/dialog
  */
 
+import View from '../view';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
-import DialogView, { type DialogViewCloseEvent } from './dialogview';
+import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview';
+import type { DialogActionButtonDefinition } from './dialogactionsview';
 
 import '../../theme/components/dialog/dialog.css';
-import View from '../view';
-import type { DialogActionButtonDefinition } from './dialogactionsview';
 
 /**
  * TODO
@@ -41,7 +41,11 @@ export default class Dialog extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this.view = new DialogView( editor.locale );
+		this.view = new DialogView( editor.locale, () => {
+			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
+		}, () => {
+			return this.editor.ui.viewportOffset;
+		} );
 
 		this.view.on<DialogViewCloseEvent>( 'close', () => {
 			this.hide();
@@ -60,6 +64,7 @@ export default class Dialog extends Plugin {
 		actionButtons,
 		className,
 		isModal = false,
+		position,
 		onShow,
 		onHide
 	}: {
@@ -68,12 +73,20 @@ export default class Dialog extends Plugin {
 		title?: string;
 		className?: string;
 		isModal?: boolean;
+		position?: DialogViewPosition;
 		onShow?: ( dialog: Dialog ) => void;
 		onHide?: ( dialog: Dialog ) => void;
 	} ): void {
 		this.hide();
 
+		// Unless the user specified a position, modals should always be centered on the screen.
+		// Otherwise, let's keep dialogs centered in the editing root by default.
+		if ( !position ) {
+			position = isModal ? DialogViewPosition.SCREEN_CENTER : DialogViewPosition.CURRENT_ROOT_CENTER;
+		}
+
 		this.view.set( {
+			position,
 			isVisible: true,
 			className,
 			isDraggable: !isModal
@@ -86,6 +99,7 @@ export default class Dialog extends Plugin {
 		this.view.addContentPart();
 
 		if ( content ) {
+			// Normalize the content specified in the arguments.
 			if ( content instanceof View ) {
 				content = [ content ];
 			}

@@ -26,6 +26,7 @@
     "@ckeditor/ckeditor5-clipboard": "40.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "40.0.0",
     "@ckeditor/ckeditor5-editor-classic": "40.0.0",
+    "@ckeditor/ckeditor5-editor-inline": "40.0.0",
     "@ckeditor/ckeditor5-editor-multi-root": "40.0.0",
     "@ckeditor/ckeditor5-engine": "40.0.0",
     "@ckeditor/ckeditor5-enter": "40.0.0",

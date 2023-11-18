@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, document */
+
+declare global {
+	interface Window { CKEditorInspector: any }
+}
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -17,7 +21,8 @@ import { List } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
@@ -39,7 +44,7 @@ class ModalWithText extends Plugin {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label: t( 'Show modal' ),
+				label: t( 'Modal' ),
 				tooltip: true,
 				withText: true
 			} );
@@ -80,10 +85,12 @@ class ModalWithText extends Plugin {
 							onExecute: () => dialog.hide()
 						},
 						{
-							label: t( 'Test button' ),
-							withText: false,
+							label: t( 'Set custom title' ),
 							icon: icons.colorPaletteIcon,
-							onExecute: () => console.log( 'Test button' )
+							withText: true,
+							onExecute: () => {
+								dialog.setTitle( 'New title' );
+							}
 						},
 						{
 							label: t( 'Cancel' ),
@@ -99,7 +106,7 @@ class ModalWithText extends Plugin {
 	}
 }
 
-class BareDialog extends Plugin {
+class MinimalisticDialog extends Plugin {
 	public static get requires() {
 		return [ Dialog ] as const;
 	}
@@ -107,11 +114,11 @@ class BareDialog extends Plugin {
 	public init(): void {
 		const t = this.editor.locale.t;
 
-		this.editor.ui.componentFactory.add( 'bareDialog', locale => {
+		this.editor.ui.componentFactory.add( 'minimalisticDialog', locale => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
-				label: t( 'Bare dialog' ),
+				label: t( 'Minimalistic' ),
 				tooltip: true,
 				withText: true
 			} );
@@ -140,8 +147,8 @@ class BareDialog extends Plugin {
 	}
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ) as HTMLElement, {
+function initEditor( editorName, editorClass ) {
+	editorClass.create( document.querySelector( '#' + editorName ) as HTMLElement, {
 		plugins: [
 			Essentials,
 			Autoformat,
@@ -167,23 +174,38 @@ ClassicEditor
 			SpecialCharactersEmoji,
 			SourceEditing,
 			ModalWithText,
-			BareDialog
+			MinimalisticDialog
 		],
-		toolbar: [
-			'heading', '|', 'bold', 'italic', 'link',
-			'|',
-			'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText', 'bareDialog'
-		],
+		toolbar: {
+			items: [
+				'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText', 'minimalisticDialog',
+				'-',
+				'heading', '|', 'bold', 'italic', 'link'
+			],
+			shouldNotGroupWhenFull: true
+		},
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		ui: {
+			viewportOffset: {
+				top: 50
+			}
 		}
 	} )
-	.then( editor => {
-		Object.assign( window, { editor } );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+		.then( editor => {
+			Object.assign( window, { [ editorName ]: editor } );
+
+			window.CKEditorInspector.attach( { [ editorName ]: editor } );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+}
+
+initEditor( 'editor-default', ClassicEditor );
+initEditor( 'editor-narrow', ClassicEditor );
+initEditor( 'editor-tiny', InlineEditor );
 
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [

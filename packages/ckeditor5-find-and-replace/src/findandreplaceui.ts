@@ -12,6 +12,7 @@ import {
 	Dialog,
 	ButtonView,
 	CssTransitionDisablerMixin,
+	DialogViewPosition,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
@@ -89,6 +90,7 @@ export default class FindAndReplaceUI extends Plugin {
 				dialog.show( {
 					title: t( 'Find and replace' ),
 					content: formView,
+					position: DialogViewPosition.CURRENT_ROOT_NE,
 					onShow: () => {
 						formView.disableCssTransitions();
 						formView.reset();
