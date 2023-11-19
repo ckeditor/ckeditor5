@@ -114,14 +114,21 @@ describe( 'TwoStepCaretMovement()', () => {
 		it( 'should use two-steps movement when between nodes with the same attribute but different value', () => {
 			setData( model, '<$text a="1">bar[]</$text><$text a="2">foo</$text>' );
 
+			expect( selection ).to.have.attribute( 'a', 1 );
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 3 },
 				'→',
+				// <$text a="1">bar</$text>[]<$text a="2">foo</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 3 },
+				'→',
 				// <$text a="1">bar</$text><$text a="2">[]foo</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStop: 1, caretPosition: 3 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 2, evtStop: 2, caretPosition: 3 }
+			] );
+			expect( selection ).to.have.attribute( 'a', 2 );
+			testTwoStepCaretMovement( [
 				'→',
 				// <$text a="1">bar</$text><$text a="2">f[]oo</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 4 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2, caretPosition: 4 }
 			] );
 		} );
 
@@ -319,20 +326,24 @@ describe( 'TwoStepCaretMovement()', () => {
 		it( 'should require two-steps movement when caret goes between text node with the same attribute but different value', () => {
 			setData( model, '<$text a="2">foo</$text><$text a="1">b[]ar</$text>' );
 
+			expect( selection ).to.have.attribute( 'a', 1 );
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 4 },
 				'←',
 				// <$text a="2">foo</$text><$text a="1">[]bar</$text>
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStop: 0, caretPosition: 3 },
 				'←',
+				// <$text a="2">foo</$text>[]<$text a="1">bar</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 3 },
+				'←',
 				// <$text a="2">foo[]</$text><$text a="1">bar</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 3 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2, caretPosition: 3 }
 			] );
 			expect( selection ).to.have.attribute( 'a', 2 );
 			testTwoStepCaretMovement( [
 				'←',
 				// <$text a="2">fo[]o</$text><$text a="1">bar</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStop: 1, caretPosition: 2 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStop: 2, caretPosition: 2 }
 			] );
 		} );
 
