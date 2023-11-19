@@ -14,7 +14,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import {
 	MouseObserver,
 	type DocumentSelection,
-	type DocumentSelectionChangeEvent,
+	type DocumentSelectionChangeRangeEvent,
 	type DomEventData,
 	type Model,
 	type Position,
@@ -168,7 +168,7 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * {@link module:engine/model/selection~Selection#event:change:range} event.
 	 */
 
-	private _isNextGravityRestorationSkipped!: boolean;
+	private _isNextGravityRestorationSkipped = false;
 
 	/**
 	 * @inheritDoc
@@ -238,7 +238,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		this._isNextGravityRestorationSkipped = false;
 
 		// The automatic gravity restoration logic.
-		this.listenTo<DocumentSelectionChangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
+		this.listenTo<DocumentSelectionChangeRangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
 			// Skipping the automatic restoration is needed if the selection should change
 			// but the gravity must remain overridden afterwards. See the #handleBackwardMovement
 			// to learn more.
@@ -443,6 +443,7 @@ export default class TwoStepCaretMovement extends Plugin {
 
 					return true;
 				}
+
 				// Skip the automatic gravity restore upon the next selection#change:range event.
 				// If not skipped, it would automatically restore the gravity, which should remain
 				// overridden.
