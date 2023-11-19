@@ -20,8 +20,12 @@ import {
 	type Position,
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
-	type ViewDocumentSelectionChangeEvent
+	type ViewDocumentSelectionChangeEvent,
+	type ModelInsertContentEvent,
+	type ModelDeleteContentEvent
 } from '@ckeditor/ckeditor5-engine';
+
+import type { ViewDocumentDeleteEvent } from './deleteobserver';
 
 /**
  * This plugin enables the two-step caret (phantom) movement behavior for
@@ -260,7 +264,14 @@ export default class TwoStepCaretMovement extends Plugin {
 			this._restoreGravity();
 		} );
 
+		// Handle a click at the beginning/end of a two-step element.
 		this._enableClickingAfterNode();
+
+		// Change the attributes of the selection in certain situations after the two-step node was inserted into the document.
+		this._enableInsertContentSelectionAttributesFixer();
+
+		// Handle removing the content after the two-step node.
+		this._handleDeleteContentAfterNode();
 	}
 
 	/**
@@ -454,6 +465,8 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * if clicked at the beginning/ending of the 2-step node.
 	 *
 	 * The purpose of this action is to allow typing around the 2-step node directly after a click.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/1016.
 	 */
 	private _enableClickingAfterNode(): void {
 		const editor = this.editor;
@@ -511,6 +524,104 @@ export default class TwoStepCaretMovement extends Plugin {
 				this._overrideGravity();
 			}
 		} );
+	}
+
+	/**
+	 * Starts listening to {@link module:engine/model/model~Model#event:insertContent} and corrects the model
+	 * selection attributes if the selection is at the end of a two-step node after inserting the content.
+	 *
+	 * The purpose of this action is to improve the overall UX because the user is no longer "trapped" by the
+	 * two-step attribute of the selection, and they can type a "clean" (`linkHref`–less) text right away.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/6053.
+	 */
+	private _enableInsertContentSelectionAttributesFixer(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const attributes = this.attributes;
+
+		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', () => {
+			const position = selection.getFirstPosition()!;
+
+			if (
+				hasAnyAttribute( selection, attributes ) &&
+				isBetweenDifferentAttributes( position, attributes )
+			) {
+				clearSelectionAttributes( model, attributes );
+			}
+		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} and checks whether
+	 * removing a content right after the tow-step attribute.
+	 *
+	 * If so, the selection should not preserve the two-step attribute. However, if
+	 * the {@link module:typing/twostepcaretmovement~TwoStepCaretMovement} plugin is active and
+	 * the selection has the two-step attribute due to overridden gravity (at the end), the two-step attribute should stay untouched.
+	 *
+	 * The purpose of this action is to allow removing the link text and keep the selection outside the link.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5/issues/7521.
+	 */
+	private _handleDeleteContentAfterNode(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const selection = model.document.selection;
+		const view = editor.editing.view;
+
+		let isBackspace = false;
+		let shouldPreserveAttributes = false;
+
+		// Detect pressing `Backspace`.
+		this.listenTo<ViewDocumentDeleteEvent>( view.document, 'delete', ( evt, data ) => {
+			isBackspace = data.direction === 'backward';
+		}, { priority: 'high' } );
+
+		// Before removing the content, check whether the selection is inside a two-step attribute.
+		// If so, we want to preserve those attributes.
+		this.listenTo<ModelDeleteContentEvent>( model, 'deleteContent', () => {
+			if ( !isBackspace ) {
+				return;
+			}
+
+			const position = selection.getFirstPosition()!;
+
+			shouldPreserveAttributes = hasAnyAttribute( selection, this.attributes ) &&
+				!isStepAfterAnyAttributeBoundary( position, this.attributes );
+		}, { priority: 'high' } );
+
+		// After removing the content, check whether the current selection should preserve the `linkHref` attribute.
+		this.listenTo<ModelDeleteContentEvent>( model, 'deleteContent', () => {
+			if ( !isBackspace ) {
+				return;
+			}
+
+			isBackspace = false;
+
+			// Do not escape two-step attribute if it was inside it before content deletion.
+			if ( shouldPreserveAttributes ) {
+				return;
+			}
+
+			// Use `model.enqueueChange()` in order to execute the callback at the end of the changes process.
+			editor.model.enqueueChange( () => {
+				const position = selection.getFirstPosition()!;
+
+				if (
+					hasAnyAttribute( selection, this.attributes ) &&
+					isBetweenDifferentAttributes( position, this.attributes )
+				) {
+					if ( position.isAtStart || isBetweenDifferentAttributes( position, this.attributes, true ) ) {
+						clearSelectionAttributes( model, this.attributes );
+					}
+					else if ( !this._isGravityOverridden ) {
+						this._overrideGravity();
+					}
+				}
+			} );
+		}, { priority: 'low' } );
 	}
 
 	/**
