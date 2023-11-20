@@ -173,12 +173,18 @@ function isIconMissing( iconPath ) {
  * @returns {String} options.cwd
  */
 function getOptions( argv ) {
-	return minimist( argv, {
+	const config = {
 		string: [
 			'cwd'
 		],
 		default: {
 			cwd: process.cwd()
 		}
-	} );
+	};
+
+	const options = minimist( argv, config );
+
+	options.cwd = upath.resolve( options.cwd );
+
+	return options;
 }
