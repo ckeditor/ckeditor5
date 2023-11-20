@@ -15,9 +15,14 @@ ClassicEditor
 				'undo', 'redo', '|', 'heading',
 				'|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
 				'|', 'bold', 'italic', 'underline', 'strikethrough',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
 			]
 		},
 		ui: {
