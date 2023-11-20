@@ -177,60 +177,54 @@ describe( 'PasteFromOffice - filters', () => {
 			describe( 'should remove MS Windows specific tags to prevent incorrect parsing of HTML', () => {
 				it( 'should remove <o:SmartTagType> empty tag (with or without `/` at the end)', () => {
 					const html =
-					'<html>' +
-						'<head>' +
-							'<o:SmartTagType/>' +
-							'<o:SmartTagType>' +
-						'</head>' +
-						'<body>' +
-							'<p>foo</p>' +
-						'</body>' +
-					'</html>';
+						'<html>' +
+							'<head>' +
+								'<o:SmartTagType/>' +
+								'<o:SmartTagType>' +
+							'</head>' +
+							'<body>' +
+								'<p>foo</p>' +
+							'</body>' +
+						'</html>';
 					const { body, bodyString } = parseHtml( html );
 
 					expect( body ).to.instanceof( DocumentFragment );
-
 					expect( body.childCount ).to.equal( 1 );
-
 					expect( bodyString ).to.equal( '<p>foo</p>' );
 				} );
 
 				it( 'should remove <o:SmartTagType> empty tag with white space before the ending', () => {
 					const html =
-					'<html>' +
-						'<head>' +
-							'<o:SmartTagType />' +
-							'<o:SmartTagType >' +
-						'</head>' +
-						'<body>' +
-							'<p>foo</p>' +
-						'</body>' +
-					'</html>';
+						'<html>' +
+							'<head>' +
+								'<o:SmartTagType />' +
+								'<o:SmartTagType >' +
+							'</head>' +
+							'<body>' +
+								'<p>foo</p>' +
+							'</body>' +
+						'</html>';
 					const { body, bodyString } = parseHtml( html );
 
 					expect( body ).to.instanceof( DocumentFragment );
-
 					expect( body.childCount ).to.equal( 1 );
-
 					expect( bodyString ).to.equal( '<p>foo</p>' );
 				} );
 
 				it( 'should remove <o:SmartTagType> tag with attributes (with and without values)', () => {
 					const html =
-					'<html>' +
-						'<head>' +
-							'<o:SmartTagType namespaceuri="foo:bar:smarttags" baz />' +
-						'</head>' +
-						'<body>' +
-							'<p>foo</p>' +
-						'</body>' +
-					'</html>';
+						'<html>' +
+							'<head>' +
+								'<o:SmartTagType namespaceuri="foo:bar:smarttags" baz />' +
+							'</head>' +
+							'<body>' +
+								'<p>foo</p>' +
+							'</body>' +
+						'</html>';
 					const { body, bodyString } = parseHtml( html );
 
 					expect( body ).to.instanceof( DocumentFragment );
-
 					expect( body.childCount ).to.equal( 1 );
-
 					expect( bodyString ).to.equal( '<p>foo</p>' );
 				} );
 			} );
