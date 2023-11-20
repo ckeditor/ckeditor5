@@ -235,8 +235,6 @@ export default class TwoStepCaretMovement extends Plugin {
 			}
 		}, { context: '$text', priority: 'highest' } );
 
-		this._isNextGravityRestorationSkipped = false;
-
 		// The automatic gravity restoration logic.
 		this.listenTo<DocumentSelectionChangeRangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
 			// Skipping the automatic restoration is needed if the selection should change
