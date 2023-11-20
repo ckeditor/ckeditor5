@@ -3,26 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-
-.ck.ck-special-characters {
-	display: grid;
-
-	& > .ck-character-categories {
-		& > .ck-dropdown {
-			display: none;
-		}
-	}
-
-	@mixin ck-media-phone {
-		& > .ck-character-categories {
-			& > .ck-list {
-				display: none;
-			}
-
-			& > .ck-dropdown {
-				display: block;
-			}
-		}
-	}
-}
+/*
+ * Note: This file should contain the wireframe styles only. But since there are no such styles,
+ * it acts as a message to the builder telling that it should look for the corresponding styles
+ * **in the theme** when compiling the editor.
+ */

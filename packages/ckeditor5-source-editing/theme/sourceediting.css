@@ -50,15 +50,3 @@
 		@mixin ck-box-shadow var(--ck-inner-shadow);
 	}
 }
-
-.ck.ck-source-editing-dialog {
-	& .ck-dialog__content {
-		padding: var(--ck-spacing-large) var(--ck-spacing-large) 0;
-
-		& textarea {
-			width: 600px;
-			max-width: 100%;
-			font-family: monospace;
-		}
-	}
-}

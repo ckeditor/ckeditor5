@@ -3,76 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
-.ck.ck-special-characters {
-	grid-template-columns: minmax(150px, 20%) 1fr;
-	grid-template-rows: 1fr auto;
-	grid-column-gap: 0px;
-	grid-row-gap: 0px;
+.ck.ck-special-characters-navigation {
 
-	height: 300px;
-	width: 600px;
-	max-width: 100%;
-
-	& > .ck-character-categories {
-		grid-area: 1 / 1 / 3 / 2;
-
-		& > .ck-list {
-			border-right: 1px solid var(--ck-color-base-border);
-			height: 100%;
-
-			& > .ck-list__item {
-				min-width: auto;
-
-				/* TODO: Compact mode for list */
-				& .ck.ck-button {
-					max-height: 2.2em;
-				}
-
-				& .ck.ck-button__label {
-					overflow: hidden;
-					text-overflow: ellipsis;
-				}
-			}
-		}
-
-		& > .ck-dropdown {
-			border-bottom: 1px solid var(--ck-color-base-border);
-
-			& .ck-dropdown__button .ck.ck-button__label {
-				width: 100%;
-			}
-		}
-	}
-
-	& > .ck-character-grid {
-		grid-area: 1 / 2 / 2 / 3;
-	}
-
-	& > .ck-character-info {
-		grid-area: 2 / 2 / 3 / 3;
-		width: 100%;
+	& > .ck-label {
+		max-width: 160px;
+		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
+	& > .ck-dropdown .ck-dropdown__panel {
+		/* There could be dozens of categories available. Use scroll to prevent a 10e6px dropdown. */
+		max-height: 250px;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
 	@mixin ck-media-phone {
-		grid-template-columns: 1fr;
-		grid-template-rows: auto 1fr auto;
-		height: 100%;
+		max-width: 190px;
 
-		& > .ck-character-categories {
-			grid-area: 1 / 1 / 2 / 2;
-		}
-
-		& > .ck-character-grid {
-			grid-area: 2 / 1 / 3 / 2;
-			max-height: 200px;
-		}
-
-		& > .ck-character-info {
-			grid-area: 3 / 1 / 4 / 2;
-			max-width: unset;
+		& > .ck-form__header__label {
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 	}
 }

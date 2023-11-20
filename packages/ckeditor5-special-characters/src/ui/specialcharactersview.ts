@@ -11,7 +11,7 @@ import { View, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type CharacterGridView from './charactergridview';
 import type CharacterInfoView from './characterinfoview';
-import type SpecialCharactersCategoriesView from './specialcharacterscategoriesview';
+import type SpecialCharactersNavigationView from './specialcharactersnavigationview';
 
 /**
  * A view that glues pieces of the special characters dropdown panel together:
@@ -39,12 +39,12 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	/**
 	 * Helps cycling over focusable {@link #items} in the view.
 	 */
-	public readonly focusCycler: FocusCycler;
+	protected readonly _focusCycler: FocusCycler;
 
 	/**
-	 * An instance of the `SpecialCharactersCategoriesView`.
+	 * An instance of the `SpecialCharactersNavigationView`.
 	 */
-	public categoriesView: SpecialCharactersCategoriesView;
+	public navigationView: SpecialCharactersNavigationView;
 
 	/**
 	 * An instance of the `CharacterGridView`.
@@ -61,20 +61,20 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	 */
 	constructor(
 		locale: Locale,
-		categoriesView: SpecialCharactersCategoriesView,
+		navigationView: SpecialCharactersNavigationView,
 		gridView: CharacterGridView,
 		infoView: CharacterInfoView
 	) {
 		super( locale );
 
-		this.categoriesView = categoriesView;
+		this.navigationView = navigationView;
 		this.gridView = gridView;
 		this.infoView = infoView;
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		this.focusCycler = new FocusCycler( {
+		this._focusCycler = new FocusCycler( {
 			focusables: this.items,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
@@ -87,20 +87,18 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 		this.setTemplate( {
 			tag: 'div',
 			children: [
-				this.categoriesView,
+				this.navigationView,
 				this.gridView,
 				this.infoView
 			],
 			attributes: {
-				class: [ 'ck', 'ck-special-characters' ],
-
 				// Avoid focus loss when the user clicks the area of the grid that is not a button.
 				// https://github.com/ckeditor/ckeditor5/pull/12319#issuecomment-1231779819
 				tabindex: '-1'
 			}
 		} );
 
-		this.items.add( this.categoriesView );
+		this.items.add( this.navigationView.groupDropdownView.buttonView );
 		this.items.add( this.gridView );
 	}
 
@@ -110,7 +108,7 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	public override render(): void {
 		super.render();
 
-		this.focusTracker.add( this.categoriesView.element! );
+		this.focusTracker.add( this.navigationView.groupDropdownView.buttonView.element! );
 		this.focusTracker.add( this.gridView.element! );
 
 		// Start listening for the keystrokes coming from #element.
@@ -128,13 +126,9 @@ export default class SpecialCharactersView extends View<HTMLDivElement> {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Focuses the first focusable in {@link #items}.
 	 */
-	public focus( direction?: 1 | -1 ): void {
-		if ( direction === -1 ) {
-			this.focusCycler.focusLast();
-		} else {
-			this.focusCycler.focusFirst();
-		}
+	public focus(): void {
+		this.navigationView.focus();
 	}
 }

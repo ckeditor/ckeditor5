@@ -12,8 +12,7 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "40.0.0",
-    "@ckeditor/ckeditor5-ui": "40.0.0"
+    "ckeditor5": "40.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-cloud-services": "40.0.0",
@@ -24,6 +23,7 @@
     "@ckeditor/ckeditor5-image": "40.0.0",
     "@ckeditor/ckeditor5-theme-lark": "40.0.0",
     "@ckeditor/ckeditor5-typing": "40.0.0",
+    "@ckeditor/ckeditor5-ui": "40.0.0",
     "@ckeditor/ckeditor5-utils": "40.0.0",
     "typescript": "^4.8.4",
     "webpack": "^5.58.1",

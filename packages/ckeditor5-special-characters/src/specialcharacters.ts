@@ -8,12 +8,10 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Typing } from 'ckeditor5/src/typing';
-import {
-	Dialog,
-	ButtonView
-} from 'ckeditor5/src/ui';
+import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing';
+import { createDropdown, type DropdownView } from 'ckeditor5/src/ui';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils';
+import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
 import CharacterGridView, {
 	type CharacterGridViewExecuteEvent,
 	type CharacterGridViewTileFocusEvent,
@@ -21,7 +19,6 @@ import CharacterGridView, {
 } from './ui/charactergridview';
 import CharacterInfoView from './ui/characterinfoview';
 import SpecialCharactersView from './ui/specialcharactersview';
-import SpecialCharactersCategoriesView from './ui/specialcharacterscategoriesview';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 
@@ -54,7 +51,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Typing, Dialog ] as const;
+		return [ Typing ] as const;
 	}
 
 	/**
@@ -83,53 +80,49 @@ export default class SpecialCharacters extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const t = editor.t;
-		const inputCommand = editor.commands.get( 'insertText' )!;
+
+		const inputCommand: InsertTextCommand = editor.commands.get( 'insertText' )!;
 
 		// Add the `specialCharacters` dropdown button to feature components.
 		editor.ui.componentFactory.add( 'specialCharacters', locale => {
-			const buttonView = new ButtonView( locale );
-			const dialog = editor.plugins.get( 'Dialog' );
-			let dropdownPanelContent: DropdownPanelContent, specialCharactersView: SpecialCharactersView;
+			const dropdownView = createDropdown( locale );
+			let dropdownPanelContent: DropdownPanelContent;
 
-			buttonView.set( {
+			dropdownView.buttonView.set( {
 				label: t( 'Special characters' ),
 				icon: specialCharactersIcon,
 				tooltip: true
 			} );
 
-			buttonView.bind( 'isEnabled' ).to( inputCommand );
+			dropdownView.bind( 'isEnabled' ).to( inputCommand );
 
-			buttonView.on( 'execute', () => {
+			// Insert a special character when a tile was clicked.
+			dropdownView.on<CharacterGridViewExecuteEvent>( 'execute', ( evt, data ) => {
+				editor.execute( 'insertText', { text: data.character } );
+				editor.editing.view.focus();
+			} );
+
+			dropdownView.on( 'change:isOpen', () => {
 				if ( !dropdownPanelContent ) {
-					dropdownPanelContent = this._createDropdownPanelContent( locale );
-					specialCharactersView = new SpecialCharactersView(
+					dropdownPanelContent = this._createDropdownPanelContent( locale, dropdownView );
+
+					const specialCharactersView = new SpecialCharactersView(
 						locale,
-						dropdownPanelContent.categoriesView,
+						dropdownPanelContent.navigationView,
 						dropdownPanelContent.gridView,
 						dropdownPanelContent.infoView
 					);
 
-					// Insert a special character when a tile was clicked.
-					dropdownPanelContent.gridView.on<CharacterGridViewExecuteEvent>( 'execute', ( evt, data ) => {
-						editor.execute( 'insertText', { text: data.character } );
-						dialog.hide();
-						editor.editing.view.focus();
-					} );
+					dropdownView.panelView.children.add( specialCharactersView );
 				}
 
-				dialog.show( {
-					title: t( 'Special Characters' ),
-					content: specialCharactersView,
-					onShow: () => {
-						dropdownPanelContent.infoView.set( {
-							character: null,
-							name: t( 'Select a character to learn more...' )
-						} );
-					}
+				dropdownPanelContent.infoView.set( {
+					character: null,
+					name: null
 				} );
 			} );
 
-			return buttonView;
+			return dropdownView;
 		} );
 	}
 
@@ -249,8 +242,8 @@ export default class SpecialCharacters extends Plugin {
 	 *
 	 * @returns An object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
-	private _createDropdownPanelContent( locale: Locale ): DropdownPanelContent {
-		const groupEntries: Array<[string, string]> = Array
+	private _createDropdownPanelContent( locale: Locale, dropdownView: DropdownView ): DropdownPanelContent {
+		const groupEntries: Array<[ string, string ]> = Array
 			.from( this.getGroups() )
 			.map( name => ( [ name, this._groups.get( name )!.label ] ) );
 
@@ -261,9 +254,11 @@ export default class SpecialCharacters extends Plugin {
 			...groupEntries
 		] );
 
-		const categoriesView = new SpecialCharactersCategoriesView( locale, specialCharsGroups );
+		const navigationView = new SpecialCharactersNavigationView( locale, specialCharsGroups );
 		const gridView = new CharacterGridView( locale );
 		const infoView = new CharacterInfoView( locale );
+
+		gridView.delegate( 'execute' ).to( dropdownView );
 
 		gridView.on<CharacterGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
 			infoView.set( data );
@@ -274,14 +269,14 @@ export default class SpecialCharacters extends Plugin {
 		} );
 
 		// Update the grid of special characters when a user changed the character group.
-		categoriesView.on( 'change:currentGroupName', ( evt, propertyName, newValue ) => {
-			this._updateGrid( newValue, gridView );
+		navigationView.on( 'execute', () => {
+			this._updateGrid( navigationView.currentGroupName, gridView );
 		} );
 
 		// Set the initial content of the special characters grid.
-		this._updateGrid( categoriesView.currentGroupName, gridView );
+		this._updateGrid( navigationView.currentGroupName, gridView );
 
-		return { categoriesView, gridView, infoView };
+		return { navigationView, gridView, infoView };
 	}
 }
 
@@ -304,7 +299,7 @@ interface Group {
 }
 
 interface DropdownPanelContent {
-	categoriesView: SpecialCharactersCategoriesView;
+	navigationView: SpecialCharactersNavigationView;
 	gridView: CharacterGridView;
 	infoView: CharacterInfoView;
 }

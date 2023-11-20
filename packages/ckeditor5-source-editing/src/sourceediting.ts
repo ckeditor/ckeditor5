@@ -10,7 +10,7 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core';
-import { ButtonView, Dialog, TextareaView } from 'ckeditor5/src/ui';
+import { ButtonView } from 'ckeditor5/src/ui';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils';
 import { formatHtml } from './utils/formathtml';
 
@@ -39,7 +39,7 @@ export default class SourceEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ PendingActions, Dialog ] as const;
+		return [ PendingActions ] as const;
 	}
 
 	/**
@@ -124,85 +124,6 @@ export default class SourceEditing extends Plugin {
 
 			this.listenTo( buttonView, 'execute', () => {
 				this.isSourceEditingMode = !this.isSourceEditingMode;
-			} );
-
-			return buttonView;
-		} );
-
-		editor.ui.componentFactory.add( 'sourceEditingDialog', locale => {
-			const buttonView = new ButtonView( locale );
-
-			buttonView.set( {
-				label: t( 'Source' ),
-				icon: sourceEditingIcon,
-				tooltip: true,
-				withText: true,
-				class: 'ck-source-editing-button'
-			} );
-
-			buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );
-
-			// The button should be disabled if one of the following conditions is met:
-			buttonView.bind( 'isEnabled' ).to(
-				this, 'isEnabled',
-				editor, 'isReadOnly',
-				editor.plugins.get( PendingActions ), 'hasAny',
-				( isEnabled, isEditorReadOnly, hasAnyPendingActions ) => {
-					// (1) The plugin itself is disabled.
-					if ( !isEnabled ) {
-						return false;
-					}
-
-					// (2) The editor is in read-only mode.
-					if ( isEditorReadOnly ) {
-						return false;
-					}
-
-					// (3) Any pending action is scheduled. It may change the model, so modifying the document source should be prevented
-					// until the model is finally set.
-					if ( hasAnyPendingActions ) {
-						return false;
-					}
-
-					return true;
-				}
-			);
-
-			this.listenTo( buttonView, 'execute', () => {
-				const dialog = editor.plugins.get( 'Dialog' );
-
-				const textareaView = new TextareaView( locale );
-
-				textareaView.set( {
-					minRows: 5,
-					maxRows: 15
-				} );
-
-				dialog.show( {
-					title: t( 'Source Editing' ),
-					className: 'ck-source-editing-dialog',
-					content: textareaView,
-					actionButtons: [
-						{
-							label: t( 'Save' ),
-							class: 'ck-button-action',
-							withText: true,
-							onExecute: () => {
-								editor.data.set( textareaView.element!.value );
-								dialog.hide();
-							}
-						},
-						{
-							label: t( 'Cancel' ),
-							withText: true,
-							onExecute: () => dialog.hide()
-						}
-					],
-					onShow: () => {
-						textareaView.value = formatSource( editor.data.get( { rootName: 'main' } ) );
-						textareaView.element!.setSelectionRange( 0, 0 );
-					}
-				} );
 			} );
 
 			return buttonView;

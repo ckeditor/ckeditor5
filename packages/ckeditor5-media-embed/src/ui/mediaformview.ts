@@ -18,6 +18,7 @@ import {
 	submitHandler
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+import { icons } from 'ckeditor5/src/core';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -51,6 +52,16 @@ export default class MediaFormView extends View {
 	public urlInputView: LabeledFieldView<InputTextView>;
 
 	/**
+	 * The Save button view.
+	 */
+	public saveButtonView: ButtonView;
+
+	/**
+	 * The Cancel button view.
+	 */
+	public cancelButtonView: ButtonView;
+
+	/**
 	 * A collection of views that can be focused in the form.
 	 */
 	private readonly _focusables: ViewCollection;
@@ -58,7 +69,7 @@ export default class MediaFormView extends View {
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
 	 */
-	public readonly focusCycler: FocusCycler;
+	private readonly _focusCycler: FocusCycler;
 
 	/**
 	 * An array of form validators used by {@link #isValid}.
@@ -83,14 +94,22 @@ export default class MediaFormView extends View {
 	constructor( validators: Array<( v: MediaFormView ) => string | undefined>, locale: Locale ) {
 		super( locale );
 
+		const t = locale.t;
+
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 		this.set( 'mediaURLInputValue', '' );
 		this.urlInputView = this._createUrlInput();
 
+		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
+		this.saveButtonView.type = 'submit';
+		this.saveButtonView.bind( 'isEnabled' ).to( this, 'mediaURLInputValue', value => !!value );
+
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
+
 		this._focusables = new ViewCollection();
 
-		this.focusCycler = new FocusCycler( {
+		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
@@ -119,7 +138,9 @@ export default class MediaFormView extends View {
 			},
 
 			children: [
-				this.urlInputView
+				this.urlInputView,
+				this.saveButtonView,
+				this.cancelButtonView
 			]
 		} );
 	}
@@ -135,7 +156,9 @@ export default class MediaFormView extends View {
 		} );
 
 		const childViews = [
-			this.urlInputView
+			this.urlInputView,
+			this.saveButtonView,
+			this.cancelButtonView
 		];
 
 		childViews.forEach( v => {
@@ -174,7 +197,7 @@ export default class MediaFormView extends View {
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	public focus(): void {
-		this.focusCycler.focusFirst();
+		this._focusCycler.focusFirst();
 	}
 
 	/**

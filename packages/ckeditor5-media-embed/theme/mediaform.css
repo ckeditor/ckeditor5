@@ -6,13 +6,28 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-media-form {
-	width: 400px;
-	max-width: 100%;
+	display: flex;
+	align-items: flex-start;
+	flex-direction: row;
+	flex-wrap: nowrap;
 
-	padding: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+	& .ck-labeled-field-view {
+		display: inline-block;
+	}
 
-	& .ck-input {
-		width: 100%;
-		min-width: auto;
+	& .ck-label {
+		display: none;
+	}
+
+	@mixin ck-media-phone {
+		flex-wrap: wrap;
+
+		& .ck-labeled-field-view {
+			flex-basis: 100%;
+		}
+
+		& .ck-button {
+			flex-basis: 50%;
+		}
 	}
 }
