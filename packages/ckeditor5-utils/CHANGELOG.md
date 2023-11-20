@@ -40,7 +40,7 @@ Changes for the past releases are available below.
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MINOR BREAKING CHANGES
 
@@ -296,7 +296,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `getOptimalPosition()` utility should accept the target option defined as a function. Closes [#157](https://github.com/ckeditor/ckeditor5-utils/issues/157). ([d63abae](https://github.com/ckeditor/ckeditor5-utils/commit/d63abae))
 
 
-## [0.9.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.0...v0.9.1) (2017-05-07)
+## [0.9.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.0...v0.9.1) (May 7, 2017)
 
 ### Bug fixes
 
@@ -304,7 +304,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `getOptimalPosition()` utility should consider limiter ancestors with CSS overflow. Closes [#148](https://github.com/ckeditor/ckeditor5-utils/issues/148). ([6bf1741](https://github.com/ckeditor/ckeditor5-utils/commit/6bf1741))
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.8.0...v0.9.0) (2017-04-05)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.8.0...v0.9.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -317,7 +317,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Two–way data binding between `Collection` instances. Closes [#132](https://github.com/ckeditor/ckeditor5-utils/issues/132). ([6b79624](https://github.com/ckeditor/ckeditor5-utils/commit/6b79624))
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.7.0...v0.8.0) (2017-03-06)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.7.0...v0.8.0) (March 6, 2017)
 
 ### Features
 

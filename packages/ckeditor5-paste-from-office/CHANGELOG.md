@@ -19,7 +19,7 @@ Internal changes only (updated dependencies, documentation, etc.).
   Thanks to [gjhenrique](https://github.com/gjhenrique) for the contribution!
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-paste-from-office/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 

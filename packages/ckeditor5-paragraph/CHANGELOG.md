@@ -15,7 +15,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-paragraph/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-paragraph/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
@@ -147,7 +147,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-paragraph/compare/v0.7.0...v0.8.0) (2017-05-07)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-paragraph/compare/v0.7.0...v0.8.0) (May 7, 2017)
 
 ### Bug fixes
 
@@ -158,7 +158,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Paragraph will be automatically created if loaded empty data or if programmatically emptied the root element. Closes [#19](https://github.com/ckeditor/ckeditor5-paragraph/issues/19). ([c42d33e](https://github.com/ckeditor/ckeditor5-paragraph/commit/c42d33e))
 
 
-## [0.7.0](https://github.com/ckeditor/ckeditor5-paragraph/compare/v0.6.1...v0.7.0) (2017-04-05)
+## [0.7.0](https://github.com/ckeditor/ckeditor5-paragraph/compare/v0.6.1...v0.7.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -170,6 +170,6 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Named existing plugin(s). ([46dc9b8](https://github.com/ckeditor/ckeditor5-paragraph/commit/46dc9b8))
 
 
-## [0.6.1](https://github.com/ckeditor/ckeditor5-paragraph/compare/v0.6.0...v0.6.1) (2017-03-06)
+## [0.6.1](https://github.com/ckeditor/ckeditor5-paragraph/compare/v0.6.0...v0.6.1) (March 6, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).

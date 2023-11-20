@@ -26,7 +26,7 @@ Changes for the past releases are available below.
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MINOR BREAKING CHANGES
 
@@ -249,11 +249,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced highlights support for widgets. Closes [#11](https://github.com/ckeditor/ckeditor5-widget/issues/11). ([0bd3d66](https://github.com/ckeditor/ckeditor5-widget/commit/0bd3d66))
 
 
-## [0.1.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.1.0...v0.1.1) (2017-05-07)
+## [0.1.1](https://github.com/ckeditor/ckeditor5-widget/compare/v0.1.0...v0.1.1) (May 7, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
-## 0.1.0 (2017-04-05)
+## 0.1.0 (April 5, 2017)
 
 ### Features
 

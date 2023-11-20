@@ -19,7 +19,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Run only one instance of the `TextWatcher` for all text transformations. Closes [ckeditor/ckeditor5#6020](https://github.com/ckeditor/ckeditor5/issues/6020). ([550426d](https://github.com/ckeditor/ckeditor5-typing/commit/550426d))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Features
 
@@ -201,11 +201,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 
 
-## [0.9.1](https://github.com/ckeditor/ckeditor5-typing/compare/v0.9.0...v0.9.1) (2017-05-07)
+## [0.9.1](https://github.com/ckeditor/ckeditor5-typing/compare/v0.9.0...v0.9.1) (May 7, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-typing/compare/v0.8.0...v0.9.0) (2017-04-05)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-typing/compare/v0.8.0...v0.9.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -224,7 +224,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `undo.step` configuration option was replaced by `typing.undoStep` in `DeleteCommand`. See [#79](https://github.com/ckeditor/ckeditor5-typing/issues/79).
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-typing/compare/v0.7.0...v0.8.0) (2017-03-06)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-typing/compare/v0.7.0...v0.8.0) (March 6, 2017)
 
 ### Bug fixes
 

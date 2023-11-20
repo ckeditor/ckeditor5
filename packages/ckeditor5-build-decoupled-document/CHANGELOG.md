@@ -124,7 +124,7 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v17.0.0 => [v18.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v18.0.0)
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 We are happy to announce the release of CKEditor&nbsp;5 v17.0.0.
 
@@ -628,7 +628,7 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v10.3.0 => [v10.3.1](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v10.3.1)
 
 
-## [11.1.1](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v11.1.0...v11.1.1) (2018-10-11)
+## [11.1.1](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v11.1.0...v11.1.1) (October 11, 2018)
 
 This releases fixes the README of this package on npm.
 
@@ -807,7 +807,7 @@ Besides new features introduced by the dependencies, this version also introduce
 * Added the table feature to the build. Closes [#12](https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12). ([58bfd46](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/58bfd46))
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v10.0.0...v10.0.1) (2018-05-22)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v10.0.0...v10.0.1) (May 22, 2018)
 
 ### Dependencies
 

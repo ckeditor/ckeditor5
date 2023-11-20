@@ -56,7 +56,7 @@ Changes for the past releases are available below.
 * Introduced support for multi-range selections. Closes [ckeditor/ckeditor5#6116](https://github.com/ckeditor/ckeditor5/issues/6116). ([ffce577](https://github.com/ckeditor/ckeditor5-engine/commit/ffce577))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Features
 
@@ -712,7 +712,7 @@ Feature: `SchemaContext#concat` has been introduced.
 * `History` API for deleting undone deltas has been removed.
 
 
-## [0.10.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.9.0...v0.10.0) (2017-05-07)
+## [0.10.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.9.0...v0.10.0) (May 7, 2017)
 
 ### Bug fixes
 
@@ -743,7 +743,7 @@ Feature: `SchemaContext#concat` has been introduced.
 * `model.Element#clone()` does not clone children when not in the `deep` mode. See [#689](https://github.com/ckeditor/ckeditor5-engine/issues/689).
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.8.0...v0.9.0) (2017-04-05)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.8.0...v0.9.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -784,7 +784,7 @@ Feature: `SchemaContext#concat` has been introduced.
 * The `insertUIElement()` model to view converter now supports collapsed and non-collapsed ranges.
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.7.0...v0.8.0) (2017-03-06)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.7.0...v0.8.0) (March 6, 2017)
 
 ### Bug fixes
 

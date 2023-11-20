@@ -218,7 +218,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 
 
-## [0.8.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.8.0...v0.8.1) (2017-05-07)
+## [0.8.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.8.0...v0.8.1) (May 7, 2017)
 
 ### Bug fixes
 
@@ -229,7 +229,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([5250bec](https://github.com/ckeditor/ckeditor5-basic-styles/commit/5250bec))
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.7.1...v0.8.0) (2017-04-05)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.7.1...v0.8.0) (April 5, 2017)
 
 ### Features
 
@@ -240,7 +240,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([2aa33fd](https://github.com/ckeditor/ckeditor5-basic-styles/commit/2aa33fd))
 
 
-## [0.7.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.7.0...v0.7.1) (2017-03-06)
+## [0.7.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v0.7.0...v0.7.1) (March 6, 2017)
 
 ### Other changes
 

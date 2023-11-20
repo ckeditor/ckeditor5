@@ -17,7 +17,7 @@ Changes for the past releases are available below.
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
@@ -139,21 +139,21 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Added the autoformat feature to the article preset. ([cb65328](https://github.com/ckeditor/ckeditor5-essentials/commit/cb65328))
 
 
-## [0.2.2](https://github.com/ckeditor/ckeditor5-essentials/compare/v0.2.1...v0.2.2) (2017-05-07)
+## [0.2.2](https://github.com/ckeditor/ckeditor5-essentials/compare/v0.2.1...v0.2.2) (May 7, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
-## [0.2.1](https://github.com/ckeditor/ckeditor5-essentials/compare/v0.2.0...v0.2.1) (2017-04-06)
+## [0.2.1](https://github.com/ckeditor/ckeditor5-essentials/compare/v0.2.0...v0.2.1) (April 6, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
-## [0.2.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v0.1.1...v0.2.0) (2017-04-05)
+## [0.2.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v0.1.1...v0.2.0) (April 5, 2017)
 
 ### Features
 
 * Added block quote feature to the article preset. Closes [#4](https://github.com/ckeditor/ckeditor5-essentials/issues/4). ([30d7bd5](https://github.com/ckeditor/ckeditor5-essentials/commit/30d7bd5))
 
 
-## [0.1.1](https://github.com/ckeditor/ckeditor5-essentials/compare/v0.1.0...v0.1.1) (2017-03-06)
+## [0.1.1](https://github.com/ckeditor/ckeditor5-essentials/compare/v0.1.0...v0.1.1) (March 6, 2017)
 
 Initial release.

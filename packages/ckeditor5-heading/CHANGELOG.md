@@ -17,7 +17,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([99855b5](https://github.com/ckeditor/ckeditor5-heading/commit/99855b5))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Bug fixes
 
@@ -217,14 +217,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `HeadingOption` interface was moved to the `heading/heading` module.
 
 
-## [0.9.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.9.0...v0.9.1) (2017-05-07)
+## [0.9.1](https://github.com/ckeditor/ckeditor5-heading/compare/v0.9.0...v0.9.1) (May 7, 2017)
 
 ### Other changes
 
 * Updated translations. ([eaff2b3](https://github.com/ckeditor/ckeditor5-heading/commit/eaff2b3))
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.8.0...v0.9.0) (2017-04-05)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.8.0...v0.9.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -251,7 +251,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `config.heading.options` format has changed. The valid `HeadingOption` syntax is now `{ modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1' }`.
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.7.0...v0.8.0) (2017-03-06)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-heading/compare/v0.7.0...v0.8.0) (March 6, 2017)
 
 ### Features
 

@@ -55,7 +55,7 @@ Changes for the past releases are available below.
 * Updated translations. ([ace38eb](https://github.com/ckeditor/ckeditor5-ui/commit/ace38eb))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Features
 
@@ -460,7 +460,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 * The position names in `BalloonPanelView.defaultPositions` and their results have changed. Please refer to the latest API documentation to learn more.
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.8.0...v0.9.0) (2017-05-07)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.8.0...v0.9.0) (May 7, 2017)
 
 ### Bug fixes
 
@@ -506,7 +506,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 * Default position names in `BalloonPanelView.defaultPositions` have changed. Now prefixed with `arrow_`.
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.7.1...v0.8.0) (2017-04-05)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.7.1...v0.8.0) (April 5, 2017)
 
 ### Features
 
@@ -527,7 +527,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 * The `ui/balloonpanel/balloonpanelview` module was renamed to `ui/panel/balloon/balloonpanelview`. See [#152](https://github.com/ckeditor/ckeditor5-ui/issues/152).
 
 
-## [0.7.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.7.0...v0.8.0) (2017-03-06)
+## [0.7.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.7.0...v0.8.0) (March 6, 2017)
 
 ### Bug fixes
 

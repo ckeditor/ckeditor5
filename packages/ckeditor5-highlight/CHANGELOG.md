@@ -19,7 +19,7 @@ Changes for the past releases are available below.
 * Updated translations. ([e7398fe](https://github.com/ckeditor/ckeditor5-highlight/commit/e7398fe))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Other changes
 

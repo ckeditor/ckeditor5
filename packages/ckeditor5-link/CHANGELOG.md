@@ -23,7 +23,7 @@ Changes for the past releases are available below.
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Bug fixes
 
@@ -155,7 +155,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations.
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-link/compare/v10.0.0...v10.0.1) (2018-05-22)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-link/compare/v10.0.0...v10.0.1) (May 22, 2018)
 
 ### Bug fixes
 
@@ -274,7 +274,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 
 
-## [0.7.0](https://github.com/ckeditor/ckeditor5-link/compare/v0.6.0...v0.6.1) (2017-05-07)
+## [0.7.0](https://github.com/ckeditor/ckeditor5-link/compare/v0.6.0...v0.6.1) (May 7, 2017)
 
 ### Bug fixes
 
@@ -290,7 +290,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([7a35617](https://github.com/ckeditor/ckeditor5-link/commit/7a35617))
 
 
-## [0.6.0](https://github.com/ckeditor/ckeditor5-link/compare/v0.5.1...v0.6.0) (2017-04-05)
+## [0.6.0](https://github.com/ckeditor/ckeditor5-link/compare/v0.5.1...v0.6.0) (April 5, 2017)
 
 ### Features
 
@@ -302,7 +302,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([0589bf0](https://github.com/ckeditor/ckeditor5-link/commit/0589bf0))
 
 
-## [0.5.1](https://github.com/ckeditor/ckeditor5-link/compare/v0.5.0...v0.5.1) (2017-03-06)
+## [0.5.1](https://github.com/ckeditor/ckeditor5-link/compare/v0.5.0...v0.5.1) (March 6, 2017)
 
 ### Bug fixes
 

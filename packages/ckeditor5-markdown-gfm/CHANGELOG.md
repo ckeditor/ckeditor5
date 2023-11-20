@@ -21,7 +21,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Adjusted the data processor implementation to changes in `ckeditor5-engine`. See [ckeditor/ckeditor5#6091](https://github.com/ckeditor/ckeditor5/issues/6091). ([ce2cc01](https://github.com/ckeditor/ckeditor5-markdown-gfm/commit/ce2cc01))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
@@ -131,16 +131,16 @@ Internal changes only (updated dependencies, documentation, etc.).
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [0.4.3](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.2...v0.4.3) (2017-05-07)
+## [0.4.3](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.2...v0.4.3) (May 7, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [0.4.2](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.1...v0.4.2) (2017-04-05)
+## [0.4.2](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.1...v0.4.2) (April 5, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [0.4.1](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.0...v0.4.1) (2017-03-06)
+## [0.4.1](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.0...v0.4.1) (March 6, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).

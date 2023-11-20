@@ -25,6 +25,6 @@ Changes for the past releases are available below.
 * Updated translations. ([9b06466](https://github.com/ckeditor/ckeditor5-special-characters/commit/9b06466))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-special-characters/tree/v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-special-characters/tree/v17.0.0) (February 19, 2020)
 
 The initial release.

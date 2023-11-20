@@ -33,7 +33,7 @@ Changes for the past releases are available below.
 * Pointer inside a restricted editing exception should be set to text for all the children. Closes [ckeditor/ckeditor5#6272](https://github.com/ckeditor/ckeditor5/issues/6272). ([a20d13b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/a20d13b))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -388,7 +388,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `.ck-disabled` is no longer available as a standalone class due to differences in the implementation of the disabled state among the UI components. Use a mixin instead `.your-class.ck-disabled { [@include](https://github.com/include) ck-disabled; }` to keep the previous functionality (reduced `opacity`) or provide a custom implementation of the state.
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.7.0...v0.8.0) (2017-05-07)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.7.0...v0.8.0) (May 7, 2017)
 
 ### Other changes
 
@@ -404,7 +404,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `ck-toolbar__container` class has been renamed, use `.ck-toolbar-container` instead.
 
 
-## [0.7.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.6.1...v0.7.0) (2017-04-05)
+## [0.7.0](https://github.com/ckeditor/ckeditor5-theme/compare/v0.6.1...v0.7.0) (April 5, 2017)
 
 ### Features
 
@@ -417,7 +417,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed tick symbol from active list item, used inverted background and text colors instead. Closes [#82](https://github.com/ckeditor/ckeditor5-theme/issues/82). ([a2eb843](https://github.com/ckeditor/ckeditor5-theme/commit/a2eb843))
 
 
-## [0.6.1](https://github.com/ckeditor/ckeditor5-theme/compare/v0.6.0...v0.6.1) (2017-03-06)
+## [0.6.1](https://github.com/ckeditor/ckeditor5-theme/compare/v0.6.0...v0.6.1) (March 6, 2017)
 
 ### Bug fixes
 

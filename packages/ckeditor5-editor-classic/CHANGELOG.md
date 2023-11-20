@@ -15,7 +15,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
@@ -184,11 +184,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `classic.js` file containing `ClassicEditor` class has been renamed to `classiceditor.js`.
 
 
-## [0.7.3](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.2...v0.7.3) (2017-05-07)
+## [0.7.3](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.2...v0.7.3) (May 7, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
-## [0.7.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.1...v0.7.2) (2017-04-05)
+## [0.7.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.1...v0.7.2) (April 5, 2017)
 
 ### Bug fixes
 
@@ -199,7 +199,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Code refactoring to share API with `ckeditor5-editor-inline`. Closes [#48](https://github.com/ckeditor/ckeditor5-editor-classic/issues/48). ([2bb1e4e](https://github.com/ckeditor/ckeditor5-editor-classic/commit/2bb1e4e))
 
 
-## [0.7.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.0...v0.7.1) (2017-03-06)
+## [0.7.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.0...v0.7.1) (March 6, 2017)
 
 ### Other changes
 

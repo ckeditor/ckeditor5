@@ -24,7 +24,7 @@ Changes for the past releases are available below.
 * Updated translations. ([79db6f5](https://github.com/ckeditor/ckeditor5-image/commit/79db6f5))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MINOR BREAKING CHANGES
 
@@ -345,7 +345,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 
 
-## [0.6.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.5.0...v0.6.0) (2017-05-07)
+## [0.6.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.5.0...v0.6.0) (May 7, 2017)
 
 ### Bug fixes
 
@@ -367,7 +367,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `config.image.defaultToolbar` is no longer available. All editor instances must have `config.image.toolbar` configured instead.
 
 
-## [0.5.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.4.0...v0.5.0) (2017-04-05)
+## [0.5.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.4.0...v0.5.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -398,7 +398,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The widget API is now available in the `ckeditor5-widget` package. See [#35](https://github.com/ckeditor/ckeditor5-image/issues/35).
 
 
-## [0.4.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.3.0...v0.4.0) (2017-03-06)
+## [0.4.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.3.0...v0.4.0) (March 6, 2017)
 
 ### Bug fixes
 

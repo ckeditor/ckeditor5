@@ -186,7 +186,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 
 
-## [0.1.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v0.1.0...v0.1.1) (2017-05-07)
+## [0.1.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v0.1.0...v0.1.1) (May 7, 2017)
 
 ### Bug fixes
 
@@ -197,7 +197,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([5e23f86](https://github.com/ckeditor/ckeditor5-block-quote/commit/5e23f86))
 
 
-## 0.1.0 (2017-04-05)
+## 0.1.0 (April 5, 2017)
 
 ### Features
 

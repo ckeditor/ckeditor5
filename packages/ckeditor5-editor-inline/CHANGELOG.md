@@ -21,7 +21,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The inline editor toolbar should group items when its width exceeds the editable’s width (see [ckeditor/ckeditor5#5597](https://github.com/ckeditor/ckeditor5/issues/5597)). ([1c5746c](https://github.com/ckeditor/ckeditor5-editor-inline/commit/1c5746c))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
@@ -193,14 +193,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `inline.js` file containing `InlineEditor` class has been renamed to `inlineeditor.js`.
 
 
-## [0.1.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.1.0...v0.1.1) (2017-05-07)
+## [0.1.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v0.1.0...v0.1.1) (May 7, 2017)
 
 ### Bug fixes
 
 * The position of the floating toolbar should be updated after the editable has grown. Closes [#4](https://github.com/ckeditor/ckeditor5-editor-inline/issues/4). ([ae578b3](https://github.com/ckeditor/ckeditor5-editor-inline/commit/ae578b3))
 
 
-## 0.1.0 (2017-04-05)
+## 0.1.0 (April 5, 2017)
 
 ### Features
 

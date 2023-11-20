@@ -17,7 +17,7 @@ Changes for the past releases are available below.
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
@@ -149,7 +149,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The viewport will be scrolled to the selection on paste. See ckeditor/ckeditor5-engine#660. ([9a0e20f](https://github.com/ckeditor/ckeditor5-clipboard/commit/9a0e20f))
 
 
-## [0.6.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.5.0...v0.6.0) (2017-05-07)
+## [0.6.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.5.0...v0.6.0) (May 7, 2017)
 
 ### Bug fixes
 
@@ -164,7 +164,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `clipboardInput` event now contains only the `dataTransfer` property (`content` was removed). The separate `inputTransformation` event was introduced for the content transformations.
 
 
-## [0.5.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.4.1...v0.5.0) (2017-04-05)
+## [0.5.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.4.1...v0.5.0) (April 5, 2017)
 
 ### Other changes
 
@@ -175,6 +175,6 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Named existing plugin(s). ([3d37f53](https://github.com/ckeditor/ckeditor5-clipboard/commit/3d37f53))
 
 
-## [0.4.1](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.4.0...v0.4.1) (2017-03-06)
+## [0.4.1](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.4.0...v0.4.1) (March 6, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).

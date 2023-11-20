@@ -142,7 +142,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Aligned feature class naming to the new scheme. ([5f5b4a9](https://github.com/ckeditor/ckeditor5-autoformat/commit/5f5b4a9))
 
 
-## 0.0.1 (2017-10-27)
+## 0.0.1 (October 27, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
@@ -186,11 +186,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The Autoformat feature doesn't require Bold, Italic, Heading, etc. any longer. In order to make the most of the plugin, please make sure that relevant features are loaded in your editor.
 
 
-## [0.5.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.5.0...v0.5.1) (2017-05-07)
+## [0.5.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.5.0...v0.5.1) (May 7, 2017)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
-## [0.5.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.4.1...v0.5.0) (2017-04-05)
+## [0.5.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.4.1...v0.5.0) (April 5, 2017)
 
 ### Features
 
@@ -201,7 +201,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated command names to match the latest API of the Heading feature. Closes [#22](https://github.com/ckeditor/ckeditor5-autoformat/issues/22). ([10b5561](https://github.com/ckeditor/ckeditor5-autoformat/commit/10b5561))
 
 
-## [0.4.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.4.0...v0.4.1) (2017-03-06)
+## [0.4.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.4.0...v0.4.1) (March 6, 2017)
 
 ### Other changes
 

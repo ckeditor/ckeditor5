@@ -19,7 +19,7 @@ Changes for the past releases are available below.
 * Updated translations. ([081969b](https://github.com/ckeditor/ckeditor5-page-break/commit/081969b))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-page-break/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Bug fixes
 

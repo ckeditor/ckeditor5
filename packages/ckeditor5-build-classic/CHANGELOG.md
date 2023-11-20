@@ -118,7 +118,7 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v17.0.0 => [v18.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v18.0.0)
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 We are happy to announce the release of CKEditor&nbsp;5 v17.0.0.
 
@@ -584,7 +584,7 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v10.3.0 => [v10.3.1](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v10.3.1)
 
 
-## [11.1.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v11.1.0...v11.1.1) (2018-10-11)
+## [11.1.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v11.1.0...v11.1.1) (October 11, 2018)
 
 This releases fixes the README of this package on npm.
 
@@ -743,7 +743,7 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo): v10.0.0 => [v10.0.1](https://github.com/ckeditor/ckeditor5-undo/releases/tag/v10.0.1)
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v10.0.0...v10.0.1) (2018-05-22)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v10.0.0...v10.0.1) (May 22, 2018)
 
 ### Dependencies
 
@@ -1006,7 +1006,7 @@ Besides new features introduced in the dependencies, this build also introduces 
 * Added Easy Image with Cloud Services and CKFinder adapter. See [ckeditor/ckeditor5#567](https://github.com/ckeditor/ckeditor5/issues/567). ([668691f](https://github.com/ckeditor/ckeditor5-build-classic/commit/668691f))
 
 
-## [0.4.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.3.0...v0.4.0) (2017-09-07)
+## [0.4.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.3.0...v0.4.0) (September 7, 2017)
 
 ### Other changes
 
@@ -1028,7 +1028,7 @@ Besides new features introduced in the dependencies, this build also introduces 
 * Removed the compat-type of build. Closes [#20](https://github.com/ckeditor/ckeditor5-build-classic/issues/20). ([529a319](https://github.com/ckeditor/ckeditor5-build-classic/commit/529a319))
 
 
-## [0.2.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.1.1...v0.2.0) (2017-05-07)
+## [0.2.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.1.1...v0.2.0) (May 7, 2017)
 
 ### Bug fixes
 
@@ -1044,14 +1044,14 @@ Besides new features introduced in the dependencies, this build also introduces 
 * Use the essentials preset instead of low level features like typing and enter. Closes [#9](https://github.com/ckeditor/ckeditor5-build-classic/issues/9). ([80314bf](https://github.com/ckeditor/ckeditor5-build-classic/commit/80314bf))
 
 
-## [0.1.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.1.0...v0.1.1) (2017-04-06)
+## [0.1.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v0.1.0...v0.1.1) (April 6, 2017)
 
 ### Other
 
 * Updated the bundles (the previous release contained an outdated bundles). ([0ac7b07](https://github.com/ckeditor/ckeditor5-build-classic/commit/0ac7b07))
 
 
-## 0.1.0 (2017-04-05)
+## 0.1.0 (April 5, 2017)
 
 ### Features
 

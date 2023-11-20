@@ -23,7 +23,7 @@ Changes for the past releases are available below.
 * Updated translations. ([b0d7c53](https://github.com/ckeditor/ckeditor5-font/commit/b0d7c53))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MINOR BREAKING CHANGES
 

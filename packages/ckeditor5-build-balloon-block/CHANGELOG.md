@@ -118,7 +118,7 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v17.0.0 => [v18.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v18.0.0)
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 We are happy to announce the release of CKEditor&nbsp;5 v17.0.0.
 

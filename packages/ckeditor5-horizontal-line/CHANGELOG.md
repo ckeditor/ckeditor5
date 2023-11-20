@@ -17,7 +17,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([ed01f6d](https://github.com/ckeditor/ckeditor5-horizontal-line/commit/ed01f6d))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Bug fixes
 
