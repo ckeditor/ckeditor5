@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import windowsSpecificTags from './windows-specific-tags/input.html';
-import windowsSpecificTagsModel from './windows-specific-tags/model.html';
+import smartTags from './smart-tags/input.html';
+import smartTagsModel from './smart-tags/model.html';
 
 export const fixtures = {
 	input: {
-		windowsSpecificTags
+		smartTags
 	},
 	model: {
-		windowsSpecificTags: windowsSpecificTagsModel
+		smartTags: smartTagsModel
 	}
 };

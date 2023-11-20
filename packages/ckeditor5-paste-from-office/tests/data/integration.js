@@ -131,7 +131,7 @@ describe( 'PasteFromOffice - integration', () => {
 	} );
 
 	generateIntegrationTests( {
-		input: 'windows-specific-tags',
+		input: 'smart-tags',
 		editorConfig: {
 			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice, FontColor ]
 		}
