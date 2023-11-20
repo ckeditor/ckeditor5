@@ -141,18 +141,47 @@ describe( 'AutocompleteView', () => {
 				expect( view.resultsView._position ).to.equal( 's' );
 			} );
 
-			it( 'should hide the results view upon pressing esc', () => {
-				const keyEvtData = {
-					keyCode: keyCodes.esc,
-					preventDefault: sinon.spy(),
-					stopPropagation: sinon.spy()
-				};
+			describe( 'Esc key handling', () => {
+				it( 'should focus the #queryView and hide the #resultsView upon pressing Esc if the results view is visible', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.esc,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
 
-				view.resultsView.isVisible = true;
+					const queryFocusSpy = sinon.spy( view.queryView, 'focus' );
+					const resultsIsVisibleChangeSpy = sinon.spy();
 
-				view.keystrokes.press( keyEvtData );
+					view.resultsView.isVisible = true;
+					view.resultsView.on( 'change:isVisible', resultsIsVisibleChangeSpy );
 
-				expect( view.resultsView.isVisible ).to.be.false;
+					view.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( queryFocusSpy );
+					sinon.assert.calledOnce( resultsIsVisibleChangeSpy );
+					sinon.assert.callOrder( queryFocusSpy, resultsIsVisibleChangeSpy );
+					expect( view.resultsView.isVisible ).to.be.false;
+
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				} );
+
+				it( 'should pass the DOM event through upon pressing Esc if the #resultsView is invisible', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.esc,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					const queryFocusSpy = sinon.spy( view.queryView, 'focus' );
+
+					view.keystrokes.press( keyEvtData );
+
+					sinon.assert.notCalled( queryFocusSpy );
+					expect( view.resultsView.isVisible ).to.be.false;
+					sinon.assert.notCalled( keyEvtData.preventDefault );
+					sinon.assert.notCalled( keyEvtData.stopPropagation );
+				} );
 			} );
 
 			it( 'should hide the results upon disabling the view', () => {

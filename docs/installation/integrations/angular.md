@@ -95,7 +95,7 @@ npm install --save @ckeditor/ckeditor5-angular
 ```
 
 <info-box>
-	If you don't have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
+	If you do not have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
 </info-box>
 
 Install one of the {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
@@ -174,7 +174,7 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
 ```
 
-Rebuild your application and CKEditor&nbsp;5 should greet you with a "Hello, world!".
+Rebuild your application and CKEditor&nbsp;5 should greet you with a "Hello, world!"
 
 ### Using the Document editor build
 
@@ -534,13 +534,17 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes (except of crashes during the editor initialization). Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+Fired when the editor crashes. Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+
+<info-box>
+	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
+</info-box>
 
 ## Styling
 
-The CKEditor&nbsp;5 rich text editor component for Angular can be styled using the component stylesheet or using a global stylesheet. See how to set the CKEditor&nbsp;5 component's height using these two approaches.
+The CKEditor&nbsp;5 rich text editor component for Angular can be styled using the component style sheet or using a global style sheet. See how to set the CKEditor&nbsp;5 component's height using these two approaches.
 
-### Setting the height via the component stylesheet
+### Setting the height via the component style sheet
 
 First, create a (S)CSS file in the parent component's directory and style the given editor's part preceded by the `:host` and `::ng-deep` pseudo selectors:
 
@@ -552,7 +556,7 @@ First, create a (S)CSS file in the parent component's directory and style the gi
 }
 ```
 
-Then in the parent component add the relative path to the above stylesheet:
+Then in the parent component add the relative path to the above style sheet:
 
 ```ts
 /* src/app/app.component.ts */
@@ -563,9 +567,9 @@ Then in the parent component add the relative path to the above stylesheet:
 } )
 ```
 
-### Setting the height via a global stylesheet
+### Setting the height via a global style sheet
 
-To style the component using a global stylesheet, first, create it:
+To style the component using a global style sheet, first, create it:
 
 ```css
 /* src/styles.css */

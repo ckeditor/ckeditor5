@@ -65,7 +65,7 @@ export default class DowncastWriter {
 	/**
 	 * The slot factory used by the `elementToStructure` downcast helper.
 	 */
-	private _slotFactory: ( ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => Element ) | null = null;
+	private _slotFactory: ( ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => Element ) | null = null;
 
 	/**
 	 * @param document The view document instance.
@@ -1431,7 +1431,7 @@ export default class DowncastWriter {
 	 * @internal
 	 * @param slotFactory The slot factory.
 	 */
-	public _registerSlotFactory( slotFactory: ( writer: DowncastWriter, modeOrFilter: string | SlotFilter ) => Element ): void {
+	public _registerSlotFactory( slotFactory: ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => Element ): void {
 		this._slotFactory = slotFactory;
 	}
 

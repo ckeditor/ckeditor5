@@ -25,7 +25,8 @@ import {
 	getImgViewElementMatcher,
 	createBlockImageViewElement,
 	determineImageTypeForInsertionAtSelection
-} from '../image/utils';
+} from './utils';
+import ImagePlaceholder from './imageplaceholder';
 
 /**
  * The image block plugin.
@@ -42,7 +43,7 @@ export default class ImageBlockEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ClipboardPipeline ] as const;
+		return [ ImageEditing, ImageSizeAttributes, ImageUtils, ImagePlaceholder, ClipboardPipeline ] as const;
 	}
 
 	/**

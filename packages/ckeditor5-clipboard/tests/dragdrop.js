@@ -479,13 +479,13 @@ describe( 'Drag and Drop', () => {
 
 			dataTransferMock = createDataTransfer( { 'text/html': 'abc' } );
 
-			let targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
+			let targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
 			fireDragging( dataTransferMock, targetPosition );
 			clock.tick( 100 );
 
 			expectDraggingMarker( targetPosition );
 			expect( getViewData( view, { renderUIElements: true } ) ).to.equal(
-				'<p>{fo<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>o}bar</p>'
+				'<p>{foo}<span class="ck ck-clipboard-drop-target-position">\u2060<span></span>\u2060</span>bar</p>'
 			);
 
 			// Dropping.

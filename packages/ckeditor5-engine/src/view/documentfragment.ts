@@ -104,6 +104,13 @@ export default class DocumentFragment extends EmitterMixin( TypeCheckable ) impl
 	}
 
 	/**
+	 * Artificial element getFillerOffset. Returns `undefined`. Added for compatibility reasons.
+	 */
+	public get getFillerOffset(): undefined {
+		return undefined;
+	}
+
+	/**
 	 * Returns the custom property value for the given key.
 	 */
 	public getCustomProperty( key: string | symbol ): unknown {

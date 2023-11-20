@@ -102,7 +102,7 @@ The above limitations can be overcome with the help of proxy services like Ifram
 The data output format of the feature can be configured using the {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`} option.
 
 <info-box info>
-	This option does not change how the media are displayed inside the editor &mdash; the previewable ones will still be displayed with previews. It only affects the output data (see below).
+	This option does not change how the media are displayed inside the editor &ndash; the previewable ones will still be displayed with previews. It only affects the output data (see below).
 </info-box>
 
 #### Semantic data output (default)
@@ -169,7 +169,7 @@ Names of providers **without previews**:
 * `'facebook'`.
 
 <info-box notice>
-	The default media provider configuration does not support all possible media URLs &mdash; only the most common are included. Services like Iframely or Embedly support thousands of media providers and it is up to you to define which you want to allow.
+	The default media provider configuration does not support all possible media URLs &ndash; only the most common are included. Services like Iframely or Embedly support thousands of media providers and it is up to you to define which you want to allow.
 </info-box>
 
 #### Extending media providers

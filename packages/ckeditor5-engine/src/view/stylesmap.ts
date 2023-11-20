@@ -21,7 +21,7 @@ export default class StylesMap {
 	 *
 	 * When no style processor rules are defined it acts as simple key-value storage.
 	 */
-	private _styles: Record<string, string>;
+	private _styles: Styles;
 
 	/**
 	 * An instance of the {@link module:engine/view/stylesmap~StylesProcessor}.
@@ -41,9 +41,8 @@ export default class StylesMap {
 	 */
 	public get isEmpty(): boolean {
 		const entries = Object.entries( this._styles );
-		const from = Array.from( entries );
 
-		return !from.length;
+		return !entries.length;
 	}
 
 	/**
@@ -67,7 +66,7 @@ export default class StylesMap {
 	public setTo( inlineStyle: string ): void {
 		this.clear();
 
-		const parsedStyles = Array.from( parseInlineStyles( inlineStyle ).entries() );
+		const parsedStyles = parseInlineStyles( inlineStyle );
 
 		for ( const [ key, value ] of parsedStyles ) {
 			this._styleProcessor.toNormalizedForm( key, value, this._styles );
@@ -373,7 +372,7 @@ export default class StylesMap {
 
 		if ( this._styles[ propertyName ] && !isObject( this._styles[ propertyName ] ) ) {
 			// Try return styles set directly - values that are not parsed.
-			return this._styles[ propertyName ];
+			return this._styles[ propertyName ] as string;
 		}
 
 		const styles = this._styleProcessor.getReducedForm( propertyName, this._styles );
@@ -458,7 +457,7 @@ export default class StylesMap {
 			return;
 		}
 
-		const isParentEmpty = !Array.from( Object.keys( parentObject ) ).length;
+		const isParentEmpty = !Object.keys( parentObject ).length;
 
 		if ( isParentEmpty ) {
 			this.remove( parentPath );
@@ -645,7 +644,7 @@ export class StylesProcessor {
 			...Object.keys( styles )
 		] );
 
-		return Array.from( styleNamesKeysSet.values() );
+		return Array.from( styleNamesKeysSet );
 	}
 
 	/**
@@ -953,7 +952,7 @@ function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObje
 }
 
 /**
- * A CSS style property descriptor that contains tuplet of two strings:
+ * A CSS style property descriptor that contains tuple of two strings:
  *
  * - first string describes property name
  * - second string describes property value

@@ -484,16 +484,19 @@ export interface ImageInsertConfig {
 	integrations: Array<string>;
 
 	/**
-	 * This options allows to override the image type used by the {@link module:image/image/insertimagecommand~InsertImageCommand}
-	 * when the user inserts new images into the editor content. By default, this option is unset which means the editor will choose
-	 * the optimal image type based on the context of the insertion (e.g. the current selection and availability of plugins)
+	 * This option allows to override the image type used by the {@link module:image/image/insertimagecommand~InsertImageCommand}
+	 * when the user inserts new images into the editor content. By default, all images inserted into the editor will be block
+	 * if {@link module:image/imageblock~ImageBlock} is loaded. To let the editor decide the image type, choose `'auto'`.
 	 *
 	 * Available options are:
 	 *
 	 * * `'block'` – all images inserted into the editor will be block (requires the {@link module:image/imageblock~ImageBlock} plugin),
-	 * * `'inline'` – all images inserted into the editor will be inline (requires the {@link module:image/imageinline~ImageInline} plugin).
+	 * * `'inline'` – all images inserted into the editor will be inline (requires the {@link module:image/imageinline~ImageInline} plugin),
+	 * * `'auto'` – the editor will choose the optimal image type based on the context of the insertion and availability of plugins.
+	 *
+	 * @default 'block'
 	 */
-	type?: 'inline' | 'block';
+	type?: 'inline' | 'block' | 'auto';
 }
 
 /**

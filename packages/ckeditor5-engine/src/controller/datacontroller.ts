@@ -71,7 +71,7 @@ export default class DataController extends EmitterMixin() {
 
 	/**
 	 * Mapper used for the conversion. It has no permanent bindings, because these are created while getting data and
-	 * ae cleared directly after the data are converted. However, the mapper is defined as a class property, because
+	 * are cleared directly after the data are converted. However, the mapper is defined as a class property, because
 	 * it needs to be passed to the `DowncastDispatcher` as a conversion API.
 	 */
 	public readonly mapper: Mapper;

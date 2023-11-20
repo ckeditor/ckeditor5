@@ -23,12 +23,15 @@ import {
 	type ViewElement,
 	type Writer
 } from 'ckeditor5/src/engine';
-import { CKEditorError, logError } from 'ckeditor5/src/utils';
+import { CKEditorError, logError, type DecoratedMethodEvent } from 'ckeditor5/src/utils';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig';
 
 import CKBoxCommand from './ckboxcommand';
 import CKBoxUploadAdapter from './ckboxuploadadapter';
+import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
+
+const DEFAULT_CKBOX_THEME_NAME = 'lark';
 
 /**
  * The CKBox editing feature. It introduces the {@link module:ckbox/ckboxcommand~CKBoxCommand CKBox command} and
@@ -118,7 +121,7 @@ export default class CKBoxEditing extends Plugin {
 			defaultUploadCategories: null,
 			ignoreDataId: false,
 			language: editor.locale.uiLanguage,
-			theme: 'default',
+			theme: DEFAULT_CKBOX_THEME_NAME,
 			tokenUrl: editor.config.get( 'cloudServices.tokenUrl' )
 		} );
 
@@ -316,6 +319,18 @@ export default class CKBoxEditing extends Plugin {
 				}
 			}
 		} );
+
+		const replaceImageSourceCommand = editor.commands.get( 'replaceImageSource' );
+
+		if ( replaceImageSourceCommand ) {
+			this.listenTo<DecoratedMethodEvent<ReplaceImageSourceCommand, 'cleanupImage'>>(
+				replaceImageSourceCommand,
+				'cleanupImage',
+				( _, [ writer, image ] ) => {
+					writer.removeAttribute( 'ckboxImageId', image );
+				}
+			);
+		}
 	}
 
 	/**
