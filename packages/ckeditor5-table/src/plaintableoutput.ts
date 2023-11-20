@@ -11,6 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core';
 import type { DowncastWriter, Element, Node, ViewContainerElement } from 'ckeditor5/src/engine';
 
 import Table from './table';
+import TableUtils from './tableutils';
 
 /**
  * The plain table output feature.
@@ -27,7 +28,7 @@ export default class PlainTableOutput extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Table ] as const;
+		return [ Table, TableUtils ] as const;
 	}
 
 	/**
@@ -35,11 +36,14 @@ export default class PlainTableOutput extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const tableUtils = editor.plugins.get( 'TableUtils' );
 
 		// Override default table data downcast converter.
 		editor.conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'table',
-			view: downcastTableElement,
+			view: ( modelElement, { writer } ) => {
+				return downcastTableElement( modelElement, { writer }, tableUtils );
+			},
 			converterPriority: 'high'
 		} );
 
@@ -68,9 +72,10 @@ export default class PlainTableOutput extends Plugin {
  *
  * @param table Table model element.
  * @param conversionApi The conversion API object.
+ * @param tableUtils The Table Utils plugin instance.
  * @returns Created element.
  */
-function downcastTableElement( table: Element, { writer }: { writer: DowncastWriter } ) {
+function downcastTableElement( table: Element, { writer }: { writer: DowncastWriter }, tableUtils: TableUtils ) {
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
 	// Table head rows slot.
@@ -78,19 +83,11 @@ function downcastTableElement( table: Element, { writer }: { writer: DowncastWri
 		element.is( 'element', 'tableRow' ) && element.index! < headingRows
 	);
 
-	// Table body rows slot.
-	const bodyRowsSlot = writer.createSlot( ( element: Node ) =>
-		element.is( 'element', 'tableRow' ) && element.index! >= headingRows
-	);
-
 	// Table children slot.
 	const childrenSlot = writer.createSlot( ( element: Node ) => !element.is( 'element', 'tableRow' ) );
 
 	// Table <thead> element with all the heading rows.
 	const theadElement = writer.createContainerElement( 'thead', null, headRowsSlot );
-
-	// Table <tbody> element with all the body rows.
-	const tbodyElement = writer.createContainerElement( 'tbody', null, bodyRowsSlot );
 
 	// Table contents element containing <thead> and <tbody> when necessary.
 	const tableContentElements: Array<ViewContainerElement> = [];
@@ -100,7 +97,18 @@ function downcastTableElement( table: Element, { writer }: { writer: DowncastWri
 	}
 
 	if ( headingRows < table.childCount ) {
-		tableContentElements.push( tbodyElement );
+		const rowGroupMap = tableUtils.getGroupedRows( table );
+		for ( const key of rowGroupMap.keys() ) {
+			// Table body row group slot.
+			const bodyRowsSlot = writer.createSlot( ( element: Node ) =>
+				element.is( 'element', 'tableRow' ) && element.index! >= headingRows && element.getAttribute( 'rowGroup' ) == key
+			);
+
+			// Table <tbody> element with all the rows for that group.
+			const tbodyElement = writer.createContainerElement( 'tbody', null, bodyRowsSlot );
+
+			tableContentElements.push( tbodyElement );
+		}
 	}
 
 	// Create table structure.
