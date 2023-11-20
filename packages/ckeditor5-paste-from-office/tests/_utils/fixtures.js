@@ -16,7 +16,7 @@ import { fixtures as table } from '../_data/table/index.js';
 import { fixtures as pageBreak } from '../_data/page-break/index.js';
 import { fixtures as fontWithoutTableProperties } from '../_data/font-without-table-properties/index';
 import { fixtures as googleDocsBrParagraphs } from '../_data/paste-from-google-docs/br-paragraph/index';
-import { fixtures as windowsSpecificTags } from '../_data/paste-from-word/index';
+import { fixtures as windowsSpecificTags } from '../_data/other/index';
 
 // Generic fixtures.
 export const generic = {
