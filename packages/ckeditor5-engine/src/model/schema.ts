@@ -375,7 +375,7 @@ export default class Schema extends ObservableMixin() {
 	 * ```
 	 *
 	 * Note: When verifying whether the given node can be a child of the given context, the
-	 * schema also verifies the entire context &mdash; from its root to its last element. Therefore, it is possible
+	 * schema also verifies the entire context &ndash; from its root to its last element. Therefore, it is possible
 	 * for `checkChild()` to return `false` even though the context's last element can contain the checked child.
 	 * It happens if one of the context's elements does not allow its child.
 	 *
@@ -421,7 +421,7 @@ export default class Schema extends ObservableMixin() {
 	/**
 	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`positionOrBaseElement`).
 	 *
-	 * In other words &mdash; whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
+	 * In other words &ndash; whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
 	 *
 	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
 	 * will be valid.
@@ -1490,7 +1490,7 @@ interface SchemaCompiledItemDefinitionInternal {
 type TypeNames = Array<'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObject' | 'isSelectable'>;
 
 /**
- * A schema context &mdash; a list of ancestors of a given position in the document.
+ * A schema context &ndash; a list of ancestors of a given position in the document.
  *
  * Considering such position:
  *

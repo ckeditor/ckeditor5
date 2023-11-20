@@ -401,7 +401,7 @@ export default class Model extends ObservableMixin() {
 	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
 	 * the content, clears the given selection's content before inserting nodes and moves the selection
 	 * to its target position at the end of the process.
-	 * It can split elements, merge them, wrap bare text nodes with paragraphs, etc. &mdash; just like the
+	 * It can split elements, merge them, wrap bare text nodes with paragraphs, etc. &ndash; just like the
 	 * pasting feature should do.
 	 *
 	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.

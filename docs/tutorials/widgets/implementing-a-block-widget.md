@@ -490,7 +490,7 @@ Once you have converters, you can try to see the simple box in action. You have 
 </html>
 ```
 
-Rebuild your project and voila &ndash; that's your first simple box instance:
+Rebuild your project and voilà &ndash; this is your first simple box instance:
 
 {@img assets/img/tutorial-implementing-a-widget-3.png Screenshot of a classic editor with an instance of a simple box inside.}
 

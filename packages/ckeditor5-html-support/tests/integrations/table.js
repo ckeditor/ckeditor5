@@ -1342,7 +1342,7 @@ describe( 'TableElementSupport', () => {
 		expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
 			'<paragraph>' +
 				'<htmlCustomElement ' +
-					'htmlContent="<custom-element><table dir="ltr"><tbody><tr><td>Foo</td></tr></tbody></table></custom-element>" ' +
+					'htmlContent="<table dir="ltr"><tbody><tr><td>Foo</td></tr></tbody></table>" ' +
 					'htmlElementName="custom-element"' +
 				'>' +
 				'</htmlCustomElement>' +

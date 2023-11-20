@@ -271,7 +271,7 @@ export default class Context {
 	/**
 	 * Returns the context configuration which will be copied to the editors created using this context.
 	 *
-	 * The configuration returned by this method has the plugins configuration removed &mdash; plugins are shared with all editors
+	 * The configuration returned by this method has the plugins configuration removed &ndash; plugins are shared with all editors
 	 * through another mechanism.
 	 *
 	 * This method should only be used by the editor.
