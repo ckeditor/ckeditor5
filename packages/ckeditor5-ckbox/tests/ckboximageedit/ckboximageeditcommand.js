@@ -139,7 +139,7 @@ describe( 'CKBoxImageEditCommand', () => {
 	} );
 
 	describe( 'execute', () => {
-		it( 'should whould open ckbox image editor', () => {
+		it( 'should open CKBox image editor', () => {
 			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 			command.execute();
 

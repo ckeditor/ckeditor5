@@ -78,7 +78,7 @@ describe( 'utils', () => {
 			expect( callback.callCount ).to.equal( 3 );
 		} );
 
-		it( 'should return failure after 3 retries by default', async () => {
+		it( 'should return failure after 4 retries by default', async () => {
 			const callback = sinon.stub();
 
 			callback.onCall( 0 ).returns( Promise.reject( new Error( '1st failure' ) ) );

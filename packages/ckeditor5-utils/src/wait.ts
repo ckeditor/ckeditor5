@@ -10,7 +10,7 @@
 /**
  * Returns a promise that is resolved after the specified time.
  *
- * @param timeout The time in miliseconds to wait.
+ * @param timeout The time in milliseconds to wait.
  * @param options.signal A signal to abort the waiting.
  */
 export default function wait( timeout: number, options: { signal?: AbortSignal } = {} ): Promise<void> {

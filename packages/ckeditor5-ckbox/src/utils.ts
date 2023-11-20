@@ -154,6 +154,7 @@ export function sendHttpRequest( {
 	};
 
 	return new Promise<any>( ( resolve, reject ) => {
+		signal.throwIfAborted();
 		signal.addEventListener( 'abort', abortCallback );
 
 		xhr.addEventListener( 'loadstart', () => {

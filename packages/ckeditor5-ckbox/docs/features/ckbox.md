@@ -298,7 +298,7 @@ editor.execute( 'ckbox' );
 If you want to use the CKBox editing capabilities straight from the editor, the plugin will also register the following:
 
 * The `'ckboxImageEdit'` UI button component for CKBox image editor
-* The `'ckboxImageEdit'`command implemented by the {@link module:ckbox/ckboximageedit~CKBoxImageEdit}
+* The `'ckboxImageEdit'` command implemented by the {@link module:ckbox/ckboximageedit~CKBoxImageEdit}
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

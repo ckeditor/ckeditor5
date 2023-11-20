@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals AbortController, URL, window */
+/* globals document, AbortController, URL, window */
 
 /**
  * @module ckbox/ckboximageedit/ckboximageeditcommand
@@ -88,7 +88,7 @@ export default class CKBoxImageEditCommand extends Command {
 		this.value = true;
 		this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
 
-		global.document.body.appendChild( this._wrapper );
+		document.body.appendChild( this._wrapper );
 
 		const imageElement = this.editor.model.document.selection.getSelectedElement()!;
 		const ckboxImageId = imageElement.getAttribute( 'ckboxImageId' ) as string;
@@ -104,8 +104,11 @@ export default class CKBoxImageEditCommand extends Command {
 		this.refresh();
 	}
 
+	/**
+	 * Closes the CKBox Image Editor dialog.
+	 */
 	public override destroy(): void {
-		this._handleImageEditorOnClose();
+		this._handleImageEditorClose();
 
 		for ( const state of this._processInProgress.values() ) {
 			state.controller.abort();
@@ -134,8 +137,8 @@ export default class CKBoxImageEditCommand extends Command {
 				allowOverwrite: false
 			},
 			tokenUrl: ckboxConfig.tokenUrl,
-			onClose: () => this._handleImageEditorOnClose(),
-			onSave: ( asset: CKBoxRawAssetDefinition ) => this._handleImageEditorOnSave( state, asset )
+			onClose: () => this._handleImageEditorClose(),
+			onSave: ( asset: CKBoxRawAssetDefinition ) => this._handleImageEditorSave( state, asset )
 		};
 	}
 
@@ -170,9 +173,9 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
-	 * Close image editor.
+	 * Closes the CKBox Image Editor dialog.
 	 */
-	private _handleImageEditorOnClose() {
+	private _handleImageEditorClose() {
 		if ( !this._wrapper ) {
 			return;
 		}
@@ -189,7 +192,7 @@ export default class CKBoxImageEditCommand extends Command {
 	 * Save edited image. In case server respond with "success" replace with edited image,
 	 * otherwise show notification error.
 	 */
-	private _handleImageEditorOnSave( state: ProcessingState, asset: CKBoxRawAssetDefinition ) {
+	private _handleImageEditorSave( state: ProcessingState, asset: CKBoxRawAssetDefinition ) {
 		const t = this.editor.locale.t;
 		const notification = this.editor.plugins.get( Notification );
 		const pendingActions = this.editor.plugins.get( PendingActions );
@@ -205,8 +208,8 @@ export default class CKBoxImageEditCommand extends Command {
 				},
 				() => {
 					if ( !state.controller.signal.aborted ) {
-						notification.showWarning( t( 'Server failed image processing or didn\'t respond' ), {
-							title: t( 'Server failed image processing or didn\'t respond' ),
+						notification.showWarning( t( 'Server failed to process the image.' ), {
+							title: t( 'Image processing failed.' ),
 							namespace: 'ckbox'
 						} );
 					}
