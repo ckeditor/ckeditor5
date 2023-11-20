@@ -20,6 +20,7 @@ import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
@@ -61,6 +62,7 @@ const defaultPlugins = [
 	CloudServices,
 	Heading,
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
@@ -92,7 +94,7 @@ const defaultToolbar = {
 		'italic',
 		'|',
 		'link',
-		'uploadImage',
+		'insertImage',
 		'insertTable',
 		'mediaEmbed',
 		'horizontalLine',
@@ -118,6 +120,11 @@ const defaultConfig = {
 	},
 	table: {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+	},
+	insert: {
+		integrations: [
+			'insertImageViaUrl'
+		]
 	},
 	ui: {
 		viewportOffset: {
