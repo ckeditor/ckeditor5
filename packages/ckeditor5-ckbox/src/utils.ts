@@ -143,7 +143,7 @@ export function sendHttpRequest( {
 } ): Promise<any> {
 	const xhr = new XMLHttpRequest();
 
-	xhr.open( method, url.toString(), true );
+	xhr.open( method, url.toString() );
 	xhr.setRequestHeader( 'Authorization', authorization );
 	xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
 	xhr.responseType = 'json';

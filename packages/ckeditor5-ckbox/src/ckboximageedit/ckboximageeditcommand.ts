@@ -10,7 +10,7 @@
  */
 
 import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
-import { createElement, global, retry } from 'ckeditor5/src/utils';
+import { CKEditorError, createElement, retry } from 'ckeditor5/src/utils';
 import type { Element as ModelElement } from 'ckeditor5/src/engine';
 import { Notification } from 'ckeditor5/src/ui';
 import { isEqual } from 'lodash-es';
@@ -20,7 +20,7 @@ import { sendHttpRequest } from '../utils';
 import { prepareImageAssetAttributes } from '../ckboxcommand';
 import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig';
 
-import type { InsertImageCommand, ImageUtils } from '@ckeditor/ckeditor5-image';
+import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
 /**
  * The CKBox edit image command.
@@ -81,7 +81,7 @@ export default class CKBoxImageEditCommand extends Command {
 	 * Opens the CKBox Image Editor dialog for editing the image.
 	 */
 	public override execute(): void {
-		if ( !this.isEnabled || this._getValue() ) {
+		if ( this._getValue() ) {
 			return;
 		}
 
@@ -105,7 +105,7 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
-	 * Closes the CKBox Image Editor dialog.
+	 * @inheritDoc
 	 */
 	public override destroy(): void {
 		this._handleImageEditorClose();
@@ -143,8 +143,7 @@ export default class CKBoxImageEditCommand extends Command {
 	}
 
 	/**
-	 * Initializes various event listeners for the `ckboxImageEditor:*` events,
-	 * because all functionality of the `ckboxImageEditor` command is event-based.
+	 * Initializes event lister for an event of removing an image.
 	 */
 	private _prepareListeners(): void {
 		// Abort editing processing when the image has been removed.
@@ -240,12 +239,21 @@ export default class CKBoxImageEditCommand extends Command {
 		const status = response.metadata!.metadataProcessingStatus;
 
 		if ( !status || status == 'queued' ) {
-			throw new Error( 'Image has not been processed yet.' );
+			/**
+			 * Image has not been processed yet.
+			 *
+			 * @error image-not-processed
+			 */
+			throw new CKEditorError( 'image-not-processed' );
 		}
 
 		return { data: { ...response } };
 	}
 
+	/**
+	 * Waits for an asset to be processed.
+	 * It retries retrieving asset status from the server in case of failure.
+	 */
 	private async _waitForAssetProcessed( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
 		const result = await retry(
 			() => this._getAssetStatusFromServer( id, signal ),
@@ -292,7 +300,6 @@ export default class CKBoxImageEditCommand extends Command {
 	 */
 	private _replaceImage( element: ModelElement, asset: CKBoxRawAssetDefinition ) {
 		const editor = this.editor;
-		const imageCommand: InsertImageCommand = editor.commands.get( 'insertImage' )!;
 
 		const {
 			imageFallbackUrl,
@@ -307,7 +314,7 @@ export default class CKBoxImageEditCommand extends Command {
 		editor.model.change( writer => {
 			writer.setSelection( element, 'on' );
 
-			imageCommand.execute( {
+			editor.execute( 'insertImage', {
 				source: {
 					src: imageFallbackUrl,
 					sources: imageSources,
@@ -323,7 +330,7 @@ export default class CKBoxImageEditCommand extends Command {
 			element = editor.model.document.selection.getSelectedElement()!;
 
 			for ( const child of previousChildren ) {
-				writer.append( child, element );
+				writer.append( writer.cloneElement( child as ModelElement ), element );
 			}
 
 			writer.setAttribute( 'ckboxImageId', asset.data.id, element );
