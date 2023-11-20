@@ -227,6 +227,23 @@ describe( 'PasteFromOffice - filters', () => {
 					expect( body.childCount ).to.equal( 1 );
 					expect( bodyString ).to.equal( '<p>foo</p>' );
 				} );
+
+				it( 'should remove <o:SmartTagType> tag with attributes containing `>`', () => {
+					const html =
+						'<html>' +
+							'<head>' +
+								'<o:SmartTagType namespaceuri="foo>bar>smarttags" />' +
+							'</head>' +
+							'<body>' +
+								'<p>foo</p>' +
+							'</body>' +
+						'</html>';
+					const { body, bodyString } = parseHtml( html );
+
+					expect( body ).to.instanceof( DocumentFragment );
+					expect( body.childCount ).to.equal( 1 );
+					expect( bodyString ).to.equal( '<p>foo</p>' );
+				} );
 			} );
 		} );
 	} );
