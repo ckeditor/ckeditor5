@@ -9,6 +9,7 @@
  * @module utils/translation-service
  */
 
+import type { Translations } from '@ckeditor/ckeditor5-core';
 import CKEditorError from './ckeditorerror';
 import global from './dom/global';
 
@@ -165,7 +166,12 @@ export function add(
  * @param quantity The number of elements for which a plural form should be picked from the target language dictionary.
  * @returns Translated sentence.
  */
-export function _translate( language: string, message: Message, quantity: number = 1 ): string {
+export function _translate(
+	language: string,
+	message: Message,
+	quantity: number = 1,
+	translations: Translations
+): string {
 	if ( typeof quantity !== 'number' ) {
 		/**
 		 * An incorrect value was passed to the translation function. This was probably caused
@@ -177,17 +183,17 @@ export function _translate( language: string, message: Message, quantity: number
 		throw new CKEditorError( 'translation-service-quantity-not-a-number', null, { quantity } );
 	}
 
-	const numberOfLanguages = getNumberOfLanguages();
+	const numberOfLanguages = getNumberOfLanguages( translations );
 
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
 		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initialization.
-		language = Object.keys( global.window.CKEDITOR_TRANSLATIONS )[ 0 ];
+		language = translations ? Object.keys( translations )[ 0 ] : Object.keys( global.window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
 	const messageId = message.id || message.string;
 
-	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId ) ) {
+	if ( numberOfLanguages === 0 || !hasTranslation( language, messageId, translations ) ) {
 		if ( quantity !== 1 ) {
 			// Return the default plural form that was passed in the `message.plural` parameter.
 			return message.plural!;
@@ -196,9 +202,11 @@ export function _translate( language: string, message: Message, quantity: number
 		return message.string;
 	}
 
-	const dictionary = global.window.CKEDITOR_TRANSLATIONS[ language ].dictionary;
-	const getPluralForm = global.window.CKEDITOR_TRANSLATIONS[ language ].getPluralForm || ( n => n === 1 ? 0 : 1 );
-	const translation = dictionary[ messageId ];
+	const dictionary = ( translations ? translations : global.window.CKEDITOR_TRANSLATIONS )[ language ].dictionary;
+	const getPluralForm = ( translations ? translations : global.window.CKEDITOR_TRANSLATIONS )[ language ].getPluralForm ||
+		( n => n === 1 ? 0 : 1 );
+
+	const translation = dictionary[ messageId ] || '';
 
 	if ( typeof translation === 'string' ) {
 		return translation;
@@ -222,15 +230,20 @@ export function _clear(): void {
 /**
  * Checks whether the dictionary exists and translation in that dictionary exists.
  */
-function hasTranslation( language: string, messageId: string ): boolean {
+function hasTranslation( language: string, messageId: string, translations: Translations ): boolean {
 	return (
-		!!global.window.CKEDITOR_TRANSLATIONS[ language ] &&
-		!!global.window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
+		translations ? (
+			!!translations[ language ] &&
+			!!translations[ language ].dictionary[ messageId as any ]
+		) : (
+			!!global.window.CKEDITOR_TRANSLATIONS[ language ] &&
+			!!global.window.CKEDITOR_TRANSLATIONS[ language ].dictionary[ messageId ]
+		)
 	);
 }
 
-function getNumberOfLanguages(): number {
-	return Object.keys( global.window.CKEDITOR_TRANSLATIONS ).length;
+function getNumberOfLanguages( translations?: Translations ): number {
+	return Object.keys( translations ? translations : global.window.CKEDITOR_TRANSLATIONS ).length;
 }
 
 /**

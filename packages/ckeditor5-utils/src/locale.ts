@@ -12,6 +12,7 @@
 import toArray from './toarray';
 import { _translate, type Message } from './translation-service';
 import { getLanguageDirection, type LanguageDirection } from './language';
+import type { Translations } from '@ckeditor/ckeditor5-core';
 
 /**
  * Represents the localization services.
@@ -98,6 +99,11 @@ export default class Locale {
 	public readonly t: LocaleTranslate;
 
 	/**
+	 * TODO: translations....
+	 */
+	public readonly translations: Translations;
+
+	/**
 	 * Creates a new instance of the locale class. Learn more about
 	 * {@glink features/ui-language configuring the language of the editor}.
 	 *
@@ -108,12 +114,13 @@ export default class Locale {
 	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. If not specified, the same as `options.language`.
 	 * See {@link #contentLanguage}.
 	 */
-	constructor( { uiLanguage = 'en', contentLanguage }: { readonly uiLanguage?: string; readonly contentLanguage?: string } = {} ) {
+	constructor( { uiLanguage = 'en', contentLanguage, translations = null }:
+		{ readonly uiLanguage?: string; readonly contentLanguage?: string; readonly translations?: any } = {} ) { // TODO
 		this.uiLanguage = uiLanguage;
 		this.contentLanguage = contentLanguage || this.uiLanguage;
 		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
-
+		this.translations = translations;
 		this.t = ( message, values ) => this._t( message, values );
 	}
 
@@ -153,8 +160,7 @@ export default class Locale {
 
 		const hasPluralForm = !!message.plural;
 		const quantity = hasPluralForm ? values[ 0 ] as number : 1;
-
-		const translatedString = _translate( this.uiLanguage, message, quantity );
+		const translatedString = _translate( this.uiLanguage, message, quantity, this.translations );
 
 		return interpolateString( translatedString, values );
 	}
@@ -165,7 +171,11 @@ export default class Locale {
  * @param values A value or an array of values that will fill message placeholders.
  * For messages supporting plural forms the first value will determine the plural form.
  */
-export type LocaleTranslate = ( message: string | Message, values?: number | string | ReadonlyArray<number | string> ) => string;
+export type LocaleTranslate = (
+	message: string | Message,
+	values?: number | string | ReadonlyArray<number | string>,
+	translations?: { [key: string]: string } | null
+) => string;
 
 /**
  * Fills the `%0, %1, ...` string placeholders with values.

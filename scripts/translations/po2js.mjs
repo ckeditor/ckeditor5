@@ -6,7 +6,6 @@
 /* eslint-env node */
 import PO from 'pofile';
 import { writeFile, readdirSync, mkdir, existsSync } from 'node:fs';
-
 import path from 'path';
 
 // Current working directory
@@ -32,10 +31,11 @@ export default function po2js( options = {} ) {
 
 			for ( const translationFile of translationFilesFromFolder ) {
 				const fullPath = path.resolve( translationsSourceFolderPath, translationFile );
-				const fullTargetPath = path.resolve( translationsTargetFolderPath, translationFile.split( '.' )[ 0 ] + '.js' );
+				const languageKey = translationFile.split( '.' )[ 0 ];
+				const fullTargetPath = path.resolve( translationsTargetFolderPath, languageKey + '.js' );
 
 				if ( fullPath.endsWith( '.po' ) ) {
-					po2json( fullPath, fullTargetPath, banner );
+					po2json( fullPath, fullTargetPath, languageKey, banner );
 				}
 			}
 
@@ -48,18 +48,27 @@ export default function po2js( options = {} ) {
 	};
 }
 
-function po2json( filePath, targetPath, banner ) {
+function po2json( filePath, targetPath, languageKey, banner ) {
 	PO.load( filePath, function( err, pof ) {
 		const translationsObject = convertPoIntoJson( pof );
-		const dataToWrite = `${ banner }\n\nexport default ${ JSON.stringify( translationsObject ) };\n`;
+
+		if ( !translationsObject ) {
+			return;
+		}
+
+		const pluralFunction = getPluralFunction( pof );
+		const dataToWrite = `${ banner }
+
+const translationObject = {};
+translationObject[ '${ languageKey }' ] = ${ JSON.stringify( translationsObject ) };
+translationObject[ '${ languageKey }' ].getPluralForm = ${ pluralFunction }
+
+export default translationObject;\n`;
 
 		writeFile( targetPath, dataToWrite, { encoding: 'utf8' }, err => {
 			if ( err ) {
 				console.log( err );
-			} /* else {
-				console.log( 'File written successfully' );
-				console.log( fs.readFileSync( targetPath, 'utf8' ) );
-			} */
+			}
 		} );
 	} );
 }
@@ -79,11 +88,27 @@ async function createDestDir( dirName ) {
 }
 
 function convertPoIntoJson( fileContent ) {
-	const translationsObject = {};
+	const dictionary = {};
 
-	for ( const item of fileContent.items ) {
-		translationsObject[ item.msgid ] = item.msgstr[ 0 ];
+	if ( fileContent.items.length === 0 ) {
+		return;
 	}
 
-	return translationsObject;
+	for ( const item of fileContent.items ) {
+		dictionary[ item.msgid ] = item.msgstr.length === 1 ? item.msgstr[ 0 ] : item.msgstr;
+	}
+
+	return { dictionary };
+}
+
+function getPluralFunction( fileContent ) {
+	const pluralForm = fileContent.headers[ 'Plural-Forms' ];
+
+	if ( pluralForm.indexOf( ' plural=' ) !== -1 ) {
+		const pluralFormStringFunction = pluralForm.substring( pluralForm.indexOf( ' plural=' ) + ' plural='.length );
+
+		return `function(n) {return ${ pluralFormStringFunction } }`;
+	}
+
+	return null;
 }
