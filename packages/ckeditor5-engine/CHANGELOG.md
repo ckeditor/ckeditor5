@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Features
 
@@ -24,7 +24,7 @@ Changes for the past releases are available below.
 * Inlined parent `is()` calls in model and view classes to improve the editor performance. Closes [ckeditor/ckeditor5#6529](https://github.com/ckeditor/ckeditor5/issues/6529). ([ff04509](https://github.com/ckeditor/ckeditor5-engine/commit/ff04509))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -76,14 +76,14 @@ Changes for the past releases are available below.
 * Improved `parseAttributes()` function performance. This results in improved editor data processing speed. Closes [ckeditor/ckeditor5#5854](https://github.com/ckeditor/ckeditor5/issues/5854). ([ecaf056](https://github.com/ckeditor/ckeditor5-engine/commit/ecaf056))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Split debug tools between the engine files. You do not need to add debug plugin to the editor if you want to use `--debug engine` building flag anymore. Closes [ckeditor/ckeditor5#5649](https://github.com/ckeditor/ckeditor5/issues/5649). ([353f091](https://github.com/ckeditor/ckeditor5-engine/commit/353f091))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v14.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v14.0.0...v15.0.0) (October 23, 2019)
 
 ### MAJOR BREAKING CHANGES
 
@@ -110,7 +110,7 @@ Changes for the past releases are available below.
 * Removed the `Selection#getTopMostBlocks()` method. Closes [ckeditor/ckeditor5-widget#95](https://github.com/ckeditor/ckeditor5-widget/issues/95). Closes [ckeditor/ckeditor5-table#199](https://github.com/ckeditor/ckeditor5-table/issues/199). ([7970f17](https://github.com/ckeditor/ckeditor5-engine/commit/7970f17))
 
 
-## [14.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.2.1...v14.0.0) (2019-08-26)
+## [14.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.2.1...v14.0.0) (August 26, 2019)
 
 ### Features
 
@@ -140,12 +140,12 @@ Changes for the past releases are available below.
 * `Mapper#unbindElementsFromMarkerName( markerName )` was replaced by `Mapper#unbindElementFromMarkerName( element, markerName )`.
 
 
-## [13.2.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.2.0...v13.2.1) (2019-07-10)
+## [13.2.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.2.0...v13.2.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [13.2.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.1...v13.2.0) (2019-07-04)
+## [13.2.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.1...v13.2.0) (July 4, 2019)
 
 ### Features
 
@@ -162,7 +162,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Changed how `&nbsp;`s are generated on the view->DOM rendering. Closes [#1747](https://github.com/ckeditor/ckeditor5-engine/issues/1747). ([da5670a](https://github.com/ckeditor/ckeditor5-engine/commit/da5670a))
 
 
-## [13.1.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.0...v13.1.1) (2019-06-05)
+## [13.1.1](https://github.com/ckeditor/ckeditor5-engine/compare/v13.1.0...v13.1.1) (June 6, 2019)
 
 ### Bug fixes
 
@@ -173,7 +173,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Added more cases of affected markers on merging in `model.Writer`. Closes [#1738](https://github.com/ckeditor/ckeditor5-engine/issues/1738). ([01ff6e6](https://github.com/ckeditor/ckeditor5-engine/commit/01ff6e6))
 
 
-## [13.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.0.0...v13.1.0) (2019-04-10)
+## [13.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.0.0...v13.1.0) (April 4, 2019)
 
 ### Features
 
@@ -196,7 +196,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The editor will not throw an error when updating an empty fake selection container. Closes [#1714](https://github.com/ckeditor/ckeditor5-engine/issues/1714). ([c48f5a4](https://github.com/ckeditor/ckeditor5-engine/commit/c48f5a4))
 
 
-## [13.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v12.0.0...v13.0.0) (2019-02-28)
+## [13.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v12.0.0...v13.0.0) (February 28, 2019)
 
 ### Features
 
@@ -270,7 +270,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `changeAttribute()` downcast converter was removed from public API. Use `conversion.for( 'downcast' ).attributeToAttribute()` instead.
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v11.0.0...v12.0.0) (2018-12-05)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v11.0.0...v12.0.0) (December 5, 2018)
 
 ### Features
 
@@ -348,7 +348,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The model `Range.createFromRanges()` method was removed from the public API.
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.2.0...v11.0.0) (2018-10-08)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.2.0...v11.0.0) (October 8, 2018)
 
 ### Bug fixes
 
@@ -397,7 +397,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `model.Writer#setAttribute()` (and `AttributeOperation`) now applies attribute only to the top-level nodes in the `range` (instead of all the nodes in the range).
 
 
-## [10.2.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.1.0...v10.2.0) (2018-07-18)
+## [10.2.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.1.0...v10.2.0) (July 18, 2018)
 
 ### Features
 
@@ -413,7 +413,7 @@ Internal changes only (updated dependencies, documentation, etc.).
   Feature: The `schema.getLimitElement()` method now accepts also `Range` and `Position` as a parameter.
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.0.0...v10.1.0) (2018-06-21)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.0.0...v10.1.0) (June 21, 2018)
 
 ### Features
 
@@ -432,7 +432,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Renderer now uses partial text replacing when updating text nodes instead of replacing entire nodes. Closes [#403](https://github.com/ckeditor/ckeditor5-engine/issues/403). ([797cd97](https://github.com/ckeditor/ckeditor5-engine/commit/797cd97))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -443,7 +443,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 ### Bug fixes
 
@@ -452,7 +452,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `bindTwoStepCaretToAttribute()` behavioral helper should not fail in more complex cases. Closes [#1301](https://github.com/ckeditor/ckeditor5-engine/issues/1301). Closes [#1346](https://github.com/ckeditor/ckeditor5-engine/issues/1346). Closes [ckeditor/ckeditor5#937](https://github.com/ckeditor/ckeditor5/issues/937).  Closes [ckeditor/ckeditor5#922](https://github.com/ckeditor/ckeditor5/issues/922).  Closes [ckeditor/ckeditor5#946](https://github.com/ckeditor/ckeditor5/issues/946). ([f0fd2d8](https://github.com/ckeditor/ckeditor5-engine/commit/f0fd2d8))
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Features
 
@@ -483,7 +483,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced `view.DocumentSelection`. It has protected API and can be modified only by the view writer. Observers creating instance of selection (like `SelectionObserver`, `MutationObserver`) use the `view.Selection` class now.
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Major refactoring
 
@@ -575,7 +575,7 @@ Feature: `SchemaContext#concat` has been introduced.
 * `DataController#parse`, `DataController#toModel`, `ViewConversionDispatcher#convert` gets `SchemaContextDefinition` as a context instead of `String`.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Bug fixes
 
@@ -589,7 +589,7 @@ Feature: `SchemaContext#concat` has been introduced.
 * The `removeHighlight()` function now accepts descriptor id instead of a `HighlightDescriptor` object. Closes [#1164](https://github.com/ckeditor/ckeditor5-engine/issues/1164). ([7bde6f7](https://github.com/ckeditor/ckeditor5-engine/commit/7bde6f7))
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-engine/compare/v0.11.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-engine/compare/v0.11.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Bug fixes
 
@@ -611,7 +611,7 @@ Feature: `SchemaContext#concat` has been introduced.
 * View and model nodes are now automatically removed from their old parents when they are inserted into new elements. This is important e.g. if you iterate through element's children and they are moved during that iteration. In that case, it's safest to cache the element's children in an array.
 
 
-## [0.11.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.10.0...v0.11.0) (2017-09-03)
+## [0.11.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.10.0...v0.11.0) (September 3, 2017)
 
 ### Bug fixes
 

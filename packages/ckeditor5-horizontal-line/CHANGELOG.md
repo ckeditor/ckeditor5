@@ -5,12 +5,12 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Other changes
 
@@ -28,13 +28,13 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([438f48a](https://github.com/ckeditor/ckeditor5-horizontal-line/commit/438f48a))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([d98f43b](https://github.com/ckeditor/ckeditor5-horizontal-line/commit/d98f43b))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/tree/v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-horizontal-line/tree/v15.0.0) (October 23, 2019)
 
 The initial release.
