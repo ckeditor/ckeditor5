@@ -17,7 +17,7 @@ import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading, Title } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { Image, ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
@@ -45,6 +45,7 @@ BalloonEditor.builtinPlugins = [
 	EasyImage,
 	Heading,
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
@@ -71,7 +72,7 @@ BalloonEditor.defaultConfig = {
 		'outdent',
 		'indent',
 		'|',
-		'uploadImage',
+		'insertImage',
 		'blockQuote',
 		'insertTable',
 		'mediaEmbed',
@@ -103,6 +104,11 @@ BalloonEditor.defaultConfig = {
 			'mergeTableCells'
 		]
 	},
+	insert: {
+		integrations: [
+			'insertImageViaUrl'
+		]
+	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
 };
@@ -124,7 +130,7 @@ BalloonEditor
 			'outdent',
 			'indent',
 			'|',
-			'uploadImage',
+			'insertImage',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed'

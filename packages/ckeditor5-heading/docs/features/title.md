@@ -15,7 +15,7 @@ Use the editor below to create a document with distinct title and body sections.
 {@snippet features/title}
 
 <info-box info>
-	This demo only presents a very specific, limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
 ## Keyboard navigation
