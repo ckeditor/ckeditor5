@@ -136,8 +136,8 @@ export default class LinkEditing extends Plugin {
 		// Handle link following by CTRL+click or ALT+ENTER
 		this._enableLinkOpen();
 
-		// TODO update comment - Change the attributes of the selection in certain situations after the link was inserted into the document.
-		this._enableSelectionDecoratorAttributesFixer();
+		// Clears the DocumentSelection decorator attributes if the selection is no longer in a link (for example while using 2-SCM).
+		this._enableSelectionAttributesFixer();
 
 		// Handle adding default protocol to pasted links.
 		this._enableClipboardIntegration();
@@ -298,15 +298,11 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Starts listening to {@link module:engine/model/model~Model#event:insertContent} and corrects the model
-	 * selection attributes if the selection is at the end of a link after inserting the content.
+	 * Watches the DocumentSelection attribute changes and removes link decorator attributes when the linkHref attribute is removed.
 	 *
-	 * The purpose of this action is to improve the overall UX because the user is no longer "trapped" by the
-	 * `linkHref` attribute of the selection and they can type a "clean" (`linkHref`–less) text right away.
-	 *
-	 * TODO update description
+	 * This is to ensure that there is no left-over link decorator attributes on the document selection that is no longer in a link.
 	 */
-	private _enableSelectionDecoratorAttributesFixer(): void {
+	private _enableSelectionAttributesFixer(): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
