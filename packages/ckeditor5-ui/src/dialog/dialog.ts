@@ -47,6 +47,16 @@ export default class Dialog extends Plugin {
 			return this.editor.ui.viewportOffset;
 		} );
 
+		this._initShowHideListeners();
+
+		editor.ui.view.body.add( this.view );
+		editor.ui.focusTracker.add( this.view.element! );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _initShowHideListeners() {
 		this.on<DialogShowEvent>( 'show', ( evt, args ) => {
 			this._show( args );
 		} );
@@ -68,38 +78,17 @@ export default class Dialog extends Plugin {
 		this.view.on<DialogViewCloseEvent>( 'close', () => {
 			this.hide();
 		} );
-
-		editor.ui.view.body.add( this.view );
-		editor.ui.focusTracker.add( this.view.element! );
 	}
 
 	/**
 	 * TODO
 	 */
-	public show( {
-		title,
-		content,
-		actionButtons,
-		className,
-		isModal = false,
-		position,
-		onShow,
-		onHide
-	}: DialogDefinition ): void {
+	public show( dialogDefinition: DialogDefinition ): void {
 		if ( this.view.isVisible ) {
 			this.hide();
 		}
 
-		this.fire( 'show', {
-			title,
-			content,
-			actionButtons,
-			className,
-			isModal,
-			position,
-			onShow,
-			onHide
-		} );
+		this.fire( 'show', dialogDefinition );
 	}
 
 	/**
