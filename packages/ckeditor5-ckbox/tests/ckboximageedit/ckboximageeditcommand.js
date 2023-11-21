@@ -293,7 +293,8 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 
 				setModelData( model,
-					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+					`[<imageBlock alt="alt text" height="50" ckboxImageId="${ ckboxImageId }"\
+					src="/assets/sample.png" width="50"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -375,8 +376,6 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should display notification in case fail', async () => {
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
-
 				const notification = editor.plugins.get( Notification );
 				const clock = sinon.useFakeTimers();
 				const spy = sinon.spy( notification, 'showWarning' );
@@ -423,7 +422,6 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should abort on CKBoxImageEditCommand destroy', async () => {
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				const clock = sinon.useFakeTimers();
 				const spy = sinon.spy( editor.editing, 'reconvertItem' );
 
@@ -516,10 +514,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const respondSpy = sinon.spy( sinonXHR, 'respond' );
 
-				setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
-					'</imageBlock>]' );
-
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					200,
 					{ 'Content-Type': 'application/json' },
@@ -539,8 +533,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should add a pending action after a change and remove after server response', async () => {
 				const pendingActions = editor.plugins.get( PendingActions );
-
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
 				clock = sinon.useFakeTimers();
 
@@ -725,10 +717,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should change <img> size attributes and add `image-processing` CSS class ' +
 				'while waiting for the processed image', async () => {
-				setModelData( model, '[<imageBlock ' +
-						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
-					'</imageBlock>]' );
-
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
 						'<img alt="alt text" height="50" src="/assets/sample.png" style="aspect-ratio:50/50" width="50"></img>' +
