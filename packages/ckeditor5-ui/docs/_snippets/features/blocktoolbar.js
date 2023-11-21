@@ -23,6 +23,7 @@ import {
 	ImageToolbar,
 	ImageUpload,
 	PictureEditing,
+	ImageInsert,
 	ImageResize,
 	AutoImage
 } from '@ckeditor/ckeditor5-image';
@@ -57,6 +58,7 @@ BalloonEditor.builtinPlugins = [
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
+	ImageInsert,
 	ImageResize,
 	AutoImage,
 	PictureEditing,
@@ -87,7 +89,7 @@ BalloonEditor.defaultConfig = {
 			'outdent',
 			'indent',
 			'|',
-			'uploadImage',
+			'insertImage',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
@@ -121,6 +123,11 @@ BalloonEditor
 		plugins: BalloonEditor.builtinPlugins.concat( [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI ] ),
 		toolbar: {
 			items: [ 'bold', 'italic', '|', 'link' ]
+		},
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
+			]
 		},
 		ui: {
 			viewportOffset: {

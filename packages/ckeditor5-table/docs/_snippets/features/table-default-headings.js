@@ -21,6 +21,11 @@ ClassicEditor
 				'imageTextAlternative'
 			]
 		},
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
+			]
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

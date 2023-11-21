@@ -9,22 +9,27 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { ImageUpload, ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
 
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#undo-redo' ), {
-		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageUpload, CloudServices ],
+		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageInsert, ImageUpload, CloudServices ],
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
 			]
 		},
 		ui: {
