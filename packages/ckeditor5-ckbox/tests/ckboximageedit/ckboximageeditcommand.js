@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, btoa, AbortController */
+/* global window, console, btoa, AbortController */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
@@ -378,7 +378,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should display notification in case fail', async () => {
 				const notification = editor.plugins.get( Notification );
 				const clock = sinon.useFakeTimers();
-				const spy = sinon.spy( notification, 'showWarning' );
+				const spy = sinon.stub( notification, 'showWarning' );
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,
@@ -395,6 +395,24 @@ describe( 'CKBoxImageEditCommand', () => {
 				await clock.tickAsync( 20000 );
 
 				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should log error in case runtime error in asynchronous code', async () => {
+				const notification = editor.plugins.get( Notification );
+				const clock = sinon.useFakeTimers();
+				const spy = sinon.stub( notification, 'showWarning' );
+				const consoleStub = sinon.stub( console, 'error' );
+
+				sinon.stub( command, '_getAssetStatusFromServer' ).callsFake( () => {
+					throw new Error( 'unhandled' );
+				} );
+
+				onSave( dataMock );
+
+				await clock.tickAsync( 20000 );
+
+				sinon.assert.notCalled( spy );
+				sinon.assert.calledOnce( consoleStub );
 			} );
 
 			it( 'should disable command for images being processed', async () => {
@@ -475,7 +493,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should display notification error if server fail or didnt respond', async () => {
 				const notification = editor.plugins.get( Notification );
 				const clock = sinon.useFakeTimers();
-				const spy = sinon.spy( notification, 'showWarning' );
+				const spy = sinon.stub( notification, 'showWarning' );
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
 					return xhr.error();
@@ -491,6 +509,9 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should reconvert image if server respond with "error" status', async () => {
 				const clock = sinon.useFakeTimers();
 				const spy = sinon.spy( editor.editing, 'reconvertItem' );
+				const notification = editor.plugins.get( Notification );
+
+				sinon.stub( notification, 'showWarning' );
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', [
 					500,

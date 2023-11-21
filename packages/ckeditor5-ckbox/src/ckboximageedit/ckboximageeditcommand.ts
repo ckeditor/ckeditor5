@@ -210,7 +210,7 @@ export default class CKBoxImageEditCommand extends Command {
 						return;
 					}
 
-					if ( error instanceof CKEditorError ) {
+					if ( !error || error instanceof CKEditorError ) {
 						notification.showWarning( t( 'Server failed to process the image.' ), {
 							namespace: 'ckbox'
 						} );

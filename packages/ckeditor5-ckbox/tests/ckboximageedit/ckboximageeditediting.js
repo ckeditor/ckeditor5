@@ -8,6 +8,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
@@ -24,6 +25,7 @@ describe( 'CKBoxImageEditEditing', () => {
 				Paragraph,
 				Heading,
 				Essentials,
+				ImageEditing,
 				CKBoxImageEditEditing
 			]
 		} );
