@@ -236,8 +236,11 @@ export default class FocusCycler extends EmitterMixin() {
 	public focusNext(): void {
 		const next = this.next;
 
+		// If there's only one focusable item, we need to let the outside world know
+		// that the next cycle is about to happen. This may be useful
+		// e.g. if you want to move the focus to the parent focus cycler.
+		// Note that the focus is not actually moved in this case.
 		if ( next && this.focusables.getIndex( next ) === this.current ) {
-			// TBD
 			this.fire<FocusCyclerForwardCycleEvent>( 'forwardCycle' );
 
 			return;
