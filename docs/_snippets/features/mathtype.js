@@ -10,7 +10,7 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { ImageUpload } from '@ckeditor/ckeditor5-image';
+import { ImageInsert, ImageUpload } from '@ckeditor/ckeditor5-image';
 import MathType from '@wiris/mathtype-ckeditor5';
 
 ClassicEditor
@@ -19,6 +19,7 @@ ClassicEditor
 			ArticlePluginSet,
 			EasyImage,
 			ImageUpload,
+			ImageInsert,
 			CloudServices,
 			MathType
 		],
@@ -26,8 +27,13 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', '|', 'MathType', 'ChemType',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', '|', 'MathType', 'ChemType',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
 			]
 		},
 		ui: {

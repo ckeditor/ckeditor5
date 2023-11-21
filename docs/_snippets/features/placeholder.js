@@ -13,9 +13,14 @@ ClassicEditor
 		toolbar: [
 			'undo', 'redo', '|', 'heading',
 			'|', 'bold', 'italic',
-			'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+			'|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent'
 		],
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
+			]
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
