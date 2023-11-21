@@ -112,7 +112,7 @@ if ( !global.window.CKEDITOR_TRANSLATIONS ) {
  * should support plural forms.
  * @param getPluralForm A function that returns the plural form index (a number).
  */
-// TODO: Move this function to core or ui (editor config needed).
+// TODO: Add editor instance as an optional parameter.
 export function add(
 	language: string,
 	translations: { readonly [ messageId: string ]: string | ReadonlyArray<string> },
