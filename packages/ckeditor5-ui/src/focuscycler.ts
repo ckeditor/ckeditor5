@@ -283,7 +283,10 @@ export default class FocusCycler extends EmitterMixin() {
 	 * @returns
 	 */
 	private _focus( view: FocusableView | null, direction: 1 | -1 ) {
-		// TBD
+		// Don't fire focus events if the view is already focused.
+		// Such attempt may occur when cycling with only one focusable item:
+		// even though `focusNext()` method returns without changing focus,
+		// the `forwardCycle` event is fired, triggering the `focusFirst()` method.
 		if ( view && this.focusTracker.focusedElement !== view.element ) {
 			view.focus( direction );
 		}
