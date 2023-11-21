@@ -298,7 +298,7 @@ export class AppComponent {
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application &ndash; see [Using a custom CKEditor&nbsp;5 build](#using-a-custom-ckeditor-5-build).
+The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application. See [Using a custom CKEditor&nbsp;5 build](#using-a-custom-ckeditor-5-build).
 
 <info-box>
 	For such a scenario we provide a few **ready-to-use integrations** featuring collaborative editing in Angular applications:
