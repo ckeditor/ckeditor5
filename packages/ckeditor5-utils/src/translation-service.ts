@@ -14,12 +14,7 @@ import CKEditorError from './ckeditorerror';
 import global from './dom/global';
 
 declare global {
-	var CKEDITOR_TRANSLATIONS: {
-		[ language: string ]: {
-			dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
-			getPluralForm?: ( n: number ) => number;
-		};
-	};
+	var CKEDITOR_TRANSLATIONS: Translations;
 }
 
 /* istanbul ignore else -- @preserve */
@@ -182,7 +177,7 @@ export function _translate(
 	language: string,
 	message: Message,
 	quantity: number = 1,
-	translations: Translations
+	translations?: Translations | undefined
 ): string {
 	if ( typeof quantity !== 'number' ) {
 		/**
@@ -242,7 +237,7 @@ export function _clear(): void {
 /**
  * Checks whether the dictionary exists and translation in that dictionary exists.
  */
-function hasTranslation( language: string, messageId: string, translations: Translations ): boolean {
+function hasTranslation( language: string, messageId: string, translations?: Translations ): boolean {
 	return (
 		translations ? (
 			!!translations[ language ] &&

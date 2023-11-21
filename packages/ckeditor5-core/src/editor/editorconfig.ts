@@ -704,7 +704,7 @@ export interface UiConfig {
 /**
  * Translations object definition.
  */
-export type Translations = null | {
+export type Translations = {
 	[ language: string ]: {
 		dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
 		getPluralForm?: ( n: number ) => number;

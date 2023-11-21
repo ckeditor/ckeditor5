@@ -99,9 +99,9 @@ export default class Locale {
 	public readonly t: LocaleTranslate;
 
 	/**
-	 * TODO: translations....
+	 * Object that contains translations.
 	 */
-	public readonly translations: Translations;
+	public readonly translations: Translations | undefined;
 
 	/**
 	 * Creates a new instance of the locale class. Learn more about
@@ -113,9 +113,10 @@ export default class Locale {
 	 * @param options.contentLanguage The editor content language code in the
 	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. If not specified, the same as `options.language`.
 	 * See {@link #contentLanguage}.
+	 * @param translations Translations passed as a editor config parameter.
 	 */
-	constructor( { uiLanguage = 'en', contentLanguage, translations = null }:
-		{ readonly uiLanguage?: string; readonly contentLanguage?: string; readonly translations?: any } = {} ) { // TODO
+	constructor( { uiLanguage = 'en', contentLanguage, translations }:
+		{ readonly uiLanguage?: string; readonly contentLanguage?: string; readonly translations?: Translations | undefined } = {} ) {
 		this.uiLanguage = uiLanguage;
 		this.contentLanguage = contentLanguage || this.uiLanguage;
 		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
