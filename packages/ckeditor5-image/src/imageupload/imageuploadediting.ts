@@ -67,6 +67,11 @@ export default class ImageUploadEditing extends Plugin {
 				types: [ '.mp4', '.webm', '.mov', '.mkv' ]
 			}
 		} );
+		editor.config.define( 'audio', {
+			upload: {
+				types: [ '.mp3', '.wav', '.m4a' ]
+			}
+		} );
 		editor.config.define( 'file', {
 			upload: {
 				types: [ '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.xlsm', '.odp', '.pps', '.ppt', '.pptx' ]
@@ -74,7 +79,7 @@ export default class ImageUploadEditing extends Plugin {
 		} );
 		editor.config.define( 'extraFile', {
 			upload: {
-				types: [ '.rtf', '.txt', '.key', '.mp3', '.email', '.eml', '.emlx', '.mpg', '.mpeg', '.zip', '.sketch', '.m4a' ]
+				types: [ '.rtf', '.txt', '.key', '.email', '.eml', '.emlx', '.mpg', '.mpeg', '.zip', '.sketch' ]
 			}
 		} );
 
@@ -104,7 +109,7 @@ export default class ImageUploadEditing extends Plugin {
 		const fileRepository = editor.plugins.get( FileRepository );
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
-		const imageTypes = createImageTypeRegExp( editor.config.get( 'image.upload.types' )! );
+		const imageTypes = createImageTypeRegExp( );
 		const uploadImageCommand = new UploadImageCommand( editor );
 
 		// Register `uploadImage` command and add `imageUpload` command as an alias for backward compatibility.

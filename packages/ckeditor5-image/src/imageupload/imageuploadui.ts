@@ -10,7 +10,7 @@
 import type { Locale } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 import { FileDialogButtonView } from 'ckeditor5/src/upload';
-import { createFileTypeRegExp, createImageTypeRegExp, createVideoTypeRegExp } from './utils';
+import { createFileTypeRegExp, createImageTypeRegExp, createVideoTypeRegExp, createAudioTypeRegExp } from './utils';
 import type UploadImageCommand from './uploadimagecommand';
 import mediaUploadIcon from '../../theme/icons/upload-media.svg';
 
@@ -41,18 +41,22 @@ export default class ImageUploadUI extends Plugin {
 			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
 			const imageTypes = editor.config.get( 'image.upload.types' )!;
 			const videoTypes = editor.config.get( 'video.upload.types' ) as Array<string>;
+			const audioTypes = editor.config.get( 'audio.upload.types' ) as Array<string>;
 			const fileTypes = editor.config.get( 'file.upload.types' ) as Array<string>;
 			const extraFileTypes = editor.config.get( 'extraFile.upload.types' ) as Array<string>;
 
-			const imageTypesRegExp = createImageTypeRegExp( imageTypes );
-			const videoTypesRegExp = createVideoTypeRegExp( videoTypes );
-			const fileTypesRegExp = createFileTypeRegExp( fileTypes );
+			const imageTypesRegExp = createImageTypeRegExp( );
+			const videoTypesRegExp = createVideoTypeRegExp( );
+			const audioTypesRegExp = createAudioTypeRegExp( );
+			const fileTypesRegExp = createFileTypeRegExp( );
 
 			view.set( {
 				acceptedType:
 					imageTypes.map( type => `${ type }` ).join( ',' ) +
 					',' +
 					videoTypes.map( type => `${ type }` ).join( ',' ) +
+					',' +
+					audioTypes.map( type => `${ type }` ).join( ',' ) +
 					',' +
 					fileTypes.map( type => `${ type }` ).join( ',' ) +
 					',' +
@@ -73,6 +77,9 @@ export default class ImageUploadUI extends Plugin {
 				const videosToUpload = Array.from( files ).filter( file => {
 					return videoTypesRegExp.test( file.type ) || file.name.includes( '.mkv' );
 				} );
+				const audiosToUpload = Array.from( files ).filter( file => {
+					return audioTypesRegExp.test( file.type );
+				} );
 				const filesToUpload = Array.from( files ).filter( file => {
 					return fileTypesRegExp.test( file.type );
 				} );
@@ -87,6 +94,9 @@ export default class ImageUploadUI extends Plugin {
 				}
 				if ( videosToUpload.length ) {
 					editor.execute( 'uploadVideo', { file: videosToUpload } );
+				}
+				if ( audiosToUpload.length ) {
+					editor.execute( 'uploadAudio', { files: audiosToUpload } );
 				}
 				if ( filesToUpload.length ) {
 					editor.execute( 'fileUpload', { file: filesToUpload } );

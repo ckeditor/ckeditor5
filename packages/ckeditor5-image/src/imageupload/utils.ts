@@ -12,7 +12,7 @@
 import type { ViewElement } from 'ckeditor5/src/engine';
 import { global } from 'ckeditor5/src/utils';
 import type ImageUtils from '../imageutils';
-import { imageMimeTypes, videoMimeTypes, fileMimeTypes } from './mimeTypes';
+import { imageMimeTypes, videoMimeTypes, audioMimeTypes, fileMimeTypes } from './mimeTypes';
 
 /**
  * Creates a regular expression used to test for image files.
@@ -23,18 +23,23 @@ import { imageMimeTypes, videoMimeTypes, fileMimeTypes } from './mimeTypes';
  * console.log( 'is supported image', imageType.test( file.type ) );
  * ```
  */
-export function createImageTypeRegExp( types: Array<string> ): RegExp {
+export function createImageTypeRegExp( ): RegExp {
 	// Sanitize the MIME type name which may include: "+", "-" or ".".
 	const regExpSafeNames = Object.values( imageMimeTypes ).map( type => type.replace( '+', '\\+' ) );
 	return new RegExp( `^image\\/(${ regExpSafeNames.join( '|' ) })$` );
 }
 
-export function createVideoTypeRegExp( types: Array<string> ): RegExp {
+export function createVideoTypeRegExp( ): RegExp {
 	const regExpSafeNames = Object.values( videoMimeTypes ).map( type => type.replace( '+', '\\+' ) );
 	return new RegExp( `^video\\/(${ regExpSafeNames.join( '|' ) })$` );
 }
 
-export function createFileTypeRegExp( types: Array<string> ): RegExp {
+export function createAudioTypeRegExp( ): RegExp {
+	const regExpSafeNames = Object.values( audioMimeTypes ).map( type => type.replace( '+', '\\+' ) );
+	return new RegExp( `^audio\\/(${ regExpSafeNames.join( '|' ) })$` );
+}
+
+export function createFileTypeRegExp( ): RegExp {
 	// Sanitize the MIME type name which may include: "+", "-" or ".".
 	const regExpSafeNames = Object.values( fileMimeTypes ).map( type => type.replace( '+', '\\+' ) );
 	return new RegExp( `^application\\/(${ regExpSafeNames.join( '|' ) })$` );

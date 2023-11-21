@@ -16,6 +16,11 @@ export const videoMimeTypes = {
 	'webm': 'webm',
 	'mov': 'quicktime'
 };
+export const audioMimeTypes = {
+	'mp3': 'mpeg',
+	'wav': 'wav',
+	'm4a': 'x-m4a'
+};
 
 export const fileMimeTypes = {
 	'pdf': 'pdf',

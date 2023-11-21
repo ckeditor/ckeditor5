@@ -32,6 +32,11 @@ import VideoUpload from '@flockjay/ckeditor5-video/src/videoupload.js';
 import VideoResize from '@flockjay/ckeditor5-video/src/videoresize.js';
 import VideoStyle from '@flockjay/ckeditor5-video/src/videostyle.js';
 import VideoInsert from '@flockjay/ckeditor5-video/src/videoinsert.js';
+import AudioToolbar from '@flockjay/ckeditor5-audio/src/audiotoolbar.js';
+import Audio from '@flockjay/ckeditor5-audio/src/audio.js';
+import AudioUpload from '@flockjay/ckeditor5-audio/src/audioupload.js';
+import AudioResize from '@flockjay/ckeditor5-audio/src/audioresize.js';
+import AudioStyle from '@flockjay/ckeditor5-audio/src/audiostyle.js';
 import {
 	Emoji,
 	EmojiActivity,
@@ -88,6 +93,11 @@ export default class ClassicEditor extends ClassicEditorBase {
 		VideoResize,
 		VideoStyle,
 		VideoInsert,
+		AudioToolbar,
+		Audio,
+		AudioUpload,
+		AudioResize,
+		AudioStyle,
 		Emoji,
 		EmojiPeople,
 		EmojiNature,
