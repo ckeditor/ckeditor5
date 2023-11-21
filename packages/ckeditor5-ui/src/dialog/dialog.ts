@@ -67,16 +67,7 @@ export default class Dialog extends Plugin {
 		position,
 		onShow,
 		onHide
-	}: {
-		content?: View | Array<View>;
-		actionButtons?: Array<DialogActionButtonDefinition>;
-		title?: string;
-		className?: string;
-		isModal?: boolean;
-		position?: DialogViewPosition;
-		onShow?: ( dialog: Dialog ) => void;
-		onHide?: ( dialog: Dialog ) => void;
-	} ): void {
+	}: DialogDefinition ): void {
 		this.hide();
 
 		// Unless the user specified a position, modals should always be centered on the screen.
@@ -141,3 +132,17 @@ export default class Dialog extends Plugin {
 		this.view.showHeader( title );
 	}
 }
+
+/**
+ * TODO
+ */
+export type DialogDefinition = {
+	content?: View | Array<View>;
+	actionButtons?: Array<DialogActionButtonDefinition>;
+	title?: string;
+	className?: string;
+	isModal?: boolean;
+	position?: DialogViewPosition;
+	onShow?: ( dialog: Dialog ) => void;
+	onHide?: ( dialog: Dialog ) => void;
+};
