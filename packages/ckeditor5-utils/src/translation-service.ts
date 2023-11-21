@@ -112,6 +112,7 @@ if ( !global.window.CKEDITOR_TRANSLATIONS ) {
  * should support plural forms.
  * @param getPluralForm A function that returns the plural form index (a number).
  */
+// TODO: Move this function to core or ui (editor config needed).
 export function add(
 	language: string,
 	translations: { readonly [ messageId: string ]: string | ReadonlyArray<string> },
@@ -164,6 +165,7 @@ export function add(
  * @param language Target language.
  * @param message A message that will be translated.
  * @param quantity The number of elements for which a plural form should be picked from the target language dictionary.
+ * @param translations Translations passed in editor config, if not provided use the global `window.CKEDITOR_TRANSLATIONS`.
  * @returns Translated sentence.
  */
 export function _translate(

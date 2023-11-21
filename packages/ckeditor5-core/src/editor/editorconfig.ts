@@ -535,9 +535,8 @@ export interface EditorConfig {
 	 */
 	licenseKey?: string;
 
-	// TODO
 	/**
-	 * Translations.
+	 * Translations to be used in editor.
 	 */
 	translations?: Translations;
 }
@@ -703,7 +702,7 @@ export interface UiConfig {
 }
 
 /**
- * TODO
+ * Translations object definition.
  */
 export type Translations = null | {
 	[ language: string ]: {
