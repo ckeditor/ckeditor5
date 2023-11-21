@@ -43,7 +43,6 @@
 	max-height: 90vh;
 	max-width: min(90vw, 800px);
 	overscroll-behavior: none;
-	will-change: transform;
 	width: fit-content;
 	position: absolute;
 
