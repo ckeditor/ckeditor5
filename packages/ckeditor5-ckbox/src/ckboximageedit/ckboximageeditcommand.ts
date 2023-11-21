@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, AbortController, URL, window */
+/* globals document, console, AbortController, URL, window */
 
 /**
  * @module ckbox/ckboximageedit/ckboximageeditcommand
@@ -205,16 +205,22 @@ export default class CKBoxImageEditCommand extends Command {
 				asset => {
 					this._replaceImage( state.element, asset );
 				},
-				() => {
-					if ( !state.controller.signal.aborted ) {
+				error => {
+					// Remove processing indicator. It was added only to ViewElement.
+					this.editor.editing.reconvertItem( state.element );
+
+					if ( state.controller.signal.aborted ) {
+						return;
+					}
+
+					if ( error instanceof CKEditorError ) {
 						notification.showWarning( t( 'Server failed to process the image.' ), {
 							title: t( 'Image processing failed.' ),
 							namespace: 'ckbox'
 						} );
+					} else {
+						console.error( error );
 					}
-
-					// Remove processing indicator. It was added only to ViewElement.
-					this.editor.editing.reconvertItem( state.element );
 				}
 			).finally( () => {
 				this._processInProgress.delete( state.ckboxImageId );
@@ -229,8 +235,9 @@ export default class CKBoxImageEditCommand extends Command {
 	 * image is already proceeded and ready for saving.
 	 */
 	private async _getAssetStatusFromServer( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
-		const url = new URL( 'assets/' + id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
+
+		const url = new URL( 'assets/' + id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal,
@@ -242,9 +249,9 @@ export default class CKBoxImageEditCommand extends Command {
 			/**
 			 * Image has not been processed yet.
 			 *
-			 * @error image-not-processed
+			 * @error ckbox-image-not-processed
 			 */
-			throw new CKEditorError( 'image-not-processed' );
+			throw new CKEditorError( 'ckbox-image-not-processed' );
 		}
 
 		return { data: { ...response } };
@@ -264,7 +271,12 @@ export default class CKBoxImageEditCommand extends Command {
 		);
 
 		if ( result.data.metadata!.metadataProcessingStatus != 'success' ) {
-			throw new Error( 'Image processing failed.' );
+			/**
+			 * The image processing failed.
+			 *
+			 * @error ckbox-image-processing-failed
+			 */
+			throw new CKEditorError( 'ckbox-image-processing-failed' );
 		}
 
 		return result;
