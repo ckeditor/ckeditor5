@@ -69,7 +69,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		/**
 		 * TODO
 		 */
-		private _attachDragDurationListeners() {
+		private _attachDragListeners() {
 			this.listenTo( global.document, 'mouseup', this._onDragEndBound );
 			this.listenTo( global.document, 'touchend', this._onDragEndBound );
 			this.listenTo( global.document, 'mousemove', this._onDragBound );
@@ -79,7 +79,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		/**
 		 * TODO
 		 */
-		private _detachDragDurationListeners() {
+		private _detachDragListeners() {
 			this.stopListening( global.document, 'mouseup', this._onDragEndBound );
 			this.stopListening( global.document, 'touchend', this._onDragEndBound );
 			this.stopListening( global.document, 'mousemove', this._onDragBound );
@@ -90,11 +90,11 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 * TODO
 		 */
 		private _onDragStart( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) {
-			if ( !this.isDraggable || !this._isHandleEventTarget( domEvt ) ) {
+			if ( !this.isDraggable || !this._isHandleElementPressed( domEvt ) ) {
 				return;
 			}
 
-			this._attachDragDurationListeners();
+			this._attachDragListeners();
 
 			const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
 			const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
@@ -127,7 +127,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 * TODO
 		 */
 		private _onDragEnd() {
-			this._detachDragDurationListeners();
+			this._detachDragListeners();
 
 			if ( !this.isDraggable ) {
 				return;
@@ -139,7 +139,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		/**
 		 * TODO
 		 */
-		private _isHandleEventTarget( domEvt: MouseEvent | TouchEvent ) {
+		private _isHandleElementPressed( domEvt: MouseEvent | TouchEvent ) {
 			if ( !this.dragHandleElement ) {
 				return false;
 			}
