@@ -26,7 +26,7 @@ export default class CKBoxImageEditEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ PendingActions, Notification ] as const;
+		return [ PendingActions, Notification, 'ImageUtils', 'ImageEditing' ] as const;
 	}
 
 	/**
