@@ -122,7 +122,7 @@ export default class Dialog extends Plugin {
 		} );
 
 		if ( title ) {
-			this.setTitle( title );
+			this.view.showHeader( title );
 		}
 
 		this.view.addContentPart();
@@ -164,13 +164,6 @@ export default class Dialog extends Plugin {
 		this.view.reset();
 
 		this._isOpen = false;
-	}
-
-	/**
-	 * TODO
-	 */
-	public setTitle( title: string ): void {
-		this.view.showHeader( title );
 	}
 }
 
