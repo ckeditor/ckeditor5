@@ -100,8 +100,6 @@ export default class CKBoxImageEditCommand extends Command {
 		};
 
 		window.CKBox.mountImageEditor( this._wrapper, this._prepareOptions( processingState ) );
-
-		this.refresh();
 	}
 
 	/**
@@ -183,8 +181,6 @@ export default class CKBoxImageEditCommand extends Command {
 		this._wrapper = null;
 
 		this.editor.editing.view.focus();
-
-		this.refresh();
 	}
 
 	/**
@@ -199,6 +195,7 @@ export default class CKBoxImageEditCommand extends Command {
 
 		this._processInProgress.set( state.ckboxImageId, state );
 		this._showImageProcessingIndicator( state.element, asset );
+		this.refresh();
 
 		this._waitForAssetProcessed( asset.data.id, state.controller.signal )
 			.then(
@@ -225,9 +222,8 @@ export default class CKBoxImageEditCommand extends Command {
 			).finally( () => {
 				this._processInProgress.delete( state.ckboxImageId );
 				pendingActions.remove( action );
+				this.refresh();
 			} );
-
-		this.refresh();
 	}
 
 	/**
