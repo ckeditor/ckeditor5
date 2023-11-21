@@ -80,7 +80,7 @@ export default class Dialog extends Plugin {
 			position,
 			isVisible: true,
 			className,
-			isDraggable: !isModal
+			isModal
 		} );
 
 		if ( title ) {

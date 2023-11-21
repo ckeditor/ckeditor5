@@ -19,11 +19,6 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		/**
 		 * TODO
 		 */
-		declare public isDraggable: boolean;
-
-		/**
-		 * TODO
-		 */
 		private _onDragBound = this._onDrag.bind( this );
 
 		/**
@@ -46,8 +41,6 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 */
 		constructor( ...args: Array<any> ) {
 			super( ...args );
-
-			this.set( 'isDraggable', true );
 
 			if ( this.isRendered ) {
 				this._attachListeners();
@@ -90,7 +83,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 * TODO
 		 */
 		private _onDragStart( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) {
-			if ( !this.isDraggable || !this._isHandleElementPressed( domEvt ) ) {
+			if ( !this._isHandleElementPressed( domEvt ) ) {
 				return;
 			}
 
@@ -108,7 +101,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 * TODO
 		 */
 		private _onDrag( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) {
-			if ( !this.isDraggable || !this._isDragging ) {
+			if ( !this._isDragging ) {
 				return;
 			}
 
@@ -128,10 +121,6 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 */
 		private _onDragEnd() {
 			this._detachDragListeners();
-
-			if ( !this.isDraggable ) {
-				return;
-			}
 
 			this._isDragging = false;
 		}
@@ -158,7 +147,6 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
  * TODO
  */
 export interface DraggableView extends View {
-	isDraggable: boolean;
 	get dragHandleElement(): HTMLElement | null;
 	resetDrag(): void;
 }

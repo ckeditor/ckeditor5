@@ -102,7 +102,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	declare public isDraggable: boolean;
+	declare public isModal: boolean;
 
 	/**
 	 * TODO
@@ -159,7 +159,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		this.set( 'isVisible', false );
 		this.set( 'className', '' );
-		this.set( 'isDraggable', false );
+		this.set( 'isModal', false );
 		this.set( 'isTransparent', false );
 		this.set( 'wasMoved', false );
 		this.set( 'position', DialogViewPosition.SCREEN_CENTER );
@@ -198,7 +198,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				class: [
 					'ck',
 					'ck-dialog-overlay',
-					bind.if( 'isDraggable', 'ck-dialog-overlay__transparent' ),
+					bind.if( 'isModal', 'ck-dialog-overlay__transparent', isModal => !isModal ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value )
 				],
 				// Prevent from editor losing focus when clicking on the modal overlay.
@@ -212,7 +212,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 						class: [
 							'ck',
 							'ck-dialog',
-							bind.if( 'isDraggable', 'ck-dialog_draggable' ),
+							'ck-dialog_draggable',
 							bind.to( 'className' )
 						],
 						style: {
