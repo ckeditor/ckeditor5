@@ -198,7 +198,7 @@ export default class CKBoxImageEditCommand extends Command {
 		const action = pendingActions.add( t( 'Processing the edited image.' ) );
 
 		this._processInProgress.set( state.ckboxImageId, state );
-		this._showImageProcessingIndicator( asset, state.element );
+		this._showImageProcessingIndicator( state.element, asset );
 
 		this._waitForAssetProcessed( asset.data.id, state.controller.signal )
 			.then(
@@ -275,11 +275,11 @@ export default class CKBoxImageEditCommand extends Command {
 	 *
 	 * @param asset Data about certain asset.
 	 */
-	private _showImageProcessingIndicator( asset: CKBoxRawAssetDefinition, element: ModelElement ): void {
+	private _showImageProcessingIndicator( element: ModelElement, asset: CKBoxRawAssetDefinition ): void {
 		const editor = this.editor;
 
 		editor.editing.view.change( writer => {
-			const imageElementView = editor.editing.mapper.toViewElement( element! )!;
+			const imageElementView = editor.editing.mapper.toViewElement( element )!;
 			const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 			const img = imageUtils.findViewImgElement( imageElementView )!;
 
