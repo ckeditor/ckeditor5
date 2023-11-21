@@ -21,10 +21,15 @@ ClassicEditor
 				label: 'Inserting',
 				icon: 'plus',
 				tooltip: 'Insert media',
-				items: [ 'uploadImage', 'insertTable' ]
+				items: [ 'insertImage', 'insertTable' ]
 			}
 		],
 		cloudServices: CS_CONFIG,
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
+			]
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

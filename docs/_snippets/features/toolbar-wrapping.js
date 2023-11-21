@@ -15,11 +15,16 @@ ClassicEditor
 				'|', 'heading',
 				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
 				'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
-				'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
+				'|', 'link', 'insertImage', 'blockQuote', 'codeBlock',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
+		},
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
+			]
 		},
 		ui: {
 			viewportOffset: {

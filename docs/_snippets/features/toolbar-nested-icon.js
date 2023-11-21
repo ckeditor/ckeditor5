@@ -31,7 +31,7 @@ ClassicEditor
 				// A "plus" sign icon works best for content insertion tools.
 				label: 'Insert',
 				icon: 'plus',
-				items: [ 'uploadImage', 'insertTable' ]
+				items: [ 'insertImage', 'insertTable' ]
 			},
 			'|',
 			{
@@ -45,6 +45,11 @@ ClassicEditor
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		cloudServices: CS_CONFIG,
+		insert: {
+			integrations: [
+				'insertImageViaUrl'
+			]
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
