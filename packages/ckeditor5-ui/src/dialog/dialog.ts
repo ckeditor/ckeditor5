@@ -47,6 +47,24 @@ export default class Dialog extends Plugin {
 			return this.editor.ui.viewportOffset;
 		} );
 
+		this.on<DialogShowEvent>( 'show', ( evt, args ) => {
+			this._show( args );
+		} );
+
+		// 'low' priority allows to add custom callback between `_show()` and `onShow()`.
+		this.on<DialogShowEvent>( 'show', ( evt, args ) => {
+			args.onShow?.( this );
+		}, { priority: 'low' } );
+
+		this.on<DialogHideEvent>( 'hide', () => {
+			this._hide();
+		} );
+
+		// 'low' priority allows to add custom callback between `_hide()` and `onHide()`.
+		this.on<DialogHideEvent>( 'hide', () => {
+			this._onHide?.( this );
+		}, { priority: 'low' } );
+
 		this.view.on<DialogViewCloseEvent>( 'close', () => {
 			this.hide();
 		} );
@@ -68,8 +86,34 @@ export default class Dialog extends Plugin {
 		onShow,
 		onHide
 	}: DialogDefinition ): void {
-		this.hide();
+		if ( this.view.isVisible ) {
+			this.hide();
+		}
 
+		this.fire( 'show', {
+			title,
+			content,
+			actionButtons,
+			className,
+			isModal,
+			position,
+			onShow,
+			onHide
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _show( {
+		title,
+		content,
+		actionButtons,
+		className,
+		isModal,
+		position,
+		onHide
+	}: DialogDefinition ) {
 		// Unless the user specified a position, modals should always be centered on the screen.
 		// Otherwise, let's keep dialogs centered in the editing root by default.
 		if ( !position ) {
@@ -102,10 +146,6 @@ export default class Dialog extends Plugin {
 			this.view.setActionButtons( actionButtons );
 		}
 
-		if ( onShow ) {
-			onShow( this );
-		}
-
 		this.view.focus();
 
 		this._onHide = onHide;
@@ -115,14 +155,17 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public hide(): void {
+		this.fire<DialogHideEvent>( 'hide' );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _hide(): void {
 		this.editor.editing.view.focus();
 
 		this.view.isVisible = false;
 		this.view.reset();
-
-		if ( this._onHide ) {
-			this._onHide( this );
-		}
 	}
 
 	/**
@@ -145,4 +188,20 @@ export type DialogDefinition = {
 	position?: DialogViewPosition;
 	onShow?: ( dialog: Dialog ) => void;
 	onHide?: ( dialog: Dialog ) => void;
+};
+
+/**
+ * TODO
+ */
+export type DialogShowEvent = {
+	name: 'show';
+	args: [ dialogDefinition: DialogDefinition ];
+};
+
+/**
+ * TODO
+ */
+export type DialogHideEvent = {
+	name: 'hide';
+	args: [];
 };
