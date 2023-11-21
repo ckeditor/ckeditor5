@@ -34,7 +34,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		/**
 		 * TODO
 		 */
-		private _currentCoordinates: { x: number; y: number } = { x: 0, y: 0 };
+		private _lastDraggingCoordinates: { x: number; y: number } = { x: 0, y: 0 };
 
 		/**
 		 * TODO
@@ -92,7 +92,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 			const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
 			const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
 
-			this._currentCoordinates = { x, y };
+			this._lastDraggingCoordinates = { x, y };
 
 			this._isDragging = true;
 		}
@@ -105,15 +105,15 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 				return;
 			}
 
-			const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-			const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
+			const newX = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
+			const newY = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
 
 			this.fire<DraggableViewDragEvent>( 'drag', {
-				x: Math.round( x - this._currentCoordinates.x ),
-				y: Math.round( y - this._currentCoordinates.y )
+				deltaX: Math.round( newX - this._lastDraggingCoordinates.x ),
+				deltaY: Math.round( newY - this._lastDraggingCoordinates.y )
 			} );
 
-			this._currentCoordinates = { x, y };
+			this._lastDraggingCoordinates = { x: newX, y: newY };
 		}
 
 		/**
@@ -157,7 +157,7 @@ export interface DraggableView extends View {
 export type DraggableViewDragEvent = {
 	name: 'drag';
 	args: [ {
-		x: number;
-		y: number;
+		deltaX: number;
+		deltaY: number;
 	} ];
 };

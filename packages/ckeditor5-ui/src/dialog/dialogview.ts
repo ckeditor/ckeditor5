@@ -243,8 +243,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		// Support for dragging the modal.
 		// TODO: Don't allow dragging beyond the edge of the viewport.
 		// TODO: Disable dragging when the mobile view is on.
-		this.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { x, y } ) => {
-			this.moveBy( x, y );
+		this.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { deltaX, deltaY } ) => {
+			this.moveBy( deltaX, deltaY );
 			this.wasMoved = true;
 		} );
 
