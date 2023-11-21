@@ -29,6 +29,11 @@ export default class Dialog extends Plugin {
 	private _onHide: ( ( dialog: Dialog ) => void ) | undefined;
 
 	/**
+	 * TODO
+	 */
+	private _isOpen: boolean = false;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -84,7 +89,7 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( this.view.isVisible ) {
+		if ( this._isOpen ) {
 			this.hide();
 		}
 
@@ -135,6 +140,8 @@ export default class Dialog extends Plugin {
 			this.view.setActionButtons( actionButtons );
 		}
 
+		this._isOpen = true;
+
 		this.view.focus();
 
 		this._onHide = onHide;
@@ -155,6 +162,8 @@ export default class Dialog extends Plugin {
 
 		this.view.isVisible = false;
 		this.view.reset();
+
+		this._isOpen = false;
 	}
 
 	/**
