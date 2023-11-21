@@ -9,7 +9,7 @@
  * @module utils/translation-service
  */
 
-import type { Translations } from '@ckeditor/ckeditor5-core';
+import type { Translations, Editor } from '@ckeditor/ckeditor5-core';
 import CKEditorError from './ckeditorerror';
 import global from './dom/global';
 
@@ -112,22 +112,32 @@ if ( !global.window.CKEDITOR_TRANSLATIONS ) {
  * should support plural forms.
  * @param getPluralForm A function that returns the plural form index (a number).
  */
-// TODO: Add editor instance as an optional parameter.
 export function add(
 	language: string,
 	translations: { readonly [ messageId: string ]: string | ReadonlyArray<string> },
-	getPluralForm?: ( n: number ) => number
+	getPluralForm?: ( n: number ) => number,
+	editor?: Editor
 ): void {
 	if ( !global.window.CKEDITOR_TRANSLATIONS[ language ] ) {
 		global.window.CKEDITOR_TRANSLATIONS[ language ] = {} as any;
 	}
 
-	const languageTranslations = global.window.CKEDITOR_TRANSLATIONS[ language ];
+	let existingTranslations = null;
+
+	if ( editor ) {
+		existingTranslations = editor.config.get( 'translations' );
+	}
+
+	const languageTranslations = existingTranslations ? existingTranslations[ language ] : global.window.CKEDITOR_TRANSLATIONS[ language ];
 
 	languageTranslations.dictionary = languageTranslations.dictionary || {};
 	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
 
 	Object.assign( languageTranslations.dictionary, translations );
+
+	if ( editor && existingTranslations ) {
+		editor.config.set( 'translations', { language: languageTranslations } );
+	}
 }
 
 /**
