@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, ClassicEditor, CS_CONFIG */
+/* globals console, window, document, ClassicEditor, CKEditorPlugins, CS_CONFIG */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-link' ), {
+		extraPlugins: [ ...Object.values( CKEditorPlugins ) ],
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
@@ -14,6 +15,12 @@ ClassicEditor
 				'|', 'bold', 'italic',
 				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 			]
 		},
 		ui: {

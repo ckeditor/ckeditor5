@@ -6,6 +6,7 @@
 /* globals window */
 
 import { Code, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
@@ -30,5 +31,7 @@ ClassicEditor.builtinPlugins.push( IndentBlock );
 ClassicEditor.builtinPlugins.push( Indent );
 ClassicEditor.builtinPlugins.push( Code );
 ClassicEditor.builtinPlugins.push( TodoList );
+ClassicEditor.builtinPlugins.push( CKBox );
+ClassicEditor.builtinPlugins.push( CKBoxImageEdit );
 
 window.ClassicEditor = ClassicEditor;

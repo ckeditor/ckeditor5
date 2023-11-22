@@ -34,7 +34,8 @@ ClassicEditor
 				'|',
 				'resizeImage:100',
 				'resizeImage:200',
-				'resizeImage:original'
+				'resizeImage:original',
+				'ckboxImageEdit'
 			],
 			resizeOptions: [
 				{
@@ -61,6 +62,9 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		ckbox: {
+			forceDemoLabel: true
 		},
 		cloudServices: CS_CONFIG
 	} )
