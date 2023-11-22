@@ -10,13 +10,17 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { ImageUpload } from '@ckeditor/ckeditor5-image';
+import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import MathType from '@wiris/mathtype-ckeditor5';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#mathtype-editor' ), {
 		plugins: [
 			ArticlePluginSet,
+			CKBox,
+			CKBoxImageEdit,
+			PictureEditing,
 			EasyImage,
 			ImageUpload,
 			CloudServices,
@@ -42,7 +46,9 @@ ClassicEditor
 				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		table: {

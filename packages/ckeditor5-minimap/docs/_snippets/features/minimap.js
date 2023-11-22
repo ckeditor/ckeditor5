@@ -10,10 +10,10 @@ import { Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
-import { ImageResize, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, ImageResize, ImageUpload } from '@ckeditor/ckeditor5-image';
 import { IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { TableCellProperties, TableProperties } from '@ckeditor/ckeditor5-table';
@@ -41,7 +41,9 @@ const config = {
 		PageBreak,
 		CodeBlock,
 		Minimap,
-		EasyImage
+		PictureEditing,
+		CKBox,
+		CKBoxImageEdit
 	],
 	toolbar: [
 		'undo', 'redo', '|', 'heading',
@@ -56,7 +58,8 @@ const config = {
 			'imageStyle:side',
 			'|',
 			'imageTextAlternative',
-			'toggleImageCaption'
+			'toggleImageCaption',
+			'ckboxImageEdit'
 		],
 		styles: [
 			'inline',

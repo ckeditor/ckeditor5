@@ -13,9 +13,11 @@
   "main": "src/index.ts",
   "dependencies": {
     "ckeditor5": "40.1.0",
-    "blurhash": "^2.0.5"
+    "blurhash": "^2.0.5",
+    "lodash-es": "4.17.21"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-autosave": "40.1.0",
     "@ckeditor/ckeditor5-basic-styles": "40.1.0",
     "@ckeditor/ckeditor5-core": "40.1.0",
     "@ckeditor/ckeditor5-clipboard": "40.1.0",
@@ -23,6 +25,7 @@
     "@ckeditor/ckeditor5-dev-utils": "^39.0.0",
     "@ckeditor/ckeditor5-editor-classic": "40.1.0",
     "@ckeditor/ckeditor5-engine": "40.1.0",
+    "@ckeditor/ckeditor5-essentials": "40.1.0",
     "@ckeditor/ckeditor5-heading": "40.1.0",
     "@ckeditor/ckeditor5-image": "40.1.0",
     "@ckeditor/ckeditor5-link": "40.1.0",

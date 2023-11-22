@@ -38,7 +38,7 @@ ClassicEditor
 					value: '200'
 				}
 			],
-			toolbar: [ 'resizeImage' ]
+			toolbar: [ 'resizeImage', 'ckboxImageEdit' ]
 		},
 		ui: {
 			viewportOffset: {
