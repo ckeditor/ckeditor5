@@ -465,7 +465,7 @@ class InternalLink extends Plugin {
 
 				console.log( 'The link form view has been displayed', this.linkFormView );
 
-				// Render button's tamplate.
+				// Render the button template.
 				this.button.render();
 
 				// Register the button under the link form view, it will handle its destruction.
@@ -488,12 +488,12 @@ class InternalLink extends Plugin {
 			tooltip: true
 		} );
 
-		// Probably this button should be also disabled when the link command is disabled.
+		// This button should probably be also disabled when the link command is disabled.
 		// Try setting editor.isReadOnly = true to see it in action.
 		button.bind( 'isEnabled' ).to( linkCommand );
 
 		button.on( 'execute', () => {
-			// Do something (like open the popup), then update the link URL field's value.
+			// Do something (for emaple, open the popup), then update the link URL field's value.
 			// The line below will be probably executed inside some callback.
 			this.linkFormView.urlInputView.value = 'http://some.internal.link';
 		} );
