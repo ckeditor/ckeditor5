@@ -1,0 +1,1 @@
+## GHS `<template>` element support

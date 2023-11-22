@@ -16,7 +16,8 @@ import {
 	type ViewElement,
 	type MatchResult,
 	type ViewConsumable,
-	type MatcherObjectPattern
+	type MatcherObjectPattern,
+	type DocumentSelectionChangeAttributeEvent
 } from 'ckeditor5/src/engine';
 
 import {
@@ -438,6 +439,7 @@ export default class DataFilter extends Plugin {
 	 */
 	private _registerCoupledAttributesPostFixer() {
 		const model = this.editor.model;
+		const selection = model.document.selection;
 
 		model.document.registerPostFixer( writer => {
 			const changes = model.document.differ.getChanges();
@@ -470,6 +472,41 @@ export default class DataFilter extends Plugin {
 			}
 
 			return changed;
+		} );
+
+		this.listenTo<DocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
+			const removeAttributes = new Set<string>();
+			const coupledAttributes = this._getCoupledAttributesMap();
+
+			for ( const attributeKey of attributeKeys ) {
+				// Handle only attribute removals.
+				if ( selection.hasAttribute( attributeKey ) ) {
+					continue;
+				}
+
+				// Find a list of coupled GHS attributes.
+				const coupledAttributeKeys = coupledAttributes.get( attributeKey );
+
+				if ( !coupledAttributeKeys ) {
+					continue;
+				}
+
+				for ( const coupledAttributeKey of coupledAttributeKeys ) {
+					if ( selection.hasAttribute( coupledAttributeKey ) ) {
+						removeAttributes.add( coupledAttributeKey );
+					}
+				}
+			}
+
+			if ( removeAttributes.size == 0 ) {
+				return;
+			}
+
+			model.change( writer => {
+				for ( const attributeKey of removeAttributes ) {
+					writer.removeSelectionAttribute( attributeKey );
+				}
+			} );
 		} );
 	}
 
