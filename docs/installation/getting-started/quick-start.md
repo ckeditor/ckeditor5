@@ -259,6 +259,7 @@ In this example, we remove the premium collaboration features as well as several
 					// These two are commercial, but you can try them out without registering to a trial.
 					// 'ExportPdf',
 					// 'ExportWord',
+					'AIAssistant',
 					'CKBox',
 					'CKFinder',
 					'EasyImage',
