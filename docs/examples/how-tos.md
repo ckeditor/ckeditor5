@@ -488,13 +488,13 @@ class InternalLink extends Plugin {
 			tooltip: true
 		} );
 
-		// This button should probably be also disabled when the link command is disabled.
+		// This button should be also disabled when the link command is disabled.
 		// Try setting editor.isReadOnly = true to see it in action.
 		button.bind( 'isEnabled' ).to( linkCommand );
 
 		button.on( 'execute', () => {
 			// Do something (for emaple, open the popup), then update the link URL field's value.
-			// The line below will be probably executed inside some callback.
+			// The line below will be executed inside some callback.
 			this.linkFormView.urlInputView.value = 'http://some.internal.link';
 		} );
 
