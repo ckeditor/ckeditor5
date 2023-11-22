@@ -9,7 +9,7 @@ category: features
 
 # Drag and drop
 
-The drag and drop feature lets you drag and drop both text and content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks. You can also drag and drop HTML and plain-text content from outside the editor and use it to upload images.
+The drag and drop feature lets you drag and drop both text and content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks. You can also drag and drop HTML and plain text content from outside the editor and use it to upload images.
 
 ## Demo
 

@@ -13,7 +13,7 @@ import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading, Title } from '@ckeditor/ckeditor5-heading';
@@ -40,6 +40,7 @@ BalloonEditor.builtinPlugins = [
 	Italic,
 	BlockQuote,
 	CKBox,
+	CKBoxImageEdit,
 	CKFinder,
 	CloudServices,
 	EasyImage,
@@ -87,13 +88,15 @@ BalloonEditor.defaultConfig = {
 		]
 	},
 	image: {
+	// having this one here does not make the slightest sense
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:block',
 			'imageStyle:side',
 			'|',
 			'toggleImageCaption',
-			'imageTextAlternative'
+			'imageTextAlternative',
+			'ckboxImageEdit'
 		]
 	},
 	table: {

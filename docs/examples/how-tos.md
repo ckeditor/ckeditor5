@@ -168,7 +168,7 @@ const modelFragment = editor.data.toModel( viewFragment );
 editor.model.insertContent( modelFragment );
 ```
 
-Remember, if some element or attribute does not have declared converters (whether by the dedicated feature or {@link features/html/general-html-support General HTML support) plugin then those won't get inserted.
+Remember, if some element or attribute does not have declared converters (whether by the dedicated feature or {@link features/general-html-support General HTML support}) plugin then those will not get inserted.
 
 ### How to focus the editor?
 
@@ -254,7 +254,46 @@ for ( const value of range.getWalker() ) {
 }
 ```
 
-### How to listen on a double click (e.g. link elements)?
+### How to find words in a document, and get their ranges?
+
+If you need to search a text fragment and remap it to its model position, use the following example. It will find all words available in the document root, create a model range based on these and feed them into the console.
+
+```js
+const model = editor.model;
+const rootElement = model.document.getRoot();
+const rootRange = model.createRangeIn( rootElement );
+const wordRanges = [];
+
+for ( const item of rootRange.getItems() ) {
+	// Find `$block` elements (those accept text).
+	if ( item.is( 'element' ) && model.schema.checkChild( item, '$text' ) ) {
+		// Get the whole text from block.
+		// Inline elements (like softBreak or imageInline) are replaced
+		// with a single whitespace to keep the position offset correct.
+		const blockText = Array.from( item.getChildren() )
+			.reduce( ( rangeText, item ) => rangeText + ( item.is( '$text' ) ? item.data : ' ' ), '' );
+
+		// Find all words.
+		for ( const match of blockText.matchAll( /\b\S+\b/g ) ) {
+			// The position in a text node is always parented by the block element.
+			const startPosition = model.createPositionAt( item, match.index );
+			const endPosition = model.createPositionAt( item, match.index + match[ 0 ].length );
+
+			wordRanges.push( model.createRange( startPosition, endPosition ) );
+		}
+	}
+}
+
+// Example usage of the collected words:
+for ( const range of wordRanges ) {
+	const fragment = model.getSelectedContent( model.createSelection( range ) );
+	const html = editor.data.stringify( fragment );
+
+	console.log( `[${ range.start.path }] - [${ range.end.path }]`, html );
+}
+```
+
+### How to listen on a double-click (e.g. link elements)?
 
 ```js
 // Add observer for double click and extend a generic DomEventObserver class by a native DOM dblclick event:

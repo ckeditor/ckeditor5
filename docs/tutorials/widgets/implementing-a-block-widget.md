@@ -490,7 +490,7 @@ Once you have converters, you can try to see the simple box in action. You have 
 </html>
 ```
 
-Rebuild your project and voila &mdash; that's your first simple box instance:
+Rebuild your project and voilà &ndash; this is your first simple box instance:
 
 {@img assets/img/tutorial-implementing-a-widget-3.png Screenshot of a classic editor with an instance of a simple box inside.}
 
@@ -556,7 +556,7 @@ You will see the following HTML-like string:
 </simpleBox>
 ```
 
-As you can see, this structure is quite different than the HTML input/output. If you look closely, you will also notice the `[]` characters in the first paragraph &mdash; this is the selection position.
+As you can see, this structure is quite different than the HTML input/output. If you look closely, you will also notice the `[]` characters in the first paragraph &ndash; this is the selection position.
 
 Play a bit with the editor features (bold, italic, headings, lists, selection) to see how the model structure changes.
 
@@ -570,7 +570,7 @@ It is time to check if the simple box behaves like you would like it to. You can
 
 * You can type text in the title, but pressing <kbd>Enter</kbd> will not split it and <kbd>Backspace</kbd> will not delete it entirely. This is because it was marked as an `isLimit` element in the schema.
 * You cannot apply a list in the title and cannot turn it into a heading (other than `<h1 class="simple-box-title">` which it is already). This is because it allows only the content that is allowed in other block elements (like paragraphs). You can, however, apply italic inside the title (because italic is allowed in other blocks).
-* The description behaves like the title, but it allows more content inside &mdash; lists and other headings.
+* The description behaves like the title, but it allows more content inside &ndash; lists and other headings.
 * If you try to select the entire simple box instance and press <kbd>Delete</kbd>, it will be deleted as a whole. The same when you copy and paste it. This is because it was marked as an `isObject` element in the schema.
 * You cannot easily select the entire simple box instance by clicking on it. Also, the cursor pointer does not change when you hover it. In other words, it seems a bit "dead". This is because you have not defined the view behavior yet.
 
@@ -836,9 +836,9 @@ You can also try inspecting the `isEnabled` property value (or just checking it 
 console.log( editor.commands.get( 'insertSimpleBox' ).isEnabled );
 ```
 
-It is always `true` except when the selection is in one place &mdash; in other simple box's title. You can also observe that executing the command when the selection is in that place takes no effect.
+It is always `true` except when the selection is in one place &ndash; in other simple box's title. You can also observe that executing the command when the selection is in that place takes no effect.
 
-Change one more thing before you move forward &mdash; disallow `simpleBox` inside `simpleBoxDescription`, too. This can be done by {@link module:engine/model/schema~Schema#addChildCheck defining a custom child check}:
+Change one more thing before you move forward &ndash; disallow `simpleBox` inside `simpleBoxDescription`, too. This can be done by {@link module:engine/model/schema~Schema#addChildCheck defining a custom child check}:
 
 ```js
 // simplebox/simpleboxediting.js

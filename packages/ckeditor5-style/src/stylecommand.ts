@@ -132,7 +132,7 @@ export default class StyleCommand extends Command {
 	}
 
 	/**
-	 * Executes the command &mdash; applies the style classes to the selection or removes it from the selection.
+	 * Executes the command &ndash; applies the style classes to the selection or removes it from the selection.
 	 *
 	 * If the command value already contains the requested style, it will remove the style classes. Otherwise, it will set it.
 	 *

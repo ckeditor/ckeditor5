@@ -24,6 +24,10 @@ ClassicEditor
 				items: [ 'uploadImage', 'insertTable' ]
 			}
 		],
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
+				'|', 'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit' ]
+		},
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

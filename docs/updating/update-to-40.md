@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-09-26
+modified_at: 2023-11-13
 ---
 
 # Update to CKEditor&nbsp;5 v40.x
@@ -13,6 +13,40 @@ modified_at: 2023-09-26
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v40.1.0
+
+### Changes to the default insert image action
+
+We changed how the images are inserted by default. For long time, the image insert action detected where the selection is placed, and depending on that inserted an inline image or a block one. This caused confusion in some cases, and led to suboptimal experience. From now on, the images will be inserted as block ones by default.
+
+Changes introduced in the latest version affect the `image.insert.type` configuration setting that lets the integrators set up the way newly uploaded ar pasted images are handled in the editor content. We renamed the `undefined` option to `auto` (see further details below). Now, if the `image.insert.type` configuration is not specified, all images inserted into the content will be treated as block images. This means that inserting an image inside a paragraph (or other content blocks) will create a new block for the image immediately below or above the current paragraph or block. After insertion, you can transform the block image into an inline image using the {@link features/images-overview#image-contextual-toolbar contextual toolbar}.
+
+If you wish to modify this behavior, the `type` setting in the editor configuration can be easily adjusted to meet your needs:
+
+```js
+ClassicEditor.create( element, {
+	image: {
+		insert: {
+			type: 'auto'
+		}
+	}
+} );
+```
+
+The `type` setting accepts the following values:
+
+* `'auto'`: The editor determines the image type based on the cursor's position, just as it was before. For example, if you insert an image in the middle of a paragraph, it will be inserted as inline. If you insert it at the end or beginning of a paragraph, it will become a block image.
+* `'block'`: Always inserts images as block elements, placing them below or above the current paragraph or block.
+* `'inline'`: Always inserts images as inline elements within the current paragraph or block.
+
+If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
+
+**Important**: If only one type of {@link features/images-installation#inline-and-block-images image plugin} is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
+
+### Updated image text alternative icon
+
+The {@link features/images-text-alternative image text alternative} (the alt attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
 
 ## Update to CKEditor&nbsp;5 v40.0.0
 
@@ -27,10 +61,42 @@ Listed below are the most important changes that require your attention when upg
 This release introduces changes to the {@link features/images-overview image feature} connected with the image `width` and `height` attributes. The changes include:
 
 * Upon {@link features/image-upload uploading an image file} or {@link features/images-inserting inserting it} into the editor content, the CKEditor 5 image feature fetches these dimensions from the file. The editor then adds these properties to the markup, just like the {@link features/images-text-alternative text alternative tag}.
-	* The editor **will not change already existing content**. It means, loading HTML (i.e., `setData`) with images does not set up these attributes.
+	* The editor **will not change already existing content**. It means, loading HTML (that is, `setData`) with images does not set up these attributes.
 	* If the user uses an upload adapter and the server sends back the uploaded image with the `width` or `height` parameters already set, these existing values are not overwritten.
 * Changes to an image (such as resize, etc.) will trigger the creation of those attributes. These attributes are crucial to proper content handling, and actions on a current image that does not have these improve this image's markup.
 * The `aspect-ratio` attribute has been added to the image's properties to handle situations when the file is resized or scaled with a tweaked aspect ratio.
+
+Image output HTML before:
+
+```html
+<p>
+	<img src="image.jpg" alt="">
+</p>
+```
+
+Image output HTML after (added the `width` and `height` attributes):
+
+```html
+<p>
+	<img src="image.jpg" alt="" width="400" height="300">
+</p>
+```
+
+Resized image output HTML before:
+
+```html
+<p>
+	<img class="image_resized" style="width:50%;" src="image.jpg" alt="">
+</p>
+```
+
+Resized image output HTML after (added the `aspect-ratio` style and the `width` and `height` attributes):
+
+```html
+<p>
+	<img class="image_resized" style="aspect-ratio:400/300;width:50%;" src="image.jpg" alt="" width="400" height="300">
+</p>
+```
 
 #### Changes to the model
 
@@ -46,13 +112,37 @@ Therefore, the relation between styles and attributes toward model attributes lo
 * Attribute `width` → model `width` (new).
 * Attribute `height` → model `height` (new).
 
+Given the following input HTML:
+
+```html
+<p>
+	<img src="image.jpg" style="width:50%;" width="400" height="300" alt="">
+</p>
+```
+
+Previously, the model would set the resized value in the `width` model attribute and ignore the input `width` and `height` attributes:
+
+```html
+<paragraph>
+	<imageInline src="image.jpg" width="50%"></imageInline>
+</paragraph>
+```
+
+And now the resized value is stored in the `resizedWidth` attribute (the `width` attribute is now reserved for the natural width value):
+
+```html
+<paragraph>
+	<imageInline src="image.jpg" resizedWidth="50%" width="400" height="300"></imageInline>
+</paragraph>
+```
+
 #### Changes to the `srcset` attribute
 
 The `srcset` model attribute which provides parameters for responsive images, has been simplified. It is no longer an object `{ data: "...", width: "..." }`, but the value that was previously stored in the `data` part.
 
 #### Changes to content styles
 
-Last but not least, content styles have been updated with this release, which means you need to update them in your editor implementation to avoid any discrepancies. Please refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the stylesheet.
+Last but not least, content styles have been updated with this release, which means you need to update them in your editor implementation to avoid any discrepancies. Please refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
 
 ### Changes to the comments feature
 
@@ -64,7 +154,7 @@ The new approach has an impact on how revision history (or loading legacy docume
 
 #### New `CommentThread#unlinkedAt` property
 
-A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property and returns it together with other `CommentThread` data.  
+A new property -- {@link module:comments/comments/commentsrepository~CommentThread#unlinkedAt `CommentThread#unlinkedAt`} -- has been introduced. If your integration saves comment threads data in your system, make sure to update your code, so it saves the new property and returns it together with other `CommentThread` data.
 
 #### Changes impacting custom features
 
@@ -115,7 +205,7 @@ This change was reflected in the {@link features/comments-outside-editor comment
 
 Previously, in a real-time collaboration environment, deleted comment threads were fetched and added to `CommentsRepository` when the editor re-connected to Cloud Services. This was an incorrect behavior and was fixed.
 
-If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it. 
+If your custom integration manually adds deleted comment threads to `CommentsRepository`, it should not and should be fixed. If your custom integration somehow depends on this incorrect behavior, you may need to change it.
 
 ### New Balloon Block editor icon
 

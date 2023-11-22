@@ -5,7 +5,7 @@ CKEditor&nbsp;5 core editor architecture
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 
-This package implements CKEditor&nbsp;5's core editor architecture &mdash; a set of classes and interfaces which glue everything together.
+This package implements CKEditor&nbsp;5's core editor architecture &ndash; a set of classes and interfaces which glue everything together.
 
 ## Documentation
 

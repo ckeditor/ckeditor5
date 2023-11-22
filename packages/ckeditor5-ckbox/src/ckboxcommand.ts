@@ -24,13 +24,6 @@ import type {
 
 import { blurHashToDataUrl, getImageUrls } from './utils';
 
-declare global {
-	// eslint-disable-next-line no-var
-	var CKBox: {
-		mount( wrapper: Element, options: Record<string, unknown> ): void;
-	};
-}
-
 // Defines the waiting time (in milliseconds) for inserting the chosen asset into the model. The chosen asset is temporarily stored in the
 // `CKBoxCommand#_chosenAssets` and it is removed from there automatically after this time. See `CKBoxCommand#_chosenAssets` for more
 // details.
@@ -375,8 +368,10 @@ function prepareAssets(
 
 /**
  * Parses the assets attributes into the internal data format.
+ *
+ * @internal
  */
-function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
+export function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetImageAttributesDefinition {
 	const { imageFallbackUrl, imageSources } = getImageUrls( asset.data.imageUrls! );
 	const { description, width, height, blurHash } = asset.data.metadata!;
 	const imagePlaceholder = blurHashToDataUrl( blurHash );

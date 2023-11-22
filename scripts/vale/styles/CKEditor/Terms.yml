@@ -14,11 +14,13 @@ swap:
   boolean: Boolean
   bugfix: bug fix
   bugfixes: bug fixes
+  byproduct: by-product
   builtin|built in: built-in
   can not: cannot
   check box: checkbox
   Ckeditor|CKeditor|CK Editor|CK editor: CKEditor
   Cksource|CKsource|CK Source: CKSource
+  clean-up: cleanup
   click on: click|click in
   config: configuration
   data are: data is
@@ -69,7 +71,8 @@ swap:
   Typescript: TypeScript
   (?i)typings: types|type definitions
   "un(?:check|select)": clear
-  url: URL
+  url(?!-parse): URL
   utils: utilities
   webpage: web page|page|website
   web site: website
+  yarn: Yarn

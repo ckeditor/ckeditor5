@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
@@ -16,7 +16,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#undo-redo' ), {
-		plugins: [ ArticlePluginSet, PictureEditing, CKBox, ImageUpload, CloudServices ],
+		plugins: [ ArticlePluginSet, PictureEditing, CKBox, CKBoxImageEdit, ImageUpload, CloudServices ],
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
@@ -35,11 +35,13 @@ ClassicEditor
 		image: {
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:wrapText',
-				'imageStyle:breakText',
+				'imageStyle:block',
+				'imageStyle:side',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		ckbox: {
