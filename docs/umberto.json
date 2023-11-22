@@ -350,40 +350,55 @@
 	},
 	"groups": [
 		{
-			"name": "Getting started",
+			"name": "Installation",
 			"id": "installation",
 			"slug": "installation",
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Basics",
-					"id": "getting-started",
-					"slug": "getting-started",
+					"name": "Getting started with CKEditor 5",
+					"id": "install",
+					"slug": "install",
 					"order": 20
 				},
 				{
-					"name": "Plugins",
-					"id": "plugins",
-					"slug": "plugins",
-					"order": 25
-				},
-				{
-					"name": "Integrations",
-					"id": "integrations",
-					"slug": "integrations",
-					"order": 30
-				},
-				{
-					"name": "Advanced concepts",
-					"id": "advanced",
-					"slug": "advanced",
-					"order": 50,
+					"name": "Legacy installation methods",
+					"id": "legacy",
+					"slug": "legacy",
+					"order": 30,
+					"folded": true,
 					"categories": [
 						{
-							"name": "Alternative setups",
-							"id": "alternative-setups",
-							"slug": "alternative-setups",
-							"order": 100
+							"name": "Basics",
+							"id": "legacy-getting-started",
+							"slug": "getting-started",
+							"order": 30
+						},
+						{
+							"name": "Plugins",
+							"id": "plugins",
+							"slug": "plugins",
+							"order": 35
+						},
+						{
+							"name": "Integrations",
+							"id": "integrations",
+							"slug": "integrations",
+							"order": 40
+						},
+						{
+							"name": "Advanced concepts",
+							"id": "advanced",
+							"slug": "advanced",
+							"order": 45,
+							"categories": [
+								{
+									"name": "Alternative setups",
+									"id": "alternative-setups",
+									"slug": "alternative-setups",
+									"order": 100
+								}
+							]
 						}
 					]
 				}

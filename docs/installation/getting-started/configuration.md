@@ -4,7 +4,7 @@
 # * Introduction to the top and must-know configurations.
 # * Point where to find the list of configuration options.
 
-category: getting-started
+category: legacy-getting-started
 meta-title: Configuration | CKEditor 5 documentation
 order: 40
 ---

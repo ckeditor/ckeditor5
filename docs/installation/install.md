@@ -1,5 +1,5 @@
 ---
-category: installation
+category: install
 order: 10
 menu-title: Overview
 meta-title: Getting started with CKEditor 5 | CKEditor 5 documentation
