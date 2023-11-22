@@ -13,9 +13,13 @@ import { type Constructor, type Mixed, global, type EventInfo } from '@ckeditor/
 /**
  * TODO
  */
-export default function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, DraggableView>
-{
+export default function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, DraggableView> {
 	abstract class DraggableMixin extends view {
+		/**
+		 * TODO
+		 */
+		declare public isDragging: boolean;
+
 		/**
 		 * TODO
 		 */
@@ -25,11 +29,6 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 * TODO
 		 */
 		private _onDragEndBound = this._onDragEnd.bind( this );
-
-		/**
-		 * TODO
-		 */
-		private _isDragging: boolean = false;
 
 		/**
 		 * TODO
@@ -49,6 +48,8 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 					this._attachListeners();
 				} );
 			}
+
+			this.set( 'isDragging', false );
 		}
 
 		/**
@@ -94,14 +95,14 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 
 			this._lastDraggingCoordinates = { x, y };
 
-			this._isDragging = true;
+			this.isDragging = true;
 		}
 
 		/**
 		 * TODO
 		 */
 		private _onDrag( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) {
-			if ( !this._isDragging ) {
+			if ( !this.isDragging ) {
 				return;
 			}
 
@@ -122,7 +123,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		private _onDragEnd() {
 			this._detachDragListeners();
 
-			this._isDragging = false;
+			this.isDragging = false;
 		}
 
 		/**
