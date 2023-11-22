@@ -76,7 +76,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 				return;
 			}
 
-			const markdownFromHtml = this.parseMarkdownFromHtml( dataAsTextHtml );
+			const markdownFromHtml = this._parseMarkdownFromHtml( dataAsTextHtml );
 
 			if ( markdownFromHtml ) {
 				data.content = this._gfmDataProcessor.toView( markdownFromHtml );
@@ -93,18 +93,18 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @private
 	 * @param htmlString Clipboard content in `text/html` type format.
 	 */
-	private parseMarkdownFromHtml( htmlString: string ): string | null {
-		const withoutOsSpecificTags = this.removeOsSpecificTags( htmlString );
+	private _parseMarkdownFromHtml( htmlString: string ): string | null {
+		const withoutOsSpecificTags = this._removeOsSpecificTags( htmlString );
 
-		const withoutWrapperTag = this.isHtmlList( withoutOsSpecificTags ) ?
-			this.removeListWrapperTagsAndBrs( withoutOsSpecificTags ) :
-			this.removeWrapperTag( withoutOsSpecificTags );
+		const withoutWrapperTag = this._isHtmlList( withoutOsSpecificTags ) ?
+			this._removeListWrapperTagsAndBrs( withoutOsSpecificTags ) :
+			this._removeWrapperTag( withoutOsSpecificTags );
 
-		if ( this.containsAnyRemainingHtmlTags( withoutWrapperTag ) ) {
+		if ( this._containsAnyRemainingHtmlTags( withoutWrapperTag ) ) {
 			return null;
 		}
 
-		return withoutWrapperTag;
+		return this._replaceHtmlReservedEntitiesWithCharacters( withoutWrapperTag );
 	}
 
 	/**
@@ -113,7 +113,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @private
 	 * @param htmlString Clipboard content in `text/html` type format.
 	 */
-	private removeOsSpecificTags( htmlString: string ): string {
+	private _removeOsSpecificTags( htmlString: string ): string {
 		// Removing <meta> tag present on Mac.
 		const withoutMetaTag = htmlString.replace( /^<meta\b[^>]*>/, '' ).trim();
 		// Removing <html> tag present on Windows.
@@ -131,7 +131,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @private
 	 * @param htmlString Clipboard content without any OS specific tags.
 	 */
-	private removeWrapperTag( htmlString: string ): string {
+	private _removeWrapperTag( htmlString: string ): string {
 		return htmlString.replace( /^<(\w+)\b[^>]*>\s*([\s\S]*?)\s*<\/\1>/, '$2' ).trim();
 	}
 
@@ -141,7 +141,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @private
 	 * @param htmlString Clipboard content without any OS specific tags.
 	 */
-	private removeListWrapperTagsAndBrs( htmlString: string ): string {
+	private _removeListWrapperTagsAndBrs( htmlString: string ): string {
 		const tempDiv = document.createElement( 'div' );
 		tempDiv.innerHTML = htmlString;
 
@@ -166,7 +166,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @private
 	 * @param htmlString Clipboard content without any OS specific tags.
 	 */
-	private isHtmlList( htmlString: string ): boolean {
+	private _isHtmlList( htmlString: string ): boolean {
 		const tempDiv = document.createElement( 'div' );
 		tempDiv.innerHTML = htmlString;
 
@@ -179,7 +179,17 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @private
 	 * @param str
 	 */
-	private containsAnyRemainingHtmlTags( str: string ): boolean {
+	private _containsAnyRemainingHtmlTags( str: string ): boolean {
 		return /<[^>]+>[\s\S]*<[^>]+>/.test( str );
+	}
+
+	/**
+	 * Replaces the reserved HTML entities with the actual characters.
+	 *
+	 * @private
+	 * @param htmlString Clipboard content without any tags.
+	 */
+	private _replaceHtmlReservedEntitiesWithCharacters( htmlString: string ) {
+		return htmlString.replace( '&gt;', '>' ).replace( '&lt;', '<' );
 	}
 }

@@ -51,11 +51,29 @@ describe( 'PasteFromMarkdownExperimental', () => {
 		expect( getData( editor.model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
 	} );
 
-	it( 'should not two level nested HTML as markdown if type is text/html', () => {
+	it( 'should not paste two level nested HTML as markdown if type is text/html', () => {
 		setData( editor.model, '<paragraph>[]</paragraph>' );
 		pasteHtml( editor, '<span><span>foo **bar** [baz](https://ckeditor.com).</span></span>' );
 
 		expect( getData( editor.model ) ).to.equal( '<paragraph>foo **bar** [baz](https://ckeditor.com).[]</paragraph>' );
+	} );
+
+	it( 'should paste single level HTML list as markdown if type is text/html', () => {
+		setData( editor.model, '<paragraph>[]</paragraph>' );
+		pasteHtml( editor, '<span>foo **bar** [baz](https://ckeditor.com).</span><span>foo **bar** [baz](https://ckeditor.com).</span>' );
+
+		expect( getData( editor.model ) ).to.equal(
+			'<paragraph>foo <$text bold="true">bar</$text> baz.foo <$text bold="true">bar</$text> baz.[]</paragraph>'
+		);
+	} );
+
+	it( 'should remove "br" tags in a HTML list', () => {
+		setData( editor.model, '<paragraph>[]</paragraph>' );
+		pasteHtml( editor, '<span>foo **bar**</span><br><span>foo **bar**</span>' );
+
+		expect( getData( editor.model ) ).to.equal(
+			'<paragraph>foo <$text bold="true">bar</$text>foo <$text bold="true">bar[]</$text></paragraph>'
+		);
 	} );
 
 	it( 'should not paste as markdown if shift key pressed', () => {
