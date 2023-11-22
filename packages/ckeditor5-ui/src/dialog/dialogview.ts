@@ -30,6 +30,7 @@ import DialogActionsView, { type DialogActionButtonDefinition } from './dialogac
 
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import type EditorUI from '../editorui/editorui';
+import DialogContentView from './dialogcontentview';
 
 export enum DialogViewPosition {
 	SCREEN_CENTER = 'screen-center',
@@ -77,7 +78,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	public readonly contentView: View;
+	public contentView?: DialogContentView;
 
 	/**
 	 * TODO
@@ -174,7 +175,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
 
 		this.parts = this.createCollection();
-		this.contentView = this._createContentView();
 
 		this.keystrokes = new KeystrokeHandler();
 		this._focusTracker = new FocusTracker();
@@ -328,6 +328,21 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
+	public addContentPart( content: Array<View> ): void {
+		if ( !this.contentView ) {
+			this.contentView = this._createContentView();
+			this._updateFocusCycleableItems();
+		} else {
+			this.contentView.reset();
+		}
+
+		this.parts.add( this.contentView );
+		this.contentView.children.addMany( content );
+	}
+
+	/**
+	 * TODO
+	 */
 	public setActionButtons( definitions: Array<DialogActionButtonDefinition> ): void {
 		if ( !this.actionsView ) {
 			this.actionsView = new DialogActionsView( this.locale );
@@ -336,13 +351,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		this.parts.add( this.actionsView );
 		this.actionsView.setButtons( definitions );
-	}
-
-	/**
-	 * TODO
-	 */
-	public addContentPart(): void {
-		this.parts.add( this.contentView );
 	}
 
 	/**
@@ -589,16 +597,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	private _createContentView(): View {
-		const contentView = new View( this.locale );
-
-		contentView.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [ 'ck', 'ck-dialog__content' ]
-			},
-			children: this.children
-		} );
+	private _createContentView(): DialogContentView {
+		const contentView = new DialogContentView( this.locale );
 
 		return contentView;
 	}

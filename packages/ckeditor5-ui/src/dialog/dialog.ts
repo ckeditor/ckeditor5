@@ -125,15 +125,13 @@ export default class Dialog extends Plugin {
 			this.view.showHeader( title );
 		}
 
-		this.view.addContentPart();
-
 		if ( content ) {
 			// Normalize the content specified in the arguments.
 			if ( content instanceof View ) {
 				content = [ content ];
 			}
 
-			this.view.children.addMany( content );
+			this.view.addContentPart( content );
 		}
 
 		if ( actionButtons ) {
