@@ -65,11 +65,6 @@ async function startStandardEditingMode() {
 				'mergeTableCells'
 			]
 		},
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

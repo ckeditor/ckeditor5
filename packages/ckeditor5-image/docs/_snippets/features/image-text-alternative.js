@@ -26,11 +26,6 @@ ClassicEditor
 				'toggleImageCaption'
 			]
 		},
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

@@ -45,11 +45,6 @@ ClassicEditor
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		cloudServices: CS_CONFIG,
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

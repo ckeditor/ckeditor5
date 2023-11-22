@@ -40,11 +40,6 @@ ClassicEditor
 			],
 			toolbar: [ 'resizeImage' ]
 		},
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

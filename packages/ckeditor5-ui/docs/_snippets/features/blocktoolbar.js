@@ -124,11 +124,6 @@ BalloonEditor
 		toolbar: {
 			items: [ 'bold', 'italic', '|', 'link' ]
 		},
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

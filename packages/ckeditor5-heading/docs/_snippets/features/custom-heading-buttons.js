@@ -29,11 +29,6 @@ ClassicEditor
 				{ model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
 			]
 		},
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

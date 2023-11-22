@@ -21,11 +21,6 @@ ClassicEditor
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

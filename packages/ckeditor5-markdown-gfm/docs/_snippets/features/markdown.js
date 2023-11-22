@@ -47,11 +47,6 @@ ClassicEditor
 			]
 		},
 		cloudServices: CS_CONFIG,
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
