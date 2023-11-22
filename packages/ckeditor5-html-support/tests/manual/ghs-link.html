@@ -1,0 +1,18 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+	<style>
+		.link {
+			display: inline-block;
+			padding: 1em;
+			outline: 1px solid rgba(255, 0, 0, 0.3);
+		}
+	</style>
+</head>
+
+<div id="editor">
+	<p>foo <a href="#bar" class="link">bar</a></p>
+	<p>foo <a href="#bar" class="link">bar</a> baz</p>
+	<p><a href="#bar" class="link">bar</a> baz</p>
+	<p><a href="#bar" class="link">bar</a></p>
+	<p><a href="#foo" class="link">foo</a><a href="#bar" class="link">bar</a></p>
+</div>
