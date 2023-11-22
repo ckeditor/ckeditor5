@@ -44,7 +44,8 @@ import textAlternative from './../theme/icons/text-alternative.svg';
 import loupe from './../theme/icons/loupe.svg';
 import image from './../theme/icons/image.svg';
 import imageUpload from './../theme/icons/image-upload.svg';
-import imageFolder from './../theme/icons/image-folder.svg';
+import imageAssetManager from './../theme/icons/image-asset-manager.svg';
+import imageUrl from './../theme/icons/image-url.svg';
 
 import alignBottom from './../theme/icons/align-bottom.svg';
 import alignMiddle from './../theme/icons/align-middle.svg';
@@ -89,7 +90,8 @@ export const icons = {
 	history,
 	image,
 	imageUpload,
-	imageFolder,
+	imageAssetManager,
+	imageUrl,
 	lowVision,
 	textAlternative,
 	loupe,

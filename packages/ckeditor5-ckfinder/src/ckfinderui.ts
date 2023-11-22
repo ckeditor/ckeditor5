@@ -62,16 +62,16 @@ export default class CKFinderUI extends Plugin {
 			imageInsertUI.registerIntegration( 'assetManager', command, type => {
 				const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
 
-				button.icon = icons.imageFolder;
+				button.icon = icons.imageAssetManager;
+
+				// TODO add to context (note that it's shared with CKBox)
+				button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+					t( 'Replace with file manager' ) :
+					t( 'Insert with file manager' )
+				);
 
 				if ( type == 'formView' ) {
 					button.withText = true;
-
-					// TODO add to context (note that it's shared with CKBox)
-					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-						t( 'Replace with file manager' ) :
-						t( 'Insert with file manager' )
-					);
 
 					button.on( 'execute', () => {
 						imageInsertUI.dropdownView!.isOpen = false;

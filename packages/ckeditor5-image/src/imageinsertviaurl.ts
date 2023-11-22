@@ -43,8 +43,8 @@ export default class ImageInsertViaUrl extends Plugin {
 		super( editor );
 
 		editor.config.define( 'image.insert.integrations', [
-			'assetManager',
 			'upload',
+			'assetManager',
 			'url'
 		] );
 	}

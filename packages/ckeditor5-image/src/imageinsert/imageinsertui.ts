@@ -69,9 +69,7 @@ export default class ImageInsertUI extends Plugin {
 		this.set( 'isImageSelected', false );
 
 		const editor = this.editor;
-		const componentCreator = ( locale: Locale ) => {
-			return this._createDropdownView( locale );
-		};
+		const componentCreator = ( locale: Locale ) => this._createToolbarComponent( locale );
 
 		// Register `insertImage` dropdown and add `imageInsert` dropdown as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'insertImage', componentCreator );
@@ -79,8 +77,11 @@ export default class ImageInsertUI extends Plugin {
 
 		const insertImageCommand: InsertImageCommand = this.editor.commands.get( 'insertImage' )!;
 
-		this.registerIntegration( 'url', insertImageCommand,
-			( type, isOnlyOne ) => type == 'formView' ? this._createInsertUrlView( isOnlyOne ) : this._createInsertButton()
+		this.registerIntegration(
+			'url',
+			insertImageCommand,
+			( type, isOnlyOne ) => type == 'formView' ? this._createInsertUrlView( isOnlyOne ) : this._createInsertUrlButton(),
+			{ requiresForm: true }
 		);
 
 		this.listenTo( editor.model.document, 'change', () => {
@@ -94,7 +95,12 @@ export default class ImageInsertUI extends Plugin {
 	/**
 	 * TODO
 	 */
-	public registerIntegration( name: string, observable: IntegrationData[ 'observable' ], callback: IntegrationCallback ): void {
+	public registerIntegration(
+		name: string,
+		observable: Observable & { isEnabled: boolean },
+		callback: IntegrationCallback,
+		options: { requiresForm?: boolean } = {}
+	): void {
 		if ( this._integrations.has( name ) ) {
 			/**
 			 * TODO
@@ -102,26 +108,37 @@ export default class ImageInsertUI extends Plugin {
 			logWarning( 'image-insert-zzzzz', { name } );
 		}
 
-		this._integrations.set( name, { observable, callback } );
+		this._integrations.set( name, { ...options, observable, callback } );
 	}
 
 	/**
-	 * Creates the dropdown view.
-	 *
-	 * @param locale The localization services instance.
+	 * Creates the toolbar component.
 	 */
-	private _createDropdownView( locale: Locale ): DropdownView {
+	private _createToolbarComponent( locale: Locale ): DropdownView | FocusableView {
 		const editor = this.editor;
+		const t = locale.t;
 
 		const integrations = this._prepareIntegrations();
-		let dropdownButton: SplitButtonView | DropdownButtonView | undefined;
 
-		if ( integrations.length > 1 ) {
-			const actionButton = integrations[ 0 ].callback( 'toolbarButton', false ) as ButtonView & FocusableView;
+		let dropdownButton: SplitButtonView | DropdownButtonView | undefined;
+		const firstIntegration = integrations[ 0 ];
+
+		if ( integrations.length == 1 ) {
+			// Do not use dropdown for a single integration button (integration that does not require form view).
+			if ( !firstIntegration.requiresForm ) {
+				return firstIntegration.callback( 'toolbarButton', true );
+			}
+
+			dropdownButton = this._createInsertUrlButton( DropdownButtonView );
+		} else {
+			const actionButton = firstIntegration.callback( 'toolbarButton', false ) as ButtonView & FocusableView;
 
 			dropdownButton = new SplitButtonView( locale, actionButton );
-		} else if ( integrations.length == 1 ) {
-			dropdownButton = this._createInsertButton( DropdownButtonView );
+			dropdownButton.tooltip = true;
+			dropdownButton.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
+				t( 'Replace image' ) : // TODO context
+				t( 'Insert image' ) // TODO context
+			);
 		}
 
 		const dropdownView = this.dropdownView = createDropdown( locale, dropdownButton );
@@ -164,6 +181,15 @@ export default class ImageInsertUI extends Plugin {
 			result.push( this._integrations.get( item )! );
 		}
 
+		if ( !result.length ) {
+			result.push( this._integrations.get( 'url' )! );
+
+			/**
+			 * TODO
+			 */
+			logWarning( 'image-insert-aaaa' );
+		}
+
 		return result;
 	}
 
@@ -197,7 +223,6 @@ export default class ImageInsertUI extends Plugin {
 				// the old value instead of the actual value of the command.
 				imageInsertUrlView.imageURLInputValue = replaceImageSourceCommand.value || '';
 
-				// TODO should we reset it to the collapsed state? List properties does not collapse.
 				if ( collapsibleView ) {
 					collapsibleView.isCollapsed = true;
 				}
@@ -236,15 +261,15 @@ export default class ImageInsertUI extends Plugin {
 		return imageInsertUrlView;
 	}
 
-	private _createInsertButton<T extends ButtonView | DropdownButtonView>(
+	private _createInsertUrlButton<T extends ButtonView | DropdownButtonView>(
 		ButtonClass: new ( locale?: Locale ) => T
 	): T;
-	private _createInsertButton(): ButtonView;
+	private _createInsertUrlButton(): ButtonView;
 
 	/**
 	 * TODO
 	 */
-	private _createInsertButton(
+	private _createInsertUrlButton(
 		ButtonClass: new ( locale?: Locale ) => ButtonView = ButtonView
 	): ButtonView {
 		const editor = this.editor;
@@ -252,13 +277,13 @@ export default class ImageInsertUI extends Plugin {
 		const t = editor.locale.t;
 
 		button.set( {
-			icon: icons.image,
+			icon: icons.imageUrl,
 			tooltip: true
 		} );
 
-		// TODO add 'Replace image' to context
+		// TODO add 'Update image URL' and 'Insert image via URL' to context
 		button.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
-			t( 'Replace image' ) : t( 'Insert image' )
+			t( 'Update image URL' ) : t( 'Insert image via URL' )
 		);
 
 		return button;
@@ -281,4 +306,5 @@ export type IntegrationCallback = ( type: 'toolbarButton' | 'formView', isOnlyOn
 type IntegrationData = {
 	observable: Observable & { isEnabled: boolean };
 	callback: IntegrationCallback;
+	requiresForm?: boolean;
 };
