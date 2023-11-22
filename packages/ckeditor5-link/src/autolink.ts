@@ -9,10 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
-import type { DocumentSelectionChangeEvent, Element, Model, Range } from 'ckeditor5/src/engine';
+import type { DocumentSelectionChangeEvent, Element, Model, Range, Writer } from 'ckeditor5/src/engine';
 import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent, findAttributeRange } from 'ckeditor5/src/typing';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
-import { priorities } from 'ckeditor5/src/utils';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
 import LinkEditing from './linkediting';
@@ -110,7 +109,7 @@ export default class AutoLink extends Plugin {
 		this._enablePasteLinking();
 	}
 
-	private _expandSelection( selectedRange: Range, href: unknown ): void {
+	private _expandSelection( writer: Writer, selectedRange: Range, href: unknown ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -126,7 +125,7 @@ export default class AutoLink extends Plugin {
 
 		if ( updatedSelection.start.isBefore( selStart ) || updatedSelection.end.isAfter( selEnd ) ) {
 			// only write the selection if it wasn't already the entire link
-			model.change( writer => writer.setSelection( updatedSelection ) );
+			writer.setSelection( updatedSelection );
 		}
 	}
 
@@ -158,10 +157,12 @@ export default class AutoLink extends Plugin {
 
 			// if the text in the clipboard has a URL, and that URL is the whole clipboard
 			if ( matches && matches[ 2 ] === newLink ) {
-				if ( selection.hasAttribute( 'linkHref' ) ) {
-					this._expandSelection( selectedRange, selection.getAttribute( 'linkHref' ) );
-				}
-				linkCommand.execute( newLink );
+				model.change( writer => {
+					if ( selection.hasAttribute( 'linkHref' ) ) {
+						this._expandSelection( writer, selectedRange, selection.getAttribute( 'linkHref' ) );
+					}
+					linkCommand.execute( newLink );
+				} );
 				evt.stop();
 			}
 		}, { priority: 'high' } );
