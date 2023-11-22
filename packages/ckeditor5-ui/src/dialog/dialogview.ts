@@ -87,7 +87,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	public readonly focusTracker: FocusTracker;
+	private readonly _focusTracker: FocusTracker;
 
 	/**
 	 * TODO
@@ -142,12 +142,12 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	private readonly focusables: ViewCollection;
+	private readonly _focusables: ViewCollection;
 
 	/**
 	 * TODO
 	 */
-	private readonly focusCycler: FocusCycler;
+	private readonly _focusCycler: FocusCycler;
 
 	/**
 	 * @inheritDoc
@@ -177,11 +177,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.contentView = this._createContentView();
 
 		this.keystrokes = new KeystrokeHandler();
-		this.focusTracker = new FocusTracker();
-		this.focusables = new ViewCollection();
-		this.focusCycler = new FocusCycler( {
-			focusables: this.focusables,
-			focusTracker: this.focusTracker,
+		this._focusTracker = new FocusTracker();
+		this._focusables = new ViewCollection();
+		this._focusCycler = new FocusCycler( {
+			focusables: this._focusables,
+			focusTracker: this._focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate form fields backwards using the Shift + Tab keystroke.
@@ -349,21 +349,21 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * TODO
 	 */
 	public focus(): void {
-		this.focusCycler.focusFirst();
+		this._focusCycler.focusFirst();
 	}
 
 	/**
 	 * TODO
 	 */
 	public focusNext(): void {
-		this.focusCycler.focusNext();
+		this._focusCycler.focusNext();
 	}
 
 	/**
 	 * TODO
 	 */
 	public focusPrevious(): void {
-		this.focusCycler.focusPrevious();
+		this._focusCycler.focusPrevious();
 	}
 
 	/**
@@ -516,8 +516,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * TODO
 	 */
 	private _updateFocusCycleableItems() {
-		for ( const focusable of this.focusables ) {
-			this.focusTracker.remove( focusable.element! );
+		for ( const focusable of this._focusables ) {
+			this._focusTracker.remove( focusable.element! );
 
 			if ( isViewWithFocusCycler( focusable ) ) {
 				this.stopListening( focusable.focusCycler, 'forwardCycle' );
@@ -525,7 +525,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			}
 		}
 
-		this.focusables.clear();
+		this._focusables.clear();
 
 		const focusables = [ ...this.children ];
 
@@ -538,8 +538,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		}
 
 		focusables.forEach( focusable => {
-			this.focusables.add( focusable );
-			this.focusTracker.add( focusable.element! );
+			this._focusables.add( focusable );
+			this._focusTracker.add( focusable.element! );
 
 			if ( isViewWithFocusCycler( focusable ) ) {
 				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {

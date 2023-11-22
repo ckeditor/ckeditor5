@@ -36,12 +36,12 @@ export default class DialogActionsView extends View {
 	/**
 	 * TODO
 	 */
-	public readonly focusTracker: FocusTracker;
+	private readonly _focusTracker: FocusTracker;
 
 	/**
 	 * TODO
 	 */
-	public readonly focusCycler: FocusCycler;
+	private readonly _focusCycler: FocusCycler;
 
 	/**
 	 * TODO
@@ -57,11 +57,11 @@ export default class DialogActionsView extends View {
 		this.children = this.createCollection<ButtonView>();
 		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
 		this.keystrokes = new KeystrokeHandler();
-		this.focusTracker = new FocusTracker();
+		this._focusTracker = new FocusTracker();
 		this._focusables = new ViewCollection();
-		this.focusCycler = new FocusCycler( {
+		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
-			focusTracker: this.focusTracker,
+			focusTracker: this._focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate form fields backwards using the Shift + Tab keystroke.
@@ -130,9 +130,9 @@ export default class DialogActionsView extends View {
 	 */
 	public focus( direction?: 1 | -1 ): void {
 		if ( direction === -1 ) {
-			this.focusCycler.focusLast();
+			this._focusCycler.focusLast();
 		} else {
-			this.focusCycler.focusFirst();
+			this._focusCycler.focusFirst();
 		}
 	}
 
@@ -141,18 +141,21 @@ export default class DialogActionsView extends View {
 	 */
 	private _updateFocusCycleableItems() {
 		for ( const focusable of this._focusables ) {
-			this.focusTracker.remove( focusable.element! );
+			this._focusTracker.remove( focusable.element! );
 		}
 
 		this._focusables.clear();
 
 		Array.from( this.children ).forEach( v => {
 			this._focusables.add( v );
-			this.focusTracker.add( v.element! );
+			this._focusTracker.add( v.element! );
 		} );
 	}
 }
 
+/**
+ * TODO
+ */
 export type DialogActionButtonDefinition =
 	Pick<Button, 'label'> &
 	Partial<Pick<Button, 'withText' | 'class' | 'icon'>> &
