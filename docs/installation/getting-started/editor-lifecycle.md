@@ -1,5 +1,5 @@
 ---
-category: getting-started
+category: legacy-getting-started
 meta-title: Editor's lifecycle | CKEditor 5 documentation
 order: 60
 ---

@@ -1,5 +1,5 @@
 ---
-category: getting-started
+category: legacy-getting-started
 meta-title: API and events | CKEditor 5 documentation
 order: 80
 ---

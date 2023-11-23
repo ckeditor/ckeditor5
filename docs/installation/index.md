@@ -1,7 +1,7 @@
 ---
 category: installation
 order: 10
-menu-title: Overview
+menu-title: Installation overview - NEW
 meta-title: Getting started with CKEditor 5 | CKEditor 5 documentation
 meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
 ---
