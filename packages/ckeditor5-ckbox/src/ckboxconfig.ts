@@ -99,6 +99,13 @@ export interface CKBoxConfig {
 	forceDemoLabel?: boolean;
 
 	/**
+	 * TODO.
+	 *
+	 * @default []
+	 */
+	allowExternalImagesEditing?: RegExp | Array<RegExp> | ( ( src: string ) => boolean );
+
+	/**
 	 * Inserts the unique asset ID as the `data-ckbox-resource-id` attribute. To disable this behavior, set it to `true`.
 	 *
 	 * @default false

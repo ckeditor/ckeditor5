@@ -22,7 +22,14 @@ import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/cke
 
 import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
-import { getImageUrls, getWorkspaceId, sendHttpRequest } from './utils';
+import {
+	getAvailableCategories,
+	getImageUrls,
+	getWorkspaceId,
+	sendHttpRequest,
+	getCategoryIdForFile,
+	type AvailableCategory
+} from './utils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -154,86 +161,30 @@ class Adapter implements UploadAdapter {
 	 *
 	 * If the API returns limited results, the method will collect all items.
 	 */
-	public async getAvailableCategories( offset: number = 0 ): Promise<Array<AvailableCategory>> {
-		const ITEMS_PER_REQUEST = 50;
-		const categoryUrl = new URL( 'categories', this.serviceOrigin );
-
-		categoryUrl.searchParams.set( 'limit', ITEMS_PER_REQUEST.toString() );
-		categoryUrl.searchParams.set( 'offset', offset.toString() );
-		categoryUrl.searchParams.set( 'workspaceId', this.getWorkspaceId() );
-
-		return sendHttpRequest( {
-			url: categoryUrl,
+	public async getAvailableCategories( offset: number = 0 ): Promise<Array<AvailableCategory> | null> {
+		return getAvailableCategories( {
+			token: this.token,
+			serviceOrigin: this.serviceOrigin,
+			workspaceId: this.getWorkspaceId(),
 			signal: this.controller.signal,
-			authorization: this.token.value
-		} )
-			.then( async data => {
-				const remainingItems = data.totalCount - ( offset + ITEMS_PER_REQUEST );
-
-				if ( remainingItems > 0 ) {
-					const offsetItems = await this.getAvailableCategories( offset + ITEMS_PER_REQUEST );
-
-					return [
-						...data.items,
-						...offsetItems
-					];
-				}
-
-				return data.items;
-			} )
-			.catch( () => {
-				this.controller.signal.throwIfAborted();
-
-				/**
-				 * Fetching a list of available categories with which an uploaded file can be associated failed.
-				 *
-				 * @error ckbox-fetch-category-http-error
-				 */
-				logError( 'ckbox-fetch-category-http-error' );
-			} );
+			offset
+		} );
 	}
 
 	/**
 	 * Resolves a promise with an object containing a category with which the uploaded file is associated or an error code.
 	 */
 	public async getCategoryIdForFile( file: File ): Promise<string | null> {
-		const extension = getFileExtension( file.name );
-		const allCategories = await this.getAvailableCategories();
-
-		// Couldn't fetch all categories. Perhaps the authorization token is invalid.
-		if ( !allCategories ) {
-			return null;
-		}
-
 		// The plugin allows defining to which category the uploaded file should be assigned.
 		const defaultCategories = this.editor.config.get( 'ckbox.defaultUploadCategories' );
 
-		// If a user specifies the plugin configuration, find the first category that accepts the uploaded file.
-		if ( defaultCategories ) {
-			const userCategory = Object.keys( defaultCategories ).find( category => {
-				return defaultCategories[ category ].find( e => e.toLowerCase() == extension );
-			} );
-
-			// If found, return its ID if the category exists on the server side.
-			if ( userCategory ) {
-				const serverCategory = allCategories.find( category => category.id === userCategory || category.name === userCategory );
-
-				if ( !serverCategory ) {
-					return null;
-				}
-
-				return serverCategory.id;
-			}
-		}
-
-		// Otherwise, find the first category that accepts the uploaded file and returns its ID.
-		const category = allCategories.find( category => category.extensions.find( e => e.toLowerCase() == extension ) );
-
-		if ( !category ) {
-			return null;
-		}
-
-		return category.id;
+		return getCategoryIdForFile( file, {
+			token: this.token,
+			serviceOrigin: this.serviceOrigin,
+			workspaceId: this.getWorkspaceId(),
+			signal: this.controller.signal,
+			defaultCategories
+		} );
 	}
 
 	/**
@@ -299,20 +250,4 @@ class Adapter implements UploadAdapter {
 	public abort(): void {
 		this.controller.abort();
 	}
-}
-
-export interface AvailableCategory {
-	id: string;
-	name: string;
-	extensions: Array<string>;
-}
-
-/**
- * Returns an extension from the given value.
- */
-function getFileExtension( value: string ) {
-	const extensionRegExp = /\.(?<ext>[^.]+)$/;
-	const match = value.match( extensionRegExp );
-
-	return match!.groups!.ext.toLowerCase();
 }

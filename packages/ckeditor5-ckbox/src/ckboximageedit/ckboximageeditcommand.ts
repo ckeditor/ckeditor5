@@ -21,6 +21,7 @@ import { prepareImageAssetAttributes } from '../ckboxcommand';
 import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig';
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
+import { createEditabilityChecker, getImageEditorMountOptions } from './utils';
 
 /**
  * The CKBox edit image command.
@@ -41,7 +42,10 @@ export default class CKBoxImageEditCommand extends Command {
 	/**
 	 * The states of image processing in progress.
 	 */
-	private _processInProgress = new Map<string, ProcessingState>();
+	private _processInProgress = new Set<ProcessingState>();
+
+	/** TODO */
+	private _canEdit: ( element: ModelElement ) => boolean;
 
 	/**
 	 * @inheritDoc
@@ -50,6 +54,8 @@ export default class CKBoxImageEditCommand extends Command {
 		super( editor );
 
 		this.value = false;
+
+		this._canEdit = createEditabilityChecker( editor.config.get( 'ckbox.allowExternalImagesEditing' ) );
 
 		this._prepareListeners();
 	}
@@ -63,18 +69,11 @@ export default class CKBoxImageEditCommand extends Command {
 		this.value = this._getValue();
 
 		const selectedElement = editor.model.document.selection.getSelectedElement();
-		const isImageElement = selectedElement && (
-			selectedElement.is( 'element', 'imageInline' ) ||
-			selectedElement.is( 'element', 'imageBlock' )
-		);
-		const isBeingProcessed = Array.from( this._processInProgress.values() )
-			.some( ( { element } ) => isEqual( element, selectedElement ) );
 
-		if ( isImageElement && selectedElement.hasAttribute( 'ckboxImageId' ) && !isBeingProcessed ) {
-			this.isEnabled = true;
-		} else {
-			this.isEnabled = false;
-		}
+		this.isEnabled =
+			!!selectedElement &&
+			this._canEdit( selectedElement ) &&
+			!this._checkIfElementIsBeingProcessed( selectedElement );
 	}
 
 	/**
@@ -85,21 +84,27 @@ export default class CKBoxImageEditCommand extends Command {
 			return;
 		}
 
+		const wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
+
+		this._wrapper = wrapper;
 		this.value = true;
-		this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
 
 		document.body.appendChild( this._wrapper );
 
 		const imageElement = this.editor.model.document.selection.getSelectedElement()!;
-		const ckboxImageId = imageElement.getAttribute( 'ckboxImageId' ) as string;
 
 		const processingState: ProcessingState = {
-			ckboxImageId,
 			element: imageElement,
 			controller: new AbortController()
 		};
 
-		window.CKBox.mountImageEditor( this._wrapper, this._prepareOptions( processingState ) );
+		this._prepareOptions( processingState ).then(
+			options => window.CKBox.mountImageEditor( wrapper, options ),
+			error => {
+				console.error( error );
+				this._handleImageEditorClose();
+			}
+		);
 	}
 
 	/**
@@ -125,12 +130,22 @@ export default class CKBoxImageEditCommand extends Command {
 	/**
 	 * Creates the options object for the CKBox Image Editor dialog.
 	 */
-	private _prepareOptions( state: ProcessingState ) {
+	private async _prepareOptions( state: ProcessingState ) {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
+		const ckboxEditing = editor.plugins.get( CKBoxEditing );
+		const token = ckboxEditing.getToken();
+
+		const imageMountOptions = await getImageEditorMountOptions( state.element, {
+			token,
+			serviceOrigin: ckboxConfig.serviceOrigin!,
+			defaultCategories: ckboxConfig.defaultUploadCategories,
+			defaultWorkspaceId: ckboxConfig.defaultUploadWorkspaceId,
+			/** TODO */ signal: ( new AbortController() ).signal
+		} );
 
 		return {
-			assetId: state.ckboxImageId,
+			...imageMountOptions,
 			imageEditing: {
 				allowOverwrite: false
 			},
@@ -169,6 +184,16 @@ export default class CKBoxImageEditCommand extends Command {
 		return states;
 	}
 
+	private _checkIfElementIsBeingProcessed( selectedElement: ModelElement ) {
+		for ( const { element } of this._processInProgress ) {
+			if ( isEqual( element, selectedElement ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Closes the CKBox Image Editor dialog.
 	 */
@@ -193,7 +218,7 @@ export default class CKBoxImageEditCommand extends Command {
 		const pendingActions = this.editor.plugins.get( PendingActions );
 		const action = pendingActions.add( t( 'Processing the edited image.' ) );
 
-		this._processInProgress.set( state.ckboxImageId, state );
+		this._processInProgress.add( state );
 		this._showImageProcessingIndicator( state.element, asset );
 		this.refresh();
 
@@ -219,7 +244,7 @@ export default class CKBoxImageEditCommand extends Command {
 					}
 				}
 			).finally( () => {
-				this._processInProgress.delete( state.ckboxImageId );
+				this._processInProgress.delete( state );
 				pendingActions.remove( action );
 				this.refresh();
 			} );
@@ -347,7 +372,6 @@ export default class CKBoxImageEditCommand extends Command {
 }
 
 interface ProcessingState {
-	ckboxImageId: string;
 	element: ModelElement;
 	controller: AbortController;
 }
