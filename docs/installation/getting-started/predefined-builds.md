@@ -1,7 +1,7 @@
 ---
 menu-title: Predefined builds
 meta-title: Predefined builds | CKEditor 5 documentation
-category: legacy-getting-started
+category: getting-started
 order: 20
 modified_at: 2022-07-12
 ---

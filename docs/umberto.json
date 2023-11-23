@@ -362,41 +362,41 @@
 					"order": 20
 				},
 				{
+					"name": "Plugins",
+					"id": "plugins",
+					"slug": "plugins",
+					"order": 25
+				},
+				{
+					"name": "Integrations",
+					"id": "integrations",
+					"slug": "integrations",
+					"order": 30
+				},
+				{
 					"name": "Legacy installation methods",
 					"id": "legacy",
 					"slug": "legacy",
-					"order": 30,
+					"order": 50,
 					"folded": true,
 					"categories": [
 						{
 							"name": "Basics",
-							"id": "legacy-getting-started",
+							"id": "getting-started",
 							"slug": "getting-started",
-							"order": 30
-						},
-						{
-							"name": "Plugins",
-							"id": "plugins",
-							"slug": "plugins",
-							"order": 35
-						},
-						{
-							"name": "Integrations",
-							"id": "integrations",
-							"slug": "integrations",
-							"order": 40
+							"order": 55
 						},
 						{
 							"name": "Advanced concepts",
 							"id": "advanced",
 							"slug": "advanced",
-							"order": 45,
+							"order": 60,
 							"categories": [
 								{
 									"name": "Alternative setups",
 									"id": "alternative-setups",
 									"slug": "alternative-setups",
-									"order": 100
+									"order": 65
 								}
 							]
 						}

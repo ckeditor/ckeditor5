@@ -1,5 +1,5 @@
 ---
-category: legacy-getting-started
+category: getting-started
 meta-title: Getting and setting data | CKEditor 5 documentation
 order: 70
 ---

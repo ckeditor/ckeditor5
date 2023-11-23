@@ -2,7 +2,7 @@
 # Scope:
 # - Guidance on all possible installation options.
 
-category: legacy-getting-started
+category: getting-started
 meta-title: Quick start | CKEditor 5 documentation
 order: 10
 modified_at: 2022-06-27
