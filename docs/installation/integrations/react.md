@@ -599,6 +599,10 @@ import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
 ```
 
+<info-box warning>
+	Use a different configuration to integrate the custom CKEditor build with Vite. Vite requires linked packages to be ESM, and unfortunately, the CKEditor build is not ESM yet (but we're working on it). See [the issue comment](https://github.com/ckeditor/ckeditor5/issues/15014#issuecomment-1755602112) and [Vite documentation](https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies) for more details.
+</info-box>
+
 If you want to use `.ts` config, you may need to install additional types for node.
 
 ```bash
