@@ -70,10 +70,6 @@ From now on, the remove format button should also remove links in the content. {
 
 ## Installation
 
-<info-box info>
-	The remove format feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-remove-format`](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format) package:
 
 ```bash

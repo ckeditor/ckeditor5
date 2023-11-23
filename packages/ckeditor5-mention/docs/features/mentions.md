@@ -502,10 +502,6 @@ It is possible to configure the Mentions feature to work with the {@link feature
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-mention`](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention) package:
 
 ```bash

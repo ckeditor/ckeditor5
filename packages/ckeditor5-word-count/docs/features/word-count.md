@@ -232,10 +232,6 @@ Here is the HTML structure used to create the customized word and character coun
 
 ## Installation
 
-<info-box info>
-	The Word count feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-word-count`](https://www.npmjs.com/package/@ckeditor/ckeditor5-word-count) package:
 
 ```bash

@@ -76,12 +76,6 @@ The spell and grammar check is compliant with WCAG 2.1 and Section 508 accessibi
 
 ## Installation
 
-<info-box info>
-	The spell and grammar check feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-
-	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
-</info-box>
-
 WProofreader is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an editor build just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
 ```

@@ -30,14 +30,6 @@ The feature supports both toolbar buttons and {@link features/keyboard-support k
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds} (loaded by the {@link module:essentials/essentials~Essentials} plugin). The installation instructions are for developers interested in building their own, custom rich text editor or willing to configure the toolbar button.
-</info-box>
-
-<info-box info>
-	This feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-undo`](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo) package:
 
 ```

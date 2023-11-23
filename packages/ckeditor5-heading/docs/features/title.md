@@ -43,10 +43,6 @@ ClassicEditor
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
 
 ```plaintext

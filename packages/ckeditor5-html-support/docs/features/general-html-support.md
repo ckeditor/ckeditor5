@@ -55,10 +55,6 @@ Therefore, GHS's main use cases would be:
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-support`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) package:
 
 ```plaintext

@@ -31,10 +31,6 @@ You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter<
 
 ## Installation
 
-<info-box info>
-	The to-do list feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
 ```bash

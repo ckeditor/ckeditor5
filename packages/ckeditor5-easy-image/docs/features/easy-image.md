@@ -122,10 +122,6 @@ The variety of the image sizes in the `srcset` attribute allows the web browser 
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-easy-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image) package:
 
 ```bash

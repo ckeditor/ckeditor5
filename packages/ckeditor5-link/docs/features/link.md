@@ -252,7 +252,7 @@ ClassicEditor
 
 ## Autolink feature
 
-Automatic linking of URLs typed or pasted into the editor is enabled by default in the predefined builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into working links.
+Automatic linking of URLs typed or pasted into the editor is enabled by default in the predefined builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or email addresses into working links.
 
 To use the autolink function, simply press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
@@ -263,10 +263,6 @@ To use the autolink function, simply press <kbd>Space</kbd>, <kbd>Enter</kbd>, o
 {@snippet features/autolink}
 
 ## Installation
-
-<info-box info>
-	Both the base link feature and autolink feature are enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
-</info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:
 

@@ -152,10 +152,6 @@ ClassicEditor
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom editor.
-</info-box>
-
 To add this feature to your editor install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:
 
 ```

@@ -116,10 +116,6 @@ This means that if you want to allow indenting lists only, you can do that by lo
 
 ## Installation
 
-<info-box info>
-	The block indent feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#document-editor document editor build} and {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-indent`](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent) package:
 
 ```bash

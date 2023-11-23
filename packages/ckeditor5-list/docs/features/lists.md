@@ -39,10 +39,6 @@ After reading this guide, check out the [Lists in CKEditor&nbsp;5](https://ckedi
 In addition to the basic functionality of creating the ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. Features such as more styles for list markers, setting the start index, or reversing the list order can be enabled separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
-	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#document-editor document editor build} only.
-
-	The {@link module:list/documentlistproperties~DocumentListProperties document list properties feature} is not available in any builds by default.
-
 	See the [installation](#list-properties-2) section to learn how to enable these in your editor.
 </info-box>
 
@@ -91,10 +87,6 @@ Refer to the {@link features/indent#indenting-lists Indenting lists} section of 
 ## Installation
 
 There are currently two plugins providing lists support for CKEditor&nbsp;5: this regular **lists feature** and the new {@link features/document-lists document lists feature}, based on a different approach.
-
-<info-box>
-	The lists feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
-</info-box>
 
 ### List feature
 

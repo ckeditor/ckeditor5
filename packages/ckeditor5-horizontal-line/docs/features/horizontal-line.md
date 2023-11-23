@@ -20,10 +20,6 @@ To insert a horizontal line in the demo below, use the toolbar button {@icon @ck
 
 ## Installation
 
-<info-box info>
-	The horizontal line feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-horizontal-line`](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line) package:
 
 ```plaintext

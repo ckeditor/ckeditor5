@@ -11,10 +11,6 @@ The simple upload adapter lets you upload images to your server using the [`XMLH
 
 ## Installation
 
-<info-box info>
-	This feature is not available in any of the {@link installation/legacy-getting-started/predefined-builds predefined builds}.
-</info-box>
-
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
 ```plaintext

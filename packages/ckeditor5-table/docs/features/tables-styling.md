@@ -26,10 +26,6 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 
 ## Installation
 
-<info-box>
-	By default, table styling tools are not included in the {@link installation/legacy-getting-started/predefined-builds predefined builds} and must be installed separately.
-</info-box>
-
 To enable the rich table and cell styling tools in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
 
 ```

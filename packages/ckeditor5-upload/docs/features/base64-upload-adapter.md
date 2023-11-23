@@ -29,10 +29,6 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
 
 ```plaintext

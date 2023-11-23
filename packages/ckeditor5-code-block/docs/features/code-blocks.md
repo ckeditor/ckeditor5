@@ -122,10 +122,6 @@ To speed up the editing, when typing in a code block, the indentation of the cur
 
 ## Installation
 
-<info-box info>
-	The code block feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
 To add the code blocks feature to your rich-text editor, install the [`@ckeditor/ckeditor5-code-block`](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block) package:
 
 ```

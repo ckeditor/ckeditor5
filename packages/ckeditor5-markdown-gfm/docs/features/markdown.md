@@ -51,10 +51,6 @@ When converting the output produced by this data processor, make sure to use a c
 
 ## Installation
 
-<info-box info>
-	This feature is not available in any of the {@link installation/legacy-getting-started/predefined-builds predefined builds}.
-</info-box>
-
 To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
 
 ```

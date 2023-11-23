@@ -39,10 +39,6 @@ The source editing plugin also works well with the {@link features/markdown Mark
 
 ## Installation
 
-<info-box>
-	Currently, the source editing mode is supported in the {@link examples/builds/classic-editor classic editor}. The source editing feature can be used with {@link features/collaboration CKEditor&nbsp;5 collaboration features} except for {@link features/real-time-collaboration CKEditor&nbsp;5 real-time collaboration}. If you would like to use the real-time collaboration mode and, for some reason, you would like to also enable source editing, please [contact us](https://ckeditor.com/contact/).
-</info-box>
-
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-source-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing) package:
 
 ```bash

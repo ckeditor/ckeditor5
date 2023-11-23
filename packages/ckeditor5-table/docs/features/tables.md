@@ -27,10 +27,6 @@ You may look for more interesting details in the [Tables in CKEditor&nbsp;5](htt
 
 The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells. It is also worth noting that you will find them out–of–the–box in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
 
-<info-box info>
-	The basic table feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
-</info-box>
-
 The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem. Available in all {@link installation/legacy-getting-started/predefined-builds predefined builds}, it provides the table functionality. There are many other features that extend the editor capabilities:
 
 The availability of these plugins varies in different {@link installation/legacy-getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
@@ -296,10 +292,6 @@ The above model structure will be rendered to the data and to the editing view a
 </info-box>
 
 ## Installation
-
-<info-box info>
-	The basic table features are enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom rich text editor.
-</info-box>
 
 To add only the basic table features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
 

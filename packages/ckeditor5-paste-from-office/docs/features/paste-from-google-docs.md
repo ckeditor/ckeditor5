@@ -41,10 +41,6 @@ This means that if you did not enable, for instance, {@link features/font font f
 
 ## Installation
 
-<info-box info>
-	This feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own custom rich-text editor.
-</info-box>
-
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-paste-from-office`](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office) package:
 
 ```

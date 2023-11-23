@@ -24,10 +24,6 @@ In the demo below, click the table caption to edit it. Once you click the captio
 
 ## Installation
 
-<info-box>
-	By default, the table caption feature is not included in the {@link installation/legacy-getting-started/predefined-builds predefined builds} and must be installed separately.
-</info-box>
-
 To enable the table caption feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
 
 ```
