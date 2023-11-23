@@ -167,7 +167,7 @@ In this section, you are going to implement and enable a custom upload adapter. 
 <info-box>
 	Note that this is just an example implementation and `XMLHttpRequest` might not necessarily be the best solution for your application.
 
-	Use the provided code snippets as an inspiration for your own custom upload adapter &mdash; it is up to you to choose the technologies and APIs to use. For instance, you may want to check out the native [`fetch()` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) that works with `Promises` out of the box.
+	Use the provided code snippets as an inspiration for your own custom upload adapter &ndash; it is up to you to choose the technologies and APIs to use. For instance, you may want to check out the native [`fetch()` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) that works with `Promises` out of the box.
 </info-box>
 
 To start off, define the `MyUploadAdapter` class with its constructor.

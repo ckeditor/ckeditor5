@@ -64,7 +64,7 @@ Once you have chosen all the desired plugins, press the **Next step** button on 
 
 ### Toolbar composition
 
-The next step allows you to compose the toolbar. A simple drag-and-drop workspace allows adding buttons (representing the plugins chosen in the previous step) to the toolbar. You may also change the order of the buttons and dropdowns and group them accordingly. Note that online builder allows you to create a multiline toolbar layout, too &mdash; just drag any button below the already placed ones to create a new toolbar line.
+The next step allows you to compose the toolbar. A simple drag-and-drop workspace allows adding buttons (representing the plugins chosen in the previous step) to the toolbar. You may also change the order of the buttons and dropdowns and group them accordingly. Note that online builder allows you to create a multiline toolbar layout, too. Just drag any button below the already placed ones to create a new toolbar line.
 
 {@img assets/img/online-builder-04-toolbar-configurator.gif 753 The toolbar drag-and-drop configurator.}
 

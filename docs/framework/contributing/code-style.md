@@ -357,7 +357,7 @@ A couple of useful links:
 
 ## Visibility levels
 
-Each class property (including methods, symbols, getters or setters) can be public, protected or private. The default visibility is public, so you should not document that a property is public &mdash; there is no need to do this.
+Each class property (including methods, symbols, getters, or setters) can be public, protected, or private. The default visibility is public, so you should not document that a property is public &ndash; there is no need to do this.
 
 Additional rules apply to private properties:
 
@@ -513,8 +513,8 @@ There are some special rules and tips for tests.
 
 	Using titles like *"utils"* is not fine as there are multiple utils in the entire project. *"Table utils"* would be better.
 * Test descriptions (`it()`) should be written like documentation (what you do and what should happen), e.g. *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
-* Avoid test descriptions like *"does not crash when two ranges get merged"* &mdash; instead explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged"*.
-* Most often, using words like "correctly", "works fine" is a code smell. Thing about the requirements &mdash; when writing them you do not say that feature X should "work fine". You document how it should work.
+* Avoid test descriptions like *"does not crash when two ranges get merged"*. Instead, explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged"*.
+* Most often, using words like "correctly", "works fine" is a code smell. Think about the requirements &ndash; when writing them you do not say that feature X should "work fine". You document how it should work.
 * Ideally, it should be possible to recreate an algorithm just by reading the test descriptions.
 * Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
 * Every test should clean after itself, including destroying all editors and removing all elements that have been added.
@@ -522,10 +522,10 @@ There are some special rules and tips for tests.
 ### Test implementation
 
 * Avoid using real timeouts. Use [fake timers](https://sinonjs.org/releases/latest/fake-timers/) instead **when possible**. Timeouts make tests really slow.
-* However &mdash; do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
-* We aim at having 100% coverage of *all distinctive scenarios*. Covering 100% branches in the code is not the goal here &mdash; it is a byproduct of covering real scenarios.
+* However, do not overoptimize (especially that performance is not a priority in tests). In most cases it is completely fine (and hence recommended) to create a separate editor for every `it()`.
+* We aim at having 100% coverage of *all distinctive scenarios*. Covering 100% branches in the code is not the goal here &ndash; it is a by-product of covering real scenarios.
 
-	Think about this &mdash; when you fix a bug by adding a parameter to an existing function call you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
+	Think about this: when you fix a bug by adding a parameter to an existing function call, you do not affect code coverage (that line was called anyway). However, you had a bug, meaning that your test suite did not cover it. Therefore, a test must be created for that code change.
 * It should be `expect( x ).to.equal( y )`. **NOT**: ~~`expect( x ).to.be.equal( y )`~~.
 * When using Sinon spies, pay attention to the readability of assertions and failure messages.
    * Use named spies, for example:
@@ -693,7 +693,7 @@ this.env;
 
 ### Acronyms and proper names
 
-Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above &mdash; especially when there is a need to include an acronym or a proper name in a variable or class name. In such case, one should follow the following rules:
+Acronyms and, partially, proper names are naturally written in uppercase. This may stand against code style rules described above &ndash; especially when there is a need to include an acronym or a proper name in a variable or class name. In such case, one should follow these rules:
 
 * Acronyms:
 	* All lowercase if at the beginning of the variable name: `let domError`.

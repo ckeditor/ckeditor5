@@ -59,7 +59,7 @@ export default class AttributeCommand extends Command {
 	}
 
 	/**
-	 * Executes the command &mdash; applies the attribute to the selection or removes it from the selection.
+	 * Executes the command &ndash; applies the attribute to the selection or removes it from the selection.
 	 *
 	 * If the command is active (`value == true`), it will remove attributes. Otherwise, it will set attributes.
 	 *

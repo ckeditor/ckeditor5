@@ -7,7 +7,7 @@ since: 33.0.0
 modified_at: 2022-03-02
 ---
 
-# Downcast conversion &mdash; model to view
+# Downcast conversion &ndash; model to view
 
 ## Introduction
 

@@ -6,16 +6,18 @@ order: 20
 modified_at: 2022-02-22
 ---
 
+{@snippet installation/advanced/dll-builds}
+
 # CKEditor 5 DLL builds
 
 The purpose of a DLL build is to allow adding plugins to an editor build without having to rebuild (recompile) the build itself.
 
-So far, the two most common integration methods included:
+Currently, the two most common integration methods included:
 
 * Using pre-compiled builds. This can be either one of the official builds or a custom build. In this case, adding a plugin requires recompiling the entire build.
 * Integrating the editor from source. In this case, if you want to add a plugin, your application needs to be recompiled.
 
-In some advanced use cases, the list of available plugins cannot be limited &mdash; it should be possible to add plugins without any access to Node.js. In other words, plugins should be built (compiled) separately from the editor's core.
+In some advanced use cases, the list of available plugins cannot be limited &ndash; it should be possible to add plugins without any access to Node.js. In other words, plugins should be built (compiled) separately from the editor's core.
 
 This is where the DLL builds come to the rescue.
 
@@ -158,7 +160,7 @@ Presented below is a working sample editor using the DLL mechanism. Observe the 
 
 ## Localization
 
-All DLL builds use the default (English) translation files. However, a localized version of the the editor can be easily configured.
+All DLL builds use the default (English) translation files. However, a localized version of the editor can be easily configured.
 
 The base DLL build produces translation files for several core packages. The DLL-compatible package builds contain their own translations files per package.
 
