@@ -31,7 +31,7 @@ export default class Dialog extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _isOpen: boolean = false;
+	declare public isOpen: boolean;
 
 	/**
 	 * @inheritDoc
@@ -53,6 +53,7 @@ export default class Dialog extends Plugin {
 		} );
 
 		this._initShowHideListeners();
+		this.set( 'isOpen', false );
 
 		editor.ui.view.body.add( this.view );
 		editor.ui.focusTracker.add( this.view.element! );
@@ -89,7 +90,7 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( this._isOpen ) {
+		if ( this.isOpen ) {
 			this.hide();
 		}
 
@@ -138,7 +139,7 @@ export default class Dialog extends Plugin {
 			this.view.setActionButtons( actionButtons );
 		}
 
-		this._isOpen = true;
+		this.isOpen = true;
 
 		this.view.focus();
 
@@ -161,7 +162,7 @@ export default class Dialog extends Plugin {
 		this.view.isVisible = false;
 		this.view.reset();
 
-		this._isOpen = false;
+		this.isOpen = false;
 	}
 }
 
