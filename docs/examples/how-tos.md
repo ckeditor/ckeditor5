@@ -441,3 +441,64 @@ class Forms extends Plugin {
 	}
 }
 ```
+
+### How to add a custom button to the link dialog?
+
+```js
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { Plugin } from 'ckeditor5/src/core';
+import { LinkUI } from '@ckeditor/ckeditor5-link';
+
+class InternalLink extends Plugin {
+	init() {
+		const editor = this.editor;
+		const linkUI = editor.plugins.get( LinkUI );
+		const contextualBalloonPlugin = editor.plugins.get( 'ContextualBalloon' );
+
+		this.listenTo( contextualBalloonPlugin, 'change:visibleView', ( evt, name, visibleView ) => {
+			if ( visibleView === linkUI.formView ) {
+				// Detach the listener.
+				this.stopListening( contextualBalloonPlugin, 'change:visibleView' );
+
+				this.linkFormView = linkUI.formView;
+				this.button = this._createButton();
+
+				console.log( 'The link form view has been displayed', this.linkFormView );
+
+				// Render the button template.
+				this.button.render();
+
+				// Register the button under the link form view, it will handle its destruction.
+				this.linkFormView.registerChild( this.button );
+
+				// Inject the element into DOM.
+				this.linkFormView.element.insertBefore( this.button.element, this.linkFormView.saveButtonView.element );
+			}
+		} );
+	}
+
+	_createButton() {
+		const editor = this.editor;
+		const button = new ButtonView( this.locale );
+		const linkCommand = editor.commands.get( 'link' );
+
+		button.set( {
+			label: 'Internal link',
+			withText: true,
+			tooltip: true
+		} );
+
+		// This button should be also disabled when the link command is disabled.
+		// Try setting editor.isReadOnly = true to see it in action.
+		button.bind( 'isEnabled' ).to( linkCommand );
+
+		button.on( 'execute', () => {
+			// Do something (for emaple, open the popup), then update the link URL field's value.
+			// The line below will be executed inside some callback.
+			this.linkFormView.urlInputView.value = 'http://some.internal.link';
+		} );
+
+		return button;
+	}
+}
+```
