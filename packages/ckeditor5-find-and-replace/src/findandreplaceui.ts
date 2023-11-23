@@ -88,6 +88,7 @@ export default class FindAndReplaceUI extends Plugin {
 			// and no longer should be marked in the content.
 			buttonView.on( 'execute', () => {
 				dialog.show( {
+					id: 'findAndReplace',
 					title: t( 'Find and replace' ),
 					content: formView,
 					position: DialogViewPosition.CURRENT_ROOT_NE,

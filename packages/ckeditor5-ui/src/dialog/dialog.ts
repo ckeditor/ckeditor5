@@ -21,17 +21,22 @@ export default class Dialog extends Plugin {
 	/**
 	 * TODO
 	 */
+	public id: string = '';
+
+	/**
+	 * TODO
+	 */
 	public readonly view: DialogView;
 
 	/**
 	 * TODO
 	 */
-	private _onHide: ( ( dialog: Dialog ) => void ) | undefined;
+	declare public isOpen: boolean;
 
 	/**
 	 * TODO
 	 */
-	declare public isOpen: boolean;
+	private _onHide: ( ( dialog: Dialog ) => void ) | undefined;
 
 	/**
 	 * @inheritDoc
@@ -94,13 +99,14 @@ export default class Dialog extends Plugin {
 			this.hide();
 		}
 
-		this.fire( 'show', dialogDefinition );
+		this.fire( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
 	}
 
 	/**
 	 * TODO
 	 */
 	private _show( {
+		id,
 		title,
 		content,
 		actionButtons,
@@ -121,6 +127,10 @@ export default class Dialog extends Plugin {
 			className,
 			isModal
 		} );
+
+		if ( id ) {
+			this.id = id;
+		}
 
 		if ( title ) {
 			this.view.showHeader( title );
@@ -150,7 +160,7 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public hide(): void {
-		this.fire<DialogHideEvent>( 'hide' );
+		this.fire<DialogHideEvent>( this.id ? `hide:${ this.id }` : 'hide' );
 	}
 
 	/**
@@ -161,6 +171,7 @@ export default class Dialog extends Plugin {
 
 		this.view.isVisible = false;
 		this.view.reset();
+		this.id = '';
 
 		this.isOpen = false;
 	}
@@ -170,6 +181,7 @@ export default class Dialog extends Plugin {
  * TODO
  */
 export type DialogDefinition = {
+	id?: string;
 	content?: View | Array<View>;
 	actionButtons?: Array<DialogActionButtonDefinition>;
 	title?: string;
@@ -184,7 +196,7 @@ export type DialogDefinition = {
  * TODO
  */
 export type DialogShowEvent = {
-	name: 'show';
+	name: 'show' | `show:${ string }`;
 	args: [ dialogDefinition: DialogDefinition ];
 };
 
@@ -192,6 +204,6 @@ export type DialogShowEvent = {
  * TODO
  */
 export type DialogHideEvent = {
-	name: 'hide';
+	name: 'hide' | `hide:${ string }`;
 	args: [];
 };
