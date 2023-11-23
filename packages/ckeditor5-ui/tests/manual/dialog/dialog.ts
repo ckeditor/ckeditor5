@@ -23,6 +23,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
@@ -157,7 +158,7 @@ class MinimalisticDialogs extends Plugin {
 	}
 }
 
-function initEditor( editorName, editorClass, direction = 'ltr' ) {
+function initEditor( editorName, editorClass, direction = 'ltr', customCallback? ) {
 	editorClass.create( document.querySelector( '#' + editorName ) as HTMLElement, {
 		plugins: [
 			Essentials,
@@ -210,6 +211,8 @@ function initEditor( editorName, editorClass, direction = 'ltr' ) {
 			Object.assign( window, { [ editorName ]: editor } );
 
 			window.CKEditorInspector.attach( { [ editorName ]: editor } );
+
+			customCallback?.( editor );
 		} )
 		.catch( err => {
 			console.error( err.stack );
@@ -220,6 +223,11 @@ initEditor( 'editor-default', ClassicEditor );
 initEditor( 'editor-narrow', ClassicEditor );
 initEditor( 'editor-tiny', InlineEditor );
 initEditor( 'editor-rtl', ClassicEditor, 'rtl' );
+initEditor( 'editor-bottom-toolbar', DecoupledEditor, 'ltr', editor => {
+	const toolbarContainer = document.querySelector( '#editor-toolbar-container' );
+
+	toolbarContainer!.appendChild( editor.ui.view.toolbar.element );
+} );
 
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [

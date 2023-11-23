@@ -446,24 +446,17 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				// @if CK_DEBUG_DIALOG // }
 
 				if ( domRootRect ) {
-					this.moveTo( domRootRect.right - dialogRect.width - defaultOffset, domRootRect.top + defaultOffset );
+					const leftCoordinate = this.locale?.contentLanguageDirection === 'ltr' ?
+						domRootRect.right - dialogRect.width - defaultOffset :
+						domRootRect.left + defaultOffset;
+
+					this.moveTo( leftCoordinate, domRootRect.top + defaultOffset );
 				} else {
 					this._moveOffScreen();
 				}
 
 				break;
 			}
-			// case DialogViewPosition.CURRENT_ROOT_NW: {
-			// 	const domRootRect = this._getVisibleDomRootRect( viewportRect );
-
-			// 	if ( domRootRect ) {
-			// 		this.moveTo( domRootRect.left + defaultOffset, domRootRect.top + defaultOffset );
-			// 	} else {
-			// 		this._moveOffScreen();
-			// 	}
-
-			// 	break;
-			// }
 			case DialogViewPosition.EDITOR_CENTER: {
 				const domRootRect = this._getVisibleDomRootRect( viewportRect );
 				const dialogRect = this._getDialogRect();
