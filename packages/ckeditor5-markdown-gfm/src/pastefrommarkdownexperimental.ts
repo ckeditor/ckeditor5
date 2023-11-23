@@ -90,7 +90,6 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * Then removes a single wrapper HTML tag or wrappers for sibling tags, and if there are no more tags left,
 	 * returns the remaining text. Returns null, if there are any remaining HTML tags detected.
 	 *
-	 * @private
 	 * @param htmlString Clipboard content in `text/html` type format.
 	 */
 	private _parseMarkdownFromHtml( htmlString: string ): string | null {
@@ -110,7 +109,6 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * Removes OS specific tags.
 	 *
-	 * @private
 	 * @param htmlString Clipboard content in `text/html` type format.
 	 */
 	private _removeOsSpecificTags( htmlString: string ): string {
@@ -128,7 +126,6 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * Removes a single HTML wrapper tag from string.
 	 *
-	 * @private
 	 * @param htmlString Clipboard content without any OS specific tags.
 	 */
 	private _removeWrapperTag( htmlString: string ): string {
@@ -138,7 +135,6 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * Removes multiple HTML wrapper tags from a list of sibling HTML tags.
 	 *
-	 * @private
 	 * @param htmlString Clipboard content without any OS specific tags.
 	 */
 	private _removeListWrapperTagsAndBrs( htmlString: string ): string {
@@ -163,7 +159,6 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * Determines if sting contains sibling HTML tags at root level.
 	 *
-	 * @private
 	 * @param htmlString Clipboard content without any OS specific tags.
 	 */
 	private _isHtmlList( htmlString: string ): boolean {
@@ -175,9 +170,6 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 
 	/**
 	 * Determines if string contains any HTML tags.
-	 *
-	 * @private
-	 * @param str
 	 */
 	private _containsAnyRemainingHtmlTags( str: string ): boolean {
 		return /<[^>]+>[\s\S]*<[^>]+>/.test( str );
@@ -186,7 +178,6 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * Replaces the reserved HTML entities with the actual characters.
 	 *
-	 * @private
 	 * @param htmlString Clipboard content without any tags.
 	 */
 	private _replaceHtmlReservedEntitiesWithCharacters( htmlString: string ) {
