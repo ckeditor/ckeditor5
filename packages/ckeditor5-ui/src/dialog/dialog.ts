@@ -118,7 +118,7 @@ export default class Dialog extends Plugin {
 		// Unless the user specified a position, modals should always be centered on the screen.
 		// Otherwise, let's keep dialogs centered in the editing root by default.
 		if ( !position ) {
-			position = isModal ? DialogViewPosition.SCREEN_CENTER : DialogViewPosition.CURRENT_ROOT_CENTER;
+			position = isModal ? DialogViewPosition.SCREEN_CENTER : DialogViewPosition.EDITOR_CENTER;
 		}
 
 		this.view.set( {

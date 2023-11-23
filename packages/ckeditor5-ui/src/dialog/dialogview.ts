@@ -34,9 +34,12 @@ import DialogContentView from './dialogcontentview';
 
 export enum DialogViewPosition {
 	SCREEN_CENTER = 'screen-center',
-	CURRENT_ROOT_CENTER = 'current-root-center',
-	CURRENT_ROOT_NE = 'current-root-ne',
-	CURRENT_ROOT_NW = 'current-root-nw'
+	EDITOR_CENTER = 'editor-center',
+	EDITOR_TOP_SIDE = 'editor-top-side',
+	EDITOR_TOP_CENTER = 'editor-top-center',
+	EDITOR_BOTTOM_CENTER = 'editor-bottom-center',
+	EDITOR_ABOVE_CENTER = 'editor-above-center',
+	EDITOR_BELOW_CENTER = 'editor-below-center'
 }
 
 const toPx = toUnit( 'px' );
@@ -434,7 +437,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
 
 		switch ( this.position ) {
-			case DialogViewPosition.CURRENT_ROOT_NE: {
+			case DialogViewPosition.EDITOR_TOP_SIDE: {
 				const domRootRect = this._getVisibleDomRootRect( viewportRect );
 				const dialogRect = this._getDialogRect();
 
@@ -450,18 +453,18 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 				break;
 			}
-			case DialogViewPosition.CURRENT_ROOT_NW: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+			// case DialogViewPosition.CURRENT_ROOT_NW: {
+			// 	const domRootRect = this._getVisibleDomRootRect( viewportRect );
 
-				if ( domRootRect ) {
-					this.moveTo( domRootRect.left + defaultOffset, domRootRect.top + defaultOffset );
-				} else {
-					this._moveOffScreen();
-				}
+			// 	if ( domRootRect ) {
+			// 		this.moveTo( domRootRect.left + defaultOffset, domRootRect.top + defaultOffset );
+			// 	} else {
+			// 		this._moveOffScreen();
+			// 	}
 
-				break;
-			}
-			case DialogViewPosition.CURRENT_ROOT_CENTER: {
+			// 	break;
+			// }
+			case DialogViewPosition.EDITOR_CENTER: {
 				const domRootRect = this._getVisibleDomRootRect( viewportRect );
 				const dialogRect = this._getDialogRect();
 
@@ -483,6 +486,84 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 					Math.round( ( viewportRect.width - dialogRect.width ) / 2 ),
 					Math.round( ( viewportRect.height - dialogRect.height ) / 2 )
 				);
+
+				break;
+			}
+			case DialogViewPosition.EDITOR_TOP_CENTER: {
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+				const dialogRect = this._getDialogRect();
+
+				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
+				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
+				// @if CK_DEBUG_DIALOG // }
+
+				if ( domRootRect ) {
+					this.moveTo(
+						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
+						domRootRect.top + defaultOffset
+					);
+				} else {
+					this._moveOffScreen();
+				}
+
+				break;
+			}
+			case DialogViewPosition.EDITOR_BOTTOM_CENTER: {
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+				const dialogRect = this._getDialogRect();
+
+				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
+				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
+				// @if CK_DEBUG_DIALOG // }
+
+				if ( domRootRect ) {
+					this.moveTo(
+						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
+						domRootRect.bottom - dialogRect.height - defaultOffset
+					);
+				} else {
+					this._moveOffScreen();
+				}
+
+				break;
+			}
+			case DialogViewPosition.EDITOR_ABOVE_CENTER: {
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+				const dialogRect = this._getDialogRect();
+
+				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
+				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
+				// @if CK_DEBUG_DIALOG // }
+
+				if ( domRootRect ) {
+					this.moveTo(
+						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
+						domRootRect.top - dialogRect.height - defaultOffset
+					);
+				} else {
+					this._moveOffScreen();
+				}
+
+				break;
+			}
+			case DialogViewPosition.EDITOR_BELOW_CENTER: {
+				const domRootRect = this._getVisibleDomRootRect( viewportRect );
+				const dialogRect = this._getDialogRect();
+
+				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
+				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
+				// @if CK_DEBUG_DIALOG // }
+
+				if ( domRootRect ) {
+					this.moveTo(
+						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
+						domRootRect.bottom + defaultOffset
+					);
+				} else {
+					this._moveOffScreen();
+				}
+
+				break;
 			}
 		}
 	}

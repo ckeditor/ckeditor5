@@ -89,7 +89,7 @@ class ModalWithText extends Plugin {
 							icon: icons.colorPaletteIcon,
 							withText: true,
 							onExecute: () => {
-								dialog.setTitle( 'New title' );
+								// dialog.setTitle( 'New title' );
 							}
 						},
 						{
@@ -147,7 +147,7 @@ class MinimalisticDialog extends Plugin {
 	}
 }
 
-function initEditor( editorName, editorClass ) {
+function initEditor( editorName, editorClass, direction = 'ltr' ) {
 	editorClass.create( document.querySelector( '#' + editorName ) as HTMLElement, {
 		plugins: [
 			Essentials,
@@ -191,7 +191,8 @@ function initEditor( editorName, editorClass ) {
 			viewportOffset: {
 				top: 50
 			}
-		}
+		},
+		language: direction === 'rtl' ? 'ar' : 'en'
 	} )
 		.then( editor => {
 			Object.assign( window, { [ editorName ]: editor } );
@@ -206,6 +207,7 @@ function initEditor( editorName, editorClass ) {
 initEditor( 'editor-default', ClassicEditor );
 initEditor( 'editor-narrow', ClassicEditor );
 initEditor( 'editor-tiny', InlineEditor );
+initEditor( 'editor-rtl', ClassicEditor, 'rtl' );
 
 function SpecialCharactersEmoji( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
