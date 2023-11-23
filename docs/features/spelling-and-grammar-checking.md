@@ -77,7 +77,7 @@ The spell and grammar check is compliant with WCAG 2.1 and Section 508 accessibi
 ## Installation
 
 <info-box info>
-	The spell and grammar check feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	The spell and grammar check feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
 
 	This is a premium feature that requires a commercial license. If you do not have one yet, please [contact us](https://ckeditor.com/contact/).
 </info-box>
@@ -102,7 +102,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Please be aware that when you try to build CKEditor&nbsp;5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two way to do this.
+Please be aware that when you try to build CKEditor&nbsp;5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two way to do this.
 
 The first configuration option is simpler:
 

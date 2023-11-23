@@ -27,7 +27,7 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 ## Installation
 
 <info-box>
-	By default, table styling tools are not included in the {@link installation/getting-started/predefined-builds predefined builds} and must be installed separately.
+	By default, table styling tools are not included in the {@link installation/legacy-getting-started/predefined-builds predefined builds} and must be installed separately.
 </info-box>
 
 To enable the rich table and cell styling tools in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
@@ -88,7 +88,7 @@ You can use these specific configuration options to define customized color pale
 * {@link module:table/tableconfig~TableConfig#tableCellProperties `tableCellProperties.backgroundColors`} &ndash; Defines the color palette for cell background.
 
 <info-box>
-	The above configurations **do not** impact the {@link installation/getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
+	The above configurations **do not** impact the {@link installation/legacy-getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}, i.e. they do not limit or filter the colors in the data. They are used only in the user interface allowing users to pick colors in a more convenient way.
 </info-box>
 
 For instance, to define the same color palette for all border and background configurations, use the following code snippet:
@@ -223,7 +223,7 @@ The same will be applied to new tables and cells if they are inserted into the e
 Read more about all supported properties for the {@link module:table/tableconfig~TablePropertiesOptions table} and {@link module:table/tableconfig~TableCellPropertiesOptions table cell} features in their API documentation.
 
 <info-box>
-	The default table and table cell styles **do** impact the {@link installation/getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
+	The default table and table cell styles **do** impact the {@link installation/legacy-getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata data loaded into the editor}. Default properties will not be kept in the editor model.
 </info-box>
 
 ## Common API

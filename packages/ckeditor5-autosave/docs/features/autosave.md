@@ -32,7 +32,7 @@ How to understand this demo:
 ## Installation
 
 <info-box>
-	This plugin is not enabled in any of the {@link installation/getting-started/predefined-builds predefined builds}, so you need to {@link installation/plugins/installing-plugins install it} by hand.
+	This plugin is not enabled in any of the {@link installation/legacy-getting-started/predefined-builds predefined builds}, so you need to {@link installation/plugins/installing-plugins install it} by hand.
 </info-box>
 
 Assuming that you have implemented some form of the `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the {@link module:autosave/autosave~Autosave} feature is simple:
@@ -139,7 +139,7 @@ function displayStatus( editor ) {
 
 ## Related features
 
-You can read more about {@link installation/getting-started/getting-and-setting-data getting and setting data} in the Getting started section.
+You can read more about {@link installation/legacy-getting-started/getting-and-setting-data getting and setting data} in the Getting started section.
 
 ## Common API
 

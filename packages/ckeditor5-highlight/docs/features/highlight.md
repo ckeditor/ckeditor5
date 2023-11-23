@@ -173,7 +173,7 @@ Then, update the classes in the stylesheet so the content corresponds to the UI 
 ## Installation
 
 <info-box info>
-	The highlight feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	The highlight feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-highlight`](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight) package:

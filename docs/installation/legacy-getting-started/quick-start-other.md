@@ -18,12 +18,12 @@ Available paths:
 
 ## Creating custom builds with online builder
 
-Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link installation/getting-started/predefined-builds predefined builds}, sometimes you need more flexibility. A need for more customized editors arises. Some of the reasons for creating custom builds are:
+Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link installation/legacy-getting-started/predefined-builds predefined builds}, sometimes you need more flexibility. A need for more customized editors arises. Some of the reasons for creating custom builds are:
 
 * Adding {@link installation/plugins/plugins plugin-driven features} not included in the existing builds.
 * Removing unnecessary features present in a build.
-* Designing a {@link installation/getting-started/configuration#toolbar-setup customized toolbar experience}.
-* Changing the {@link installation/getting-started/predefined-builds#available-builds editor type build}.
+* Designing a {@link installation/legacy-getting-started/configuration#toolbar-setup customized toolbar experience}.
+* Changing the {@link installation/legacy-getting-started/predefined-builds#available-builds editor type build}.
 * Changing the {@link features/ui-language localization language} of the editor.
 
 The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an application that lets you design and download custom CKEditor&nbsp;5 builds. It allows you to create your bundles with your desired editor type, toolbar, and plugins in a few easy steps through a simple and intuitive UI.
@@ -32,11 +32,11 @@ The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an appl
 
 The following editor types are currently available to choose from:
 
-* {@link installation/getting-started/predefined-builds#classic-editor Classic editor}
-* {@link installation/getting-started/predefined-builds#inline-editor Inline editor}
-* {@link installation/getting-started/predefined-builds#balloon-editor Balloon editor}
-* {@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block editor}
-* {@link installation/getting-started/predefined-builds#document-editor Document editor}
+* {@link installation/legacy-getting-started/predefined-builds#classic-editor Classic editor}
+* {@link installation/legacy-getting-started/predefined-builds#inline-editor Inline editor}
+* {@link installation/legacy-getting-started/predefined-builds#balloon-editor Balloon editor}
+* {@link installation/legacy-getting-started/predefined-builds#balloon-block-editor Balloon block editor}
+* {@link installation/legacy-getting-started/predefined-builds#document-editor Document editor}
 
  Refer to the predefined builds documentation and {@link examples/index examples} to check what kind of WYSIWYG editor suits your needs best. Once you choose the desired editor type, select it to move to the next step.
 
@@ -96,7 +96,7 @@ Every build comes with a default set of features and their default configuration
 * You can change the default **toolbar configuration** (e.g. remove undo/redo buttons).
 * You can also **remove features** (plugins).
 
-Read more in the {@link installation/getting-started/configuration Configuration guide}.
+Read more in the {@link installation/legacy-getting-started/configuration Configuration guide}.
 
 A build may not provide all the necessary features. You may also want to create an optimized one with limited functionality. In such cases, customize the build or create a new one.
 
@@ -106,7 +106,7 @@ Some of the reasons for creating custom builds are:
 
 * Adding features not included in the existing builds, either from a third party or custom-developed.
 * Removing unnecessary features present in a build.
-* Changing the {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create editor creator}.
+* Changing the {@link installation/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create editor creator}.
 * Changing the {@link framework/theme-customization editor theme}.
 * Changing the {@link features/ui-language localization language} of the editor.
 * Enabling bug fixes that are still not a part of any public release.
@@ -397,7 +397,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	Note that in this guide, the editor class is used directly (i.e. you use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	No {@link installation/getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/plugins/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
+	No {@link installation/legacy-getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/plugins/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
 </info-box>
 
 ```js
@@ -502,7 +502,7 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 <info-box hint>
 **What's next?**
 
-Congratulations, you have just run your first CKEditor&nbsp;5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
+Congratulations, you have just run your first CKEditor&nbsp;5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/legacy-getting-started/configuration Configuration guide}.
 
 P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
 </info-box>

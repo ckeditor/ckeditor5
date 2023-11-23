@@ -8,7 +8,7 @@ meta-description: Learn how to install, integrate, configure, and develop CKEdit
 
 # CKEditor&nbsp;5 Framework overview
 
-CKEditor&nbsp;5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to the {@link installation/getting-started/predefined-builds predefined CKEditor&nbsp;5 builds}. The latter &ndash; thanks to CKEditor&nbsp;5 Framework.
+CKEditor&nbsp;5 is a project that allows you to quickly and easily initialize one of the many types of editors it offers in your application. At the same time, it is a framework for creating custom-tailored rich-text editing solutions. The former requirement is met thanks to the {@link installation/legacy-getting-started/predefined-builds predefined CKEditor&nbsp;5 builds}. The latter &ndash; thanks to CKEditor&nbsp;5 Framework.
 
 CKEditor&nbsp;5 Framework is a highly-flexible and universal platform that provides a set of components allowing you to create any kind of rich text editing solution. It enables the building of different, custom-tailored editors that suit specific needs. It also provides tools for the creation and integration of user-made features and for customizing existing ones.
 
@@ -20,7 +20,7 @@ If the documentation is insufficient, do not be afraid to look into the source c
 
 ## When to use the framework?
 
-The CKEditor&nbsp;5 predefined builds {@link installation/getting-started/quick-start-other#customizing-builds can be customized}, but certain types of customizations require using the framework.
+The CKEditor&nbsp;5 predefined builds {@link installation/legacy-getting-started/quick-start-other#customizing-builds can be customized}, but certain types of customizations require using the framework.
 
 * **Writing your own features.** New features are implemented using the framework.
 * **Customizing existing features.** Changing the behavior or look of existing features can be done thanks to the framework's capabilities.
@@ -55,7 +55,7 @@ There are a few groups of packages:
 * [Editors](https://github.com/ckeditor/ckeditor5#editors) &ndash; Packages that implement various types of editors.
 * [Features](https://github.com/ckeditor/ckeditor5#features) &ndash; Packages that implement end-user features.
 * [Themes](https://github.com/ckeditor/ckeditor5#themes) &ndash; Packages that implement editor themes.
-* [Builds](https://github.com/ckeditor/ckeditor5#builds) &ndash; Packages containing {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds}.
+* [Builds](https://github.com/ckeditor/ckeditor5#builds) &ndash; Packages containing {@link installation/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds}.
 
 ## What's next?
 

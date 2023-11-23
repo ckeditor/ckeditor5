@@ -15,7 +15,7 @@ order: 10
 This scenario allows you to fully control the building process of CKEditor&nbsp;5. This means that you will not actually use the builds anymore, but instead build CKEditor&nbsp;5 from the source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
 <info-box>
-	Similar results to what this method allows can be achieved by {@link installation/getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor&nbsp;5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
+	Similar results to what this method allows can be achieved by {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source customizing an existing build} and integrating your custom build. This will give faster build times (since CKEditor&nbsp;5 will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
 First of all, you need to install the source packages that you will use in your existing project. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor type and the features you want. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/plugins/installing-plugins#requirements must have the same version as the base editor package}.
@@ -330,7 +330,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configuration settings that you need already built-in. To use the configured editor, simply import that class and call the static `.create()` method like in all {@link installation/getting-started/editor-lifecycle#creating-an-editor-with-create examples}.
+This module will export an editor creator class which has all the plugins and configuration settings that you need already built-in. To use the configured editor, simply import that class and call the static `.create()` method like in all {@link installation/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create examples}.
 
 ```js
 // main.js

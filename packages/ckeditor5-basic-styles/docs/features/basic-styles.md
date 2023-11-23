@@ -35,7 +35,7 @@ You may apply basic formatting options with toolbar buttons. You can also make u
 | {@link module:basic-styles/superscript~Superscript} | `'superscript'` | `'superscript'` | `<sup>superscript</sup>` |
 
 <info-box info>
-	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link installation/getting-started/predefined-builds editor builds}.
+	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link installation/legacy-getting-started/predefined-builds editor builds}.
 
 	The {@link module:basic-styles/code~Code} feature provides support for inline code formatting. To create blocks of pre-formatted code with a specific programming language assigned, use the {@link features/code-blocks code block feature}.
 </info-box>
@@ -69,7 +69,7 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of code
 ## Installation
 
 <info-box info>
-	Bold and italic styles are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only. The code style is present in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only. These installation instructions are for developers interested in building their own, custom editor.
+	Bold and italic styles are enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}. Strikethrough and underline are available in the {@link installation/legacy-getting-started/predefined-builds#document-editor document editor build} and {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only. The code style is present in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only. These installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package:

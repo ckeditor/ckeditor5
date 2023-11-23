@@ -32,7 +32,7 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of link
 
 ## Custom link attributes (decorators)
 
-By default, all links created in the editor have the `href="..."` attribute in the {@link installation/getting-started/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
+By default, all links created in the editor have the `href="..."` attribute in the {@link installation/legacy-getting-started/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
 
 There are two types of link decorators you can use:
 
@@ -265,7 +265,7 @@ To use the autolink function, simply press <kbd>Space</kbd>, <kbd>Enter</kbd>, o
 ## Installation
 
 <info-box info>
-	Both the base link feature and autolink feature are enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
+	Both the base link feature and autolink feature are enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:

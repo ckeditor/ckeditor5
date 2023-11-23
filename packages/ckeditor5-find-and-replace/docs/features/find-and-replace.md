@@ -22,7 +22,7 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-repl
 ## Installation
 
 <info-box info>
-	The find and replace feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	The find and replace feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-find-and-replace`](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace) package:

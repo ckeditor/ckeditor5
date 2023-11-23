@@ -25,15 +25,15 @@ You may look for more interesting details in the [Tables in CKEditor&nbsp;5](htt
 
 {@snippet features/build-table-source}
 
-The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells. It is also worth noting that you will find them out–of–the–box in all {@link installation/getting-started/predefined-builds predefined builds}.
+The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells. It is also worth noting that you will find them out–of–the–box in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
 
 <info-box info>
-	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+	The basic table feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
 </info-box>
 
-The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds predefined builds}, it provides the table functionality. There are many other features that extend the editor capabilities:
+The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem. Available in all {@link installation/legacy-getting-started/predefined-builds predefined builds}, it provides the table functionality. There are many other features that extend the editor capabilities:
 
-The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
+The availability of these plugins varies in different {@link installation/legacy-getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
 
 <figure class="table">
 	<table style="text-align: center">
@@ -43,12 +43,12 @@ The availability of these plugins varies in different {@link installation/gettin
 				<th colspan="6">Predefined editor build</th>
 			</tr>
 			<tr>
-				<th>{@link installation/getting-started/predefined-builds#classic-editor Classic}</th>
-				<th>{@link installation/getting-started/predefined-builds#inline-editor Inline}</th>
-				<th>{@link installation/getting-started/predefined-builds#balloon-editor Balloon}</th>
-				<th>{@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
-				<th>{@link installation/getting-started/predefined-builds#document-editor Document}</th>
-				<th>{@link installation/getting-started/predefined-builds#superbuild Superbuild}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#classic-editor Classic}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#inline-editor Inline}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#balloon-editor Balloon}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#document-editor Document}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#superbuild Superbuild}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -161,7 +161,7 @@ To type before or after a table easily, select the table, then press the Arrow k
 CKEditor&nbsp;5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
 
 <info-box info>
-	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+	The basic table feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
 </info-box>
 
 ### Demo

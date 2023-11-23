@@ -9,7 +9,7 @@ order: 60
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/configuration previous guide} you have explored available configuration options of the editor. This article shows the lifecycle methods to create and destroy the editor.
+In the {@link installation/legacy-getting-started/configuration previous guide} you have explored available configuration options of the editor. This article shows the lifecycle methods to create and destroy the editor.
 </info-box>
 
 Each CKEditor 5 **type** provides a different **editor class** that handles the creation of editor instances. Most of the examples in the documentation use the {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} class, but things should work similarly with other types.
@@ -32,7 +32,7 @@ Add an element that CKEditor should replace to your HTML page:
 </div>
 ```
 
-Then you call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<div>` element with a {@link installation/getting-started/predefined-builds#classic-editor classic editor}:
+Then you call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<div>` element with a {@link installation/legacy-getting-started/predefined-builds#classic-editor classic editor}:
 
 ```js
 ClassicEditor.create( document.querySelector( '#editor' ) )
@@ -108,5 +108,5 @@ Once destroyed, resources used by the editor instance are released and the origi
 <info-box hint>
 **What's next?**
 
-Now you know how to initialize the editor instance. But an editor without the ability to get its content is not particularly useful. It's time to learn how to work with the editor's data {@link installation/getting-started/getting-and-setting-data in the following guide}.
+Now you know how to initialize the editor instance. But an editor without the ability to get its content is not particularly useful. It's time to learn how to work with the editor's data {@link installation/legacy-getting-started/getting-and-setting-data in the following guide}.
 </info-box>

@@ -29,7 +29,7 @@ import BalloonEditorUIView from './ballooneditoruiview';
 import { isElement as _isElement } from 'lodash-es';
 
 /**
- * The {@glink installation/getting-started/predefined-builds#balloon-editor balloon editor}
+ * The {@glink installation/legacy/legacy-getting-started/predefined-builds#balloon-editor balloon editor}
  * implementation (Medium-like editor).
  * It uses an inline editable and a toolbar based on the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}.
  * See the {@glink examples/builds/balloon-editor demo}.
@@ -41,9 +41,9 @@ import { isElement as _isElement } from 'lodash-es';
  *
  * The balloon editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-balloon`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon) package)
- * but it is also available in the {@glink installation/getting-started/predefined-builds#balloon-editor balloon build}.
+ * but it is also available in the {@glink installation/legacy/legacy-getting-started/predefined-builds#balloon-editor balloon build}.
  *
- * {@glink installation/getting-started/predefined-builds Builds}
+ * {@glink installation/legacy/legacy-getting-started/predefined-builds Builds}
  * are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
@@ -199,13 +199,14 @@ export default class BalloonEditor extends DataApiMixin( ElementApiMixin( Editor
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink installation/getting-started/predefined-builds editor build} (for example – `@ckeditor/ckeditor5-build-balloon`).
+	 * {@glink installation/legacy/legacy-getting-started/predefined-builds editor build}
+	 * (for example – `@ckeditor/ckeditor5-build-balloon`).
 	 *
 	 * If you want to use the balloon editor from source (`@ckeditor/ckeditor5-editor-balloon/src/ballooneditor`),
 	 * you need to define the list of
 	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
-	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source-webpack dedicated guide}.
+	 * source in the {@glink installation/legacy/advanced/alternative-setups/integrating-from-source-webpack dedicated guide}.
 	 *
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.

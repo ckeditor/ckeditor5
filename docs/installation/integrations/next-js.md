@@ -21,7 +21,7 @@ First, we will use the [online builder](https://ckeditor.com/ckeditor-5/online-b
 
 The online builder is a powerful tool that lets you effortlessly create a rich text editor tailored to your needs. With the online builder, you can choose the desired editor type and plugins, configure the toolbar, and choose the UI language for your editor.
 
-You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
+You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in the {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
 
 ## Setting up the project
 

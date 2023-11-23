@@ -43,7 +43,7 @@ It is recommended to use the {@link features/media-embed media embed} feature fo
 ## Installation
 
 <info-box info>
-	The HTML embed feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	The HTML embed feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed) package:

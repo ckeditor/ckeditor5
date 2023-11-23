@@ -131,7 +131,7 @@ DecoupledEditor
 ## Installation
 
 <info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
+	This feature is not available in any of the {@link installation/legacy-getting-started/predefined-builds predefined builds}.
 </info-box>
 
 To add the content minimap feature to your editor, install the [`@ckeditor/ckeditor5-minimap`](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap) package:

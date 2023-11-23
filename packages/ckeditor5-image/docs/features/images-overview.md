@@ -28,7 +28,7 @@ The base image feature does not support any user interface for inserting or mana
 
 ## Image features
 
-The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other features that extend the editor's capabilities:
+The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains multiple plugins that implement various image-related features. The {@link module:image/image~Image `Image`} plugin is at the core of the ecosystem. Available in all {@link installation/legacy-getting-started/predefined-builds ready-to-use editor builds}, it provides the basic support for block and inline images. There are many other features that extend the editor's capabilities:
 
 * The [contextual toolbar](#image-contextual-toolbar) available on mouse click gives access to image features.
 * {@link features/images-captions Image captions} allow adding descriptive text under the image.
@@ -40,7 +40,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * The {@link features/ckbox CKBox management platform} provides support for {@link features/images-responsive responsive images} in CKEditor&nbsp;5. Responsive images will display correctly on any viewport, enhancing the accessibility, reach, and user experience.
 * CKBox also provides basic editing capabilities, like cropping, resizing, rotating, and flipping right from the image contextual toolbar.
 
-The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
+The availability of these plugins varies in different {@link installation/legacy-getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
 
 <figure class="table">
 	<table style="text-align: center">
@@ -50,12 +50,12 @@ The availability of these plugins varies in different {@link installation/gettin
 				<th colspan="6">Predefined editor build</th>
 			</tr>
 			<tr>
-				<th>{@link installation/getting-started/predefined-builds#classic-editor Classic}</th>
-				<th>{@link installation/getting-started/predefined-builds#inline-editor Inline}</th>
-				<th>{@link installation/getting-started/predefined-builds#balloon-editor Balloon}</th>
-				<th>{@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
-				<th>{@link installation/getting-started/predefined-builds#document-editor Document}</th>
-				<th>{@link installation/getting-started/predefined-builds#superbuild Superbuild}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#classic-editor Classic}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#inline-editor Inline}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#balloon-editor Balloon}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#document-editor Document}</th>
+				<th>{@link installation/legacy-getting-started/predefined-builds#superbuild Superbuild}</th>
 			</tr>
 		</thead>
 		<tbody>

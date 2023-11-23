@@ -293,7 +293,7 @@ When using the {@link features/ckbox CKBox file manager} service, it produces se
 ## Installation
 
 <info-box>
-	The image resize feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
+	The image resize feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#document-editor document editor build} only.
 </info-box>
 
 To enable it in other editor builds, you need to install the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`):

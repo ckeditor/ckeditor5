@@ -22,7 +22,7 @@ See the demo of the placeholder feature:
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
+	This feature is enabled by default in all {@link installation/legacy-getting-started/predefined-builds predefined builds}.
 </info-box>
 
 The editor placeholder feature does not require a separate plugin installation. It does, however, require configuring the editor before use. There are two different ways of configuring the editor placeholder text:

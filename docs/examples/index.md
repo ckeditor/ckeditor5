@@ -18,7 +18,7 @@ Check out these examples of different editor integrations. See the predefined bu
 
 ## Predefined builds
 
-{@link installation/getting-started/predefined-builds Predefined CKEditor&nbsp;5 builds} are a set of ready-to-use rich text editors. Every “build” provides a single type of editor with a set of features and a default configuration. They cover the most common editing use cases, and you can install them easily. See all of them in action: {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, {@link examples/builds/document-editor document}, and {@link examples/builds/multi-root-editor multi-root} editors! Learn their differences by using our examples and analyzing the source code of the builds.
+{@link installation/legacy-getting-started/predefined-builds Predefined CKEditor&nbsp;5 builds} are a set of ready-to-use rich text editors. Every “build” provides a single type of editor with a set of features and a default configuration. They cover the most common editing use cases, and you can install them easily. See all of them in action: {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon}, {@link examples/builds/balloon-block-editor balloon block}, {@link examples/builds/document-editor document}, and {@link examples/builds/multi-root-editor multi-root} editors! Learn their differences by using our examples and analyzing the source code of the builds.
 
 ## Advanced custom builds
 

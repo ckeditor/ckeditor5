@@ -21,7 +21,7 @@ Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/t
 ## Installation
 
 <info-box info>
-	The Page break feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	The Page break feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-page-break`](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break) package:

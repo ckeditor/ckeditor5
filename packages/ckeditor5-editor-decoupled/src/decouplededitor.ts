@@ -29,7 +29,7 @@ import DecoupledEditorUIView from './decouplededitoruiview';
 import { isElement as _isElement } from 'lodash-es';
 
 /**
- * The {@glink installation/getting-started/predefined-builds#document-editor decoupled editor} implementation.
+ * The {@glink installation/legacy/legacy-getting-started/predefined-builds#document-editor decoupled editor} implementation.
  * It provides an inline editable and a toolbar. However, unlike other editors,
  * it does not render these components anywhere in the DOM unless configured.
  *
@@ -49,9 +49,9 @@ import { isElement as _isElement } from 'lodash-es';
  * The decoupled editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-decoupled`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled) package)
  * but it is also available in the
- * {@glink installation/getting-started/predefined-builds#document-editor document editor build}.
+ * {@glink installation/legacy/legacy-getting-started/predefined-builds#document-editor document editor build}.
  *
- * {@glink installation/getting-started/predefined-builds Builds}
+ * {@glink installation/legacy/legacy-getting-started/predefined-builds Builds}
  * are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
@@ -231,14 +231,14 @@ export default class DecoupledEditor extends DataApiMixin( ElementApiMixin( Edit
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink installation/getting-started/predefined-builds editor build}
+	 * {@glink installation/legacy/legacy-getting-started/predefined-builds editor build}
 	 * (for example – `@ckeditor/ckeditor5-build-decoupled`).
 	 *
 	 * If you want to use the decoupled editor from source (`@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor`),
 	 * you need to define the list of
 	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
-	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source-webpack dedicated guide}.
+	 * source in the {@glink installation/legacy/advanced/alternative-setups/integrating-from-source-webpack dedicated guide}.
 	 *
 	 * @param sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.

@@ -226,7 +226,7 @@ The stylesheet:
 ## Installation
 
 <info-box info>
-	The style feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
+	The style feature is not available in any of the {@link installation/legacy-getting-started/predefined-builds predefined builds}.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-style`](https://www.npmjs.com/package/@ckeditor/ckeditor5-style) package:

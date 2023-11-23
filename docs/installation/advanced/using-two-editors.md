@@ -5,7 +5,7 @@ order: 10
 ---
 # Using two different editors
 
-The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the {@link installation/getting-started/predefined-builds#classic-editor classic editor} next to a couple of {@link installation/getting-started/predefined-builds#inline-editor inline editors}.
+The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the {@link installation/legacy-getting-started/predefined-builds#classic-editor classic editor} next to a couple of {@link installation/legacy-getting-started/predefined-builds#inline-editor inline editors}.
 
 **Do not load two builds on one page.** This is a mistake that leads to:
 
@@ -24,7 +24,7 @@ If you want to load two different editors on one page you need to make sure that
 
 There is no limit to how many editor classes a single build can export. By default, the official builds export a single editor class only. However, they can easily import more.
 
-You can start by forking (or copying) an existing build like in the {@link installation/getting-started/quick-start-other#building-the-editor-from-source "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5`](http://github.com/ckeditor/ckeditor5) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to the classic build:
+You can start by forking (or copying) an existing build like in the {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5`](http://github.com/ckeditor/ckeditor5) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to the classic build:
 
 ```bash
 git clone -b stable git@github.com:<your-username>/ckeditor5.git

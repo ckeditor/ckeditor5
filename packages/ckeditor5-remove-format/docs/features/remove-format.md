@@ -25,7 +25,7 @@ This feature has no integration–level configuration. Once enabled, it works ou
 
 ## A short note about content types in the editor
 
-The remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Each editor feature brings its own content types to the WYSIWYG editor. If you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link installation/getting-started/configuration#removing-features reducing the number of features} enabled in the editor.
+The remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Each editor feature brings its own content types to the WYSIWYG editor. If you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link installation/legacy-getting-started/configuration#removing-features reducing the number of features} enabled in the editor.
 
 Doing that will spare the users the pain of manually removing formatting every time they paste content from other programs and make the editing experience smoother. The narrower set of editor features also gives you more control over the content saved to the database and prevents the accidental use of the types of content you would rather not store in your application.
 
@@ -35,7 +35,7 @@ In order for the remove formatting feature to work with custom content, you need
 
 This is already done for most inline elements supported by the {@link features/general-html-support General HTML Support} plugin and its derivatives such as the {@link features/style Style} plugin.
 
-By default, formatting is not removed from the {@link features/link link} elements. To remove formatting from them as well, you need to create a {@link installation/getting-started/extending-features plugin} that extends the schema and tells the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
+By default, formatting is not removed from the {@link features/link link} elements. To remove formatting from them as well, you need to create a {@link installation/legacy-getting-started/extending-features plugin} that extends the schema and tells the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
 
 ```js
 // A simple plugin that extends the remove format feature to consider links.
@@ -47,7 +47,7 @@ function RemoveFormatLinks( editor ) {
 }
 ```
 
-Enable the `RemoveFormatLinks` plugin in the {@link installation/getting-started/configuration#adding-features configuration} and run the editor:
+Enable the `RemoveFormatLinks` plugin in the {@link installation/legacy-getting-started/configuration#adding-features configuration} and run the editor:
 
 ```js
 ClassicEditor
@@ -71,7 +71,7 @@ From now on, the remove format button should also remove links in the content. {
 ## Installation
 
 <info-box info>
-	The remove format feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	The remove format feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-remove-format`](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format) package:

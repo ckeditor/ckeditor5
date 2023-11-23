@@ -12,7 +12,7 @@ The simple upload adapter lets you upload images to your server using the [`XMLH
 ## Installation
 
 <info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
+	This feature is not available in any of the {@link installation/legacy-getting-started/predefined-builds predefined builds}.
 </info-box>
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
@@ -132,7 +132,7 @@ If the upload is successful, the server should return:
 The URL(s) in the server response are used:
 
 * To display the image during the editing (as seen by the user in the editor).
-* In the editor content {@link installation/getting-started/getting-and-setting-data saved to the database}.
+* In the editor content {@link installation/legacy-getting-started/getting-and-setting-data saved to the database}.
 
 ### Error handling
 

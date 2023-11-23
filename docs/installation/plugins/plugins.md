@@ -12,7 +12,7 @@ order: 10
 
 # Plugins in CKEditor&nbsp;5
 
-Features in CKEditor are introduced by plugins. In fact, without plugins, CKEditor&nbsp;5 is an empty API with no use. The {@link installation/getting-started/predefined-builds predefined builds} provided with CKEditor&nbsp;5 are actually predefined collections of plugins, put together to satisfy specific needs.
+Features in CKEditor are introduced by plugins. In fact, without plugins, CKEditor&nbsp;5 is an empty API with no use. The {@link installation/legacy-getting-started/predefined-builds predefined builds} provided with CKEditor&nbsp;5 are actually predefined collections of plugins, put together to satisfy specific needs.
 
 Plugins provided by the CKEditor core team are available in [npm](https://www.npmjs.com/search?q=ckeditor5) (and [GitHub](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=), too) in the form of npm packages. A package may contain one or more plugins (e.g. the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains {@link features/images-overview several granular plugins}).
 
@@ -37,7 +37,7 @@ Creating your own plugins is a straightforward task but it requires good knowled
 * The {@link tutorials/crash-course/editor Plugin development guide} in the {@link framework/index CKEditor&nbsp;5 Framework} documentation.
 * The {@link framework/development-tools/package-generator/using-package-generator Using package generator}, that provides a plugin development environment.
 * The {@link framework/quick-start Quick start guide} in the {@link framework/index CKEditor&nbsp;5 Framework} documentation.
-* {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds} which is necessary to have your plugin included inside a CKEditor&nbsp;5 build.
+* {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds} which is necessary to have your plugin included inside a CKEditor&nbsp;5 build.
 
 A good understanding of the {@link framework/index CKEditor&nbsp;5 Framework} is also very welcome when it comes to creating plugins.
 

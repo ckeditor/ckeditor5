@@ -15,9 +15,9 @@ order: 30
 	</a>
 </p>
 
-CKEditor&nbsp;5 consists of {@link installation/getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
+CKEditor&nbsp;5 consists of {@link installation/legacy-getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor&nbsp;5 in your React application is by choosing one of the {@link installation/getting-started/predefined-builds#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor&nbsp;5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
+The easiest way to use CKEditor&nbsp;5 in your React application is by choosing one of the {@link installation/legacy-getting-started/predefined-builds#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor&nbsp;5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
 
 <info-box hint>
 	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link installation/working-with-typescript TypeScript support}.
@@ -27,7 +27,7 @@ The easiest way to use CKEditor&nbsp;5 in your React application is by choosing 
 
 This guide assumes you already have a React project. If you want to create a new one, you can use the [`create-react-app`](https://create-react-app.dev/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/getting-started/predefined-builds#available-builds editor build of your choice}. Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
+Install the [CKEditor&nbsp;5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link installation/legacy-getting-started/predefined-builds#available-builds editor build of your choice}. Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
 ```bash
 npm install --save @ckeditor/ckeditor5-react @ckeditor/ckeditor5-build-classic
@@ -78,8 +78,8 @@ export default App;
 The `<CKEditor>` component supports the following properties:
 
 * `editor` (required) &ndash; The {@link module:core/editor/editor~Editor `Editor`} constructor to use.
-* `data` &ndash; The initial data for the created editor. See the {@link installation/getting-started/getting-and-setting-data Getting and setting data} guide.
-* `config` &ndash; The editor configuration. See the {@link installation/getting-started/configuration Configuration} guide.
+* `data` &ndash; The initial data for the created editor. See the {@link installation/legacy-getting-started/getting-and-setting-data Getting and setting data} guide.
+* `config` &ndash; The editor configuration. See the {@link installation/legacy-getting-started/configuration Configuration} guide.
 * `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
 * `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
 * `disableWatchdog` &ndash; A Boolean value. If set to `true`, {@link features/watchdog the watchdog feature} will be disabled. It is set to `false` by default.
@@ -174,7 +174,7 @@ The `CKEditorContext` component supports the following properties:
 
 ## Customizing the builds
 
-The {@link installation/getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
+The {@link installation/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link installation/legacy-getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
 
 There are three main ways to do that.
 
@@ -188,7 +188,7 @@ Create your own CKEditor&nbsp;5 build with customized plugins, toolbar and langu
 
 ### Customizing one of the predefined builds
 
-This option requires making changes to a {@link installation/getting-started/quick-start-other#building-the-editor-from-source predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
+This option requires making changes to a {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
 
 Read more about customising a predefined build in the {@link installation/plugins/installing-plugins Installing plugins} guide.
 
@@ -680,7 +680,7 @@ CKEditor&nbsp;5 supports {@link features/ui-language multiple UI languages}, and
 
 ### Predefined builds
 
-When using one of the {@link installation/getting-started/predefined-builds predefined builds} or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
+When using one of the {@link installation/legacy-getting-started/predefined-builds predefined builds} or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
 
 **Official editor builds:**
 
@@ -702,7 +702,7 @@ import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import 'ckeditor5-custom-build/build/translations/de';
 ```
 
-Then, {@link installation/getting-started/configuration configure} the language of the editor in the component:
+Then, {@link installation/legacy-getting-started/configuration configure} the language of the editor in the component:
 
 ```jsx
 <CKEditor
