@@ -29,7 +29,9 @@ ClassicEditor
 				'|',
 				'resizeImage:25',
 				'resizeImage:50',
-				'resizeImage:original'
+				'resizeImage:original',
+				'|',
+				'ckboxImageEdit'
 			],
 			resizeOptions: [
 				{
@@ -56,7 +58,8 @@ ClassicEditor
 			}
 		},
 		ckbox: {
-			tokenUrl: TOKEN_URL
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

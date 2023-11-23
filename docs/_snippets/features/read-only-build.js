@@ -8,7 +8,7 @@
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
 import { ExportPdf } from '@ckeditor/ckeditor5-export-pdf';
 import { ExportWord } from '@ckeditor/ckeditor5-export-word';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import ClassicEditor from '../build-classic';
 
@@ -16,6 +16,10 @@ ClassicEditor.builtinPlugins.push( FindAndReplace );
 ClassicEditor.builtinPlugins.push( ExportPdf );
 ClassicEditor.builtinPlugins.push( ExportWord );
 ClassicEditor.builtinPlugins.push( CKBox );
-ClassicEditor.builtinPlugins.push( PictureEditing, ImageInsert, ImageResize, AutoImage );
+ClassicEditor.builtinPlugins.push( CKBoxImageEdit );
+ClassicEditor.builtinPlugins.push( PictureEditing );
+ClassicEditor.builtinPlugins.push( ImageInsert );
+ClassicEditor.builtinPlugins.push( ImageResize );
+ClassicEditor.builtinPlugins.push( AutoImage );
 
 window.ClassicEditor = ClassicEditor;

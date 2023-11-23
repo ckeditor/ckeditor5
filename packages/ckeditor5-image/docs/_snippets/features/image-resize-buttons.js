@@ -48,7 +48,8 @@ ClassicEditor
 			toolbar: [
 				'resizeImage:20',
 				'resizeImage:40',
-				'resizeImage:original'
+				'resizeImage:original',
+				'ckboxImageEdit'
 			]
 		},
 		cloudServices: CS_CONFIG

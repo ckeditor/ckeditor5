@@ -23,7 +23,8 @@ ClassicEditor
 			toolbar: [
 				'imageTextAlternative',
 				'|',
-				'toggleImageCaption'
+				'toggleImageCaption',
+				'ckboxImageEdit'
 			]
 		},
 		ui: {

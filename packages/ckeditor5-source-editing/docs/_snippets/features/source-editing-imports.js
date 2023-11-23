@@ -14,7 +14,7 @@ import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 
@@ -43,7 +43,8 @@ ClassicEditor.builtinPlugins.push(
 	ImageInsert,
 	ImageResize,
 	AutoImage,
-	CKBox
+	CKBox,
+	CKBoxImageEdit
 );
 
 ClassicEditor.defaultConfig = {

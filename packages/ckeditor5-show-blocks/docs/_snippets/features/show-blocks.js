@@ -12,10 +12,10 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
 
-ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditing, CKBox, ImageInsert, PictureEditing );
+ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, PictureEditing );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-show-blocks' ), {
@@ -29,6 +29,12 @@ ClassicEditor
 				'|', 'bold', 'italic',
 				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 			]
 		},
 		ui: {

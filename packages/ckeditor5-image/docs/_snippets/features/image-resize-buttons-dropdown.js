@@ -43,7 +43,7 @@ ClassicEditor
 					value: '60'
 				}
 			],
-			toolbar: [ 'resizeImage' ]
+			toolbar: [ 'resizeImage', 'ckboxImageEdit' ]
 		},
 		cloudServices: CS_CONFIG
 	} )

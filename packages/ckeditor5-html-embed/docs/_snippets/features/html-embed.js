@@ -7,7 +7,7 @@
 
 import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
@@ -15,7 +15,16 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( HtmlEmbed, CodeBlock, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, CKBox );
+ClassicEditor.builtinPlugins.push(
+	HtmlEmbed,
+	CodeBlock,
+	PictureEditing,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	CKBox,
+	CKBoxImageEdit );
 
 /* eslint-disable max-len */
 const initialData =
@@ -101,7 +110,9 @@ ClassicEditor
 				'imageStyle:breakText',
 				'|',
 				'toggleImageCaption',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
 			]
 		},
 		table: {

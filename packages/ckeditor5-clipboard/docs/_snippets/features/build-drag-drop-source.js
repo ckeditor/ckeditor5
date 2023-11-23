@@ -16,7 +16,7 @@ import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
 	Image,
@@ -59,6 +59,7 @@ const defaultPlugins = [
 	Italic,
 	BlockQuote,
 	CKBox,
+	CKBoxImageEdit,
 	CloudServices,
 	Heading,
 	Image,
@@ -115,7 +116,9 @@ const defaultConfig = {
 			'imageStyle:side',
 			'|',
 			'toggleImageCaption',
-			'imageTextAlternative'
+			'imageTextAlternative',
+			'|',
+			'ckboxImageEdit'
 		]
 	},
 	table: {

@@ -5,7 +5,7 @@
 
 /* globals window */
 
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
@@ -20,7 +20,8 @@ ClassicEditor.builtinPlugins.push(
 	AutoImage,
 	LinkImage,
 	Alignment,
-	CKBox
+	CKBox,
+	CKBoxImageEdit
 );
 
 window.ClassicEditor = ClassicEditor;

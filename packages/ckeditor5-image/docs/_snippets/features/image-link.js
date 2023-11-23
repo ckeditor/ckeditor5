@@ -30,7 +30,8 @@ ClassicEditor
 				'|',
 				'imageStyle:inline',
 				'imageStyle:block',
-				'imageStyle:side'
+				'imageStyle:side',
+				'ckboxImageEdit'
 			]
 		},
 		cloudServices: CS_CONFIG

@@ -18,6 +18,10 @@ ClassicEditor
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
+				'|', 'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit' ]
+		},
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

@@ -28,7 +28,8 @@ ClassicEditor
 			toolbar: [
 				'imageStyle:inline',
 				'imageStyle:wrapText',
-				'imageStyle:breakText'
+				'imageStyle:breakText',
+				'ckboxImageEdit'
 			]
 		},
 		cloudServices: CS_CONFIG
