@@ -321,7 +321,7 @@ class App extends Component {
 					} }
 					onChange={ ( event, editor ) => {
 						const data = editor.getData();
-						console.log( { event, editor, data } );
+						console.log( { event, data } );
 					} }
 					onBlur={ ( event, editor ) => {
 						console.log( 'Blur.', editor );
