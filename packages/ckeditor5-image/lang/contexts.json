@@ -12,6 +12,9 @@
 	"Text alternative": "The label for the image text alternative input.",
 	"Enter image caption": "The placeholder text for the image caption displayed when the caption is empty.",
 	"Insert image": "The label for the insert image toolbar button.",
+	"Replace image": "The label for the replace image toolbar button.",
+	"Upload from computer": "The label for the upload image from computer toolbar button.",
+	"Replace from computer": "The label for the replace image by upload from computer toolbar button.",
 	"Upload failed": "The title of the notification displayed when upload fails.",
 	"Image toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget.",
 	"Resize image": "The label used for the dropdown in the image toolbar containing defined resize options.",
@@ -23,6 +26,8 @@
 	"Update": "The label of the form submit button if the image source URL input has a value.",
 	"Insert image via URL": "The input label for the Insert image via URL form.",
 	"Update image URL": "The input label for the Insert image via URL form for a pre-existing image.",
+	"Insert with file manager": "The label for the insert image with the file manager toolbar button.",
+	"Replace with file manager": "The label for the replace image with the file manager toolbar button.",
 	"Caption for the image": "Text used by screen readers do describe an image when the image has no text alternative.",
 	"Caption for image: %0": "Text used by screen readers do describe an image when there is a text alternative available, e.g. 'Caption for image: this is a description of the image.'"
 }

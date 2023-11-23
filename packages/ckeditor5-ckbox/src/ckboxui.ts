@@ -68,7 +68,6 @@ export default class CKBoxUI extends Plugin {
 
 				button.icon = icons.imageAssetManager;
 
-				// TODO add to context (note that it's shared with CKFinder)
 				button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
 					t( 'Replace with file manager' ) :
 					t( 'Insert with file manager' )

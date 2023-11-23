@@ -82,7 +82,6 @@ export default class ImageUploadUI extends Plugin {
 
 				uploadImageButton.icon = icons.imageUpload;
 
-				// TODO add to context (note that it's shared with CKBox)
 				uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
 					t( 'Replace from computer' ) :
 					t( 'Upload from computer' )

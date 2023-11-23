@@ -135,9 +135,10 @@ export default class ImageInsertUI extends Plugin {
 
 			dropdownButton = new SplitButtonView( locale, actionButton );
 			dropdownButton.tooltip = true;
+
 			dropdownButton.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
-				t( 'Replace image' ) : // TODO context
-				t( 'Insert image' ) // TODO context
+				t( 'Replace image' ) :
+				t( 'Insert image' )
 			);
 		}
 
@@ -251,8 +252,8 @@ export default class ImageInsertUI extends Plugin {
 			} );
 
 			collapsibleView.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
-				t( 'Replace with link' ) : // TODO context
-				t( 'Insert with link' ) // TODO context
+				t( 'Update image URL' ) :
+				t( 'Insert image via URL' )
 			);
 
 			return collapsibleView;
@@ -281,9 +282,9 @@ export default class ImageInsertUI extends Plugin {
 			tooltip: true
 		} );
 
-		// TODO add 'Update image URL' and 'Insert image via URL' to context
 		button.bind( 'label' ).to( this, 'isImageSelected', isImageSelected => isImageSelected ?
-			t( 'Update image URL' ) : t( 'Insert image via URL' )
+			t( 'Update image URL' ) :
+			t( 'Insert image via URL' )
 		);
 
 		return button;
