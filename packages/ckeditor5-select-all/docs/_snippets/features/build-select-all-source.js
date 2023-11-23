@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window */
+/* globals */
 
 import { Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
