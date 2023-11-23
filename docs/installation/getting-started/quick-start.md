@@ -133,7 +133,7 @@ In this example, we remove the premium collaboration features as well as several
 		</div>
 		<!--
 			The "super-build" of CKEditor&nbsp;5 served via CDN contains a large set of plugins and multiple editor types.
-			See https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
+			See https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/quick-start.html#running-a-full-featured-editor-from-cdn
 		-->
 		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/super-build/ckeditor.js"></script>
 		<!--

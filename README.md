@@ -37,7 +37,7 @@ CKEditor&nbsp;5 is an ultra-modern JavaScript rich-text editor with MVC architec
 
 ### CKEditor&nbsp;5 online builder
 
-The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). All you need to do is choose the preferred predefined build as a base, add all the required plugins, and download the ready-to-use package. Refer to the [Online builder Quick start](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder) guide to follow this installation path.
+The easiest way to start using CKEditor&nbsp;5 with all the features you need is to prepare a customized build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). All you need to do is choose the preferred predefined build as a base, add all the required plugins, and download the ready-to-use package. Refer to the [Online builder Quick start](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/quick-start.html#creating-custom-builds-with-online-builder) guide to follow this installation path.
 
 ### CKEditor&nbsp;5 predefined builds
 
@@ -45,11 +45,11 @@ CKEditor&nbsp;5 predefined builds are a set of ready-to-use rich text editors. E
 
 The following CKEditor&nbsp;5 predefined builds are currently available:
 
-* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#classic-editor)
-* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#inline-editor)
-* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#balloon-editor)
-* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#balloon-block-editor)
-* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#document-editor)
+* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#classic-editor)
+* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#inline-editor)
+* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#balloon-editor)
+* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#balloon-block-editor)
+* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#document-editor)
 
 #### Example installation
 
@@ -64,7 +64,7 @@ In your HTML page, add an element that CKEditor should replace:
 <div id="editor"></div>
 ```
 
-Load the classic editor build (you can choose between the [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#npm), and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#zip-download)):
+Load the classic editor build (you can choose between the [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#npm), and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#zip-download)):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
@@ -84,7 +84,7 @@ Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/a
 
 You’re ready to go!
 
-To find out how to start with other builds, check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html) guide in the CKEditor&nbsp;5 documentation.
+To find out how to start with other builds, check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html) guide in the CKEditor&nbsp;5 documentation.
 
 ### TypeScript support
 
@@ -93,12 +93,12 @@ CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, it offers native
 ### CKEditor&nbsp;5 advanced installation
 
 For more advanced users or those who need to integrate CKEditor&nbsp;5 with their applications, we have prepared several other, advanced methods to do it. You can:
-* Integrate the editor from source [using webpack](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source-webpack.html) or [Vite](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/integrating-from-source-vite.html)
-* Use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/alternative-setups/dll-builds.html)
-* Use some of the pre-made integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/overview.html):
-  * [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/angular.html)
-  * [React](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/react.html)
-  * [Vue](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/frameworks/vuejs-v3.html)
+* Integrate the editor from source [using webpack](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/advanced/alternative-setups/integrating-from-source-webpack.html) or [Vite](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/advanced/alternative-setups/integrating-from-source-vite.html)
+* Use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/advanced/alternative-setups/dll-builds.html)
+* Use some of the pre-made integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/frameworks/overview.html):
+  * [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/frameworks/angular.html)
+  * [React](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/frameworks/react.html)
+  * [Vue](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/frameworks/vuejs-v3.html)
 
 #### CKEditor&nbsp;5 Framework
 
