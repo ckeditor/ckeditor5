@@ -27,10 +27,17 @@ import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandrepl
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import { ButtonView, Dialog, View } from '../../../src';
+import { ButtonView, Dialog, DialogViewPosition, View } from '../../../src';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { icons } from '@ckeditor/ckeditor5-ui';
+
+// Necessary to insert into config all of the generated buttons.
+const POSSIBLE_DIALOG_POSITIONS: Array<string> = [];
+
+for ( const position in DialogViewPosition ) {
+	POSSIBLE_DIALOG_POSITIONS.push( position );
+}
 
 class ModalWithText extends Plugin {
 	public static get requires() {
@@ -106,7 +113,7 @@ class ModalWithText extends Plugin {
 	}
 }
 
-class MinimalisticDialog extends Plugin {
+class MinimalisticDialogs extends Plugin {
 	public static get requires() {
 		return [ Dialog ] as const;
 	}
@@ -114,36 +121,39 @@ class MinimalisticDialog extends Plugin {
 	public init(): void {
 		const t = this.editor.locale.t;
 
-		this.editor.ui.componentFactory.add( 'minimalisticDialog', locale => {
-			const buttonView = new ButtonView( locale );
+		for ( const position in DialogViewPosition ) {
+			this.editor.ui.componentFactory.add( position, locale => {
+				const buttonView = new ButtonView( locale );
 
-			buttonView.set( {
-				label: t( 'Minimalistic' ),
-				tooltip: true,
-				withText: true
-			} );
-
-			buttonView.on( 'execute', () => {
-				const dialog = this.editor.plugins.get( 'Dialog' );
-				const textView = new View( locale );
-
-				textView.setTemplate( {
-					tag: 'p',
-					attributes: {
-						tabindex: -1
-					},
-					children: [
-						'This dialog has no title and no action buttons. It\'s up to the develop to handle its behavior.'
-					]
+				buttonView.set( {
+					label: t( position ),
+					tooltip: true,
+					withText: true
 				} );
 
-				dialog.show( {
-					content: textView
-				} );
-			} );
+				buttonView.on( 'execute', () => {
+					const dialog = this.editor.plugins.get( 'Dialog' );
+					const textView = new View( locale );
 
-			return buttonView;
-		} );
+					textView.setTemplate( {
+						tag: 'p',
+						attributes: {
+							tabindex: -1
+						},
+						children: [
+							'This dialog has no title and no action buttons. It\'s up to the develop to handle its behavior.'
+						]
+					} );
+
+					dialog.show( {
+						content: textView,
+						position: DialogViewPosition[ position as keyof typeof DialogViewPosition ]
+					} );
+				} );
+
+				return buttonView;
+			} );
+		}
 	}
 }
 
@@ -174,11 +184,13 @@ function initEditor( editorName, editorClass, direction = 'ltr' ) {
 			SpecialCharactersEmoji,
 			SourceEditing,
 			ModalWithText,
-			MinimalisticDialog
+			MinimalisticDialogs
 		],
 		toolbar: {
 			items: [
-				'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText', 'minimalisticDialog',
+				'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText',
+				'-',
+				...POSSIBLE_DIALOG_POSITIONS,
 				'-',
 				'heading', '|', 'bold', 'italic', 'link'
 			],
