@@ -7,7 +7,7 @@
 
 import { Code, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { ListProperties } from '@ckeditor/ckeditor5-list';
@@ -33,6 +33,7 @@ ClassicEditor.builtinPlugins.push(
 	Indent,
 	IndentBlock,
 	PictureEditing,
+	ImageInsert,
 	ImageResize,
 	AutoImage,
 	LinkImage,

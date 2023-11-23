@@ -21,7 +21,7 @@ ClassicEditor
 				label: 'Inserting',
 				icon: 'plus',
 				tooltip: 'Insert media',
-				items: [ 'uploadImage', 'insertTable' ]
+				items: [ 'insertImage', 'insertTable' ]
 			}
 		],
 		image: {

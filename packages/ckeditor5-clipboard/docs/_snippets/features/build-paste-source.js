@@ -7,7 +7,7 @@
 
 import { Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Font } from '@ckeditor/ckeditor5-font';
 
@@ -19,6 +19,7 @@ ClassicEditor.builtinPlugins.push(
 	Underline,
 	Font,
 	PictureEditing,
+	ImageInsert,
 	ImageResize,
 	AutoImage,
 	LinkImage,

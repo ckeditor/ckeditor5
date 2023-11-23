@@ -15,7 +15,7 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
@@ -40,6 +40,7 @@ ClassicEditor.builtinPlugins.push(
 	ImageCaption,
 	LinkImage,
 	PictureEditing,
+	ImageInsert,
 	ImageResize,
 	AutoImage,
 	CKBox,
@@ -54,8 +55,13 @@ ClassicEditor.defaultConfig = {
 			'|', 'sourceEditing',
 			'|', 'heading',
 			'|', 'bold', 'italic',
-			'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+			'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+		]
+	},
+	insert: {
+		integrations: [
+			'insertImageViaUrl'
 		]
 	},
 	ui: {

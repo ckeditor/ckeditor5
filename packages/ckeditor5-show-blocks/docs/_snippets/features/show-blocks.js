@@ -13,9 +13,9 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing } from '@ckeditor/ckeditor5-image';
+import { ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
 
-ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditing, CKBox, CKBoxImageEdit, PictureEditing );
+ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, PictureEditing );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-show-blocks' ), {
@@ -27,7 +27,7 @@ ClassicEditor
 				'|', 'sourceEditing',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},

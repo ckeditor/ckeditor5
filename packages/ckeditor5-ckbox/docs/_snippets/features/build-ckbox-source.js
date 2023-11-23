@@ -6,7 +6,7 @@
 /* globals window */
 
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
@@ -15,6 +15,7 @@ import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push(
 	PictureEditing,
+	ImageInsert,
 	ImageResize,
 	AutoImage,
 	LinkImage,

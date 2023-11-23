@@ -15,7 +15,7 @@ ClassicEditor
 				'|', 'heading',
 				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
 				'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
-				'|', 'link', 'uploadImage', 'blockQuote', 'codeBlock',
+				'|', 'link', 'insertImage', 'blockQuote', 'codeBlock',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
