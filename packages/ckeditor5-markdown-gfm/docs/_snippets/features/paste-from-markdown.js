@@ -12,8 +12,8 @@ import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { DocumentList, TodoDocumentList, AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
 import { Markdown, PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Font } from '@ckeditor/ckeditor5-font';
 
@@ -32,7 +32,8 @@ const plugins = ClassicEditor.builtinPlugins
 	// Then, add Markdown-specific features.
 	.concat( [
 		SourceEditing, Code, Strikethrough, Underline, Markdown, CodeBlock, HorizontalLine, DocumentList, TodoDocumentList,
-		AdjacentListsSupport, PasteFromMarkdownExperimental, CKBox, PictureEditing, ImageResize, AutoImage, LinkImage, Font
+		AdjacentListsSupport, PasteFromMarkdownExperimental, CKBox, CKBoxImageEdit,
+		PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, Font
 	] );
 
 ClassicEditor
@@ -42,13 +43,23 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
 				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
+				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
-			]
+			],
+			shouldNotGroupWhenFull: true
 		},
 		cloudServices: CS_CONFIG,
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'ckboxImageEdit'
+			]
 		},
 		codeBlock: {
 			languages: [

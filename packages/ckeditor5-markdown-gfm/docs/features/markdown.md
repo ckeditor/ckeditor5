@@ -1,6 +1,7 @@
 ---
 title: Markdown output
 meta-title: Markdown output | CKEditor 5 Documentation
+meta-description: The Markdown plugin lets you switch the default CKEditor 5 output from HTML to Markdown.
 category: features
 ---
 

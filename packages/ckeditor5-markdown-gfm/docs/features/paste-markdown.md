@@ -1,9 +1,10 @@
 ---
 menu-title: Paste Markdown
 meta-title: Paste Markdown | CKEditor 5 Documentation
+meta-description: The paste Markdown feature lets users paste Markdown-formatted content straight into CKEditor 5.
 category: features-pasting
 order: 40
-modified_at: 2023-11-10
+modified_at: 2023-11-24
 ---
 
 # Paste Markdown
