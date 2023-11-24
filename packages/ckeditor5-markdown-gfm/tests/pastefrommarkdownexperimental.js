@@ -98,26 +98,26 @@ describe( 'PasteFromMarkdownExperimental', () => {
 			} );
 		} );
 
-		describe( 'Linux', () => {
+		describe( 'Windows', () => {
 			it( 'should parse correctly Windows type clipboard', () => {
 				setData( editor.model, '<paragraph>[]</paragraph>' );
 				pasteHtml( editor,
-					`<html>
-				<body>
-					<!--StartFragment-->
-						<code class="notranslate">
-							foo **bar** [baz](https://ckeditor.com).
-						</code>
-					<!--EndFragment-->
-				</body>
-			</html>`
+					'<html>' +
+						'<body>' +
+							'<!--StartFragment-->' +
+								'<code class="notranslate">' +
+									'foo **bar** [baz](https://ckeditor.com).' +
+								'</code>' +
+							'<!--EndFragment-->' +
+						'</body>' +
+					'</html>'
 				);
 
-				expect( getData( editor.model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
+				expect( getData( editor.model ).trim() ).to.equal( '<paragraph>foo <$text bold="true">bar</$text> baz.[]</paragraph>' );
 			} );
 		} );
 
-		describe( 'Windows', () => {
+		describe( 'Linux', () => {
 			it( 'should parse correctly Linux type clipboard', () => {
 				setData( editor.model, '<paragraph>[]</paragraph>' );
 				pasteHtml( editor, '<span class="notranslate">foo **bar** [baz](https://ckeditor.com).</span>' );
