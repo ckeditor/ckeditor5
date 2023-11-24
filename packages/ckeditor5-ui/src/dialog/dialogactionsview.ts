@@ -108,6 +108,8 @@ export default class DialogActionsView extends View {
 	 * TODO
 	 */
 	public setButtons( definitions: Array<DialogActionButtonDefinition> ): void {
+		this.reset();
+
 		for ( const definition of definitions ) {
 			const button = new ButtonView( this.locale );
 

@@ -26,7 +26,7 @@ export default class Dialog extends Plugin {
 	/**
 	 * TODO
 	 */
-	public readonly view: DialogView;
+	public static view: DialogView;
 
 	/**
 	 * TODO
@@ -51,17 +51,7 @@ export default class Dialog extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this.view = new DialogView( editor.locale, () => {
-			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
-		}, () => {
-			return this.editor.ui.viewportOffset;
-		} );
-
-		this._initShowHideListeners();
 		this.set( 'isOpen', false );
-
-		editor.ui.view.body.add( this.view );
-		editor.ui.focusTracker.add( this.view.element! );
 	}
 
 	/**
@@ -86,7 +76,7 @@ export default class Dialog extends Plugin {
 			this._onHide?.( this );
 		}, { priority: 'low' } );
 
-		this.view.on<DialogViewCloseEvent>( 'close', () => {
+		Dialog.view.on<DialogViewCloseEvent>( 'close', () => {
 			this.hide();
 		} );
 	}
@@ -95,9 +85,22 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( this.isOpen ) {
+		if ( this.isOpen || Dialog.view ) {
 			this.hide();
 		}
+
+		const editor = this.editor;
+
+		Dialog.view = new DialogView( editor.locale, () => {
+			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
+		}, () => {
+			return editor.ui.viewportOffset;
+		} );
+
+		this._initShowHideListeners();
+
+		editor.ui.view.body.add( Dialog.view );
+		editor.ui.focusTracker.add( Dialog.view.element! );
 
 		this.fire( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
 	}
@@ -121,7 +124,7 @@ export default class Dialog extends Plugin {
 			position = isModal ? DialogViewPosition.SCREEN_CENTER : DialogViewPosition.EDITOR_CENTER;
 		}
 
-		this.view.set( {
+		Dialog.view.set( {
 			position,
 			isVisible: true,
 			className,
@@ -133,7 +136,7 @@ export default class Dialog extends Plugin {
 		}
 
 		if ( title ) {
-			this.view.showHeader( title );
+			Dialog.view.showHeader( title );
 		}
 
 		if ( content ) {
@@ -142,16 +145,16 @@ export default class Dialog extends Plugin {
 				content = [ content ];
 			}
 
-			this.view.addContentPart( content );
+			Dialog.view.addContentPart( content );
 		}
 
 		if ( actionButtons ) {
-			this.view.setActionButtons( actionButtons );
+			Dialog.view.setActionButtons( actionButtons );
 		}
 
 		this.isOpen = true;
 
-		this.view.focus();
+		Dialog.view.focus();
 
 		this._onHide = onHide;
 	}
@@ -167,10 +170,10 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	private _hide(): void {
+		Dialog.view.destroy();
+
 		this.editor.editing.view.focus();
 
-		this.view.isVisible = false;
-		this.view.reset();
 		this.id = '';
 
 		this.isOpen = false;

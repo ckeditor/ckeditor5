@@ -296,6 +296,15 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
+	public override destroy(): void {
+		this.element?.remove();
+
+		super.destroy();
+	}
+
+	/**
+	 * TODO
+	 */
 	public reset(): void {
 		while ( this.children.length ) {
 			this.children.remove( 0 );
@@ -335,11 +344,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		if ( !this.contentView ) {
 			this.contentView = this._createContentView();
 			this._updateFocusCycleableItems();
+			this.parts.add( this.contentView );
 		} else {
 			this.contentView.reset();
 		}
 
-		this.parts.add( this.contentView );
 		this.contentView.children.addMany( content );
 	}
 
@@ -350,9 +359,9 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		if ( !this.actionsView ) {
 			this.actionsView = new DialogActionsView( this.locale );
 			this._updateFocusCycleableItems();
+			this.parts.add( this.actionsView );
 		}
 
-		this.parts.add( this.actionsView );
 		this.actionsView.setButtons( definitions );
 	}
 

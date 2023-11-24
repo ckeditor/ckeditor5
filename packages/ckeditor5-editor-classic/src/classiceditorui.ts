@@ -13,7 +13,8 @@ import {
 	normalizeToolbarConfig,
 	type EditorUIReadyEvent,
 	type DialogViewMoveToEvent,
-	DialogView
+	DialogView,
+	Dialog
 } from 'ckeditor5/src/ui';
 import {
 	enablePlaceholder,
@@ -113,7 +114,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 		this._initPlaceholder();
 		this._initToolbar();
-		this._initDialogPluginIntegration();
+		// this._initDialogPluginIntegration();
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -227,7 +228,8 @@ export default class ClassicEditorUI extends EditorUI {
 			return;
 		}
 
-		const dialogView = this.editor.plugins.get( 'Dialog' ).view;
+		const dialogView = Dialog.view;
+
 		const stickyPanel = this.view.stickyPanel;
 
 		dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
