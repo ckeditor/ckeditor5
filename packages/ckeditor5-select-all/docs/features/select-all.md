@@ -4,8 +4,6 @@ meta-title: Select all | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-select-all-source}
-
 The select all feature lets you select the entire content using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> keystroke or a toolbar button. This way you can clear or copy all the content in one move.
 
 ## Demo

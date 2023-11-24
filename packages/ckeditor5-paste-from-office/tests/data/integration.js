@@ -130,6 +130,13 @@ describe( 'PasteFromOffice - integration', () => {
 		}
 	} );
 
+	generateIntegrationTests( {
+		input: 'smart-tags',
+		editorConfig: {
+			plugins: [ Clipboard, Paragraph, Bold, PasteFromOffice, FontColor ]
+		}
+	} );
+
 	function generateIntegrationTests( config ) {
 		const commonIntegrationConfig = {
 			type: 'integration',
