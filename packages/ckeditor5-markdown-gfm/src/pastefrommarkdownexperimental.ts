@@ -8,14 +8,14 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { Clipboard, type ClipboardInputTransformationEvent, type ClipboardPipeline } from 'ckeditor5/src/clipboard';
+import { type ClipboardInputTransformationEvent, ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import GFMDataProcessor from './gfmdataprocessor';
 import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 
 /**
  * The GitHub Flavored Markdown (GFM) paste plugin.
  *
- * For a detailed overview, check the {@glink features/pasting/paste-markdown Markdown feature} guide.
+ * For a detailed overview, check the {@glink features/pasting/paste-markdown Paste Markdown feature} guide.
  */
 export default class PasteFromMarkdownExperimental extends Plugin {
 	/**
@@ -43,7 +43,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Clipboard ] as const;
+		return [ ClipboardPipeline ] as const;
 	}
 
 	/**
@@ -71,6 +71,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 
 			if ( !dataAsTextHtml ) {
 				const dataAsTextPlain = data.dataTransfer.getData( 'text/plain' );
+
 				data.content = this._gfmDataProcessor.toView( dataAsTextPlain );
 
 				return;
@@ -94,10 +95,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 */
 	private _parseMarkdownFromHtml( htmlString: string ): string | null {
 		const withoutOsSpecificTags = this._removeOsSpecificTags( htmlString );
-
-		const withoutWrapperTag = this._isHtmlList( withoutOsSpecificTags ) ?
-			this._removeListWrapperTagsAndBrs( withoutOsSpecificTags ) :
-			this._removeWrapperTag( withoutOsSpecificTags );
+		const withoutWrapperTag = this._removeFirstLevelWrapperTagsAndBrs( withoutOsSpecificTags );
 
 		if ( this._containsAnyRemainingHtmlTags( withoutWrapperTag ) ) {
 			return null;
@@ -124,20 +122,11 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	}
 
 	/**
-	 * Removes a single HTML wrapper tag from string.
-	 *
-	 * @param htmlString Clipboard content without any OS specific tags.
-	 */
-	private _removeWrapperTag( htmlString: string ): string {
-		return htmlString.replace( /^<(\w+)\b[^>]*>\s*([\s\S]*?)\s*<\/\1>/, '$2' ).trim();
-	}
-
-	/**
 	 * Removes multiple HTML wrapper tags from a list of sibling HTML tags.
 	 *
 	 * @param htmlString Clipboard content without any OS specific tags.
 	 */
-	private _removeListWrapperTagsAndBrs( htmlString: string ): string {
+	private _removeFirstLevelWrapperTagsAndBrs( htmlString: string ): string {
 		const tempDiv = document.createElement( 'div' );
 		tempDiv.innerHTML = htmlString;
 
@@ -157,22 +146,10 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	}
 
 	/**
-	 * Determines if sting contains sibling HTML tags at root level.
-	 *
-	 * @param htmlString Clipboard content without any OS specific tags.
-	 */
-	private _isHtmlList( htmlString: string ): boolean {
-		const tempDiv = document.createElement( 'div' );
-		tempDiv.innerHTML = htmlString;
-
-		return tempDiv.children.length > 1;
-	}
-
-	/**
 	 * Determines if string contains any HTML tags.
 	 */
 	private _containsAnyRemainingHtmlTags( str: string ): boolean {
-		return /<[^>]+>[\s\S]*<[^>]+>/.test( str );
+		return str.includes( '<' );
 	}
 
 	/**
@@ -181,6 +158,9 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 * @param htmlString Clipboard content without any tags.
 	 */
 	private _replaceHtmlReservedEntitiesWithCharacters( htmlString: string ) {
-		return htmlString.replace( '&gt;', '>' ).replace( '&lt;', '<' );
+		return htmlString
+			.replace( new RegExp( '&gt;', 'g' ), '>' )
+			.replace( new RegExp( '&lt;', 'g' ), '<' )
+			.replace( new RegExp( '&nbsp;', 'g' ), ' ' );
 	}
 }
