@@ -69,4 +69,4 @@ Or a code block.
 
 ## Images
 
-![CKEditor 5](https://ckeditor.com/assets/images/webp/illustration/home-banner-d49ece364f.webp)
+![CKEditor 5](https://user-images.githubusercontent.com/1099479/179190754-f4aaf2b3-21cc-49c4-a454-8de4a00cc70e.jpg)

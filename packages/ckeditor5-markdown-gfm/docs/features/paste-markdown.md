@@ -36,7 +36,7 @@ To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-
 npm install --save @ckeditor/ckeditor5-markdown-gfm
 ```
 
-Then add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration, which will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
+Then add the {@link module:markdown-gfm/pastefrommarkdownexperimental~PasteFromMarkdownExperimental} plugin to the editor configuration:
 
 ```js
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
