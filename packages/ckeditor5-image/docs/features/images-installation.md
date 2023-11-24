@@ -17,7 +17,7 @@ npm install --save @ckeditor/ckeditor5-image
 	You may want to install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package if you want to use the {@link features/images-linking `LinkImage`} plugin in your editor.
 </info-box>
 
-Next, add the {@link features/images-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
+Next, add the {@link features/images-overview#image-features plugins that you need} to your plugin list and to the editor toolbar.
 
 ```js
 import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
@@ -26,6 +26,28 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
+		toolbar: [ 'insertImage', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+## Configuring the toolbar dropdown
+
+<!-- For Kuba -->
+
+## Configuring the contextual image toolbar
+
+You also need to configure the desired contextual image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
+
+```js
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
+		toolbar: [ 'insertImage', /* ... */ ],
 		image: {
 			toolbar: [
 				'imageStyle:block',
