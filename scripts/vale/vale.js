@@ -29,7 +29,7 @@ const RESULTS_DIR = upath.join( CKEDITOR5_ROOT, 'scripts', 'vale', 'results' );
 const VALE_CONFIG_PATH = upath.join( CKEDITOR5_ROOT, '.vale.ini' );
 const READABILITY_FILES_GLOB = 'scripts/vale/styles/Readability/*.yml';
 
-const originalFileContents = {};
+const originalConfigFilesContents = {};
 
 const defaultPatterns = [
 	// "README.md", "CHANGELOG.md" etc.
@@ -44,26 +44,6 @@ const defaultPatterns = [
 	'external/ckeditor5-commercial/packages/*/docs'
 ];
 
-const minimistOptions = {
-	string: [
-		'alert',
-		'directory'
-	],
-	boolean: [
-		'save'
-	],
-	alias: {
-		a: 'alert',
-		d: 'directory',
-		s: 'save'
-	},
-	default: {
-		alert: 'warning',
-		directory: '',
-		save: false
-	}
-};
-
 const spawnOptions = {
 	cwd: CKEDITOR5_ROOT,
 	shell: true
@@ -77,8 +57,6 @@ const globOptions = {
 	]
 };
 
-const args = minimist( process.argv.slice( 2 ), minimistOptions );
-
 main()
 	.catch( err => {
 		console.log( chalk.red( '\nScript threw an error:' ) );
@@ -91,7 +69,11 @@ main()
 	} );
 
 async function main() {
-	validateArgs();
+	const readabilityFilePaths = globSync( READABILITY_FILES_GLOB, globOptions ).map( upath.toUnix );
+	await loadConfigFiles( readabilityFilePaths );
+
+	const args = getArgs();
+	validateArgs( args );
 
 	const patterns = args.directory ? [ `**/${ args.directory }/**/*.md` ] : args._;
 	const files = [];
@@ -114,18 +96,18 @@ async function main() {
 
 	console.log( chalk.blue( '\nPreparing config files...' ) );
 
-	await prepareMainConfigFile();
+	await prepareMainConfigFile( args );
 
 	if ( args.save ) {
-		await prepareReadabilityConfigFiles();
+		await prepareReadabilityConfigFiles( readabilityFilePaths );
 
-		return executeAndSave( chunks );
+		return executeAndSave( args, chunks );
 	}
 
-	return executeAndLog( chunks );
+	return executeAndLog( args, chunks );
 }
 
-async function executeAndSave( chunks ) {
+async function executeAndSave( args, chunks ) {
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
 	const filesData = [];
@@ -133,7 +115,7 @@ async function executeAndSave( chunks ) {
 	for ( let i = 0; i < chunks.length; i++ ) {
 		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...` ) );
 
-		const valeData = await runVale( chunks[ i ] );
+		const valeData = await runVale( args, chunks[ i ] );
 
 		for ( const key in valeData ) {
 			const path = upath.toUnix( key );
@@ -182,7 +164,7 @@ async function executeAndSave( chunks ) {
 	await fs.writeFile( resultPath, filesDataToCsv( filesData ), 'utf-8' );
 }
 
-async function executeAndLog( chunks ) {
+async function executeAndLog( args, chunks ) {
 	console.log( chalk.blue( '\nExecuting vale...\n' ) );
 
 	const collectedValeData = {
@@ -196,14 +178,14 @@ async function executeAndLog( chunks ) {
 	for ( let i = 0; i < chunks.length; i++ ) {
 		console.log( chalk.blue( `Processing chunk ${ i + 1 }/${ chunks.length }...` ) );
 
-		const valeData = await runVale( chunks[ i ] );
+		const valeData = await runVale( args, chunks[ i ] );
 
 		for ( const key in valeData ) {
 			collectedValeData[ key ] += valeData[ key ];
 		}
 	}
 
-	console.log( getSummary( collectedValeData ) );
+	console.log( getSummary( args, collectedValeData ) );
 }
 
 function splitFilesIntoChunks( files ) {
@@ -222,7 +204,7 @@ function splitFilesIntoChunks( files ) {
 	}, [ [] ] );
 }
 
-function runVale( files ) {
+function runVale( args, files ) {
 	const valeCommandPattern = /^\$ vale .+\n/m;
 	const commandInfoLinePattern = /^info Visit .+\n/m;
 	const valeFooterPattern = /\n?.*?(\d+) errors?.*?(\d+) warnings?.*?(\d+) suggestions?.*?(\d+) files?[\s\S]+/;
@@ -280,22 +262,24 @@ function runVale( files ) {
 	} );
 }
 
-async function prepareMainConfigFile() {
-	originalFileContents[ VALE_CONFIG_PATH ] = await fs.readFile( VALE_CONFIG_PATH, 'utf-8' );
+async function loadConfigFiles( readabilityFilePaths ) {
+	originalConfigFilesContents[ VALE_CONFIG_PATH ] = await fs.readFile( VALE_CONFIG_PATH, 'utf-8' );
 
-	const parsedIniFile = ini.parse( originalFileContents[ VALE_CONFIG_PATH ] );
+	for ( const readabilityFilePath of readabilityFilePaths ) {
+		originalConfigFilesContents[ readabilityFilePath ] = await fs.readFile( readabilityFilePath, 'utf-8' );
+	}
+}
+
+async function prepareMainConfigFile( args ) {
+	const parsedIniFile = ini.parse( originalConfigFilesContents[ VALE_CONFIG_PATH ] );
 	parsedIniFile.MinAlertLevel = args.alert;
 
 	await fs.writeFile( VALE_CONFIG_PATH, ini.stringify( parsedIniFile ), 'utf-8' );
 }
 
-async function prepareReadabilityConfigFiles() {
-	const readabilityFilePaths = globSync( READABILITY_FILES_GLOB, globOptions ).map( upath.toUnix );
-
+async function prepareReadabilityConfigFiles( readabilityFilePaths ) {
 	for ( const readabilityFilePath of readabilityFilePaths ) {
-		originalFileContents[ readabilityFilePath ] = await fs.readFile( readabilityFilePath, 'utf-8' );
-
-		const parsedYmlFile = yaml.load( originalFileContents[ readabilityFilePath ] );
+		const parsedYmlFile = yaml.load( originalConfigFilesContents[ readabilityFilePath ] );
 		parsedYmlFile.message = '%s';
 		parsedYmlFile.condition = '> -999999';
 
@@ -304,8 +288,8 @@ async function prepareReadabilityConfigFiles() {
 }
 
 async function restoreConfigFiles() {
-	for ( const filePath in originalFileContents ) {
-		const originalFileContent = originalFileContents[ filePath ];
+	for ( const filePath in originalConfigFilesContents ) {
+		const originalFileContent = originalConfigFilesContents[ filePath ];
 
 		await fs.writeFile( filePath, originalFileContent, 'utf-8' );
 	}
@@ -323,7 +307,33 @@ function filesDataToCsv( filesData ) {
 	return [ [ headers, readabilityMetrics ].join( ',' ), ...data ].join( '\n' );
 }
 
-function validateArgs() {
+function getArgs() {
+	const parsedIniFile = ini.parse( originalConfigFilesContents[ VALE_CONFIG_PATH ] );
+
+	const minimistOptions = {
+		string: [
+			'alert',
+			'directory'
+		],
+		boolean: [
+			'save'
+		],
+		alias: {
+			a: 'alert',
+			d: 'directory',
+			s: 'save'
+		},
+		default: {
+			alert: parsedIniFile.MinAlertLevel || 'warning',
+			directory: '',
+			save: false
+		}
+	};
+
+	return minimist( process.argv.slice( 2 ), minimistOptions );
+}
+
+function validateArgs( args ) {
 	const allowedValeAlertLevels = Object.keys( VALE_ALERT_LEVELS );
 
 	if ( !allowedValeAlertLevels.includes( args.alert ) ) {
@@ -341,7 +351,7 @@ function validateArgs() {
 	}
 }
 
-function getSummary( collectedValeData ) {
+function getSummary( args, collectedValeData ) {
 	const formatter = new Intl.ListFormat( 'en', { style: 'long', type: 'conjunction' } );
 
 	const alerts = [ chalk.red( `${ collectedValeData.errors } errors` ) ];
