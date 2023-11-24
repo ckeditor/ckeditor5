@@ -51,6 +51,8 @@ export default class Dialog extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
+		this._initShowHideListeners();
+
 		this.set( 'isOpen', false );
 	}
 
@@ -81,26 +83,9 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		this._initShowHideListeners();
-
 		if ( this.isOpen || Dialog.view ) {
 			this.hide();
 		}
-
-		const editor = this.editor;
-
-		Dialog.view = new DialogView( editor.locale, () => {
-			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
-		}, () => {
-			return editor.ui.viewportOffset;
-		} );
-
-		Dialog.view.on<DialogViewCloseEvent>( 'close', () => {
-			this.hide();
-		} );
-
-		editor.ui.view.body.add( Dialog.view );
-		editor.ui.focusTracker.add( Dialog.view.element! );
 
 		this.fire( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
 	}
@@ -118,6 +103,21 @@ export default class Dialog extends Plugin {
 		position,
 		onHide
 	}: DialogDefinition ) {
+		const editor = this.editor;
+
+		Dialog.view = new DialogView( editor.locale, () => {
+			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
+		}, () => {
+			return editor.ui.viewportOffset;
+		} );
+
+		Dialog.view.on<DialogViewCloseEvent>( 'close', () => {
+			this.hide();
+		} );
+
+		editor.ui.view.body.add( Dialog.view );
+		editor.ui.focusTracker.add( Dialog.view.element! );
+
 		// Unless the user specified a position, modals should always be centered on the screen.
 		// Otherwise, let's keep dialogs centered in the editing root by default.
 		if ( !position ) {

@@ -620,12 +620,16 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		const focusables = [ ...this.children ];
 
-		if ( this.actionsView ) {
-			focusables.push( this.actionsView );
-		}
-
 		if ( this.closeButtonView ) {
 			focusables.push( this.closeButtonView );
+		}
+
+		if ( this.contentView ) {
+			focusables.push( this.contentView );
+		}
+
+		if ( this.actionsView ) {
+			focusables.push( this.actionsView );
 		}
 
 		focusables.forEach( focusable => {
