@@ -36,7 +36,7 @@ ClassicEditor
 				'|',
 				'linkImage'
 			],
-			insert: { 
+			insert: {
 				// If this setting is omitted, the editor defaults to 'block'.
 				// See explanation below.
 				type: 'auto'
@@ -55,7 +55,7 @@ ClassicEditor
 
 Inline images can be inserted in the middle of a paragraph or a link just like regular text. Block images, on the other hand, can be inserted only between other blocks like paragraphs, tables, or media. Being larger and existing as standalone content, block images can also have individual captions. Other than that, both types of images can be resized, linked, etc.
 
-By default, the {@link module:image/image~Image} plugin available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds} provides support for both inline and block images, working as a glue for {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock} plugins:
+By default, the {@link module:image/image~Image} plugin available in all {@link installation/getting-started/predefined-builds predefined editor builds} supports both inline and block images, working as a glue for the {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock} plugins.
 
 <figure class="table">
 	<table style="text-align: center">

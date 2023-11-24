@@ -6,7 +6,7 @@ category: features
 
 {@snippet features/build-link-source}
 
-The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and e-mail addresses automatically turn into working links.
+The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and email addresses automatically turn into working links.
 
 ## Demo
 
