@@ -49,8 +49,8 @@ export default class ImageUploadUI extends Plugin {
 			} );
 
 			view.set( {
-				label: t( 'Insert image' ),
-				icon: icons.image,
+				label: t( 'Upload image from computer' ),
+				icon: icons.imageUpload,
 				tooltip: true
 			} );
 
@@ -82,17 +82,22 @@ export default class ImageUploadUI extends Plugin {
 
 				uploadImageButton.icon = icons.imageUpload;
 
-				uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-					t( 'Replace from computer' ) :
-					t( 'Upload from computer' )
-				);
-
 				if ( type == 'formView' ) {
 					uploadImageButton.withText = true;
+
+					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace from computer' ) :
+						t( 'Upload from computer' )
+					);
 
 					uploadImageButton.on( 'execute', () => {
 						imageInsertUI.dropdownView!.isOpen = false;
 					} );
+				} else {
+					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace image from computer' ) :
+						t( 'Upload image from computer' )
+					);
 				}
 
 				return uploadImageButton;

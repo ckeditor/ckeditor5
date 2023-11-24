@@ -64,17 +64,22 @@ export default class CKFinderUI extends Plugin {
 
 				button.icon = icons.imageAssetManager;
 
-				button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-					t( 'Replace with file manager' ) :
-					t( 'Insert with file manager' )
-				);
-
 				if ( type == 'formView' ) {
 					button.withText = true;
+
+					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace with file manager' ) :
+						t( 'Insert with file manager' )
+					);
 
 					button.on( 'execute', () => {
 						imageInsertUI.dropdownView!.isOpen = false;
 					} );
+				} else {
+					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace image with file manager' ) :
+						t( 'Insert image with file manager' )
+					);
 				}
 
 				return button;
