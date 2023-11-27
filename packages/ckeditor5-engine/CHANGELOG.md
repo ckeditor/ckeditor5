@@ -223,7 +223,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Prevented `model.Writer` from inserting empty text nodes. Closes [#1320](https://github.com/ckeditor/ckeditor5-engine/issues/1320). ([47070b5](https://github.com/ckeditor/ckeditor5-engine/commit/47070b5))
 * Prevented `View` from firing the `render` event if there were no changes since the last rendering. Closes [#1653](https://github.com/ckeditor/ckeditor5-engine/issues/1653). Closes [#1660](https://github.com/ckeditor/ckeditor5-engine/issues/1660). ([558638c](https://github.com/ckeditor/ckeditor5-engine/commit/558638c))
 * Renamed the event during selection attributes conversion. `attribute:key` becomes to `attribute:key:$text`. Closes [#1597](https://github.com/ckeditor/ckeditor5-engine/issues/1597). ([fd7734e](https://github.com/ckeditor/ckeditor5-engine/commit/fd7734e))
-* Stopped invoking `view.render()` by `EditingController` when the model document isn't changed. Closes [#1653](https://github.com/ckeditor/ckeditor5-engine/issues/1653). ([5d97fd6](https://github.com/ckeditor/ckeditor5-engine/commit/5d97fd6))
+* Stopped invoking `view.render()` by `EditingController` when the model document has not changed. Closes [#1653](https://github.com/ckeditor/ckeditor5-engine/issues/1653). ([5d97fd6](https://github.com/ckeditor/ckeditor5-engine/commit/5d97fd6))
 * Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([bf86ffa](https://github.com/ckeditor/ckeditor5-engine/commit/bf86ffa))
 * Undo and redo no longer crashes in scenarios featuring pasting content into earlier pasted content. Closes [[ckeditor/ckeditor5#1385](https://github.com/ckeditor/ckeditor5/issues/1385)](https://github.com/ckeditor/ckeditor5/issues/1385). ([551ab50](https://github.com/ckeditor/ckeditor5-engine/commit/551ab50))
 * Update model selection attributes and markers after each change that affects the selection. Closes [#1673](https://github.com/ckeditor/ckeditor5-engine/issues/1673). ([4f9ac0e](https://github.com/ckeditor/ckeditor5-engine/commit/4f9ac0e))
@@ -491,7 +491,7 @@ In 1.0.0-beta.1 the engine's API has underwent a thorough review which resulted 
 
 Instead, we recommend reading https://ckeditor.com/docs/ckeditor5/latest/framework/guides/architecture/editing-engine.html once more (it will be updated in a couple of days after the release).
 
-The good news is that the our focus when designing the new API was on developer experience. APIs which were dangerous or confusing were removed or hidden and new APIs were added in their place. The engine is now safer and more useful library and we hope you'll enjoy it :).
+The good news is that our focus when designing the new API was on the developer experience. APIs which were dangerous or confusing were removed or hidden and new APIs were added in their place. The engine is now a safer and more useful library and we hope you will enjoy it.
 
 ### Features
 
@@ -512,7 +512,7 @@ The good news is that the our focus when designing the new API was on developer 
 
 * [Firefox] Added fix for typing space on the edge of inline elements. Closes [ckeditor/ckeditor5#692](https://github.com/ckeditor/ckeditor5/issues/692). ([3ea70f3](https://github.com/ckeditor/ckeditor5-engine/commit/3ea70f3))
 * `DocumenSelection#change:range` event will be fired only once after multiple selection live ranges have changed. Closes [#1281](https://github.com/ckeditor/ckeditor5-engine/issues/1281). ([b26935c](https://github.com/ckeditor/ckeditor5-engine/commit/b26935c))
-* `model.DocumentSelection` should update it's attributes after each change, including external changes. Closes [#1267](https://github.com/ckeditor/ckeditor5-engine/issues/1267). ([b91d967](https://github.com/ckeditor/ckeditor5-engine/commit/b91d967))
+* `model.DocumentSelection` should update its attributes after each change, including external changes. Closes [#1267](https://github.com/ckeditor/ckeditor5-engine/issues/1267). ([b91d967](https://github.com/ckeditor/ckeditor5-engine/commit/b91d967))
 * `Model#insertContent()` will not merge nodes if the model after the merge would violate schema rules. Closes [ckeditor/ckeditor5#730](https://github.com/ckeditor/ckeditor5/issues/730). ([2a73830](https://github.com/ckeditor/ckeditor5-engine/commit/2a73830))
 * `Schema#getLimitElement()` will return a proper limit element (the root element) if one of the selection's ranges have the root element as the limit element. Closes [#1275](https://github.com/ckeditor/ckeditor5-engine/issues/1275). ([050a415](https://github.com/ckeditor/ckeditor5-engine/commit/050a415))
 * Added a 50ms timeout after `Document#focus` event before rendering to be sure that selection changes are processed on Firefox and Safari. Closes [ckeditor/ckeditor5#676](https://github.com/ckeditor/ckeditor5/issues/676). Closes [#1157](https://github.com/ckeditor/ckeditor5-engine/issues/1157). Closes [#1155](https://github.com/ckeditor/ckeditor5-engine/issues/1155). Closes [#1153](https://github.com/ckeditor/ckeditor5-engine/issues/1153). ([aba8e68](https://github.com/ckeditor/ckeditor5-engine/commit/aba8e68))
@@ -536,7 +536,7 @@ The good news is that the our focus when designing the new API was on developer 
 * Keep the same marker instance when marker is updated. ([8eba5e9](https://github.com/ckeditor/ckeditor5-engine/commit/8eba5e9))
 * Make `Position` and `Range` immutable in model and view. Closes [#897](https://github.com/ckeditor/ckeditor5-engine/issues/897). ([836dfd8](https://github.com/ckeditor/ckeditor5-engine/commit/836dfd8))
 * Manual test for [#475](https://github.com/ckeditor/ckeditor5-engine/issues/475) now works correctly. Closes [#1271](https://github.com/ckeditor/ckeditor5-engine/issues/1271). ([c2d4cec](https://github.com/ckeditor/ckeditor5-engine/commit/c2d4cec))
-* Methods which modify the model's and view's tree are now protected and shouldn't be used directly in the code. Iinstance of `Writer` should be used instead. Closes [#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([a4f3dad](https://github.com/ckeditor/ckeditor5-engine/commit/a4f3dad))
+* Methods that modify the model's and view's tree are now protected and should not be used directly in the code. An instance of `Writer` should be used instead. Closes [#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([a4f3dad](https://github.com/ckeditor/ckeditor5-engine/commit/a4f3dad))
 * Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([5f65823](https://github.com/ckeditor/ckeditor5-engine/commit/5f65823))
 * Moved `consumable` parameter to `conversionApi` parameter in downcast. Closes [#1294](https://github.com/ckeditor/ckeditor5-engine/issues/1294). Closes [#1261](https://github.com/ckeditor/ckeditor5-engine/issues/1261). ([731db37](https://github.com/ckeditor/ckeditor5-engine/commit/731db37))
 * Moved `Document#getNearesetSelectionRange` to `Schema`. Closes [#1227](https://github.com/ckeditor/ckeditor5-engine/issues/1227). ([d1838a4](https://github.com/ckeditor/ckeditor5-engine/commit/d1838a4))
@@ -585,7 +585,7 @@ Feature: `SchemaContext#concat` has been introduced.
 
 ### Other changes
 
-* Removed the `renderer-skipped-selection-rendering` warning since it doesn't bring any value. Closes [#1158](https://github.com/ckeditor/ckeditor5-engine/issues/1158). ([4a5a5d1](https://github.com/ckeditor/ckeditor5-engine/commit/4a5a5d1))
+* Removed the `renderer-skipped-selection-rendering` warning since it does not bring any value. Closes [#1158](https://github.com/ckeditor/ckeditor5-engine/issues/1158). ([4a5a5d1](https://github.com/ckeditor/ckeditor5-engine/commit/4a5a5d1))
 * The `removeHighlight()` function now accepts descriptor id instead of a `HighlightDescriptor` object. Closes [#1164](https://github.com/ckeditor/ckeditor5-engine/issues/1164). ([7bde6f7](https://github.com/ckeditor/ckeditor5-engine/commit/7bde6f7))
 
 
@@ -608,7 +608,7 @@ Feature: `SchemaContext#concat` has been introduced.
 
 ### BREAKING CHANGES
 
-* View and model nodes are now automatically removed from their old parents when they are inserted into new elements. This is important e.g. if you iterate through element's children and they are moved during that iteration. In that case, it's safest to cache the element's children in an array.
+* View and model nodes are now automatically removed from their old parents when they are inserted into new elements. This is important e.g. if you iterate through element's children and they are moved during that iteration. In that case, it is safest to cache the element's children in an array.
 
 
 ## [0.11.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.10.0...v0.11.0) (2017-09-03)
@@ -621,7 +621,7 @@ Feature: `SchemaContext#concat` has been introduced.
 * `DomConverter` should actively prevent unwanted scrolling on focus. Closes [#951](https://github.com/ckeditor/ckeditor5-engine/issues/951). Closes [#707](https://github.com/ckeditor/ckeditor5-engine/issues/707). Closes [#706](https://github.com/ckeditor/ckeditor5-engine/issues/706). ([cb18a95](https://github.com/ckeditor/ckeditor5-engine/commit/cb18a95))
 * `LiveSelection` will correctly set its properties in case of a non-collapsed default range. This will fix loading data which starts with an object element. Closes [#699](https://github.com/ckeditor/ckeditor5-engine/issues/699). ([e6e92e9](https://github.com/ckeditor/ckeditor5-engine/commit/e6e92e9))
 * `LiveSelection` will not read attributes from object element's children. Closes [#986](https://github.com/ckeditor/ckeditor5-engine/issues/986). ([93639d0](https://github.com/ckeditor/ckeditor5-engine/commit/93639d0))
-* `MarkerDelta` transformation should no longer cause editor to crash, if a `MarkerOperation` had `null` as it's `oldRange` or `newRange`. Closes [#943](https://github.com/ckeditor/ckeditor5-engine/issues/943). ([d328811](https://github.com/ckeditor/ckeditor5-engine/commit/d328811))
+* `MarkerDelta` transformation should no longer cause the editor to crash if a `MarkerOperation` had `null` as its `oldRange` or `newRange`. Closes [#943](https://github.com/ckeditor/ckeditor5-engine/issues/943). ([d328811](https://github.com/ckeditor/ckeditor5-engine/commit/d328811))
 * `model.Element#getNodeByPath()` and `model.DocumentFragment#getNodeByPath()` should work with offsets not indexes (because path is an array of offsets). Closes [#1009](https://github.com/ckeditor/ckeditor5-engine/issues/1009). ([331d2f4](https://github.com/ckeditor/ckeditor5-engine/commit/331d2f4))
 * `Schema.checkAttributeInSelection` should use element's existing attributes when querying schema. Closes [#1110](https://github.com/ckeditor/ckeditor5-engine/issues/1110). ([25ef1a8](https://github.com/ckeditor/ckeditor5-engine/commit/25ef1a8))
 * `view.Range#getTrimmed()` was returning incorrect ranges in some cases. Fixes [#1058](https://github.com/ckeditor/ckeditor5-engine/issues/1058). ([d99c568](https://github.com/ckeditor/ckeditor5-engine/commit/d99c568))
@@ -630,9 +630,9 @@ Feature: `SchemaContext#concat` has been introduced.
 * Fixed a bug when `SplitDelta` transformation might cause undo to throw an error in some cases. Closes [#1084](https://github.com/ckeditor/ckeditor5-engine/issues/1084). ([cb9d409](https://github.com/ckeditor/ckeditor5-engine/commit/cb9d409))
 * Fixed incorrect markers transformations and conversions. Closes [#1112](https://github.com/ckeditor/ckeditor5-engine/issues/1112). Closes [#1080](https://github.com/ckeditor/ckeditor5-engine/issues/1080). Closes [#1079](https://github.com/ckeditor/ckeditor5-engine/issues/1079). ([b71adfb](https://github.com/ckeditor/ckeditor5-engine/commit/b71adfb))
 * Multiple spaces in an empty paragraph are now allowed. Closes ckeditor/ckeditor5-typing[#101](https://github.com/ckeditor/ckeditor5-engine/issues/101). ([9ca61d5](https://github.com/ckeditor/ckeditor5-engine/commit/9ca61d5))
-* Mutation observer will ignore children mutations if as a result of several native mutations the element's children haven't changed. Closes [#1031](https://github.com/ckeditor/ckeditor5-engine/issues/1031). ([552198e](https://github.com/ckeditor/ckeditor5-engine/commit/552198e))
+* Mutation observer will ignore children mutations if as a result of several native mutations the element's children have not changed. Closes [#1031](https://github.com/ckeditor/ckeditor5-engine/issues/1031). ([552198e](https://github.com/ckeditor/ckeditor5-engine/commit/552198e))
 * None of the editable's ancestors should scroll when the `DomConverter` focuses an editable. Closes [#957](https://github.com/ckeditor/ckeditor5-engine/issues/957). ([e3bc4d1](https://github.com/ckeditor/ckeditor5-engine/commit/e3bc4d1))
-* Placeholder text now will not be hidden if the element has only ui elements. Closes [#1018](https://github.com/ckeditor/ckeditor5-engine/issues/1018). ([299628b](https://github.com/ckeditor/ckeditor5-engine/commit/299628b))
+* Placeholder text now will not be hidden if the element has only UI elements. Closes [#1018](https://github.com/ckeditor/ckeditor5-engine/issues/1018). ([299628b](https://github.com/ckeditor/ckeditor5-engine/commit/299628b))
 * Prevent unbinding elements that are reused during rendering. Closes [#922](https://github.com/ckeditor/ckeditor5-engine/issues/922). ([88fcdcb](https://github.com/ckeditor/ckeditor5-engine/commit/88fcdcb))
 * Prevented editor throwing during `SplitDelta` x `RemoveDelta` transformation when SplitDelta's first operation was neither InsertOperation nor ReinsertOperation. Closes [#1065](https://github.com/ckeditor/ckeditor5-engine/issues/1065). ([85e38e1](https://github.com/ckeditor/ckeditor5-engine/commit/85e38e1))
 
@@ -692,13 +692,13 @@ Feature: `SchemaContext#concat` has been introduced.
   <paragraph>]Baz</paragraph>
   ```
 
-  The reasoning behind this change is that the user doesn't consider the last block as selected in such a case (as its selection isn't even visible).
+  The reasoning behind this change is that the user does not consider the last block as selected in such a case (as its selection is not even visible).
 
 ### BREAKING CHANGES
 
 * `ModelConverterBuilder#toStamp()` functionality is renamed to `ModelConverterBuilder#toElement()`. Introduced `ModelConverterBuilder#toVirtualSelection()` which replaces current marker to element conversion.
 * The `DataController#deleteContent()` option was renamed from `merge` to `leaveUnmerged` and the default behavior of the function was changed to merge blocks.
-* Removed `wrapRange()` and `unwrapRange()` functions from `model-to-view-converters.js` as they're no longer used.
+* Removed the `wrapRange()` and `unwrapRange()` functions from `model-to-view-converters.js` as they are no longer used.
 * Renamed marker stamps to marker elements in code and docs.
 * Renamed `Selection#collapse()` to `Selection#setCollapsedAt()`.
 * Renamed `Selection#setFocus()` to `Selection#moveFocusTo()`.
@@ -747,7 +747,7 @@ Feature: `SchemaContext#concat` has been introduced.
 
 ### Bug fixes
 
-* Changed `DataController#insertContent()` behavior, so it doesn't clone given nodes. Closes [#869](https://github.com/ckeditor/ckeditor5-engine/issues/869). ([45f0f33](https://github.com/ckeditor/ckeditor5-engine/commit/45f0f33))
+* Changed `DataController#insertContent()` behavior, so it does not clone given nodes. Closes [#869](https://github.com/ckeditor/ckeditor5-engine/issues/869). ([45f0f33](https://github.com/ckeditor/ckeditor5-engine/commit/45f0f33))
 * Empty `AttributeDelta` should not be added to batch. Closes [#875](https://github.com/ckeditor/ckeditor5-engine/issues/875). ([425399b](https://github.com/ckeditor/ckeditor5-engine/commit/425399b))
 * Fixed a bug where `LiveRange` position would be lost when using wrap and unwrap deltas. Closes [#841](https://github.com/ckeditor/ckeditor5-engine/issues/841). ([efe3987](https://github.com/ckeditor/ckeditor5-engine/commit/efe3987))
 * Fixed various issues with the move and unwrap deltas conversion. Closes [#847](https://github.com/ckeditor/ckeditor5-engine/issues/847). ([39c34a5](https://github.com/ckeditor/ckeditor5-engine/commit/39c34a5))
@@ -755,7 +755,7 @@ Feature: `SchemaContext#concat` has been introduced.
 
   The base algorithm implemented in `Range#_getTransformedByDocumentChange()` will now include all model items between the old and new range boundary. See https://github.com/ckeditor/ckeditor5-engine/issues/877#issuecomment-287740021 for more details.
 * Mutations inserting bogus `<br>` at the end of the block element are filtered out by the mutation observer. Closes [#882](https://github.com/ckeditor/ckeditor5-engine/issues/882). ([3583cae](https://github.com/ckeditor/ckeditor5-engine/commit/3583cae))
-* Renderer should not change the native selection if the one it's about to render is visually similar to the current one. Closes [#887](https://github.com/ckeditor/ckeditor5-engine/issues/887). Closes [#880](https://github.com/ckeditor/ckeditor5-engine/issues/880). ([d8ee5fa](https://github.com/ckeditor/ckeditor5-engine/commit/d8ee5fa))
+* The renderer should not change the native selection if the one it is about to render is visually similar to the current one. Closes [#887](https://github.com/ckeditor/ckeditor5-engine/issues/887). Closes [#880](https://github.com/ckeditor/ckeditor5-engine/issues/880). ([d8ee5fa](https://github.com/ckeditor/ckeditor5-engine/commit/d8ee5fa))
 * Renderer will unbind DOM elements from view elements when removing them from DOM. Closes [#888](https://github.com/ckeditor/ckeditor5-engine/issues/888). ([86ea5b5](https://github.com/ckeditor/ckeditor5-engine/commit/86ea5b5))
 * Reversed `ReinsertOperation` targets back to same graveyard holder from which the nodes were re-inserted. Closes [#891](https://github.com/ckeditor/ckeditor5-engine/issues/891). ([ea6c881](https://github.com/ckeditor/ckeditor5-engine/commit/ea6c881))
 * View document is now re-rendered after focusing. Closes [#795](https://github.com/ckeditor/ckeditor5-engine/issues/795). ([115a91b](https://github.com/ckeditor/ckeditor5-engine/commit/115a91b))
@@ -776,7 +776,7 @@ Feature: `SchemaContext#concat` has been introduced.
 
 ### BREAKING CHANGES
 
-* Since the default position mapping algorithms are attached with low priority, custom position mapping callbacks added with higher priority won't receive position calculated by default algorithms in data. To execute default position mapping algorithms and use their value, hook custom callback with lower priority.
+* Since the default position mapping algorithms are attached with low priority, custom position mapping callbacks added with higher priority will not receive the position calculated by default algorithms in data. To execute default position mapping algorithms and use their value, hook custom callback with lower priority.
 * `BuildModelConverter#fromMarkerCollapsed()` is removed. Use `BuildModelConverter#fromMarker()` instead.
 
 ### NOTE
