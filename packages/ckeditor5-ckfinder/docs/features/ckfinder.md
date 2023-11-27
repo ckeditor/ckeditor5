@@ -28,7 +28,7 @@ The CKFinder feature lets you insert images and links to files into your content
 This demo shows the integration where the file manager's server connector handles [image upload](#configuring-the-image-upload-only) only:
 
 * Paste an image directly into the editor, and it will be automatically uploaded using the server-side connector.
-* Use the insert image button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} in the toolbar to insert an image.
+* Use the insert image button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} in the toolbar to insert an image.
 
 {@snippet features/ckfinder-upload-only}
 

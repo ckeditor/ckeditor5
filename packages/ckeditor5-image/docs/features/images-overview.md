@@ -185,11 +185,11 @@ The availability of these plugins varies in different {@link installation/gettin
 	You can add more image features to your editor using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or {@link features/images-installation manually by customizing your editor build}.
 </info-box>
 
-## Image toolbar dropdown
+## Image insert dropdown
 
 The toolbar button for the image feature is configurable and provides access to selected methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
 
-<!-- insert toolbar dropdown screenshot here -->
+{@img assets/img/image_insert_dropdown.png 772 Image insert dropdown in the main editor toolbar.}
 
 You can learn more about the toolbar dropdown configuration in the {@link features/images-installation#configuring-the-toolbar-dropdown installation guide}.
 

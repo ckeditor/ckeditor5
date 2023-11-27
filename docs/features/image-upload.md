@@ -18,7 +18,7 @@ Inserting {@link features/images-overview images} into content created with CKEd
 
 ## Demo
 
-This demo is configured to use {@link features/ckbox CKBox} for image upload and management. Use the image upload button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} to upload images or the CKBox button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to browse and select existing images from the file manager. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
+This demo is configured to use {@link features/ckbox CKBox} for image upload and management. Use the image upload button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} to upload images or the CKBox button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to browse and select existing images from the file manager. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
 
 {@snippet features/image-upload}
 
