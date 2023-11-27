@@ -11,6 +11,7 @@ export { default as Clipboard } from './clipboard.js';
 export {
 	default as ClipboardPipeline,
 	type ClipboardContentInsertionEvent,
+	type ClipboardContentInsertionData,
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData,
 	type ClipboardOutputTransformationEvent,
@@ -26,6 +27,8 @@ export { default as DragDrop } from './dragdrop.js';
 export { default as PastePlainText } from './pasteplaintext.js';
 export { default as DragDropTarget } from './dragdroptarget.js';
 export { default as DragDropBlockToolbar } from './dragdropblocktoolbar.js';
+
+export { collectAndRemoveFakeMarkers, insertAndCollectFakeMarkers } from './utils/insertAndCollectFakeMarkers.js';
 
 export type {
 	ViewDocumentClipboardInputEvent,

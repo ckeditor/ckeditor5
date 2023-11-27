@@ -33,6 +33,8 @@ import plainTextToHtml from './utils/plaintexttohtml.js';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata.js';
 import viewToPlainText from './utils/viewtoplaintext.js';
 
+import { collectAndRemoveFakeMarkers, insertAndCollectFakeMarkers } from './utils/insertAndCollectFakeMarkers.js';
+
 // Input pipeline events overview:
 //
 //              ┌──────────────────────┐          ┌──────────────────────┐
@@ -170,12 +172,17 @@ export default class ClipboardPipeline extends Plugin {
 		selection: Selection | DocumentSelection,
 		method: 'copy' | 'cut' | 'dragstart'
 	): void {
-		const content = this.editor.model.getSelectedContent( selection );
+		this.editor.model.change( writer => {
+			const insertedFakeMarkersElements = insertAndCollectFakeMarkers( writer, selection );
+			const documentFragment = this.editor.model.getSelectedContent( selection );
 
-		this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', {
-			dataTransfer,
-			content,
-			method
+			collectAndRemoveFakeMarkers( writer, documentFragment, insertedFakeMarkersElements );
+
+			this.fire<ClipboardOutputTransformationEvent>( 'outputTransformation', {
+				dataTransfer,
+				content: documentFragment,
+				method
+			} );
 		} );
 	}
 
