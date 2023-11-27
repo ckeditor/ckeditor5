@@ -70,7 +70,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* Any digit followed by a dot won't trigger the numbered list. Now, only `1` is supported by the `Autoformat` plugin. Closes [#60](https://github.com/ckeditor/ckeditor5-autoformat/issues/60). ([c7c4662](https://github.com/ckeditor/ckeditor5-autoformat/commit/c7c4662))
+* Any digit followed by a dot will not trigger the numbered list. Now, only `1` is supported by the `Autoformat` plugin. Closes [#60](https://github.com/ckeditor/ckeditor5-autoformat/issues/60). ([c7c4662](https://github.com/ckeditor/ckeditor5-autoformat/commit/c7c4662))
 
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v10.0.4...v11.0.0) (2019-02-28)
@@ -183,7 +183,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### NOTE
 
-* The Autoformat feature doesn't require Bold, Italic, Heading, etc. any longer. In order to make the most of the plugin, please make sure that relevant features are loaded in your editor.
+* The Autoformat feature does not require Bold, Italic, Heading, etc. any longer. In order to make the most of the plugin, please make sure that relevant features are loaded in your editor.
 
 
 ## [0.5.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.5.0...v0.5.1) (2017-05-07)

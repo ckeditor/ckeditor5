@@ -148,7 +148,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * Added the observable `Editor#state` property. Closes [#124](https://github.com/ckeditor/ckeditor5-core/issues/124). ([ec89d8d](https://github.com/ckeditor/ckeditor5-core/commit/ec89d8d))
 * Imported the module providing the `CKEDITOR_VERSION` global constant in the `Editor` class (see [ckeditor/ckeditor5#1005](https://github.com/ckeditor/ckeditor5/issues/1005)). ([a1a9144](https://github.com/ckeditor/ckeditor5-core/commit/a1a9144))
-* Introduced the `#element` property to the `EditorWithUI` interface. The `#element` property from the `ElementApi` interface has been renamed to `#sourceElement`. Most editors implement both interfaces, which ultimately means that the old `editor.element` property is now called `editor.sourceElement` and there's a new `editor.element` property with a new meaning. Closes [#64](https://github.com/ckeditor/ckeditor5-core/issues/64). ([eb43b63](https://github.com/ckeditor/ckeditor5-core/commit/eb43b63))
+* Introduced the `#element` property to the `EditorWithUI` interface. The `#element` property from the `ElementApi` interface has been renamed to `#sourceElement`. Most editors implement both interfaces, which ultimately means that the old `editor.element` property is now called `editor.sourceElement` and there is a new `editor.element` property with a new meaning. Closes [#64](https://github.com/ckeditor/ckeditor5-core/issues/64). ([eb43b63](https://github.com/ckeditor/ckeditor5-core/commit/eb43b63))
 * Introduced the `EditorUI#update` event. Closes [#130](https://github.com/ckeditor/ckeditor5-core/issues/130). ([734166a](https://github.com/ckeditor/ckeditor5-core/commit/734166a))
 
 ### Bug fixes
@@ -254,7 +254,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * Bound `EditingController#isReadOnly` to the editor. Closes [#98](https://github.com/ckeditor/ckeditor5-core/issues/98). ([ec02906](https://github.com/ckeditor/ckeditor5-core/commit/ec02906))
 * Cleaned up SVG icons. ([ffac7e7](https://github.com/ckeditor/ckeditor5-core/commit/ffac7e7))
-* Introduced `PluginInterface`. A plugin doesn't need to inherit directly from the `Plugin` class, as long as it implements some minimal interface. See [#78](https://github.com/ckeditor/ckeditor5-core/issues/78). ([f476f34](https://github.com/ckeditor/ckeditor5-core/commit/f476f34))
+* Introduced `PluginInterface`. A plugin does not need to inherit directly from the `Plugin` class, as long as it implements some minimal interface. See [#78](https://github.com/ckeditor/ckeditor5-core/issues/78). ([f476f34](https://github.com/ckeditor/ckeditor5-core/commit/f476f34))
 * Removed `ToggleAttributeCommand` class as well as other helpers from the `core/command` namespace. Closes [#14](https://github.com/ckeditor/ckeditor5-core/issues/14). ([7c68581](https://github.com/ckeditor/ckeditor5-core/commit/7c68581))
 * The command API has been redesigned. The `Command` methods are now public and consistent. Commands can be used in a standalone mode (without the editor). The `CommandCollection` was introduced and replaced the `Map` of commands used in `editor.commands`. Closes [#88](https://github.com/ckeditor/ckeditor5-core/issues/88). ([b76983b](https://github.com/ckeditor/ckeditor5-core/commit/b76983b))
 
@@ -288,7 +288,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* This time, we introduced support for `config.removePlugins` for real (we said that we did this in the previous release, but we didn't). Closes [#49](https://github.com/ckeditor/ckeditor5-core/issues/49). ([5834fed](https://github.com/ckeditor/ckeditor5-core/commit/5834fed))
+* This time, we introduced support for `config.removePlugins` for real (we said that we did this in the previous release, but we did not). Closes [#49](https://github.com/ckeditor/ckeditor5-core/issues/49). ([5834fed](https://github.com/ckeditor/ckeditor5-core/commit/5834fed))
 
 ### Features
 

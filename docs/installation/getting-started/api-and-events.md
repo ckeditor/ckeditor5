@@ -73,5 +73,5 @@ You can find more information about events in {@link framework/architecture/core
 <info-box hint>
 **What's next?**
 
-Having explored the API and events, it's time to take the next step: {@link installation/getting-started/extending-features extend your editor's features}.
+Having explored the API and events, it is time to take the next step: {@link installation/getting-started/extending-features extend your editor's features}.
 </info-box>

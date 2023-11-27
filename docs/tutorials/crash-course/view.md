@@ -25,7 +25,7 @@ In this section, we will focus on updating the toolbar.
 
 ## Creating a new button
 
-Let's import the `ButtonView` contructor in the `src/plugin.js` file:
+Let's import the `ButtonView` constructor in the `src/plugin.js` file:
 
 ```js
 import { ButtonView } from 'ckeditor5/src/ui';
@@ -63,14 +63,14 @@ In the callback we do four things:
 
 * Create a {@link module:ui/button/button~Button button} and set a few properties on it, one of which is the translated text created with the {@link module:utils/locale~Locale#t `editor.t()`} method.
 * Register a callback that will execute the `highlight` command and put the focus back to the editing view when the button is pressed.
-* Bind the `isOn` and `isEnabled` button properties to the `value` and `isEnabled` command properties. This ensures that the button is only clickable when the command can be executed, and that it's active when the selection is already highlighted.
+* Bind the `isOn` and `isEnabled` button properties to the `value` and `isEnabled` command properties. This ensures that the button is only clickable when the command can be executed, and that it is active when the selection is already highlighted.
 * Return the configured button.
 
 ## Registering a new button
 
 When we go back to the browser, we see that nothing has changed. The button we just created is not there.
 
-That's because to see the button, we need to register it in the editor's configuration. To do this, add the `'highlight'` string (the name we passed as the first argument to the `editor.ui.componentFactory.add()` method) to the `toolbar.items` array.
+This is because to see the button, we need to register it in the editor's configuration. To do this, add the `'highlight'` string (the name we passed as the first argument to the `editor.ui.componentFactory.add()` method) to the `toolbar.items` array.
 
 Open `src/main.js` and update the configuration of the editor:
 
