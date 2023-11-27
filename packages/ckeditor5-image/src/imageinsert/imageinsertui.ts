@@ -7,8 +7,16 @@
  * @module image/imageinsert/imageinsertui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { logWarning, CKEditorError, type Locale, type Observable } from 'ckeditor5/src/utils';
+import {
+	Plugin,
+	type Editor
+} from 'ckeditor5/src/core';
+import {
+	CKEditorError,
+	logWarning,
+	type Locale,
+	type Observable
+} from 'ckeditor5/src/utils';
 import {
 	createDropdown,
 	SplitButtonView,
@@ -44,14 +52,14 @@ export default class ImageInsertUI extends Plugin {
 	public dropdownView?: DropdownView;
 
 	/**
-	 * TODO
+	 * Observable property used to alter labels while some image is selected and when it is not.
 	 *
 	 * @observable
 	 */
 	declare public isImageSelected: boolean;
 
 	/**
-	 * TODO
+	 * Registered integrations map.
 	 */
 	private _integrations = new Map<string, IntegrationData>();
 
@@ -90,7 +98,7 @@ export default class ImageInsertUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers the insert image dropdown integration.
 	 */
 	public registerIntegration( {
 		name,
@@ -101,15 +109,19 @@ export default class ImageInsertUI extends Plugin {
 	}: {
 		name: string;
 		observable: Observable & { isEnabled: boolean };
-		buttonViewCreator: IntegrationCallback;
-		formViewCreator: IntegrationCallback;
+		buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
+		formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
 		requiresForm?: boolean;
 } ): void {
 		if ( this._integrations.has( name ) ) {
 			/**
-			 * TODO
+			 * There are two insert image integrations registered with the same name.
+			 *
+			 * // TODO add more details.
+			 *
+			 * @error image-insert-integration-exists
 			 */
-			logWarning( 'image-insert-zzzzz', { name } );
+			logWarning( 'image-insert-integration-exists', { name } );
 		}
 
 		this._integrations.set( name, {
@@ -169,20 +181,33 @@ export default class ImageInsertUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Validates the integrations list.
 	 */
 	private _prepareIntegrations(): Array<IntegrationData> {
 		const editor = this.editor;
 		const items = editor.config.get( 'image.insert.integrations' )!;
 		const result: Array<IntegrationData> = [];
 
+		if ( !items.length ) {
+			/**
+			 * The insert image feature requires a list of integrations to be provided in the editor configuration.
+			 *
+			 * // TODO add details.
+			 *
+			 * @error image-insert-not-specified-integrations
+			 */
+			throw new CKEditorError( 'image-insert-not-specified-integrations' );
+		}
+
 		for ( const item of items ) {
 			if ( !this._integrations.has( item ) ) {
 				if ( ![ 'upload', 'assetManager', 'url' ].includes( item ) ) {
 					/**
-					 * TODO
+					 * The specified insert image integration name is unknown or the providing plugin is not loaded in the editor.
+					 *
+					 * @error image-insert-unknown-integration
 					 */
-					logWarning( 'image-insert-zzzzzz', { item } );
+					logWarning( 'image-insert-unknown-integration', { item } );
 				}
 
 				continue;
@@ -193,24 +218,22 @@ export default class ImageInsertUI extends Plugin {
 
 		if ( !result.length ) {
 			/**
-			 * TODO
-			 * @error image-insert-aaaa
+			 * The image insert feature requires integrations to be registered by separate features.
+			 *
+			 * // TODO add details.
+			 *
+			 * @error image-insert-not-registered-integrations
 			 */
-			throw new CKEditorError( 'image-insert-aaaa' );
+			throw new CKEditorError( 'image-insert-not-registered-integrations' );
 		}
 
 		return result;
 	}
 }
 
-/**
- * TODO
- */
-export type IntegrationCallback = ( isOnlyOne: boolean ) => FocusableView;
-
 type IntegrationData = {
 	observable: Observable & { isEnabled: boolean };
-	buttonViewCreator: IntegrationCallback;
-	formViewCreator: IntegrationCallback;
+	buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
+	formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
 	requiresForm?: boolean;
 };

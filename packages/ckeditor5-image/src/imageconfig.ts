@@ -475,7 +475,6 @@ export interface ImageInsertConfig {
 	 * };
 	 * ```
 	 *
-	 * @internal
 	 * @default [ 'upload', 'assetManager', 'url' ]
 	 */
 	integrations?: Array<string>;

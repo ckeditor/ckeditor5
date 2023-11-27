@@ -16,7 +16,12 @@ import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
 import ImageInsertUrlView, { type ImageInsertUrlViewCancelEvent, type ImageInsertUrlViewSubmitEvent } from './ui/imageinserturlview';
 
 /**
- * TODO
+ * The image insert via URL plugin (UI part).
+ *
+ * For a detailed overview, check the {@glink features/images/images-inserting
+ * Insert images via source URL} documentation.
+ *
+ * This plugin registers the {@link module:image/imageinsert/imageinsertui~ImageInsertUI} integration for `url`.
  */
 export default class ImageInsertViaUrlUI extends Plugin {
 	private _imageInsertUI!: ImageInsertUI;
@@ -52,7 +57,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates the view displayed in the dropdown.
 	 */
 	private _createInsertUrlView( isOnlyOne: boolean ): FocusableView {
 		const editor = this.editor;
@@ -120,7 +125,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Creates the toolbar button.
 	 */
 	private _createInsertUrlButton( isOnlyOne: boolean ): ButtonView {
 		const ButtonClass = isOnlyOne ? DropdownButtonView : ButtonView;
@@ -143,7 +148,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Closes the dropdown.
 	 */
 	private _closePanel(): void {
 		this.editor.editing.view.focus();
