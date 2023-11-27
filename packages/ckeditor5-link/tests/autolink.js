@@ -127,8 +127,7 @@ describe( 'AutoLink', () => {
 				setData( model, '<paragraph>[some <$text linkHref="http://hello.com">selected] text</$text></paragraph>' );
 				pasteText( 'http://world.com' );
 				expect( getData( model ) ).to.equal(
-					// eslint-disable-next-line max-len
-					'<paragraph>[<$text linkHref="http://world.com">some selected</$text>]<$text linkHref="http://hello.com"> text</$text></paragraph>'
+					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
 
@@ -137,6 +136,17 @@ describe( 'AutoLink', () => {
 				pasteText( 'http://world.com' );
 				expect( getData( model ) ).to.equal(
 					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
+				);
+			} );
+
+			it( 'paste with two partially selected links overwrites both', () => {
+				setData( model, `
+					<paragraph><$text linkHref="http://one.com">here [are</$text>
+					<$text linkHref="http://two.com">two] links</$text></paragraph>`
+				);
+				pasteText( 'http://world.com' );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>[<$text linkHref="http://world.com">here are two links</$text>]</paragraph>'
 				);
 			} );
 		} );

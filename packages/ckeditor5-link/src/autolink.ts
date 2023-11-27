@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
-import type { DocumentSelectionChangeEvent, Element, Model, Range, Writer } from 'ckeditor5/src/engine';
+import type { DocumentSelectionChangeEvent, Element, Model, Position, Range, Writer } from 'ckeditor5/src/engine';
 import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent, findAttributeRange } from 'ckeditor5/src/typing';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
 
@@ -109,22 +109,27 @@ export default class AutoLink extends Plugin {
 		this._enablePasteLinking();
 	}
 
-	private _expandSelection( writer: Writer, selectedRange: Range, href: unknown ): void {
+	private _expandLinkSelection( model: Model, position: Position ): Range | null {
+		if ( position.textNode?.hasAttribute( 'linkHref' ) ) {
+			return findAttributeRange( position, 'linkHref', position.textNode?.getAttribute( 'linkHref' ), model );
+		} else {
+			return null;
+		}
+	}
+
+	private _selectEntireLinks( writer: Writer, selectedRange: Range ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
 		const selStart = selection.getFirstPosition()!;
 		const selEnd = selection.getLastPosition()!;
 
-		const linkRange = findAttributeRange( selStart, 'linkHref', href, model );
+		const updatedSelection = selectedRange
+			.getJoined( this._expandLinkSelection( model, selStart ) || selectedRange )
+			?.getJoined( this._expandLinkSelection( model, selEnd ) || selectedRange );
 
-		const updatedSelection = linkRange.getJoined( selectedRange );
-		if ( updatedSelection === null ) {
-			return;
-		}
-
-		if ( updatedSelection.start.isBefore( selStart ) || updatedSelection.end.isAfter( selEnd ) ) {
-			// only write the selection if it wasn't already the entire link
+		if ( updatedSelection?.start.isBefore( selStart ) || updatedSelection?.end.isAfter( selEnd ) ) {
+			// only update the selection if it changed
 			writer.setSelection( updatedSelection );
 		}
 	}
@@ -158,9 +163,7 @@ export default class AutoLink extends Plugin {
 			// if the text in the clipboard has a URL, and that URL is the whole clipboard
 			if ( matches && matches[ 2 ] === newLink ) {
 				model.change( writer => {
-					if ( selection.hasAttribute( 'linkHref' ) ) {
-						this._expandSelection( writer, selectedRange, selection.getAttribute( 'linkHref' ) );
-					}
+					this._selectEntireLinks( writer, selectedRange );
 					linkCommand.execute( newLink );
 				} );
 				evt.stop();
