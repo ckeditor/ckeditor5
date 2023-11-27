@@ -59,14 +59,27 @@ export default class CKFinderUI extends Plugin {
 			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
 			const command: CKFinderCommand = editor.commands.get( 'ckfinder' )!;
 
-			imageInsertUI.registerIntegration( 'assetManager', command, type => {
-				const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
+			imageInsertUI.registerIntegration( {
+				name: 'assetManager',
+				observable: command,
 
-				button.icon = icons.imageAssetManager;
+				buttonViewCreator: () => {
+					const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
 
-				if ( type == 'formView' ) {
+					button.icon = icons.imageAssetManager;
+					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace image with file manager' ) :
+						t( 'Insert image with file manager' )
+					);
+
+					return button;
+				},
+
+				formViewCreator: () => {
+					const button = this.editor.ui.componentFactory.create( 'ckfinder' ) as ButtonView;
+
+					button.icon = icons.imageAssetManager;
 					button.withText = true;
-
 					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
 						t( 'Replace with file manager' ) :
 						t( 'Insert with file manager' )
@@ -75,14 +88,9 @@ export default class CKFinderUI extends Plugin {
 					button.on( 'execute', () => {
 						imageInsertUI.dropdownView!.isOpen = false;
 					} );
-				} else {
-					button.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-						t( 'Replace image with file manager' ) :
-						t( 'Insert image with file manager' )
-					);
-				}
 
-				return button;
+					return button;
+				}
 			} );
 		}
 	}
