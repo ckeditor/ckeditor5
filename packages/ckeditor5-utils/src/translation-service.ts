@@ -12,6 +12,7 @@
 import type { Translations, Editor } from '@ckeditor/ckeditor5-core';
 import CKEditorError from './ckeditorerror';
 import global from './dom/global';
+import _ from 'lodash-es';
 
 declare global {
 	var CKEDITOR_TRANSLATIONS: Translations;
@@ -117,20 +118,29 @@ export function add(
 		global.window.CKEDITOR_TRANSLATIONS[ language ] = {} as any;
 	}
 
-	let existingTranslations = null;
+	let mergedExistingTranslations: Translations | undefined;
 
 	if ( editor ) {
-		existingTranslations = editor.config.get( 'translations' );
+		const existingTranslations = editor.config.get( 'translations' );
+
+		if ( Array.isArray( existingTranslations ) ) {
+			mergedExistingTranslations = existingTranslations.reduce(
+				( acc, singleTranslationObject ) => _.merge( acc, singleTranslationObject ) ) as Translations | undefined;
+		} else {
+			mergedExistingTranslations = existingTranslations as Translations | undefined;
+		}
 	}
 
-	const languageTranslations = existingTranslations ? existingTranslations[ language ] : global.window.CKEDITOR_TRANSLATIONS[ language ];
+	const languageTranslations = mergedExistingTranslations ?
+		mergedExistingTranslations[ language ] :
+		global.window.CKEDITOR_TRANSLATIONS[ language ];
 
 	languageTranslations.dictionary = languageTranslations.dictionary || {};
 	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
 
 	Object.assign( languageTranslations.dictionary, translations );
 
-	if ( editor && existingTranslations ) {
+	if ( editor && mergedExistingTranslations ) {
 		editor.config.set( 'translations', { language: languageTranslations } );
 	}
 }

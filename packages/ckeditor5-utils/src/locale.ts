@@ -13,6 +13,7 @@ import toArray from './toarray';
 import { _translate, type Message } from './translation-service';
 import { getLanguageDirection, type LanguageDirection } from './language';
 import type { Translations } from '@ckeditor/ckeditor5-core';
+import _ from 'lodash-es';
 
 /**
  * Represents the localization services.
@@ -115,13 +116,25 @@ export default class Locale {
 	 * See {@link #contentLanguage}.
 	 * @param translations Translations passed as a editor config parameter.
 	 */
-	constructor( { uiLanguage = 'en', contentLanguage, translations }:
-		{ readonly uiLanguage?: string; readonly contentLanguage?: string; readonly translations?: Translations | undefined } = {} ) {
+	constructor( { uiLanguage = 'en', contentLanguage, translations }: { readonly uiLanguage?: string;
+			readonly contentLanguage?: string;
+			readonly translations?: Translations | Array<Translations> | undefined; } = {}
+	) {
 		this.uiLanguage = uiLanguage;
 		this.contentLanguage = contentLanguage || this.uiLanguage;
 		this.uiLanguageDirection = getLanguageDirection( this.uiLanguage );
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
-		this.translations = translations;
+
+		let unifiedTranslations: Translations | undefined;
+
+		if ( Array.isArray( translations ) ) {
+			unifiedTranslations = translations.reduce(
+				( acc, singleTranslationObject ) => _.merge( acc, singleTranslationObject ) ) as Translations | undefined;
+		} else {
+			unifiedTranslations = translations as Translations | undefined;
+		}
+
+		this.translations = unifiedTranslations;
 		this.t = ( message, values ) => this._t( message, values );
 	}
 

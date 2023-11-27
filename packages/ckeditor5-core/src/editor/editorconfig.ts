@@ -538,7 +538,7 @@ export interface EditorConfig {
 	/**
 	 * Translations to be used in editor.
 	 */
-	translations?: Translations;
+	translations?: Translations | Array<Translations>;
 }
 
 /**
