@@ -24,6 +24,7 @@ import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
@@ -332,3 +333,158 @@ function SpecialCharactersEmoji( editor ) {
 		{ character: '✅', title: 'Check Mark Button' }
 	] );
 }
+
+class MultiRootEditorIntegration extends Plugin {
+	public init() {
+		const editor: MultiRootEditor = this.editor as MultiRootEditor;
+
+		editor.ui.componentFactory.add( 'removeRoot', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'Remove root',
+				withText: true
+			} );
+
+			view.isEnabled = true;
+
+			// Execute command.
+			this.listenTo( view, 'execute', () => {
+				const root = editor.model.document.selection.getFirstRange()!.root;
+
+				editor.detachRoot( root, true );
+			} );
+
+			return view;
+		} );
+
+		editor.ui.componentFactory.add( 'addRoot', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'Add root',
+				withText: true
+			} );
+
+			view.isEnabled = true;
+
+			// Execute command.
+			this.listenTo( view, 'execute', () => {
+				editor.addRoot( 'root' + new Date().getTime(), { isUndoable: true } );
+			} );
+
+			return view;
+		} );
+
+		const holder = document.querySelector( '.editable-container' );
+
+		editor.model.schema.extend( '$root', {
+			allowAttributes: 'order'
+		} );
+
+		editor.on( 'addRoot', ( evt, root ) => {
+			const domElement = editor.createEditable( root );
+
+			const container = document.createElement( 'div' );
+			container.className = 'editor';
+			container.appendChild( domElement );
+
+			moveRootToIndex( root, holder!.children.length );
+		} );
+
+		editor.on( 'detachRoot', ( evt, root ) => {
+			const domElement = editor.detachEditable( root );
+
+			domElement.parentElement!.remove();
+		} );
+
+		function moveRootToIndex( root, index ) {
+			const domElement = editor.ui.getEditableElement( root.rootName );
+			const container = domElement!.parentElement;
+
+			container!.remove();
+			holder!.insertBefore( container!, holder!.children[ index ] || null );
+		}
+	}
+}
+
+const editorData: Record<string, HTMLElement> = {
+	intro: document.querySelector( '#editor-intro' )!,
+	content: document.querySelector( '#editor-content' )!,
+	outro: document.querySelector( '#editor-outro' )!
+};
+
+MultiRootEditor
+	.create( editorData, {
+		plugins: [ Essentials,
+			Autoformat,
+			BlockQuote,
+			Bold,
+			Heading,
+			Image,
+			ImageCaption,
+			ImageStyle,
+			ImageToolbar,
+			Indent,
+			Italic,
+			Link,
+			List,
+			MediaEmbed,
+			Paragraph,
+			Table,
+			TableToolbar,
+
+			FindAndReplace,
+			SpecialCharacters,
+			SpecialCharactersEssentials,
+			SpecialCharactersEmoji,
+			SourceEditing,
+			ModalWithText,
+			MinimalisticDialogs,
+			MultiRootEditorIntegration
+		],
+		toolbar: {
+			items: [
+				'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText',
+				'-',
+				...POSSIBLE_DIALOG_POSITIONS,
+				'-',
+				'heading', '|', 'bold', 'italic', 'link',
+				{
+					label: 'Multi-root',
+					withText: true,
+					items: [ 'addRoot', 'removeRoot' ]
+				}
+			],
+			shouldNotGroupWhenFull: true
+		},
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		ui: {
+			viewportOffset: {
+				top: 50
+			}
+		}
+	} )
+	.then( editor => {
+		Object.assign( window, { 'multiroot': editor } );
+
+		window.CKEditorInspector.attach( { 'multiroot': editor } );
+
+		// Append toolbar to a proper container.
+		const toolbarContainer = document.querySelector( '#toolbar' )!;
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element! );
+
+		// Make toolbar sticky when the editor is focused.
+		editor.ui.focusTracker.on( 'change:isFocused', () => {
+			if ( editor.ui.focusTracker.isFocused ) {
+				toolbarContainer.classList.add( 'sticky' );
+			} else {
+				toolbarContainer.classList.remove( 'sticky' );
+			}
+		} );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
