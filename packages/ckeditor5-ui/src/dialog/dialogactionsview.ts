@@ -36,12 +36,12 @@ export default class DialogActionsView extends View {
 	/**
 	 * TODO
 	 */
-	private readonly _focusTracker: FocusTracker;
+	public readonly focusCycler: FocusCycler;
 
 	/**
 	 * TODO
 	 */
-	private readonly _focusCycler: FocusCycler;
+	private readonly _focusTracker: FocusTracker;
 
 	/**
 	 * TODO
@@ -59,7 +59,7 @@ export default class DialogActionsView extends View {
 		this.keystrokes = new KeystrokeHandler();
 		this._focusTracker = new FocusTracker();
 		this._focusables = new ViewCollection();
-		this._focusCycler = new FocusCycler( {
+		this.focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this._focusTracker,
 			keystrokeHandler: this.keystrokes,
@@ -132,9 +132,9 @@ export default class DialogActionsView extends View {
 	 */
 	public focus( direction?: 1 | -1 ): void {
 		if ( direction === -1 ) {
-			this._focusCycler.focusLast();
+			this.focusCycler.focusLast();
 		} else {
-			this._focusCycler.focusFirst();
+			this.focusCycler.focusFirst();
 		}
 	}
 

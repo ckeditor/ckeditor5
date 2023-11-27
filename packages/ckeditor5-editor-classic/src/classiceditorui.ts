@@ -231,7 +231,7 @@ export default class ClassicEditorUI extends EditorUI {
 		const stickyPanel = this.view.stickyPanel;
 
 		this.editor.plugins.get( 'Dialog' ).on( 'show', () => {
-			const dialogView = Dialog.view;
+			const dialogView = this.editor.plugins.get( 'Dialog' ).view!;
 
 			dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
 				// Engage only when the panel is sticky, and the dialog is using one of default positions.

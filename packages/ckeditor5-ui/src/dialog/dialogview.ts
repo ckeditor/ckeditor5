@@ -56,11 +56,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	public readonly children: ViewCollection;
-
-	/**
-	 * TODO
-	 */
 	public headerView?: FormHeaderView;
 
 	/**
@@ -174,10 +169,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		this.decorate( 'moveTo' );
 
-		this.children = this.createCollection();
-		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
-
 		this.parts = this.createCollection();
+		this.parts.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
 
 		this.keystrokes = new KeystrokeHandler();
 		this._focusTracker = new FocusTracker();
@@ -275,6 +268,10 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 					this._moveToConfiguredPosition();
 
 					this.isTransparent = false;
+
+					// The view must get the focus after it gets visible. But this is only possible
+					// after the dialog is no longer transparent.
+					this.focus();
 				}, 10 );
 			}
 		} );
@@ -311,10 +308,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * TODO
 	 */
 	public reset(): void {
-		while ( this.children.length ) {
-			this.children.remove( 0 );
-		}
-
 		while ( this.parts.length ) {
 			this.parts.remove( 0 );
 		}
@@ -332,7 +325,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	public showHeader( label: string ): void {
 		if ( !this.headerView ) {
 			this.headerView = this._createHeaderView();
-			this._updateFocusCycleableItems();
 		}
 
 		if ( !this.parts.has( this.headerView ) ) {
@@ -348,13 +340,13 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	public addContentPart( content: Array<View> ): void {
 		if ( !this.contentView ) {
 			this.contentView = this._createContentView();
-			this._updateFocusCycleableItems();
 			this.parts.add( this.contentView );
 		} else {
 			this.contentView.reset();
 		}
 
 		this.contentView.children.addMany( content );
+		this._updateFocusCycleableItems();
 	}
 
 	/**
@@ -363,7 +355,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	public setActionButtons( definitions: Array<DialogActionButtonDefinition> ): void {
 		if ( !this.actionsView ) {
 			this.actionsView = new DialogActionsView( this.locale );
-			this._updateFocusCycleableItems();
 			this.parts.add( this.actionsView );
 		}
 
@@ -623,18 +614,18 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		this._focusables.clear();
 
-		const focusables = [ ...this.children ];
-
-		if ( this.closeButtonView ) {
-			focusables.push( this.closeButtonView );
-		}
+		const focusables = [];
 
 		if ( this.contentView ) {
-			focusables.push( this.contentView );
+			focusables.push( ...this.contentView.children );
 		}
 
 		if ( this.actionsView ) {
 			focusables.push( this.actionsView );
+		}
+
+		if ( this.closeButtonView ) {
+			focusables.push( this.closeButtonView );
 		}
 
 		focusables.forEach( focusable => {

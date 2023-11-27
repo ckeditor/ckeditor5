@@ -26,7 +26,12 @@ export default class Dialog extends Plugin {
 	/**
 	 * TODO
 	 */
-	public static view: DialogView;
+	public view?: DialogView;
+
+	/**
+	 * TODO
+	 */
+	public static pluginInstance: Dialog | null;
 
 	/**
 	 * TODO
@@ -83,8 +88,8 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( this.isOpen || Dialog.view ) {
-			this.hide();
+		if ( Dialog.pluginInstance ) {
+			Dialog.pluginInstance.hide();
 		}
 
 		this.fire( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
@@ -105,25 +110,20 @@ export default class Dialog extends Plugin {
 	}: DialogDefinition ) {
 		const editor = this.editor;
 
-		Dialog.view = new DialogView( editor.locale, () => {
+		Dialog.pluginInstance = this;
+
+		this.view = new DialogView( editor.locale, () => {
 			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
 		}, () => {
 			return editor.ui.viewportOffset;
 		} );
 
-		Dialog.view.on<DialogViewCloseEvent>( 'close', () => {
+		this.view.on<DialogViewCloseEvent>( 'close', () => {
 			this.hide();
 		} );
 
-		// If the dialog was closed by opening in another editor instance,
-		// we need to update the state in the previous instance manually.
-		Dialog.view.on( 'destroy', () => {
-			this.id = '';
-			this.isOpen = false;
-		} );
-
-		editor.ui.view.body.add( Dialog.view );
-		editor.ui.focusTracker.add( Dialog.view.element! );
+		editor.ui.view.body.add( this.view );
+		editor.ui.focusTracker.add( this.view.element! );
 
 		// Unless the user specified a position, modals should always be centered on the screen.
 		// Otherwise, let's keep dialogs centered in the editing root by default.
@@ -131,7 +131,7 @@ export default class Dialog extends Plugin {
 			position = isModal ? DialogViewPosition.SCREEN_CENTER : DialogViewPosition.EDITOR_CENTER;
 		}
 
-		Dialog.view.set( {
+		this.view.set( {
 			position,
 			isVisible: true,
 			className,
@@ -143,7 +143,7 @@ export default class Dialog extends Plugin {
 		}
 
 		if ( title ) {
-			Dialog.view.showHeader( title );
+			this.view.showHeader( title );
 		}
 
 		if ( content ) {
@@ -152,16 +152,14 @@ export default class Dialog extends Plugin {
 				content = [ content ];
 			}
 
-			Dialog.view.addContentPart( content );
+			this.view.addContentPart( content );
 		}
 
 		if ( actionButtons ) {
-			Dialog.view.setActionButtons( actionButtons );
+			this.view.setActionButtons( actionButtons );
 		}
 
 		this.isOpen = true;
-
-		Dialog.view.focus();
 
 		this._onHide = onHide;
 	}
@@ -177,13 +175,21 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	private _hide(): void {
-		Dialog.view.destroy();
+		// Reset the content view to prevent its children from being destroyed in the standard
+		// View#destroy() (and collections) chain. If the content children were left in there,
+		// they would have to be re-created by the feature using the dialog every time the dialog
+		// shows up.
+		if ( this.view!.contentView ) {
+			this.view!.contentView.reset();
+		}
+
+		this.view!.destroy();
 
 		this.editor.editing.view.focus();
 
 		this.id = '';
-
 		this.isOpen = false;
+		Dialog.pluginInstance = null;
 	}
 }
 
