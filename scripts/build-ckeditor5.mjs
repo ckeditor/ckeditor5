@@ -20,6 +20,8 @@ import postcssImport from 'postcss-import';
 
 import path from 'path';
 
+import po2jsglobal from './translations/po2jsglobal.mjs';
+
 // Indicates whether to emit source maps
 const sourceMap = process.env.DEVELOPMENT || false;
 
@@ -87,6 +89,10 @@ export default [
 					declarationMap: false, // TODO
 				},
 				sourceMap
+			} ),
+			po2jsglobal( {
+				destFolder: `${cwd}/dist/translations`,
+				banner
 			} )
 		]
 	},
