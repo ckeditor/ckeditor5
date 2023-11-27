@@ -350,15 +350,15 @@
 	},
 	"groups": [
 		{
-			"name": "Installation",
-			"id": "installation",
-			"slug": "installation",
+			"name": "Getting started",
+			"id": "getting-started",
+			"slug": "getting-started",
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Getting started with CKEditor 5",
-					"id": "getting-started",
-					"slug": "getting-started",
+					"name": "Installation",
+					"id": "installation",
+					"slug": "installation",
 					"order": 20
 				},
 				{
@@ -376,8 +376,8 @@
 					"categories": [
 						{
 							"name": "Basics",
-							"id": "legacy-getting-started",
-							"slug": "legacy-getting-started",
+							"id": "installation-methods",
+							"slug": "installation-methods",
 							"order": 55
 						},
 						{

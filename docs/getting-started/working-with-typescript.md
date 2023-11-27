@@ -3,7 +3,7 @@
 # * Introduction to TypeScript in CKEditor&nbsp;5
 # * List and clarify the things that need attention when using TypeScript.
 
-category: installation
+category: getting-started
 order: 35
 menu-title: TypeScript support
 meta-title: TypeScript support | CKEditor 5 documentation

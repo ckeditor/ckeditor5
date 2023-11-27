@@ -1,8 +1,8 @@
 ---
-category: getting-started
+category: installation
 order: 10
-menu-title: CKEditor 5 Quick Start - NEW
-meta-title: Getting started with CKEditor 5 | CKEditor 5 documentation
+menu-title: Quick Start - NEW
+meta-title: Quick Start | CKEditor 5 documentation
 meta-description: Learn how to install, integrate, configure, and develop CKEditor 5. Browse through the API documentation and online samples.
 ---
 
