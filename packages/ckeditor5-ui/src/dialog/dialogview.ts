@@ -280,6 +280,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		} );
 
 		this.keystrokes.listenTo( this.element! );
+
+		// When a dialog is closed by opening a dialog in another editor instance,
+		// the original editor instance is not aware of that.
+		// That is why we need to listen to the destroy event.
+		this.decorate( 'destroy' );
 	}
 
 	/**

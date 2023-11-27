@@ -82,6 +82,9 @@ export default class FindAndReplaceUI extends Plugin {
 			// Button should be disabled when in source editing mode. See #10001.
 			buttonView.bind( 'isEnabled' ).to( editor.commands.get( 'find' )! );
 
+			// Button should be on when the find and replace dialog is opened.
+			buttonView.bind( 'isOn' ).to( dialog, 'isOpen', isOpen => isOpen && dialog.id === 'findAndReplace' );
+
 			// Every time a dialog is opened, the search text field should get focused and selected for better UX.
 			// Each time a dialog is closed, move the focus back to the find and replace toolbar button
 			// and let the find and replace editing feature know that all search results can be invalidated

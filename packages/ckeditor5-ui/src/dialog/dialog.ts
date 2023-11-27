@@ -115,6 +115,13 @@ export default class Dialog extends Plugin {
 			this.hide();
 		} );
 
+		// If the dialog was closed by opening in another editor instance,
+		// we need to update the state in the previous instance manually.
+		Dialog.view.on( 'destroy', () => {
+			this.id = '';
+			this.isOpen = false;
+		} );
+
 		editor.ui.view.body.add( Dialog.view );
 		editor.ui.focusTracker.add( Dialog.view.element! );
 
