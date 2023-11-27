@@ -159,9 +159,9 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Fixed a cross-site scripting (XSS) vulnerability which allowed remote attackers to inject arbitrary web script through a crafted href attribute of a link (A) element. [CVE-2018-11093](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-11093). ([8cb782e](https://github.com/ckeditor/ckeditor5-link/commit/8cb782e))
+* Fixed a cross-site scripting (XSS) vulnerability which allowed remote attackers to inject arbitrary web script through a crafted `href` attribute of a link (`<a>`) element. [CVE–2018–11093](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-11093). ([8cb782e](https://github.com/ckeditor/ckeditor5-link/commit/8cb782e))
 
-  This issue was reported indepdentently by [Toan Chi Nguyen](https://www.linkedin.com/in/toan-nguyen-chi/) from [Techlab Corporation](https://www.techlabcorp.com/) and [Michal Bazyli](https://www.linkedin.com/in/michal-bazyli-6a3111144/). Thank you!
+  This issue was reported independently by [Toan Chi Nguyen](https://www.linkedin.com/in/toan-nguyen-chi/) from [Techlab Corporation](https://www.techlabcorp.com/) and [Michał Bazyli](https://www.linkedin.com/in/michal-bazyli-6a3111144/). Thank you!
 
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
@@ -266,7 +266,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Cleaning up svg icons. ([af73903](https://github.com/ckeditor/ckeditor5-link/commit/af73903))
 * Removed the "Unlink" button. Closes [#52](https://github.com/ckeditor/ckeditor5-link/issues/52). ([3b7fda7](https://github.com/ckeditor/ckeditor5-link/commit/3b7fda7))
 
-  See https://github.com/ckeditor/ckeditor5-link/issues/31#issuecomment-316992952 and https://github.com/ckeditor/ckeditor5-link/issues/149 for plans how unlinking will be exposed in the future.
+  See https://github.com/ckeditor/ckeditor5-link/issues/31#issuecomment-316992952 and https://github.com/ckeditor/ckeditor5-link/issues/149 for plans how removing links will be exposed in the future.
 
 ### BREAKING CHANGES
 
