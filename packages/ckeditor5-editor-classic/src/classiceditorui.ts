@@ -13,8 +13,7 @@ import {
 	normalizeToolbarConfig,
 	type EditorUIReadyEvent,
 	type DialogViewMoveToEvent,
-	DialogView,
-	Dialog
+	DialogView
 } from 'ckeditor5/src/ui';
 import {
 	enablePlaceholder,

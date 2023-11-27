@@ -90,22 +90,26 @@ export default class FindAndReplaceUI extends Plugin {
 			// and let the find and replace editing feature know that all search results can be invalidated
 			// and no longer should be marked in the content.
 			buttonView.on( 'execute', () => {
-				dialog.show( {
-					id: 'findAndReplace',
-					title: t( 'Find and replace' ),
-					content: formView,
-					position: DialogViewPosition.EDITOR_TOP_SIDE,
-					onShow: () => {
-						formView.disableCssTransitions();
-						formView.reset();
-						formView._findInputView.fieldView.select();
-						formView.enableCssTransitions();
-					},
+				if ( buttonView.isOn ) {
+					dialog.hide();
+				} else {
+					dialog.show( {
+						id: 'findAndReplace',
+						title: t( 'Find and replace' ),
+						content: formView,
+						position: DialogViewPosition.EDITOR_TOP_SIDE,
+						onShow: () => {
+							formView.disableCssTransitions();
+							formView.reset();
+							formView._findInputView.fieldView.select();
+							formView.enableCssTransitions();
+						},
 
-					onHide: () => {
-						this.fire( 'searchReseted' );
-					}
-				} );
+						onHide: () => {
+							this.fire( 'searchReseted' );
+						}
+					} );
+				}
 			} );
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
