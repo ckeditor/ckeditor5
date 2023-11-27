@@ -7,7 +7,7 @@
  * @module image/imageinsertviaurl
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
 import ImageInsertUI from './imageinsert/imageinsertui';
 
 /**
@@ -34,5 +34,18 @@ export default class ImageInsertViaUrl extends Plugin {
 	 */
 	public static get requires() {
 		return [ ImageInsertUI ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'image.insert.integrations', [
+			'upload',
+			'assetManager',
+			'url'
+		] );
 	}
 }

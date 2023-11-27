@@ -38,7 +38,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * } );
  * ```
  */
-export default class FileDialogButtonView extends View {
+export default class FileDialogButtonView extends ButtonView {
 	/**
 	 * The button view of the component.
 	 */
@@ -72,7 +72,8 @@ export default class FileDialogButtonView extends View {
 	constructor( locale?: Locale ) {
 		super( locale );
 
-		this.buttonView = new ButtonView( locale );
+		// TODO should we leave this for backward compatibility?
+		this.buttonView = this;
 
 		this._fileInputView = new FileInputView( locale );
 		this._fileInputView.bind( 'acceptedType' ).to( this );
@@ -80,27 +81,24 @@ export default class FileDialogButtonView extends View {
 
 		this._fileInputView.delegate( 'done' ).to( this );
 
-		this.setTemplate( {
-			tag: 'span',
-			attributes: {
-				class: 'ck-file-dialog-button'
-			},
-			children: [
-				this.buttonView,
-				this._fileInputView
-			]
+		this.on<ButtonExecuteEvent>( 'execute', () => {
+			this._fileInputView.open();
 		} );
 
-		this.buttonView.on<ButtonExecuteEvent>( 'execute', () => {
-			this._fileInputView.open();
+		this.extendTemplate( {
+			attributes: {
+				class: 'ck-file-dialog-button'
+			}
 		} );
 	}
 
 	/**
-	 * Focuses the {@link #buttonView}.
+	 * @inheritDoc
 	 */
-	public focus(): void {
-		this.buttonView.focus();
+	public override render(): void {
+		super.render();
+
+		this.children.add( this._fileInputView );
 	}
 }
 

@@ -15,7 +15,7 @@ import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import ImageInsert from '../../src/imageinsert';
 import ImageInsertViaUrl from '../../src/imageinsertviaurl';
 import ImageInsertUI from '../../src/imageinsert/imageinsertui';
-import ImageInsertPanelView from '../../src/imageinsert/ui/imageinsertpanelview';
+import ImageInsertFormView from '../../src/imageinsert/ui/imageinsertformview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
@@ -116,14 +116,14 @@ describe( 'ImageInsertUI', () => {
 			dropdown.isOpen = true;
 
 			expect( dropdown.panelView.children.length ).to.equal( 1 );
-			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
+			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertFormView );
 
 			dropdown.isOpen = false;
 			dropdown.isOpen = true;
 
 			// Make sure it happens only once.
 			expect( dropdown.panelView.children.length ).to.equal( 1 );
-			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
+			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertFormView );
 		} );
 
 		describe( 'dropdown action button', () => {
@@ -325,11 +325,11 @@ describe( 'ImageInsertUI', () => {
 			it( 'should focus on "insert image via URL" input after opening', () => {
 				let spy;
 
-				// The ImageInsertPanelView is added on first open.
+				// The ImageInsertFormView is added on first open.
 				// See https://github.com/ckeditor/ckeditor5/pull/8019#discussion_r484069652
 				dropdown.on( 'change:isOpen', () => {
-					const imageInsertPanelView = dropdown.panelView.children.first;
-					spy = sinon.spy( imageInsertPanelView, 'focus' );
+					const imageInsertFormView = dropdown.panelView.children.first;
+					spy = sinon.spy( imageInsertFormView, 'focus' );
 				} );
 
 				dropdown.buttonView.fire( 'open' );
@@ -427,7 +427,7 @@ describe( 'ImageInsertUI', () => {
 			dropdown.buttonView.fire( 'open' );
 
 			expect( dropdown.panelView.children.length ).to.equal( 1 );
-			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertPanelView );
+			expect( dropdown.panelView.children.first ).to.be.instanceOf( ImageInsertFormView );
 		} );
 
 		describe( 'dropdown button', () => {
@@ -623,11 +623,11 @@ describe( 'ImageInsertUI', () => {
 			it( 'should focus on "insert image via URL" input after opening', () => {
 				let spy;
 
-				// The ImageInsertPanelView is added on first open.
+				// The ImageInsertFormView is added on first open.
 				// See https://github.com/ckeditor/ckeditor5/pull/8019#discussion_r484069652
 				dropdown.on( 'change:isOpen', () => {
-					const imageInsertPanelView = dropdown.panelView.children.first;
-					spy = sinon.spy( imageInsertPanelView, 'focus' );
+					const imageInsertFormView = dropdown.panelView.children.first;
+					spy = sinon.spy( imageInsertFormView, 'focus' );
 				} );
 
 				dropdown.buttonView.fire( 'open' );

@@ -13,50 +13,80 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import ImageInsert from '../../src/imageinsert';
 import AutoImage from '../../src/autoimage';
 
-createEditor( 'editor1', 'auto' );
-createEditor( 'editor2', 'block' );
-createEditor( 'editor3', 'inline' );
-
-function createEditor( elementId, imageType ) {
-	ClassicEditor
-		.create( document.querySelector( '#' + elementId ), {
-			plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder ],
-			toolbar: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'blockQuote',
-				'insertImage',
-				'insertTable',
-				'mediaEmbed',
-				'undo',
-				'redo'
-			],
-			image: {
-				toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
-				insert: {
-					integrations: [
-						'insertImageViaUrl',
-						'openCKFinder'
-					],
-					type: imageType
-				}
-			},
-			ckfinder: {
-				// eslint-disable-next-line max-len
-				uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+async function createEditor( elementId, imageType ) {
+	const editor = await ClassicEditor.create( document.querySelector( '#' + elementId ), {
+		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'insertImage',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
+			insert: {
+				integrations: getSelectedIntegrations(),
+				type: imageType
 			}
-		} )
-		.then( editor => {
-			window[ elementId ] = editor;
+		},
+		ckfinder: {
+			// eslint-disable-next-line max-len
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+		},
+		updateSourceElementOnDestroy: true
+	} );
 
-			CKEditorInspector.attach( { [ imageType ]: editor } );
-		} )
-		.catch( err => {
-			console.error( err );
+	window[ elementId ] = editor;
+
+	CKEditorInspector.attach( { [ imageType ]: editor } );
+}
+
+setupEditors( {
+	editor1: 'auto',
+	editor2: 'block',
+	editor3: 'inline'
+} ).catch( err => {
+	console.error( err );
+} );
+
+async function setupEditors( opt ) {
+	await startEditors();
+
+	for ( const element of document.querySelectorAll( 'input[name=imageInsertIntegration]' ) ) {
+		element.addEventListener( 'change', () => {
+			restartEditors().catch( err => console.error( err ) );
 		} );
+	}
+
+	async function restartEditors() {
+		await stopEditors();
+		await startEditors();
+	}
+
+	async function startEditors() {
+		for ( const [ elementId, imageType ] of Object.entries( opt ) ) {
+			await createEditor( elementId, imageType );
+		}
+	}
+
+	async function stopEditors( ) {
+		for ( const editorId of Object.keys( opt ) ) {
+			await window[ editorId ].destroy();
+		}
+	}
+}
+
+function getSelectedIntegrations() {
+	return Array.from( document.querySelectorAll( 'input[name=imageInsertIntegration]' ) )
+		.filter( element => element.checked )
+		.map( element => element.value );
 }

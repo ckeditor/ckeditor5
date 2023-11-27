@@ -195,3 +195,23 @@ export default class TextAlternativeFormView extends View {
 		return labeledInput;
 	}
 }
+
+/**
+ * TODO
+ *
+ * @eventName ~TextAlternativeFormView#submit
+ */
+export type TextAlternativeFormViewSubmitEvent = {
+	name: 'submit';
+	args: [];
+};
+
+/**
+ * TODO
+ *
+ * @eventName ~TextAlternativeFormView#cancel
+ */
+export type TextAlternativeFormViewCancelEvent = {
+	name: 'cancel';
+	args: [];
+};
