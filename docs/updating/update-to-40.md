@@ -142,7 +142,7 @@ The `srcset` model attribute which provides parameters for responsive images, ha
 
 #### Changes to content styles
 
-Last but not least, content styles have been updated with this release, which means you need to update them in your editor implementation to avoid any discrepancies. Please refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
+Last but not least, content styles have been updated with this release, which means you need to update them in your editor implementation to avoid any discrepancies. Please refer to the {@link getting-started/legacy/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
 
 ### Changes to the comments feature
 

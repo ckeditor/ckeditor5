@@ -132,7 +132,7 @@ Since the appearance of the image in the document depends on the image type (blo
 	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default dropdowns} are provided.
 	* In the editor configuration, {@link module:image/imageconfig~ImageStyleDropdownDefinition a custom dropdown} can be declared.
 
-* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link installation/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
+* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link getting-started/legacy/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
 
 * The format of the `config.image.styles` has changed. The list of the styles must be wrapped with the `options` array. Read more about the {@link module:image/imageconfig~ImageConfig#styles `image.styles` configuration}.
 

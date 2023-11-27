@@ -149,7 +149,7 @@ ClassicEditor
 
 ### Default table and table cell styles
 
-The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link installation/advanced/content-styles editor content styles}.
+The table styles feature allows for configuring the default look of the tables in the editor. The configuration object should be synchronized with the {@link getting-started/legacy/advanced/content-styles editor content styles}.
 
 The **“Table properties”** and **“Table cell properties”** buttons in the toolbar will show the table and table cell properties applied to the table or table cells.
 

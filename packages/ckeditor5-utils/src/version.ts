@@ -61,7 +61,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * This scenario is very similar to the previous one, but has a different origin.
 	 *
 	 * Let's assume that you wanted to use CKEditor 5 from source, as explained in the
-	 * {@glink installation/legacy/advanced/alternative-setups/integrating-from-source-webpack "Building from source"} section
+	 * {@glink getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack "Building from source"} section
 	 * or in the {@glink framework/quick-start "Quick start"} guide of CKEditor 5 Framework.
 	 *
 	 * The correct way to do so is to import an editor and plugins and run them together like this:
@@ -107,7 +107,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * Check your web page for duplicated `<script>` elements or make sure your page builder/bundler includes CKEditor only once.
 	 *
 	 * If you want to use two different types of editors at once, see the
-	 * {@glink installation/legacy/advanced/using-two-editors "Using two different editors"}
+	 * {@glink getting-started/legacy/advanced/using-two-editors "Using two different editors"}
 	 * section.
 	 *
 	 * # Using outdated packages

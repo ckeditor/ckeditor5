@@ -30,7 +30,7 @@ import type Editor from './editor';
  * 	.catch( ... );
  * ```
  *
- * Check the {@glink installation/legacy/legacy-getting-started/predefined-builds Configuration} guide for more information
+ * Check the {@glink getting-started/legacy/installation-methods/predefined-builds Configuration} guide for more information
  * about setting configuration options.
  */
 export interface EditorConfig {
@@ -38,7 +38,7 @@ export interface EditorConfig {
 
 	/**
 	 * The list of additional plugins to load along those already available in the
-	 * {@glink installation/legacy/legacy-getting-started/predefined-builds editor build}.
+	 * {@glink getting-started/legacy/installation-methods/predefined-builds editor build}.
 	 * It extends the {@link #plugins `plugins`} configuration.
 	 *
 	 * ```ts
@@ -54,7 +54,7 @@ export interface EditorConfig {
 	 * **Note:** This configuration works only for simple plugins which utilize the
 	 * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
 	 * build with complex features, create a
-	 * {@glink installation/legacy/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build}.
+	 * {@glink getting-started/legacy/installation-methods/quick-start-other#creating-custom-builds-with-online-builder custom build}.
 	 *
 	 * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
 	 * about the {@glink features/toolbar/toolbar toolbar setup}.
@@ -243,7 +243,7 @@ export interface EditorConfig {
 	/**
 	 * The list of plugins to load.
 	 *
-	 * If you use an {@glink installation/legacy/legacy-getting-started/predefined-builds editor build}
+	 * If you use an {@glink getting-started/legacy/installation-methods/predefined-builds editor build}
 	 * you can define the list of plugins to load using the names of plugins that are available:
 	 *
 	 * ```ts
@@ -280,7 +280,7 @@ export interface EditorConfig {
 
 	/**
 	 * The list of plugins which should not be loaded despite being available in
-	 * an {@glink installation/legacy/legacy-getting-started/predefined-builds editor build}.
+	 * an {@glink getting-started/legacy/installation-methods/predefined-builds editor build}.
 	 *
 	 * ```ts
 	 * const config = {
