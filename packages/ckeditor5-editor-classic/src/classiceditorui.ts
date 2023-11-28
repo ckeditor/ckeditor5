@@ -227,21 +227,24 @@ export default class ClassicEditorUI extends EditorUI {
 			return;
 		}
 
-		const dialogView = this.editor.plugins.get( 'Dialog' ).view;
 		const stickyPanel = this.view.stickyPanel;
 
-		dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
-			// Engage only when the panel is sticky, and the dialog is using one of default positions.
-			if ( !stickyPanel.isSticky || dialogView.wasMoved ) {
-				return;
-			}
+		this.editor.plugins.get( 'Dialog' ).on( 'show', () => {
+			const dialogView = this.editor.plugins.get( 'Dialog' ).view!;
 
-			const stickyPanelContentRect = new Rect( stickyPanel.contentPanel );
+			dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
+				// Engage only when the panel is sticky, and the dialog is using one of default positions.
+				if ( !stickyPanel.isSticky || dialogView.wasMoved ) {
+					return;
+				}
 
-			if ( data[ 1 ] < stickyPanelContentRect.bottom + DialogView.defaultOffset ) {
-				data[ 1 ] = stickyPanelContentRect.bottom + DialogView.defaultOffset;
-			}
-		}, { priority: 'high' } );
+				const stickyPanelContentRect = new Rect( stickyPanel.contentPanel );
+
+				if ( data[ 1 ] < stickyPanelContentRect.bottom + DialogView.defaultOffset ) {
+					data[ 1 ] = stickyPanelContentRect.bottom + DialogView.defaultOffset;
+				}
+			}, { priority: 'high' } );
+		}, { priority: 'low' } );
 	}
 }
 

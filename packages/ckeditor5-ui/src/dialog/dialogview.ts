@@ -10,7 +10,6 @@
 import {
 	type EventInfo,
 	type Locale,
-	type CollectionChangeEvent,
 	type DecoratedMethodEvent,
 	KeystrokeHandler,
 	FocusTracker,
@@ -52,11 +51,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * TODO
 	 */
 	public readonly parts: ViewCollection;
-
-	/**
-	 * TODO
-	 */
-	public readonly children: ViewCollection;
 
 	/**
 	 * TODO
@@ -156,7 +150,15 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, getCurrentDomRoot: () => HTMLElement, getViewportOffset: () => EditorUI[ 'viewportOffset' ] ) {
+	constructor( locale: Locale,
+		{
+			getCurrentDomRoot,
+			getViewportOffset
+		}: {
+			getCurrentDomRoot: () => HTMLElement;
+			getViewportOffset: () => EditorUI[ 'viewportOffset' ];
+		}
+	) {
 		super( locale );
 
 		const bind = this.bindTemplate;
@@ -173,9 +175,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this._getViewportOffset = getViewportOffset;
 
 		this.decorate( 'moveTo' );
-
-		this.children = this.createCollection();
-		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
 
 		this.parts = this.createCollection();
 
@@ -236,8 +235,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	public override render(): void {
 		super.render();
 
-		this._updateFocusCycleableItems();
-
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this.fire<DialogViewCloseEvent>( 'close' );
 			cancel();
@@ -252,14 +249,14 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		// Update dialog position upon window resize, if the position was not changed manually.
 		this.listenTo( global.window, 'resize', () => {
 			if ( this.isVisible && !this.wasMoved ) {
-				this._moveToConfiguredPosition();
+				this.updatePosition();
 			}
 		} );
 
 		// Update dialog position upon document scroll, if the position was not changed manually.
 		this.listenTo( global.document, 'scroll', () => {
 			if ( this.isVisible && !this.wasMoved ) {
-				this._moveToConfiguredPosition();
+				this.updatePosition();
 			}
 		} );
 
@@ -272,9 +269,13 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 				// FYI: RAF is too short. We need to wait a bit longer.
 				setTimeout( () => {
-					this._moveToConfiguredPosition();
+					this.updatePosition();
 
 					this.isTransparent = false;
+
+					// The view must get the focus after it gets visible. But this is only possible
+					// after the dialog is no longer transparent.
+					this.focus();
 				}, 10 );
 			}
 		} );
@@ -296,64 +297,37 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	public reset(): void {
-		while ( this.children.length ) {
-			this.children.remove( 0 );
-		}
-
-		while ( this.parts.length ) {
-			this.parts.remove( 0 );
-		}
-
-		if ( this.actionsView ) {
-			this.actionsView.reset();
-		}
-
-		this.wasMoved = false;
-	}
-
-	/**
-	 * TODO
-	 */
-	public showHeader( label: string ): void {
-		if ( !this.headerView ) {
-			this.headerView = this._createHeaderView();
-			this._updateFocusCycleableItems();
-		}
-
-		if ( !this.parts.has( this.headerView ) ) {
+	public setupParts( { title, content, actionButtons }: {
+		title?: string;
+		content?: View | Array<View>;
+		actionButtons?: Array<DialogActionButtonDefinition>;
+	} ): void {
+		if ( title ) {
+			this.headerView = new FormHeaderView( this.locale );
+			this.closeButtonView = this._createCloseButton();
+			this.headerView.children.add( this.closeButtonView );
+			this.headerView.label = title;
 			this.parts.add( this.headerView, 0 );
 		}
 
-		this.headerView.label = label;
-	}
+		if ( content ) {
+			// Normalize the content specified in the arguments.
+			if ( content instanceof View ) {
+				content = [ content ];
+			}
 
-	/**
-	 * TODO
-	 */
-	public addContentPart( content: Array<View> ): void {
-		if ( !this.contentView ) {
-			this.contentView = this._createContentView();
-			this._updateFocusCycleableItems();
-		} else {
-			this.contentView.reset();
+			this.contentView = new DialogContentView( this.locale );
+			this.contentView.children.addMany( content );
+			this.parts.add( this.contentView );
 		}
 
-		this.parts.add( this.contentView );
-		this.contentView.children.addMany( content );
-	}
-
-	/**
-	 * TODO
-	 */
-	public setActionButtons( definitions: Array<DialogActionButtonDefinition> ): void {
-		if ( !this.actionsView ) {
+		if ( actionButtons ) {
 			this.actionsView = new DialogActionsView( this.locale );
-			this._updateFocusCycleableItems();
+			this.actionsView.setButtons( actionButtons );
+			this.parts.add( this.actionsView );
 		}
 
-		this.parts.add( this.actionsView );
-		this.actionsView.setButtons( definitions );
+		this._updateFocusCyclableItems();
 	}
 
 	/**
@@ -399,7 +373,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			top = viewportRect.top;
 		}
 
-		// TODO: The same for the bottom edge?
+		// Note: We don't do the same for the bottom edge to allow users to resize the window vertically
+		// and let the dialog to stay put instead of covering the editing root.
 
 		this._moveTo( left, top );
 	}
@@ -429,7 +404,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	private _moveToConfiguredPosition(): void {
+	public updatePosition(): void {
 		const viewportRect = this._getViewportRect();
 		const defaultOffset = DialogView.defaultOffset;
 
@@ -597,19 +572,12 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	private _updateFocusCycleableItems() {
-		for ( const focusable of this._focusables ) {
-			this._focusTracker.remove( focusable.element! );
+	private _updateFocusCyclableItems() {
+		const focusables = [];
 
-			if ( isViewWithFocusCycler( focusable ) ) {
-				this.stopListening( focusable.focusCycler, 'forwardCycle' );
-				this.stopListening( focusable.focusCycler, 'backwardCycle' );
-			}
+		if ( this.contentView ) {
+			focusables.push( ...this.contentView.children );
 		}
-
-		this._focusables.clear();
-
-		const focusables = [ ...this.children ];
 
 		if ( this.actionsView ) {
 			focusables.push( this.actionsView );
@@ -653,28 +621,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		buttonView.on( 'execute', () => this.fire<DialogViewCloseEvent>( 'close' ) );
 
 		return buttonView;
-	}
-
-	/**
-	 * TODO
-	 */
-	private _createHeaderView(): FormHeaderView {
-		const headerView = new FormHeaderView( this.locale );
-
-		this.closeButtonView = this._createCloseButton();
-
-		headerView.children.add( this.closeButtonView );
-
-		return headerView;
-	}
-
-	/**
-	 * TODO
-	 */
-	private _createContentView(): DialogContentView {
-		const contentView = new DialogContentView( this.locale );
-
-		return contentView;
 	}
 }
 

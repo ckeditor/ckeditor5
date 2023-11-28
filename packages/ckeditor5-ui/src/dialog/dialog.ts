@@ -7,7 +7,7 @@
  * @module ui/dialog/dialog
  */
 
-import View from '../view';
+import type View from '../view';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview';
 import type { DialogActionButtonDefinition } from './dialogactionsview';
@@ -26,7 +26,12 @@ export default class Dialog extends Plugin {
 	/**
 	 * TODO
 	 */
-	public readonly view: DialogView;
+	public view?: DialogView;
+
+	/**
+	 * TODO
+	 */
+	public static visibleDialogPlugin?: Dialog;
 
 	/**
 	 * TODO
@@ -51,17 +56,9 @@ export default class Dialog extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this.view = new DialogView( editor.locale, () => {
-			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
-		}, () => {
-			return this.editor.ui.viewportOffset;
-		} );
-
 		this._initShowHideListeners();
-		this.set( 'isOpen', false );
 
-		editor.ui.view.body.add( this.view );
-		editor.ui.focusTracker.add( this.view.element! );
+		this.set( 'isOpen', false );
 	}
 
 	/**
@@ -85,19 +82,13 @@ export default class Dialog extends Plugin {
 		this.on<DialogHideEvent>( 'hide', () => {
 			this._onHide?.( this );
 		}, { priority: 'low' } );
-
-		this.view.on<DialogViewCloseEvent>( 'close', () => {
-			this.hide();
-		} );
 	}
 
 	/**
 	 * TODO
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( this.isOpen ) {
-			this.hide();
-		}
+		Dialog.visibleDialogPlugin?.hide();
 
 		this.fire( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
 	}
@@ -115,6 +106,24 @@ export default class Dialog extends Plugin {
 		position,
 		onHide
 	}: DialogDefinition ) {
+		const editor = this.editor;
+
+		this.view = new DialogView( editor.locale, {
+			getCurrentDomRoot: () => {
+				return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
+			},
+			getViewportOffset: () => {
+				return editor.ui.viewportOffset;
+			}
+		} );
+
+		this.view.on<DialogViewCloseEvent>( 'close', () => {
+			this.hide();
+		} );
+
+		editor.ui.view.body.add( this.view );
+		editor.ui.focusTracker.add( this.view.element! );
+
 		// Unless the user specified a position, modals should always be centered on the screen.
 		// Otherwise, let's keep dialogs centered in the editing root by default.
 		if ( !position ) {
@@ -128,32 +137,20 @@ export default class Dialog extends Plugin {
 			isModal
 		} );
 
+		this.view.setupParts( {
+			title,
+			content,
+			actionButtons
+		} );
+
 		if ( id ) {
 			this.id = id;
 		}
 
-		if ( title ) {
-			this.view.showHeader( title );
-		}
-
-		if ( content ) {
-			// Normalize the content specified in the arguments.
-			if ( content instanceof View ) {
-				content = [ content ];
-			}
-
-			this.view.addContentPart( content );
-		}
-
-		if ( actionButtons ) {
-			this.view.setActionButtons( actionButtons );
-		}
-
 		this.isOpen = true;
-
-		this.view.focus();
-
 		this._onHide = onHide;
+
+		Dialog.visibleDialogPlugin = this;
 	}
 
 	/**
@@ -167,13 +164,26 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	private _hide(): void {
-		this.editor.editing.view.focus();
+		const editor = this.editor;
+		const view = this.view!;
 
-		this.view.isVisible = false;
-		this.view.reset();
+		// Reset the content view to prevent its children from being destroyed in the standard
+		// View#destroy() (and collections) chain. If the content children were left in there,
+		// they would have to be re-created by the feature using the dialog every time the dialog
+		// shows up.
+		if ( view.contentView ) {
+			view.contentView.reset();
+		}
+
+		editor.ui.view.body.remove( view );
+		editor.ui.focusTracker.remove( view.element! );
+
+		view.destroy();
+		editor.editing.view.focus();
+
 		this.id = '';
-
 		this.isOpen = false;
+		Dialog.visibleDialogPlugin = undefined;
 	}
 }
 
