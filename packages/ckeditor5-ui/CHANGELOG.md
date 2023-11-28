@@ -392,7 +392,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `ContextualBalloon` should remember position passed to `#updatePosition()`. Closes [#305](https://github.com/ckeditor/ckeditor5-ui/issues/305). Closes [ckeditor/ckeditor5-image#141](https://github.com/ckeditor/ckeditor5-image/issues/141). ([c787c0d](https://github.com/ckeditor/ckeditor5-ui/commit/c787c0d))
 * `ContextualToolbar` should not be positioned to a zero–width DOM rect when invoked for a multi-line forward selection. Closes [#308](https://github.com/ckeditor/ckeditor5-ui/issues/308). ([00b701b](https://github.com/ckeditor/ckeditor5-ui/commit/00b701b))
 * `ContextualToolbar` will accept the object format of `config.contextualToolbar`. Closes [#316](https://github.com/ckeditor/ckeditor5-ui/issues/316). ([d71cad8](https://github.com/ckeditor/ckeditor5-ui/commit/d71cad8))
-* Fixed sticky panel's `z-index` so it's correctly rendered above images (or other relatively positioned elements). Closes [#315](https://github.com/ckeditor/ckeditor5-ui/issues/315). ([00f2add](https://github.com/ckeditor/ckeditor5-ui/commit/00f2add))
+* Fixed sticky panel's `z-index` so it is correctly rendered above images (or other relatively positioned elements). Closes [#315](https://github.com/ckeditor/ckeditor5-ui/issues/315). ([00f2add](https://github.com/ckeditor/ckeditor5-ui/commit/00f2add))
 * The content of the `BalloonPanelView` should be selectable. Closes [#294](https://github.com/ckeditor/ckeditor5-ui/issues/294). Closes https://github.com/ckeditor/ckeditor5/issues/498. ([e5315df](https://github.com/ckeditor/ckeditor5-ui/commit/e5315df))
 
 ### Features
