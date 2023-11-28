@@ -10,8 +10,7 @@
 import {
 	FocusTracker,
 	KeystrokeHandler,
-	type Locale,
-	type CollectionChangeEvent
+	type Locale
 } from '@ckeditor/ckeditor5-utils';
 import type Button from '../button/button';
 import ButtonView from '../button/buttonview';
@@ -55,7 +54,6 @@ export default class DialogActionsView extends View {
 		super( locale );
 
 		this.children = this.createCollection<ButtonView>();
-		this.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
 		this.keystrokes = new KeystrokeHandler();
 		this._focusTracker = new FocusTracker();
 		this._focusables = new ViewCollection();
@@ -90,26 +88,13 @@ export default class DialogActionsView extends View {
 	public override render(): void {
 		super.render();
 
-		this._updateFocusCycleableItems();
-
 		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
 	 * TODO
 	 */
-	public reset(): void {
-		while ( this.children.length ) {
-			this.children.remove( 0 );
-		}
-	}
-
-	/**
-	 * TODO
-	 */
 	public setButtons( definitions: Array<DialogActionButtonDefinition> ): void {
-		this.reset();
-
 		for ( const definition of definitions ) {
 			const button = new ButtonView( this.locale );
 
@@ -125,6 +110,8 @@ export default class DialogActionsView extends View {
 
 			this.children.add( button );
 		}
+
+		this._updateFocusCyclableItems();
 	}
 
 	/**
@@ -141,13 +128,7 @@ export default class DialogActionsView extends View {
 	/**
 	 * TODO
 	 */
-	private _updateFocusCycleableItems() {
-		for ( const focusable of this._focusables ) {
-			this._focusTracker.remove( focusable.element! );
-		}
-
-		this._focusables.clear();
-
+	private _updateFocusCyclableItems() {
 		Array.from( this.children ).forEach( v => {
 			this._focusables.add( v );
 			this._focusTracker.add( v.element! );

@@ -7,7 +7,7 @@
  * @module ui/dialog/dialog
  */
 
-import View from '../view';
+import type View from '../view';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview';
 import type { DialogActionButtonDefinition } from './dialogactionsview';
@@ -31,7 +31,7 @@ export default class Dialog extends Plugin {
 	/**
 	 * TODO
 	 */
-	public static pluginInstance: Dialog | null;
+	public static visibleDialogPlugin?: Dialog;
 
 	/**
 	 * TODO
@@ -88,9 +88,7 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( Dialog.pluginInstance ) {
-			Dialog.pluginInstance.hide();
-		}
+		Dialog.visibleDialogPlugin?.hide();
 
 		this.fire( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
 	}
@@ -110,12 +108,13 @@ export default class Dialog extends Plugin {
 	}: DialogDefinition ) {
 		const editor = this.editor;
 
-		Dialog.pluginInstance = this;
-
-		this.view = new DialogView( editor.locale, () => {
-			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
-		}, () => {
-			return editor.ui.viewportOffset;
+		this.view = new DialogView( editor.locale, {
+			getCurrentDomRoot: () => {
+				return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
+			},
+			getViewportOffset: () => {
+				return editor.ui.viewportOffset;
+			}
 		} );
 
 		this.view.on<DialogViewCloseEvent>( 'close', () => {
@@ -138,30 +137,20 @@ export default class Dialog extends Plugin {
 			isModal
 		} );
 
+		this.view.setupParts( {
+			title,
+			content,
+			actionButtons
+		} );
+
 		if ( id ) {
 			this.id = id;
 		}
 
-		if ( title ) {
-			this.view.showHeader( title );
-		}
-
-		if ( content ) {
-			// Normalize the content specified in the arguments.
-			if ( content instanceof View ) {
-				content = [ content ];
-			}
-
-			this.view.addContentPart( content );
-		}
-
-		if ( actionButtons ) {
-			this.view.setActionButtons( actionButtons );
-		}
-
 		this.isOpen = true;
-
 		this._onHide = onHide;
+
+		Dialog.visibleDialogPlugin = this;
 	}
 
 	/**
@@ -175,21 +164,26 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	private _hide(): void {
+		const editor = this.editor;
+		const view = this.view!;
+
 		// Reset the content view to prevent its children from being destroyed in the standard
 		// View#destroy() (and collections) chain. If the content children were left in there,
 		// they would have to be re-created by the feature using the dialog every time the dialog
 		// shows up.
-		if ( this.view!.contentView ) {
-			this.view!.contentView.reset();
+		if ( view.contentView ) {
+			view.contentView.reset();
 		}
 
-		this.view!.destroy();
+		editor.ui.view.body.remove( view );
+		editor.ui.focusTracker.remove( view.element! );
 
-		this.editor.editing.view.focus();
+		view.destroy();
+		editor.editing.view.focus();
 
 		this.id = '';
 		this.isOpen = false;
-		Dialog.pluginInstance = null;
+		Dialog.visibleDialogPlugin = undefined;
 	}
 }
 

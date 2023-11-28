@@ -784,11 +784,11 @@ class DynamicGrouping implements ToolbarBehavior {
 		// Only those items that were not grouped are visible to the user.
 		view.itemsView.children.bindTo( this.ungroupedItems ).using( item => item );
 
-		// Make sure all #items visible in the main space of the toolbar are "focuscycleable".
-		this.ungroupedItems.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
+		// Make sure all #items visible in the main space of the toolbar are "focuscyclable".
+		this.ungroupedItems.on<CollectionChangeEvent>( 'change', this._updateFocusCyclableItems.bind( this ) );
 
 		// Make sure the #groupedItemsDropdown is also included in cycling when it appears.
-		view.children.on<CollectionChangeEvent>( 'change', this._updateFocusCycleableItems.bind( this ) );
+		view.children.on<CollectionChangeEvent>( 'change', this._updateFocusCyclableItems.bind( this ) );
 
 		// ToolbarView#items is dynamic. When an item is added or removed, it should be automatically
 		// represented in either grouped or ungrouped items at the right index.
@@ -1053,7 +1053,7 @@ class DynamicGrouping implements ToolbarBehavior {
 	}
 
 	/**
-	 * Updates the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables focus–cycleable items}
+	 * Updates the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables focus–cyclable items}
 	 * collection so it represents the up–to–date state of the UI from the perspective of the user.
 	 *
 	 * For instance, the {@link #groupedItemsDropdown} can show up and hide but when it is visible,
@@ -1062,7 +1062,7 @@ class DynamicGrouping implements ToolbarBehavior {
 	 * See the {@link module:ui/toolbar/toolbarview~ToolbarView#focusables collection} documentation
 	 * to learn more about the purpose of this method.
 	 */
-	private _updateFocusCycleableItems() {
+	private _updateFocusCyclableItems() {
 		this.viewFocusables.clear();
 
 		this.ungroupedItems.map( item => {
