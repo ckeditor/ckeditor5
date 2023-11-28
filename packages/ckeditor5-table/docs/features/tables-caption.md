@@ -50,7 +50,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+	Read more about {@link framework/plugins/installing-plugins installing plugins}.
 </info-box>
 
 By default, the table caption is placed above the table. You can change the placement by setting [`caption-side`](https://developer.mozilla.org/en-US/docs/Web/CSS/caption-side) in your {@link getting-started/legacy/advanced/content-styles content styles} for the `.ck-content .table > figcaption` style. Changing it to `caption-side: bottom` will display the caption below the table.

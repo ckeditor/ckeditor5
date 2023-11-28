@@ -26,7 +26,7 @@ This article explains how to activate a commercial license of CKEditor&nbsp;5 an
 Other premium features such as {@link features/real-time-collaboration real-time collaboration}, {@link features/export-word export to Word}, {@link features/export-pdf export to PDF}, or {@link features/import-word import from Word} are authenticated on the server side. Please refer to respective feature guides for installation details.
 
 <info-box>
-	CKEditor&nbsp;5 (without premium features listed above) can be used without activation as {@link support/license-and-legal open source software under the GPL license}. It will then {@link support/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
+	CKEditor&nbsp;5 (without premium features listed above) can be used without activation as {@link maintenance/support/license-and-legal open source software under the GPL license}. It will then {@link maintenance/support/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 </info-box>
 
 ## Obtaining a license
@@ -93,4 +93,4 @@ ClassicEditor
 
 To use premium features, you need to add the relevant plugins to your {@link installation/legacy-getting-started/quick-start-other custom CKEditor&nbsp;5 build}. You can use the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) to generate a CKEditor&nbsp;5 build with the plugin enabled.
 
-Alternatively, refer to the installation sections in the plugin documentation to do it on your own. You can read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration} in dedicated guides.
+Alternatively, refer to the installation sections in the plugin documentation to do it on your own. You can read more about {@link framework/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration} in dedicated guides.

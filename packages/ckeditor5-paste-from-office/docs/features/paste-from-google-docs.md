@@ -61,7 +61,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+	Read more about {@link framework/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Support for other applications

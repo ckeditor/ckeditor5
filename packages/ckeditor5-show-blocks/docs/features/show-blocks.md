@@ -44,7 +44,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration}.
+	Read more about {@link framework/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration}.
 </info-box>
 
 ## Known issues

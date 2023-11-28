@@ -50,7 +50,7 @@ When you create a {@link installation/legacy-getting-started/quick-start-other#c
 
 ## Adding features
 
-All the features of CKEditor 5 all implemented by plugins. {@link installation/plugins/plugins Read more about the plugin concept.}
+All the features of CKEditor 5 all implemented by plugins. {@link framework/plugins/plugins Read more about the plugin concept.}
 
 ### List of plugins
 
@@ -62,7 +62,7 @@ ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
 
 ### Installing plugins
 
-Predefined CKEditor 5 builds do not include all possible features. To add more features you can {@link installation/plugins/installing-plugins install plugins} to custom builds and to editors integrated from the source.
+Predefined CKEditor 5 builds do not include all possible features. To add more features you can {@link framework/plugins/installing-plugins install plugins} to custom builds and to editors integrated from the source.
 
 ## Removing features
 
