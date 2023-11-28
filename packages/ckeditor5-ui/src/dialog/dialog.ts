@@ -31,7 +31,7 @@ export default class Dialog extends Plugin {
 	/**
 	 * TODO
 	 */
-	public static pluginInstance: Dialog | null;
+	public static visibleDialogPlugin?: Dialog;
 
 	/**
 	 * TODO
@@ -88,9 +88,7 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( Dialog.pluginInstance ) {
-			Dialog.pluginInstance.hide();
-		}
+		Dialog.visibleDialogPlugin?.hide();
 
 		this.fire( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
 	}
@@ -110,7 +108,7 @@ export default class Dialog extends Plugin {
 	}: DialogDefinition ) {
 		const editor = this.editor;
 
-		Dialog.pluginInstance = this;
+		Dialog.visibleDialogPlugin = this;
 
 		this.view = new DialogView( editor.locale, () => {
 			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
@@ -175,21 +173,26 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	private _hide(): void {
+		const editor = this.editor;
+		const view = this.view!;
+
 		// Reset the content view to prevent its children from being destroyed in the standard
 		// View#destroy() (and collections) chain. If the content children were left in there,
 		// they would have to be re-created by the feature using the dialog every time the dialog
 		// shows up.
-		if ( this.view!.contentView ) {
-			this.view!.contentView.reset();
+		if ( view.contentView ) {
+			view.contentView.reset();
 		}
 
-		this.view!.destroy();
+		editor.ui.view.body.remove( view );
+		editor.ui.focusTracker.remove( view.element! );
 
-		this.editor.editing.view.focus();
+		view.destroy();
+		editor.editing.view.focus();
 
 		this.id = '';
 		this.isOpen = false;
-		Dialog.pluginInstance = null;
+		Dialog.visibleDialogPlugin = undefined;
 	}
 }
 

@@ -97,7 +97,7 @@ class ModalWithText extends Plugin {
 							icon: icons.colorPaletteIcon,
 							withText: true,
 							onExecute: () => {
-								// dialog.setTitle( 'New title' );
+								dialog.view!.headerView!.label = 'New title';
 							}
 						},
 						{
