@@ -16,5 +16,6 @@ export { default as FindNextCommand } from './findnextcommand';
 export { default as FindPreviousCommand } from './findpreviouscommand';
 export { default as ReplaceCommand } from './replacecommand';
 export { default as ReplaceAllCommand } from './replaceallcommand';
+export { FindAndReplaceConfig, type FindAndReplaceUIType } from './findandreplaceconfig';
 
 import './augmentation';
