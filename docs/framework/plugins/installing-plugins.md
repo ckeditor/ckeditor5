@@ -28,7 +28,7 @@ To enrich the CKEditor&nbsp;5 by installing plugins, you will require:
 	**NOTE:** The above rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
 </info-box>
 
-If you are here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you do not, you have two options: create a custom build with an {@link installation/legacy-getting-started/quick-start-other online builder} or {@link installation/advanced/integrating-from-source-webpack integrate the editor from the source}.
+If you are here looking for a way to install plugins, there is a chance you have the CKEditor already installed. But if you do not, you have two options: create a custom build with an {@link getting-started/legacy-getting-started/quick-start-other online builder} or {@link getting-started/advanced/integrating-from-source-webpack integrate the editor from the source}.
 
 ## Adding a plugin to an editor
 

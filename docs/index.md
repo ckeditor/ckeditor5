@@ -8,7 +8,7 @@ meta-description: Learn how to install, integrate, update, configure, and develo
 
 # CKEditor&nbsp;5 documentation
 
-<dl><dt>{@link installation/index Getting started}</dt><dd>Learn how to install, integrate and configure CKEditor&nbsp;5 from scratch or using predefined builds. More complex aspects, like creating custom builds or migrating from CKEditor 4 are explained here, too.</dd>
+<dl><dt>{@link getting-started/index Getting started}</dt><dd>Learn how to install, integrate and configure CKEditor&nbsp;5 from scratch or using predefined builds. More complex aspects, like creating custom builds or migrating from CKEditor 4 are explained here, too.</dd>
 <dt>{@link features/index Features}</dt><dd>Learn about the features available for CKEditor&nbsp;5 &ndash; both the ones included in Builds and a plethora of others.</dd>
 <dt>{@link examples/index Examples}</dt><dd>Try out all CKEditor&nbsp;5 predefined builds. See some of the possible customizations of CKEditor.</dd>
 <dt>{@link framework/index CKEditor&nbsp;5 Framework}</dt><dd>Learn how to work with CKEditor&nbsp;5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor.</dd>

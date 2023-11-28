@@ -44,7 +44,7 @@ import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/l
 
 ### Additional dependencies in CKEditor&nbsp;5 collaboration features
 
-The {@link installation/advanced/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
+The {@link getting-started/advanced/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
 
 From now on, additional plugins will be required when the following CKEditor&nbsp;5 collaboration features are added to the editor:
 

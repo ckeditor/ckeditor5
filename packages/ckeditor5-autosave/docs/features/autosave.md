@@ -135,7 +135,7 @@ function displayStatus( editor ) {
 
 ## Related features
 
-You can read more about {@link installation/legacy-getting-started/getting-and-setting-data getting and setting data} in the Getting started section.
+You can read more about {@link getting-started/legacy-getting-started/getting-and-setting-data getting and setting data} in the Getting started section.
 
 ## Common API
 

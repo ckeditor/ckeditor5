@@ -96,7 +96,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Please be aware that when you try to build CKEditor&nbsp;5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two way to do this.
+Please be aware that when you try to build CKEditor&nbsp;5 from source with WProofreader included, you need to adjust the example `webpack.config.js` provided in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building from source guide}. It needs to also allow including icons and styling from the WProofreader package. There are two way to do this.
 
 The first configuration option is simpler:
 

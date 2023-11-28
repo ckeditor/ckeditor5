@@ -33,7 +33,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance: `connect-src 'self' http://*.cke-cs.com`.
 * `script-src 'self'`: Allows the execution of JavaScript from the current host only and can be applied only if the CKEditor&nbsp;5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
 
-	**Note**: If CKEditor&nbsp;5 is served from another host, for example the {@link installation/legacy-getting-started/predefined-builds#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
+	**Note**: If CKEditor&nbsp;5 is served from another host, for example the {@link getting-started/legacy-getting-started/predefined-builds#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
 * `img-src * data:`
 	* The `*` directive value allows images in the editor content to come from any hosts.
 	* The `data:` value allows:
@@ -44,7 +44,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 * `style-src 'self' 'unsafe-inline'`: `'unsafe-inline'` is necessary for:
 	* webpack's [style-loader](https://github.com/webpack-contrib/style-loader) to load the {@link framework/theme-customization#styles-processing-and-bundling editor UI styles}.
 
-	**Note**: You can {@link installation/advanced/integrating-from-source-webpack#option-extracting-css extract styles to a separate `.css` file} during the editor building process and remove this directive.
+	**Note**: You can {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css extract styles to a separate `.css` file} during the editor building process and remove this directive.
 	* Certain editor content styles to work properly. For instance, you are going to need it if you want to enable such editor features as {@link features/font font} or {@link features/text-alignment text alignment} or any other feature that uses inline `style="..."` attributes in the content.
 * `frame-src *`: Necessary for the {@link features/media-embed media embed} feature to load media with previews (containing `<iframe>`).
 
@@ -64,7 +64,7 @@ default-src 'none'; connect-src 'self'; script-src 'self'; img-src 'self'; style
 
 This comes with some trade–offs, though. For example, it requires you to:
 
-* Use an editor build with the {@link installation/advanced/integrating-from-source-webpack#option-extracting-css styles extracted to a separate `.css` file} (no style-loader).
+* Use an editor build with the {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css styles extracted to a separate `.css` file} (no style-loader).
 * Load images in the content from the same host.
 * Load previewable media in the content from the same host.
 * Give up certain features that use inline styles like {@link features/font font} or {@link features/text-alignment text alignment}.

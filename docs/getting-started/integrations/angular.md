@@ -15,16 +15,16 @@ order: 20
 	</a>
 </p>
 
-CKEditor&nbsp;5 consists of the {@link installation/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
+CKEditor&nbsp;5 consists of the {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-Currently, the CKEditor&nbsp;5 component for Angular supports integrating CKEditor&nbsp;5 only via builds. Integrating {@link installation/advanced/integrating-from-source-webpack CKEditor&nbsp;5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
+Currently, the CKEditor&nbsp;5 component for Angular supports integrating CKEditor&nbsp;5 only via builds. Integrating {@link getting-started/advanced/integrating-from-source-webpack CKEditor&nbsp;5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
-	While there is no support to integrate CKEditor&nbsp;5 from source yet, you can still {@link installation/legacy-getting-started/quick-start-other#customizing-builds create a custom build of CKEditor&nbsp;5} and include it in your Angular application.
+	While there is no support to integrate CKEditor&nbsp;5 from source yet, you can still {@link getting-started/legacy-getting-started/quick-start-other#customizing-builds create a custom build of CKEditor&nbsp;5} and include it in your Angular application.
 </info-box>
 
 <info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link installation/working-with-typescript TypeScript support}.
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/working-with-typescript TypeScript support}.
 </info-box>
 
 ## Supported Angular versions
@@ -98,7 +98,7 @@ npm install --save @ckeditor/ckeditor5-angular
 	If you do not have an existing project, you can use the [Angular CLI](https://angular.io/cli) to create a new one.
 </info-box>
 
-Install one of the {@link installation/legacy-getting-started/predefined-builds CKEditor&nbsp;5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
+Install one of the {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 predefined builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
 
 This tutorial assumes that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -217,7 +217,7 @@ And then, in the template:
 
 ### Using a custom CKEditor&nbsp;5 build
 
-If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link installation/legacy-getting-started/configuration editor configuration} you need to create a custom build first, as described in the {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
+If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link getting-started/legacy-getting-started/configuration editor configuration} you need to create a custom build first, as described in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
 
 By completing the above tutorial you should get a generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
 
@@ -341,7 +341,7 @@ The following `@Input` properties are supported by the CKEditor&nbsp;5 rich text
 
 ### `editor` (required)
 
-The {@link installation/legacy-getting-started/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
+The {@link getting-started/legacy-getting-started/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
 
 ```html
 <ckeditor [editor]="Editor"></ckeditor>

@@ -29,7 +29,7 @@ Each build was designed to satisfy as many use cases as possible. They differ in
 
 ### When NOT to use predefined builds?
 
-{@link framework/index CKEditor&nbsp;5 Framework} or a {@link installation/legacy-getting-started/quick-start-other custom build} should be used, instead of predefined builds, in the following cases:
+{@link framework/index CKEditor&nbsp;5 Framework} or a {@link getting-started/legacy-getting-started/quick-start-other custom build} should be used, instead of predefined builds, in the following cases:
 
 * When you want to create your own text editor and have full control over its every aspect, from UI to features.
 * When the solution proposed by the builds does not fit your specific use case.
@@ -45,7 +45,7 @@ There are several options to download predefined CKEditor&nbsp;5 builds:
 
 #### CDN
 
-Predefined CKEditor&nbsp;5 builds {@link installation/legacy-getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed. CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
+Predefined CKEditor&nbsp;5 builds {@link getting-started/legacy-getting-started/quick-start can be loaded inside pages} directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed. CKEditor is hosted on servers spread across the globe &ndash; the scripts are loaded faster because they are served from the nearest locations to the end user. If the same version of CKEditor has already been downloaded (even on a different website), it is loaded from cache. Using CDN reduces the number of HTTP requests handled by your server so it speeds it up as well.
 
 However, CDN only offers ready-to-use, predefined packages (CKEditor&nbsp;5 builds). This limits its customization capabilities.
 
@@ -94,10 +94,10 @@ After downloading and installing a predefined CKEditor&nbsp;5 build in your appl
 <script src="[ckeditor-build-path]/ckeditor.js"></script>
 ```
 
-Once the CKEditor script is loaded, you can {@link installation/legacy-getting-started/editor-lifecycle use the API} to create editors in your page.
+Once the CKEditor script is loaded, you can {@link getting-started/legacy-getting-started/editor-lifecycle use the API} to create editors in your page.
 
 <info-box>
-	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link installation/legacy-getting-started/predefined-builds#umd-support UMD support section}.
+	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link getting-started/legacy-getting-started/predefined-builds#umd-support UMD support section}.
 </info-box>
 
 ## Available builds
@@ -682,12 +682,12 @@ The superbuild, available instantly from the CDN, is a pre-configured package th
 <info-box>
 	Keep in mind that the superbuild contains a lot of code. You may not need all of it for your use case. It is best to use the superbuild for testing and evaluation purposes rather than in a production environment.
 
-	For customized and efficient solutions in a production environment, we strongly advise using the {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} approach or {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}. You can also try out other predefined builds instead.
+	For customized and efficient solutions in a production environment, we strongly advise using the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} approach or {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}. You can also try out other predefined builds instead.
 </info-box>
 
 #### Installation example
 
- To learn how to use the superbuild, refer to the {@link installation/legacy-getting-started/quick-start#running-a-full-featured-editor-from-cdn CDN installation quick start guide}.
+ To learn how to use the superbuild, refer to the {@link getting-started/legacy-getting-started/quick-start#running-a-full-featured-editor-from-cdn CDN installation quick start guide}.
 
 ## List of plugins included in the CKEditor&nbsp;5 predefined builds
 

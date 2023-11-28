@@ -21,7 +21,7 @@ Later on, you will use the "Product preview" feature to build a simple React app
 
 There are a couple of things you should know before you start:
 
-* Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor&nbsp;5 has an official {@link installation/integrations/react **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to {@link installation/integrations/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
+* Since you are here, you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor&nbsp;5 has an official {@link getting-started/integrations/react **rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to {@link getting-started/integrations/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
 * In this tutorial, you are going to implement a block editor widget and that itself could give you a headache. It is recommended to at least skim through the {@link tutorials/widgets/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API, and possible use cases.
 * Also, while it is not strictly necessary to read the {@link framework/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor&nbsp;5 Framework before you dive into this tutorial.
 * Various parts of the {@link framework/architecture/intro CKEditor&nbsp;5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
@@ -67,7 +67,7 @@ yarn add --dev \
 	webpack-cli@4
 ```
 
-Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor&nbsp;5 and React, check out the {@link installation/integrations/react#integrating-ckeditor-5-built-from-source Integrating CKEditor&nbsp;5 built from source} section of the CKEditor&nbsp;5 React component guide.
+Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor&nbsp;5 and React, check out the {@link getting-started/integrations/react#integrating-ckeditor-5-built-from-source Integrating CKEditor&nbsp;5 built from source} section of the CKEditor&nbsp;5 React component guide.
 
 ```js
 // webpack.config.js
@@ -242,7 +242,7 @@ The `ProductPreviewEditing` plugin defines the `productPreview` element in the e
 </info-box>
 
 * In the **data view**, the `productPreview` is represented as an empty `<section class="product" data-id="..."></section>` element with a `data-id` attribute associating it with a particular product. A semantic representation of the product saved in the database can be then consumed in the front–end by retrieving a fresh preview using the `data-id`. Since it does not carry any formatting or styling, the data representation will never get outdated, even if the layout or styles of the application change in the future.
-* In the **editing view**, on the other hand, the product preview is a {@link tutorials/widgets/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~UIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link installation/legacy-getting-started/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
+* In the **editing view**, on the other hand, the product preview is a {@link tutorials/widgets/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~UIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link getting-started/legacy-getting-started/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
@@ -497,7 +497,7 @@ export default class ProductPreview extends React.Component {
 
 So far, you have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together in the `App` class.
 
-You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial so it renders the {@link installation/integrations/react official `<CKEditor>` React component} on the left side, and the list of available products on the right.
+You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial so it renders the {@link getting-started/integrations/react official `<CKEditor>` React component} on the left side, and the list of available products on the right.
 
 Have a look at the full source code of the `App` class:
 

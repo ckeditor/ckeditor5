@@ -9,9 +9,9 @@ modified_at: 2022-02-21
 # CKEditor 5 DLL builds for CKEditor 5 Collaboration Features
 
 <info-box>
-    This guide discusses using a DLL build together with CKEditor&nbsp;5 Collaboration Features and is supplemental to the {@link installation/advanced/dll-builds CKEditor&nbsp;5 DLL builds guide}.
+    This guide discusses using a DLL build together with CKEditor&nbsp;5 Collaboration Features and is supplemental to the {@link getting-started/advanced/dll-builds CKEditor&nbsp;5 DLL builds guide}.
 
-    Make sure to read the {@link installation/advanced/dll-builds base guide} first before proceeding.
+    Make sure to read the {@link getting-started/advanced/dll-builds base guide} first before proceeding.
 </info-box>
 
 ## Anatomy of a DLL build with CKEditor&nbsp;5 collaboration features

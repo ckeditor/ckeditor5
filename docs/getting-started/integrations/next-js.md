@@ -13,7 +13,7 @@ Next.js is a React meta-framework that helps create full-stack web apps. It offe
 
 Next.js 13 introduced a new App Router as an alternative to the previous Pages Router. App Router supports server components and is more server-centric than Pages Router, which is client-side oriented.
 
-CKEditor&nbsp;5 does not support server-side rendering yet, but it is possible to integrate it with the Next.js framework. In this guide, we will add the editor to a Next.js project using both routing paradigms. For this purpose, we will need [Next.js CLI](https://nextjs.org/docs/pages/api-reference/create-next-app), [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), and the official {@link installation/integrations/react CKEditor&nbsp;5 React component}.
+CKEditor&nbsp;5 does not support server-side rendering yet, but it is possible to integrate it with the Next.js framework. In this guide, we will add the editor to a Next.js project using both routing paradigms. For this purpose, we will need [Next.js CLI](https://nextjs.org/docs/pages/api-reference/create-next-app), [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), and the official {@link getting-started/integrations/react CKEditor&nbsp;5 React component}.
 
 ## Preparing a build
 
@@ -21,7 +21,7 @@ First, we will use the [online builder](https://ckeditor.com/ckeditor-5/online-b
 
 The online builder is a powerful tool that lets you effortlessly create a rich text editor tailored to your needs. With the online builder, you can choose the desired editor type and plugins, configure the toolbar, and choose the UI language for your editor.
 
-You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in the {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
+You can learn more about creating custom builds of CKEditor&nbsp;5 with the online builder in the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Customized installation} guide.
 
 ## Setting up the project
 

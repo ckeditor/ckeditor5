@@ -14,7 +14,7 @@ Some of the {@link features/index core editor features} bring additional CSS to 
 
 {@img assets/img/builds-content-styles.png 823 Editor content styles.}
 
-Content styles are bundled along with editor UI styles and, together with the JavaScript code of CKEditor&nbsp;5, they create a monolithic structure called an {@link installation/legacy-getting-started/predefined-builds#available-builds editor build}. By default, content styles are inseparable from the rest of the editor which means there is no CSS file containing them you could take straight from the editor and use in your application (as opposed to the CKEditor 4 `contents.css` file). To get the editor content styles, for instance, for the front–end of your application, you will have to take additional steps described in this guide.
+Content styles are bundled along with editor UI styles and, together with the JavaScript code of CKEditor&nbsp;5, they create a monolithic structure called an {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor build}. By default, content styles are inseparable from the rest of the editor which means there is no CSS file containing them you could take straight from the editor and use in your application (as opposed to the CKEditor 4 `contents.css` file). To get the editor content styles, for instance, for the front–end of your application, you will have to take additional steps described in this guide.
 
 ## Sharing content styles between front–end and back–end
 
@@ -40,7 +40,7 @@ The content in the front–end of your application should now look the same as w
 </info-box>
 
 <info-box>
-	If you are not afraid to get your hands dirty, you can always create a custom CKEditor&nbsp;5 build from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link installation/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}.
+	If you are not afraid to get your hands dirty, you can always create a custom CKEditor&nbsp;5 build from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}.
 </info-box>
 
 ## The full list of content styles

@@ -37,7 +37,7 @@ plugins: [
 
 You can also use the relative path which is resolved relative to the resource that imports `bold.svg` (the {@link module:basic-styles/bold/boldui~BoldUI `BoldUI`} class file in this scenario).
 
-Learn more about {@link installation/advanced/integrating-from-source-webpack#webpack-configuration building CKEditor 5 using webpack}.
+Learn more about {@link getting-started/advanced/integrating-from-source-webpack#webpack-configuration building CKEditor 5 using webpack}.
 
 ### How to add an attribute to the editor editable in DOM?
 

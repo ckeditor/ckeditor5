@@ -14,7 +14,7 @@ order: 40
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/legacy-getting-started/quick-start-other previous guide} you have learned about various ways to set up CKEditor&nbsp;5 in the project. Now, you know how to use the online builder or create the editor from the source. It is time to play a bit with the configuration!
+In the {@link getting-started/legacy-getting-started/quick-start-other previous guide} you have learned about various ways to set up CKEditor&nbsp;5 in the project. Now, you know how to use the online builder or create the editor from the source. It is time to play a bit with the configuration!
 </info-box>
 
 When creating an editor on your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configurations} that change many of its aspects. For example:
@@ -40,13 +40,13 @@ As you can see, the configuration is set by a simple JavaScript object passed to
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
 
-Some of the options may require loading plugins that are not available in the build you use. Return to the {@link installation/legacy-getting-started/quick-start-other Customized installation} guide for instructions on creating a custom build.
+Some of the options may require loading plugins that are not available in the build you use. Return to the {@link getting-started/legacy-getting-started/quick-start-other Customized installation} guide for instructions on creating a custom build.
 
 ## Toolbar setup
 
 In the builds that contain toolbars, an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. Check the detailed {@link features/toolbar toolbar feature guide} for the available options.
 
-When you create a {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
+When you create a {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
 
 ## Adding features
 
@@ -66,7 +66,7 @@ Predefined CKEditor 5 builds do not include all possible features. To add more f
 
 ## Removing features
 
-The {@link installation/legacy-getting-started/predefined-builds predefined CKEditor 5 builds} come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor 5.
+The {@link getting-started/legacy-getting-started/predefined-builds predefined CKEditor 5 builds} come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor 5.
 
 In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
@@ -124,7 +124,7 @@ ClassicEditor
 <info-box hint>
 **What's next?**
 
-You have learned how to configure your own CKEditor 5 instance. Awesome! Learn more about CKEditor 5 by moving on to {@link installation/legacy-getting-started/editor-lifecycle the editor's lifecycle guide}!
+You have learned how to configure your own CKEditor 5 instance. Awesome! Learn more about CKEditor 5 by moving on to {@link getting-started/legacy-getting-started/editor-lifecycle the editor's lifecycle guide}!
 
-If you would like to integrate your CKEditor 5 installation with the Angular, React, and Vue.js JavaScript frameworks, {@link installation/integrations/overview we have dedicated guides for that}.
+If you would like to integrate your CKEditor 5 installation with the Angular, React, and Vue.js JavaScript frameworks, {@link getting-started/integrations/overview we have dedicated guides for that}.
 </info-box>

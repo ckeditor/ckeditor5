@@ -14,9 +14,9 @@ modified_at: 2022-06-27
 In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor&nbsp;5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
 
 <info-box>
-	Please bear in mind that the CDN solution only offers {@link installation/legacy-getting-started/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
+	Please bear in mind that the CDN solution only offers {@link getting-started/legacy-getting-started/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
 
-	Should you need a more flexible solution, consider using the {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or try {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
+	Should you need a more flexible solution, consider using the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or try {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 </info-box>
 
 ## Running a simple editor
@@ -81,7 +81,7 @@ A full webpage with embedded CKEditor&nbsp;5 from the above example would look l
 <info-box>
 	This kind of installation will only provide features available in the build used.
 
-	You can learn more about other available predefined editor builds in the {@link installation/legacy-getting-started/predefined-builds dedicated builds guide}.
+	You can learn more about other available predefined editor builds in the {@link getting-started/legacy-getting-started/predefined-builds dedicated builds guide}.
 </info-box>
 
 ## Running a full-featured editor from CDN
@@ -91,12 +91,12 @@ The fastest way to run an advanced editor using the {@link features/index rich e
 <info-box>
 	Please consider, that the superbuild contains a really whole lot of code. A good portion of that code may not be needed in your implementation, so using the superbuild should be considered for evaluation purposes and tests rather, than for the production environment.
 
-	We strongly advise using the {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link installation/legacy-getting-started/predefined-builds predefined builds} tailored for specific needs.
+	We strongly advise using the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} approach or {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source} to create customized and efficient production-environment solutions. You can also try out the {@link getting-started/legacy-getting-started/predefined-builds predefined builds} tailored for specific needs.
 </info-box>
 
 ### Using the CKEditor&nbsp;5 superbuild
 
-In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link installation/legacy-getting-started/predefined-builds#available-builds available builds documentation}.
+In the superbuild, all editor classes are stored under the `CKEDITOR` object. Apart from that exception, the editor initialization is no different than the one described in the {@link getting-started/legacy-getting-started/predefined-builds#available-builds available builds documentation}.
 
 Because the superbuild contains a lot of plugins, you may need to remove the plugins you do not need with the <code>removePlugins</code> configuration option and adjust the toolbar configuration. There are also some plugins, like the {@link features/productivity-pack Productivity Pack}, that require a license to run. You can learn more about obtaining and activating license keys in the {@link maintenance/support/license-key-and-activation License key and activation} guide. Observe the config below to see this implemented.
 
@@ -314,14 +314,14 @@ After you sign up, you will find in the customer dashboard the full code snippet
 
 ## Adjusting plugins included in the CKEditor&nbsp;5 superbuild
 
-You may disable any features available in the superbuild using the {@link installation/legacy-getting-started/configuration#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link installation/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
+You may disable any features available in the superbuild using the {@link getting-started/legacy-getting-started/configuration#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
 
 <info-box hint>
 **What's next?**
 
 Congratulations, you have just run your first CKEditor&nbsp;5 instance!
 
-You can also try another simple installation method, like the {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
+You can also try another simple installation method, like the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 
-And if you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
+And if you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link getting-started/integrations/overview Frameworks section}.
 </info-box>

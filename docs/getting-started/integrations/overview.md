@@ -13,10 +13,10 @@ CKEditor&nbsp;5 is framework agnostic and can be integrated with any JavaScript 
 
 There are four official integrations so far:
 
-* {@link installation/integrations/angular CKEditor&nbsp;5 rich-text editor for Angular}
-* {@link installation/integrations/react CKEditor&nbsp;5 rich-text editor for React}
-* {@link installation/integrations/vuejs-v2 CKEditor&nbsp;5 rich-text editor for Vue.js 2.x}
-* {@link installation/integrations/vuejs-v3 CKEditor&nbsp;5 rich-text editor for Vue.js 3.x}
+* {@link getting-started/integrations/angular CKEditor&nbsp;5 rich-text editor for Angular}
+* {@link getting-started/integrations/react CKEditor&nbsp;5 rich-text editor for React}
+* {@link getting-started/integrations/vuejs-v2 CKEditor&nbsp;5 rich-text editor for Vue.js 2.x}
+* {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 rich-text editor for Vue.js 3.x}
 
 Refer to their documentation to learn how to use them.
 
@@ -30,12 +30,12 @@ When checking how to integrate CKEditor&nbsp;5 with your framework, you can foll
 
 1. **Check whether an [official integration](#official-wysiwyg-editor-integrations) exists.**
 
-	So far, there are four official integrations: for {@link installation/integrations/react React}, {@link installation/integrations/angular Angular}, {@link installation/integrations/vuejs-v2 Vue.js 2.x}, and {@link installation/integrations/vuejs-v3 Vue.js 3.x}.
+	So far, there are four official integrations: for {@link getting-started/integrations/react React}, {@link getting-started/integrations/angular Angular}, {@link getting-started/integrations/vuejs-v2 Vue.js 2.x}, and {@link getting-started/integrations/vuejs-v3 Vue.js 3.x}.
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor&nbsp;5 with your framework by yourself.**
 
-	CKEditor&nbsp;5 offers {@link installation/legacy-getting-started/predefined-builds predefined builds} that expose a rich JavaScript API, which you can use to {@link installation/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create create editors} and {@link installation/legacy-getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata control them}.
+	CKEditor&nbsp;5 offers {@link getting-started/legacy-getting-started/predefined-builds predefined builds} that expose a rich JavaScript API, which you can use to {@link getting-started/legacy-getting-started/editor-lifecycle#creating-an-editor-with-create create editors} and {@link getting-started/legacy-getting-started/getting-and-setting-data#setting-the-editor-data-with-setdata control them}.
 
 ## Compatibility with CSS frameworks
 
-CKEditor&nbsp;5 is compatible with popular CSS frameworks such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link installation/integrations/css in this guide}.
+CKEditor&nbsp;5 is compatible with popular CSS frameworks such as [Bootstrap](https://getbootstrap.com/) or [Foundation](https://get.foundation/). Such integrations, however, often require additional changes and adjustments that we have gathered {@link getting-started/integrations/css in this guide}.

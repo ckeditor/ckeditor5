@@ -175,9 +175,9 @@ A relatively simple yet efficient strategy of adopting CKEditor&nbsp;5 into exis
 
 ### Installation and integration
 
-The very first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all available installation and integration options.
+The very first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link getting-started/index Getting started} section to explore all available installation and integration options.
 
-The API for integrating CKEditor with your pages changed, too. It is worth checking the {@link installation/legacy-getting-started/editor-lifecycle Editor lifecycle} and {@link installation/legacy-getting-started/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
+The API for integrating CKEditor with your pages changed, too. It is worth checking the {@link getting-started/legacy-getting-started/editor-lifecycle Editor lifecycle} and {@link getting-started/legacy-getting-started/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
 
 ### Custom plugins
 
@@ -212,8 +212,8 @@ CKEditor&nbsp;5 is licensed under GPL2+ Open Source license only. If you are run
 You can approach moving from CKEditor 4 to CKEditor&nbsp;5 as follows:
 
 1. **Back up all your data.**
-2. Learn about CKEditor&nbsp;5. Check the [demos](https://ckeditor.com/ckeditor-5/demo/), read about its {@link framework/architecture/intro architecture}, and review the {@link features/index available features} and {@link installation/index integration methods}.
-3. Create a custom build containing all the plugins you need {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder using online builder} or {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
+2. Learn about CKEditor&nbsp;5. Check the [demos](https://ckeditor.com/ckeditor-5/demo/), read about its {@link framework/architecture/intro architecture}, and review the {@link features/index available features} and {@link getting-started/index integration methods}.
+3. Create a custom build containing all the plugins you need {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder using online builder} or {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 4. Test loading pre-existing content created in CKEditor 4 into CKEditor&nbsp;5. Adjust the editor configuration and plugin set. If needed, enable the missing elements, classes, or attributes via the {@link features/general-html-support General HTML Support} feature.
 5. When you are sure no data loss will occur, you can focus on customizing your CKEditor&nbsp;5 build even more by changing the integration method, creating custom plugins, adjusting the theme, and enabling new features.
 

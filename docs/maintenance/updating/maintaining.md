@@ -17,7 +17,7 @@ CKEditor&nbsp;5 should be {@link maintenance/updating/updating-ckeditor-5 update
 
 ### Update your custom builds
 
-If you want to skip some editor features, customize your build with {@link installation/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and remove unneeded functionality. Alternatively, {@link installation/legacy-getting-started/quick-start-other#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a {@link installation/legacy-getting-started/predefined-builds predefined editor build} and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
+If you want to skip some editor features, customize your build with {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and remove unneeded functionality. Alternatively, {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a {@link getting-started/legacy-getting-started/predefined-builds predefined editor build} and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
 
 ### Use online builder to add plugins
 

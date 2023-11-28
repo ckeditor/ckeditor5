@@ -56,7 +56,7 @@ If you visit a page using MathType with your mobile device, the handwriting inte
 ## Installation
 
 <info-box info>
-	The Math equations and chemical formulas feature is enabled by default in the {@link installation/legacy-getting-started/predefined-builds#superbuild superbuild} only.
+	The Math equations and chemical formulas feature is enabled by default in the {@link getting-started/legacy-getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
 <info-box>

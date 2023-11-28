@@ -8,7 +8,7 @@ classes: main__content--no-toc
 
 # Balloon block editor
 
-{@link installation/legacy-getting-started/predefined-builds#balloon-block-editor Balloon block editor} lets you create your content directly in its target location with the help of two toolbars:
+{@link getting-started/legacy-getting-started/predefined-builds#balloon-block-editor Balloon block editor} lets you create your content directly in its target location with the help of two toolbars:
 
 * A balloon toolbar that appears next to the selected editable document element (offering inline content formatting tools).
 * A {@link features/blocktoolbar block toolbar} accessible using the toolbar handle button {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator}  attached to the editable content area and following the selection in the document (bringing additional block formatting tools). The {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} button is also a handle that can be used to drag and drop blocks around the content.
@@ -17,7 +17,7 @@ classes: main__content--no-toc
 
 ## Editor example configuration
 
-Check out the {@link installation/legacy-getting-started/predefined-builds#installation-example-4 Quick start} guide to learn more about implementing this kind of editor. You will find the implementation steps there. You can see this example editor’s code below.
+Check out the {@link getting-started/legacy-getting-started/predefined-builds#installation-example-4 Quick start} guide to learn more about implementing this kind of editor. You will find the implementation steps there. You can see this example editor’s code below.
 
 <details>
 <summary>View editor configuration script</summary>

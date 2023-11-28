@@ -11,7 +11,7 @@ order: 70
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/legacy-getting-started/editor-lifecycle previous guide} you have learned about lifecycle methods. Having the editor created, you can now set or get its data.
+In the {@link getting-started/legacy-getting-started/editor-lifecycle previous guide} you have learned about lifecycle methods. Having the editor created, you can now set or get its data.
 </info-box>
 
 CKEditor 5 allows you to retrieve the data from and save it to your server (or to your system in general) in various ways. In this guide, you can learn about the available options along with their pros and cons.
@@ -67,7 +67,7 @@ document.querySelector( '#submit' ).addEventListener( 'click', () => {
 
 This is the classic way of integrating the editor. It is typically used in simpler CMSes, forums, comment sections, etc.
 
-This approach is only available in the {@link installation/legacy-getting-started/predefined-builds#classic-editor Classic editor} and only if the editor was used to replace a `<textarea>` element:
+This approach is only available in the {@link getting-started/legacy-getting-started/predefined-builds#classic-editor Classic editor} and only if the editor was used to replace a `<textarea>` element:
 
 ```html
 <!DOCTYPE html>
@@ -288,6 +288,6 @@ How to understand this demo:
 <info-box hint>
 **What's next?**
 
-Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link installation/legacy-getting-started/api-and-events API and events guide} for more.
+Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link getting-started/legacy-getting-started/api-and-events API and events guide} for more.
 
 </info-box>

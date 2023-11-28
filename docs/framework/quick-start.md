@@ -26,7 +26,7 @@ The CKEditor&nbsp;5 Framework consists of several [npm packages](https://npmjs.c
 * [Node.js](https://nodejs.org/en/) 18.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
-Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor&nbsp;5 in the {@link installation/advanced/integrating-from-source-webpack Integrating from source} guide.
+Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor&nbsp;5 in the {@link getting-started/advanced/integrating-from-source-webpack Integrating from source} guide.
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
@@ -135,7 +135,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	Note that in this guide the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	No {@link installation/legacy-getting-started/predefined-builds editor builds} are used because adding new plugins to them requires rebuilding them anyway. This can be done by {@link framework/plugins/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
+	No {@link getting-started/legacy-getting-started/predefined-builds editor builds} are used because adding new plugins to them requires rebuilding them anyway. This can be done by {@link framework/plugins/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
 </info-box>
 
 ```js

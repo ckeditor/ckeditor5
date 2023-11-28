@@ -16,22 +16,22 @@ order: 40
 </p>
 
 <info-box>
-	**Important**: This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. To learn more about the integration with Vue.js 3+, check out the {@link installation/integrations/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
+	**Important**: This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations/vuejs-v3 "Rich text editor component for Vue.js 3+"} guide.
 </info-box>
 
-CKEditor&nbsp;5 consists of the {@link installation/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
+CKEditor&nbsp;5 consists of the {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor&nbsp;5 in your Vue.js application is by choosing one of the {@link installation/legacy-getting-started/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
+The easiest way to use CKEditor&nbsp;5 in your Vue.js application is by choosing one of the {@link getting-started/legacy-getting-started/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
 
 Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
 <info-box>
-	The {@link features/watchdog watchdog feature} is available for the {@link installation/integrations/react React} and {@link installation/integrations/angular Angular} integrations, but is not supported in Vue yet.
+	The {@link features/watchdog watchdog feature} is available for the {@link getting-started/integrations/react React} and {@link getting-started/integrations/angular Angular} integrations, but is not supported in Vue yet.
 </info-box>
 
 ## Quick start
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2) and the {@link installation/legacy-getting-started/predefined-builds#available-builds editor build of your choice}.
+Install the [CKEditor&nbsp;5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2) and the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -262,7 +262,7 @@ npm init vue@2 ckeditor5-vue-example
 This command will install and execute `create-vue`, the official project scaffolding tool for Vue. It will also allow you to customize your project. Choose your preferred options.
 
 <info-box>
-	Using the Vite plugin to build CKEditor&nbsp;5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link installation/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
+	Using the Vite plugin to build CKEditor&nbsp;5 from the source in Vite is still in the experimental phase. We encourage you to test it and give us feedback. To read more about integration with Vite or its limitations, check the {@link getting-started/advanced/integrating-from-source-vite Integrating from source with Vite} guide.
 </info-box>
 
 You need to install some packages to use CKEditor&nbsp;5 from source with Vue 2 and Vite: the official CKEditor Vue 2 component and the CKEditor Vite plugin.
@@ -310,7 +310,7 @@ npm install -g @vue/cli
 ```
 
 <info-box>
-	Learn more about building CKEditor&nbsp;5 from source in the {@link installation/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
+	Learn more about building CKEditor&nbsp;5 from source in the {@link getting-started/advanced/integrating-from-source-webpack Integrating the editor from the source} guide.
 </info-box>
 
 To create a new project, run:
@@ -552,7 +552,7 @@ CKEditor&nbsp;5 supports {@link features/ui-language multiple UI languages}, and
 
 ### Predefined builds
 
-When using one of the {@link installation/legacy-getting-started/predefined-builds predefined builds}, you need to import the translations first.
+When using one of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds}, you need to import the translations first.
 
 * When using a [direct script include](#direct-script-include):
 	```html
@@ -569,7 +569,7 @@ When using one of the {@link installation/legacy-getting-started/predefined-buil
 	import '@ckeditor/ckeditor5-build-classic/build/translations/de';
 	```
 
-Then, {@link installation/legacy-getting-started/configuration configure} the language of the editor in the component:
+Then, {@link getting-started/legacy-getting-started/configuration configure} the language of the editor in the component:
 
 ```html
 <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
@@ -659,7 +659,7 @@ This directive specifies the editor to be used by the component. It must directl
 ```
 
 <info-box>
-	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link installation/advanced/using-two-editors "super build"}.
+	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link getting-started/advanced/using-two-editors "super build"}.
 </info-box>
 
 ### `tag-name`

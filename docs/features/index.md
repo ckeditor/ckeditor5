@@ -79,7 +79,7 @@ The {@link features/productivity-pack productivity pack} is a set of exclusive p
 
 ### Other productivity features
 
-Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link installation/index editor build} to suit your needs.
+Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link getting-started/index editor build} to suit your needs.
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
@@ -91,7 +91,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 ### Customizable user experience
 
-Work as you like it - choose user interface approach from {@link installation/legacy-getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link installation/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
+Work as you like it - choose user interface approach from {@link getting-started/legacy-getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
 
 {@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 
@@ -107,13 +107,13 @@ If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, please check the {@li
 
 ## Feature availability
 
-Plenty of these features are included by default in the predefined {@link installation/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+Plenty of these features are included by default in the predefined {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
 
 However, some of the presented features need to be manually included in a customized CKEditor&nbsp;5 build, for example, the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. These plugins can also be easily and conveniently added to a custom build with the [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-You can refer to the {@link installation/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds full list of features available in each build} for details.
+You can refer to the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds full list of features available in each build} for details.
 
-We also offer the flexibility of the {@link installation/advanced/dll-builds DLL builds}, enabling the addition of new plugins into an existing build without the need to rebuild the installation.
+We also offer the flexibility of the {@link getting-started/advanced/dll-builds DLL builds}, enabling the addition of new plugins into an existing build without the need to rebuild the installation.
 
 ## Feature examples
 
