@@ -249,14 +249,14 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		// Update dialog position upon window resize, if the position was not changed manually.
 		this.listenTo( global.window, 'resize', () => {
 			if ( this.isVisible && !this.wasMoved ) {
-				this._moveToConfiguredPosition();
+				this.updatePosition();
 			}
 		} );
 
 		// Update dialog position upon document scroll, if the position was not changed manually.
 		this.listenTo( global.document, 'scroll', () => {
 			if ( this.isVisible && !this.wasMoved ) {
-				this._moveToConfiguredPosition();
+				this.updatePosition();
 			}
 		} );
 
@@ -269,7 +269,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 				// FYI: RAF is too short. We need to wait a bit longer.
 				setTimeout( () => {
-					this._moveToConfiguredPosition();
+					this.updatePosition();
 
 					this.isTransparent = false;
 
@@ -403,7 +403,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	private _moveToConfiguredPosition(): void {
+	public updatePosition(): void {
 		const viewportRect = this._getViewportRect();
 		const defaultOffset = DialogView.defaultOffset;
 
