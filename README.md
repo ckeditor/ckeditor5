@@ -93,8 +93,8 @@ CKEditor&nbsp;5 is a TypeScript project. Starting from v37.0.0, it offers native
 ### CKEditor&nbsp;5 advanced installation
 
 For more advanced users or those who need to integrate CKEditor&nbsp;5 with their applications, we have prepared several other, advanced methods to do it. You can:
-* Integrate the editor from source [using webpack](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/advanced/alternative-setups/integrating-from-source-webpack.html) or [Vite](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/advanced/alternative-setups/integrating-from-source-vite.html)
-* Use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/advanced/alternative-setups/dll-builds.html)
+* Integrate the editor from source [using webpack](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/advanced/alternative-setups/integrating-from-source-webpack.html) or [Vite](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/advanced/alternative-setups/integrating-from-source-vite.html)
+* Use [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/advanced/alternative-setups/dll-builds.html)
 * Use some of the pre-made integrations with popular [JavaScript frameworks](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/frameworks/overview.html):
   * [Angular](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/frameworks/angular.html)
   * [React](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/frameworks/react.html)

@@ -245,7 +245,7 @@ yarn docs:content-styles
 
 The stylesheet will be saved in the `build/content-styles` folder.
 
-To learn more, refer to the {@link getting-started/legacy/advanced/content-styles Content styles} guide.
+To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
 
 ## Additional information for contributors
 
