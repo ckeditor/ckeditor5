@@ -373,7 +373,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			top = viewportRect.top;
 		}
 
-		// TODO: The same for the bottom edge?
+		// Note: We don't do the same for the bottom edge to allow users to resize the window vertically
+		// and let the dialog to stay put instead of covering the editing root.
 
 		this._moveTo( left, top );
 	}
