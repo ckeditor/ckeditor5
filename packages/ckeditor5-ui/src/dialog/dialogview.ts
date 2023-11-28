@@ -405,13 +405,19 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * TODO
 	 */
 	public updatePosition(): void {
+		let configuredPosition = this.position;
+
+		if ( !this._getCurrentDomRoot() ) {
+			configuredPosition = DialogViewPosition.SCREEN_CENTER;
+		}
+
 		const viewportRect = this._getViewportRect();
 		const defaultOffset = DialogView.defaultOffset;
 
 		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
 
-		switch ( this.position ) {
+		switch ( configuredPosition ) {
 			case DialogViewPosition.EDITOR_TOP_SIDE: {
 				const domRootRect = this._getVisibleDomRootRect( viewportRect );
 				const dialogRect = this._getDialogRect();

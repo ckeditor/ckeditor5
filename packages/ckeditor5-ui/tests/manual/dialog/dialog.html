@@ -6,6 +6,7 @@
 	<li><a href="#inline">Inline editor</a></li>
 	<li><a href="#rtl">RTL editor</a></li>
 	<li><a href="#bottom-toolbar">Bottom toolbar editor</a></li>
+	<li><a href="#multiroot">Multiroot editor</a></li>
 </ul>
 
 <div class="spanner"></div>
@@ -121,6 +122,31 @@
 <div id="editor-toolbar-container"></div>
 <div class="spanner"></div>
 
+<h2 id="multiroot" class="demo-heading">Multiroot editor<a href="#demo-list">(back to top)</a></h2>
+<div id="toolbar"></div>
+<div class="editable-container">
+	<div class="editor">
+		<div id="editor-intro">
+			<h2>Intro news!</h2>
+			<p><strong>Exciting</strong> intro text to an article.</p>
+		</div>
+	</div>
+	<div class="editor">
+		<div id="editor-content">
+			<h2>Exciting news!</h2>
+			<p>Lorem ipsum dolor sit amet.</p>
+			<h3>Less exciting news!</h3>
+			<p>Lorem ipsum dolor sit amet.</p>
+		</div>
+	</div>
+	<div class="editor">
+		<div id="editor-outro">
+			<p>Closing text.</p>
+		</div>
+	</div>
+</div>
+<div class="spanner"></div>
+
 <style>
 	.links a {
 		font-size: 2vw;
@@ -161,5 +187,10 @@
 
 	#editor-tiny {
 		width: 300px;
+	}
+
+	.editor {
+		border: #ccced1 1px solid;
+		margin-top: 1em;
 	}
 </style>

@@ -57,6 +57,7 @@ export default class Dialog extends Plugin {
 		super( editor );
 
 		this._initShowHideListeners();
+		this._initMultiRootIntegration();
 
 		this.set( 'isOpen', false );
 	}
@@ -82,6 +83,27 @@ export default class Dialog extends Plugin {
 		this.on<DialogHideEvent>( 'hide', () => {
 			this._onHide?.( this );
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Provides an integration between the root attaching and detaching and positioning of the view.
+	 */
+	private _initMultiRootIntegration() {
+		const model = this.editor.model;
+
+		model.document.on( 'change:data', () => {
+			if ( !this.view ) {
+				return;
+			}
+
+			const changedRoots = model.document.differ.getChangedRoots();
+
+			for ( const changes of changedRoots ) {
+				if ( changes.state ) {
+					this.view.updatePosition();
+				}
+			}
+		} );
 	}
 
 	/**
