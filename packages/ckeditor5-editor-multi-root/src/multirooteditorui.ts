@@ -84,7 +84,31 @@ export default class MultiRootEditorUI extends EditorUI {
 		}
 
 		this._initToolbar();
+		this._initDialogPluginIntegration();
 		this.fire<EditorUIReadyEvent>( 'ready' );
+	}
+
+	/**
+	 * Provides an integration between the root attaching and detaching and {@link module:ui/dialog the Dialog plugin}.
+	 *
+	 * It ensures that when the root with the accordingly positioned dialog gets detached, the dialog is repositioned.
+	 */
+	private _initDialogPluginIntegration(): void {
+		if ( !this.editor.plugins.has( 'Dialog' ) ) {
+			return;
+		}
+
+		this.editor.plugins.get( 'Dialog' ).on( 'show', () => {
+			const dialogView = this.editor.plugins.get( 'Dialog' ).view!;
+
+			this.editor.on( 'detachRoot', () => {
+				dialogView.updatePosition();
+			} );
+
+			this.editor.on( 'addRoot', () => {
+				dialogView.updatePosition();
+			} );
+		}, { priority: 'low' } );
 	}
 
 	/**
