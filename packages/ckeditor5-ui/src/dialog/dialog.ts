@@ -7,7 +7,7 @@
  * @module ui/dialog/dialog
  */
 
-import View from '../view';
+import type View from '../view';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview';
 import type { DialogActionButtonDefinition } from './dialogactionsview';
@@ -108,12 +108,13 @@ export default class Dialog extends Plugin {
 	}: DialogDefinition ) {
 		const editor = this.editor;
 
-		Dialog.visibleDialogPlugin = this;
-
-		this.view = new DialogView( editor.locale, () => {
-			return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
-		}, () => {
-			return editor.ui.viewportOffset;
+		this.view = new DialogView( editor.locale, {
+			getCurrentDomRoot: () => {
+				return editor.editing.view.getDomRoot( editor.model.document.selection.anchor!.root.rootName )!;
+			},
+			getViewportOffset: () => {
+				return editor.ui.viewportOffset;
+			}
 		} );
 
 		this.view.on<DialogViewCloseEvent>( 'close', () => {
@@ -136,30 +137,20 @@ export default class Dialog extends Plugin {
 			isModal
 		} );
 
+		this.view.setupParts( {
+			title,
+			content,
+			actionButtons
+		} );
+
 		if ( id ) {
 			this.id = id;
 		}
 
-		if ( title ) {
-			this.view.showHeader( title );
-		}
-
-		if ( content ) {
-			// Normalize the content specified in the arguments.
-			if ( content instanceof View ) {
-				content = [ content ];
-			}
-
-			this.view.addContentPart( content );
-		}
-
-		if ( actionButtons ) {
-			this.view.setActionButtons( actionButtons );
-		}
-
 		this.isOpen = true;
-
 		this._onHide = onHide;
+
+		Dialog.visibleDialogPlugin = this;
 	}
 
 	/**
