@@ -186,8 +186,12 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	private _hide(): void {
+		if ( !this.view ) {
+			return;
+		}
+
 		const editor = this.editor;
-		const view = this.view!;
+		const view = this.view;
 
 		// Reset the content view to prevent its children from being destroyed in the standard
 		// View#destroy() (and collections) chain. If the content children were left in there,
@@ -205,6 +209,7 @@ export default class Dialog extends Plugin {
 
 		this.id = '';
 		this.isOpen = false;
+		this._onHide = undefined;
 		Dialog.visibleDialogPlugin = undefined;
 	}
 }
