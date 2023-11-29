@@ -78,8 +78,8 @@ export default App;
 The `<CKEditor>` component supports the following properties:
 
 * `editor` (required) &ndash; The {@link module:core/editor/editor~Editor `Editor`} constructor to use.
-* `data` &ndash; The initial data for the created editor. See the {@link getting-started/legacy-getting-started/getting-and-setting-data Getting and setting data} guide.
-* `config` &ndash; The editor configuration. See the {@link getting-started/legacy-getting-started/configuration Configuration} guide.
+* `data` &ndash; The initial data for the created editor. See the {@link getting-started/getting-and-setting-data Getting and setting data} guide.
+* `config` &ndash; The editor configuration. See the {@link getting-started/configuration Configuration} guide.
 * `id` &ndash; The editor ID. When this property changes, the component restarts the editor with new data instead of setting it on an initialized editor.
 * `disabled` &ndash; A Boolean value. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
 * `disableWatchdog` &ndash; A Boolean value. If set to `true`, {@link features/watchdog the watchdog feature} will be disabled. It is set to `false` by default.
@@ -174,7 +174,7 @@ The `CKEditorContext` component supports the following properties:
 
 ## Customizing the builds
 
-The {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link getting-started/legacy-getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
+The {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
 
 There are three main ways to do that.
 
@@ -702,7 +702,7 @@ import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import 'ckeditor5-custom-build/build/translations/de';
 ```
 
-Then, {@link getting-started/legacy-getting-started/configuration configure} the language of the editor in the component:
+Then, {@link getting-started/configuration configure} the language of the editor in the component:
 
 ```jsx
 <CKEditor

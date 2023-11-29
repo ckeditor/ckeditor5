@@ -1,5 +1,5 @@
 ---
-category: installation-methods
+category: installation
 meta-title: Getting and setting data | CKEditor 5 documentation
 order: 70
 ---

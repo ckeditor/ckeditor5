@@ -9,7 +9,7 @@ order: 80
 <info-box hint>
 **Quick recap**
 
-In the {@link getting-started/legacy-getting-started/getting-and-setting-data previous guide} you have learned how to set and get data from the editor. You can also start using the editor's API and events.
+In the {@link getting-started/getting-and-setting-data previous guide} you have learned how to set and get data from the editor. You can also start using the editor's API and events.
 </info-box>
 
 CKEditor 5 API allows developers to interact with the editor and its plugins to create new behaviors. Through the event system, you can tailor reactions to specific actions that are happening.

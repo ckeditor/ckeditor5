@@ -217,7 +217,7 @@ And then, in the template:
 
 ### Using a custom CKEditor&nbsp;5 build
 
-If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link getting-started/legacy-getting-started/configuration editor configuration} you need to create a custom build first, as described in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
+If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link getting-started/configuration editor configuration} you need to create a custom build first, as described in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
 
 By completing the above tutorial you should get a generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
 
