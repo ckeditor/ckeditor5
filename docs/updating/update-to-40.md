@@ -16,7 +16,7 @@ modified_at: 2023-11-13
 
 ## Update to CKEditor&nbsp;5 v40.1.0
 
-For the entire list of changes introduced in version 40.0.0, see the [release notes for CKEditor&nbsp;5 v40.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.1.0).
+For the entire list of changes introduced in version 40.1.0, see the [release notes for CKEditor&nbsp;5 v40.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.1.0).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.1.0.
 
