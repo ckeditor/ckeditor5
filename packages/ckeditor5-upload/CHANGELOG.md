@@ -5,33 +5,33 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Bug fixes
 
 * Restored a condition handling an edge case in upload when promise chains are aborted. Closes [ckeditor/ckeditor5#5892](https://github.com/ckeditor/ckeditor5/issues/5892). ([ed7187b](https://github.com/ckeditor/ckeditor5-upload/commit/ed7187b))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([5be630b](https://github.com/ckeditor/ckeditor5-upload/commit/5be630b))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([188255c](https://github.com/ckeditor/ckeditor5-upload/commit/188255c))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v12.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v12.0.0...v15.0.0) (October 23, 2019)
 
 ### Bug fixes
 
@@ -42,7 +42,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([290db0f](https://github.com/ckeditor/ckeditor5-upload/commit/290db0f)) ([1d7e907](https://github.com/ckeditor/ckeditor5-upload/commit/1d7e907))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.1...v12.0.0) (2019-08-26)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.1...v12.0.0) (August 26, 2019)
 
 ### Features
 
@@ -68,33 +68,33 @@ import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64u
 ```
 
 
-## [11.1.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.0...v11.1.1) (2019-07-10)
+## [11.1.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.1.0...v11.1.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.2...v11.1.0) (2019-07-04)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.2...v11.1.0) (July 4, 2019)
 
 ### Features
 
 * Introduced the Base64 image upload adapter. Closes [ckeditor/ckeditor5#1378](https://github.com/ckeditor/ckeditor5/issues/1378). ([938f0f7](https://github.com/ckeditor/ckeditor5-upload/commit/938f0f7))
 
 
-## [11.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.1...v11.0.2) (2019-06-05)
+## [11.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.1...v11.0.2) (June 6, 2019)
 
 ### Other changes
 
 * Updated translations. ([73c6761](https://github.com/ckeditor/ckeditor5-upload/commit/73c6761))
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.0...v11.0.1) (2019-04-10)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v11.0.0...v11.0.1) (April 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([eac33b1](https://github.com/ckeditor/ckeditor5-upload/commit/eac33b1))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.4...v11.0.0) (2019-02-28)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.4...v11.0.0) (February 28, 2019)
 
 ### Bug fixes
 
@@ -111,35 +111,35 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `FileLoader.file` property was changed to a getter which returns a native `Promise` instance instead of a `File` instance. The returned promise resolves to a `File` instance.
 
 
-## [10.0.4](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.3...v10.0.4) (2018-12-05)
+## [10.0.4](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.3...v10.0.4) (December 5, 2018)
 
 ### Other changes
 
 * Updated translations. ([489b6fa](https://github.com/ckeditor/ckeditor5-upload/commit/489b6fa)) ([f435630](https://github.com/ckeditor/ckeditor5-upload/commit/f435630))
 
 
-## [10.0.3](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.2...v10.0.3) (2018-10-08)
+## [10.0.3](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.2...v10.0.3) (October 8, 2018)
 
 ### Other changes
 
 * Updated translations. ([871eb44](https://github.com/ckeditor/ckeditor5-upload/commit/871eb44))
 
 
-## [10.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.1...v10.0.2) (2018-07-18)
+## [10.0.2](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.1...v10.0.2) (July 18, 2018)
 
 ### Other changes
 
 * Updated translations. ([ce32eb2](https://github.com/ckeditor/ckeditor5-upload/commit/ce32eb2), [9adb325](https://github.com/ckeditor/ckeditor5-upload/commit/9adb325))
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.0...v10.0.1) (2018-06-21)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.0...v10.0.1) (June 21, 2018)
 
 ### Other changes
 
 * Updated translations.
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -150,17 +150,17 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Bug fixes
 
@@ -183,7 +183,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Renamed `filerepository-no-adapter` error to `filerepository-no-upload-adapter`.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Bug fixes
 
@@ -200,7 +200,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `FileDialogButtonView` is not a `ButtonView` instance anymore but a wrapper instead. The button of the component is available under the `#buttonView` property.
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-upload/compare/v0.2.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-upload/compare/v0.2.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Bug fixes
 
@@ -213,7 +213,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Placeholder image will now look better on wider editors. Closes [#63](https://github.com/ckeditor/ckeditor5-upload/issues/63). ([edb5e81](https://github.com/ckeditor/ckeditor5-upload/commit/edb5e81))
 
 
-## [0.2.0](https://github.com/ckeditor/ckeditor5-upload/compare/v0.1.0...v0.2.0) (2017-09-03)
+## [0.2.0](https://github.com/ckeditor/ckeditor5-upload/compare/v0.1.0...v0.2.0) (September 3, 2017)
 
 ### Bug fixes
 
@@ -244,7 +244,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The command API has been changed.
 
 
-## 0.1.0 (2017-05-07)
+## 0.1.0 (May 7, 2017)
 
 ### Features
 
