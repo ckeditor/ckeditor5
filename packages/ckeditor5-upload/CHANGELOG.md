@@ -209,15 +209,15 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Other changes
 
-* `FileRepository` will automatically warn when it's initialized but no upload adapter was enabled. Closes [#58](https://github.com/ckeditor/ckeditor5-upload/issues/58). ([29aa315](https://github.com/ckeditor/ckeditor5-upload/commit/29aa315))
-* Placeholder image will now look better on wider editors. Closes [#63](https://github.com/ckeditor/ckeditor5-upload/issues/63). ([edb5e81](https://github.com/ckeditor/ckeditor5-upload/commit/edb5e81))
+* `FileRepository` will automatically warn when it is initialized but no upload adapter was enabled. Closes [#58](https://github.com/ckeditor/ckeditor5-upload/issues/58). ([29aa315](https://github.com/ckeditor/ckeditor5-upload/commit/29aa315))
+* Placeholder images will now look better on wider editors. Closes [#63](https://github.com/ckeditor/ckeditor5-upload/issues/63). ([edb5e81](https://github.com/ckeditor/ckeditor5-upload/commit/edb5e81))
 
 
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-upload/compare/v0.1.0...v0.2.0) (September 3, 2017)
 
 ### Bug fixes
 
-* [Safari, Edge] The image upload (button) feature will not throw an error anymore when trying to access picked files. The feature should not use `for...of` loop on native `FileList` because Safari and Edge do not support `Symbol.iterator` for it yet. Closes [#35](https://github.com/ckeditor/ckeditor5-upload/issues/35). ([f4efd9b](https://github.com/ckeditor/ckeditor5-upload/commit/f4efd9b))
+* [Safari, Edge] The image upload (button) feature will not throw an error anymore when trying to access picked files. The feature should not use the `for...of` loop on native `FileList` because Safari and Edge do not support `Symbol.iterator` for it yet. Closes [#35](https://github.com/ckeditor/ckeditor5-upload/issues/35). ([f4efd9b](https://github.com/ckeditor/ckeditor5-upload/commit/f4efd9b))
 * An image dropped on another image will not redirect the browser to the file's path. Closes [#32](https://github.com/ckeditor/ckeditor5-upload/issues/32). ([4f533be](https://github.com/ckeditor/ckeditor5-upload/commit/4f533be))
 * Bound `ImageUploadButton#isEnabled` to `ImageUploadCommand#isEnabled`. Closes [#43](https://github.com/ckeditor/ckeditor5-upload/issues/43). ([ba6de66](https://github.com/ckeditor/ckeditor5-upload/commit/ba6de66))
 * Fixed two issues related to dropping images. First, when dropping a file into an empty paragraph, that paragraph should be replaced with that image. Second, drop position should be read correctly when the editor is focused upon drop. Closes [#42](https://github.com/ckeditor/ckeditor5-upload/issues/42). Closes [#29](https://github.com/ckeditor/ckeditor5-upload/issues/29). ([fec452d](https://github.com/ckeditor/ckeditor5-upload/commit/fec452d))
@@ -239,8 +239,8 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### BREAKING CHANGES
 
-* `UploadImageCommand` doesn't optimize the drop position itself anymore. Instead, a separate `findOptimalInsertionPosition()` function was introduced.
-* `UploadImageCommand` doesn't verify the type of file anymore. This needs to be done by the caller.
+* `UploadImageCommand` does not optimize the drop position itself anymore. Instead, a separate `findOptimalInsertionPosition()` function was introduced.
+* `UploadImageCommand` does not verify the type of file anymore. This needs to be done by the caller.
 * The command API has been changed.
 
 

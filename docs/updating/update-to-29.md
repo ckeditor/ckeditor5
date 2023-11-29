@@ -24,7 +24,7 @@ Listed below are the most important changes that require your attention when upg
 
 Starting from v29.1.0, the {@link module:engine/view/matcher~Matcher} feature deprecated matching `style` and `class` HTML attributes using `attributes` key-value pairs pattern.
 
-The {@link module:engine/view/matcher~Matcher} feature allows to match styles and classes by using dedicated `styles` and `classes` patterns. Since v29.0.0 it's also possible to match every possible value for these attributes by using Boolean type with `true` value. Therefore, to avoid confusion which pattern should be used to match classes and styles, we decided to deprecate matching classes and styles using `attributes` pattern.
+The {@link module:engine/view/matcher~Matcher} feature allows to match styles and classes by using dedicated `styles` and `classes` patterns. Since v29.0.0 it is also possible to match every possible value for these attributes by using the Boolean type with the `true` value. Therefore, to avoid confusion about which pattern should be used to match classes and styles, we decided to deprecate matching classes and styles using the `attributes` pattern.
 
 Here is an example of changes you may need for proper integration with the {@link module:engine/view/matcher~Matcher} feature new API:
 

@@ -108,5 +108,5 @@ Once destroyed, resources used by the editor instance are released and the origi
 <info-box hint>
 **What's next?**
 
-Now you know how to initialize the editor instance. But an editor without the ability to get its content is not particularly useful. It's time to learn how to work with the editor's data {@link installation/getting-started/getting-and-setting-data in the following guide}.
+Now you know how to initialize the editor instance. But an editor without the ability to get its content is not particularly useful. It is time to learn how to work with the editor's data {@link installation/getting-started/getting-and-setting-data in the following guide}.
 </info-box>
