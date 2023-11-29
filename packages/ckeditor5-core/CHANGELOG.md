@@ -5,19 +5,19 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([c898ffc](https://github.com/ckeditor/ckeditor5-core/commit/c898ffc))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Features
 
@@ -30,14 +30,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([6a2b584](https://github.com/ckeditor/ckeditor5-core/commit/6a2b584))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([6d8950e](https://github.com/ckeditor/ckeditor5-core/commit/6d8950e))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.3.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.3.0...v15.0.0) (October 23, 2019)
 
 ### Other changes
 
@@ -45,7 +45,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([a7d36a8](https://github.com/ckeditor/ckeditor5-core/commit/a7d36a8))
 
 
-## [12.3.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.1...v12.3.0) (2019-08-26)
+## [12.3.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.1...v12.3.0) (August 26, 2019)
 
 ### Features
 
@@ -58,12 +58,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([e29d56e](https://github.com/ckeditor/ckeditor5-core/commit/e29d56e))
 
 
-## [12.2.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.0...v12.2.1) (2019-07-10)
+## [12.2.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.2.0...v12.2.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.2.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.1...v12.2.0) (2019-07-04)
+## [12.2.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.1...v12.2.0) (July 4, 2019)
 
 ### Features
 
@@ -79,14 +79,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([43f5b6e](https://github.com/ckeditor/ckeditor5-core/commit/43f5b6e))
 
 
-## [12.1.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.0...v12.1.1) (2019-06-05)
+## [12.1.1](https://github.com/ckeditor/ckeditor5-core/compare/v12.1.0...v12.1.1) (June 6, 2019)
 
 ### Other changes
 
 * Updated translations. ([ed6bd3c](https://github.com/ckeditor/ckeditor5-core/commit/ed6bd3c))
 
 
-## [12.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.0.0...v12.1.0) (2019-04-10)
+## [12.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.0.0...v12.1.0) (April 4, 2019)
 
 ### Features
 
@@ -98,7 +98,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([2dedc43](https://github.com/ckeditor/ckeditor5-core/commit/2dedc43))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.1.0...v12.0.0) (2019-02-28)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.1.0...v12.0.0) (February 28, 2019)
 
 ### Bug fixes
 
@@ -124,7 +124,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `editor.plugins.get()` will now throw an error if the plugin is not loaded. Use `editor.plugins.has()` to check if plugin is available.
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.1...v11.1.0) (2018-12-05)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.1...v11.1.0) (December 5, 2018)
 
 ### Features
 
@@ -135,14 +135,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([c4795fb](https://github.com/ckeditor/ckeditor5-core/commit/c4795fb))
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.0...v11.0.1) (2018-10-08)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.0...v11.0.1) (October 8, 2018)
 
 ### Other changes
 
 * Updated translations. ([873d193](https://github.com/ckeditor/ckeditor5-core/commit/873d193))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.1.0...v11.0.0) (2018-07-18)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.1.0...v11.0.0) (July 18, 2018)
 
 ### Features
 
@@ -170,7 +170,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `EditorUI` is now a class (no longer an interface).
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.0.0...v10.1.0) (2018-06-21)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.0.0...v10.1.0) (June 21, 2018)
 
 ### Features
 
@@ -181,7 +181,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations.
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -192,19 +192,19 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Other changes
 
 * Made the check and cancel icons thicker and fill-friendly (see [ckeditor/ckeditor5#810](https://github.com/ckeditor/ckeditor5/issues/810)). ([6584541](https://github.com/ckeditor/ckeditor5-core/commit/6584541))
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Other changes
 
@@ -219,21 +219,21 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `StandardEditor` class was removed. Use `Editor` class with `DataInterface` and `ElementInterface` mixins.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Other changes
 
 * Updated translations. ([1003fa4](https://github.com/ckeditor/ckeditor5-core/commit/1003fa4))
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.9.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.9.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Features
 
 * The `StandardEditor` should automatically update the contents of its source textarea upon submission of the form. Closes https://github.com/ckeditor/ckeditor5/issues/544. ([ce46fde](https://github.com/ckeditor/ckeditor5-core/commit/ce46fde))
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.1...v0.9.0) (2017-09-03)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.1...v0.9.0) (September 3, 2017)
 
 ### Bug fixes
 
@@ -277,14 +277,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Plugin naming convention has changed.
 
 
-## [0.8.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.0...v0.8.1) (2017-05-07)
+## [0.8.1](https://github.com/ckeditor/ckeditor5-core/compare/v0.8.0...v0.8.1) (May 7, 2017)
 
 ### Other changes
 
 * Updated translations. ([993596a](https://github.com/ckeditor/ckeditor5-core/commit/993596a))
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.7.0...v0.8.0) (2017-04-05)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.7.0...v0.8.0) (April 5, 2017)
 
 ### Bug fixes
 
@@ -299,7 +299,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([1296b03](https://github.com/ckeditor/ckeditor5-core/commit/1296b03))
 
 
-## [0.7.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.6.0...v0.7.0) (2017-03-06)
+## [0.7.0](https://github.com/ckeditor/ckeditor5-core/compare/v0.6.0...v0.7.0) (March 6, 2017)
 
 ### Features
 

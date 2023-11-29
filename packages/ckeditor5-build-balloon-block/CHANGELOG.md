@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 We are happy to announce the release of CKEditor&nbsp;5 v19.0.0.
 
@@ -61,7 +61,7 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v18.0.0 => [v19.0.0](https://github.com/ckeditor/ckeditor5-upload/releases/tag/v19.0.0)
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 We are happy to announce the release of CKEditor&nbsp;5 v18.0.0.
 
@@ -118,7 +118,7 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v17.0.0 => [v18.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v18.0.0)
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 We are happy to announce the release of CKEditor&nbsp;5 v17.0.0.
 
@@ -171,7 +171,7 @@ Other releases:
 * [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v16.0.0 => [v17.0.0](https://github.com/ckeditor/ckeditor5-upload/releases/tag/v17.0.0)
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 We are happy to announce the release of CKEditor&nbsp;5 v16.0.0. This release introduces one of the most community-requested features: [code blocks](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html). We included a new [restricted editing](https://ckeditor.com/docs/ckeditor5/latest/features/restricted-editing.html) plugin, too.
 
@@ -222,7 +222,7 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v15.0.0 => [v16.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v16.0.0)
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.4.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.4.0...v15.0.0) (October 23, 2019)
 
 We are happy to announce the release of CKEditor&nbsp;5 v15.0.0. This editor version introduces support for inserting [horizontal lines](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html), [page breaks](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) and [SVG images](https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imageupload-ImageUploadConfig.html#member-types) into the WYSIWYG editor. It also allows you to define the [document title section](https://ckeditor.com/docs/ckeditor5/latest/features/title.html) thanks to the new title plugin. The editor toolbar is now responsive which improves the UX, especially for mobile devices.
 
@@ -271,7 +271,7 @@ Major releases (dependencies of those packages have breaking changes):
 * [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v14.0.0 => [v15.0.0](https://github.com/ckeditor/ckeditor5-utils/releases/tag/v15.0.0)
 
 
-## [12.4.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.1...v12.4.0) (2019-08-26)
+## [12.4.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.1...v12.4.0) (August 26, 2019)
 
 This release brings a huge set of new features: [image resizing](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/image.html#resizing-images), [to-do lists](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/todo-lists.html), [support for RTL languages](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/ui-language.html), [simple upload adapter](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/images/image-upload/simple-upload-adapter.html), [support for pasting from Google Docs](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/paste-from-office/paste-from-google-docs.html), [mathematic formulas](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/mathtype.html), and [spelling and grammar checking](https://ckeditor.com/ckeditor5/build/docs/ckeditor5/latest/features/spell-checker.html). In addition to that, as always, it contains many improvements and bug fixes.
 
@@ -320,7 +320,7 @@ Patch releases (bug fixes, internal changes):
 * The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([7b8f1bc](https://github.com/ckeditor/ckeditor5-build-balloon-block/commit/7b8f1bc))
 
 
-## [12.3.1](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.0...v12.3.1) (2019-07-10)
+## [12.3.1](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.3.0...v12.3.1) (July 10, 2019)
 
 We are happy to report the release of CKEditor&nbsp;5 v12.3.0 (and v12.3.1 with a small fix). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
 
@@ -358,7 +358,7 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v11.0.3 => [v11.0.4](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v11.0.4)
 
 
-## [12.3.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.2.0...v12.3.0) (2019-07-04)
+## [12.3.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.2.0...v12.3.0) (July 4, 2019)
 
 ### Dependencies
 
@@ -404,7 +404,7 @@ Patch releases (bug fixes, internal changes):
 * Moved "Undo" and "Redo" buttons from selection toolbar to block toolbar. Thanks to that, users are able to undo the last step if the editor is empty. Closes [ckeditor/ckeditor5#1543](https://github.com/ckeditor/ckeditor5/issues/1543). ([e25c2b8](https://github.com/ckeditor/ckeditor5-build-balloon-block/commit/e25c2b8))
 
 
-## [12.2.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.1.0...v12.2.0) (2019-06-05)
+## [12.2.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.1.0...v12.2.0) (June 6, 2019)
 
 We are happy to report the release of CKEditor&nbsp;5 v12.2.0. This is a minor release with many bug fixes and a new UI feature which allows to navigating between multiple balloons.
 
@@ -450,7 +450,7 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v11.0.1 => [v11.0.2](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v11.0.2)
 
 
-## [12.1.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.0.0...v12.1.0) (2019-04-10)
+## [12.1.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.0.0...v12.1.0) (April 4, 2019)
 
 We are happy to report the release of CKEditor&nbsp;5 v12.1.0. This release introduces 3 new features ([mentions](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html), [font color and background color](https://ckeditor.com/docs/ckeditor5/latest/features/font.html) and [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html)).
 
@@ -493,6 +493,6 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v11.0.0 => [v11.0.1](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v11.0.1)
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v0.0.1...v12.0.0) (2019-02-28)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v0.0.1...v12.0.0) (February 28, 2019)
 
 Initial implementation.
