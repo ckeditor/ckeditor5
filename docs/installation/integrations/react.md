@@ -319,7 +319,7 @@ class App extends Component {
 						console.log( 'Editor is ready to use!', editor );
 					} }
 					onChange={ ( event ) => {
-						console.log( event);
+						console.log( event );
 					} }
 					onBlur={ ( event, editor ) => {
 						console.log( 'Blur.', editor );
@@ -353,12 +353,6 @@ export default defineConfig({
     }
   }
 })
-```
-
-Also, remember to use the correct import style for the CKEditor React component:
-
-```js
-import { CKEditor } from '@ckeditor/ckeditor5-react';
 ```
 
 ### The `JavaScript heap out of memory` error
