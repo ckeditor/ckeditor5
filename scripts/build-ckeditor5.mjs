@@ -20,13 +20,13 @@ import postcssImport from 'postcss-import';
 
 import path from 'path';
 
-import po2jsglobal from './translations/po2jsglobal.mjs';
+import po2js from './translations/rollup-po2js/po2js.mjs';
 
 // Indicates whether to emit source maps
 const sourceMap = process.env.DEVELOPMENT || false;
 
 // Current working directory
-const cwd = path.resolve();
+const cwd = process.cwd();
 
 // Content of the `package.json`
 const pkg = JSON.parse( await readFile( path.join( cwd, 'package.json' ) ) );
@@ -90,8 +90,9 @@ export default [
 				},
 				sourceMap
 			} ),
-			po2jsglobal( {
-				destFolder: `${cwd}/dist/translations`,
+			po2js( {
+				type: 'all',
+				destFolder: path.join( cwd, 'dist', 'translations' ),
 				banner
 			} )
 		]
