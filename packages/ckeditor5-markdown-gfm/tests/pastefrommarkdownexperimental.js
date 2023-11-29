@@ -88,6 +88,15 @@ describe( 'PasteFromMarkdownExperimental', () => {
 			);
 		} );
 
+		it( 'should not parse as markdown if first level formatting tags detected', () => {
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, '<b>foo **bar**</b><br><span>foo **bar**</span>' );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph><$text bold="true">foo **bar**</$text>foo **bar**[]</paragraph>'
+			);
+		} );
+
 		// TODO add Chrome, Firefox, Safari, Edge clipboard examples.
 		describe( 'Mac', () => {
 			it( 'should parse correctly Mac type clipboard', () => {

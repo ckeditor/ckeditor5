@@ -7,10 +7,12 @@
  * @module markdown-gfm/pastefrommarkdownexperimental
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { type ClipboardInputTransformationEvent, ClipboardPipeline } from 'ckeditor5/src/clipboard';
+import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard';
 import GFMDataProcessor from './gfmdataprocessor';
 import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
+
+const FORMATTING_TAGS = [ 'B', 'STRONG', 'I', 'EM', 'MARK', 'SMALL', 'DEL', 'INS', 'SUB', 'SUP' ];
 
 /**
  * The GitHub Flavored Markdown (GFM) paste plugin.
@@ -77,6 +79,10 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 				return;
 			}
 
+			if ( this._isNotMarkdownBecauseContainsFormattingTags( dataAsTextHtml ) ) {
+				return;
+			}
+
 			const markdownFromHtml = this._parseMarkdownFromHtml( dataAsTextHtml );
 
 			if ( markdownFromHtml ) {
@@ -95,6 +101,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 */
 	private _parseMarkdownFromHtml( htmlString: string ): string | null {
 		const withoutOsSpecificTags = this._removeOsSpecificTags( htmlString );
+
 		const withoutWrapperTag = this._removeFirstLevelWrapperTagsAndBrs( withoutOsSpecificTags );
 
 		if ( this._containsAnyRemainingHtmlTags( withoutWrapperTag ) ) {
@@ -122,27 +129,43 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	}
 
 	/**
+	 * If the input HTML string contains any first level formatting tags
+	 * like <b>, <strong> or <i>, then we should not treat it as markdown.
+	 *
+	 * @param htmlString Clipboard content.
+	 */
+	private _isNotMarkdownBecauseContainsFormattingTags( htmlString: string ): boolean {
+		const parser = new DOMParser();
+		const { body: tempElement } = parser.parseFromString( htmlString, 'text/html' );
+
+		const tagNames = Array.from( tempElement.children ).map( el => el.tagName );
+
+		return tagNames.some( el => FORMATTING_TAGS.includes( el ) );
+	}
+
+	/**
 	 * Removes multiple HTML wrapper tags from a list of sibling HTML tags.
 	 *
 	 * @param htmlString Clipboard content without any OS specific tags.
 	 */
 	private _removeFirstLevelWrapperTagsAndBrs( htmlString: string ): string {
-		const tempDiv = document.createElement( 'div' );
-		tempDiv.innerHTML = htmlString;
+		const parser = new DOMParser();
+		const { body: tempElement } = parser.parseFromString( htmlString, 'text/html' );
 
-		const outerElements = tempDiv.querySelectorAll( ':not(:empty)' );
-		const brElements = tempDiv.querySelectorAll( 'br' );
+		const brElements = tempElement.querySelectorAll( 'br' );
+
+		for ( const br of brElements ) {
+			br.replaceWith( '\n' );
+		}
+
+		const outerElements = tempElement.querySelectorAll( ':scope > *' );
 
 		for ( const element of outerElements ) {
 			const elementClone = element.cloneNode( true );
 			element.replaceWith( ...elementClone.childNodes );
 		}
 
-		for ( const br of brElements ) {
-			br.replaceWith( '\n' );
-		}
-
-		return tempDiv.innerHTML;
+		return tempElement.innerHTML;
 	}
 
 	/**
@@ -159,8 +182,8 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 */
 	private _replaceHtmlReservedEntitiesWithCharacters( htmlString: string ) {
 		return htmlString
-			.replace( new RegExp( '&gt;', 'g' ), '>' )
-			.replace( new RegExp( '&lt;', 'g' ), '<' )
-			.replace( new RegExp( '&nbsp;', 'g' ), ' ' );
+			.replace( /&gt;/g, '>' )
+			.replace( /&lt;/g, '<' )
+			.replace( /&nbsp;/g, ' ' );
 	}
 }
