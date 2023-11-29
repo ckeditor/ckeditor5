@@ -565,7 +565,7 @@
 			]
 		},
 		{
-			"name": "Editor development",
+			"name": "Framework",
 			"id": "framework",
 			"slug": "framework",
 			"navigationIncludeIndex": true,
