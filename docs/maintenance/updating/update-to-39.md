@@ -63,7 +63,7 @@ The [`@ckeditor/ckeditor5-cbox`](https://www.npmjs.com/package/@ckeditor/ckedito
 
 #### On-Premise CKBox backend adjustments
 
-The CKBox backend has been released in version 2.0.0. For users operating the on-premise version of the CKBox backend, it's essential to update to this version to ensure compatibility.
+The CKBox backend has been released in version 2.0.0. For users operating the on-premise version of the CKBox backend, it is essential to update to this version to ensure compatibility.
 
 Moreover, the editor configuration parameter `ckbox.assetsOrigin`, commonly used with the on-premise version, is no longer necessary. This is because the plugin no longer constructs asset URLs on its own but instead uses those provided directly by the backend. Therefore, you should remove the `ckbox.assetsOrigin` parameter from your editor configuration.
 

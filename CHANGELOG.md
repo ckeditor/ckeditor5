@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [40.1.0](https://github.com/ckeditor/ckeditor5/compare/v40.0.0...v40.1.0) (2023-11-15)
+## [40.1.0](https://github.com/ckeditor/ckeditor5/compare/v40.0.0...v40.1.0) (November 15, 2023)
 
 We are happy to announce the release of CKEditor 5 v40.1.0.
 
@@ -11,7 +11,7 @@ We are happy to announce the release of CKEditor 5 v40.1.0.
 
 This release introduces an important user experience improvement for the track changes feature. From now on, styling changes made in the track changes mode will be also reflected in the editor content, instead of just being marked with a blue suggestion highlight.
 
-Below is a summary of the important changes related to this improvement: 
+Below is a summary of the important changes related to this improvement:
 
 * A new suggestion type `'attribute'` was introduced. All integrated features will now create `'attribute'` suggestions.
 * Formatting suggestions in existing documents are still supported, and will work as they used to.
@@ -205,7 +205,7 @@ Other releases:
 </details>
 
 
-## [40.0.0](https://github.com/ckeditor/ckeditor5/compare/v39.0.2...v40.0.0) (2023-10-04)
+## [40.0.0](https://github.com/ckeditor/ckeditor5/compare/v39.0.2...v40.0.0) (October 4, 2023)
 
 We are happy to announce the release of CKEditor 5 v40.0.0.
 
@@ -392,7 +392,7 @@ Other releases:
 </details>
 
 
-## [39.0.2](https://github.com/ckeditor/ckeditor5/compare/v39.0.1...v39.0.2) (2023-09-06)
+## [39.0.2](https://github.com/ckeditor/ckeditor5/compare/v39.0.1...v39.0.2) (September 6, 2023)
 
 We are happy to announce the release of CKEditor 5 v39.0.2.
 
@@ -513,7 +513,7 @@ Other releases:
 </details>
 
 
-## [39.0.1](https://github.com/ckeditor/ckeditor5/compare/v39.0.0...v39.0.1) (2023-08-10)
+## [39.0.1](https://github.com/ckeditor/ckeditor5/compare/v39.0.0...v39.0.1) (August 10, 2023)
 
 ### Release highlights
 
@@ -616,7 +616,7 @@ Other releases:
 </details>
 
 
-## [39.0.0](https://github.com/ckeditor/ckeditor5/compare/v38.1.1...v39.0.0) (2023-08-02)
+## [39.0.0](https://github.com/ckeditor/ckeditor5/compare/v38.1.1...v39.0.0) (August 2, 2023)
 
 We are happy to announce the release of CKEditor 5 v39.0.0.
 
@@ -656,7 +656,7 @@ Please note, that there are some technical obstacles that we will be addressing 
 
 Note: this is an experimental feature. Its API and details of its behavior may change in the upcoming releases.
 
-#### Major bugfixes
+#### Major bug fixes
 
 * Improved sticky toolbar behavior when nesting in an overflown element. Closes [#5465](https://github.com/ckeditor/ckeditor5/issues/5465).
 

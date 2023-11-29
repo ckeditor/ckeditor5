@@ -16,6 +16,10 @@ modified_at: 2023-11-13
 
 ## Update to CKEditor&nbsp;5 v40.1.0
 
+For the entire list of changes introduced in version 40.1.0, see the [release notes for CKEditor&nbsp;5 v40.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.1.0).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.1.0.
+
 ### Changes to the default insert image action
 
 We changed how the images are inserted by default. For long time, the image insert action detected where the selection is placed, and depending on that inserted an inline image or a block one. This caused confusion in some cases, and led to suboptimal experience. From now on, the images will be inserted as block ones by default.

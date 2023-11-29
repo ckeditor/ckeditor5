@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -38,7 +38,7 @@ Changes for the past releases are available below.
 * Updated translations. ([2a391d6](https://github.com/ckeditor/ckeditor5-ui/commit/2a391d6))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -55,7 +55,7 @@ Changes for the past releases are available below.
 * Updated translations. ([ace38eb](https://github.com/ckeditor/ckeditor5-ui/commit/ace38eb))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Features
 
@@ -77,7 +77,7 @@ Changes for the past releases are available below.
 * Updated translations. ([b8bd38e](https://github.com/ckeditor/ckeditor5-ui/commit/b8bd38e))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Features
 
@@ -92,7 +92,7 @@ Changes for the past releases are available below.
 * Updated translations. ([16ee253](https://github.com/ckeditor/ckeditor5-ui/commit/16ee253))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v14.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v14.0.0...v15.0.0) (October 23, 2019)
 
 ### MAJOR BREAKING CHANGES
 
@@ -107,7 +107,7 @@ Changes for the past releases are available below.
 * Updated translations. ([c233bb7](https://github.com/ckeditor/ckeditor5-ui/commit/c233bb7)) ([f8f07b2](https://github.com/ckeditor/ckeditor5-ui/commit/f8f07b2))
 
 
-## [14.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.2...v14.0.0) (2019-08-26)
+## [14.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.2...v14.0.0) (August 26, 2019)
 
 ### Features
 
@@ -129,21 +129,21 @@ Changes for the past releases are available below.
 * The `ToolbarView` class requires the [editor locale](https://ckeditor.com/docs/ckeditor5/latest/api/module_utils_locale-Locale.html) to be passed into the constructor.
 
 
-## [13.0.2](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.1...v13.0.2) (2019-07-10)
+## [13.0.2](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.1...v13.0.2) (July 10, 2019)
 
 ### Other changes
 
 * Updated translations. ([ad189b6](https://github.com/ckeditor/ckeditor5-ui/commit/ad189b6))
 
 
-## [13.0.1](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.0...v13.0.1) (2019-07-04)
+## [13.0.1](https://github.com/ckeditor/ckeditor5-ui/compare/v13.0.0...v13.0.1) (July 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([1964cc0](https://github.com/ckeditor/ckeditor5-ui/commit/1964cc0)) ([11cfd41](https://github.com/ckeditor/ckeditor5-ui/commit/11cfd41))
 
 
-## [13.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v12.1.0...v13.0.0) (2019-06-05)
+## [13.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v12.1.0...v13.0.0) (June 6, 2019)
 
 ### Features
 
@@ -162,7 +162,7 @@ Changes for the past releases are available below.
 * The (misspelled) `InputTextView#ariaDesribedById` property is no longer available. Use `ariaDescribedById` instead.
 
 
-## [12.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v12.0.0...v12.1.0) (2019-04-10)
+## [12.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v12.0.0...v12.1.0) (April 4, 2019)
 
 ### Features
 
@@ -178,7 +178,7 @@ Changes for the past releases are available below.
 * Updated translations. ([dcdca2e](https://github.com/ckeditor/ckeditor5-ui/commit/dcdca2e))
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.2.0...v12.0.0) (2019-02-28)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.2.0...v12.0.0) (February 28, 2019)
 
 ### Bug fixes
 
@@ -199,7 +199,7 @@ Changes for the past releases are available below.
 * The `EditorUIView#editableElement` property was made private. Use `editor.ui.getEditableElement()` method instead.
 
 
-## [11.2.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.1.0...v11.2.0) (2018-12-05)
+## [11.2.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.1.0...v11.2.0) (December 5, 2018)
 
 ### Features
 
@@ -216,7 +216,7 @@ Changes for the past releases are available below.
 * Updated translations. ([2e409a9](https://github.com/ckeditor/ckeditor5-ui/commit/2e409a9)) ([611bd04](https://github.com/ckeditor/ckeditor5-ui/commit/611bd04)) ([c6689e4](https://github.com/ckeditor/ckeditor5-ui/commit/c6689e4)) ([07c4fdb](https://github.com/ckeditor/ckeditor5-ui/commit/07c4fdb))
 
 
-## [11.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.0.0...v11.1.0) (2018-10-08)
+## [11.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.0.0...v11.1.0) (October 8, 2018)
 
 ### Features
 
@@ -232,7 +232,7 @@ Changes for the past releases are available below.
 * Updated translations. ([e58bcbb](https://github.com/ckeditor/ckeditor5-ui/commit/e58bcbb))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v10.1.0...v11.0.0) (2018-07-18)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v10.1.0...v11.0.0) (July 18, 2018)
 
 ### Features
 
@@ -263,7 +263,7 @@ Changes for the past releases are available below.
 * The `.ck-button` and `.ck-list` classes are using `flex` which may have an impact on rendering.
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v10.0.0...v10.1.0) (2018-06-21)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v10.0.0...v10.1.0) (June 21, 2018)
 
 ### Features
 
@@ -283,7 +283,7 @@ Changes for the past releases are available below.
 * Updated translations. ([084e8c6](https://github.com/ckeditor/ckeditor5-ui/commit/084e8c6))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-beta.4...v10.0.0) (April 25, 2018)
 
 ### Other changes
 
@@ -294,12 +294,12 @@ Changes for the past releases are available below.
 * The license under which CKEditor&nbsp;5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
 
 
-## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-beta.2...v1.0.0-beta.4) (April 19, 2018)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-beta.1...v1.0.0-beta.2) (April 10, 2018)
 
 ### Other changes
 
@@ -310,7 +310,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `View#registerChildren()` and `View#deregisterChildren()` have been renamed to `View#registerChild()` and `View#deregisterChild()`.
 
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (March 15, 2018)
 
 ### Features
 
@@ -356,7 +356,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The styles are no longer developed in SASS which means the `.scss` files became unavailable. Please refer to the [Theme Customization](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
 
 
-## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
+## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (November 14, 2017)
 
 ### Bug fixes
 
@@ -385,14 +385,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The DOM structure of the `StickyPanelView` has changed along with the class names. Please refer to the component documentation to learn more.
 
 
-## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.10.0...v1.0.0-alpha.1) (2017-10-03)
+## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.10.0...v1.0.0-alpha.1) (October 3, 2017)
 
 ### Bug fixes
 
 * `ContextualBalloon` should remember position passed to `#updatePosition()`. Closes [#305](https://github.com/ckeditor/ckeditor5-ui/issues/305). Closes [ckeditor/ckeditor5-image#141](https://github.com/ckeditor/ckeditor5-image/issues/141). ([c787c0d](https://github.com/ckeditor/ckeditor5-ui/commit/c787c0d))
 * `ContextualToolbar` should not be positioned to a zero–width DOM rect when invoked for a multi-line forward selection. Closes [#308](https://github.com/ckeditor/ckeditor5-ui/issues/308). ([00b701b](https://github.com/ckeditor/ckeditor5-ui/commit/00b701b))
 * `ContextualToolbar` will accept the object format of `config.contextualToolbar`. Closes [#316](https://github.com/ckeditor/ckeditor5-ui/issues/316). ([d71cad8](https://github.com/ckeditor/ckeditor5-ui/commit/d71cad8))
-* Fixed sticky panel's `z-index` so it's correctly rendered above images (or other relatively positioned elements). Closes [#315](https://github.com/ckeditor/ckeditor5-ui/issues/315). ([00f2add](https://github.com/ckeditor/ckeditor5-ui/commit/00f2add))
+* Fixed sticky panel's `z-index` so it is correctly rendered above images (or other relatively positioned elements). Closes [#315](https://github.com/ckeditor/ckeditor5-ui/issues/315). ([00f2add](https://github.com/ckeditor/ckeditor5-ui/commit/00f2add))
 * The content of the `BalloonPanelView` should be selectable. Closes [#294](https://github.com/ckeditor/ckeditor5-ui/issues/294). Closes https://github.com/ckeditor/ckeditor5/issues/498. ([e5315df](https://github.com/ckeditor/ckeditor5-ui/commit/e5315df))
 
 ### Features
@@ -413,7 +413,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 * The `StickyToolbarView` and corresponding CSS `.ck-sticky-panel` classes are no longer available. `StickyPanelView` + `ToolbarView` combo should be used instead.
 
 
-## [0.10.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.9.0...v0.10.0) (2017-09-03)
+## [0.10.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.9.0...v0.10.0) (September 3, 2017)
 
 ### Bug fixes
 
@@ -460,7 +460,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 * The position names in `BalloonPanelView.defaultPositions` and their results have changed. Please refer to the latest API documentation to learn more.
 
 
-## [0.9.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.8.0...v0.9.0) (2017-05-07)
+## [0.9.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.8.0...v0.9.0) (May 7, 2017)
 
 ### Bug fixes
 
@@ -506,7 +506,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 * Default position names in `BalloonPanelView.defaultPositions` have changed. Now prefixed with `arrow_`.
 
 
-## [0.8.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.7.1...v0.8.0) (2017-04-05)
+## [0.8.0](https://github.com/ckeditor/ckeditor5-ui/compare/v0.7.1...v0.8.0) (April 5, 2017)
 
 ### Features
 
@@ -527,7 +527,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 * The `ui/balloonpanel/balloonpanelview` module was renamed to `ui/panel/balloon/balloonpanelview`. See [#152](https://github.com/ckeditor/ckeditor5-ui/issues/152).
 
 
-## [0.7.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.7.0...v0.8.0) (2017-03-06)
+## [0.7.1](https://github.com/ckeditor/ckeditor5-ui/compare/v0.7.0...v0.8.0) (March 6, 2017)
 
 ### Bug fixes
 

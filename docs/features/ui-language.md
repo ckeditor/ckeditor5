@@ -117,7 +117,7 @@ If you build CKEditor&nbsp;5 from scratch or integrate it directly into your app
 
 2. Add it to your webpack configuration:
 
-	Note: The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+	Note: The language code is defined in the [ISO 639–1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
 
 	```js
 	const { CKEditorTranslationsPlugin } = require( '@ckeditor/ckeditor5-dev-translations' );
