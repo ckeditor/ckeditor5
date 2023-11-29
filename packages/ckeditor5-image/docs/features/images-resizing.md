@@ -38,7 +38,7 @@ You can configure resizing images by handles in two different ways in the CKEdit
 
 * Either by installing the {@link module:image/imageresize~ImageResize} plugin, which contains **all** needed features (`ImageResizeEditing`, `ImageResizeHandles`, `ImageResizeButtons`) as described in the {@link features/images-resizing#installation installation} of this guide.
 
-* Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins, that won't load the unnecessary `ImageResizeButtons` plugin:
+* Or by installing the combination of {@link module:image/imageresize/imageresizeediting~ImageResizeEditing} and {@link module:image/imageresize/imageresizehandles~ImageResizeHandles} plugins, that will not load the unnecessary `ImageResizeButtons` plugin:
 
 ```js
 import { Image, ImageResizeEditing, ImageResizeHandles } from '@ckeditor/ckeditor5-image';
@@ -46,7 +46,7 @@ import { Image, ImageResizeEditing, ImageResizeHandles } from '@ckeditor/ckedito
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageResizeEditing, ImageResizeHandles, /* ... */ ],
-		// More of editor's config.
+		// More of editor's configuration.
 		// ...
 	} )
 	.then( /* ... */ )
@@ -57,7 +57,7 @@ Both ways enable resize handles by default.
 
 ### Using resize dropdown
 
-In this case, the user is able to choose from a set of predefined options. These options can be displayed in form of a dropdown in the image toolbar available after the user clicks the image.
+In this case, the user is able to choose from a set of predefined options. These options can be displayed in a form of a dropdown in the image toolbar available after the user clicks the image.
 
 To use this option, you need to [enable image resizing](#installation) and configure the available {@link module:image/imageconfig~ImageConfig#resizeOptions resize options}. Then add the dropdown to the image toolbar configuration.
 
