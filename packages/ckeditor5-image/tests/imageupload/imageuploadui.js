@@ -83,11 +83,11 @@ describe( 'ImageUploadUI', () => {
 
 		command.isEnabled = true;
 
-		expect( button.buttonView.isEnabled ).to.true;
+		expect( button.isEnabled ).to.true;
 
 		command.isEnabled = false;
 
-		expect( button.buttonView.isEnabled ).to.false;
+		expect( button.isEnabled ).to.false;
 	} );
 
 	// ckeditor5-upload/#77
@@ -98,11 +98,11 @@ describe( 'ImageUploadUI', () => {
 
 		button.render();
 
-		button.buttonView.on( 'execute', spy );
+		button.on( 'execute', spy );
 
 		command.isEnabled = false;
 
-		button.buttonView.element.dispatchEvent( new Event( 'click' ) );
+		button.element.dispatchEvent( new Event( 'click' ) );
 
 		sinon.assert.notCalled( spy );
 	} );
