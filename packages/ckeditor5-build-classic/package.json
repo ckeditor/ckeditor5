@@ -51,7 +51,7 @@
     "@ckeditor/ckeditor5-table": "39.0.0",
     "@ckeditor/ckeditor5-typing": "39.0.0",
     "@flockjay/ckeditor5-video": "https://github.com/Flockjay/ckeditor5-video.git#31e93ba51e56ecb02786c9d3a82e5651e1a7fe49",
-    "@flockjay/ckeditor5-audio": "https://github.com/Flockjay/ckeditor5-audio.git#135b7abd1d3397314ca1ef672353a951f6d28de4",
+    "@flockjay/ckeditor5-audio": "https://github.com/Flockjay/ckeditor5-audio.git#df9ccab57290233e4e7be3b77a8078f90953786a",
     "@phudak/ckeditor5-emoji": "^1.1.1"
   },
   "devDependencies": {
