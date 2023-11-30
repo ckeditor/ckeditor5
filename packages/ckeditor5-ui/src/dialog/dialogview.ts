@@ -21,6 +21,7 @@ import ViewCollection from '../viewcollection';
 import View from '../view';
 import FormHeaderView from '../formheader/formheaderview';
 import ButtonView from '../button/buttonview';
+import { type ButtonExecuteEvent } from '../button/button';
 import FocusCycler, { isViewWithFocusCycler, type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
 import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin';
 import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview';
@@ -609,7 +610,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			icon: cancelIcon
 		} );
 
-		buttonView.on( 'execute', () => this.fire<DialogViewCloseEvent>( 'close' ) );
+		buttonView.on<ButtonExecuteEvent>( 'execute', () => this.fire<DialogViewCloseEvent>( 'close' ) );
 
 		return buttonView;
 	}
