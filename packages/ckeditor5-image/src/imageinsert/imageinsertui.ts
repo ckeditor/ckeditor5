@@ -12,7 +12,6 @@ import {
 	type Editor
 } from 'ckeditor5/src/core';
 import {
-	CKEditorError,
 	logWarning,
 	type Locale,
 	type Observable
@@ -115,9 +114,9 @@ export default class ImageInsertUI extends Plugin {
 } ): void {
 		if ( this._integrations.has( name ) ) {
 			/**
-			 * There are two insert image integrations registered with the same name.
+			 * There are two insert-image integrations registered with the same name.
 			 *
-			 * // TODO add more details.
+			 * Make sure that you do not load multiple asset manager plugins.
 			 *
 			 * @error image-insert-integration-exists
 			 */
@@ -140,6 +139,10 @@ export default class ImageInsertUI extends Plugin {
 		const t = locale.t;
 
 		const integrations = this._prepareIntegrations();
+
+		if ( !integrations.length ) {
+			return null as any;
+		}
 
 		let dropdownButton: SplitButtonView | DropdownButtonView | undefined;
 		const firstIntegration = integrations[ 0 ];
@@ -192,11 +195,15 @@ export default class ImageInsertUI extends Plugin {
 			/**
 			 * The insert image feature requires a list of integrations to be provided in the editor configuration.
 			 *
-			 * // TODO add details.
+			 * The default list of integrations is `upload`, `assetManager`, `url`. Those integrations are included
+			 * in the insert image dropdown if the given feature plugin is loaded. You should omit the `integrations`
+			 * configuration key to use the default set or provide a selected list of integrations that should be used.
 			 *
-			 * @error image-insert-not-specified-integrations
+			 * @error image-insert-integrations-not-specified
 			 */
-			throw new CKEditorError( 'image-insert-not-specified-integrations' );
+			logWarning( 'image-insert-integrations-not-specified' );
+
+			return result;
 		}
 
 		for ( const item of items ) {
@@ -220,11 +227,15 @@ export default class ImageInsertUI extends Plugin {
 			/**
 			 * The image insert feature requires integrations to be registered by separate features.
 			 *
-			 * // TODO add details.
+			 * The `insertImage` toolbar button requires integrations to be registered by other features.
+			 * For example {@link module:image/imageupload~ImageUpload ImageUpload},
+			 * {@link module:image/imageinsert~ImageInsert ImageInsert},
+			 * {@link module:image/imageinsertviaurl~ImageInsertViaUrl ImageInsertViaUrl},
+			 * {@link module:ckbox/ckbox~CKBox CKBox}
 			 *
-			 * @error image-insert-not-registered-integrations
+			 * @error image-insert-integrations-not-registered
 			 */
-			throw new CKEditorError( 'image-insert-not-registered-integrations' );
+			logWarning( 'image-insert-integrations-not-registered' );
 		}
 
 		return result;
