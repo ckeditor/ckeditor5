@@ -55,14 +55,7 @@
 
 		& .ck-form__header__label {
 			--ck-font-size-base: 15px;
-		}
-	}
-
-	&.ck-dialog_draggable {
-		& .ck.ck-form__header {
-			&, & .ck-form__header__label {
-				cursor: grab;
-			}
+			cursor: grab;
 		}
 	}
 

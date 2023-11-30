@@ -24,12 +24,12 @@ import ButtonView from '../button/buttonview';
 import FocusCycler, { isViewWithFocusCycler, type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
 import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin';
 import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview';
+import DialogContentView from './dialogcontentview';
+import type EditorUI from '../editorui/editorui';
 
 // @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import type EditorUI from '../editorui/editorui';
-import DialogContentView from './dialogcontentview';
 
 export enum DialogViewPosition {
 	SCREEN_CENTER = 'screen-center',
@@ -214,7 +214,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 						class: [
 							'ck',
 							'ck-dialog',
-							'ck-dialog_draggable',
 							bind.to( 'className' )
 						],
 						style: {
@@ -340,20 +339,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * TODO
 	 */
-	public focusNext(): void {
-		this._focusCycler.focusNext();
-	}
-
-	/**
-	 * TODO
-	 */
-	public focusPrevious(): void {
-		this._focusCycler.focusPrevious();
-	}
-
-	/**
-	 * TODO
-	 */
 	public moveTo( left: number, top: number ): void {
 		const viewportRect = this._getViewportRect();
 		const dialogRect = this._getDialogRect();
@@ -427,7 +412,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				// @if CK_DEBUG_DIALOG // }
 
 				if ( domRootRect ) {
-					const leftCoordinate = this.locale?.contentLanguageDirection === 'ltr' ?
+					const leftCoordinate = this.locale!.contentLanguageDirection === 'ltr' ?
 						domRootRect.right - dialogRect.width - defaultOffset :
 						domRootRect.left + defaultOffset;
 
@@ -599,12 +584,12 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 			if ( isViewWithFocusCycler( focusable ) ) {
 				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {
-					this.focusNext();
+					this._focusCycler.focusNext();
 					evt.stop();
 				} );
 
 				this.listenTo<FocusCyclerBackwardCycleEvent>( focusable.focusCycler, 'backwardCycle', evt => {
-					this.focusPrevious();
+					this._focusCycler.focusPrevious();
 					evt.stop();
 				} );
 			}
@@ -654,6 +639,9 @@ function getConstrainedViewportRect( viewportOffset: EditorUI[ 'viewportOffset' 
 	viewportRect.height -= viewportOffset.top!;
 	viewportRect.bottom -= viewportOffset.bottom!;
 	viewportRect.height -= viewportOffset.bottom!;
+	viewportRect.left += viewportOffset.left!;
+	viewportRect.right -= viewportOffset.right!;
+	viewportRect.width -= viewportOffset.left! + viewportOffset.right!;
 
 	return viewportRect;
 }
