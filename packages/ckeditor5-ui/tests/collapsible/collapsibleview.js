@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import CollapsibleView from '../../../src/listproperties/ui/collapsibleview';
+import CollapsibleView from '../../src/collapsible/collapsibleview';
+import ButtonView from '../../src/button/buttonview';
 
-import { ButtonView, ViewCollection } from '@ckeditor/ckeditor5-ui';
-import dropdownArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
+import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
+import ViewCollection from '../../src/viewcollection';
 
 describe( 'CollapsibleView', () => {
 	let view, locale;
@@ -78,6 +79,16 @@ describe( 'CollapsibleView', () => {
 
 		it( 'should have #label with default value', () => {
 			expect( view.label ).to.equal( '' );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the button', () => {
+			const spy = sinon.spy( view.buttonView, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 

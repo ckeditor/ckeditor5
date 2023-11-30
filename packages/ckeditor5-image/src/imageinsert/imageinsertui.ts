@@ -26,7 +26,7 @@ import {
 } from 'ckeditor5/src/ui';
 
 import ImageInsertFormView from './ui/imageinsertformview';
-import type ImageUtils from '../imageutils';
+import ImageUtils from '../imageutils';
 
 /**
  * The image insert dropdown plugin.
@@ -43,6 +43,13 @@ export default class ImageInsertUI extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'ImageInsertUI' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ ImageUtils ] as const;
 	}
 
 	/**

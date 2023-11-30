@@ -23,9 +23,6 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * view.set( {
  * 	acceptedType: 'image/*',
  * 	allowMultipleFiles: true
- * } );
- *
- * view.buttonView.set( {
  * 	label: t( 'Insert image' ),
  * 	icon: imageIcon,
  * 	tooltip: true
@@ -39,11 +36,6 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * ```
  */
 export default class FileDialogButtonView extends ButtonView {
-	/**
-	 * The button view of the component.
-	 */
-	public buttonView: ButtonView;
-
 	/**
 	 * A hidden `<input>` view used to execute file dialog.
 	 */
@@ -71,9 +63,6 @@ export default class FileDialogButtonView extends ButtonView {
 	 */
 	constructor( locale?: Locale ) {
 		super( locale );
-
-		// TODO should we leave this for backward compatibility?
-		this.buttonView = this;
 
 		this._fileInputView = new FileInputView( locale );
 		this._fileInputView.bind( 'acceptedType' ).to( this );

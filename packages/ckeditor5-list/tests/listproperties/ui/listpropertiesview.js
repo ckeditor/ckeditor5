@@ -6,10 +6,10 @@
 /* globals document */
 
 import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview';
-import CollapsibleView from '../../../src/listproperties/ui/collapsibleview';
 
 import {
 	ButtonView,
+	CollapsibleView,
 	FocusCycler,
 	LabeledFieldView,
 	SwitchButtonView,
