@@ -12,11 +12,18 @@ import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { ImageBlockEditing, ImageUploadEditing, ImageUploadProgress, PictureEditing } from '@ckeditor/ckeditor5-image';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 
 describe( 'CKBoxImageEditEditing', () => {
 	let editor, domElement;
 
 	beforeEach( async () => {
+		TokenMock.initialToken = 'ckbox-token';
+
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
 
@@ -25,9 +32,21 @@ describe( 'CKBoxImageEditEditing', () => {
 				Paragraph,
 				Heading,
 				Essentials,
+				ImageBlockEditing,
 				ImageEditing,
-				CKBoxImageEditEditing
-			]
+				ImageUploadEditing,
+				ImageUploadProgress,
+				PictureEditing,
+				LinkEditing,
+				CKBoxImageEditEditing,
+				CloudServices
+			],
+			substitutePlugins: [
+				CloudServicesCoreMock
+			],
+			ckbox: {
+				tokenUrl: 'http://cs.example.com'
+			}
 		} );
 	} );
 

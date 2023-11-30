@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import CKBoxEditing from './ckboxediting';
 import CKBoxImageEditEditing from './ckboximageedit/ckboximageeditediting';
 import CKBoxImageEditUI from './ckboximageedit/ckboximageeditui';
 
@@ -30,6 +29,6 @@ export default class CKBoxImageEdit extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ CKBoxEditing, CKBoxImageEditEditing, CKBoxImageEditUI ] as const;
+		return [ CKBoxImageEditEditing, CKBoxImageEditUI ] as const;
 	}
 }

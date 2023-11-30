@@ -9,8 +9,9 @@ import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { Image } from '@ckeditor/ckeditor5-image';
+import { Image, ImageUploadEditing, ImageUploadProgress, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
@@ -43,7 +44,17 @@ describe( 'CKBoxImageEditUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ CKBoxImageEditEditing, CKBoxImageEditUI, Image, Paragraph, CloudServices ],
+				plugins: [
+					CKBoxImageEditEditing,
+					CKBoxImageEditUI,
+					Image,
+					ImageUploadEditing,
+					ImageUploadProgress,
+					Paragraph,
+					PictureEditing,
+					LinkEditing,
+					CloudServices
+				],
 				ckbox: {
 					tokenUrl: 'foo'
 				},
