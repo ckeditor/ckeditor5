@@ -11,6 +11,7 @@ import View from '../view';
 import type ViewCollection from '../viewcollection';
 import ListView from './listview';
 import LabelView from '../label/labelview';
+import ListSeparatorView from './listseparatorview';
 
 import { type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -108,7 +109,7 @@ export default class ListItemGroupView extends View {
 	 * Focuses the list item.
 	 */
 	public focus(): void {
-		if ( this.items.first ) {
+		if ( this.items.first && !( this.items.first instanceof ListSeparatorView ) ) {
 			this.items.first.focus();
 		}
 	}
