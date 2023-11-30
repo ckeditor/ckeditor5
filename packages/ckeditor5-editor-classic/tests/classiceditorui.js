@@ -301,7 +301,7 @@ describe( 'ClassicEditorUI', () => {
 					}
 				} );
 
-				sinon.stub( editorWithUi.ui.view.stickyPanel.contentPanel, 'getBoundingClientRect' ).returns( {
+				sinon.stub( editorWithUi.ui.view.stickyPanel.contentPanelElement, 'getBoundingClientRect' ).returns( {
 					height: 50,
 					bottom: 50
 				} );

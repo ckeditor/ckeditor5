@@ -100,7 +100,7 @@ export default class StickyPanelView extends View {
 	 * The panel which accepts children into {@link #content} collection.
 	 * Also an element which is positioned when {@link #isSticky}.
 	 */
-	public contentPanel: HTMLElement;
+	public contentPanelElement: HTMLElement;
 
 	/**
 	 * Controls the `margin-left` CSS style of the panel.
@@ -184,7 +184,7 @@ export default class StickyPanelView extends View {
 			}
 		} ).render() as HTMLElement;
 
-		this.contentPanel = new Template( {
+		this.contentPanelElement = new Template( {
 			tag: 'div',
 
 			attributes: {
@@ -220,7 +220,7 @@ export default class StickyPanelView extends View {
 			},
 			children: [
 				this._contentPanelPlaceholder,
-				this.contentPanel
+				this.contentPanelElement
 			]
 		} );
 	}
@@ -387,6 +387,6 @@ export default class StickyPanelView extends View {
 	 * @private
 	 */
 	private get _contentPanelRect(): Rect {
-		return new Rect( this.contentPanel );
+		return new Rect( this.contentPanelElement );
 	}
 }
