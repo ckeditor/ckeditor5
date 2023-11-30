@@ -241,8 +241,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		// Support for dragging the modal.
 		this.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { deltaX, deltaY } ) => {
-			this.moveBy( deltaX, deltaY );
 			this.wasMoved = true;
+			this.moveBy( deltaX, deltaY );
 		} );
 
 		// Update dialog position upon window resize, if the position was not changed manually.
