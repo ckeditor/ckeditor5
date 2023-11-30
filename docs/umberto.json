@@ -356,41 +356,35 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "Installation",
-					"id": "installation",
-					"slug": "installation",
-					"order": 20
-				},
-				{
 					"name": "Integrations",
 					"id": "integrations",
 					"slug": "integrations",
-					"order": 30
+					"order": 50
 				},
 				{
 					"name": "Legacy installation methods",
 					"id": "legacy",
 					"slug": "legacy",
-					"order": 50,
+					"order": 60,
 					"folded": true,
 					"categories": [
 						{
 							"name": "Basics",
 							"id": "installation-methods",
 							"slug": "installation-methods",
-							"order": 55
+							"order": 70
 						},
 						{
 							"name": "Advanced concepts",
 							"id": "advanced",
 							"slug": "advanced",
-							"order": 60,
+							"order": 80,
 							"categories": [
 								{
 									"name": "Alternative setups",
 									"id": "alternative-setups",
 									"slug": "alternative-setups",
-									"order": 65
+									"order": 90
 								}
 							]
 						}

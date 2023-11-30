@@ -1,5 +1,5 @@
 ---
-category: installation
+category: getting-started
 order: 10
 menu-title: Quick Start - NEW
 meta-title: Quick Start | CKEditor 5 documentation
