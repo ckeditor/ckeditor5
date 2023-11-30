@@ -21,9 +21,9 @@ import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils
 import '../../../theme/imageinsert.css';
 
 /**
- * TODO
+ * The view displayed in the insert image dropdown.
  *
- * See {@link module:image/imageinsert/ui/imageinsertformview~ImageInsertFormView}.
+ * See {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
  */
 export default class ImageInsertFormView extends View {
 	/**

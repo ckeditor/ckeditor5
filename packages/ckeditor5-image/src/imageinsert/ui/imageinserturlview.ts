@@ -20,13 +20,13 @@ import {
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
 /**
- * The insert an image via URL view controller class.
+ * The insert an image via URL view.
  *
- * See {@link module:image/imageinsert/ui/imageinsertformview~ImageInsertFormView}.
+ * See {@link module:image/imageinsert/imageinsertviaurlui~ImageInsertViaUrlUI}.
  */
 export default class ImageInsertUrlView extends View {
 	/**
-	 * TODO
+	 * The URL input field view.
 	 */
 	public urlInputView: LabeledFieldView<InputTextView>;
 
@@ -48,14 +48,14 @@ export default class ImageInsertUrlView extends View {
 	declare public imageURLInputValue: string;
 
 	/**
-	 * TODO
+	 * Observable property used to alter labels while some image is selected and when it is not.
 	 *
 	 * @observable
 	 */
 	declare public isImageSelected: boolean;
 
 	/**
-	 * TODO
+	 * Observable property indicating whether the form interactive elements should be enabled.
 	 *
 	 * @observable
 	 */
@@ -258,7 +258,7 @@ export default class ImageInsertUrlView extends View {
 }
 
 /**
- * TODO
+ * Fired when the form view is submitted.
  *
  * @eventName ~ImageInsertUrlView#submit
  */
@@ -268,7 +268,7 @@ export type ImageInsertUrlViewSubmitEvent = {
 };
 
 /**
- * TODO
+ * Fired when the form view is canceled.
  *
  * @eventName ~ImageInsertUrlView#cancel
  */
