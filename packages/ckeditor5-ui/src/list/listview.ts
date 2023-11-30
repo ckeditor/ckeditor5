@@ -12,6 +12,7 @@ import FocusCycler from '../focuscycler';
 
 import type ListItemView from './listitemview';
 import ListItemGroupView from './listitemgroupview';
+import type ListSeparatorView from './listseparatorview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
 import ViewCollection from '../viewcollection';
 
@@ -39,7 +40,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 	/**
 	 * Collection of the child list views.
 	 */
-	public readonly items: ViewCollection<ListItemView | ListItemGroupView>;
+	public readonly items: ViewCollection<ListItemView | ListItemGroupView | ListSeparatorView>;
 
 	/**
 	 * Tracks information about DOM focus in the list.
