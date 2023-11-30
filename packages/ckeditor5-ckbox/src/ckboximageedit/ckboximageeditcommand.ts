@@ -10,7 +10,7 @@
  */
 
 import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
-import { CKEditorError, createElement, retry } from 'ckeditor5/src/utils';
+import { CKEditorError, abortableDebounce, createElement, retry, type AbortableFunc } from 'ckeditor5/src/utils';
 import type { Element as ModelElement } from 'ckeditor5/src/engine';
 import { Notification } from 'ckeditor5/src/ui';
 import { isEqual } from 'lodash-es';
@@ -47,6 +47,8 @@ export default class CKBoxImageEditCommand extends Command {
 	/** TODO */
 	private _canEdit: ( element: ModelElement ) => boolean;
 
+	private _prepareOptions: AbortableFunc<[ ProcessingState ], Promise<Record<string, unknown>>>;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -56,6 +58,7 @@ export default class CKBoxImageEditCommand extends Command {
 		this.value = false;
 
 		this._canEdit = createEditabilityChecker( editor.config.get( 'ckbox.allowExternalImagesEditing' ) );
+		this._prepareOptions = abortableDebounce( ( signal, state ) => this._prepareOptionsImpl( signal, state ) );
 
 		this._prepareListeners();
 	}
@@ -113,6 +116,8 @@ export default class CKBoxImageEditCommand extends Command {
 	public override destroy(): void {
 		this._handleImageEditorClose();
 
+		this._prepareOptions.abort();
+
 		for ( const state of this._processInProgress.values() ) {
 			state.controller.abort();
 		}
@@ -130,7 +135,7 @@ export default class CKBoxImageEditCommand extends Command {
 	/**
 	 * Creates the options object for the CKBox Image Editor dialog.
 	 */
-	private async _prepareOptions( state: ProcessingState ) {
+	private async _prepareOptionsImpl( signal: AbortSignal, state: ProcessingState ) {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
 		const ckboxEditing = editor.plugins.get( CKBoxEditing );
@@ -141,7 +146,7 @@ export default class CKBoxImageEditCommand extends Command {
 			serviceOrigin: ckboxConfig.serviceOrigin!,
 			defaultCategories: ckboxConfig.defaultUploadCategories,
 			defaultWorkspaceId: ckboxConfig.defaultUploadWorkspaceId,
-			/** TODO */ signal: ( new AbortController() ).signal
+			signal
 		} );
 
 		return {
