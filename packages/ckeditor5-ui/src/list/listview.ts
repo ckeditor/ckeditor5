@@ -10,7 +10,7 @@
 import View from '../view';
 import FocusCycler from '../focuscycler';
 
-import type ListItemView from './listitemview';
+import ListItemView from './listitemview';
 import ListItemGroupView from './listitemgroupview';
 import type ListSeparatorView from './listseparatorview';
 import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
@@ -142,7 +142,7 @@ export default class ListView extends View<HTMLUListElement> implements Dropdown
 		for ( const item of this.items ) {
 			if ( item instanceof ListItemGroupView ) {
 				this._registerFocusableItemsGroup( item );
-			} else {
+			} else if ( item instanceof ListItemView ) {
 				this._registerFocusableListItem( item );
 			}
 		}
