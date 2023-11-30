@@ -6,6 +6,7 @@
 /* eslint-env node */
 import { readdirSync, existsSync } from 'node:fs';
 import path from 'path';
+import chalk from 'chalk';
 
 import {
 	listDirectories,
@@ -19,9 +20,9 @@ import {
 const cwd = process.cwd();
 
 export default function po2js( options = {} ) {
-	const translationsTargetFolderPath = options.destFolder || `${ cwd }/dist/translations`;
+	const translationsTargetDirectoryPath = options.destDirectory || `${ cwd }/dist/translations`;
 	const po2jsType = options.type || 'single';
-	const translationsSourceFolderPath = options.sourceFolder || `${ cwd }/lang/translations`;
+	const translationsSourceDirectoryPath = options.sourceDirectory || `${ cwd }/lang/translations`;
 	const banner = options.banner || '';
 
 	return {
@@ -33,8 +34,9 @@ export default function po2js( options = {} ) {
 				const packagesList = listDirectories( `${ cwd }/packages/` );
 				languageDirectoriesList = packagesList.map( directoryName => `${ cwd }/packages/${ directoryName }/lang/translations` );
 			} else {
-				languageDirectoriesList.push( translationsSourceFolderPath );
+				languageDirectoriesList.push( translationsSourceDirectoryPath );
 			}
+
 			const promisesArray = [];
 
 			languageDirectoriesList.forEach( languageDirectory => {
@@ -42,9 +44,9 @@ export default function po2js( options = {} ) {
 					return null;
 				}
 
-				const translationFilesFromFolder = readdirSync( languageDirectory );
+				const translationFilesFromDirectory = readdirSync( languageDirectory );
 
-				for ( const translationFile of translationFilesFromFolder ) {
+				for ( const translationFile of translationFilesFromDirectory ) {
 					const fullPath = path.resolve( languageDirectory, translationFile );
 					const languageKey = translationFile.split( '.' )[ 0 ];
 
@@ -56,13 +58,22 @@ export default function po2js( options = {} ) {
 
 			const listOfUnifiedTranslationObjects = await Promise.all( promisesArray );
 
-			if ( !existsSync( translationsTargetFolderPath ) ) {
-				await createDirectory( translationsTargetFolderPath );
+			if ( !existsSync( translationsTargetDirectoryPath ) ) {
+				await createDirectory( translationsTargetDirectoryPath );
 			}
 
 			const mergedTranslationObject = mergeObjects( listOfUnifiedTranslationObjects );
 
-			gatherDataAndSaveFile( mergedTranslationObject, banner, translationsTargetFolderPath );
+			gatherDataAndSaveFile( mergedTranslationObject, banner, translationsTargetDirectoryPath )
+				.then( results => {
+					results.forEach( result => {
+						if ( result.status === 'rejected' ) {
+							console.log( chalk.red( JSON.stringify( result.reason ) ) );
+						} else {
+							console.log( chalk.green( result.value ) );
+						}
+					} );
+				} );
 
 			return null;
 		}

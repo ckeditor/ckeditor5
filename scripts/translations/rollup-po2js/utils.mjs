@@ -104,6 +104,7 @@ export function getSingleUnifiedTranslationObject( filePath, languageKey ) {
  */
 export function gatherDataAndSaveFile( translationsObject, banner, targetPath ) {
 	const languageKeys = Object.keys( translationsObject );
+	const promisesArray = [];
 
 	languageKeys.forEach( languageKey => {
 		const pluralFunction = translationsObject[ languageKey ].getPluralForm;
@@ -118,16 +119,23 @@ translationObject[ '${ languageKey }' ].getPluralForm = ${ pluralFunction }
 
 export default translationObject;\n`;
 
-		writeFile(
-			`${ targetPath }/${ languageKey }.js`,
-			dataToWrite,
-			{ encoding: 'utf8' },
-			err => {
-				if ( err ) {
-					console.log( err );
-				}
-			} );
+		promisesArray.push( new Promise( ( resolve, reject ) => {
+			const pathToFile = `${ targetPath }/${ languageKey }.js`;
+			writeFile(
+				pathToFile,
+				dataToWrite,
+				{ encoding: 'utf8' },
+				error => {
+					if ( error ) {
+						reject( error );
+					}
+
+					resolve( `"${ pathToFile }" created.` );
+				} );
+		} ) );
 	} );
+
+	return Promise.allSettled( promisesArray );
 }
 
 /**

@@ -96,8 +96,8 @@ export default [
 			} ),
 			po2js( {
 				type: 'single',
-				sourceFolder: path.join( cwd, 'lang', 'translations' ),
-				destFolder: path.join( cwd, 'dist', 'translations' ),
+				sourceDirectory: path.join( cwd, 'lang', 'translations' ),
+				destDirectory: path.join( cwd, 'dist', 'translations' ),
 				banner
 			} )
 		]
