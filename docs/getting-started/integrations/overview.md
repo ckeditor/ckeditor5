@@ -30,7 +30,7 @@ When checking how to integrate CKEditor&nbsp;5 with your framework, you can foll
 
 1. **Check whether an [official integration](#official-wysiwyg-editor-integrations) exists.**
 
-	So far, there are four official integrations: for {@link getting-started/integrations/react React}, {@link getting-started/integrations/angular Angular}, {@link getting-started/integrations/vuejs-v2 Vue.js 2.x}, and {@link getting-started/integrations/vuejs-v3 Vue.js 3.x}.
+	There are four official integrations now: for {@link getting-started/integrations/react React}, {@link getting-started/integrations/angular Angular}, {@link getting-started/integrations/vuejs-v2 Vue.js 2.x}, and {@link getting-started/integrations/vuejs-v3 Vue.js 3.x}.
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor&nbsp;5 with your framework by yourself.**
 

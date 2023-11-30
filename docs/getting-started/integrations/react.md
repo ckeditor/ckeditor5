@@ -173,7 +173,7 @@ The `CKEditorContext` component supports the following properties:
 
 ## Customizing the builds
 
-The {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link getting-started/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
+The {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link getting-started/configuration#removing-features remove some plugins}, you need to rebuild the editor to add more plugins.
 
 There are three main ways to do that.
 
@@ -338,7 +338,7 @@ export default App;
 
 ### Vite
 
-Vite requires linked packages to be ESM, and unfortunately, the CKEditor build is not ESM yet (but we're working on it). Therefore, you must modify the `vite.config.js` file to integrate a custom build with Vite. The snippet below will allow you to include the custom build in a Vite bundle. Check out the [Vite docs](https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies) to see more details.
+Vite requires linked packages to be ESM, and unfortunately, the CKEditor build is not ESM yet (but we are working on it). Therefore, you must modify the `vite.config.js` file to integrate a custom build with Vite. The snippet below will allow you to include the custom build in a Vite bundle. Check out the [Vite documentation](https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies) to see more details.
 
 ```js
 // vite.config.js
@@ -590,7 +590,7 @@ npm install --save \
 
 #### Configuring `vite.config.js` / `vite.config.ts`
 
-Configuring CKEditor&nbsp;5 with React and Vite is simple. Modify the existing config by importing `ckeditor5` and adding it to the list of plugins.
+Configuring CKEditor&nbsp;5 with React and Vite is simple. Modify the existing configuration by importing `ckeditor5` and adding it to the list of plugins.
 
 ```js
 // vite.config.js / vite.config.ts
@@ -607,7 +607,7 @@ export default defineConfig( {
 } )
 ```
 
-The configuration slightly differs for ESM projects. If you try to start the dev server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
+The configuration slightly differs for ESM projects. If you try to start the development server using the `npm run dev` command, you may encounter an error: `require.resolve is not a function`. In this case, you need some additional lines of code.
 
 ```js
 // vite.config.js / vite.config.ts
@@ -616,7 +616,7 @@ import { createRequire } from 'node:module';
 const require = createRequire( import.meta.url );
 ```
 
-If you want to use `.ts` config, you may need to install additional types for node.
+If you want to use `.ts` configuration, you may need to install additional types for node.
 
 ```bash
 npm install --save @types/node
