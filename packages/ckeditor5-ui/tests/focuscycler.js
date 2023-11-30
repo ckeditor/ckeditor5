@@ -7,7 +7,7 @@
 
 import ViewCollection from '../src/viewcollection';
 import View from '../src/view';
-import FocusCycler from '../src/focuscycler';
+import FocusCycler, { isViewWithFocusCycler } from '../src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -582,6 +582,16 @@ describe( 'FocusCycler', () => {
 		} );
 	} );
 
+	describe( 'isViewWithFocusCycler', () => {
+		it( 'should return true if the view has its own focus cycler instance', () => {
+			expect( isViewWithFocusCycler( viewWithFocusCycler() ) ).to.be.true;
+		} );
+
+		it( 'should return false if the view does not have a focus cycler instance', () => {
+			expect( isViewWithFocusCycler( new View() ) ).to.be.false;
+		} );
+	} );
+
 	function nonFocusable( { display = 'block', isDetached = false, hiddenParent = false } = {} ) {
 		const view = new View();
 		view.element = document.createElement( 'div' );
@@ -604,6 +614,22 @@ describe( 'FocusCycler', () => {
 		const view = nonFocusable( ...args );
 
 		view.focus = sinon.spy();
+
+		return view;
+	}
+
+	function viewWithFocusCycler() {
+		const view = new View();
+		view.element = document.createElement( 'div' );
+
+		const focusCycler = new FocusCycler( {
+			focusables: new ViewCollection( [ view ] ),
+			focusTracker: {
+				focusedElement: null
+			}
+		} );
+
+		view.focusCycler = focusCycler;
 
 		return view;
 	}
