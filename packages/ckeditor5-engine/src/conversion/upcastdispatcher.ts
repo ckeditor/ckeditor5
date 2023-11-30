@@ -526,7 +526,7 @@ export type UpcastViewCleanupEvent = {
 	args: [ ViewElement | ViewDocumentFragment ];
 };
 
-type UpcastEvent<TName extends string, TItem extends ViewItem | ViewDocumentFragment> = {
+export type UpcastEvent<TName extends string, TItem extends ViewItem | ViewDocumentFragment> = {
 	name: TName | `${ TName }:${ string }`;
 	args: [ data: UpcastConversionData<TItem>, conversionApi: UpcastConversionApi ];
 };
