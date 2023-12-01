@@ -93,6 +93,15 @@ describe( 'AutoLink', () => {
 					'<paragraph>some <$text linkHref="http://hello.com">hello.com</$text>[] text</paragraph>'
 				);
 			} );
+
+			it( 'paste HTML with no plain text', () => {
+				pasteData( {
+					'text/html': '<span style="font-color: blue">http://hello.com</span>'
+				} );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>some http://hello.com[] text</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'pasting on collapsed selection', () => {
