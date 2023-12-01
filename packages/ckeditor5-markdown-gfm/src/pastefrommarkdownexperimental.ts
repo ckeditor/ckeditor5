@@ -12,7 +12,7 @@ import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckedi
 import GFMDataProcessor from './gfmdataprocessor';
 import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 
-const ALLOWED_MARKDOWN_TAGS = [ 'SPAN', 'BR', 'PRE', 'CODE' ];
+const ALLOWED_MARKDOWN_FIRST_LEVEL_TAGS = [ 'SPAN', 'BR', 'PRE', 'CODE' ];
 
 /**
  * The GitHub Flavored Markdown (GFM) paste plugin.
@@ -79,7 +79,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 				return;
 			}
 
-			if ( !this._containsOnlyAllowedTags( dataAsTextHtml ) ) {
+			if ( !this._containsOnlyAllowedFirstLevelTags( dataAsTextHtml ) ) {
 				return;
 			}
 
@@ -134,11 +134,13 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 *
 	 * @param htmlString Clipboard content.
 	 */
-	private _containsOnlyAllowedTags( htmlString: string ): boolean {
-		const tagsMatches = htmlString.match( /<([a-zA-Z]+)>/g ) || [];
-		const tagNames = tagsMatches.map( match => match.replace( /[<>]/g, '' ).toUpperCase() );
+	private _containsOnlyAllowedFirstLevelTags( htmlString: string ): boolean {
+		const parser = new DOMParser();
+		const { body: tempElement } = parser.parseFromString( htmlString, 'text/html' );
 
-		return tagNames.every( el => ALLOWED_MARKDOWN_TAGS.includes( el ) );
+		const tagNames = Array.from( tempElement.children ).map( el => el.tagName );
+
+		return tagNames.every( el => ALLOWED_MARKDOWN_FIRST_LEVEL_TAGS.includes( el ) );
 	}
 
 	/**
