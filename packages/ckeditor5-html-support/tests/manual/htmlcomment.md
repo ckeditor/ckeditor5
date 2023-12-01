@@ -1,6 +1,6 @@
 ## HTML comment
 
-1. Toggle the source editing mode and verify that all comments are present. There should be 10 comments: from `C1` to `C10`.
+1. Toggle the source editing mode and verify that all comments are present. There should be 12 comments: from `C1` to `C12`.
 1. In source editing mode add and remove some comments. Please note that, currently, the comment support is on a basic level. See the **Known limitations** section below containing missing functionalities.
 1. Copy & paste some content from Word and Google Docs. Content should be parsed without errors and displayed correctly.
 
