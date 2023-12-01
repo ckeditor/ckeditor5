@@ -115,6 +115,33 @@ describe( 'AutoLink', () => {
 			} );
 		} );
 
+		describe( 'pasting with multiple selection', () => {
+			beforeEach( () => {
+				setData( model, '<paragraph>some text</paragraph>' );
+				const paragraph = model.document.getRoot().getChild( 0 );
+				const firstRange = editor.model.createRange(
+					editor.model.createPositionAt( paragraph, 0 ),
+					editor.model.createPositionAt( paragraph, 4 )
+				);
+				const secondRange = editor.model.createRange(
+					editor.model.createPositionAt( paragraph, 5 ),
+					editor.model.createPositionAt( paragraph, 9 )
+				);
+
+				model.change( writer => {
+					writer.setSelection( [ firstRange, secondRange ] );
+				} );
+			} );
+
+			it( 'paste link', () => {
+				pasteText( 'http://hello.com' );
+				// Default behaviour: overwrites the first selection
+				expect( getData( model ) ).to.equal(
+					'<paragraph>http://hello.com[] text</paragraph>'
+				);
+			} );
+		} );
+
 		describe( 'pasting on a link', () => {
 			it( 'paste with entire link selected', () => {
 				setData( model, '<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>' );
