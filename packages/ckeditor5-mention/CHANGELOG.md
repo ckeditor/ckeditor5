@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Bug fixes
 
@@ -13,24 +13,24 @@ Changes for the past releases are available below.
 * Mentions can now be matched by any character typed. Closes [ckeditor/ckeditor5#6398](https://github.com/ckeditor/ckeditor5/issues/6398). ([aa7d04d](https://github.com/ckeditor/ckeditor5-mention/commit/aa7d04d))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Features
 
 * Implemented debounced mechanism for requesting a mention feed. Closes [ckeditor/ckeditor5#4619](https://github.com/ckeditor/ckeditor5/issues/4619). ([f50db9c](https://github.com/ckeditor/ckeditor5-mention/commit/f50db9c))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v13.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v13.0.0...v15.0.0) (October 23, 2019)
 
 ### Other changes
 
@@ -39,7 +39,7 @@ Internal changes only (updated dependencies, documentation, etc.).
   Thanks [@oliverguenther](https://github.com/oliverguenther) for the contribution!
 
 
-## [13.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v12.0.1...v13.0.0) (2019-08-26)
+## [13.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v12.0.1...v13.0.0) (August 26, 2019)
 
 ### Other changes
 
@@ -51,12 +51,12 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `mention/featuredetection` namespace is removed. Please use `env.features` from ckeditor5-utils instead.
 
 
-## [12.0.1](https://github.com/ckeditor/ckeditor5-mention/compare/v12.0.0...v12.0.1) (2019-07-10)
+## [12.0.1](https://github.com/ckeditor/ckeditor5-mention/compare/v12.0.0...v12.0.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [12.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v11.0.0...v12.0.0) (2019-07-04)
+## [12.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v11.0.0...v12.0.0) (July 4, 2019)
 
 ### Bug fixes
 
@@ -73,7 +73,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `TextWatcher` util was moved to `@ckeditor/ckeditor5-typing`.
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v10.0.0...v11.0.0) (2019-06-05)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-mention/compare/v10.0.0...v11.0.0) (June 6, 2019)
 
 ### Bug fixes
 
@@ -92,6 +92,6 @@ Internal changes only (updated dependencies, documentation, etc.).
 * The `MentionUI#panelView` property is removed. The mention feature now uses the `ContextualBalloon` plugin.
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-mention/tree/v10.0.0) (2019-04-10)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-mention/tree/v10.0.0) (April 4, 2019)
 
 The initial release.

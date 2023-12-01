@@ -5,17 +5,17 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Bug fixes
 
@@ -26,14 +26,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([f0a7140](https://github.com/ckeditor/ckeditor5-indent/commit/f0a7140))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([749ed44](https://github.com/ckeditor/ckeditor5-indent/commit/749ed44))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v10.1.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-indent/compare/v10.1.0...v15.0.0) (October 23, 2019)
 
 ### Bug fixes
 
@@ -44,7 +44,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([857389c](https://github.com/ckeditor/ckeditor5-indent/commit/857389c)) ([3a262fd](https://github.com/ckeditor/ckeditor5-indent/commit/3a262fd))
 
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-indent/compare/v10.0.1...v10.1.0) (2019-08-26)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-indent/compare/v10.0.1...v10.1.0) (August 26, 2019)
 
 ### Features
 
@@ -61,11 +61,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([cc421f3](https://github.com/ckeditor/ckeditor5-indent/commit/cc421f3))
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-indent/compare/v10.0.0...v10.0.1) (2019-07-10)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-indent/compare/v10.0.0...v10.0.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-indent/tree/v10.0.0) (2019-07-04)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-indent/tree/v10.0.0) (July 4, 2019)
 
 Initial implementation of the block indentation feature.

@@ -16,10 +16,11 @@ import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
@@ -58,9 +59,11 @@ const defaultPlugins = [
 	Italic,
 	BlockQuote,
 	CKBox,
+	CKBoxImageEdit,
 	CloudServices,
 	Heading,
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
@@ -92,7 +95,7 @@ const defaultToolbar = {
 		'italic',
 		'|',
 		'link',
-		'uploadImage',
+		'insertImage',
 		'insertTable',
 		'mediaEmbed',
 		'horizontalLine',
@@ -113,11 +116,18 @@ const defaultConfig = {
 			'imageStyle:side',
 			'|',
 			'toggleImageCaption',
-			'imageTextAlternative'
+			'imageTextAlternative',
+			'|',
+			'ckboxImageEdit'
 		]
 	},
 	table: {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+	},
+	insert: {
+		integrations: [
+			'insertImageViaUrl'
+		]
 	},
 	ui: {
 		viewportOffset: {

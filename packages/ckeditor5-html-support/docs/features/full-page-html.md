@@ -46,7 +46,7 @@ ClassicEditor
 
 Here are some examples of the HTML elements you can enable with this plugin:
 
-* The HTML doctype preamble: `<!DOCTYPE html>`
+* The HTML DOCTYPE preamble: `<!DOCTYPE html>`
 * The HTML root element: `<html>`
 * The head element: `<head>`
 * The document's title: `<title>`

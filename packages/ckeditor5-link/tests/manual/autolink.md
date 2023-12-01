@@ -23,3 +23,10 @@
 3. Check if *only* created link was removed:
     - For "space" - the space after the text link should be preserved.
     - For "enter" - the new block or `<softBreak>` should be preserved.
+
+### Paste integration
+
+1. Copy a URL to the clipboard
+2. Select some content
+3. Paste
+4. Check the selected content is now a link using the copied URL.

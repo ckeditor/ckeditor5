@@ -60,7 +60,7 @@ export default class GFMDataProcessor implements DataProcessor {
 	}
 
 	/**
-	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment} to data format &mdash; in this
+	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment} to data format &ndash; in this
 	 * case to a Markdown string.
 	 *
 	 * @returns Markdown string.

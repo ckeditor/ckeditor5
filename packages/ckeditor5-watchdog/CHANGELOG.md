@@ -5,17 +5,17 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### MAJOR BREAKING CHANGES
 
@@ -28,21 +28,21 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Introduced `ContextWatchdog` which is a watchdog for `Context`. Closes [ckeditor/ckeditor5#6079](https://github.com/ckeditor/ckeditor5/issues/6079). Closes [ckeditor/ckeditor5#6042](https://github.com/ckeditor/ckeditor5/issues/6042). Closes [ckeditor/ckeditor5#4696](https://github.com/ckeditor/ckeditor5/issues/4696). ([76c4938](https://github.com/ckeditor/ckeditor5-watchdog/commit/76c4938))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Bug fixes
 
 * Only instances of the `Error` class will be handled by `Watchdog`. Closes [ckeditor/ckeditor5#5678](https://github.com/ckeditor/ckeditor5/issues/5678). ([3f24a2e](https://github.com/ckeditor/ckeditor5-watchdog/commit/3f24a2e))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v11.0.0...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v11.0.0...v15.0.0) (October 23, 2019)
 
 ### Other changes
 
 * Made the Watchdog#setDestructor() method optional and default to editor => editor.destroy(). Closes [#21](https://github.com/ckeditor/ckeditor5-watchdog/issues/21). ([5a9dc0c](https://github.com/ckeditor/ckeditor5-watchdog/commit/5a9dc0c))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v10.0.1...v11.0.0) (2019-08-26)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-watchdog/compare/v10.0.1...v11.0.0) (August 26, 2019)
 
 ### Features
 
@@ -65,11 +65,11 @@ Internal changes only (updated dependencies, documentation, etc.).
 * `Watchdog#restart()` is no longer public.
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-watchdog/compare/v10.0.0...v10.0.1) (2019-07-10)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-watchdog/compare/v10.0.0...v10.0.1) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-watchdog/tree/v10.0.0) (2019-07-04)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-watchdog/tree/v10.0.0) (July 4, 2019)
 
 The initial watchdog feature implementation.
