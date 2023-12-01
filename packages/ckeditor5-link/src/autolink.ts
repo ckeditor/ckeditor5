@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
 import type { DocumentSelectionChangeEvent, Element, Model, Position, Range, Writer } from 'ckeditor5/src/engine';
-import { Delete, TextWatcher, getLastTextLine, type TextWatcherMatchedDataEvent, findAttributeRange } from 'ckeditor5/src/typing';
+import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
@@ -109,7 +109,12 @@ export default class AutoLink extends Plugin {
 		this._enablePasteLinking();
 	}
 
-	private _expandLinkSelection( model: Model, position: Position ): Range | null {
+	/**
+	 * For given position, returns a range that includes the whole link that contains the position.
+	 *
+	 * If position is not inside a link, returns `null`.
+	 */
+	private _expandLinkRange( model: Model, position: Position ): Range | null {
 		if ( position.textNode?.hasAttribute( 'linkHref' ) ) {
 			return findAttributeRange( position, 'linkHref', position.textNode?.getAttribute( 'linkHref' ), model );
 		} else {
@@ -117,6 +122,9 @@ export default class AutoLink extends Plugin {
 		}
 	}
 
+	/**
+	 * Extends the document selection to includes all links that intersects with given `selectedRange`.
+	 */
 	private _selectEntireLinks( writer: Writer, selectedRange: Range ): void {
 		const editor = this.editor;
 		const model = editor.model;
@@ -129,7 +137,7 @@ export default class AutoLink extends Plugin {
 			?.getJoined( this._expandLinkSelection( model, selEnd ) || selectedRange );
 
 		if ( updatedSelection?.start.isBefore( selStart ) || updatedSelection?.end.isAfter( selEnd ) ) {
-			// only update the selection if it changed
+			// Only update the selection if it changed.
 			writer.setSelection( updatedSelection );
 		}
 	}
@@ -146,12 +154,12 @@ export default class AutoLink extends Plugin {
 
 		clipboardPipeline.on( 'inputTransformation', ( evt, data: ClipboardInputTransformationData ) => {
 			if ( !this.isEnabled || !linkCommand.isEnabled || selection.isCollapsed ) {
-				// abort if we are disabled or the selection is collapsed
+				// Abort if we are disabled or the selection is collapsed.
 				return;
 			}
 
 			if ( selection.rangeCount > 1 ) {
-				// abort if there are multiple selection ranges
+				// Abort if there are multiple selection ranges.
 				return;
 			}
 
@@ -160,12 +168,13 @@ export default class AutoLink extends Plugin {
 			const newLink = data.dataTransfer.getData( 'text/plain' );
 			const matches = newLink.match( URL_REG_EXP );
 
-			// if the text in the clipboard has a URL, and that URL is the whole clipboard
+			// If the text in the clipboard has a URL, and that URL is the whole clipboard.
 			if ( matches && matches[ 2 ] === newLink ) {
 				model.change( writer => {
 					this._selectEntireLinks( writer, selectedRange );
 					linkCommand.execute( newLink );
 				} );
+
 				evt.stop();
 			}
 		}, { priority: 'high' } );

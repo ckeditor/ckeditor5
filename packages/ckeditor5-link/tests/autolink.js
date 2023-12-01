@@ -140,9 +140,11 @@ describe( 'AutoLink', () => {
 			} );
 
 			it( 'paste with two partially selected links overwrites both', () => {
-				setData( model, `
-					<paragraph><$text linkHref="http://one.com">here [are</$text>
-					<$text linkHref="http://two.com">two] links</$text></paragraph>`
+				setData( model,
+					`<paragraph>
+						<$text linkHref="http://one.com">here [are</$text>
+						<$text linkHref="http://two.com">two] links</$text>
+					</paragraph>`
 				);
 				pasteText( 'http://world.com' );
 				expect( getData( model ) ).to.equal(
