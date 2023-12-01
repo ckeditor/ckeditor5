@@ -4,7 +4,7 @@
 			"name": "Undo",
 			"className": "Undo",
 			"description": "Inserts buttons with undo and redo functionality.",
-			"docs": "features/undo.html",
+			"docs": "features/undo-redo.html",
 			"path": "src/undo.js",
 			"uiComponents": [
 				{
