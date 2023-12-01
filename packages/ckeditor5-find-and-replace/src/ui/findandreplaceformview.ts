@@ -22,7 +22,8 @@ import {
 	addListToDropdown,
 	type DropdownView,
 	type Template,
-	type InputView
+	type InputView,
+	SwitchButtonView
 } from 'ckeditor5/src/ui';
 
 import {
@@ -164,7 +165,12 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * The find options dropdown.
 	 */
-	private readonly _optionsDropdown: DropdownView;
+	private readonly _matchCaseSwitch: SwitchButtonView;
+
+	/**
+	 * The find options dropdown.
+	 */
+	private readonly _wholeWordsOnlySwitch: SwitchButtonView;
 
 	/**
 	 * The replace button view.
@@ -266,7 +272,8 @@ export default class FindAndReplaceFormView extends View {
 			tooltip: true
 		} );
 
-		this._optionsDropdown = this._createOptionsDropdown();
+		this._matchCaseSwitch = this._createMatchCaseSwitch();
+		this._wholeWordsOnlySwitch = this._createWholeWordsOnlySwitch();
 
 		this._replaceButtonView = this._createButton( {
 			label: t( 'Replace' ),
@@ -394,8 +401,6 @@ export default class FindAndReplaceFormView extends View {
 			this.isDirty = true;
 		} );
 
-		this._findButtonView.on( 'execute', this._onFindButtonExecute.bind( this ) );
-
 		// Pressing prev/next buttons fires related event on the form.
 		this._findPrevButtonView.delegate( 'execute' ).to( this, 'findPrevious' );
 		this._findNextButtonView.delegate( 'execute' ).to( this, 'findNext' );
@@ -413,7 +418,6 @@ export default class FindAndReplaceFormView extends View {
 			},
 			children: [
 				this._findInputView,
-				this._findButtonView,
 				this._findPrevButtonView,
 				this._findNextButtonView
 			]
@@ -560,6 +564,8 @@ export default class FindAndReplaceFormView extends View {
 			this.focus();
 		} );
 
+		this._findButtonView.on( 'execute', this._onFindButtonExecute.bind( this ) );
+
 		fieldsetView.setTemplate( {
 			tag: 'fieldset',
 			attributes: {
@@ -567,7 +573,9 @@ export default class FindAndReplaceFormView extends View {
 			},
 			children: [
 				this._replaceInputView,
-				this._optionsDropdown,
+				this._matchCaseSwitch,
+				this._wholeWordsOnlySwitch,
+				this._findButtonView,
 				this._replaceButtonView,
 				this._replaceAllButtonView
 			]
@@ -580,56 +588,58 @@ export default class FindAndReplaceFormView extends View {
 	 * Creates, configures and returns and instance of a dropdown allowing users to narrow
 	 * the search criteria down. The dropdown has a list with switch buttons for each option.
 	 */
-	private _createOptionsDropdown(): DropdownView {
-		const locale = this.locale;
-		const t = locale.t;
-		const dropdownView = createDropdown( this.locale );
+	private _createMatchCaseSwitch(): SwitchButtonView {
+		const t = this.locale.t;
 
-		dropdownView.class = 'ck-options-dropdown';
+		const matchCaseSwitchButton = new SwitchButtonView( this.locale );
 
-		dropdownView.buttonView.set( {
-			withText: false,
-			label: t( 'Show options' ),
-			icon: icons.cog,
-			tooltip: true
-		} );
-
-		const matchCaseModel = new Model( {
-			withText: true,
+		matchCaseSwitchButton.set( {
 			label: t( 'Match case' ),
-
-			// A dummy read-only prop to make it easy to tell which switch was toggled.
-			_isMatchCaseSwitch: true
+			withText: true
 		} );
 
-		const wholeWordsOnlyModel = new Model( {
-			withText: true,
-			label: t( 'Whole words only' )
+		// Let the switch be controlled by form's observable property.
+		matchCaseSwitchButton.bind( 'isOn' ).to( this, '_matchCase' );
+
+		// // Update the state of the form when a switch is toggled.
+		matchCaseSwitchButton.on( 'execute', () => {
+			this._matchCase = !this._matchCase;
 		} );
 
-		// Let the switches be controlled by form's observable properties.
-		matchCaseModel.bind( 'isOn' ).to( this, '_matchCase' );
-		wholeWordsOnlyModel.bind( 'isOn' ).to( this, '_wholeWordsOnly' );
+		// Toggling a switch makes the form dirty because this changes search criteria
+		// just like typing text of the find input.
+		this.isDirty = true;
 
-		// Update the state of the form when a switch is toggled.
-		dropdownView.on( 'execute', evt => {
-			if ( ( evt.source as any )._isMatchCaseSwitch ) {
-				this._matchCase = !this._matchCase;
-			} else {
-				this._wholeWordsOnly = !this._wholeWordsOnly;
-			}
+		return matchCaseSwitchButton;
+	}
 
-			// Toggling a switch makes the form dirty because this changes search criteria
-			// just like typing text of the find input.
-			this.isDirty = true;
+	/**
+	 * Creates, configures and returns and instance of a dropdown allowing users to narrow
+	 * the search criteria down. The dropdown has a list with switch buttons for each option.
+	 */
+	private _createWholeWordsOnlySwitch(): SwitchButtonView {
+		const t = this.locale.t;
+
+		const wholeWordsOnlySwitchButton = new SwitchButtonView( this.locale );
+
+		wholeWordsOnlySwitchButton.set( {
+			label: t( 'Whole words only' ),
+			withText: true
 		} );
 
-		addListToDropdown( dropdownView, new Collection( [
-			{ type: 'switchbutton', model: matchCaseModel },
-			{ type: 'switchbutton', model: wholeWordsOnlyModel }
-		] ) );
+		// Let the switch be controlled by form's observable property.
+		wholeWordsOnlySwitchButton.bind( 'isOn' ).to( this, '_wholeWordsOnly' );
 
-		return dropdownView;
+		// // Update the state of the form when a switch is toggled.
+		wholeWordsOnlySwitchButton.on( 'execute', () => {
+			this._wholeWordsOnly = !this._wholeWordsOnly;
+		} );
+
+		// Toggling a switch makes the form dirty because this changes search criteria
+		// just like typing text of the find input.
+		this.isDirty = true;
+
+		return wholeWordsOnlySwitchButton;
 	}
 
 	/**
@@ -639,11 +649,12 @@ export default class FindAndReplaceFormView extends View {
 	private _initFocusCycling() {
 		const childViews = [
 			this._findInputView,
-			this._findButtonView,
 			this._findPrevButtonView,
 			this._findNextButtonView,
 			this._replaceInputView,
-			this._optionsDropdown,
+			this._matchCaseSwitch,
+			this._wholeWordsOnlySwitch,
+			this._findButtonView,
 			this._replaceButtonView,
 			this._replaceAllButtonView
 		];
