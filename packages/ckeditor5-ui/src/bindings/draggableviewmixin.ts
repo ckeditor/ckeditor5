@@ -41,13 +41,9 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		constructor( ...args: Array<any> ) {
 			super( ...args );
 
-			if ( this.isRendered ) {
+			this.on( 'render', () => {
 				this._attachListeners();
-			} else {
-				this.on( 'render', () => {
-					this._attachListeners();
-				} );
-			}
+			} );
 
 			this.set( 'isDragging', false );
 		}
@@ -102,7 +98,10 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		 * TODO
 		 */
 		private _onDrag( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) {
+			// If dragging was stopped by some external intervention, stop listening.
 			if ( !this.isDragging ) {
+				this._detachDragListeners();
+
 				return;
 			}
 

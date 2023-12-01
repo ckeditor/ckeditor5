@@ -11,6 +11,7 @@ import type View from '../view';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview';
 import type { DialogActionButtonDefinition } from './dialogactionsview';
+import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 
 import '../../theme/components/dialog/dialog.css';
 
@@ -91,7 +92,7 @@ export default class Dialog extends Plugin {
 	private _initMultiRootIntegration() {
 		const model = this.editor.model;
 
-		model.document.on( 'change:data', () => {
+		model.document.on<DocumentChangeEvent>( 'change:data', () => {
 			if ( !this.view ) {
 				return;
 			}
@@ -112,7 +113,7 @@ export default class Dialog extends Plugin {
 	public show( dialogDefinition: DialogDefinition ): void {
 		Dialog.visibleDialogPlugin?.hide();
 
-		this.fire( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
+		this.fire<DialogShowEvent>( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
 	}
 
 	/**
@@ -186,8 +187,12 @@ export default class Dialog extends Plugin {
 	 * TODO
 	 */
 	private _hide(): void {
+		if ( !this.view ) {
+			return;
+		}
+
 		const editor = this.editor;
-		const view = this.view!;
+		const view = this.view;
 
 		// Reset the content view to prevent its children from being destroyed in the standard
 		// View#destroy() (and collections) chain. If the content children were left in there,
@@ -205,6 +210,7 @@ export default class Dialog extends Plugin {
 
 		this.id = '';
 		this.isOpen = false;
+		this._onHide = undefined;
 		Dialog.visibleDialogPlugin = undefined;
 	}
 }

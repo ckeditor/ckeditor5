@@ -12,7 +12,7 @@ import {
 	KeystrokeHandler,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
-import type Button from '../button/button';
+import type { default as Button, ButtonExecuteEvent } from '../button/button';
 import ButtonView from '../button/buttonview';
 import View from '../view';
 import ViewCollection from '../viewcollection';
@@ -102,7 +102,7 @@ export default class DialogActionsView extends View {
 
 			for ( property in definition ) {
 				if ( property == 'onExecute' ) {
-					button.on( 'execute', () => definition.onExecute() );
+					button.on<ButtonExecuteEvent>( 'execute', () => definition.onExecute() );
 				} else {
 					button.set( property, definition[ property ] );
 				}
