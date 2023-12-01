@@ -115,7 +115,7 @@ export default class AutoLink extends Plugin {
 	 * If position is not inside a link, returns `null`.
 	 */
 	private _expandLinkRange( model: Model, position: Position ): Range | null {
-		if ( position.textNode?.hasAttribute( 'linkHref' ) ) {
+		if ( position.textNode && position.textNode.hasAttribute( 'linkHref' ) ) {
 			return findAttributeRange( position, 'linkHref', position.textNode?.getAttribute( 'linkHref' ), model );
 		} else {
 			return null;
@@ -132,11 +132,12 @@ export default class AutoLink extends Plugin {
 		const selStart = selection.getFirstPosition()!;
 		const selEnd = selection.getLastPosition()!;
 
-		const updatedSelection = selectedRange
-			.getJoined( this._expandLinkSelection( model, selStart ) || selectedRange )
-			?.getJoined( this._expandLinkSelection( model, selEnd ) || selectedRange );
+		let updatedSelection = selectedRange.getJoined( this._expandLinkRange( model, selStart ) || selectedRange );
+		if ( updatedSelection ) {
+			updatedSelection = updatedSelection.getJoined( this._expandLinkRange( model, selEnd ) || selectedRange );
+		}
 
-		if ( updatedSelection?.start.isBefore( selStart ) || updatedSelection?.end.isAfter( selEnd ) ) {
+		if ( updatedSelection && ( updatedSelection.start.isBefore( selStart ) || updatedSelection.end.isAfter( selEnd ) ) ) {
 			// Only update the selection if it changed.
 			writer.setSelection( updatedSelection );
 		}
@@ -166,6 +167,12 @@ export default class AutoLink extends Plugin {
 			const selectedRange = selection.getFirstRange()!;
 
 			const newLink = data.dataTransfer.getData( 'text/plain' );
+
+			if ( !newLink ) {
+				// Abort if there is no plain text on the clipboard.
+				return;
+			}
+
 			const matches = newLink.match( URL_REG_EXP );
 
 			// If the text in the clipboard has a URL, and that URL is the whole clipboard.
