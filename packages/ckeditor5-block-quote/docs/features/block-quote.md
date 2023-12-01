@@ -7,7 +7,7 @@ meta-title: Block quote | CKEditor 5 Documentation
 
 # Block quote
 
-The block quote feature lets you easily include block quotations or pull quotes in your content. It's also an attractive way to draw the readers' attention to selected parts of the text.
+The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.
 
 ## Demo
 

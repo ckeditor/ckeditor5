@@ -55,7 +55,7 @@ Notice that we added two classes. All UI elements of the editor need to have the
 
 ### Creating input fields
 
-As we have two similar input fields to create and we don't want to repeat ourselves, let's define a method `_createInput()`, which will produce them for us. It will accept the label of our input field.
+As we have two similar input fields to create and we do not want to repeat ourselves, let's define a method `_createInput()`, which will produce them for us. It will accept the label of our input field.
 
 We will use {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class and we will pass it the {@link module:ui/labeledfield/utils~createLabeledInputText `createLabeledInputText()`} function as the second argument. It is a helper coming from the CKEditor UI library that will take care of creating the input.
 
@@ -73,7 +73,7 @@ export default class FormView extends View {
 
 		this.abbrInputView = this._createInput( 'Add abbreviation' );
 		this.titleInputView = this._createInput( 'Add title' );
-		
+
 		// Previously set template.
 		// ...
 	}
