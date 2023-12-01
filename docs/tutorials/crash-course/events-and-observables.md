@@ -29,13 +29,13 @@ Let's analyze the code we wrote to create the reactive button.
 
 Many classes in the editor are already observables. This includes the {@link module:core/editor/editor~Editor `Editor`} class, the {@link module:core/command~Command `Command`} class, all UI elements that extend the {@link module:ui/view~View `View`} class and many more.
 
-Since the `ButtonView` class is already an observable, we didn't have to do anything other than create a new instance.
+Since the `ButtonView` class is already an observable, we did not have to do anything other than create a new instance.
 
 ```js
 const button = new ButtonView( locale );
 ```
 
-Then, we called the `.set()` method to update few button properties.
+Then, we called the `.set()` method to update a few button properties.
 
 ```js
 button.set( {
@@ -89,4 +89,4 @@ command.on( 'change:isEnabled', ( event, propName, newValue, oldValue ) => {
 
 If you want to learn more about events and observables, see the {@link framework/deep-dive/observables Observables} and {@link framework/deep-dive/event-system Event system} documents.
 
-Otherwise, go to the next chapter where you will {@link tutorials/crash-course/keystrokes learn more about handling keystrokes}, which also use CKEditor's event system.
+Otherwise, go to the next chapter where you will {@link tutorials/crash-course/keystrokes learn more about handling keystrokes}, which also uses the CKEditor's event system.

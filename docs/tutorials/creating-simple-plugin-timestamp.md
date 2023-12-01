@@ -191,7 +191,7 @@ ClassicEditor
 
 ```
 
-Rebuild the editor, and you should be able to see the timestamp button. It doesn't do anything just yet, so let's change that.
+Rebuild the editor, and you should be able to see the timestamp button. It does not do anything just yet, so let's change that.
 
 ## Inserting a timestamp
 

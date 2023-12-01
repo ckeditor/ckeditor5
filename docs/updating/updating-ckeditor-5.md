@@ -108,7 +108,7 @@ Finally, you reinstall the packages and rebuild the editor. Note that sometimes 
 rm -rf node_modules && yarn install && yarn run build
 ```
 
-That's it! Your editor is updated and now you can focus on adjusting your custom solutions (if needed). If you use real-time collaboration, you should check the next section.
+This is it! Your editor is updated and now you can focus on adjusting your custom solutions (if needed). If you use real-time collaboration, you should check the next section.
 
 ### Real-time collaboration
 
