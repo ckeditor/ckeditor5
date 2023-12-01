@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import CollapsibleView from '../../../src/listproperties/ui/collapsibleview';
+import CollapsibleView from '../../src/collapsible/collapsibleview';
+import ViewCollection from '../../src/viewcollection';
+import ButtonView from '../../src/button/buttonview';
 
-import { ButtonView, ViewCollection } from '@ckeditor/ckeditor5-ui';
-import dropdownArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
+import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
 describe( 'CollapsibleView', () => {
 	let view, locale;

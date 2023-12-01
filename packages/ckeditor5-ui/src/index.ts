@@ -21,6 +21,8 @@ export { default as ButtonView } from './button/buttonview';
 export { default as ButtonLabelView } from './button/buttonlabelview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 
+export { default as CollapsibleView } from './collapsible/collapsibleview';
+
 export * from './colorgrid/utils';
 export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
