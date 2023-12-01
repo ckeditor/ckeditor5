@@ -296,6 +296,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * TODO
+	 *
+	 * @internal
 	 */
 	public setupParts( { title, content, actionButtons }: {
 		title?: string;
@@ -339,6 +341,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * TODO
+	 *
+	 * @internal
 	 */
 	public moveTo( left: number, top: number ): void {
 		const viewportRect = this._getViewportRect();
@@ -375,6 +379,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * TODO
+	 *
+	 * @internal
 	 */
 	public moveBy( left: number, top: number ): void {
 		this.moveTo( this._left + left, this._top + top );
