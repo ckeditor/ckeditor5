@@ -356,6 +356,20 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
+					"name": "Setup",
+					"id": "setup",
+					"slug": "setup",
+					"order": 40,
+					"categories": [
+						{
+							"name": "Toolbars",
+							"id": "features-toolbar",
+							"slug": "toolbar",
+							"order": 50
+						}
+					]
+				},
+				{
 					"name": "Integrations",
 					"id": "integrations",
 					"slug": "integrations",
@@ -518,11 +532,6 @@
 					"name": "Tables",
 					"id": "tables",
 					"slug": "tables"
-				},
-				{
-					"name": "Toolbar",
-					"id": "features-toolbar",
-					"slug": "toolbar"
 				}
 			]
 		},

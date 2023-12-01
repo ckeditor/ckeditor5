@@ -23,7 +23,7 @@ Below is a sample toolbar with a basic set of features. Toolbar items can be eas
 ## Basic toolbar configuration
 
 <info-box hint>
-	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link getting-started/configuration#removing-features removing features} for more information.
+	Toolbar configuration is a strict UI-related setting. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check {@link getting-started/setup/configuration#removing-features removing features} for more information.
 </info-box>
 
 In the builds that contain toolbars, an optimal default tollbar set is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.

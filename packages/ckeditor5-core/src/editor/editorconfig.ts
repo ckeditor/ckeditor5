@@ -57,7 +57,7 @@ export interface EditorConfig {
 	 * {@glink getting-started/legacy/installation-methods/quick-start-other#creating-custom-builds-with-online-builder custom build}.
 	 *
 	 * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
-	 * about the {@glink features/toolbar/toolbar toolbar setup}.
+	 * about the {@glink getting-started/setup/toolbar/toolbar toolbar setup}.
 	 */
 	extraPlugins?: Array<PluginConstructor<Editor>>;
 

@@ -4,7 +4,8 @@
 # * Introduction to the top and must-know configurations.
 # * Point where to find the list of configuration options.
 
-category: getting-started
+category: setup
+menu-title: Configuration - to split
 meta-title: Configuration | CKEditor 5 documentation
 order: 20
 ---

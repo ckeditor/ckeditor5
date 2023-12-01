@@ -24,7 +24,7 @@ Currently, the CKEditor&nbsp;5 component for Angular supports integrating CKEdit
 </info-box>
 
 <info-box hint>
-	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/working-with-typescript TypeScript support}.
+	Starting from version 6.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.
 </info-box>
 
 ## Supported Angular versions
@@ -217,7 +217,7 @@ And then, in the template:
 
 ### Using a custom CKEditor&nbsp;5 build
 
-If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link getting-started/configuration editor configuration} you need to create a custom build first, as described in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
+If you want to add more plugins to an existing build or customize something that cannot be controlled with the {@link getting-started/setup/configuration editor configuration} you need to create a custom build first, as described in the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Building the editor from source} guide.
 
 By completing the above tutorial you should get a generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
 

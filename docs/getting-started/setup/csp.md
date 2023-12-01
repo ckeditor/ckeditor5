@@ -4,9 +4,9 @@
 # * List the recommended Content Security Policy settings.
 # * List the strictest working Content Security Policy settings.
 
-category: advanced
+category: setup
 meta-title: Content Security Policy | CKEditor 5 documentation
-order: 40
+order: 20
 ---
 
 # Content Security Policy

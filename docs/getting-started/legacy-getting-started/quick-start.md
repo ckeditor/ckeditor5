@@ -144,7 +144,7 @@ In this example, we remove the premium collaboration features as well as several
 			// This sample still does not showcase all CKEditor&nbsp;5 features (!)
 			// Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
 			CKEDITOR.ClassicEditor.create(document.getElementById("editor"), {
-				// https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format
+				// https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar/toolbar.html#extended-toolbar-configuration-format
 				toolbar: {
 					items: [
 						'exportPDF','exportWord', '|',
@@ -314,7 +314,7 @@ After you sign up, you will find in the customer dashboard the full code snippet
 
 ## Adjusting plugins included in the CKEditor&nbsp;5 superbuild
 
-You may disable any features available in the superbuild using the {@link getting-started/configuration#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
+You may disable any features available in the superbuild using the {@link getting-started/setup/configuration#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
 
 <info-box hint>
 **What's next?**

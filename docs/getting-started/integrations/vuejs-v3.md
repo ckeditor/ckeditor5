@@ -30,7 +30,7 @@ Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-5-
 </info-box>
 
 <info-box hint>
-	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/working-with-typescript TypeScript support}.
+	Starting from version 5.0.0 of this package, you can use native type definitions provided by CKEditor&nbsp;5. Check the details about {@link getting-started/setup/working-with-typescript TypeScript support}.
 </info-box>
 
 ## Quick start
@@ -647,7 +647,7 @@ When using one of the {@link getting-started/legacy-getting-started/predefined-b
 	import '@ckeditor/ckeditor5-build-classic/build/translations/de';
 	```
 
-Then, {@link getting-started/configuration configure} the language of the editor in the component:
+Then, {@link getting-started/setup/configuration configure} the language of the editor in the component:
 
 ```html
 <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>

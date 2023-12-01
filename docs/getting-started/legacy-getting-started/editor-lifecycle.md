@@ -9,7 +9,7 @@ order: 60
 <info-box hint>
 **Quick recap**
 
-In the {@link getting-started/configuration previous guide} you have explored available configuration options of the editor. This article shows the lifecycle methods to create and destroy the editor.
+In the {@link getting-started/setup/configuration previous guide} you have explored available configuration options of the editor. This article shows the lifecycle methods to create and destroy the editor.
 </info-box>
 
 Each CKEditor 5 **type** provides a different **editor class** that handles the creation of editor instances. Most of the examples in the documentation use the {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} class, but things should work similarly with other types.

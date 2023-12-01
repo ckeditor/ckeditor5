@@ -569,7 +569,7 @@ When using one of the {@link getting-started/legacy-getting-started/predefined-b
 	import '@ckeditor/ckeditor5-build-classic/build/translations/de';
 	```
 
-Then, {@link getting-started/configuration configure} the language of the editor in the component:
+Then, {@link getting-started/setup/configuration configure} the language of the editor in the component:
 
 ```html
 <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>

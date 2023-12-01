@@ -22,7 +22,7 @@ Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link getting-star
 
 * Adding {@link framework/plugins/plugins plugin-driven features} not included in the existing builds.
 * Removing unnecessary features present in a build.
-* Designing a {@link getting-started/configuration#toolbar-setup customized toolbar experience}.
+* Designing a {@link getting-started/setup/configuration#toolbar-setup customized toolbar experience}.
 * Changing the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor type build}.
 * Changing the {@link features/ui-language localization language} of the editor.
 
@@ -96,7 +96,7 @@ Every build comes with a default set of features and their default configuration
 * You can change the default **toolbar configuration** (e.g. remove undo/redo buttons).
 * You can also **remove features** (plugins).
 
-Read more in the {@link getting-started/configuration Configuration guide}.
+Read more in the {@link getting-started/setup/configuration Configuration guide}.
 
 A build may not provide all the necessary features. You may also want to create an optimized one with limited functionality. In such cases, customize the build or create a new one.
 
@@ -502,7 +502,7 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 <info-box hint>
 **What's next?**
 
-Congratulations, you have just run your first CKEditor&nbsp;5 instance! Now it is time to learn more about customization, so jump in straight to the {@link getting-started/configuration Configuration guide}.
+Congratulations, you have just run your first CKEditor&nbsp;5 instance! Now it is time to learn more about customization, so jump in straight to the {@link getting-started/setup/configuration Configuration guide}.
 
 P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link getting-started/integrations/overview Frameworks section}.
 </info-box>
