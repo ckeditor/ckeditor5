@@ -130,8 +130,8 @@ export function listUpcastCleanList(): GetCallback<UpcastElementEvent> {
 
 		const viewWriter = new UpcastWriter( data.viewItem.document );
 
-		for ( const child of Array.from( data.viewItem.getChildren() ) ) {
-			if ( !isListItemView( child ) && !isListView( child ) ) {
+		for ( const child of Array.from( data.viewItem.getChildren() as Iterable<ViewElement> ) ) {
+			if ( !isListItemView( child ) && !isListView( child ) && child.name !== '$comment' ) {
 				viewWriter.remove( child );
 			}
 		}
