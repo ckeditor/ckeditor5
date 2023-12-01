@@ -12,7 +12,7 @@ import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckedi
 import GFMDataProcessor from './gfmdataprocessor';
 import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 
-const ALLOWED_MARKDOWN_FIRST_LEVEL_TAGS = [ 'SPAN', 'BR', 'PRE' ];
+const ALLOWED_MARKDOWN_FIRST_LEVEL_TAGS = [ 'SPAN', 'BR', 'PRE', 'CODE' ];
 
 /**
  * The GitHub Flavored Markdown (GFM) paste plugin.
