@@ -116,7 +116,7 @@ export default class AutoLink extends Plugin {
 	 */
 	private _expandLinkRange( model: Model, position: Position ): Range | null {
 		if ( position.textNode && position.textNode.hasAttribute( 'linkHref' ) ) {
-			return findAttributeRange( position, 'linkHref', position.textNode?.getAttribute( 'linkHref' ), model );
+			return findAttributeRange( position, 'linkHref', position.textNode.getAttribute( 'linkHref' ), model );
 		} else {
 			return null;
 		}
