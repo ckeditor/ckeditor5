@@ -33,10 +33,12 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Markdown from '../../../src/markdown';
 import PasteFromMarkdownExperimental from '../../../src/pastefrommarkdownexperimental';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
+			FontFamily,
 			PasteFromMarkdownExperimental,
 			Markdown,
 			Essentials,
@@ -86,7 +88,8 @@ ClassicEditor
 			'|',
 			'undo',
 			'redo',
-			'horizontalLine'
+			'horizontalLine',
+			'fontFamily'
 		],
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]

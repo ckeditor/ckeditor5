@@ -79,10 +79,6 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 				return;
 			}
 
-			if ( !this._containsOnlyAllowedFirstLevelTags( dataAsTextHtml ) ) {
-				return;
-			}
-
 			const markdownFromHtml = this._parseMarkdownFromHtml( dataAsTextHtml );
 
 			if ( markdownFromHtml ) {
@@ -101,6 +97,10 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 */
 	private _parseMarkdownFromHtml( htmlString: string ): string | null {
 		const withoutOsSpecificTags = this._removeOsSpecificTags( htmlString );
+
+		if ( !this._containsOnlyAllowedFirstLevelTags( withoutOsSpecificTags ) ) {
+			return null;
+		}
 
 		const withoutWrapperTag = this._removeFirstLevelWrapperTagsAndBrs( withoutOsSpecificTags );
 

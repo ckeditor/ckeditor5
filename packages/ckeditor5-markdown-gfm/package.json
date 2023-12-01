@@ -28,6 +28,7 @@
     "@ckeditor/ckeditor5-editor-classic": "40.1.0",
     "@ckeditor/ckeditor5-engine": "40.1.0",
     "@ckeditor/ckeditor5-essentials": "40.1.0",
+    "@ckeditor/ckeditor5-font": "40.1.0",
     "@ckeditor/ckeditor5-heading":"40.1.0",
     "@ckeditor/ckeditor5-horizontal-line": "40.1.0",
     "@ckeditor/ckeditor5-image": "40.1.0",
