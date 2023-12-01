@@ -12,7 +12,7 @@ import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckedi
 import GFMDataProcessor from './gfmdataprocessor';
 import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine';
 
-const FORMATTING_TAGS = [ 'B', 'STRONG', 'I', 'EM', 'MARK', 'SMALL', 'DEL', 'INS', 'SUB', 'SUP' ];
+const ALLOWED_MARKDOWN_FIRST_LEVEL_TAGS = [ 'SPAN', 'BR', 'PRE' ];
 
 /**
  * The GitHub Flavored Markdown (GFM) paste plugin.
@@ -79,7 +79,7 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 				return;
 			}
 
-			if ( this._isNotMarkdownBecauseContainsFormattingTags( dataAsTextHtml ) ) {
+			if ( !this._containsOnlyAllowedFirstLevelTags( dataAsTextHtml ) ) {
 				return;
 			}
 
@@ -134,13 +134,13 @@ export default class PasteFromMarkdownExperimental extends Plugin {
 	 *
 	 * @param htmlString Clipboard content.
 	 */
-	private _isNotMarkdownBecauseContainsFormattingTags( htmlString: string ): boolean {
+	private _containsOnlyAllowedFirstLevelTags( htmlString: string ): boolean {
 		const parser = new DOMParser();
 		const { body: tempElement } = parser.parseFromString( htmlString, 'text/html' );
 
 		const tagNames = Array.from( tempElement.children ).map( el => el.tagName );
 
-		return tagNames.some( el => FORMATTING_TAGS.includes( el ) );
+		return tagNames.every( el => ALLOWED_MARKDOWN_FIRST_LEVEL_TAGS.includes( el ) );
 	}
 
 	/**

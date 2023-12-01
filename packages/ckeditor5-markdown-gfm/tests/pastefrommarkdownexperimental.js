@@ -114,9 +114,7 @@ describe( 'PasteFromMarkdownExperimental', () => {
 					'<html>' +
 						'<body>' +
 							'<!--StartFragment-->' +
-								'<code class="notranslate">' +
-									'foo **bar** [baz](https://ckeditor.com).' +
-								'</code>' +
+								'foo **bar** [baz](https://ckeditor.com).' +
 							'<!--EndFragment-->' +
 						'</body>' +
 					'</html>'
