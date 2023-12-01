@@ -1,0 +1,23 @@
+{
+	"plugins": [
+		{
+			"name": "Undo",
+			"className": "Undo",
+			"description": "Inserts buttons with undo and redo functionality.",
+			"docs": "features/undo.html",
+			"path": "src/undo.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "undo",
+					"iconPath": "theme/icons/undo.svg"
+				},
+				{
+					"type": "Button",
+					"name": "redo",
+					"iconPath": "theme/icons/redo.svg"
+				}
+			]
+		}
+	]
+}

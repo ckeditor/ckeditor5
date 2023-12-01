@@ -145,9 +145,13 @@ function getMissingExports( packageData ) {
 function getMissingIcons( packageData, options ) {
 	return packageData.metadata.plugins
 		.filter( plugin => plugin.uiComponents )
-		.flatMap( plugin => plugin.uiComponents.map( uiComponent => uiComponent.iconPath ) )
-		.filter( Boolean )
-		.map( iconPath => {
+		.flatMap( plugin => plugin.uiComponents.map( uiComponent => ( { ...plugin, iconPath: uiComponent.iconPath } ) ) )
+		.filter( ( { iconPath } ) => iconPath !== undefined )
+		.map( ( { iconPath, name } ) => {
+			if ( iconPath === '' ) {
+				return `${ name } has an empty iconPath. Either define or remove it.`;
+			}
+
 			if ( iconPath.startsWith( '@ckeditor/' ) ) {
 				return iconPath;
 			}
