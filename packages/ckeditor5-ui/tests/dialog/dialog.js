@@ -139,6 +139,22 @@ describe( 'Dialog', () => {
 
 					sinon.assert.calledOnce( spy );
 				} );
+
+				it( 'should do nothing if a root attribute is changed', () => {
+					dialogPlugin.show( {} );
+
+					const spy = sinon.spy( dialogPlugin.view, 'updatePosition' );
+
+					editor.model.change( writer => {
+						writer.setAttribute( 'foo', 'bar', editor.model.document.getRoot() );
+
+						const rootChanges = editor.model.document.differ.getChangedRoots();
+
+						expect( rootChanges.length ).to.equal( 1 );
+					} );
+
+					sinon.assert.notCalled( spy );
+				} );
 			} );
 
 			it( 'should set #isOpen to false', () => {
