@@ -44,7 +44,9 @@ export default class CKBoxImageEditCommand extends Command {
 	 */
 	private _processInProgress = new Set<ProcessingState>();
 
-	/** TODO */
+	/**
+	 * Determines if the element can be edited.
+	 */
 	private _canEdit: ( element: ModelElement ) => boolean;
 
 	private _prepareOptions: AbortableFunc<[ ProcessingState ], Promise<Record<string, unknown>>>;

@@ -99,7 +99,10 @@ export interface CKBoxConfig {
 	forceDemoLabel?: boolean;
 
 	/**
-	 * TODO.
+	 * Allows editing images that are not hosted in CKBox service.
+	 *
+	 * The provided function or regular expression should whitelist image URL(s) that should be editable.
+	 * Make sure that allowed image resources have CORS enabled.
 	 *
 	 * @default []
 	 */
