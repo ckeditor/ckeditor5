@@ -50,14 +50,7 @@ describe( 'ImageInsertUI', () => {
 
 			editor = await ClassicEditor.create( editorElement, {
 				plugins: [ Paragraph, Image, ImageInsert, FileRepository, UploadAdapterPluginMock, Clipboard ],
-				toolbar: [ 'insertImage' ],
-				image: {
-					insert: {
-						integrations: [
-							'insertImageViaUrl'
-						]
-					}
-				}
+				toolbar: [ 'insertImage' ]
 			} );
 
 			dropdown = editor.ui.view.toolbar.children.first.children.first;

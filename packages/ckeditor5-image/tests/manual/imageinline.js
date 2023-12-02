@@ -67,13 +67,7 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', '|', 'imageTextAlternative' ],
-			insert: {
-				integrations: [
-					'insertImageViaUrl',
-					'openCKFinder'
-				]
-			}
+			toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},
 		ckfinder: {
 			// eslint-disable-next-line max-len

@@ -196,12 +196,7 @@ const config = {
 			'imageTextAlternative', 'toggleImageCaption', '|',
 			'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
 			'resizeImage'
-		],
-		insert: {
-			integrations: [
-				'insertImageViaUrl'
-			]
-		}
+		]
 	},
 	placeholder: 'Type the content here!',
 	mention: {
