@@ -15,13 +15,13 @@ import type { Element as ModelElement } from 'ckeditor5/src/engine';
 import { Notification } from 'ckeditor5/src/ui';
 import { isEqual } from 'lodash-es';
 
-import CKBoxEditing from '../ckboxediting';
 import { sendHttpRequest } from '../utils';
 import { prepareImageAssetAttributes } from '../ckboxcommand';
 import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig';
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
-import { createEditabilityChecker, getImageEditorMountOptions } from './utils';
+import { createEditabilityChecker } from './utils';
+import CKBoxUtils from '../ckboxutils';
 
 /**
  * The CKBox edit image command.
@@ -58,7 +58,7 @@ export default class CKBoxImageEditCommand extends Command {
 		this.value = false;
 
 		this._canEdit = createEditabilityChecker( editor.config.get( 'ckbox.allowExternalImagesEditing' ) );
-		this._prepareOptions = abortableDebounce( ( signal, state ) => this._prepareOptionsImpl( signal, state ) );
+		this._prepareOptions = abortableDebounce( ( signal, state ) => this._prepareOptionsAbortable( signal, state ) );
 
 		this._prepareListeners();
 	}
@@ -104,6 +104,13 @@ export default class CKBoxImageEditCommand extends Command {
 		this._prepareOptions( processingState ).then(
 			options => window.CKBox.mountImageEditor( wrapper, options ),
 			error => {
+				const editor = this.editor;
+				const t = editor.t;
+				const notification = editor.plugins.get( Notification );
+
+				notification.showWarning( t( 'Failed to determine category of edited image.' ), {
+					namespace: 'ckbox'
+				} );
 				console.error( error );
 				this._handleImageEditorClose();
 			}
@@ -135,19 +142,28 @@ export default class CKBoxImageEditCommand extends Command {
 	/**
 	 * Creates the options object for the CKBox Image Editor dialog.
 	 */
-	private async _prepareOptionsImpl( signal: AbortSignal, state: ProcessingState ) {
+	private async _prepareOptionsAbortable( signal: AbortSignal, state: ProcessingState ) {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
-		const ckboxEditing = editor.plugins.get( CKBoxEditing );
-		const token = ckboxEditing.getToken();
+		const ckboxUtils = editor.plugins.get( CKBoxUtils );
+		const { element } = state;
 
-		const imageMountOptions = await getImageEditorMountOptions( state.element, {
-			token,
-			serviceOrigin: ckboxConfig.serviceOrigin!,
-			defaultCategories: ckboxConfig.defaultUploadCategories,
-			defaultWorkspaceId: ckboxConfig.defaultUploadWorkspaceId,
-			signal
-		} );
+		let imageMountOptions;
+		const ckboxImageId = element.getAttribute( 'ckboxImageId' );
+
+		if ( ckboxImageId ) {
+			imageMountOptions = {
+				assetId: ckboxImageId
+			};
+		} else {
+			const imageUrl = element.getAttribute( 'src' ) as string;
+			const uploadCategoryId = await ckboxUtils.getCategoryIdForFile( imageUrl, { signal } );
+
+			imageMountOptions = {
+				imageUrl,
+				uploadCategoryId
+			};
+		}
 
 		return {
 			...imageMountOptions,
@@ -260,13 +276,13 @@ export default class CKBoxImageEditCommand extends Command {
 	 * image is already proceeded and ready for saving.
 	 */
 	private async _getAssetStatusFromServer( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
-		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
+		const ckboxUtils = this.editor.plugins.get( CKBoxUtils );
 
 		const url = new URL( 'assets/' + id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal,
-			authorization: ckboxEditing.getToken().value
+			authorization: ckboxUtils.getToken().value
 		} );
 		const status = response.metadata!.metadataProcessingStatus;
 

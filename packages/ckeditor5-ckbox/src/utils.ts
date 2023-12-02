@@ -12,7 +12,6 @@
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import type { CKBoxImageUrls } from './ckboxconfig';
 
-import { logError } from 'ckeditor5/src/utils';
 import { decode } from 'blurhash';
 
 /**
@@ -196,126 +195,6 @@ export function sendHttpRequest( {
 	} );
 }
 
-/**
- * Resolves a promise with an array containing available categories with which the uploaded file can be associated.
- *
- * If the API returns limited results, the method will collect all items.
- *
- * @internal
- */
-export async function getAvailableCategories( options: {
-	token: InitializedToken;
-	serviceOrigin: string;
-	workspaceId: string;
-	signal: AbortSignal;
-	offset?: number;
-} ): Promise<Array<AvailableCategory>> {
-	const ITEMS_PER_REQUEST = 50;
-	const { token, serviceOrigin, workspaceId, signal, offset = 0 } = options;
-	const categoryUrl = new URL( 'categories', serviceOrigin );
-
-	categoryUrl.searchParams.set( 'limit', ITEMS_PER_REQUEST.toString() );
-	categoryUrl.searchParams.set( 'offset', offset.toString() );
-	categoryUrl.searchParams.set( 'workspaceId', workspaceId );
-
-	return sendHttpRequest( {
-		url: categoryUrl,
-		signal,
-		authorization: token.value
-	} )
-		.then( async data => {
-			const remainingItems = data.totalCount - ( offset + ITEMS_PER_REQUEST );
-
-			if ( remainingItems > 0 ) {
-				const offsetItems = await getAvailableCategories( {
-					...options,
-					offset: offset + ITEMS_PER_REQUEST
-				} );
-
-				return [
-					...data.items,
-					...offsetItems
-				];
-			}
-
-			return data.items;
-		} )
-		.catch( () => {
-			signal.throwIfAborted();
-
-			/**
-			 * Fetching a list of available categories with which an uploaded file can be associated failed.
-			 *
-			 * @error ckbox-fetch-category-http-error
-			 */
-			logError( 'ckbox-fetch-category-http-error' );
-		} );
-}
-
-/**
- * Resolves a promise with an object containing a category with which the uploaded file is associated or an error code.
- *
- * @internal
- */
-export async function getCategoryIdForFile( fileOrUrl: File | string, options: {
-	token: InitializedToken;
-	serviceOrigin: string;
-	workspaceId: string;
-	signal: AbortSignal;
-	defaultCategories?: Record<string, Array<string>> | null;
-} ): Promise<string | null> {
-	const { defaultCategories, signal } = options;
-
-	const allCategoriesPromise = getAvailableCategories( options );
-
-	const extension = typeof fileOrUrl == 'string' ?
-		convertMimeTypeToExtension( await getContentTypeOfUrl( fileOrUrl, { signal } ) ) :
-		getFileExtension( fileOrUrl );
-
-	const allCategories = await allCategoriesPromise;
-
-	// Couldn't fetch all categories. Perhaps the authorization token is invalid.
-	if ( !allCategories ) {
-		return null;
-	}
-
-	// If a user specifies the plugin configuration, find the first category that accepts the uploaded file.
-	if ( defaultCategories ) {
-		const userCategory = Object.keys( defaultCategories ).find( category => {
-			return defaultCategories[ category ].find( e => e.toLowerCase() == extension );
-		} );
-
-		// If found, return its ID if the category exists on the server side.
-		if ( userCategory ) {
-			const serverCategory = allCategories.find( category => category.id === userCategory || category.name === userCategory );
-
-			if ( !serverCategory ) {
-				return null;
-			}
-
-			return serverCategory.id;
-		}
-	}
-
-	// Otherwise, find the first category that accepts the uploaded file and returns its ID.
-	const category = allCategories.find( category => category.extensions.find( e => e.toLowerCase() == extension ) );
-
-	if ( !category ) {
-		return null;
-	}
-
-	return category.id;
-}
-
-/**
- * @internal
- */
-export interface AvailableCategory {
-	id: string;
-	name: string;
-	extensions: Array<string>;
-}
-
 const MIME_TO_EXTENSION: Record<string, string> = {
 	'image/gif': 'gif',
 	'image/jpeg': 'jpg',
@@ -325,37 +204,32 @@ const MIME_TO_EXTENSION: Record<string, string> = {
 	'image/tiff': 'tiff'
 };
 
-function convertMimeTypeToExtension( mimeType: string ) {
-	const result = MIME_TO_EXTENSION[ mimeType ];
-
-	if ( !result ) {
-		throw new Error( 'TODO' );
-	}
-
-	return result;
+export function convertMimeTypeToExtension( mimeType: string ): string {
+	return MIME_TO_EXTENSION[ mimeType ];
 }
 
-/**
- * Gets the Content-Type of the specified url.
- */
-async function getContentTypeOfUrl( url: string, options: { signal: AbortSignal } ): Promise<string> {
-	const response = await fetch( url, {
-		method: 'HEAD',
-		cache: 'force-cache',
-		...options
-	} );
+export async function getContentTypeOfUrl( url: string, options: { signal: AbortSignal } ): Promise<string> {
+	try {
+		const response = await fetch( url, {
+			method: 'HEAD',
+			cache: 'force-cache',
+			...options
+		} );
 
-	if ( !response.ok ) {
-		throw new Error( `HTTP error. Status: ${ response.status }` );
+		if ( !response.ok ) {
+			return '';
+		}
+
+		return response.headers.get( 'content-type' ) || '';
+	} catch {
+		return '';
 	}
-
-	return response.headers.get( 'content-type' ) || '';
 }
 
 /**
  * Returns an extension from the given value.
  */
-function getFileExtension( file: File ) {
+export function getFileExtension( file: File ): string {
 	const fileName = file.name;
 	const extensionRegExp = /\.(?<ext>[^.]+)$/;
 	const match = fileName.match( extensionRegExp );

@@ -20,16 +20,12 @@ import {
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/ckeditor5-image';
 
-import { logError } from 'ckeditor5/src/utils';
 import CKBoxEditing from './ckboxediting';
 import {
-	getAvailableCategories,
 	getImageUrls,
-	getWorkspaceId,
-	sendHttpRequest,
-	getCategoryIdForFile,
-	type AvailableCategory
+	sendHttpRequest
 } from './utils';
+import CKBoxUtils from './ckboxutils';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -72,11 +68,9 @@ export default class CKBoxUploadAdapter extends Plugin {
 		}
 
 		const fileRepository = editor.plugins.get( FileRepository );
-		const ckboxEditing = editor.plugins.get( CKBoxEditing );
+		const ckboxUtils = editor.plugins.get( CKBoxUtils );
 
-		fileRepository.createUploadAdapter = loader => {
-			return new Adapter( loader, ckboxEditing.getToken(), editor );
-		};
+		fileRepository.createUploadAdapter = loader => new Adapter( loader, editor, ckboxUtils );
 
 		const shouldInsertDataId = !editor.config.get( 'ckbox.ignoreDataId' );
 		const imageUploadEditing: ImageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
@@ -122,69 +116,21 @@ class Adapter implements UploadAdapter {
 	public serviceOrigin: string;
 
 	/**
+	 * The reference to CKBoxUtils plugin.
+	 */
+	public ckboxUtils: CKBoxUtils;
+
+	/**
 	 * Creates a new adapter instance.
 	 */
-	constructor( loader: FileLoader, token: InitializedToken, editor: Editor ) {
+	constructor( loader: FileLoader, editor: Editor, ckboxUtils: CKBoxUtils ) {
 		this.loader = loader;
-		this.token = token;
+		this.token = ckboxUtils.getToken();
+		this.ckboxUtils = ckboxUtils;
 		this.editor = editor;
 		this.controller = new AbortController();
 
 		this.serviceOrigin = editor.config.get( 'ckbox.serviceOrigin' )!;
-	}
-
-	/**
-	 * The ID of workspace to use.
-	 */
-	public getWorkspaceId(): string {
-		const t = this.editor.t;
-		const cannotAccessDefaultWorkspaceError = t( 'Cannot access default workspace.' );
-		const defaultWorkspaceId = this.editor.config.get( 'ckbox.defaultUploadWorkspaceId' );
-		const workspaceId = getWorkspaceId( this.token, defaultWorkspaceId );
-
-		if ( workspaceId == null ) {
-			/**
-			 * The user is not authorized to access the workspace defined in  the`ckbox.defaultUploadWorkspaceId` configuration.
-			 *
-			 * @error ckbox-access-default-workspace-error
-			 */
-			logError( 'ckbox-access-default-workspace-error' );
-
-			throw cannotAccessDefaultWorkspaceError;
-		}
-
-		return workspaceId;
-	}
-
-	/**
-	 * Resolves a promise with an array containing available categories with which the uploaded file can be associated.
-	 *
-	 * If the API returns limited results, the method will collect all items.
-	 */
-	public async getAvailableCategories( offset: number = 0 ): Promise<Array<AvailableCategory> | null> {
-		return getAvailableCategories( {
-			token: this.token,
-			serviceOrigin: this.serviceOrigin,
-			workspaceId: this.getWorkspaceId(),
-			signal: this.controller.signal,
-			offset
-		} );
-	}
-
-	/**
-	 * Resolves a promise with an object containing a category with which the uploaded file is associated or an error code.
-	 */
-	public async getCategoryIdForFile( file: File ): Promise<string | null> {
-		// The plugin allows defining to which category the uploaded file should be assigned.
-		const defaultCategories = this.editor.config.get( 'ckbox.defaultUploadCategories' );
-
-		return getCategoryIdForFile( file, {
-			token: this.token,
-			serviceOrigin: this.serviceOrigin,
-			workspaceId: this.getWorkspaceId(),
-			signal: this.controller.signal,
-			defaultCategories
-		} );
 	}
 
 	/**
@@ -193,19 +139,16 @@ class Adapter implements UploadAdapter {
 	 * @see module:upload/filerepository~UploadAdapter#upload
 	 */
 	public async upload(): Promise<UploadResponse> {
-		const t = this.editor.t;
-		const cannotFindCategoryError = t( 'Cannot determine a category for the uploaded file.' );
-		const file = ( await this.loader.file )!;
-		const category = await this.getCategoryIdForFile( file );
+		const ckboxUtils = this.ckboxUtils;
 
-		if ( !category ) {
-			return Promise.reject( cannotFindCategoryError );
-		}
+		const t = this.editor.t;
+		const file = ( await this.loader.file )!;
+		const category = await ckboxUtils.getCategoryIdForFile( file, { signal: this.controller.signal } );
 
 		const uploadUrl = new URL( 'assets', this.serviceOrigin );
 		const formData = new FormData();
 
-		uploadUrl.searchParams.set( 'workspaceId', this.getWorkspaceId() );
+		uploadUrl.searchParams.set( 'workspaceId', ckboxUtils.getWorkspaceId() );
 
 		formData.append( 'categoryId', category );
 		formData.append( 'file', file );

@@ -70,7 +70,8 @@ describe( 'CKBoxImageEditCommand', () => {
 			],
 			ckbox: {
 				serviceOrigin: CKBOX_API_URL,
-				tokenUrl: 'foo'
+				tokenUrl: 'foo',
+				allowExternalImagesEditing: () => true
 			},
 			substitutePlugins: [
 				CloudServicesCoreMock
@@ -218,7 +219,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
 			} );
 
-			it( 'should prepare options for the CKBox Image Editing dialog instance', async () => {
+			it( 'should prepare options for the CKBox Image Editing dialog instance (ckbox image)', async () => {
 				const ckboxImageId = 'example-id';
 
 				setModelData( model,
@@ -229,7 +230,6 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const options = await command._prepareOptions( {
 					element: imageElement,
-					ckboxImageId,
 					controller: new AbortController()
 				} );
 
@@ -238,6 +238,53 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( options.imageEditing.allowOverwrite ).to.be.false;
 				expect( options.onSave ).to.be.a( 'function' );
 				expect( options.onClose ).to.be.a( 'function' );
+			} );
+
+			it( 'should prepare options for the CKBox Image Editing dialog instance (external image)', async () => {
+				const imageUrl = 'https://example.com/assets/sample.png';
+				const categoryId = 'id-category-1';
+
+				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).resolves( categoryId );
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" src="${ imageUrl }"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					controller: new AbortController()
+				} );
+
+				expect( options ).to.not.have.property( 'assetId' );
+				expect( options ).to.have.property( 'imageUrl', imageUrl );
+				expect( options ).to.have.property( 'uploadCategoryId', categoryId );
+				expect( options ).to.have.property( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).to.be.false;
+				expect( options.onSave ).to.be.a( 'function' );
+				expect( options.onClose ).to.be.a( 'function' );
+			} );
+
+			it( 'should handle error when preparing options', async () => {
+				const notification = editor.plugins.get( Notification );
+				const notificationStub = sinon.stub( notification, 'showWarning' );
+				const consoleStub = sinon.stub( console, 'error' );
+				const reason = 'getCategoryIdForFile behavied very badly.';
+
+				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).returns( Promise.reject( reason ) );
+
+				setModelData( model,
+					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
+				);
+
+				command.execute();
+
+				await clock.tickAsync( 0 );
+
+				expect( command._wrapper ).to.be.null;
+				expect( consoleStub.calledOnceWith( reason ) ).to.be.true;
+				expect( notificationStub.calledOnce ).to.be.true;
 			} );
 		} );
 
