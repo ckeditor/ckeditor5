@@ -86,21 +86,21 @@ export default class ImageInsertUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
+
 		this.set( 'isImageSelected', false );
 
-		const editor = this.editor;
+		this.listenTo( editor.model.document, 'change', () => {
+			this.isImageSelected = imageUtils.isImage( selection.getSelectedElement() );
+		} );
+
 		const componentCreator = ( locale: Locale ) => this._createToolbarComponent( locale );
 
 		// Register `insertImage` dropdown and add `imageInsert` dropdown as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'insertImage', componentCreator );
 		editor.ui.componentFactory.add( 'imageInsert', componentCreator );
-
-		this.listenTo( editor.model.document, 'change', () => {
-			const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
-			const element = this.editor.model.document.selection.getSelectedElement();
-
-			this.isImageSelected = imageUtils.isImage( element );
-		} );
 	}
 
 	/**
@@ -134,7 +134,7 @@ export default class ImageInsertUI extends Plugin {
 			observable,
 			buttonViewCreator,
 			formViewCreator,
-			requiresForm
+			requiresForm: !!requiresForm
 		} );
 	}
 
@@ -253,5 +253,5 @@ type IntegrationData = {
 	observable: Observable & { isEnabled: boolean };
 	buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
 	formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
-	requiresForm?: boolean;
+	requiresForm: boolean;
 };
