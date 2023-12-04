@@ -7,7 +7,7 @@
  * @module ckbox/ckboximageedit/utils
  */
 
-import { toArray } from 'ckeditor5/src/utils';
+import { global } from 'ckeditor5/src/utils';
 
 import type { Element } from 'ckeditor5/src/engine';
 import type { CKBoxConfig } from '../ckboxconfig';
@@ -44,19 +44,31 @@ export function createEditabilityChecker(
 function createUrlChecker(
 	allowExternalImagesEditing: CKBoxConfig[ 'allowExternalImagesEditing' ]
 ): ( src: string ) => boolean {
-	if ( !allowExternalImagesEditing ) {
-		return () => false;
+	if ( Array.isArray( allowExternalImagesEditing ) ) {
+		const urlMatchers = allowExternalImagesEditing.map( createUrlChecker );
+
+		return src => urlMatchers.some( matcher => matcher( src ) );
+	}
+
+	if ( allowExternalImagesEditing == 'origin' ) {
+		const origin = global.window.location.origin;
+
+		return src => src.startsWith( origin + '/' );
 	}
 
 	if ( typeof allowExternalImagesEditing == 'function' ) {
 		return allowExternalImagesEditing;
 	}
 
-	const urlRegExps = toArray( allowExternalImagesEditing );
+	if ( allowExternalImagesEditing instanceof RegExp ) {
+		return src => !!(
+			src.match( allowExternalImagesEditing ) ||
+			src.replace( /^https?:\/\//, '' ).match( allowExternalImagesEditing )
+		);
+	}
 
-	return src => urlRegExps.some( pattern =>
-		src.match( pattern ) ||
-		src.replace( /^https?:\/\//, '' ).match( pattern )
-	);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const shouldBeUndefned: undefined = allowExternalImagesEditing;
+
+	return () => false;
 }
-

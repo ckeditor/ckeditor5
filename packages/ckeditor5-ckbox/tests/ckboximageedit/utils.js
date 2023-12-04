@@ -6,6 +6,7 @@
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { createEditabilityChecker } from '../../src/ckboximageedit/utils';
 import { Element } from '@ckeditor/ckeditor5-engine';
+import { global } from 'ckeditor5/src/utils';
 
 describe( 'image edit utils', () => {
 	testUtils.createSinonSandbox();
@@ -39,8 +40,6 @@ describe( 'image edit utils', () => {
 			expect( checker( new Element( 'imageBlock', { src: 'https://ckeditor.com/xyz' } ) ) ).to.be.true;
 			expect( checker( new Element( 'imageInline', { src: 'https://example.com/abc' } ) ) ).to.be.false;
 			expect( checker( new Element( 'imageBlock', { src: 'https://cksource.com/xyz' } ) ) ).to.be.false;
-			expect( checker( new Element( 'imageInline', { src: 'ckeditor.com/abc' } ) ) ).to.be.true;
-			expect( checker( new Element( 'imageInline', { src: 'example.com/abc' } ) ) ).to.be.false;
 		} );
 
 		it( 'should check if external images match one of RegExps', () => {
@@ -50,8 +49,17 @@ describe( 'image edit utils', () => {
 			expect( checker( new Element( 'imageBlock', { src: 'https://ckeditor.com/xyz' } ) ) ).to.be.true;
 			expect( checker( new Element( 'imageInline', { src: 'https://example.com/abc' } ) ) ).to.be.false;
 			expect( checker( new Element( 'imageBlock', { src: 'https://cksource.com/xyz' } ) ) ).to.be.true;
-			expect( checker( new Element( 'imageInline', { src: 'example.com/abc' } ) ) ).to.be.false;
-			expect( checker( new Element( 'imageBlock', { src: 'cksource.com/xyz' } ) ) ).to.be.true;
+		} );
+
+		it( 'should check if external images match current origin', () => {
+			sinon.stub( global, 'window' ).get( () => ( { location: { origin: 'https://ckeditor.com' } } ) );
+
+			const checker = createEditabilityChecker( 'origin' );
+
+			expect( checker( new Element( 'imageInline', { src: 'https://ckeditor.com/abc' } ) ) ).to.be.true;
+			expect( checker( new Element( 'imageBlock', { src: 'https://ckeditor.com/xyz' } ) ) ).to.be.true;
+			expect( checker( new Element( 'imageInline', { src: 'https://example.com/abc' } ) ) ).to.be.false;
+			expect( checker( new Element( 'imageBlock', { src: 'https://cksource.com/xyz' } ) ) ).to.be.false;
 		} );
 
 		it( 'should use the function to check external images', () => {
