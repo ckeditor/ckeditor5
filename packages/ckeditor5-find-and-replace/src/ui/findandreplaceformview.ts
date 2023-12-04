@@ -12,15 +12,11 @@ import {
 	ButtonView,
 	LabeledFieldView,
 
-	Model,
 	FocusCycler,
 	createLabeledInputText,
 	submitHandler,
 	ViewCollection,
 
-	createDropdown,
-	addListToDropdown,
-	type DropdownView,
 	type Template,
 	type InputView,
 	SwitchButtonView,
@@ -30,7 +26,6 @@ import {
 import {
 	FocusTracker,
 	KeystrokeHandler,
-	Collection,
 	Rect,
 	isVisible,
 	type Locale
@@ -43,7 +38,6 @@ import '../../theme/findandreplaceform.css';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
-import { icons } from 'ckeditor5/src/core';
 
 /**
  * The find and replace form view class.
