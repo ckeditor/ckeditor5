@@ -18,6 +18,7 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { icons } from 'ckeditor5/src/core';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -217,6 +218,7 @@ describe( 'ImageUploadUI', () => {
 
 			expect( dropdownButton ).to.be.instanceOf( FileDialogButtonView );
 			expect( dropdownButton.withText ).to.be.false;
+			expect( dropdownButton.icon ).to.equal( icons.imageUpload );
 
 			expect( spy.calledTwice ).to.be.true;
 			expect( spy.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
@@ -237,6 +239,7 @@ describe( 'ImageUploadUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( FileDialogButtonView );
 			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.icon ).to.equal( icons.imageUpload );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );

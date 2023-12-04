@@ -18,6 +18,7 @@ import CloudServicesCoreMock from './_utils/cloudservicescoremock';
 import ImageInsertUI from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { icons } from 'ckeditor5/src/core';
 
 import CKBoxUI from '../src/ckboxui';
 import CKBoxEditing from '../src/ckboxediting';
@@ -158,6 +159,7 @@ describe( 'CKBoxUI', () => {
 
 			expect( dropdownButton ).to.be.instanceOf( ButtonView );
 			expect( dropdownButton.withText ).to.be.false;
+			expect( dropdownButton.icon ).to.equal( icons.imageAssetManager );
 
 			expect( spy.calledTwice ).to.be.true;
 			expect( spy.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
@@ -178,6 +180,7 @@ describe( 'CKBoxUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.firstCall.args[ 0 ] ).to.equal( 'ckbox' );
