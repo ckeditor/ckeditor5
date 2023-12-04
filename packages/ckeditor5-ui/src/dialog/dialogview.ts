@@ -21,15 +21,16 @@ import ViewCollection from '../viewcollection';
 import View from '../view';
 import FormHeaderView from '../formheader/formheaderview';
 import ButtonView from '../button/buttonview';
+import { type ButtonExecuteEvent } from '../button/button';
 import FocusCycler, { isViewWithFocusCycler, type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
 import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin';
 import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview';
+import DialogContentView from './dialogcontentview';
+import type EditorUI from '../editorui/editorui';
 
 // @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import type EditorUI from '../editorui/editorui';
-import DialogContentView from './dialogcontentview';
 
 export enum DialogViewPosition {
 	SCREEN_CENTER = 'screen-center',
@@ -214,7 +215,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 						class: [
 							'ck',
 							'ck-dialog',
-							'ck-dialog_draggable',
 							bind.to( 'className' )
 						],
 						style: {
@@ -242,8 +242,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		// Support for dragging the modal.
 		this.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { deltaX, deltaY } ) => {
-			this.moveBy( deltaX, deltaY );
 			this.wasMoved = true;
+			this.moveBy( deltaX, deltaY );
 		} );
 
 		// Update dialog position upon window resize, if the position was not changed manually.
@@ -296,6 +296,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * TODO
+	 *
+	 * @internal
 	 */
 	public setupParts( { title, content, actionButtons }: {
 		title?: string;
@@ -339,20 +341,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * TODO
-	 */
-	public focusNext(): void {
-		this._focusCycler.focusNext();
-	}
-
-	/**
-	 * TODO
-	 */
-	public focusPrevious(): void {
-		this._focusCycler.focusPrevious();
-	}
-
-	/**
-	 * TODO
+	 *
+	 * @internal
 	 */
 	public moveTo( left: number, top: number ): void {
 		const viewportRect = this._getViewportRect();
@@ -389,6 +379,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 	/**
 	 * TODO
+	 *
+	 * @internal
 	 */
 	public moveBy( left: number, top: number ): void {
 		this.moveTo( this._left + left, this._top + top );
@@ -427,7 +419,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				// @if CK_DEBUG_DIALOG // }
 
 				if ( domRootRect ) {
-					const leftCoordinate = this.locale?.contentLanguageDirection === 'ltr' ?
+					const leftCoordinate = this.locale!.contentLanguageDirection === 'ltr' ?
 						domRootRect.right - dialogRect.width - defaultOffset :
 						domRootRect.left + defaultOffset;
 
@@ -599,12 +591,12 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 			if ( isViewWithFocusCycler( focusable ) ) {
 				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {
-					this.focusNext();
+					this._focusCycler.focusNext();
 					evt.stop();
 				} );
 
 				this.listenTo<FocusCyclerBackwardCycleEvent>( focusable.focusCycler, 'backwardCycle', evt => {
-					this.focusPrevious();
+					this._focusCycler.focusPrevious();
 					evt.stop();
 				} );
 			}
@@ -624,7 +616,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			icon: cancelIcon
 		} );
 
-		buttonView.on( 'execute', () => this.fire<DialogViewCloseEvent>( 'close' ) );
+		buttonView.on<ButtonExecuteEvent>( 'execute', () => this.fire<DialogViewCloseEvent>( 'close' ) );
 
 		return buttonView;
 	}
@@ -654,6 +646,9 @@ function getConstrainedViewportRect( viewportOffset: EditorUI[ 'viewportOffset' 
 	viewportRect.height -= viewportOffset.top!;
 	viewportRect.bottom -= viewportOffset.bottom!;
 	viewportRect.height -= viewportOffset.bottom!;
+	viewportRect.left += viewportOffset.left!;
+	viewportRect.right -= viewportOffset.right!;
+	viewportRect.width -= viewportOffset.left! + viewportOffset.right!;
 
 	return viewportRect;
 }

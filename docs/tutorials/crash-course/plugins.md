@@ -47,7 +47,7 @@ For a list of plugins, usage examples, installation, and configuration options, 
 
 ## Predefined builds
 
-The fact that individual plugins add support for such minor features as typing, <kbd>Enter</kbd>, or `<p>` does not mean that you have to browse through the long list of plugins and painstakingly install the ones you need to get a good typing experience. You can do that if you want to have full control over the editor. But if that's not your thing, you can use one of the {@link installation/getting-started/predefined-builds predefined builds} with the most important and popular plugins already installed and configured.
+The fact that individual plugins add support for such minor features as typing, <kbd>Enter</kbd>, or `<p>` does not mean that you have to browse through the long list of plugins and painstakingly install the ones you need to get a good typing experience. You can do that if you want to have full control over the editor. But if that is not your thing, you can use one of the {@link installation/getting-started/predefined-builds predefined builds} with the most important and popular plugins already installed and configured.
 
 ## Creating custom plugins
 

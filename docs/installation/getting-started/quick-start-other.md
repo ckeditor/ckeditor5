@@ -274,7 +274,7 @@ npm run build
 ```
 
 <info-box hint>
-	If you don't have the build script, learn more about {@link installation/plugins/installing-plugins#building-an-editor building an editor}.
+	If you do not have the build script, learn more about {@link installation/plugins/installing-plugins#building-an-editor building an editor}.
 </info-box>
 
 ### Running the editor

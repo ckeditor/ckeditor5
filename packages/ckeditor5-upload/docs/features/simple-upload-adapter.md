@@ -148,7 +148,7 @@ If the `error` object contains a `message`, it will be passed to the {@link modu
 }
 ```
 
-If the `message` property is missing in the `error` object, the {@link module:ui/notification/notification~Notification#showWarning editor notification system} will display the default "Couldn't upload file: `[filename]`." message.
+If the `message` property is missing in the `error` object, the {@link module:ui/notification/notification~Notification#showWarning editor notification system} will display the default "Could not upload file: `[filename]`." message.
 
 ### Upload progress
 

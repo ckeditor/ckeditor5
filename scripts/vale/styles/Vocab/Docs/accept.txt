@@ -95,6 +95,8 @@ Stylelint
 [Ss]ubstring
 [Ss]uperbuild
 SVG
+Toan
+Techlab
 textarea
 toolset
 (?i)tooltip

@@ -238,7 +238,7 @@ export default class ClassicEditorUI extends EditorUI {
 					return;
 				}
 
-				const stickyPanelContentRect = new Rect( stickyPanel.contentPanel );
+				const stickyPanelContentRect = new Rect( stickyPanel.contentPanelElement );
 
 				if ( data[ 1 ] < stickyPanelContentRect.bottom + DialogView.defaultOffset ) {
 					data[ 1 ] = stickyPanelContentRect.bottom + DialogView.defaultOffset;

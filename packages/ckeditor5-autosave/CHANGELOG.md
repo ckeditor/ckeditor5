@@ -5,31 +5,31 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v16.0.0...v17.0.0) (2020-02-18)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v16.0.0...v17.0.0) (February 18, 2020)
 
 ### Other changes
 
 * Updated translations. ([d0042f4](https://github.com/ckeditor/ckeditor5-autosave/commit/d0042f4))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v15.0.0...v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v15.0.0...v16.0.0) (December 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([b99249d](https://github.com/ckeditor/ckeditor5-autosave/commit/b99249d))
 
 
-## [15.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.5...v15.0.0) (2019-10-23)
+## [15.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.5...v15.0.0) (October 23, 2019)
 
 ### Features
 
@@ -40,7 +40,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([115bf18](https://github.com/ckeditor/ckeditor5-autosave/commit/115bf18))
 
 
-## [11.0.5](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.4...v11.0.5) (2019-08-26)
+## [11.0.5](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.4...v11.0.5) (August 26, 2019)
 
 ### Other changes
 
@@ -48,33 +48,33 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([2de7f77](https://github.com/ckeditor/ckeditor5-autosave/commit/2de7f77))
 
 
-## [11.0.4](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.3...v11.0.4) (2019-07-10)
+## [11.0.4](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.3...v11.0.4) (July 10, 2019)
 
 Internal changes only (updated dependencies, documentation, etc.).
 
 
-## [11.0.3](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.2...v11.0.3) (2019-07-04)
+## [11.0.3](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.2...v11.0.3) (July 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([28230c2](https://github.com/ckeditor/ckeditor5-autosave/commit/28230c2)) ([3a16129](https://github.com/ckeditor/ckeditor5-autosave/commit/3a16129))
 
 
-## [11.0.2](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.1...v11.0.2) (2019-06-05)
+## [11.0.2](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.1...v11.0.2) (June 6, 2019)
 
 ### Other changes
 
 * Updated translations. ([5541f00](https://github.com/ckeditor/ckeditor5-autosave/commit/5541f00))
 
 
-## [11.0.1](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.0...v11.0.1) (2019-04-10)
+## [11.0.1](https://github.com/ckeditor/ckeditor5-autosave/compare/v11.0.0...v11.0.1) (April 4, 2019)
 
 ### Other changes
 
 * Updated translations. ([e38aed3](https://github.com/ckeditor/ckeditor5-autosave/commit/e38aed3))
 
 
-## [11.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v10.0.2...v11.0.0) (2019-02-28)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-autosave/compare/v10.0.2...v11.0.0) (February 28, 2019)
 
 ### Other changes
 
@@ -85,14 +85,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
-## [10.0.2](https://github.com/ckeditor/ckeditor5-autosave/compare/v10.0.1...v10.0.2) (2018-12-05)
+## [10.0.2](https://github.com/ckeditor/ckeditor5-autosave/compare/v10.0.1...v10.0.2) (December 5, 2018)
 
 ### Other changes
 
 * Updated translations. ([5a423f6](https://github.com/ckeditor/ckeditor5-autosave/commit/5a423f6)) ([c5bb743](https://github.com/ckeditor/ckeditor5-autosave/commit/c5bb743))
 
 
-## [10.0.1](https://github.com/ckeditor/ckeditor5-autosave/compare/v10.0.0...v10.0.1) (2018-10-08)
+## [10.0.1](https://github.com/ckeditor/ckeditor5-autosave/compare/v10.0.0...v10.0.1) (October 8, 2018)
 
 ### Other changes
 
@@ -100,7 +100,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Updated translations. ([3f52ebc](https://github.com/ckeditor/ckeditor5-autosave/commit/3f52ebc)) ([8c702ee](https://github.com/ckeditor/ckeditor5-autosave/commit/8c702ee))
 
 
-## [10.0.0](https://github.com/ckeditor/ckeditor5-autosave/tree/v10.0.0) (2018-07-18)
+## [10.0.0](https://github.com/ckeditor/ckeditor5-autosave/tree/v10.0.0) (July 18, 2018)
 
 ### Other changes
 

@@ -41,11 +41,11 @@ const editor = await ClassicEditor.create( element );
 
 As you can see, the {@link module:core/editor/editor~Editor.create `create()`} method creates a new editor instance. It replaces the DOM element passed as the first argument with the editor UI, and sets the initial state of the editor to the content of that DOM element.
 
-However, you may have noticed that the "Hello world!" text does not appear in the editor, and you can't write anything into it. This may seem strange at first, but it is by design. Let's fix this with the right configuration.
+However, you may have noticed that the "Hello world!" text does not appear in the editor, and you cannot write anything in it. This may seem strange at first, but it is by design. Let's fix this with the right configuration.
 
 ## Configuration
 
-The editor itself does not do much - it's just an empty shell at this stage. What gives the editor almost all of its functionality are the plugins. We will talk more about plugins in the next chapter, but for now let's just install two plugins that provide the bare minimum needed to type in the editor.
+The editor itself does not do much - it is just an empty shell at this stage. What gives the editor almost all of its functionality are the plugins. We will talk more about plugins in the next chapter, but for now, let's just install two plugins that provide the bare minimum needed to type in the editor.
 
 ```js
 // Add these two imports.
@@ -86,7 +86,7 @@ const editor = await ClassicEditor.create( element, {
 
 After refreshing the page, the editor should have two buttons at the top. If you type something into the editor and click the "back arrow" button, your changes should be removed. Clicking the "forward arrow" button should restore those changes.
 
-The configuration object we just updated controls the features, appearance, and behavior of the editor. If you want to change any aspect of the editor, it's most likely through this object.
+The configuration object we have just updated controls the features, appearance, and behavior of the editor. If you want to change any aspect of the editor, it is most likely through this object.
 
 ## Editor methods
 
@@ -148,7 +148,7 @@ Run the following command from a console:
 editor.destroy();
 ```
 
-The editor and it's contents should disappear. Note that **this method returns a promise, so you need to `await` it** if you want to execute more logic after the editor is destroyed.
+The editor and its contents should disappear. Note that **this method returns a promise, so you need to `await` it** if you want to execute more logic after the editor is destroyed.
 
 ## What's next
 
