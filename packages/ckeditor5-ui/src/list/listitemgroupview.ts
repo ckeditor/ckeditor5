@@ -10,6 +10,7 @@
 import View from '../view';
 import type ViewCollection from '../viewcollection';
 import ListView from './listview';
+import type ListItemView from './listitemview';
 import LabelView from '../label/labelview';
 import ListSeparatorView from './listseparatorview';
 
@@ -106,11 +107,14 @@ export default class ListItemGroupView extends View {
 	}
 
 	/**
-	 * Focuses the list item.
+	 * Focuses the list item (which is not a separator).
 	 */
 	public focus(): void {
-		if ( this.items.first && !( this.items.first instanceof ListSeparatorView ) ) {
-			this.items.first.focus();
+		if ( this.items ) {
+			const firstListItem = this.items.find( item => !( item instanceof ListSeparatorView ) ) as ListItemView | ListItemGroupView;
+			if ( firstListItem ) {
+				firstListItem.focus();
+			}
 		}
 	}
 }
