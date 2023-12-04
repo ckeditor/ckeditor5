@@ -365,7 +365,7 @@
 							"name": "Toolbars",
 							"id": "features-toolbar",
 							"slug": "toolbar",
-							"order": 50
+							"order": 20
 						}
 					]
 				},
