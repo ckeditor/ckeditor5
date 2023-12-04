@@ -6,7 +6,7 @@
 /* globals window */
 
 /**
- * @module ckbox/ckboxediting
+ * @module ckbox/ckboxutils
  */
 
 import type { CloudServices, InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
