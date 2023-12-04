@@ -81,7 +81,6 @@ export default class ImageUploadUI extends Plugin {
 				buttonViewCreator: () => {
 					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
 
-					uploadImageButton.icon = icons.imageUpload;
 					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
 						t( 'Replace image from computer' ) :
 						t( 'Upload image from computer' )
@@ -93,7 +92,6 @@ export default class ImageUploadUI extends Plugin {
 				formViewCreator: () => {
 					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
 
-					uploadImageButton.icon = icons.imageUpload;
 					uploadImageButton.withText = true;
 					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
 						t( 'Replace from computer' ) :

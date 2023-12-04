@@ -204,14 +204,12 @@ describe( 'ImageInsertViaUrlUI', () => {
 	} );
 
 	describe( 'multiple integrations', () => {
-		let observable;
-
 		beforeEach( async () => {
 			await createEditor( {
 				plugins: [ Image, ImageInsertViaUrl ]
 			} );
 
-			observable = new Model( { isEnabled: true } );
+			const observable = new Model( { isEnabled: true } );
 
 			insertImageUI.registerIntegration( {
 				name: 'foo',
