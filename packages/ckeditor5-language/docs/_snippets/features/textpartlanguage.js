@@ -8,7 +8,7 @@
 import { Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -16,7 +16,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( TextPartLanguage, Superscript, PictureEditing,
-	ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
+	ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-text-part-language' ), {
@@ -35,7 +35,7 @@ ClassicEditor
 				'|', 'heading',
 				'|', 'bold', 'italic',
 				'|', 'textPartLanguage',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},

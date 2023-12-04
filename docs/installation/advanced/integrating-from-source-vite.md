@@ -27,7 +27,7 @@ npm create vite@latest ckeditor5-vite-example -- --template vanilla
 ```
 
 <info-box>
-	NPM 6 and below doesn't require an extra double-dash in the command above.
+	npm 6 and below do not require an extra double-dash in the command above.
 </info-box>
 
 Select the appropriate Vite template to use TypeScript in your project.
@@ -340,4 +340,4 @@ ClassicEditor
 
 ## Building
 
-Finally, you can build your application. Import the script with the editor into `index.html` if you didn't use the scaffolded template. Run Vite (by typing `npm run dev`) on your project and the rich-text editor will be a part of it.
+Finally, you can build your application. Import the script with the editor into `index.html` if you did not use the scaffolded template. Run Vite (by typing `npm run dev`) on your project and the rich-text editor will be a part of it.

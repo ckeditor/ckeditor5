@@ -25,7 +25,7 @@ editor.conversion.attributeToElement( {
 } );
 ```
 
-You may have noticed that we used the term **helpers**. That's because these methods are often used for simple and symmetric conversions, abstracting away the internals and what really happens in the engine. However, there are cases where the conversion is a bit more complicated.
+You may have noticed that we used the term **helpers**. This is because these methods are often used for simple and symmetric conversions, abstracting away the internals and what really happens in the engine. However, there are cases where the conversion is a bit more complicated.
 
 In this chapter we will learn more about data conversion so that you can better understand the editor and work with more complex cases.
 
@@ -66,10 +66,10 @@ editor.conversion.for( 'editingDowncast' ).attributeToElement( {
 } );
 ```
 
-Notice that we called the `elementToAttribute` method in the upcast and the `attributeToElement` method in the downcast. That's because in the upcast we convert the HTML element to a model attribute, but in the downcast we do the opposite.
+Notice that we called the `elementToAttribute` method in the upcast and the `attributeToElement` method in the downcast. This is because in the upcast we convert the HTML element to a model attribute, but in the downcast we do the opposite.
 
 ## What's next?
 
 If your case requires a more complex conversion than we covered in this tutorial, see the {@link framework/deep-dive/conversion/intro Conversion deep dive} document.
 
-Otherwise, go to the next chapter, where you'll {@link tutorials/crash-course/commands learn more about updating the model using commands}.
+Otherwise, go to the next chapter, where you will {@link tutorials/crash-course/commands learn more about updating the model using commands}.

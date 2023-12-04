@@ -11,7 +11,7 @@ order: 10
 
 The following legal notices apply to CKEditor&nbsp;5 and all software from CKEditor&nbsp;5 Ecosystem included with it.
 
-Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+Copyright (c) 2003–2023, CKSource Holding sp. z o.o. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
 

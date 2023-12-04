@@ -7,12 +7,20 @@
 
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic';
 
-ClassicEditor.builtinPlugins.push( TextTransformation, PictureEditing, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
+ClassicEditor.builtinPlugins.push(
+	TextTransformation,
+	PictureEditing,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	CKBox,
+	CKBoxImageEdit );
 
 window.ClassicEditor = ClassicEditor;

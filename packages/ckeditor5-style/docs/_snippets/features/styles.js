@@ -16,14 +16,23 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import { Highlight } from '@ckeditor/ckeditor5-highlight';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { PictureEditing, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } from '@ckeditor/ckeditor5-image';
+import {
+	PictureEditing,
+	Image,
+	ImageCaption,
+	ImageInsert,
+	ImageResize,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload
+} from '@ckeditor/ckeditor5-image';
 import { Style } from '@ckeditor/ckeditor5-style';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-styles' ), {
 		plugins: [
 			ArticlePluginSet, CloudServices, CKBox, CKBoxImageEdit,
-			PictureEditing, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload,
+			PictureEditing, Image, ImageCaption, ImageInsert, ImageResize, ImageStyle, ImageToolbar, ImageUpload,
 			Code, CodeBlock, Strikethrough, HorizontalLine, GeneralHtmlSupport, Style, Highlight
 		],
 		toolbar: {
@@ -31,7 +40,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'style', '|', 'heading',
 				'|', 'bold', 'italic', 'strikethrough', 'code',
-				'-', 'link', 'uploadImage', 'insertTable', 'highlight', 'codeBlock',
+				'-', 'link', 'insertImage', 'insertTable', 'highlight', 'codeBlock',
 				'blockQuote', 'mediaEmbed', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],

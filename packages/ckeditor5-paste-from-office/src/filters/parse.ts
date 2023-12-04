@@ -29,6 +29,10 @@ export function parseHtml( htmlString: string, stylesProcessor: StylesProcessor 
 	// Remove Word specific "if comments" so content inside is not omitted by the parser.
 	htmlString = htmlString.replace( /<!--\[if gte vml 1]>/g, '' );
 
+	// Clean the <head> section of MS Windows specific tags. See https://github.com/ckeditor/ckeditor5/issues/15333.
+	// The regular expression matches the <o:SmartTagType> tag with optional attributes (with or without values).
+	htmlString = htmlString.replace( /<o:SmartTagType(?:\s+[^\s>=]+(?:="[^"]*")?)*\s*\/?>/gi, '' );
+
 	const normalizedHtml = normalizeSpacing( cleanContentAfterBody( htmlString ) );
 
 	// Parse htmlString as native Document object.

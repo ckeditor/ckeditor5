@@ -14,7 +14,7 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { ImageUpload, ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
@@ -23,14 +23,14 @@ import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
-			ArticlePluginSet, SourceEditing, CKBox, CKBoxImageEdit, ImageUpload, PictureEditing, CloudServices, Markdown,
+			ArticlePluginSet, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, CloudServices, Markdown,
 			Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
 		],
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
 				'|', 'bold', 'italic', 'strikethrough', 'code',
-				'-', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
+				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true

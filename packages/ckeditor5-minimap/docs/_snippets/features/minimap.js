@@ -13,7 +13,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
-import { PictureEditing, ImageResize, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { PictureEditing, ImageInsert, ImageResize, ImageUpload } from '@ckeditor/ckeditor5-image';
 import { IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { TableCellProperties, TableProperties } from '@ckeditor/ckeditor5-table';
@@ -32,6 +32,7 @@ const config = {
 		FontColor,
 		FontBackgroundColor,
 		IndentBlock,
+		ImageInsert,
 		ImageUpload,
 		ImageResize,
 		TableProperties,
@@ -48,7 +49,7 @@ const config = {
 	toolbar: [
 		'undo', 'redo', '|', 'heading',
 		'|', 'bold', 'italic',
-		'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+		'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 		'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 	],
 	image: {
@@ -89,6 +90,11 @@ const config = {
 		extraClasses: 'live-snippet formatted'
 	},
 	cloudServices: CS_CONFIG,
+	insert: {
+		integrations: [
+			'insertImageViaUrl'
+		]
+	},
 	ui: {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()

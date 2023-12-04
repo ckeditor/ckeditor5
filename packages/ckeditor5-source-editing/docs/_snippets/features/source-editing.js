@@ -15,7 +15,7 @@ ClassicEditor
 				'|', 'sourceEditing',
 				'|', 'heading',
 				'|', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code',
-				'-', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock',
+				'-', 'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'codeBlock',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],

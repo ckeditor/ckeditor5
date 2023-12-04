@@ -31,7 +31,7 @@ ClassicEditor
 				// A "plus" sign icon works best for content insertion tools.
 				label: 'Insert',
 				icon: 'plus',
-				items: [ 'uploadImage', 'insertTable' ]
+				items: [ 'insertImage', 'insertTable' ]
 			},
 			'|',
 			{
