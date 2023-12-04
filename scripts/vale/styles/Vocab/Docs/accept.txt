@@ -60,14 +60,17 @@ matcher
 mindmap
 [Mm]inimap
 [Mm]ixin
+mockup
 modified_at
 monorepo
 (?i)multiline
 [Nn]amespace
 npm
+Nuxt
 nvm
 oEmbed
 outdent
+parallelization
 pilcrow
 (?i)polyfill
 previewable
@@ -88,6 +91,7 @@ Sinon
 Socket.IO
 Spotify
 [Ss]trikethrough
+stringify
 Stylelint
 [Ss]ubfeature
 [Ss]ubfolder
