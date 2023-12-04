@@ -7,6 +7,9 @@
  * @module ui
  */
 
+// This import must be at the top to ensure that `globals.css` is imported first
+export { default as View, type UIViewRenderEvent } from './view';
+
 export { default as clickOutsideHandler } from './bindings/clickoutsidehandler';
 export { default as injectCssTransitionDisabler } from './bindings/injectcsstransitiondisabler';
 export { default as CssTransitionDisablerMixin, type ViewWithCssTransitionDisabler } from './bindings/csstransitiondisablermixin';
@@ -98,7 +101,6 @@ export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarcon
 export { default as BalloonToolbar, type BalloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar';
 
-export { default as View, type UIViewRenderEvent } from './view';
 export { default as ViewCollection } from './viewcollection';
 
 import { default as colorPaletteIcon } from '../theme/icons/color-palette.svg';
