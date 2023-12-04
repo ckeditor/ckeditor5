@@ -241,7 +241,9 @@ export function _translate(
  * @internal
  */
 export function _clear(): void {
-	global.window.CKEDITOR_TRANSLATIONS = {};
+	if ( global.window.CKEDITOR_TRANSLATIONS ) {
+		global.window.CKEDITOR_TRANSLATIONS = {};
+	}
 }
 
 /**
