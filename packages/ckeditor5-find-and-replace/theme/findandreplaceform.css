@@ -9,8 +9,8 @@
 	& fieldset {
 		display: flex;
 
-		/* The find fieldset */
-		&.ck-find-and-replace-form__find .ck-results-counter {
+		/* The inputs fieldset */
+		&.ck-find-and-replace-form__inputs .ck-results-counter {
 			position: absolute;
 		}
 	}

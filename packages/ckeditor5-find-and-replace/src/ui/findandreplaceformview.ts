@@ -23,7 +23,8 @@ import {
 	type DropdownView,
 	type Template,
 	type InputView,
-	SwitchButtonView
+	SwitchButtonView,
+	CollapsibleView
 } from 'ckeditor5/src/ui';
 
 import {
@@ -163,6 +164,11 @@ export default class FindAndReplaceFormView extends View {
 	private readonly _findNextButtonView: ButtonView;
 
 	/**
+	 * TODO
+	 */
+	private readonly _advancedOptionsCollapsible: CollapsibleView;
+
+	/**
 	 * The find options dropdown.
 	 */
 	private readonly _matchCaseSwitch: SwitchButtonView;
@@ -185,12 +191,12 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * The fieldset aggregating the find UI.
 	 */
-	private readonly _findFieldsetView: View;
+	private readonly _inputsFieldsetView: View;
 
 	/**
 	 * The fieldset aggregating the replace UI.
 	 */
-	private readonly _replaceFieldsetView: View;
+	private readonly _actionButtonsFieldsetView: View;
 
 	/**
 	 * Tracks information about the DOM focus in the form.
@@ -275,6 +281,16 @@ export default class FindAndReplaceFormView extends View {
 		this._matchCaseSwitch = this._createMatchCaseSwitch();
 		this._wholeWordsOnlySwitch = this._createWholeWordsOnlySwitch();
 
+		this._advancedOptionsCollapsible = new CollapsibleView( locale, [
+			this._matchCaseSwitch,
+			this._wholeWordsOnlySwitch
+		] );
+
+		this._advancedOptionsCollapsible.set( {
+			label: t( 'Advanced options' ),
+			isCollapsed: true
+		} );
+
 		this._replaceButtonView = this._createButton( {
 			label: t( 'Replace' ),
 			class: 'ck-button-replace',
@@ -287,9 +303,9 @@ export default class FindAndReplaceFormView extends View {
 			withText: true
 		} );
 
-		this._findFieldsetView = this._createFindFieldset();
+		this._inputsFieldsetView = this._createInputsFieldset();
 
-		this._replaceFieldsetView = this._createReplaceFieldset();
+		this._actionButtonsFieldsetView = this._createActionButtonsFieldset();
 
 		this._focusTracker = new FocusTracker();
 
@@ -321,8 +337,9 @@ export default class FindAndReplaceFormView extends View {
 				tabindex: '-1'
 			},
 			children: [
-				this._findFieldsetView,
-				this._replaceFieldsetView
+				this._inputsFieldsetView,
+				this._advancedOptionsCollapsible,
+				this._actionButtonsFieldsetView
 			]
 		} );
 	}
@@ -390,10 +407,11 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Configures and returns the `<fieldset>` aggregating all find controls.
+	 * Configures and returns the `<fieldset>` aggregating all form inputs.
 	 */
-	private _createFindFieldset(): View {
+	private _createInputsFieldset(): View {
 		const locale = this.locale;
+		const t = locale.t;
 		const fieldsetView = new View( locale );
 
 		// Typing in the find field invalidates all previous results (the form is "dirty").
@@ -411,15 +429,32 @@ export default class FindAndReplaceFormView extends View {
 
 		this._injectFindResultsCounter();
 
+		this._replaceInputView.bind( 'isEnabled' ).to(
+			this, '_areCommandsEnabled',
+			this, '_searchResultsFound',
+			( { replace }, resultsFound ) => replace && resultsFound );
+
+		this._replaceInputView.bind( 'infoText' ).to(
+			this._replaceInputView, 'isEnabled',
+			this._replaceInputView, 'isFocused',
+			( isEnabled, isFocused ) => {
+				if ( isEnabled || !isFocused ) {
+					return '';
+				}
+
+				return t( 'Tip: Find some text first in order to replace it.' );
+			} );
+
 		fieldsetView.setTemplate( {
 			tag: 'fieldset',
 			attributes: {
-				class: [ 'ck', 'ck-find-and-replace-form__find' ]
+				class: [ 'ck', 'ck-find-and-replace-form__inputs' ]
 			},
 			children: [
 				this._findInputView,
 				this._findPrevButtonView,
-				this._findNextButtonView
+				this._findNextButtonView,
+				this._replaceInputView
 			]
 		} );
 
@@ -515,11 +550,9 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Configures and returns the `<fieldset>` aggregating all replace controls.
+	 * Configures and returns the `<fieldset>` aggregating all form action buttons.
 	 */
-	private _createReplaceFieldset(): View {
-		const locale = this.locale;
-		const t = locale.t;
+	private _createActionButtonsFieldset(): View {
 		const fieldsetView = new View( this.locale );
 
 		this._replaceButtonView.bind( 'isEnabled' ).to(
@@ -531,22 +564,6 @@ export default class FindAndReplaceFormView extends View {
 			this, '_areCommandsEnabled',
 			this, '_searchResultsFound',
 			( { replaceAll }, resultsFound ) => replaceAll && resultsFound );
-
-		this._replaceInputView.bind( 'isEnabled' ).to(
-			this, '_areCommandsEnabled',
-			this, '_searchResultsFound',
-			( { replace }, resultsFound ) => replace && resultsFound );
-
-		this._replaceInputView.bind( 'infoText' ).to(
-			this._replaceInputView, 'isEnabled',
-			this._replaceInputView, 'isFocused',
-			( isEnabled, isFocused ) => {
-				if ( isEnabled || !isFocused ) {
-					return '';
-				}
-
-				return t( 'Tip: Find some text first in order to replace it.' );
-			} );
 
 		this._replaceButtonView.on( 'execute', () => {
 			this.fire( 'replace', {
@@ -569,12 +586,9 @@ export default class FindAndReplaceFormView extends View {
 		fieldsetView.setTemplate( {
 			tag: 'fieldset',
 			attributes: {
-				class: [ 'ck', 'ck-find-and-replace-form__replace' ]
+				class: [ 'ck', 'ck-find-and-replace-form__actions' ]
 			},
 			children: [
-				this._replaceInputView,
-				this._matchCaseSwitch,
-				this._wholeWordsOnlySwitch,
 				this._findButtonView,
 				this._replaceButtonView,
 				this._replaceAllButtonView
