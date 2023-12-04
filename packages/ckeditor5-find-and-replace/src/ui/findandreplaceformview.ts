@@ -583,9 +583,9 @@ export default class FindAndReplaceFormView extends View {
 				class: [ 'ck', 'ck-find-and-replace-form__actions' ]
 			},
 			children: [
-				this._findButtonView,
+				this._replaceAllButtonView,
 				this._replaceButtonView,
-				this._replaceAllButtonView
+				this._findButtonView
 			]
 		} );
 
@@ -663,9 +663,9 @@ export default class FindAndReplaceFormView extends View {
 			this._advancedOptionsCollapsible.buttonView,
 			this._matchCaseSwitch,
 			this._wholeWordsOnlySwitch,
-			this._findButtonView,
+			this._replaceAllButtonView,
 			this._replaceButtonView,
-			this._replaceAllButtonView
+			this._findButtonView
 		];
 
 		childViews.forEach( v => {
