@@ -12,6 +12,7 @@ Automattic
 [Aa]utosaving
 (?i)backport
 [Bb]lockquote
+blurhash
 (?i)bookmarklet
 breakpoint
 (?i)bundler
@@ -100,6 +101,7 @@ Stylelint
 [Ss]uperbuild
 SVG
 Toan
+toggleable
 Techlab
 textarea
 toolset
