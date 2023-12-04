@@ -49,6 +49,9 @@ export default class CKBoxImageEditCommand extends Command {
 	 */
 	private _canEdit: ( element: ModelElement ) => boolean;
 
+	/**
+	 * A wrapper function to prepare mount options. Ensures that at most one preparation is in-flight.
+	 */
 	private _prepareOptions: AbortableFunc<[ ProcessingState ], Promise<Record<string, unknown>>>;
 
 	/**
@@ -229,6 +232,8 @@ export default class CKBoxImageEditCommand extends Command {
 		this._wrapper = null;
 
 		this.editor.editing.view.focus();
+
+		this.refresh();
 	}
 
 	/**
