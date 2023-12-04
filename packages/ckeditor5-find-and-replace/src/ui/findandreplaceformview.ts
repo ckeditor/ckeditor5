@@ -160,7 +160,7 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * TODO
 	 */
-	private readonly _advancedOptionsCollapsible: CollapsibleView;
+	private readonly _advancedOptionsCollapsibleView: CollapsibleView;
 
 	/**
 	 * The find options dropdown.
@@ -248,14 +248,6 @@ export default class FindAndReplaceFormView extends View {
 
 		this._findInputView = this._createInputField( t( 'Find in text…' ) );
 
-		this._replaceInputView = this._createInputField( t( 'Replace with…' ) );
-
-		this._findButtonView = this._createButton( {
-			label: t( 'Find' ),
-			class: 'ck-button-find ck-button-action',
-			withText: true
-		} );
-
 		this._findPrevButtonView = this._createButton( {
 			label: t( 'Previous result' ),
 			class: 'ck-button-prev',
@@ -272,17 +264,19 @@ export default class FindAndReplaceFormView extends View {
 			tooltip: true
 		} );
 
+		this._replaceInputView = this._createInputField( t( 'Replace with…' ) );
+
+		this._inputsFieldsetView = this._createInputsFieldset();
+
 		this._matchCaseSwitch = this._createMatchCaseSwitch();
 		this._wholeWordsOnlySwitch = this._createWholeWordsOnlySwitch();
 
-		this._advancedOptionsCollapsible = new CollapsibleView( locale, [
-			this._matchCaseSwitch,
-			this._wholeWordsOnlySwitch
-		] );
+		this._advancedOptionsCollapsibleView = this._createAdvancedOptionsCollapsible();
 
-		this._advancedOptionsCollapsible.set( {
-			label: t( 'Advanced options' ),
-			isCollapsed: true
+		this._replaceAllButtonView = this._createButton( {
+			label: t( 'Replace all' ),
+			class: 'ck-button-replaceall',
+			withText: true
 		} );
 
 		this._replaceButtonView = this._createButton( {
@@ -291,13 +285,11 @@ export default class FindAndReplaceFormView extends View {
 			withText: true
 		} );
 
-		this._replaceAllButtonView = this._createButton( {
-			label: t( 'Replace all' ),
-			class: 'ck-button-replaceall',
+		this._findButtonView = this._createButton( {
+			label: t( 'Find' ),
+			class: 'ck-button-find ck-button-action',
 			withText: true
 		} );
-
-		this._inputsFieldsetView = this._createInputsFieldset();
 
 		this._actionButtonsFieldsetView = this._createActionButtonsFieldset();
 
@@ -332,7 +324,7 @@ export default class FindAndReplaceFormView extends View {
 			},
 			children: [
 				this._inputsFieldsetView,
-				this._advancedOptionsCollapsible,
+				this._advancedOptionsCollapsibleView,
 				this._actionButtonsFieldsetView
 			]
 		} );
@@ -544,6 +536,24 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
+	 * TODO
+	 */
+	private _createAdvancedOptionsCollapsible(): CollapsibleView {
+		const t = this.locale.t;
+		const collapsible =	new CollapsibleView( this.locale, [
+			this._matchCaseSwitch,
+			this._wholeWordsOnlySwitch
+		] );
+
+		collapsible.set( {
+			label: t( 'Advanced options' ),
+			isCollapsed: true
+		} );
+
+		return collapsible;
+	}
+
+	/**
 	 * Configures and returns the `<fieldset>` aggregating all form action buttons.
 	 */
 	private _createActionButtonsFieldset(): View {
@@ -660,7 +670,7 @@ export default class FindAndReplaceFormView extends View {
 			this._findPrevButtonView,
 			this._findNextButtonView,
 			this._replaceInputView,
-			this._advancedOptionsCollapsible.buttonView,
+			this._advancedOptionsCollapsibleView.buttonView,
 			this._matchCaseSwitch,
 			this._wholeWordsOnlySwitch,
 			this._replaceAllButtonView,
