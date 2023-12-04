@@ -353,7 +353,6 @@
 			"name": "Getting started",
 			"id": "getting-started",
 			"slug": "getting-started",
-			"navigationIncludeIndex": true,
 			"categories": [
 				{
 					"name": "Setup",
