@@ -37,6 +37,13 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  */
 export default class FileDialogButtonView extends ButtonView {
 	/**
+	 * The button view of the component.
+	 *
+	 * @deprecated
+	 */
+	public buttonView: ButtonView;
+
+	/**
 	 * A hidden `<input>` view used to execute file dialog.
 	 */
 	private _fileInputView: FileInputView;
@@ -63,6 +70,9 @@ export default class FileDialogButtonView extends ButtonView {
 	 */
 	constructor( locale?: Locale ) {
 		super( locale );
+
+		// For backward compatibility.
+		this.buttonView = this;
 
 		this._fileInputView = new FileInputView( locale );
 		this._fileInputView.bind( 'acceptedType' ).to( this );
