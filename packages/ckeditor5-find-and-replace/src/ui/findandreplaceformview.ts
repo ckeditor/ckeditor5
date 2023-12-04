@@ -660,6 +660,7 @@ export default class FindAndReplaceFormView extends View {
 			this._findPrevButtonView,
 			this._findNextButtonView,
 			this._replaceInputView,
+			this._advancedOptionsCollapsible.buttonView,
 			this._matchCaseSwitch,
 			this._wholeWordsOnlySwitch,
 			this._findButtonView,
