@@ -3,19 +3,19 @@
 		{
 			"name": "Undo",
 			"className": "Undo",
-			"description": "Inserts buttons with undo and redo functionality.",
+			"description": "Support the undo and redo functionalities.",
 			"docs": "features/undo-redo.html",
 			"path": "src/undo.js",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "undo",
-					"iconPath": "theme/icons/undo.svg"
+					"iconPath": "@ckeditor/ckeditor5-undo/theme/icons/undo.svg"
 				},
 				{
 					"type": "Button",
 					"name": "redo",
-					"iconPath": "theme/icons/redo.svg"
+					"iconPath": "@ckeditor/ckeditor5-undo/theme/icons/redo.svg"
 				}
 			]
 		}

@@ -23,7 +23,6 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -57,7 +56,6 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -97,7 +95,6 @@
 				{
 					"type": "Button",
 					"name": "toggleImageCaption",
-					"iconPath": "",
 					"toolbars": [
 						"image.toolbar"
 					]
