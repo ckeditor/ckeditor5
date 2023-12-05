@@ -21,9 +21,14 @@ ClassicEditor
 		},
 		image: {
 			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'|',
 				'imageTextAlternative',
 				'|',
 				'toggleImageCaption',
+				'|',
 				'ckboxImageEdit'
 			]
 		},

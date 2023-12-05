@@ -8,6 +8,7 @@ import ListItemGroupView from '../../src/list/listitemgroupview';
 import ViewCollection from '../../src/viewcollection';
 import { LabelView, View } from '../../src';
 import { Locale } from '@ckeditor/ckeditor5-utils';
+import ListSeparatorView from '../../src/list/listseparatorview';
 
 describe( 'ListItemGroupView', () => {
 	let view, locale;
@@ -159,6 +160,28 @@ describe( 'ListItemGroupView', () => {
 
 			view.focus();
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'focuses the first view in #items which is not a separator', () => {
+			const childListSeparatorView = new ListSeparatorView();
+			view.items.add( childListSeparatorView );
+
+			const childListItemView = new ListItemView();
+			view.items.add( childListItemView );
+
+			const spyItem = sinon.spy( childListItemView, 'focus' );
+
+			view.focus();
+			sinon.assert.calledOnce( spyItem );
+		} );
+
+		it( 'does not throw if #items include only a separator', () => {
+			expect( () => {
+				const childListSeparatorView = new ListSeparatorView();
+				view.items.add( childListSeparatorView );
+
+				view.focus();
+			} ).to.not.throw();
 		} );
 
 		it( 'does not throw if #items are empty', () => {

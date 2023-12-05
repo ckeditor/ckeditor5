@@ -70,7 +70,7 @@ ClassicEditor
 				title: 'Style',
 				items: [ 'imageStyle:block', 'imageStyle:side' ],
 				defaultItem: 'imageStyle:block'
-			}, '|', 'toggleImageCaption', 'linkImage', 'ckboxImageEdit'
+			}, '|', 'toggleImageCaption', 'linkImage', '|', 'ckboxImageEdit'
 			]
 		}
 	} )

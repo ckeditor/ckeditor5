@@ -4,5 +4,6 @@
   "Cannot access default workspace.": "A message is displayed when the user is not authorised to access the CKBox workspace configured as default one.",
   "Edit image": "Image toolbar button tooltip for opening a dialog to manipulate the image.",
   "Processing the edited image.": "A message stating that image editing is in progress.",
-  "Server failed to process the image.": "A message is displayed when the server fails to process an image or doesn't respond."
+  "Server failed to process the image.": "A message is displayed when the server fails to process an image or doesn't respond.",
+  "Failed to determine category of edited image.": "A message is displayed when category of the image user wants to edit can't be determined."
 }

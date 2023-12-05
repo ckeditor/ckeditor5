@@ -49,6 +49,7 @@ ClassicEditor
 				'resizeImage:20',
 				'resizeImage:40',
 				'resizeImage:original',
+				'|',
 				'ckboxImageEdit'
 			]
 		},

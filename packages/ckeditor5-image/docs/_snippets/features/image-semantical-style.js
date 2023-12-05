@@ -26,7 +26,7 @@ ClassicEditor
 			]
 		},
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', 'ckboxImageEdit' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'ckboxImageEdit' ]
 		}
 	} )
 	.then( editor => {

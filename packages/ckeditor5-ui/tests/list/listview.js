@@ -12,7 +12,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../../src/focuscycler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import View from '../../src/view';
-import { ListItemGroupView } from '../../src';
+import { ListItemGroupView, ListItemView } from '../../src';
 
 describe( 'ListView', () => {
 	let view;
@@ -499,10 +499,9 @@ describe( 'ListView', () => {
 } );
 
 function focusable( name ) {
-	const view = nonFocusable();
+	const view = new ListItemView();
 
 	view.name = name;
-	view.focus = () => {};
 
 	return view;
 }
