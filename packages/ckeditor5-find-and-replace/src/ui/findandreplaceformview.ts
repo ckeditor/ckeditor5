@@ -46,6 +46,11 @@ import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg
  */
 export default class FindAndReplaceFormView extends View {
 	/**
+	 * TODO
+	 */
+	public children: ViewCollection;
+
+	/**
 	 * Stores the number of matched search results.
 	 *
 	 * @readonly
@@ -224,6 +229,8 @@ export default class FindAndReplaceFormView extends View {
 
 		const t = locale.t;
 
+		this.children = this.createCollection();
+
 		this.set( 'matchCount', 0 );
 
 		this.set( 'highlightOffset', 0 );
@@ -312,6 +319,12 @@ export default class FindAndReplaceFormView extends View {
 			}
 		} );
 
+		this.children.addMany( [
+			this._inputsFieldsetView,
+			this._advancedOptionsCollapsibleView,
+			this._actionButtonsFieldsetView
+		] );
+
 		this.setTemplate( {
 			tag: 'form',
 			attributes: {
@@ -322,11 +335,7 @@ export default class FindAndReplaceFormView extends View {
 
 				tabindex: '-1'
 			},
-			children: [
-				this._inputsFieldsetView,
-				this._advancedOptionsCollapsibleView,
-				this._actionButtonsFieldsetView
-			]
+			children: this.children
 		} );
 	}
 
@@ -540,7 +549,7 @@ export default class FindAndReplaceFormView extends View {
 	 */
 	private _createAdvancedOptionsCollapsible(): CollapsibleView {
 		const t = this.locale.t;
-		const collapsible =	new CollapsibleView( this.locale, [
+		const collapsible = new CollapsibleView( this.locale, [
 			this._matchCaseSwitch,
 			this._wholeWordsOnlySwitch
 		] );

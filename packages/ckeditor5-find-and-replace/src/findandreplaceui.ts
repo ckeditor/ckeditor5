@@ -104,12 +104,14 @@ export default class FindAndReplaceUI extends Plugin {
 		dropdownView.once( 'change:isOpen', () => {
 			this.formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
 
-			dropdownView.panelView.children.addMany( [
+			dropdownView.panelView.children.add( this.formView );
+
+			this.formView.children.add(
 				new FormHeaderView( editor.locale, {
 					label: t( 'Find and replace' )
 				} ),
-				this.formView
-			] );
+				0
+			);
 
 			this._setupFormView( this.formView );
 		} );
