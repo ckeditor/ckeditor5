@@ -83,6 +83,7 @@ export default class Dialog extends Plugin {
 		// 'low' priority allows to add custom callback between `_hide()` and `onHide()`.
 		this.on<DialogHideEvent>( 'hide', () => {
 			this._onHide?.( this );
+			this._onHide = undefined;
 		}, { priority: 'low' } );
 	}
 
@@ -210,7 +211,6 @@ export default class Dialog extends Plugin {
 
 		this.id = '';
 		this.isOpen = false;
-		this._onHide = undefined;
 		Dialog.visibleDialogPlugin = undefined;
 	}
 }
