@@ -82,8 +82,12 @@ export default class FindAndReplaceUI extends Plugin {
 			}
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-				( componentView instanceof ButtonView ? componentView : componentView.buttonView ).fire( 'execute' );
-				cancelEvent();
+				const componentButtonView = componentView instanceof ButtonView ? componentView : componentView.buttonView;
+
+				if ( componentButtonView.isEnabled ) {
+					componentButtonView.fire( 'execute' );
+					cancelEvent();
+				}
 			} );
 
 			// Button should be disabled when in source editing mode. See #10001.
