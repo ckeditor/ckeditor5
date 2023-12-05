@@ -338,6 +338,33 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				sinon.assert.calledOnce( focusSpy );
 			} );
+
+			it( 'should refresh the command after closing the CKBox Image Editor dialog', async () => {
+				const ckboxImageId = 'example-id';
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} );
+
+				const refreshSpy = testUtils.sinon.spy( command, 'refresh' );
+
+				expect( command.value ).to.be.false;
+
+				command.execute();
+				expect( command.value ).to.be.true;
+
+				options.onClose();
+				expect( command.value ).to.be.false;
+				sinon.assert.calledOnce( refreshSpy );
+			} );
 		} );
 
 		describe( 'saving edited asset', () => {

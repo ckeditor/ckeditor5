@@ -4,17 +4,18 @@
  */
 
 /**
- * @module list/listproperties/ui/collapsibleview
+ * @module ui/collapsible/collapsibleview
  */
 
-import type { Locale } from 'ckeditor5/src/utils';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
-import { View, ButtonView, type ViewCollection } from 'ckeditor5/src/ui';
+import View from '../view';
+import ButtonView from '../button/buttonview';
+import type ViewCollection from '../viewcollection';
 
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import dropdownArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
+import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
-import '../../../theme/collapsible.css';
+import '../../theme/components/collapsible/collapsible.css';
 
 /**
  * A collapsible UI component. Consists of a labeled button and a container which can be collapsed
@@ -116,6 +117,13 @@ export default class CollapsibleView extends View {
 		super.render();
 
 		this._collapsibleAriaLabelUid = this.buttonView.labelView.element!.id;
+	}
+
+	/**
+	 * Focuses the first focusable.
+	 */
+	public focus(): void {
+		this.buttonView.focus();
 	}
 
 	/**

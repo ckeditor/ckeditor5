@@ -86,11 +86,6 @@ BalloonEditor.defaultConfig = {
 			'redo'
 		]
 	},
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
-		]
-	},
 	image: {
 		toolbar: [
 			'imageStyle:inline',
@@ -137,11 +132,6 @@ ClassicEditor.defaultConfig = {
 			'mediaEmbed',
 			'undo',
 			'redo'
-		]
-	},
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
 		]
 	},
 	image: {
