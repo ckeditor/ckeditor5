@@ -15,13 +15,13 @@ classes: focus-tracking
 
 Every time you click a text field or an editor, it automatically prepares to accept your text. It is no longer just a static container for letters but something you can interact with using your keyboard. And you know it because you can see the familiar blinking caret somewhere inside of it. This subtle action called a **focus change** takes place hundreds of times every day as you navigate web pages, type your search queries, chat with your friends and fill in checkout forms when online shopping.
 
-{@img assets/img/framework-deep-dive-focus-form-example.gif 578 The animation showing the focus moving from one field to another when filling in the form.}
+{@img assets/img/framework-deep-dive-focus-form-example.gif 578 The animation shows the focus moving from one field to another when filling in the form.}
 
-Focusing text fields feels so natural we usually do not give it much thought. But if it wasn't for that simple action... there would be no way to type text. Where would it go if there was no focused field? Focus informs the software about your intentions and it is synonymous with the **context**.
+Focusing text fields feels so natural we usually do not give it much thought. But without this simple action, there would be no way to type text. Where would it go if there was no focused field? Focus informs the software about your intentions and it is synonymous with the **context**.
 
 ### Focus in CKEditor
 
-But CKEditor is more than a simple text field. Yes, it has the main space where you type your text but other places also allow you to type, for instance, a link URL field or a form with plenty of inputs allowing you to configure the look of a table.
+CKEditor is more than a simple text field. Yes, it has the main space where you type your text but other places also allow you to type, for instance, a link URL field or a form with plenty of inputs allowing you to configure the look of a table.
 
 {@img assets/img/framework-deep-dive-focus-link-blinking-caret.gif 606 The animation showing the focused link URL input in CKEditor&nbsp;5 with a blinking caret.}
 

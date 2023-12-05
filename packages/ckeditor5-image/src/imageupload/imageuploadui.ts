@@ -45,10 +45,7 @@ export default class ImageUploadUI extends Plugin {
 
 			view.set( {
 				acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
-				allowMultipleFiles: true
-			} );
-
-			view.set( {
+				allowMultipleFiles: true,
 				label: t( 'Upload image from computer' ),
 				icon: icons.imageUpload,
 				tooltip: true
@@ -77,14 +74,25 @@ export default class ImageUploadUI extends Plugin {
 			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
 			const command: UploadImageCommand = editor.commands.get( 'uploadImage' )!;
 
-			imageInsertUI.registerIntegration( 'upload', command, type => {
-				const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
+			imageInsertUI.registerIntegration( {
+				name: 'upload',
+				observable: command,
 
-				uploadImageButton.icon = icons.imageUpload;
+				buttonViewCreator: () => {
+					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
 
-				if ( type == 'formView' ) {
+					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
+						t( 'Replace image from computer' ) :
+						t( 'Upload image from computer' )
+					);
+
+					return uploadImageButton;
+				},
+
+				formViewCreator: () => {
+					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
+
 					uploadImageButton.withText = true;
-
 					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
 						t( 'Replace from computer' ) :
 						t( 'Upload from computer' )
@@ -93,14 +101,9 @@ export default class ImageUploadUI extends Plugin {
 					uploadImageButton.on( 'execute', () => {
 						imageInsertUI.dropdownView!.isOpen = false;
 					} );
-				} else {
-					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-						t( 'Replace image from computer' ) :
-						t( 'Upload image from computer' )
-					);
-				}
 
-				return uploadImageButton;
+					return uploadImageButton;
+				}
 			} );
 		}
 	}

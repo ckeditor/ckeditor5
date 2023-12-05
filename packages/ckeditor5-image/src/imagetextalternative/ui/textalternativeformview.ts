@@ -197,7 +197,7 @@ export default class TextAlternativeFormView extends View {
 }
 
 /**
- * TODO
+ * Fired when the form view is submitted.
  *
  * @eventName ~TextAlternativeFormView#submit
  */
@@ -207,7 +207,7 @@ export type TextAlternativeFormViewSubmitEvent = {
 };
 
 /**
- * TODO
+ * Fired when the form view is canceled.
  *
  * @eventName ~TextAlternativeFormView#cancel
  */

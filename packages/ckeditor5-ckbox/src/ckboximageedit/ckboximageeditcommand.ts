@@ -10,17 +10,18 @@
  */
 
 import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
-import { CKEditorError, createElement, retry } from 'ckeditor5/src/utils';
+import { CKEditorError, abortableDebounce, createElement, retry, type AbortableFunc } from 'ckeditor5/src/utils';
 import type { Element as ModelElement } from 'ckeditor5/src/engine';
 import { Notification } from 'ckeditor5/src/ui';
 import { isEqual } from 'lodash-es';
 
-import CKBoxEditing from '../ckboxediting';
 import { sendHttpRequest } from '../utils';
 import { prepareImageAssetAttributes } from '../ckboxcommand';
 import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig';
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
+import { createEditabilityChecker } from './utils';
+import CKBoxUtils from '../ckboxutils';
 
 /**
  * The CKBox edit image command.
@@ -41,7 +42,17 @@ export default class CKBoxImageEditCommand extends Command {
 	/**
 	 * The states of image processing in progress.
 	 */
-	private _processInProgress = new Map<string, ProcessingState>();
+	private _processInProgress = new Set<ProcessingState>();
+
+	/**
+	 * Determines if the element can be edited.
+	 */
+	private _canEdit: ( element: ModelElement ) => boolean;
+
+	/**
+	 * A wrapper function to prepare mount options. Ensures that at most one preparation is in-flight.
+	 */
+	private _prepareOptions: AbortableFunc<[ ProcessingState ], Promise<Record<string, unknown>>>;
 
 	/**
 	 * @inheritDoc
@@ -50,6 +61,9 @@ export default class CKBoxImageEditCommand extends Command {
 		super( editor );
 
 		this.value = false;
+
+		this._canEdit = createEditabilityChecker( editor.config.get( 'ckbox.allowExternalImagesEditing' ) );
+		this._prepareOptions = abortableDebounce( ( signal, state ) => this._prepareOptionsAbortable( signal, state ) );
 
 		this._prepareListeners();
 	}
@@ -63,18 +77,11 @@ export default class CKBoxImageEditCommand extends Command {
 		this.value = this._getValue();
 
 		const selectedElement = editor.model.document.selection.getSelectedElement();
-		const isImageElement = selectedElement && (
-			selectedElement.is( 'element', 'imageInline' ) ||
-			selectedElement.is( 'element', 'imageBlock' )
-		);
-		const isBeingProcessed = Array.from( this._processInProgress.values() )
-			.some( ( { element } ) => isEqual( element, selectedElement ) );
 
-		if ( isImageElement && selectedElement.hasAttribute( 'ckboxImageId' ) && !isBeingProcessed ) {
-			this.isEnabled = true;
-		} else {
-			this.isEnabled = false;
-		}
+		this.isEnabled =
+			!!selectedElement &&
+			this._canEdit( selectedElement ) &&
+			!this._checkIfElementIsBeingProcessed( selectedElement );
 	}
 
 	/**
@@ -85,21 +92,34 @@ export default class CKBoxImageEditCommand extends Command {
 			return;
 		}
 
+		const wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
+
+		this._wrapper = wrapper;
 		this.value = true;
-		this._wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
 
 		document.body.appendChild( this._wrapper );
 
 		const imageElement = this.editor.model.document.selection.getSelectedElement()!;
-		const ckboxImageId = imageElement.getAttribute( 'ckboxImageId' ) as string;
 
 		const processingState: ProcessingState = {
-			ckboxImageId,
 			element: imageElement,
 			controller: new AbortController()
 		};
 
-		window.CKBox.mountImageEditor( this._wrapper, this._prepareOptions( processingState ) );
+		this._prepareOptions( processingState ).then(
+			options => window.CKBox.mountImageEditor( wrapper, options ),
+			error => {
+				const editor = this.editor;
+				const t = editor.t;
+				const notification = editor.plugins.get( Notification );
+
+				notification.showWarning( t( 'Failed to determine category of edited image.' ), {
+					namespace: 'ckbox'
+				} );
+				console.error( error );
+				this._handleImageEditorClose();
+			}
+		);
 	}
 
 	/**
@@ -107,6 +127,8 @@ export default class CKBoxImageEditCommand extends Command {
 	 */
 	public override destroy(): void {
 		this._handleImageEditorClose();
+
+		this._prepareOptions.abort();
 
 		for ( const state of this._processInProgress.values() ) {
 			state.controller.abort();
@@ -125,12 +147,31 @@ export default class CKBoxImageEditCommand extends Command {
 	/**
 	 * Creates the options object for the CKBox Image Editor dialog.
 	 */
-	private _prepareOptions( state: ProcessingState ) {
+	private async _prepareOptionsAbortable( signal: AbortSignal, state: ProcessingState ) {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
+		const ckboxUtils = editor.plugins.get( CKBoxUtils );
+		const { element } = state;
+
+		let imageMountOptions;
+		const ckboxImageId = element.getAttribute( 'ckboxImageId' );
+
+		if ( ckboxImageId ) {
+			imageMountOptions = {
+				assetId: ckboxImageId
+			};
+		} else {
+			const imageUrl = element.getAttribute( 'src' ) as string;
+			const uploadCategoryId = await ckboxUtils.getCategoryIdForFile( imageUrl, { signal } );
+
+			imageMountOptions = {
+				imageUrl,
+				uploadCategoryId
+			};
+		}
 
 		return {
-			assetId: state.ckboxImageId,
+			...imageMountOptions,
 			imageEditing: {
 				allowOverwrite: false
 			},
@@ -169,6 +210,16 @@ export default class CKBoxImageEditCommand extends Command {
 		return states;
 	}
 
+	private _checkIfElementIsBeingProcessed( selectedElement: ModelElement ) {
+		for ( const { element } of this._processInProgress ) {
+			if ( isEqual( element, selectedElement ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Closes the CKBox Image Editor dialog.
 	 */
@@ -180,8 +231,9 @@ export default class CKBoxImageEditCommand extends Command {
 		this._wrapper.remove();
 		this._wrapper = null;
 
-		this.refresh();
 		this.editor.editing.view.focus();
+
+		this.refresh();
 	}
 
 	/**
@@ -194,7 +246,7 @@ export default class CKBoxImageEditCommand extends Command {
 		const pendingActions = this.editor.plugins.get( PendingActions );
 		const action = pendingActions.add( t( 'Processing the edited image.' ) );
 
-		this._processInProgress.set( state.ckboxImageId, state );
+		this._processInProgress.add( state );
 		this._showImageProcessingIndicator( state.element, asset );
 		this.refresh();
 
@@ -220,7 +272,7 @@ export default class CKBoxImageEditCommand extends Command {
 					}
 				}
 			).finally( () => {
-				this._processInProgress.delete( state.ckboxImageId );
+				this._processInProgress.delete( state );
 				pendingActions.remove( action );
 				this.refresh();
 			} );
@@ -231,13 +283,13 @@ export default class CKBoxImageEditCommand extends Command {
 	 * image is already proceeded and ready for saving.
 	 */
 	private async _getAssetStatusFromServer( id: string, signal: AbortSignal ): Promise<CKBoxRawAssetDefinition> {
-		const ckboxEditing = this.editor.plugins.get( CKBoxEditing );
+		const ckboxUtils = this.editor.plugins.get( CKBoxUtils );
 
 		const url = new URL( 'assets/' + id, this.editor.config.get( 'ckbox.serviceOrigin' )! );
 		const response: CKBoxRawAssetDataDefinition = await sendHttpRequest( {
 			url,
 			signal,
-			authorization: ckboxEditing.getToken().value
+			authorization: ckboxUtils.getToken().value
 		} );
 		const status = response.metadata!.metadataProcessingStatus;
 
@@ -348,7 +400,6 @@ export default class CKBoxImageEditCommand extends Command {
 }
 
 interface ProcessingState {
-	ckboxImageId: string;
 	element: ModelElement;
 	controller: AbortController;
 }

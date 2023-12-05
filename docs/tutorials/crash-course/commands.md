@@ -45,7 +45,7 @@ Our command class has two methods:
 
 Our plugin only allows text highlighting, so when only an image or table is selected in the editor, we should disable the command. We also want to remove highlighting if the command is called and the selected text is already highlighted.
 
-For this reason, we need a state that indicates whether selections in the editor can be highlighted and whether they're already highlighted.
+For this reason, we need a state that indicates whether selections in the editor can be highlighted and whether they are already highlighted.
 
 The command state is managed by the `refresh()` method. This method is called whenever the model is updated, ensuring that the state is refreshed and always up-to-date.
 
@@ -100,7 +100,7 @@ execute() {
 }
 ```
 
-All changes to the model are made using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so that's what we will use.
+All changes to the model are made using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so we will use it.
 
 In the callback, we first check if the selection is collapsed. Unlike a standard selection, which can span multiple letters, elements, or even blocks, a collapsed selection has a range of zero, meaning that it starts and ends at the same position. In other words, the collapsed selection is just a caret.
 

@@ -5,7 +5,7 @@ All changes in the package are documented in the main repository. See: https://g
 
 Changes for the past releases are available below.
 
-## [19.0.0](https://github.com/ckeditor/ckeditor5-code-block/compare/v18.0.0...v19.0.0) (2020-04-29)
+## [19.0.0](https://github.com/ckeditor/ckeditor5-code-block/compare/v18.0.0...v19.0.0) (April 29, 2020)
 
 ### Other changes
 
@@ -13,14 +13,14 @@ Changes for the past releases are available below.
 * Updated translations. ([5300e22](https://github.com/ckeditor/ckeditor5-code-block/commit/5300e22))
 
 
-## [18.0.0](https://github.com/ckeditor/ckeditor5-code-block/compare/v17.0.0...v18.0.0) (2020-03-19)
+## [18.0.0](https://github.com/ckeditor/ckeditor5-code-block/compare/v17.0.0...v18.0.0) (March 19, 2020)
 
 ### Other changes
 
 * Updated translations. ([8613554](https://github.com/ckeditor/ckeditor5-code-block/commit/8613554))
 
 
-## [17.0.0](https://github.com/ckeditor/ckeditor5-code-block/compare/v16.0.0...v17.0.0) (2020-02-19)
+## [17.0.0](https://github.com/ckeditor/ckeditor5-code-block/compare/v16.0.0...v17.0.0) (February 19, 2020)
 
 ### Bug fixes
 
@@ -32,6 +32,6 @@ Changes for the past releases are available below.
 * Updated translations. ([3604224](https://github.com/ckeditor/ckeditor5-code-block/commit/3604224))
 
 
-## [16.0.0](https://github.com/ckeditor/ckeditor5-code-block/tree/v16.0.0) (2019-12-04)
+## [16.0.0](https://github.com/ckeditor/ckeditor5-code-block/tree/v16.0.0) (December 4, 2019)
 
 The initial release.

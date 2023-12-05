@@ -39,7 +39,7 @@ Listed below are the most important changes that require your attention when upg
 
 Starting from version 38.0.0, all **open source installations** of CKEditor&nbsp;5 will include a small “Powered by CKEditor” logo in the bottom-right corner of the editing area. This logo is designed to raise awareness of the CKEditor brand and will link to the CKEditor website.
 
-If you have a **commercial license**, you can hide the logo by adding {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} to your configuration. If you already use pagination, productivity pack, or non-real-time collaboration features, you don't need to take any action as you should already have `config.licenseKey` in place. The logo will not be visible in your editor.
+If you have a **commercial license**, you can hide the logo by adding {@link module:core/editor/editorconfig~EditorConfig#licenseKey `config.licenseKey`} to your configuration. If you already use pagination, productivity pack, or non-real-time collaboration features, you do not need to take any action as you should already have `config.licenseKey` in place. The logo will not be visible in your editor.
 
 We have prepared a detailed {@link support/managing-ckeditor-logo Managing the "Powered by CKEditor" logo} guide to help everyone through the transition and explain any concerns.
 

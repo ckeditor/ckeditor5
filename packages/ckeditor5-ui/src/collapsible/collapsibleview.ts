@@ -120,7 +120,7 @@ export default class CollapsibleView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Focuses the first focusable.
 	 */
 	public focus(): void {
 		this.buttonView.focus();

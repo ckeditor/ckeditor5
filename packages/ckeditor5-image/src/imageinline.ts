@@ -12,6 +12,7 @@ import { Widget } from 'ckeditor5/src/widget';
 
 import ImageTextAlternative from './imagetextalternative';
 import ImageInlineEditing from './image/imageinlineediting';
+import ImageInsertUI from './imageinsert/imageinsertui';
 
 import '../theme/image.css';
 
@@ -31,7 +32,7 @@ export default class ImageInline extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageInlineEditing, Widget, ImageTextAlternative ] as const;
+		return [ ImageInlineEditing, Widget, ImageTextAlternative, ImageInsertUI ] as const;
 	}
 
 	/**

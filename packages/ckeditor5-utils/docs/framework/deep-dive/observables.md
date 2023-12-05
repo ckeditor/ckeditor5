@@ -280,7 +280,7 @@ This kind of binding can be useful e.g. when a button opens a dropdown containin
 
 ### Releasing the bindings
 
-If you don't want your object's properties to be bound any longer, you can use the {@link module:utils/observablemixin~Observable#unbind `unbind()`} method.
+If you do not want your object's properties to be bound any longer, you can use the {@link module:utils/observablemixin~Observable#unbind `unbind()`} method.
 
 You can specify the names of the properties to selectively unbind them
 

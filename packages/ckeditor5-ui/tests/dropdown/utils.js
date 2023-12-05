@@ -68,6 +68,15 @@ describe( 'utils', () => {
 			expect( dropdownView.buttonView ).to.be.instanceOf( SplitButtonView );
 		} );
 
+		it( 'creates dropdown#buttonView out of passed ButtonView instance', () => {
+			const buttonView = new SplitButtonView( locale );
+
+			dropdownView = createDropdown( locale, buttonView );
+
+			expect( dropdownView.buttonView ).to.be.instanceOf( SplitButtonView );
+			expect( dropdownView.buttonView ).to.equal( buttonView );
+		} );
+
 		it( 'binds #isEnabled to the buttonView', () => {
 			dropdownView = createDropdown( locale );
 
