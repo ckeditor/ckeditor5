@@ -31,6 +31,9 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		mediaEmbed: {
 			previewsInData: false,
 			providers: [

@@ -134,6 +134,9 @@ const defaultConfig = {
 			top: window.getViewportTopOffsetConfig()
 		}
 	},
+	ckbox: {
+		allowExternalImagesEditing: [ /^data:/, 'origin' ]
+	},
 	fontFamily: {
 		supportAllValues: true
 	},

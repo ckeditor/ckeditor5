@@ -36,6 +36,9 @@ BalloonEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		placeholder: 'Text of the post',
 		image: {
 			toolbar: [

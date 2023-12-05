@@ -20,6 +20,9 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

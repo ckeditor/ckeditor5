@@ -126,6 +126,9 @@ BalloonEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		blockToolbar: [
 			'bulletedList',
 			'numberedList',

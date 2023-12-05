@@ -46,6 +46,9 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		placeholder: 'Insert the new table with the default styles applied.'
 	} )
 	.then( editor => {

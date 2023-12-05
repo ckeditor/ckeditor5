@@ -42,6 +42,9 @@ ClassicEditor.defaultConfig = {
 			top: window.getViewportTopOffsetConfig()
 		}
 	},
+	ckbox: {
+		allowExternalImagesEditing: [ /^data:/, 'origin' ]
+	},
 	image: {
 		toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
 	}

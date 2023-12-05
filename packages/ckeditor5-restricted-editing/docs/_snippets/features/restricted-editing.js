@@ -77,6 +77,9 @@ async function startStandardEditingMode() {
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		updateSourceElementOnDestroy: true
 	} );
 }
@@ -96,6 +99,9 @@ async function startRestrictedEditingMode() {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		},
 		updateSourceElementOnDestroy: true
 	} );

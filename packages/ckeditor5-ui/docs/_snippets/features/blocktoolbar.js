@@ -132,6 +132,9 @@ BalloonEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		blockToolbar: [
 			'undo', 'redo',
 			'|',

@@ -29,6 +29,9 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		codeBlock: {
 			languages: [
 				{ language: 'css', label: 'CSS' },

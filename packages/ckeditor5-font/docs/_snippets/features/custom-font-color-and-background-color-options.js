@@ -31,6 +31,9 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		fontBackgroundColor: {
 			colors: [
 				'hsl(0,0%,0%)',

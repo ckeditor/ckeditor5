@@ -30,6 +30,9 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		},
 		exportPdf: {
 			stylesheets: [
 				'../assets/fonts.css',

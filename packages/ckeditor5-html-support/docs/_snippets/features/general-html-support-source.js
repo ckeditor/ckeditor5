@@ -53,6 +53,9 @@ ClassicEditor.defaultConfig = {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
 		}
+	},
+	ckbox: {
+		allowExternalImagesEditing: [ /^data:/, 'origin' ]
 	}
 };
 
