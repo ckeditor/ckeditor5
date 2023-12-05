@@ -43,6 +43,7 @@ ClassicEditor
 				'imageStyle:wrapText',
 				'imageStyle:breakText',
 				'resizeImage',
+				'|',
 				'ckboxImageEdit'
 			]
 		},

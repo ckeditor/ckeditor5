@@ -35,6 +35,7 @@ ClassicEditor
 				'resizeImage:100',
 				'resizeImage:200',
 				'resizeImage:original',
+				'|',
 				'ckboxImageEdit'
 			],
 			resizeOptions: [

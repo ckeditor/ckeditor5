@@ -29,6 +29,7 @@ ClassicEditor
 				'imageStyle:inline',
 				'imageStyle:wrapText',
 				'imageStyle:breakText',
+				'|',
 				'ckboxImageEdit'
 			]
 		},
