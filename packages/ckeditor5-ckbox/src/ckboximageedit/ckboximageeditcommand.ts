@@ -180,8 +180,9 @@ export default class CKBoxImageEditCommand extends Command {
 		this._wrapper.remove();
 		this._wrapper = null;
 
-		this.refresh();
 		this.editor.editing.view.focus();
+
+		this.refresh();
 	}
 
 	/**
