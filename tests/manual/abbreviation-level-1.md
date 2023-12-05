@@ -297,7 +297,7 @@ export default class AbbreviationEditing extends Plugin {
 
 		conversion.for( 'downcast' ).attributeToElement(
 			// ...
-		 );
+		);
 
 		// Conversion from a view element to a model attribute
 		conversion.for( 'upcast' ).elementToAttribute( {
@@ -373,7 +373,7 @@ ClassicEditor
 		],
 		toolbar: [
 			'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|',
-			'abbreviation'														  // ADDED
+			'abbreviation'														 // ADDED
 		]
 	} )
 	.then( editor => {

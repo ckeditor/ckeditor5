@@ -34,52 +34,52 @@ Because of the breaking changes in the Angular library output format, the `@cked
 <table>
   <thead>
 	<tr>
-	  <th>CKEditor&nbsp;5&nbsp;version</th>
-	  <th>Angular&nbsp;version</th>
-	  <th>Details</th>
+	 <th>CKEditor&nbsp;5&nbsp;version</th>
+	 <th>Angular&nbsp;version</th>
+	 <th>Details</th>
 	</tr>
   </thead>
   <tbody>
 	<tr>
-	  <td colspan="3">Actively supported versions</td>
+	 <td colspan="3">Actively supported versions</td>
 	</tr>
 	<tr>
-	  <td><code>^6</code></td>
-	  <td><code>13+</code></td>
-	  <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+	 <td><code>^6</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
 	</tr>
 	<tr>
-	  <td colspan="3">Past releases (no longer maintained)</td>
+	 <td colspan="3">Past releases (no longer maintained)</td>
 	</tr>
 	<tr>
-	  <td><code>^5</code></td>
-	  <td><code>13+</code></td>
-	  <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
+	 <td><code>^5</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
 	</tr>
 	<tr>
-	  <td><code>^5</code></td>
-	  <td><code>13+</code></td>
-	  <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
+	 <td><code>^5</code></td>
+	 <td><code>13+</code></td>
+	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
 	</tr>
 	<tr>
-	  <td><code>^4</code></td>
-	  <td><code>9.1+</code></td>
-	  <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
+	 <td><code>^4</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
 	</tr>
 	<tr>
-	  <td><code>^3</code></td>
-	  <td><code>9.1+</code></td>
-	  <td>Requires Node.js in version 14 or higher.</td>
+	 <td><code>^3</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Requires Node.js in version 14 or higher.</td>
 	</tr>
 	<tr>
-	  <td><code>^2</code></td>
-	  <td><code>9.1+</code></td>
-	  <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
+	 <td><code>^2</code></td>
+	 <td><code>9.1+</code></td>
+	 <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
 	</tr>
 	<tr>
-	  <td><code>^1</code></td>
-	  <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
-	  <td>Angular versions are no longer maintained.</td>
+	 <td><code>^1</code></td>
+	 <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
+	 <td>Angular versions are no longer maintained.</td>
 	</tr>
   </tbody>
 </table>

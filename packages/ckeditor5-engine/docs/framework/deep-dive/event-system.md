@@ -339,7 +339,7 @@ Assuming the given content and selection (on a widget):
 <blockquote>
 	<p>
 		Foo
-		[<img />]	 // enhanced with toWidget()
+		[<img />]	// enhanced with toWidget()
 		bar
 	</p>
 </blockquote>
@@ -359,7 +359,7 @@ An even more complex example:
 
 ```html
 <blockquote>
-	<figure class="table">	 // enhanced with toWidget()
+	<figure class="table">	// enhanced with toWidget()
 		<table>
 			<tr>
 				<td>
@@ -417,7 +417,7 @@ And for the example with the widget selected:
 <blockquote>
 	<p>
 		Foo
-		[<img />]	 // enhanced with toWidget()
+		[<img />]	// enhanced with toWidget()
 		bar
 	</p>
 </blockquote>

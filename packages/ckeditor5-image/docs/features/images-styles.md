@@ -33,8 +33,8 @@ The styles applied to the image can either add or remove the style-related class
 
 <info-box warning>
 	The `ImageStyle` plugin does not provide any mechanism to apply a default CSS class to newly inserted images. The initial image appearance should be handled by the integrator by defining the proper custom {@link getting-started/advanced/content-styles content styles}. If desired, the default image appearance customization can be done by overriding the following CSS rules:
-	  * `.ck-content .image-inline` for the inline images,
-	  * `.ck-content .image` for the block images.
+	 * `.ck-content .image-inline` for the inline images,
+	 * `.ck-content .image` for the block images.
 </info-box>
 
 ### Inline and block images

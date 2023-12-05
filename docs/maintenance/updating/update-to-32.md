@@ -77,7 +77,7 @@ class RevisionHistoryIntegration extends Plugin {
 /* After v32.0.0 */
 class RevisionHistoryIntegration extends Plugin {
 	async init() {
-	    const revisionHistory = editor.plugins.get( 'RevisionHistory' );
+	   const revisionHistory = editor.plugins.get( 'RevisionHistory' );
 
 		// ...
 

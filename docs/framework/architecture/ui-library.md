@@ -233,13 +233,13 @@ EditorUIView
 	├── "main" collection
 	│	└── InlineEditableUIView
 	└── "body" collection
-		 ├── BalloonPanelView
-		 │	└── "content" collection
-		 │		└── ToolbarView
-		 ├── BalloonPanelView
-		 │	└── "content" collection
-		 │		└── ...
-		 └── ...
+		├── BalloonPanelView
+		│	└── "content" collection
+		│		└── ToolbarView
+		├── BalloonPanelView
+		│	└── "content" collection
+		│		└── ...
+		└── ...
 ```
 
 ## Using the existing components

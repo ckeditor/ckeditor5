@@ -52,15 +52,15 @@ import { clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 
 class FormattingOptions extends Plugin {
 	/**
-	 * @inheritDoc
-	 */
+	* @inheritDoc
+	*/
 	static get pluginName() {
 		return 'FormattingOptions';
 	}
 
 	/**
-	 * @inheritDoc
-	 */
+	* @inheritDoc
+	*/
 	constructor( editor ) {
 		super( editor );
 

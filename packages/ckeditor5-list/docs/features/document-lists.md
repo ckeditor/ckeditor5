@@ -160,7 +160,7 @@ ClassicEditor
 		plugins: [ DocumentList, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
-		    multiBlock: false // Turn off the multi block support (enabled by default).
+		   multiBlock: false // Turn off the multi block support (enabled by default).
 		}
 	} )
 	.then( /* ... */ )

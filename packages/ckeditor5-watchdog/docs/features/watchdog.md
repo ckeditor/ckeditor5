@@ -174,7 +174,7 @@ const watchdog = new ContextWatchdog( Context, {
 // Initialize the watchdog with the context configuration:
 await watchdog.create( {
 	plugins: [
-	    // A list of plugins for the context.
+	   // A list of plugins for the context.
 		// ...
 	],
 	// More configuration options for the plugin.

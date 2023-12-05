@@ -128,7 +128,7 @@ MultiRootEditor
 		Make the editable "fill" the whole box.
 		The box will grow if the other box grows too.
 		This makes the whole box "clickable".
-	 */
+	*/
 	.box .ck-editor__editable {
 		height: 100%;
 	}
@@ -137,7 +137,7 @@ MultiRootEditor
 		When toolbar receives this class, it becomes sticky.
 		If the toolbar would be scrolled outside of the visible area,
 		instead it is kept at the top edge of the window.
-	 */
+	*/
 	#toolbar.sticky {
 		position: sticky;
 		top: 0px;

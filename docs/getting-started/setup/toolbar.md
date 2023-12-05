@@ -212,7 +212,7 @@ You can use one of the icons listed below for your dropdown:
 * The default icons are loaded from the `ckeditor5-core` package.
 * If no icon is specified, `'threeVerticalDots'` will be used as a default.
 * If `icon: false` is configured, no icon will be displayed and the text label will show up instead.
-* You can set a custom icon for the drop-down by passing an SVG string.
+* You can set a custom icon for the dropdown by passing an SVG string.
 
 Here is an example:
 
