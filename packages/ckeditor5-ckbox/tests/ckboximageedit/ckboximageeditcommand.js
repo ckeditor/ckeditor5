@@ -339,7 +339,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				sinon.assert.calledOnce( focusSpy );
 			} );
 
-			it( 'should refresh the command after closing the CKBox Image Editor dialog', () => {
+			it( 'should refresh the command after closing the CKBox Image Editor dialog', async () => {
 				const ckboxImageId = 'example-id';
 
 				setModelData( model,
@@ -348,11 +348,11 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
-				const onClose = command._prepareOptions( {
+				const options = await command._prepareOptions( {
 					element: imageElement,
 					ckboxImageId,
 					controller: new AbortController()
-				} ).onClose;
+				} );
 
 				const refreshSpy = testUtils.sinon.spy( command, 'refresh' );
 
@@ -361,7 +361,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				command.execute();
 				expect( command.value ).to.be.true;
 
-				onClose();
+				options.onClose();
 				expect( command.value ).to.be.false;
 				sinon.assert.calledOnce( refreshSpy );
 			} );
