@@ -45,11 +45,11 @@ CKEditor&nbsp;5 predefined builds are a set of ready-to-use rich text editors. E
 
 The following CKEditor&nbsp;5 predefined builds are currently available:
 
-* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#classic-editor)
-* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#inline-editor)
-* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#balloon-editor)
-* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#balloon-block-editor)
-* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#document-editor)
+* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#classic-editor)
+* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#inline-editor)
+* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#balloon-editor)
+* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#balloon-block-editor)
+* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#document-editor)
 
 #### Example installation
 
@@ -64,7 +64,7 @@ In your HTML page, add an element that CKEditor should replace:
 <div id="editor"></div>
 ```
 
-Load the classic editor build (you can choose between the [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#npm), and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#zip-download)):
+Load the classic editor build (you can choose between the [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#npm), and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#zip-download)):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
@@ -84,7 +84,7 @@ Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/a
 
 You’re ready to go!
 
-To find out how to start with other builds, check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html) guide in the CKEditor&nbsp;5 documentation.
+To find out how to start with other builds, check the [Predefined builds](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html) guide in the CKEditor&nbsp;5 documentation.
 
 ### TypeScript support
 

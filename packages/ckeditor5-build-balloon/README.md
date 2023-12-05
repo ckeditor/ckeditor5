@@ -5,7 +5,7 @@ CKEditor&nbsp;5 balloon editor build
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://app.travis-ci.com/github/ckeditor/ckeditor5)
 
-The balloon editor build for CKEditor&nbsp;5. Read more about the [balloon editor build](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/predefined-builds.html#balloon-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-editor.html).
+The balloon editor build for CKEditor&nbsp;5. Read more about the [balloon editor build](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/installation-methods/predefined-builds.html#balloon-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-editor.html).
 
 ![CKEditor&nbsp;5 balloon editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor5-build-balloon.png)
 

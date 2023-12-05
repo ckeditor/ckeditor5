@@ -18,7 +18,7 @@ CKEditor&nbsp;5 provides every type of WYSIWYG editing solution imaginable. From
 
 ## New to CKEditor&nbsp;5?
 
-Find out hot to start your adventure with the {@ geatting-started/quick-start Quick Start} guide.
+Find out how to start your adventure with the {@ geatting-started/quick-start Quick Start} guide.
 
 ## Migrating from CKEditor&nbsp;4?
 
