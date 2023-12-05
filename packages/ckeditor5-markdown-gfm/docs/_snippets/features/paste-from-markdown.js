@@ -5,41 +5,55 @@
 
 /* globals console, window, document, setTimeout */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { Code, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { ImageUpload, ImageInsert, PictureEditing, AutoImage } from '@ckeditor/ckeditor5-image';
-import { TodoList } from '@ckeditor/ckeditor5-list';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { DocumentList, TodoDocumentList, AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
+import { Markdown, PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { Font } from '@ckeditor/ckeditor5-font';
 
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import ClassicEditor from '../build-classic';
+
+const plugins = ClassicEditor.builtinPlugins
+	// Remove the `List` plugin as in a single demo we want to use the Document list feature.
+	.filter( pluginConstructor => {
+		if ( pluginConstructor.pluginName === 'List' ) {
+			return false;
+		}
+
+		return true;
+	} )
+	// Then, add Markdown-specific features.
+	.concat( [
+		SourceEditing, Code, Strikethrough, Underline, Markdown, CodeBlock, HorizontalLine, DocumentList, TodoDocumentList,
+		AdjacentListsSupport, PasteFromMarkdownExperimental, CKBox, CKBoxImageEdit,
+		PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, Font
+	] );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [
-			ArticlePluginSet, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, AutoImage,
-			CloudServices, Markdown, Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
-		],
+	.create( document.querySelector( '#snippet-paste-from-markdown' ), {
+		plugins,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
-				'|', 'bold', 'italic', 'strikethrough', 'code',
+				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code',
 				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
 		},
+		cloudServices: CS_CONFIG,
 		image: {
 			toolbar: [
 				'imageStyle:inline',
-				'imageStyle:wrapText',
-				'imageStyle:breakText',
+				'imageStyle:block',
+				'imageStyle:side',
 				'|',
 				'toggleImageCaption',
 				'imageTextAlternative',
@@ -55,7 +69,6 @@ ClassicEditor
 				{ language: 'php', label: 'PHP' }
 			]
 		},
-		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
@@ -65,7 +78,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const outputElement = document.querySelector( '#snippet-markdown-output' );
+		const outputElement = document.querySelector( '#snippet-paste-from-markdown-output' );
 
 		editor.model.document.on( 'change', () => {
 			outputElement.innerText = editor.getData();
