@@ -170,12 +170,12 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * The find options dropdown.
 	 */
-	private readonly _matchCaseSwitch: SwitchButtonView;
+	private readonly _matchCaseSwitchView: SwitchButtonView;
 
 	/**
 	 * The find options dropdown.
 	 */
-	private readonly _wholeWordsOnlySwitch: SwitchButtonView;
+	private readonly _wholeWordsOnlySwitchView: SwitchButtonView;
 
 	/**
 	 * The replace button view.
@@ -275,8 +275,8 @@ export default class FindAndReplaceFormView extends View {
 
 		this._inputsFieldsetView = this._createInputsFieldset();
 
-		this._matchCaseSwitch = this._createMatchCaseSwitch();
-		this._wholeWordsOnlySwitch = this._createWholeWordsOnlySwitch();
+		this._matchCaseSwitchView = this._createMatchCaseSwitch();
+		this._wholeWordsOnlySwitchView = this._createWholeWordsOnlySwitch();
 
 		this._advancedOptionsCollapsibleView = this._createAdvancedOptionsCollapsible();
 
@@ -550,8 +550,8 @@ export default class FindAndReplaceFormView extends View {
 	private _createAdvancedOptionsCollapsible(): CollapsibleView {
 		const t = this.locale.t;
 		const collapsible = new CollapsibleView( this.locale, [
-			this._matchCaseSwitch,
-			this._wholeWordsOnlySwitch
+			this._matchCaseSwitchView,
+			this._wholeWordsOnlySwitchView
 		] );
 
 		collapsible.set( {
@@ -631,11 +631,10 @@ export default class FindAndReplaceFormView extends View {
 		// // Update the state of the form when a switch is toggled.
 		matchCaseSwitchButton.on( 'execute', () => {
 			this._matchCase = !this._matchCase;
+			// Toggling a switch makes the form dirty because this changes search criteria
+			// just like typing text of the find input.
+			this.isDirty = true;
 		} );
-
-		// Toggling a switch makes the form dirty because this changes search criteria
-		// just like typing text of the find input.
-		this.isDirty = true;
 
 		return matchCaseSwitchButton;
 	}
@@ -660,11 +659,10 @@ export default class FindAndReplaceFormView extends View {
 		// // Update the state of the form when a switch is toggled.
 		wholeWordsOnlySwitchButton.on( 'execute', () => {
 			this._wholeWordsOnly = !this._wholeWordsOnly;
+			// Toggling a switch makes the form dirty because this changes search criteria
+			// just like typing text of the find input.
+			this.isDirty = true;
 		} );
-
-		// Toggling a switch makes the form dirty because this changes search criteria
-		// just like typing text of the find input.
-		this.isDirty = true;
 
 		return wholeWordsOnlySwitchButton;
 	}
@@ -680,8 +678,8 @@ export default class FindAndReplaceFormView extends View {
 			this._findNextButtonView,
 			this._replaceInputView,
 			this._advancedOptionsCollapsibleView.buttonView,
-			this._matchCaseSwitch,
-			this._wholeWordsOnlySwitch,
+			this._matchCaseSwitchView,
+			this._wholeWordsOnlySwitchView,
 			this._replaceAllButtonView,
 			this._replaceButtonView,
 			this._findButtonView
