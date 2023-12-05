@@ -26,6 +26,7 @@ import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock
 import CloudServicesCoreMock from './_utils/cloudservicescoremock';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import CKBoxUtils from '../src/ckboxutils';
 
 const BASE64_SAMPLE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 const CKBOX_API_URL = 'https://upload.example.com';
@@ -212,7 +213,7 @@ describe( 'CKBoxUploadAdapter', () => {
 	} );
 
 	describe( 'Adapter', () => {
-		let adapter, file, loader, sinonXHR;
+		let adapter, file, loader, sinonXHR, ckboxUtils;
 
 		beforeEach( () => {
 			file = createNativeFileMock();
@@ -220,6 +221,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			loader = fileRepository.createLoader( file );
 			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
+			ckboxUtils = editor.plugins.get( CKBoxUtils );
 
 			sinonXHR = testUtils.sinon.useFakeServer();
 			sinonXHR.autoRespond = true;
@@ -910,7 +912,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should throw an error on abort (while uploading)', () => {
-			sinon.stub( adapter, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
+			sinon.stub( ckboxUtils, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
 
 			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				adapter.abort();
@@ -929,7 +931,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 		it( 'should throw an error on generic request error (while uploading)', () => {
 			sinon.stub( console, 'error' );
-			sinon.stub( adapter, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
+			sinon.stub( ckboxUtils, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
 
 			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				xhr.error();
@@ -951,7 +953,7 @@ describe( 'CKBoxUploadAdapter', () => {
 		} );
 
 		it( 'should update progress', () => {
-			sinon.stub( adapter, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
+			sinon.stub( ckboxUtils, 'getCategoryIdForFile' ).resolves( 'id-category-2' );
 
 			sinonXHR.respondWith( 'POST', CKBOX_API_URL + '/assets?workspaceId=workspace1', xhr => {
 				xhr.uploadProgress( { loaded: 4, total: 10 } );
@@ -994,7 +996,7 @@ describe( 'CKBoxUploadAdapter', () => {
 				for ( const { testName, workspaceId, tokenClaims } of testData ) {
 					it( testName, async () => {
 						TokenMock.initialToken = createToken( tokenClaims );
-						adapter.token.refreshToken();
+						ckboxUtils._token.refreshToken();
 
 						sinonXHR.respondWith( 'GET', /\/categories/, [
 							200,
@@ -1035,7 +1037,7 @@ describe( 'CKBoxUploadAdapter', () => {
 			describe( 'defaultUploadWorkspaceId is defined', () => {
 				it( 'should use the default workspace', () => {
 					TokenMock.initialToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1', 'workspace2' ] } } } );
-					adapter.token.refreshToken();
+					ckboxUtils._token.refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,
@@ -1075,7 +1077,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 				it( 'should use the default workspace when the user is superadmin', () => {
 					TokenMock.initialToken = createToken( { auth: { ckbox: { role: 'superadmin' } } } );
-					adapter.token.refreshToken();
+					ckboxUtils._token.refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,
@@ -1117,7 +1119,7 @@ describe( 'CKBoxUploadAdapter', () => {
 					sinon.stub( console, 'error' );
 
 					TokenMock.initialToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1', 'workspace2' ] } } } );
-					adapter.token.refreshToken();
+					ckboxUtils._token.refreshToken();
 
 					sinonXHR.respondWith( 'GET', /\/categories/, [
 						200,

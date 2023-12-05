@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global btoa, atob */
+/* global btoa, atob, window, AbortController, Response */
 
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getWorkspaceId, getImageUrls, blurHashToDataUrl } from '../src/utils';
+import { getWorkspaceId, getImageUrls, blurHashToDataUrl, convertMimeTypeToExtension, getContentTypeOfUrl } from '../src/utils';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();
@@ -187,6 +187,96 @@ describe( 'utils', () => {
 
 			expect( result ).to.match( new RegExp( '^' + prefix ) );
 			expect( binary.substring( 0, 8 ) ).to.equal( '\x89PNG\r\n\u001a\n' );
+		} );
+	} );
+
+	describe( 'convertMimeTypeToExtension()', () => {
+		const testData = [
+			[ 'image/gif', 'gif' ],
+			[ 'image/jpeg', 'jpg' ],
+			[ 'image/png', 'png' ],
+			[ 'image/webp', 'webp' ],
+			[ 'image/bmp', 'bmp' ],
+			[ 'image/tiff', 'tiff' ],
+			[ 'image/unknown', undefined ],
+			[ 'text/html', undefined ],
+			[ '', undefined ]
+		];
+
+		for ( const [ mimeType, extension ] of testData ) {
+			const returnDescription = extension ? `'${ extension }'` : 'undefined';
+
+			it( `should return ${ returnDescription } for '${ mimeType }' type`, () => {
+				expect( convertMimeTypeToExtension( mimeType ) ).to.equal( extension );
+			} );
+		}
+	} );
+
+	describe( 'getContentTypeOfUrl()', () => {
+		it( 'should fetch content type', async () => {
+			const imageUrl = 'https://example.com/sample.jpb';
+			const mimeType = 'image/myformat';
+			const controller = new AbortController();
+			sinon.stub( window, 'fetch' ).resolves(
+				new Response( null, { headers: { 'content-type': mimeType } } )
+			);
+
+			const result = await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
+
+			expect( result ).to.equal( mimeType );
+		} );
+
+		it( 'should call `fetch` with correct arguments', async () => {
+			const imageUrl = 'https://example.com/sample.jpb';
+			const mimeType = 'image/myformat';
+			const controller = new AbortController();
+			const stub = sinon.stub( window, 'fetch' ).resolves(
+				new Response( null, { headers: { 'content-type': mimeType } } )
+			);
+
+			await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
+
+			expect( stub.calledOnce ).to.be.true;
+			expect( stub.firstCall.args[ 0 ] ).to.equal( imageUrl );
+			expect( stub.firstCall.args[ 1 ] ).to.deep.include( {
+				method: 'HEAD',
+				cache: 'force-cache',
+				signal: controller.signal
+			} );
+		} );
+
+		it( 'should return empty string when `Content-Type` is missing in response', async () => {
+			const imageUrl = 'https://example.com/sample.jpb';
+			const controller = new AbortController();
+			sinon.stub( window, 'fetch' ).resolves(
+				new Response( null, { headers: {} } )
+			);
+
+			const result = await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
+
+			expect( result ).to.equal( '' );
+		} );
+
+		it( 'should return empty string when `fetch` fails', async () => {
+			const imageUrl = 'https://example.com/sample.jpb';
+			const controller = new AbortController();
+			sinon.stub( window, 'fetch' ).resolves(
+				new Response( null, { status: 500 } )
+			);
+
+			const result = await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
+
+			expect( result ).to.equal( '' );
+		} );
+
+		it( 'should return empty string on network error', async () => {
+			const imageUrl = 'https://example.com/sample.jpb';
+			const controller = new AbortController();
+			sinon.stub( window, 'fetch' ).rejects( 'failed' );
+
+			const result = await getContentTypeOfUrl( imageUrl, { signal: controller.signal } );
+
+			expect( result ).to.equal( '' );
 		} );
 	} );
 } );
