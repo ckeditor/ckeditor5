@@ -25,7 +25,7 @@ This feature has no integration–level configuration. Once enabled, it works ou
 
 ## A short note about content types in the editor
 
-The remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Each editor feature brings its own content types to the WYSIWYG editor. If you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link getting-started/setup/configuration#removing-features reducing the number of features} enabled in the editor.
+The remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Each editor feature brings its own content types to the WYSIWYG editor. If you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link getting-started/setup/adding-removing-features#removing-features reducing the number of features} enabled in the editor.
 
 Doing that will spare the users the pain of manually removing formatting every time they paste content from other programs and make the editing experience smoother. The narrower set of editor features also gives you more control over the content saved to the database and prevents the accidental use of the types of content you would rather not store in your application.
 
@@ -47,7 +47,7 @@ function RemoveFormatLinks( editor ) {
 }
 ```
 
-Enable the `RemoveFormatLinks` plugin in the {@link getting-started/setup/configuration#adding-features configuration} and run the editor:
+Enable the `RemoveFormatLinks` plugin in the {@link getting-started/setup/adding-removing-features#adding-features configuration} and run the editor:
 
 ```js
 ClassicEditor

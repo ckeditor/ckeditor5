@@ -24,7 +24,7 @@ You may apply basic formatting options with toolbar buttons. You can also make u
 
 ## Available text styles
 
-| Style feature | {@link framework/architecture/core-editor-architecture#commands Command} name | {@link features/toolbar Toolbar} component name | Output element |
+| Style feature | {@link framework/architecture/core-editor-architecture#commands Command} name | {@link getting-started/setup/toolbar Toolbar} component name | Output element |
 |-----|---|-----|-----|
 | {@link module:basic-styles/bold~Bold} | `'bold'` | `'bold'` | `<strong>bold</strong>` |
 | {@link module:basic-styles/italic~Italic} | `'italic'` | `'italic'` | `<i>italic</i>` |

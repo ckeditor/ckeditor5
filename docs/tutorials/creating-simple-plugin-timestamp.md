@@ -146,7 +146,7 @@ CKEditor 5 has a rich UI library. We will grab the `ButtonView` class for our to
 
 Once we create a new instance of `ButtonView`, we will be able to customize it by setting its properties. We will create a label, which will be visible on the button thanks to the `withText` property.
 
-We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, in order to be able to add it into the {@link features/toolbar toolbar} array.
+We also need to register our button in the editor's UI `componentFactory`, so it can be displayed in the toolbar. To do it, we will pass the name of the button in the `componentFactory.add` method, in order to be able to add it into the {@link getting-started/setup/toolbar toolbar} array.
 
 ```js
 // Imports from the previous example

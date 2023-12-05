@@ -672,7 +672,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbar">toolbar</a></p>
 			</td>
 			<td>
-				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}. Refer to the {@link features/toolbar toolbar} feature guide to learn more about managing toolbars in CKEditor&nbsp;5.</p>
+				<p>See {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}. Refer to the {@link getting-started/setup/toolbar toolbar} feature guide to learn more about managing toolbars in CKEditor&nbsp;5.</p>
 				<p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar `config.balloonToolbar`} to define the toolbar of a balloon editor and the {@link features/blocktoolbar block toolbar} feature.</p>
 			</td>
 		</tr>
@@ -682,7 +682,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroupCycling">toolbarGroupCycling</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroups">toolbarGroups</a></td>
-			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into multiple lines by using <code>'-'</code>. Refer to the {@link features/toolbar toolbar} guide to learn more about managing toolbar items behavior in CKEditor&nbsp;5.</td>
+			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into multiple lines by using <code>'-'</code>. Refer to the {@link getting-started/setup/toolbar toolbar} guide to learn more about managing toolbar items behavior in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarLocation">toolbarLocation</a></td>

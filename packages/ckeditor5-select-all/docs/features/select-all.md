@@ -46,7 +46,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link framework/plugins/installing-plugins installing plugins} and {@link features/toolbar toolbar configuration}.
+	Read more about {@link framework/plugins/installing-plugins installing plugins} and {@link getting-started/setup/toolbar toolbar configuration}.
 </info-box>
 
 ## Related features

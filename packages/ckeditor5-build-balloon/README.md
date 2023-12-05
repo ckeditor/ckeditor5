@@ -15,7 +15,7 @@ See:
 
 * [Installation](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/quick-start.html) for how to install this package and what it contains.
 * [Editor lifecycle](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/editor-lifecycle.html) for how to create an editor and interact with it.
-* [Configuration](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/configuration.html) for how to configure the editor.
+* [Configuration](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/configuration.html) for how to configure the editor.
 * [Creating custom builds](https://ckeditor.com/docs/ckeditor5/latest/installation/legacy/getting-started/quick-start.html#building-the-editor-from-source) for how to customize the build (configure and rebuild the editor bundle).
 
 ## Quick start

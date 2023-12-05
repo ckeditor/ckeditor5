@@ -130,7 +130,7 @@
 		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
 		"examples/framework/inline-widget.html": "examples/framework/content-placeholder.html",
 		"examples/framework/multi-root-editor.html": "examples/builds/multi-root-editor.html",
-		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
+		"features/blocktoolbar.html": "getting-started/setup/toolbar/blocktoolbar.html",
 		"features/ckbox.html": "features/file-management/ckbox.html",
 		"features/ckfinder.html": "features/file-management/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",

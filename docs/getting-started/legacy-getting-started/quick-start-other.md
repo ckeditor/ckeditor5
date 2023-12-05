@@ -22,7 +22,7 @@ Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link getting-star
 
 * Adding {@link framework/plugins/plugins plugin-driven features} not included in the existing builds.
 * Removing unnecessary features present in a build.
-* Designing a {@link getting-started/setup/configuration#toolbar-setup customized toolbar experience}.
+* Designing a {@link getting-started/setup/toolbar customized toolbar experience}.
 * Changing the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor type build}.
 * Changing the {@link features/ui-language localization language} of the editor.
 

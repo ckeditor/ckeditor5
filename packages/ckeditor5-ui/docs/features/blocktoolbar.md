@@ -127,7 +127,7 @@ BalloonEditor
 	.catch( /* ... */ );
 ```
 
-You can also change the current default toolbar icon `'dragIndicator'` {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} by choosing predefined icon from {@link features/toolbar#changing-the-icon list} using option `icon` or by passing a `SVG` string:
+You can also change the current default toolbar icon `'dragIndicator'` {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} by choosing predefined icon from {@link getting-started/setup/toolbar#changing-the-icon list} using option `icon` or by passing a `SVG` string:
 
 ```js
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';

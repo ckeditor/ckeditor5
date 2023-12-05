@@ -17,7 +17,7 @@ CKEditor&nbsp;5 has many features, and the number is constantly growing. You can
 
 ## Using CKEditor&nbsp;5 features
 
-Most of the features are easily accessible from a {@link features/toolbar highly configurable toolbar} (in fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. This is aided by dedicated feature toolbars in many cases. Plenty of actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with a {@link features/ui-language multitude of translations} and it supports RTL languages.
+Most of the features are easily accessible from a {@link getting-started/setup/toolbar highly configurable toolbar} (in fact there are {@link features/blocktoolbar two of those}) offering buttons and dropdowns you may arrange the way you need. This is aided by dedicated feature toolbars in many cases. Plenty of actions can also be executed with {@link features/keyboard-support keyboard shortcuts}. And the whole user interface comes with a {@link features/ui-language multitude of translations} and it supports RTL languages.
 
 ## CKEditor&nbsp;5 WYSIWYG editor features and functions
 
@@ -31,7 +31,7 @@ The {@link features/font Font feature} provides support for using different font
 
 {@link features/headings Headings} {@icon @ckeditor/ckeditor5-heading/theme/icons/heading1.svg Heading 1} (with configurable levels and styles), as well as the {@link features/text-alignment text alignment feature} {@icon @ckeditor/ckeditor5-core/theme/icons/align-left.svg Align Left} help organize the structure of the document.
 
-Most of these formatting options can be applied from the {@link features/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature} {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg Remove Format}.
+Most of these formatting options can be applied from the {@link getting-started/setup/toolbar toolbar} or on the go, as you type, thanks to the {@link features/autoformat autoformatting feature} that employs Markdown syntax, and as easily removed with the {@link features/remove-format remove format feature} {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg Remove Format}.
 
 {@img assets/img/features-basic-formatting.png 800 CKEditor&nbsp;5 formatting features.}
 
@@ -79,7 +79,7 @@ The {@link features/productivity-pack productivity pack} is a set of exclusive p
 
 ### Other productivity features
 
-Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link getting-started/index editor build} to suit your needs.
+Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link getting-started/setup/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link getting-started/index editor build} to suit your needs.
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
@@ -91,7 +91,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 ### Customizable user experience
 
-Work as you like it - choose user interface approach from {@link getting-started/legacy-getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
+Work as you like it - choose user interface approach from {@link getting-started/legacy-getting-started/predefined-builds several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link getting-started/advanced/dll-builds DLL builds}. Then tailor the user interface to your needs with our customizable {@link getting-started/setup/toolbar editor toolbar} arranging features buttons, dropdowns, and other items in whatever way you need them.
 
 {@img assets/img/full-toolbar.png 938 CKEditor&nbsp;5 customizable UI.}
 

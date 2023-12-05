@@ -382,7 +382,7 @@ The {@link module:table/table~Table} plugins register the following UI component
 
 <table>
 	<thead>
-		<th>{@link features/toolbar Component} name</th>
+		<th>{@link getting-started/setup/toolbar Component} name</th>
 		<th>Registered by</th>
 	</thead>
 	<tbody>

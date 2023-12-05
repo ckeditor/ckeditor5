@@ -230,7 +230,7 @@ The {@link module:table/tableproperties~TableProperties} and {@link module:table
 
 <table>
 	<thead>
-		<th>{@link features/toolbar Component} name</th>
+		<th>{@link getting-started/setup/toolbar Component} name</th>
 		<th>Registered by</th>
 	</thead>
 	<tbody>
