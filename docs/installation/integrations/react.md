@@ -338,7 +338,7 @@ export default App;
 
 ### Vite
 
-Vite requires linked packages to be ESM, and unfortunately, the CKEditor build is not ESM yet (but we're working on it). Therefore, you must modify the `vite.config.js` file to integrate a custom build with Vite. The snippet below will allow you to include the custom build in a Vite bundle. Check out the [Vite docs](https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies) to see more details.
+Vite requires linked packages to be ESM, and unfortunately, the CKEditor build is not ESM yet (but we are working on it). Therefore, you must modify the `vite.config.js` file to integrate a custom build with Vite. The snippet below will allow you to include the custom build in a Vite bundle. Check out the [Vite documentation](https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies) for more details.
 
 ```js
 // vite.config.js

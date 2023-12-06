@@ -15,6 +15,7 @@ import {
 	LabeledFieldView,
 	createLabeledInputNumber,
 	addKeyboardHandlingForGrid,
+	CollapsibleView,
 	type ButtonView,
 	type InputNumberView
 } from 'ckeditor5/src/ui';
@@ -25,8 +26,6 @@ import {
 	global,
 	type Locale
 } from 'ckeditor5/src/utils';
-
-import CollapsibleView from './collapsibleview';
 
 import type { ListPropertiesConfig } from '../../listconfig';
 

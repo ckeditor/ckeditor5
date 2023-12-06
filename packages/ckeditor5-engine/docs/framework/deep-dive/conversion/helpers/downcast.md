@@ -13,7 +13,7 @@ This article lists all editor helpers available in the {@link framework/deep-div
 
 ## Element to element conversion helper
 
-Converting a model element to a view element is the most common case of conversion. It is used to create view elements like `<p>` or `<h1>`, that we call "container elements".
+Converting a model element to a view element is the most common case of conversion. It is used to create view elements like `<p>` or `<h1>`, that we call "container elements."
 
 When using the `elementToElement()` helper, a **single model element** will be converted to a **single view element**. The children of this model element need to have their own converters defined and the engine will recursively convert them and insert into the created view element.
 

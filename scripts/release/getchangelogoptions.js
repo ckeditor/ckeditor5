@@ -5,6 +5,7 @@
 
 /* eslint-env node */
 
+const { format } = require( 'date-fns' );
 const { PACKAGES_DIRECTORY, CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } = require( './utils/constants' );
 
 module.exports = function getChangelogOptions( cliArguments ) {
@@ -12,6 +13,9 @@ module.exports = function getChangelogOptions( cliArguments ) {
 		cwd: CKEDITOR5_ROOT_PATH,
 		packages: PACKAGES_DIRECTORY,
 		releaseBranch: cliArguments.branch,
+		formatDate: now => {
+			return format( now, 'LLLL d, yyyy' );
+		},
 		transformScope: name => {
 			if ( name === 'ckeditor5' ) {
 				return 'https://www.npmjs.com/package/ckeditor5';
