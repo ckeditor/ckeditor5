@@ -99,7 +99,7 @@ msgstr ""
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "قىستۇر"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"

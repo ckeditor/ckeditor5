@@ -27,4 +27,4 @@ msgstr "Nije moguće odrediti kategoriju za otpremljenu datoteku."
 
 msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
-msgstr ""
+msgstr "Nije moguće pristupiti podrazumevanom radnom prostoru."

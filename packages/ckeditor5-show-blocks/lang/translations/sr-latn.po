@@ -12,15 +12,11 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Galician (https://app.transifex.com/ckeditor/teams/11143/gl/)\n"
-"Language: gl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Serbian (Latin) (https://app.transifex.com/ckeditor/teams/11143/sr@latin/)\n"
+"Language: sr@latin\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "Toolbar button tooltip for the increase indentation feature."
-msgid "Increase indent"
-msgstr "Aumentar a sangría"
-
-msgctxt "Toolbar button tooltip for the decrease indentation feature."
-msgid "Decrease indent"
-msgstr "Reducir a sangría"
+msgctxt "The label of the show blocks toolbar button."
+msgid "Show blocks"
+msgstr "Prikaži blokove"
