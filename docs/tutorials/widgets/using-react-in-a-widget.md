@@ -195,7 +195,7 @@ You should see a "Hello world" application in your web browser, which might not 
 
 ## Application structure
 
-Nothing warms the heart of a developer like a good "Hello world!". But you probably agree that what you created is not the most useful application and it is time to change that. In the next sections, you will create some React components and CKEditor&nbsp;5 classes to bring some real logic to the application.
+Nothing warms the heart of a developer like a good "Hello world!" But you probably agree that what you created is not the most useful application and it is time to change that. In the next sections, you will create some React components and CKEditor&nbsp;5 classes to bring some real logic to the application.
 
 To keep some order in the project, you will put [CKEditor classes](#ckeditor-classes) in the `/ckeditor` directory and [React components](#react-components) in the `/react` directory. [Images and CSS styles](#styles-and-assets) will land in the `/assets` directory. By the time you are finished with this tutorial, the structure of the project should look as follows:
 

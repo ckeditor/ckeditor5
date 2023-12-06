@@ -64,15 +64,15 @@ It is also possible to create a completely custom image styles UI, setting your 
 
 ## Approaches to styling images
 CKEditor5 offers two basic approaches to styling the images:
-* A particular style can define the image “type”, so it can be styled for example as an avatar, a banner or an emoticon. It will be called a [“semantical style”](#semantical-styles), since it refers to the purpose of the particular image.
-* On the other hand, sometimes the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately and completely arbitrarily. The style that defines the image alignment will be called a [“presentational”](#presentational-styles) one, since it refers only to the appearance of the image.
+* A particular style can define the image type, so it can be styled, for example, as an avatar, a banner, or an emoticon. It will be called a ["semantical style"](#semantical-styles) since it refers to the purpose of the particular image.
+* On the other hand, sometimes the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately and completely arbitrarily. The style that defines the image alignment will be called a ["presentational"](#presentational-styles) one since it refers only to the appearance of the image.
 
 <info-box hint>
-The distinction made above is purely theoretical. Setting up both semantical and presentational styles is done in exactly the same way, using the {@link module:image/imageconfig~ImageConfig#styles `ImageConfig#styles`} configuration.
+	The distinction made above is purely theoretical. Setting up both semantical and presentational styles is done in the same way, using the {@link module:image/imageconfig~ImageConfig#styles `ImageConfig#styles`} configuration.
 </info-box>
 
 ### Semantical styles
-A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. Check the list of the available semantical styles in the [table](#ready-to-use-styles) below. Semantical styles give the integrator an ability to put a wide range of predefined image appearances at the user's disposal. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.
+A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. Check the list of the available semantical styles in the [table](#ready-to-use-styles) below. Semantical styles give the integrator the ability to put a wide range of predefined image appearances at the user's disposal. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.
 
 <info-box hint>
 	Try to understand what use cases you system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. The "side image" in the example below is displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).

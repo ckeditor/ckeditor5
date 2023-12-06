@@ -572,9 +572,9 @@ It is time to check if the simple box behaves like you would like it to. You can
 * You cannot apply a list in the title and cannot turn it into a heading (other than `<h1 class="simple-box-title">` which it is already). This is because it allows only the content that is allowed in other block elements (like paragraphs). You can, however, apply italic inside the title (because italic is allowed in other blocks).
 * The description behaves like the title, but it allows more content inside &ndash; lists and other headings.
 * If you try to select the entire simple box instance and press <kbd>Delete</kbd>, it will be deleted as a whole. The same when you copy and paste it. This is because it was marked as an `isObject` element in the schema.
-* You cannot easily select the entire simple box instance by clicking on it. Also, the cursor pointer does not change when you hover it. In other words, it seems a bit "dead". This is because you have not defined the view behavior yet.
+* You cannot easily select the entire simple box instance by clicking it. Also, the cursor pointer does not change when you hover it. In other words, it seems a bit dead. This is because you have not defined the view behavior yet.
 
-Pretty cool so far, right? With a very little code, you were able to define the behavior of your simple box plugin which maintains the integrity of these elements. The engine ensures that the user does not break these instances.
+Pretty cool so far, right? With very little code, you were able to define the behavior of your simple box plugin which maintains the integrity of these elements. The engine ensures that the user does not break these instances.
 
 See what else you can improve.
 
@@ -723,7 +723,7 @@ You can rebuild your project now and see how your simple box plugin has changed.
 
 You should observe that:
 
-* The `<section>`, `<h1>`, and `<div>` elements have the `contentEditable` attribute on them (plus some classes). This attribute tells the browser whether an element is considered "editable". Passing the element through `toWidget()` will make its content non-editable. Conversely, passing it through `toWidgetEditable()` will make its content editable again.
+* The `<section>`, `<h1>`, and `<div>` elements have the `contentEditable` attribute on them (plus some classes). This attribute tells the browser whether an element is considered editable. Passing the element through `toWidget()` will make its content non-editable. Conversely, passing it through `toWidgetEditable()` will make its content editable again.
 * You can now click the widget (the gray area) to select it. Once it is selected, it is easier to copy-paste it.
 * The widget and its nested editable regions react to hovering, selection, and focus (outline).
 
