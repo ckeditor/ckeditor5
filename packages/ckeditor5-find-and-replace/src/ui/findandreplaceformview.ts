@@ -271,7 +271,7 @@ export default class FindAndReplaceFormView extends View {
 			tooltip: true
 		} );
 
-		this._replaceInputView = this._createInputField( t( 'Replace with…' ) );
+		this._replaceInputView = this._createInputField( t( 'Replace with…' ), 'ck-labeled-field-replace' );
 
 		this._inputsFieldsetView = this._createInputsFieldset();
 
@@ -784,10 +784,11 @@ export default class FindAndReplaceFormView extends View {
 	 * @param label The input label.
 	 * @returns The labeled input view instance.
 	 */
-	private _createInputField( label: string ): LabeledFieldView<InputView> {
+	private _createInputField( label: string, className?: string ): LabeledFieldView<InputView> {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
 		labeledInput.label = label;
+		labeledInput.class = className;
 
 		return labeledInput;
 	}
