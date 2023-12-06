@@ -34,7 +34,7 @@ ClassicEditor
 
 ## Configuring the toolbar dropdown
 
-The Image feature comes with the unified image insert dropdown component. It automatically collects installed image insert methods so when you install for example `ImageUpload` plugin, the corresponding button will automatically appear in the dropdown. You only need to add a button to the toolbar:
+The Image feature comes with the unified image insert dropdown component. It automatically collects installed image insert methods. For example, if you install the `ImageUpload` plugin, the corresponding button will automatically appear in the dropdown. You only need to add a button to the toolbar:
 
 ```js
 import { Image } from '@ckeditor/ckeditor5-image';
@@ -48,13 +48,13 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-The feature is preconfigured to include the following image insertion methods:
+The feature is pre-configured to include the following image insertion methods:
 
 * `upload` - Upload image from computer. It uses the configured image upload adapter.
 * `assetManager` - Opens the installed asset manager (for example the CKBox).
 * `url` - Allows inserting an image by directly specifying its URL. Integration provided by `ImageInsertViaUrl` feature.
 
-Note that the above buttons will be added only if you install dedicated features but not all features are required.
+Note that the insert methods mentioned above will only be added if you install dedicated features. However, not all features are required.
 
 If you need to limit the methods included in the dropdown (apart from not installing a specific feature) or change their order you can use the `image.insert.integration` configuration option:
 
@@ -68,7 +68,7 @@ ClassicEditor
 		image: {
 			insert: {
 				// This is the default configuration, you do not need to provide 
-                // this configuration key if the list content and order reflects your needs. 
+				// this configuration key if the list content and order reflects your needs. 
 				integrations: [ 'upload', 'assetManager', 'url' ]
 			}
 		}
