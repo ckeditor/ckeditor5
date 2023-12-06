@@ -1266,6 +1266,10 @@ describe( 'FindAndReplaceFormView', () => {
 
 				const spy = sinon.spy( findInput, 'focus' );
 
+				// Make sure the input is not focused. Otherwise it won't be focused again
+				// and the test will fail.
+				view._focusTracker.isFocused = false;
+				view._focusTracker.focusedElement = undefined;
 				replaceAllButton.fire( 'execute' );
 
 				sinon.assert.calledOnce( spy );
