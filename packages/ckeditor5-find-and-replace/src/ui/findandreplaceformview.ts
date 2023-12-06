@@ -168,12 +168,12 @@ export default class FindAndReplaceFormView extends View {
 	private readonly _advancedOptionsCollapsibleView: CollapsibleView;
 
 	/**
-	 * The find options dropdown.
+	 * TODO
 	 */
 	private readonly _matchCaseSwitchView: SwitchButtonView;
 
 	/**
-	 * The find options dropdown.
+	 * TODO
 	 */
 	private readonly _wholeWordsOnlySwitchView: SwitchButtonView;
 
@@ -188,14 +188,14 @@ export default class FindAndReplaceFormView extends View {
 	private readonly _replaceAllButtonView: ButtonView;
 
 	/**
-	 * The fieldset aggregating the find UI.
+	 * The `div` aggregating the inputs.
 	 */
-	private readonly _inputsFieldsetView: View;
+	private readonly _inputsDivView: View;
 
 	/**
-	 * The fieldset aggregating the replace UI.
+	 * The `div` aggregating the action buttons.
 	 */
-	private readonly _actionButtonsFieldsetView: View;
+	private readonly _actionButtonsDivView: View;
 
 	/**
 	 * Tracks information about the DOM focus in the form.
@@ -273,7 +273,7 @@ export default class FindAndReplaceFormView extends View {
 
 		this._replaceInputView = this._createInputField( t( 'Replace with…' ), 'ck-labeled-field-replace' );
 
-		this._inputsFieldsetView = this._createInputsFieldset();
+		this._inputsDivView = this._createInputsDiv();
 
 		this._matchCaseSwitchView = this._createMatchCaseSwitch();
 		this._wholeWordsOnlySwitchView = this._createWholeWordsOnlySwitch();
@@ -298,7 +298,7 @@ export default class FindAndReplaceFormView extends View {
 			withText: true
 		} );
 
-		this._actionButtonsFieldsetView = this._createActionButtonsFieldset();
+		this._actionButtonsDivView = this._createActionButtonsDiv();
 
 		this._focusTracker = new FocusTracker();
 
@@ -320,9 +320,9 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		this.children.addMany( [
-			this._inputsFieldsetView,
+			this._inputsDivView,
 			this._advancedOptionsCollapsibleView,
-			this._actionButtonsFieldsetView
+			this._actionButtonsDivView
 		] );
 
 		this.setTemplate( {
@@ -402,12 +402,12 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Configures and returns the `<fieldset>` aggregating all form inputs.
+	 * Configures and returns the `<div>` aggregating all form inputs.
 	 */
-	private _createInputsFieldset(): View {
+	private _createInputsDiv(): View {
 		const locale = this.locale;
 		const t = locale.t;
-		const fieldsetView = new View( locale );
+		const inputsDivView = new View( locale );
 
 		// Typing in the find field invalidates all previous results (the form is "dirty").
 		this._findInputView.fieldView.on( 'input', () => {
@@ -440,8 +440,8 @@ export default class FindAndReplaceFormView extends View {
 				return t( 'Tip: Find some text first in order to replace it.' );
 			} );
 
-		fieldsetView.setTemplate( {
-			tag: 'fieldset',
+		inputsDivView.setTemplate( {
+			tag: 'div',
 			attributes: {
 				class: [ 'ck', 'ck-find-and-replace-form__inputs' ]
 			},
@@ -453,7 +453,7 @@ export default class FindAndReplaceFormView extends View {
 			]
 		} );
 
-		return fieldsetView;
+		return inputsDivView;
 	}
 
 	/**
@@ -563,10 +563,10 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * Configures and returns the `<fieldset>` aggregating all form action buttons.
+	 * Configures and returns the `<div>` element aggregating all form action buttons.
 	 */
-	private _createActionButtonsFieldset(): View {
-		const fieldsetView = new View( this.locale );
+	private _createActionButtonsDiv(): View {
+		const actionsDivView = new View( this.locale );
 
 		this._replaceButtonView.bind( 'isEnabled' ).to(
 			this, '_areCommandsEnabled',
@@ -596,8 +596,8 @@ export default class FindAndReplaceFormView extends View {
 
 		this._findButtonView.on( 'execute', this._onFindButtonExecute.bind( this ) );
 
-		fieldsetView.setTemplate( {
-			tag: 'fieldset',
+		actionsDivView.setTemplate( {
+			tag: 'div',
 			attributes: {
 				class: [ 'ck', 'ck-find-and-replace-form__actions' ]
 			},
@@ -608,7 +608,7 @@ export default class FindAndReplaceFormView extends View {
 			]
 		} );
 
-		return fieldsetView;
+		return actionsDivView;
 	}
 
 	/**

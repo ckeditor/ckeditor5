@@ -91,24 +91,24 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 			} );
 
-			it( 'should have input and action fieldsets and collapsible options', () => {
-				expect( view.template.children[ 0 ].get( 0 ) ).to.equal( view._inputsFieldsetView );
+			it( 'should have input and action areas and collapsible options', () => {
+				expect( view.template.children[ 0 ].get( 0 ) ).to.equal( view._inputsDivView );
 				expect( view.template.children[ 0 ].get( 1 ) ).to.equal( view._advancedOptionsCollapsibleView );
-				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view._actionButtonsFieldsetView );
+				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view._actionButtonsDivView );
 			} );
 
-			describe( 'inputs fieldset', () => {
+			describe( 'inputs area', () => {
 				it( 'should have an element created from template', () => {
-					expect( view._inputsFieldsetView.element.tagName ).to.equal( 'FIELDSET' );
-					expect( view._inputsFieldsetView.element.classList.contains( 'ck' ) ).to.true;
-					expect( view._inputsFieldsetView.element.classList.contains( 'ck-find-and-replace-form__inputs' ) ).to.be.true;
+					expect( view._inputsDivView.element.tagName ).to.equal( 'DIV' );
+					expect( view._inputsDivView.element.classList.contains( 'ck' ) ).to.true;
+					expect( view._inputsDivView.element.classList.contains( 'ck-find-and-replace-form__inputs' ) ).to.be.true;
 				} );
 
 				it( 'should have children', () => {
-					expect( view._inputsFieldsetView.template.children[ 0 ] ).to.equal( view._findInputView );
-					expect( view._inputsFieldsetView.template.children[ 1 ] ).to.equal( view._findPrevButtonView );
-					expect( view._inputsFieldsetView.template.children[ 2 ] ).to.equal( view._findNextButtonView );
-					expect( view._inputsFieldsetView.template.children[ 3 ] ).to.equal( view._replaceInputView );
+					expect( view._inputsDivView.template.children[ 0 ] ).to.equal( view._findInputView );
+					expect( view._inputsDivView.template.children[ 1 ] ).to.equal( view._findPrevButtonView );
+					expect( view._inputsDivView.template.children[ 2 ] ).to.equal( view._findNextButtonView );
+					expect( view._inputsDivView.template.children[ 3 ] ).to.equal( view._replaceInputView );
 				} );
 
 				describe( 'find input view', () => {
@@ -256,17 +256,17 @@ describe( 'FindAndReplaceFormView', () => {
 				} );
 			} );
 
-			describe( 'actions fieldset', () => {
+			describe( 'actions araea', () => {
 				it( 'should have an element created from template', () => {
-					expect( view._actionButtonsFieldsetView.element.tagName ).to.equal( 'FIELDSET' );
-					expect( view._actionButtonsFieldsetView.element.classList.contains( 'ck' ) ).to.true;
-					expect( view._actionButtonsFieldsetView.element.classList.contains( 'ck-find-and-replace-form__actions' ) ).to.be.true;
+					expect( view._actionButtonsDivView.element.tagName ).to.equal( 'DIV' );
+					expect( view._actionButtonsDivView.element.classList.contains( 'ck' ) ).to.true;
+					expect( view._actionButtonsDivView.element.classList.contains( 'ck-find-and-replace-form__actions' ) ).to.be.true;
 				} );
 
 				it( 'should have children', () => {
-					expect( view._actionButtonsFieldsetView.template.children[ 0 ] ).to.equal( view._replaceAllButtonView );
-					expect( view._actionButtonsFieldsetView.template.children[ 1 ] ).to.equal( view._replaceButtonView );
-					expect( view._actionButtonsFieldsetView.template.children[ 2 ] ).to.equal( view._findButtonView );
+					expect( view._actionButtonsDivView.template.children[ 0 ] ).to.equal( view._replaceAllButtonView );
+					expect( view._actionButtonsDivView.template.children[ 1 ] ).to.equal( view._replaceButtonView );
+					expect( view._actionButtonsDivView.template.children[ 2 ] ).to.equal( view._findButtonView );
 				} );
 
 				describe( 'replace all button view', () => {
@@ -313,7 +313,7 @@ describe( 'FindAndReplaceFormView', () => {
 			} );
 
 			it( 'should create child views', () => {
-				expect( view._inputsFieldsetView ).to.be.instanceOf( View );
+				expect( view._inputsDivView ).to.be.instanceOf( View );
 				expect( view._findInputView ).to.be.instanceOf( LabeledFieldView );
 				expect( view._findPrevButtonView ).to.be.instanceOf( ButtonView );
 				expect( view._findNextButtonView ).to.be.instanceOf( ButtonView );
@@ -323,7 +323,7 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( view._matchCaseSwitchView ).to.be.instanceOf( SwitchButtonView );
 				expect( view._wholeWordsOnlySwitchView ).to.be.instanceOf( SwitchButtonView );
 
-				expect( view._actionButtonsFieldsetView ).to.be.instanceOf( View );
+				expect( view._actionButtonsDivView ).to.be.instanceOf( View );
 				expect( view._replaceAllButtonView ).to.be.instanceOf( ButtonView );
 				expect( view._replaceButtonView ).to.be.instanceOf( ButtonView );
 				expect( view._findButtonView ).to.be.instanceOf( ButtonView );
