@@ -19,7 +19,7 @@ Listed below are the most important changes that require your attention when upg
 
 ## Soft requirements
 
-While [allowing to extend builds](https://github.com/ckeditor/ckeditor5/issues/8395) with additional plugins without rebuilding the bundle (a concept also called {@link installation/advanced/dll-builds "DLLs"}), certain sets of plugins had to be decoupled. This has lead to the introduction of the "soft requirements".
+While [allowing to extend builds](https://github.com/ckeditor/ckeditor5/issues/8395) with additional plugins without rebuilding the bundle (a concept also called {@link installation/advanced/dll-builds "DLLs"}), certain sets of plugins had to be decoupled. This has led to the introduction of the "soft requirements."
 
 Before, each plugin had its direct requirements that would be automatically loaded by the editor before the plugin is loaded. These plugins were specified in the `static get() {}` callback of a plugin class in the form of plugin constructors (dependencies).
 

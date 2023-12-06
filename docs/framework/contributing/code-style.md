@@ -513,8 +513,8 @@ There are some special rules and tips for tests.
 
 	Using titles like *"utils"* is not fine as there are multiple utils in the entire project. *"Table utils"* would be better.
 * Test descriptions (`it()`) should be written like documentation (what you do and what should happen), e.g. *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
-* Avoid test descriptions like *"does not crash when two ranges get merged"*. Instead, explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged"*.
-* Most often, using words like "correctly", "works fine" is a code smell. Think about the requirements &ndash; when writing them you do not say that feature X should "work fine". You document how it should work.
+* Avoid test descriptions like *"does not crash when two ranges get merged."* Instead, explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged."*
+* Most often, using words like "correctly," "works fine" is a code smell. Think about the requirements &ndash; when writing them you do not say that feature X should "work fine." You document how it should work.
 * Ideally, it should be possible to recreate an algorithm just by reading the test descriptions.
 * Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
 * Every test should clean after itself, including destroying all editors and removing all elements that have been added.

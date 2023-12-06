@@ -189,7 +189,7 @@ Check the {@link installation/plugins/plugins#creating-plugins Creating plugins}
 
 ### Custom themes (skins)
 
-In CKEditor&nbsp;5, the previous concept of "skins" was reviewed and is now called "themes".
+In CKEditor&nbsp;5, the previous concept of "skins" was reviewed and is now called "themes."
 
 If you have custom skins for CKEditor 4, they need to be recreated for CKEditor&nbsp;5. Fortunately, custom theming in CKEditor&nbsp;5 is much more powerful and simpler than before.
 
