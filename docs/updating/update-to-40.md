@@ -14,6 +14,40 @@ modified_at: 2023-11-13
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v40.2.0
+
+For the entire list of changes introduced in version 40.2.0, see the [release notes for CKEditor&nbsp;5 v40.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.2.0).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
+
+### New image insert dropdown
+
+As of v40.2.0 the `uploadImage` function used to upload images via the editor toolbar before has been replaced by the `insertImage` function. Now, the image toolbar button has been updated into a configurable dropdown. It provides access to selected methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
+
+{@img assets/img/image_insert_dropdown.png 772 Image insert dropdown in the main editor toolbar.}
+
+You need to update your toolbar configuration to make use of the updated feature.
+
+```js
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
+		// the toolbar item changed from `uploadImage`
+		toolbar: [ 'insertImage', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+By default, the function automatically detects all available upload methods. For example, it will detect and add the `ImageInsertViaUrl` if it is enabled. While no configuration is required for this feature, you might want to limit the options available from the image insert dropdown. Learn more about the toolbar dropdown configuration in the {@link features/images-installation#configuring-the-toolbar-dropdown installation guide}.
+
+### Removal of the `insertImageViaUrl` option
+
+The `insertImageViaUrl` configuration option was not used and has been removed. If you have it somewhere in your editor configuration, please remove it to avoid getting an error.
+
 ## Update to CKEditor&nbsp;5 v40.1.0
 
 For the entire list of changes introduced in version 40.1.0, see the [release notes for CKEditor&nbsp;5 v40.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.1.0).
