@@ -90,8 +90,6 @@ export { default as SearchInfoView } from './search/searchinfoview';
 export { default as FilteredView, type FilteredViewExecuteEvent } from './search/filteredview';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview';
 
-export { default as CollapsibleView } from './collapsible/collapsibleview';
-
 export { default as TooltipManager } from './tooltipmanager';
 export { default as Template, type TemplateDefinition } from './template';
 
