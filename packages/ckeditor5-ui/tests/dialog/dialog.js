@@ -7,6 +7,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Dialog, DialogView, DialogViewPosition } from '../../src';
+import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 /* global document */
 
@@ -79,7 +80,7 @@ describe( 'Dialog', () => {
 				} );
 			} );
 
-			describe( 'hide event listeners', () => {
+			describe( '`hide` event listeners', () => {
 				it( 'executing `_hide()` method ', () => {
 					const spy = sinon.spy( dialogPlugin, '_hide' );
 
@@ -120,6 +121,49 @@ describe( 'Dialog', () => {
 					}, { priority: 'lowest' } );
 
 					dialogPlugin.fire( 'hide' );
+				} );
+			} );
+
+			describe( 'keystroke handling', () => {
+				describe( 'on ctrl+F6 press', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.f6,
+						ctrlKey: !env.isMac,
+						metaKey: env.isMac,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					it( 'should do nothing if dialog view is not open', () => {
+						editor.keystrokes.press( keyEvtData );
+
+						sinon.assert.notCalled( keyEvtData.preventDefault );
+						sinon.assert.notCalled( keyEvtData.stopPropagation );
+					} );
+
+					it( 'should focus the editor if dialog view is focused', () => {
+						const spy = sinon.spy( editor.editing.view, 'focus' );
+
+						dialogPlugin.show( {} );
+						dialogPlugin.view.focusTracker.isFocused = true;
+
+						editor.keystrokes.press( keyEvtData );
+
+						sinon.assert.calledOnce( keyEvtData.preventDefault );
+						sinon.assert.calledOnce( keyEvtData.stopPropagation );
+						sinon.assert.calledOnce( spy );
+					} );
+
+					it( 'should focus the dialog if editor is focused', () => {
+						dialogPlugin.show( {} );
+						editor.editing.view.focus();
+
+						const spy = sinon.spy( dialogPlugin.view, 'focus' );
+
+						editor.keystrokes.press( keyEvtData );
+
+						sinon.assert.calledOnce( spy );
+					} );
 				} );
 			} );
 
