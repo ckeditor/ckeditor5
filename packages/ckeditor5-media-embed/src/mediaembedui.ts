@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown, CssTransitionDisablerMixin, type DropdownView } from 'ckeditor5/src/ui';
+import { createDropdown, type DropdownView } from 'ckeditor5/src/ui';
 
 import MediaFormView from './ui/mediaformview';
 import MediaEmbedEditing from './mediaembedediting';
@@ -58,7 +58,7 @@ export default class MediaEmbedUI extends Plugin {
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
 		dropdown.once( 'change:isOpen', () => {
-			const form = new ( CssTransitionDisablerMixin( MediaFormView ) )( getFormValidators( editor.t, registry ), editor.locale );
+			const form = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
 
 			dropdown.panelView.children.add( form );
 
@@ -66,8 +66,6 @@ export default class MediaEmbedUI extends Plugin {
 			// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
 			// invisible form/input cannot be focused/selected.
 			button.on( 'open', () => {
-				form.disableCssTransitions();
-
 				// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 				// the command. If the user typed in the input, then canceled (`urlInputView#fieldView#value` stays
 				// unaltered) and re-opened it without changing the value of the media command (e.g. because they
@@ -75,7 +73,6 @@ export default class MediaEmbedUI extends Plugin {
 				// command.
 				form.url = command.value || '';
 				form.urlInputView.fieldView.select();
-				form.enableCssTransitions();
 			}, { priority: 'low' } );
 
 			dropdown.on( 'submit', () => {

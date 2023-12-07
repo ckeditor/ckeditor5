@@ -11,9 +11,7 @@ import { Plugin, icons } from 'ckeditor5/src/core';
 import {
 	ButtonView,
 	ContextualBalloon,
-	clickOutsideHandler,
-	CssTransitionDisablerMixin,
-	type ViewWithCssTransitionDisabler
+	clickOutsideHandler
 } from 'ckeditor5/src/ui';
 
 import TextAlternativeFormView, {
@@ -38,7 +36,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 	/**
 	 * A form containing a textarea and buttons, used to change the `alt` text value.
 	 */
-	private _form?: TextAlternativeFormView & ViewWithCssTransitionDisabler;
+	private _form?: TextAlternativeFormView;
 
 	/**
 	 * @inheritDoc
@@ -114,7 +112,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
-		this._form = new ( CssTransitionDisablerMixin( TextAlternativeFormView ) )( editor.locale );
+		this._form = new TextAlternativeFormView( editor.locale );
 
 		// Render the form so its #element is available for clickOutsideHandler.
 		this._form.render();
@@ -171,8 +169,6 @@ export default class ImageTextAlternativeUI extends Plugin {
 		const command: ImageTextAlternativeCommand = editor.commands.get( 'imageTextAlternative' )!;
 		const labeledInput = this._form!.labeledInput;
 
-		this._form!.disableCssTransitions();
-
 		if ( !this._isInBalloon ) {
 			this._balloon!.add( {
 				view: this._form!,
@@ -188,8 +184,6 @@ export default class ImageTextAlternativeUI extends Plugin {
 		labeledInput.fieldView.value = labeledInput.fieldView.element!.value = command.value || '';
 
 		this._form!.labeledInput.fieldView.select();
-
-		this._form!.enableCssTransitions();
 	}
 
 	/**

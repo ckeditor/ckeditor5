@@ -10,6 +10,7 @@
 import View from '../view';
 import type ViewCollection from '../viewcollection';
 import type DropdownPanelFocusable from './dropdownpanelfocusable';
+import CssTransitionDisablerMixin from '../bindings/csstransitiondisablermixin';
 
 import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -18,7 +19,7 @@ import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
  *
  * See {@link module:ui/dropdown/dropdownview~DropdownView} to learn about the common usage.
  */
-export default class DropdownPanelView extends View implements DropdownPanelFocusable {
+export default class DropdownPanelView extends CssTransitionDisablerMixin( View ) implements DropdownPanelFocusable {
 	/**
 	 * Collection of the child views in this panel.
 	 *

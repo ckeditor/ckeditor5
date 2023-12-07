@@ -22,6 +22,7 @@ import {
 	type PositioningFunction,
 	type Rect
 } from '@ckeditor/ckeditor5-utils';
+import CssTransitionDisablerMixin from '../../bindings/csstransitiondisablermixin';
 
 import { isElement } from 'lodash-es';
 import '../../../theme/components/panel/balloonpanel.css';
@@ -85,7 +86,7 @@ const POSITION_OFF_SCREEN: Position = {
  * } );
  * ```
  */
-export default class BalloonPanelView extends View {
+export default class BalloonPanelView extends CssTransitionDisablerMixin( View ) {
 	/**
 	 * A collection of the child views that creates the balloon panel contents.
 	 */
@@ -193,6 +194,19 @@ export default class BalloonPanelView extends View {
 
 			children: this.content
 		} );
+
+		this.on<ObservableChangeEvent<boolean>>( 'change:isVisible', ( evt, name, isVisible ) => {
+			if ( isVisible ) {
+				console.log( this );
+				this.disableCssTransitions();
+			}
+		}, { priority: 'highest' } );
+
+		this.on<ObservableChangeEvent<boolean>>( 'change:isVisible', ( evt, name, isVisible ) => {
+			if ( isVisible ) {
+				this.enableCssTransitions();
+			}
+		}, { priority: 'lowest' } );
 	}
 
 	/**

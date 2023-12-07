@@ -53,6 +53,8 @@
 				transform var(--ck-labeled-field-view-transition),
 				padding var(--ck-labeled-field-view-transition),
 				background var(--ck-labeled-field-view-transition);
+
+			transition-delay: .1s;
 		}
 	}
 

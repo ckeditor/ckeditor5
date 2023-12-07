@@ -27,6 +27,7 @@ import type Model from '../model';
 import type DropdownButton from './button/dropdownbutton';
 import type { FocusableView } from '../focuscycler';
 import type { FalsyValue } from '../template';
+import ListItemGroupView from '../list/listitemgroupview';
 
 import {
 	global,
@@ -39,7 +40,6 @@ import {
 
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
-import ListItemGroupView from '../list/listitemgroupview';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -418,6 +418,7 @@ function addDefaultBehavior( dropdownView: DropdownView ) {
 	focusDropdownContentsOnArrows( dropdownView );
 	focusDropdownButtonOnClose( dropdownView );
 	focusDropdownPanelOnOpen( dropdownView );
+	useCssTransitionDisabler( dropdownView );
 }
 
 /**
@@ -580,6 +581,23 @@ function bindViewCollectionItemsToDefinitions(
 
 		return null;
 	} );
+}
+
+/**
+ * TODO
+ */
+function useCssTransitionDisabler( dropdownView: DropdownView ) {
+	dropdownView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+		if ( isOpen ) {
+			dropdownView.panelView.disableCssTransitions();
+		}
+	}, { priority: 'highest' } );
+
+	dropdownView.on<ObservableChangeEvent<boolean>>( 'change:isOpen', ( evt, name, isOpen ) => {
+		if ( isOpen ) {
+			dropdownView.panelView.enableCssTransitions();
+		}
+	}, { priority: 'lowest' } );
 }
 
 /**

@@ -18,9 +18,7 @@ import {
 import {
 	ButtonView,
 	ContextualBalloon,
-	clickOutsideHandler,
-	CssTransitionDisablerMixin,
-	type ViewWithCssTransitionDisabler
+	clickOutsideHandler
 } from 'ckeditor5/src/ui';
 import type { PositionOptions } from 'ckeditor5/src/utils';
 import { isWidget } from 'ckeditor5/src/widget';
@@ -50,7 +48,7 @@ export default class LinkUI extends Plugin {
 	/**
 	 * The form view displayed inside the balloon.
 	 */
-	public formView: LinkFormView & ViewWithCssTransitionDisabler | null = null;
+	public formView: LinkFormView | null = null;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -172,12 +170,12 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
 	 */
-	private _createFormView(): LinkFormView & ViewWithCssTransitionDisabler {
+	private _createFormView(): LinkFormView {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
-		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand );
+		const formView = new LinkFormView( editor.locale, linkCommand );
 
 		formView.urlInputView.fieldView.bind( 'value' ).to( linkCommand, 'value' );
 
@@ -337,8 +335,6 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 
-		this.formView!.disableCssTransitions();
-
 		this._balloon.add( {
 			view: this.formView!,
 			position: this._getBalloonPositionData()
@@ -348,8 +344,6 @@ export default class LinkUI extends Plugin {
 		if ( this._balloon.visibleView === this.formView ) {
 			this.formView!.urlInputView.fieldView.select();
 		}
-
-		this.formView!.enableCssTransitions();
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView.fieldView#value` stays

@@ -54,7 +54,11 @@ export default function CssTransitionDisablerMixin<Base extends Constructor<View
 			super( ...args );
 
 			this.set( '_isCssTransitionsDisabled', false );
+		}
+
+		public override render() {
 			this.initializeCssTransitionDisablerMixin();
+			super.render();
 		}
 
 		protected initializeCssTransitionDisablerMixin(): void {

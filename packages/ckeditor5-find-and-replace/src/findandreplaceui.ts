@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core';
-import { createDropdown, CssTransitionDisablerMixin, type DropdownView, type ViewWithCssTransitionDisabler } from 'ckeditor5/src/ui';
+import { createDropdown, type DropdownView } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 
 import loupeIcon from '../theme/icons/find-replace.svg';
@@ -36,7 +36,7 @@ export default class FindAndReplaceUI extends Plugin {
 	/**
 	 * A reference to the find and replace form view.
 	 */
-	public formView: FindAndReplaceFormView & ViewWithCssTransitionDisabler | null;
+	public formView: FindAndReplaceFormView | null;
 
 	/**
 	 * @inheritDoc
@@ -62,7 +62,7 @@ export default class FindAndReplaceUI extends Plugin {
 			dropdown.bind( 'isEnabled' ).to( findCommand );
 
 			dropdown.once( 'change:isOpen', () => {
-				this.formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
+				this.formView = new FindAndReplaceFormView( editor.locale );
 
 				dropdown.panelView.children.add( this.formView );
 
@@ -79,12 +79,8 @@ export default class FindAndReplaceUI extends Plugin {
 			// and no longer should be marked in the content.
 			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
 				if ( isOpen ) {
-					this.formView!.disableCssTransitions();
-
 					this.formView!.reset();
 					this.formView!._findInputView.fieldView.select();
-
-					this.formView!.enableCssTransitions();
 				} else {
 					this.fire( 'searchReseted' );
 				}
