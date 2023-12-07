@@ -44,6 +44,15 @@ ClassicEditor
 
 By default, the function automatically detects all available upload methods. For example, it will detect and add the `ImageInsertViaUrl` if it is enabled. While no configuration is required for this feature, you might want to limit the options available from the image insert dropdown. Learn more about the toolbar dropdown configuration in the {@link features/images-installation#configuring-the-toolbar-dropdown installation guide}.
 
+Due to these changes, new toolbar icons have been introduced and replaced the old {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} image icon.
+
+Now there are:
+* {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon that is the default for the dropdown or for the upload from computer command
+* {@icon @ckeditor/ckeditor5-core/theme/icons/image-asset-manager.svg Asset manager} asset manager icon
+* {@icon @ckeditor/ckeditor5-core/theme/icons/image-url.svg Insert via URL} insert via URL icon.
+
+If there are more than one insert method configured, the toolbar dropdown will use the {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} default icon. If only one image insert method is available, the toolbar will use the respective icon instead.
+
 ### Removal of the `insertImageViaUrl` option
 
 The `insertImageViaUrl` configuration option was not used and has been removed. If you have it somewhere in your editor configuration, please remove it to avoid getting an error.
