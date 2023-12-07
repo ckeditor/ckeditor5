@@ -46,7 +46,7 @@ import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg
  */
 export default class FindAndReplaceFormView extends View {
 	/**
-	 * TODO
+	 * A collection of child views.
 	 */
 	public children: ViewCollection;
 
@@ -163,17 +163,17 @@ export default class FindAndReplaceFormView extends View {
 	private readonly _findNextButtonView: ButtonView;
 
 	/**
-	 * TODO
+	 * A collapsible view aggregating the advanced search options.
 	 */
 	private readonly _advancedOptionsCollapsibleView: CollapsibleView;
 
 	/**
-	 * TODO
+	 * A switch button view controlling the "Match case" option.
 	 */
 	private readonly _matchCaseSwitchView: SwitchButtonView;
 
 	/**
-	 * TODO
+	 * A switch button view controlling the "Whole words only" option.
 	 */
 	private readonly _wholeWordsOnlySwitchView: SwitchButtonView;
 
@@ -545,7 +545,7 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Creates the collapsible view aggregating the advanced search options.
 	 */
 	private _createAdvancedOptionsCollapsible(): CollapsibleView {
 		const t = this.locale.t;
