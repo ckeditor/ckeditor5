@@ -25,6 +25,7 @@ ClassicEditor
 			CKBox,
 			Mermaid
 		] ),
+		removePlugins: [ 'UploadImage' ],
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',
