@@ -194,3 +194,45 @@ export function sendHttpRequest( {
 		xhr.send( data );
 	} );
 }
+
+const MIME_TO_EXTENSION: Record<string, string> = {
+	'image/gif': 'gif',
+	'image/jpeg': 'jpg',
+	'image/png': 'png',
+	'image/webp': 'webp',
+	'image/bmp': 'bmp',
+	'image/tiff': 'tiff'
+};
+
+export function convertMimeTypeToExtension( mimeType: string ): string {
+	return MIME_TO_EXTENSION[ mimeType ];
+}
+
+export async function getContentTypeOfUrl( url: string, options: { signal: AbortSignal } ): Promise<string> {
+	try {
+		const response = await fetch( url, {
+			method: 'HEAD',
+			cache: 'force-cache',
+			...options
+		} );
+
+		if ( !response.ok ) {
+			return '';
+		}
+
+		return response.headers.get( 'content-type' ) || '';
+	} catch {
+		return '';
+	}
+}
+
+/**
+ * Returns an extension from the given value.
+ */
+export function getFileExtension( file: File ): string {
+	const fileName = file.name;
+	const extensionRegExp = /\.(?<ext>[^.]+)$/;
+	const match = fileName.match( extensionRegExp );
+
+	return match!.groups!.ext.toLowerCase();
+}

@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "Toolbar button tooltip for opening a file browser that allows inserting an image or a file to the editor."
+msgctxt "A toolbar button tooltip for opening the file browser that allows inserting an image or a file to the editor."
 msgid "Open file manager"
 msgstr "Apri il gestore dei file"
 
@@ -25,6 +25,22 @@ msgctxt "A message is displayed when CKEditor 5 cannot associate an image with a
 msgid "Cannot determine a category for the uploaded file."
 msgstr "Impossibile determinare la categoria del file caricato."
 
-msgctxt "A message is displayed when the user is not authorised to access CKBox workspace configured as default one."
+msgctxt "A message is displayed when the user is not authorised to access the CKBox workspace configured as default one."
 msgid "Cannot access default workspace."
 msgstr "Impossibile accedere all'area di lavoro predefinita."
+
+msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
+msgid "Edit image"
+msgstr ""
+
+msgctxt "A message stating that image editing is in progress."
+msgid "Processing the edited image."
+msgstr ""
+
+msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
+msgid "Server failed to process the image."
+msgstr ""
+
+msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
+msgid "Failed to determine category of edited image."
+msgstr ""

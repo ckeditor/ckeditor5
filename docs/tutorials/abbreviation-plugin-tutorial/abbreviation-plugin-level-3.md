@@ -259,11 +259,11 @@ export default class FormView extends View {
 }
 ```
 
-Our new functionality should work now, check it out yourself! It does not recognize whether the selected text is an abbreviation already, so if you select "WYSIWYG", the full title does not yet appear in the title input field. We will change it in the next steps.
+Our new functionality should work now, check it out yourself! It does not recognize whether the selected text is an abbreviation already, so if you select "WYSIWYG," the full title does not yet appear in the title input field. We will change it in the next steps.
 
 ## Adding a command
 
-Our plugin does what we want it to do, so why complicate things by adding a command? Well, a command not only executes an action, but also automatically reacts when any changes are applied to the model.
+Our plugin does what we want it to do, so why complicate things by adding a command? Well, a command not only executes an action but also automatically reacts when any changes are applied to the model.
 
 <info-box>
 	A command in CKEditor&nbsp;5 is a combination of an action and a state. The state of the command gets refreshed whenever anything changes in the model. We highly recommend {@link framework/architecture/core-editor-architecture#commands reading about commands} before we move on.
@@ -654,7 +654,7 @@ export default class AbbreviationCommand extends Command {
 
 If the collapsed selection is not inside an existing abbreviation, we will insert a text node with the "abbreviation" attribute in place of the caret.
 
-The user might place the abbreviation inside a text, which already has some other model attributes, like "bold" or "italic". We should first collect them along with our abbreviation attribute, and use the whole list when inserting the abbreviation into the document. We will use our {@link module:utils/tomap~toMap `toMap`} helper function to collect all attributes.
+The user might place the abbreviation inside a text, which already has some other model attributes, like "bold" or "italic." We should first collect them along with our abbreviation attribute, and use the whole list when inserting the abbreviation into the document. We will use our {@link module:utils/tomap~toMap `toMap`} helper function to collect all attributes.
 
 ```js
 // abbreviation/abbreviationcommand.js

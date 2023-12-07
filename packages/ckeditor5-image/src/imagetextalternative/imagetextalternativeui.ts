@@ -16,9 +16,11 @@ import {
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui';
 
-import TextAlternativeFormView from './ui/textalternativeformview';
+import TextAlternativeFormView, {
+	type TextAlternativeFormViewCancelEvent,
+	type TextAlternativeFormViewSubmitEvent
+} from './ui/textalternativeformview';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils';
-import type { CancelEvent, SubmitEvent } from '../imageinsert/ui/imageinsertpanelview';
 import type ImageTextAlternativeCommand from './imagetextalternativecommand';
 import type ImageUtils from '../imageutils';
 
@@ -117,7 +119,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		// Render the form so its #element is available for clickOutsideHandler.
 		this._form.render();
 
-		this.listenTo<SubmitEvent>( this._form, 'submit', () => {
+		this.listenTo<TextAlternativeFormViewSubmitEvent>( this._form, 'submit', () => {
 			editor.execute( 'imageTextAlternative', {
 				newValue: this._form!.labeledInput.fieldView.element!.value
 			} );
@@ -125,7 +127,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 			this._hideForm( true );
 		} );
 
-		this.listenTo<CancelEvent>( this._form, 'cancel', () => {
+		this.listenTo<TextAlternativeFormViewCancelEvent>( this._form, 'cancel', () => {
 			this._hideForm( true );
 		} );
 

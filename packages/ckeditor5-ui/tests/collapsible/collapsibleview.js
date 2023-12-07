@@ -4,10 +4,10 @@
  */
 
 import CollapsibleView from '../../src/collapsible/collapsibleview';
-import ViewCollection from '../../src/viewcollection';
 import ButtonView from '../../src/button/buttonview';
 
 import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
+import ViewCollection from '../../src/viewcollection';
 
 describe( 'CollapsibleView', () => {
 	let view, locale;
@@ -79,6 +79,16 @@ describe( 'CollapsibleView', () => {
 
 		it( 'should have #label with default value', () => {
 			expect( view.label ).to.equal( '' );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the button', () => {
+			const spy = sinon.spy( view.buttonView, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 

@@ -7,13 +7,12 @@
  * @module ui/collapsible/collapsibleview
  */
 
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+
 import View from '../view';
 import ButtonView from '../button/buttonview';
 import type ViewCollection from '../viewcollection';
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
 import '../../theme/components/collapsible/collapsible.css';
@@ -118,6 +117,13 @@ export default class CollapsibleView extends View {
 		super.render();
 
 		this._collapsibleAriaLabelUid = this.buttonView.labelView.element!.id;
+	}
+
+	/**
+	 * Focuses the first focusable.
+	 */
+	public focus(): void {
+		this.buttonView.focus();
 	}
 
 	/**

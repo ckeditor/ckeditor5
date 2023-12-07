@@ -59,11 +59,6 @@ ClassicEditor.defaultConfig = {
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
 	},
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
-		]
-	},
 	ui: {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()

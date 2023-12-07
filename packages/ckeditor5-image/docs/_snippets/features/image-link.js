@@ -31,6 +31,7 @@ ClassicEditor
 				'imageStyle:inline',
 				'imageStyle:block',
 				'imageStyle:side',
+				'|',
 				'ckboxImageEdit'
 			]
 		},

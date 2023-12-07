@@ -37,7 +37,7 @@ Most of these formatting options can be applied from the {@link features/toolbar
 
 ### Advanced content editing
 
-Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} and create a responsive design. If that is not enough, {@link features/media-embed embed media} {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Media} into your content.
+Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} and create a responsive design. If that is not enough, {@link features/media-embed embed media} {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Media} into your content.
 
 An essential feature for online content are {@link features/link links} {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} - these can be easily pasted, changed and attributed.
 

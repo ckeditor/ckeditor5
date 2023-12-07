@@ -458,30 +458,26 @@ export interface ImageInsertConfig {
 	 * The image insert panel view configuration contains a list of {@link module:image/imageinsert~ImageInsert} integrations.
 	 *
 	 * The option accepts string tokens.
-	 * * for predefined integrations, we have two special strings: `insertImageViaUrl` and `openCKFinder`.
-	 * The former adds the **Insert image via URL** feature, while the latter adds the built-in **CKFinder** integration.
-	 * * for custom integrations, each string should be a name of the component registered in the
-	 * {@link module:ui/componentfactory~ComponentFactory component factory}.
-	 * If you have a plugin `PluginX` that registers `pluginXButton` component, then the integration token
-	 * in that case should be `pluginXButton`.
+	 * * for predefined integrations, we have 3 special strings: `upload`, `url`, and `assetManager`.
+	 * * for custom integrations, each string should be a name of the integration registered by the
+	 * {@link module:image/imageinsert/imageinsertui~ImageInsertUI#registerIntegration `ImageInsertUI#registerIntegration()`}.
 	 *
 	 * ```ts
-	 * // Add `insertImageViaUrl`, `openCKFinder` and custom `pluginXButton` integrations.
+	 * // Add `upload`, `assetManager` and `url` integrations.
 	 * const imageInsertConfig = {
 	 * 	insert: {
 	 * 		integrations: [
-	 * 			'insertImageViaUrl',
-	 * 			'openCKFinder',
-	 * 			'pluginXButton'
+	 * 			'upload',
+	 * 			'assetManager',
+	 * 			'url'
 	 * 		]
 	 * 	}
 	 * };
 	 * ```
 	 *
-	 * @internal
-	 * @default [ 'insertImageViaUrl' ]
+	 * @default [ 'upload', 'assetManager', 'url' ]
 	 */
-	integrations: Array<string>;
+	integrations?: Array<string>;
 
 	/**
 	 * This option allows to override the image type used by the {@link module:image/image/insertimagecommand~InsertImageCommand}
