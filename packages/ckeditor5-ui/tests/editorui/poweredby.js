@@ -189,7 +189,7 @@ describe( 'PoweredBy', () => {
 
 				// Stub textarea's client rect.
 				testUtils.sinon.stub( HTMLElement.prototype, 'getBoundingClientRect' ).callsFake( function() {
-					if ( this.parentNode.classList.contains( 'ck-source-editing-area' ) ) {
+					if ( typeof(this.parentNode.classList) === 'undefined' || this.parentNode.classList.contains( 'ck-source-editing-area' ) ) {
 						return {
 							top: 0,
 							left: 0,
