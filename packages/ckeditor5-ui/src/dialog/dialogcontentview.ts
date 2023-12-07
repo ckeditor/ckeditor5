@@ -13,7 +13,7 @@ import type ViewCollection from '../viewcollection';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
- * TODO
+ * A dialog content view class.
  */
 export default class DialogContentView extends View {
 	/**
@@ -22,7 +22,7 @@ export default class DialogContentView extends View {
 	public readonly children: ViewCollection;
 
 	/**
-	 * TODO
+	 * @inheritdoc
 	 */
 	constructor(
 		locale: Locale | undefined
@@ -41,7 +41,7 @@ export default class DialogContentView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Removes all the child views.
 	 */
 	public reset(): void {
 		while ( this.children.length ) {

@@ -45,106 +45,116 @@ export enum DialogViewPosition {
 const toPx = toUnit( 'px' );
 
 /**
- * TODO
+ * A dialog view class.
  */
 export default class DialogView extends DraggableViewMixin( View ) implements DraggableView {
 	/**
-	 * TODO
+	 * A collection of the child views inside of the dialog.
+	 * Dialog can have 3 optional parts: header, content and actions.
 	 */
 	public readonly parts: ViewCollection;
 
 	/**
-	 * TODO
+	 * A header view of the dialog. It's also a drag handle of the dialog.
 	 */
 	public headerView?: FormHeaderView;
 
 	/**
-	 * TODO
+	 * A close button view. It's automatically added to the header view if present.
 	 */
 	public closeButtonView?: ButtonView;
 
 	/**
-	 * TODO
+	 * A view with the action buttons available to the user.
 	 */
 	public actionsView?: DialogActionsView;
 
 	/**
-	 * TODO
+	 * A default dialog element offset from the reference element (e.g. editor editable area).
 	 */
 	public static defaultOffset: number = 15;
 
 	/**
-	 * TODO
+	 * A view with the dialog content.
 	 */
 	public contentView?: DialogContentView;
 
 	/**
-	 * TODO
+	 * A keystroke handler instance.
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
-	 * TODO
+	 * A focus tracker instance.
 	 */
 	private readonly _focusTracker: FocusTracker;
 
 	/**
-	 * TODO
+	 * A flag indicating that the dialog should be shown. Once set to `true`, the dialog will be shown
+	 * after its position is calculated. Until then, the dialog is transparent and not visible.
+	 *
+	 * See {@link #isTransparent} property.
 	 */
 	declare public isVisible: boolean;
 
 	/**
-	 * TODO
+	 * A flag indicating if dialog is transparent. It is used to prevent the dialog from being visible
+	 * before its position is calculated.
 	 */
 	declare public isTransparent: boolean;
 
 	/**
-	 * TODO
+	 * A flag indicating if this DialogView is a modal.
 	 */
 	declare public isModal: boolean;
 
 	/**
-	 * TODO
+	 * A flag indicating if the dialog was moved manually. If so, its position
+	 * won't be updated automatically upon window resize or document scroll.
 	 */
 	declare public wasMoved: boolean;
 
 	/**
-	 * TODO
+	 * A custom class name to be added to the dialog element.
 	 */
 	declare public className: string | undefined;
 
 	/**
-	 * TODO
+	 * The calculated `top` CSS dialog property used for positioning.
+	 *
+	 * @internal
 	 */
 	declare public _top: number;
 
 	/**
-	 * TODO
+	 * The calculated `left` CSS dialog property used for positioning.
+	 *
+	 * @internal
 	 */
 	declare public _left: number;
 
 	/**
-	 * TODO
+	 * Callback returning the DOM root that requested the dialog.
 	 */
 	private _getCurrentDomRoot: () => HTMLElement;
 
 	/**
-	 * TODO
+	 * Callback returning the configured editor viewport offset.
 	 */
 	private _getViewportOffset: () => EditorUI[ 'viewportOffset' ];
 
 	/**
-	 * TODO
+	 * The position of the dialog view.
 	 */
 	declare public position: DialogViewPosition;
 
 	/**
-	 * TODO
+	 * The list of the focusable elements inside the dialog view.
 	 */
 	private readonly _focusables: ViewCollection;
 
 	/**
-	 * TODO
+	 * The focus cycler instance.
 	 */
 	private readonly _focusCycler: FocusCycler;
 
@@ -284,7 +294,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Returns the element that should be used as a drag handle.
 	 */
 	public override get dragHandleElement(): HTMLElement | null {
 		if ( this.headerView ) {
@@ -295,7 +305,9 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Creates the dialog parts. Which of them are created depends on the arguments passed to the method.
+	 * There are no rules regarding the dialog construction, i.e. no part is mandatory.
+	 * Each part can only be created once.
 	 *
 	 * @internal
 	 */
@@ -333,14 +345,15 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Focuses the first focusable element inside the dialog.
 	 */
 	public focus(): void {
 		this._focusCycler.focusFirst();
 	}
 
 	/**
-	 * TODO
+	 * Normalises the passed coordinates to make sure the dialog view
+	 * is displayed within the visible viewport and moves it there.
 	 *
 	 * @internal
 	 */
@@ -370,7 +383,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Moves the dialog to the specified coordinates.
 	 */
 	private _moveTo( left: number, top: number ): void {
 		this._left = left;
@@ -378,7 +391,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Moves the dialog by the specified offset.
 	 *
 	 * @internal
 	 */
@@ -387,14 +400,16 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Moves the dialog view to the off-screen position.
+	 * Used when there's no space to display the dialog.
 	 */
 	private _moveOffScreen(): void {
 		this._moveTo( -9999, -9999 );
 	}
 
 	/**
-	 * TODO
+	 * Recalculates the dialog according to the set position and viewport
+	 * and moves it to the new position.
 	 */
 	public updatePosition(): void {
 		let configuredPosition = this.position;
@@ -535,7 +550,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Calculates the visible DOM root part.
 	 */
 	private _getVisibleDomRootRect( viewportRect: Rect ): Rect | null {
 		let visibleDomRootRect = new Rect( this._getCurrentDomRoot() ).getVisible();
@@ -554,21 +569,22 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Calculates the dialog element rect.
 	 */
 	private _getDialogRect() {
 		return new Rect( this.element!.firstElementChild as HTMLElement );
 	}
 
 	/**
-	 * TODO
+	 * Calculates the viewport rect.
 	 */
 	private _getViewportRect() {
 		return getConstrainedViewportRect( this._getViewportOffset() );
 	}
 
 	/**
-	 * TODO
+	 * Collects all focusable elements inside the dialog parts
+	 * and adds them to the focus tracker and focus cycler.
 	 */
 	private _updateFocusCyclableItems() {
 		const focusables = [];
@@ -604,7 +620,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	}
 
 	/**
-	 * TODO
+	 * Creates a close button view that is displayed in the header view corner.
 	 */
 	private _createCloseButton(): ButtonView {
 		const buttonView = new ButtonView( this.locale );
@@ -623,7 +639,9 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 }
 
 /**
- * TODO
+ * An event fired when the dialog is closed.
+ *
+ * @eventName ~DialogView#close
  */
 export type DialogViewCloseEvent = {
 	name: 'close';
@@ -631,7 +649,9 @@ export type DialogViewCloseEvent = {
 };
 
 /**
- * TODO
+ * An event fired when the dialog is moved.
+ *
+ * @eventName ~DialogView#moveTo
  */
 export type DialogViewMoveToEvent = DecoratedMethodEvent<DialogView, 'moveTo'>;
 
