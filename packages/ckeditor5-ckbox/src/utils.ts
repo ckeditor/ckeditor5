@@ -204,10 +204,16 @@ const MIME_TO_EXTENSION: Record<string, string> = {
 	'image/tiff': 'tiff'
 };
 
+/**
+ * Returns an extension a typical file in the specified `mimeType` format would have.
+ */
 export function convertMimeTypeToExtension( mimeType: string ): string {
 	return MIME_TO_EXTENSION[ mimeType ];
 }
 
+/**
+ * Tries to fetch the given `url` and returns 'content-type' of the response.
+ */
 export async function getContentTypeOfUrl( url: string, options: { signal: AbortSignal } ): Promise<string> {
 	try {
 		const response = await fetch( url, {
