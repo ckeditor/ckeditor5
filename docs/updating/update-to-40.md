@@ -20,9 +20,9 @@ For the entire list of changes introduced in version 40.2.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
 
-### New image insert dropdown
+### Expanded image insert dropdown
 
-As of v40.2.0 the `uploadImage` function used to upload images via the editor toolbar before has been replaced by the `insertImage` function. Now, the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} has been updated into a configurable dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image}. It provides access to selected methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
+We have updated the toolbar `insertImage` component. By default, the image toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} provides access to all installed methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
 
 {@img assets/img/image_insert_dropdown.png 772 Image insert dropdown in the main editor toolbar.}
 
@@ -44,18 +44,34 @@ ClassicEditor
 
 By default, the function automatically detects all available upload methods. For example, it will detect and add the `ImageInsertViaUrl` if it is enabled. While no configuration is required for this feature, you might want to limit the options available from the image insert dropdown. Learn more about the toolbar dropdown configuration in the {@link features/images-installation#configuring-the-toolbar-dropdown installation guide}.
 
-Due to these changes, new toolbar icons have been introduced and replaced the old {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} image icon.
+#### Image upload plugins
+
+There are currently the following plugins responsible for inserting images into content:
+
+* `ImageUpload` &ndash; provides the default upload from computer toolbar button
+* `ImageInsertViaUrl` &ndash; provides the insert image via URL integration and toolbar item
+* `ImageInsert` &ndash; delivers both of the integrations mentioned above:
+	* `ImageUpload`
+	* `ImageInsertViaUrl`
+
+Additional image inserting plugins:
+* `CKBox` &ndash; asset manager that provides image upload and editing capabilities
+* `CKFinder` &ndash; image manager
+
+#### New image upload icons
+
+Due to the changes to the image insert mechanisms, new toolbar icons have been introduced and replaced the old {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} image icon.
 
 Now there are:
 * {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon that is the default for the dropdown or for the upload from computer command
-* {@icon @ckeditor/ckeditor5-core/theme/icons/image-asset-manager.svg Asset manager} asset manager icon
+* {@icon @ckeditor/ckeditor5-core/theme/icons/image-asset-manager.svg Image manager} image manager icon
 * {@icon @ckeditor/ckeditor5-core/theme/icons/image-url.svg Insert via URL} insert via URL icon.
 
 If there are more than one insert method configured, the toolbar dropdown will use the {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} default icon. If only one image insert method is available, the toolbar will use the respective icon instead.
 
 ### Removal of the `insertImageViaUrl` option
 
-The `insertImageViaUrl` configuration option was not used and has been removed. If you have it somewhere in your editor configuration, please remove it to avoid getting an error.
+The `insertImageViaUrl` configuration option was not used and has been removed. If you have it somewhere in your editor configuration, please remove it to avoid getting an error. 
 
 ## Update to CKEditor&nbsp;5 v40.1.0
 
