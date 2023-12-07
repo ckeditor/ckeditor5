@@ -72,6 +72,22 @@ describe( 'FindAndReplaceUI', () => {
 				expect( form ).to.be.instanceOf( FindAndReplaceFormView );
 			} );
 
+			it( 'should not create the form until the user opened the dialog (performance enhancement)', async () => {
+				const editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ FindAndReplace, Paragraph ]
+				} );
+				const plugin = editor.plugins.get( 'FindAndReplaceUI' );
+				const toolbarButtonView = editor.ui.componentFactory.create( 'findAndReplace' );
+
+				expect( plugin.formView ).to.be.null;
+
+				toolbarButtonView.fire( 'execute' );
+
+				expect( plugin.formView ).to.be.instanceOf( FindAndReplaceFormView );
+
+				await editor.destroy();
+			} );
+
 			describe( 'findAndReplace button', () => {
 				it( 'should be disabled when find command is disabled', () => {
 					findCommand.isEnabled = true;
