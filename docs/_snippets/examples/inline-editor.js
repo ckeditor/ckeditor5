@@ -22,7 +22,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
