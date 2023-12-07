@@ -22,7 +22,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### New image insert dropdown
 
-As of v40.2.0 the `uploadImage` function used to upload images via the editor toolbar before has been replaced by the `insertImage` function. Now, the image toolbar button has been updated into a configurable dropdown. It provides access to selected methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
+As of v40.2.0 the `uploadImage` function used to upload images via the editor toolbar before has been replaced by the `insertImage` function. Now, the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} has been updated into a configurable dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image}. It provides access to selected methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
 
 {@img assets/img/image_insert_dropdown.png 772 Image insert dropdown in the main editor toolbar.}
 
