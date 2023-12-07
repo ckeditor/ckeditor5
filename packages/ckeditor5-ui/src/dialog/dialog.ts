@@ -172,9 +172,11 @@ export default class Dialog extends Plugin {
 			this.id = id;
 		}
 
-		this.isOpen = true;
-		this._onHide = onHide;
+		if ( onHide ) {
+			this._onHide = onHide;
+		}
 
+		this.isOpen = true;
 		Dialog.visibleDialogPlugin = this;
 	}
 
