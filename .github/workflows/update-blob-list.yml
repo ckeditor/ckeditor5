@@ -1,9 +1,9 @@
-name: Update CKEditor 5 blob remove link
+name: Update CKEditor 5 blob new list plugin
 
 on:
     push:
         branches:
-            - feature/TR-2852
+            - TR-2922
 
 jobs:
     build:
@@ -25,4 +25,4 @@ jobs:
               env:
                   AZURE_STORAGE_ACCOUNT: "ckeditorbuild"
                   AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_BLOB_STORAGE_DEV_CONNECTION_STRING }}
-              run: az storage blob upload -f ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -c \ckeditor -n ckeditor5htmlInsert.js --overwrite
+              run: az storage blob upload -f ./packages/ckeditor5-build-decoupled-document/build/ckeditor.js -c \ckeditor -n ckeditor5list.js --overwrite
