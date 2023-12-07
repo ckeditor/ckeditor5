@@ -19,31 +19,31 @@ import ViewCollection from '../viewcollection';
 import FocusCycler from '../focuscycler';
 
 /**
- * TODO
+ * A dialog actions view class. Contains button views which are used to execute dialog actions.
  */
 export default class DialogActionsView extends View {
 	/**
-	 * TODO
+	 * A collection of button views.
 	 */
 	public readonly children: ViewCollection;
 
 	/**
-	 * TODO
+	 * A keystroke handler instance.
 	 */
 	public readonly keystrokes: KeystrokeHandler;
 
 	/**
-	 * TODO
+	 * A focus cycler instance.
 	 */
 	public readonly focusCycler: FocusCycler;
 
 	/**
-	 * TODO
+	 * A focus tracker instance.
 	 */
 	private readonly _focusTracker: FocusTracker;
 
 	/**
-	 * TODO
+	 * A collection of focusable views.
 	 */
 	private readonly _focusables: ViewCollection;
 
@@ -92,7 +92,8 @@ export default class DialogActionsView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Creates the button views based on the given definitions.
+	 * Then adds them to the {@link #children} collection and to the focus cycler.
 	 */
 	public setButtons( definitions: Array<DialogActionButtonDefinition> ): void {
 		for ( const definition of definitions ) {
@@ -126,7 +127,8 @@ export default class DialogActionsView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Add all elements from the {@link #children} collection to the {@link #_focusables} collection
+	 * and to the {@link #_focusTracker} instance.
 	 */
 	private _updateFocusCyclableItems() {
 		Array.from( this.children ).forEach( v => {
@@ -137,7 +139,8 @@ export default class DialogActionsView extends View {
 }
 
 /**
- * TODO
+ * A dialog action button definition. It's a slightly modified version
+ * of the {@link module:ui/button/button~Button} definition.
  */
 export type DialogActionButtonDefinition =
 	Pick<Button, 'label'> &

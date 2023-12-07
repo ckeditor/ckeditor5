@@ -16,31 +16,31 @@ import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 import '../../theme/components/dialog/dialog.css';
 
 /**
- * TODO
+ * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.
  */
 export default class Dialog extends Plugin {
 	/**
-	 * TODO
+	 * The name of the currently visible dialog view instance.
 	 */
 	public id: string = '';
 
 	/**
-	 * TODO
+	 * The currently visible dialog view instance.
 	 */
 	public view?: DialogView;
 
 	/**
-	 * TODO
+	 * The currently dialog plugin instance controlling the currently visible dialog view.
 	 */
 	public static visibleDialogPlugin?: Dialog;
 
 	/**
-	 * TODO
+	 * A flag indicating whether the dialog is currently visible.
 	 */
 	declare public isOpen: boolean;
 
 	/**
-	 * TODO
+	 * A configurable callback called when the dialog is hidden.
 	 */
 	private _onHide: ( ( dialog: Dialog ) => void ) | undefined;
 
@@ -64,7 +64,7 @@ export default class Dialog extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Initiates listeners for the `show` and `hide` events emitted by this plugin.
 	 */
 	private _initShowHideListeners() {
 		this.on<DialogShowEvent>( 'show', ( evt, args ) => {
@@ -108,7 +108,8 @@ export default class Dialog extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Shows the dialog. If another dialog is currently visible, it will be hidden.
+	 * This method is decorated to enable interacting on the `show` event.
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
 		Dialog.visibleDialogPlugin?.hide();
@@ -117,7 +118,7 @@ export default class Dialog extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Handles creating the {@link module:ui/dialog/dialogview~DialogView} instance and making it visible.
 	 */
 	private _show( {
 		id,
@@ -177,14 +178,14 @@ export default class Dialog extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Hides the dialog. This method is decorated to enable interacting on the `hide` event.
 	 */
 	public hide(): void {
 		this.fire<DialogHideEvent>( this.id ? `hide:${ this.id }` : 'hide' );
 	}
 
 	/**
-	 * TODO
+	 * Destroys the {@link module:ui/dialog/dialogview~DialogView} and cleans up the stored dialog state.
 	 */
 	private _hide(): void {
 		if ( !this.view ) {
@@ -216,7 +217,7 @@ export default class Dialog extends Plugin {
 }
 
 /**
- * TODO
+ * The definition needed to create a {@link module:ui/dialog/dialogview~DialogView}.
  */
 export type DialogDefinition = {
 	id?: string;
@@ -231,7 +232,9 @@ export type DialogDefinition = {
 };
 
 /**
- * TODO
+ * An event fired after {@link module:ui/dialog/dialog~Dialog#show} is called.
+ *
+ * @eventName ~Dialog#show
  */
 export type DialogShowEvent = {
 	name: 'show' | `show:${ string }`;
@@ -239,7 +242,9 @@ export type DialogShowEvent = {
 };
 
 /**
- * TODO
+ * An event fired after {@link module:ui/dialog/dialog~Dialog#hide} is called.
+ *
+ * @eventName ~Dialog#hide
  */
 export type DialogHideEvent = {
 	name: 'hide' | `hide:${ string }`;
