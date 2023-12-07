@@ -26,7 +26,7 @@ We have updated the toolbar `insertImage` component. By default, the image toolb
 
 {@img assets/img/image_insert_dropdown.png 772 Image insert dropdown in the main editor toolbar.}
 
-You need to update your toolbar configuration to make use of the updated feature.
+You may want to update your toolbar configuration to make use of the updated feature if you did not use it before.
 
 ```js
 import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
@@ -35,7 +35,7 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
-		// the toolbar item changed from `uploadImage`
+		// the insert image dropdown toolbar item
 		toolbar: [ 'insertImage', /* ... */ ],
 	} )
 	.then( /* ... */ )
@@ -46,7 +46,7 @@ By default, the function automatically detects all available upload methods. For
 
 #### Image upload plugins
 
-There are currently the following plugins responsible for inserting images into content:
+These are all available plugins that provide integrations to the insert image dropdown:
 
 * `ImageUpload` &ndash; provides the default upload from computer toolbar button
 * `ImageInsertViaUrl` &ndash; provides the insert image via URL integration and toolbar item
