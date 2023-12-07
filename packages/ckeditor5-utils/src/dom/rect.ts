@@ -385,6 +385,8 @@ export default class Rect {
 			}
 		}
 
+		shiftRectToCompensatePositionedAncestor( absoluteRect, document.documentElement );
+
 		return absoluteRect;
 	}
 
