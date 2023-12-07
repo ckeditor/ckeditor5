@@ -109,6 +109,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	declare public isModal: boolean;
 
 	/**
+	 * A label for the view dialog element.
+	 */
+	declare public ariaLabel: string;
+
+	/**
 	 * A flag indicating if the dialog was moved manually. If so, its position
 	 * won't be updated automatically upon window resize or document scroll.
 	 */
@@ -173,9 +178,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		super( locale );
 
 		const bind = this.bindTemplate;
+		const t = locale.t;
 
 		this.set( 'isVisible', false );
 		this.set( 'className', '' );
+		this.set( 'ariaLabel', t( 'Editor dialog' ) );
 		this.set( 'isModal', false );
 		this.set( 'isTransparent', false );
 		this.set( 'wasMoved', false );
@@ -227,6 +234,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 							'ck-dialog',
 							bind.to( 'className' )
 						],
+						role: 'dialog',
+						'aria-label': bind.to( 'ariaLabel' ),
 						style: {
 							top: bind.to( '_top', top => toPx( top ) ),
 							left: bind.to( '_left', left => toPx( left ) ),
@@ -321,6 +330,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			this.closeButtonView = this._createCloseButton();
 			this.headerView.children.add( this.closeButtonView );
 			this.headerView.label = title;
+			this.ariaLabel = title;
 			this.parts.add( this.headerView, 0 );
 		}
 
