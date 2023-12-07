@@ -29,8 +29,9 @@ describe( 'FindAndReplaceUI', () => {
 	} );
 
 	describe( 'init()', () => {
-		describe( 'with default config', () => {
+		describe( 'with the default UI type config (dialog)', () => {
 			let toolbarButtonView, dialogPlugin, dialogView;
+
 			beforeEach( () => {
 				editorElement = global.document.createElement( 'div' );
 				global.document.body.appendChild( editorElement );
@@ -378,7 +379,7 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 		} );
 
-		describe( 'when dropdown UI was specified in the config', () => {
+		describe( 'with the UI type specified as dropdown in the config', () => {
 			beforeEach( () => {
 				editorElement = global.document.createElement( 'div' );
 				global.document.body.appendChild( editorElement );
