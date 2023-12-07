@@ -18,7 +18,8 @@
 	}
 
 	/* Generic styles for the form inputs and actions. */
-	& .ck-find-and-replace-form__inputs, .ck-find-and-replace-form__actions {
+	& .ck-find-and-replace-form__inputs,
+	& .ck-find-and-replace-form__actions {
 		flex: 1 1 auto;
 		flex-direction: row;
 		flex-wrap: wrap;
@@ -26,7 +27,6 @@
 		align-content: stretch;
 
 		padding: var(--ck-spacing-large);
-		border: 0;
 		margin: 0;
 
 		& > .ck-button {
