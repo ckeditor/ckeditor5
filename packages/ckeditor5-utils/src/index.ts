@@ -42,6 +42,7 @@ export { default as CKEditorError, logError, logWarning } from './ckeditorerror'
 
 export { default as ElementReplacer } from './elementreplacer';
 
+export { default as abortableDebounce, type AbortableFunc } from './abortabledebounce';
 export { default as count } from './count';
 export { default as compareArrays } from './comparearrays';
 export { default as createElement } from './dom/createelement';

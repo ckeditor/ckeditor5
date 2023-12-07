@@ -90,11 +90,6 @@ const config = {
 		extraClasses: 'live-snippet formatted'
 	},
 	cloudServices: CS_CONFIG,
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
-		]
-	},
 	ui: {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()

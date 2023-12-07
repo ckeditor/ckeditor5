@@ -12,8 +12,7 @@
   ],
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "40.1.0",
-    "@ckeditor/ckeditor5-ui": "40.1.0"
+    "ckeditor5": "40.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "40.1.0",
@@ -47,6 +46,7 @@
     "@ckeditor/ckeditor5-table": "40.1.0",
     "@ckeditor/ckeditor5-theme-lark": "40.1.0",
     "@ckeditor/ckeditor5-typing": "40.1.0",
+    "@ckeditor/ckeditor5-ui": "40.1.0",
     "@ckeditor/ckeditor5-undo": "40.1.0",
     "@ckeditor/ckeditor5-utils": "40.1.0",
     "@ckeditor/ckeditor5-widget": "40.1.0",
