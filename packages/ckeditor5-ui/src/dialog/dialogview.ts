@@ -87,7 +87,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * A focus tracker instance.
 	 */
-	private readonly _focusTracker: FocusTracker;
+	public readonly focusTracker: FocusTracker;
 
 	/**
 	 * A flag indicating that the dialog should be shown. Once set to `true`, the dialog will be shown
@@ -190,11 +190,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.parts = this.createCollection();
 
 		this.keystrokes = new KeystrokeHandler();
-		this._focusTracker = new FocusTracker();
+		this.focusTracker = new FocusTracker();
 		this._focusables = new ViewCollection();
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
-			focusTracker: this._focusTracker,
+			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate form fields backwards using the Shift + Tab keystroke.
@@ -603,7 +603,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		focusables.forEach( focusable => {
 			this._focusables.add( focusable );
-			this._focusTracker.add( focusable.element! );
+			this.focusTracker.add( focusable.element! );
 
 			if ( isViewWithFocusCycler( focusable ) ) {
 				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {
