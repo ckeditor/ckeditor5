@@ -31,16 +31,16 @@ msgstr "Geen toegang mogelijk tot standaard werkplek."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "Afbeelding bewerken"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "De bewerkte afbeelding verwerken."
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "De server heeft de afbeelding niet verwerkt."
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "Het is niet gelukt om de categorie van de bewerkte afbeelding te bepalen."

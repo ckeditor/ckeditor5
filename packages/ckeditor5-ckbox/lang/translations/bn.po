@@ -31,16 +31,16 @@ msgstr "ডিফল্ট ওয়ার্কস্পেস অ্যাক�
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "ছবি এডিট করুন"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "এডিট করা ছবি প্রক্রিয়া করা হচ্ছে।"
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "সার্ভার ছবিটি প্রক্রিয়া করতে ব্যর্থ হয়েছে।"
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "এডিট করা ছবির ক্যাটাগরি নির্ধারণ করতে ব্যর্থ হয়েছে।"
