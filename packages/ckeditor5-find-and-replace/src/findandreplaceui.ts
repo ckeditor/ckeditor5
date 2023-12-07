@@ -70,19 +70,20 @@ export default class FindAndReplaceUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const isUiUsingDropdown = editor.config.get( 'findAndReplace.uiType' ) === FindAndReplaceUIType.DROPDOWN;
 
 		// Register the toolbar component: dropdown or button (that opens a dialog).
 		editor.ui.componentFactory.add( 'findAndReplace', () => {
 			let componentView: DropdownView | ButtonView;
 
-			if ( editor.config.get( 'findAndReplace.uiType' ) === FindAndReplaceUIType.DROPDOWN ) {
+			if ( isUiUsingDropdown ) {
 				componentView = this._createDropdown();
 			} else {
 				componentView = this._createDialogButton();
 			}
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-				const componentButtonView = componentView instanceof ButtonView ? componentView : componentView.buttonView;
+				const componentButtonView = isUiUsingDropdown ? ( componentView as DropdownView ).buttonView : componentView;
 
 				if ( componentButtonView.isEnabled ) {
 					componentButtonView.fire( 'execute' );
