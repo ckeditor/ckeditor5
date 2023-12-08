@@ -375,7 +375,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				setModelData( model,
 					`[<imageBlock alt="alt text" height="50" ckboxImageId="${ ckboxImageId }"\
-                    src="/assets/sample.png" width="50"></imageBlock>]`
+					src="/assets/sample.png" width="50"></imageBlock>]`
 				);
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
@@ -408,8 +408,8 @@ describe( 'CKBoxImageEditCommand', () => {
 				command.on( 'ckboxImageEditor:processed', () => {
 					expect( getModelData( model ) ).to.equal(
 						'[<imageBlock alt="" ckboxImageId="image-id1" height="100" sources="[object Object]"' +
-                            ' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
-                        '</imageBlock>]'
+							' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
+						'</imageBlock>]'
 					);
 				} );
 
@@ -731,11 +731,11 @@ describe( 'CKBoxImageEditCommand', () => {
 				} );
 
 				setModelData( model, '[<imageBlock ' +
-                        'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
-                            '<caption>' +
-                                'caption' +
-                            '</caption>' +
-                    '</imageBlock>]' );
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+							'<caption>' +
+								'caption' +
+							'</caption>' +
+					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
@@ -743,25 +743,25 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
-                        'alt="alt text" ' +
-                        'ckboxImageId="image-id1" ' +
-                        'height="100" ' +
-                        'sources="[object Object]" ' +
-                        'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-                        'width="100">' +
-                            '<caption>' +
-                                'caption' +
-                            '</caption>' +
-                    '</imageBlock>]'
+						'alt="alt text" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+							'<caption>' +
+								'caption' +
+							'</caption>' +
+					'</imageBlock>]'
 				);
 			} );
 
 			it( 'should not replace image with saved one before it is processed', () => {
 				const modelData =
-                    '[<imageBlock ' +
-                        'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" ' +
-                        'tempServerAssetId="image-id1" width="50">' +
-                    '</imageBlock>]';
+					'[<imageBlock ' +
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" ' +
+						'tempServerAssetId="image-id1" width="50">' +
+					'</imageBlock>]';
 
 				setModelData( model, modelData );
 
@@ -772,8 +772,8 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should replace image with saved one after it is processed', () => {
 				setModelData( model, '[<imageBlock ' +
-                        'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
-                    '</imageBlock>]' );
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
@@ -781,20 +781,20 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
-                        'alt="alt text" ' +
-                        'ckboxImageId="image-id1" ' +
-                        'height="100" ' +
-                        'sources="[object Object]" ' +
-                        'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-                        'width="100">' +
-                    '</imageBlock>]'
+						'alt="alt text" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
 				);
 			} );
 
 			it( 'should not be alt attribute if there is no one in the original image', () => {
 				setModelData( model, '[<imageBlock ' +
-                        'ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
-                    '</imageBlock>]' );
+						'ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
@@ -802,12 +802,12 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
-                        'ckboxImageId="image-id1" ' +
-                        'height="100" ' +
-                        'sources="[object Object]" ' +
-                        'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-                        'width="100">' +
-                    '</imageBlock>]'
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
 				);
 			} );
 
@@ -815,8 +815,8 @@ describe( 'CKBoxImageEditCommand', () => {
 				const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
 
 				setModelData( model, '[<imageBlock ' +
-                        'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
-                    '</imageBlock>]' );
+						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
@@ -824,34 +824,34 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
-                        'alt="alt text" ' +
-                        'ckboxImageId="image-id1" ' +
-                        'height="100" ' +
-                        'placeholder="' + placeholder + '" ' +
-                        'sources="[object Object]" ' +
-                        'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
-                        'width="100">' +
-                    '</imageBlock>]'
+						'alt="alt text" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'placeholder="' + placeholder + '" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
 				);
 			} );
 
 			it( 'should change <img> size attributes and add `image-processing` CSS class ' +
-                'while waiting for the processed image', async () => {
+				'while waiting for the processed image', async () => {
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
-                        '<img alt="alt text" height="50" src="/assets/sample.png" style="aspect-ratio:50/50" width="50"></img>' +
-                        '<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-                    '</figure>'
+						'<img alt="alt text" height="50" src="/assets/sample.png" style="aspect-ratio:50/50" width="50"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>'
 				);
 
 				options.onSave( dataMock );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
-                        'contenteditable="false" data-ckbox-resource-id="example-id">' +
-                        '<img alt="alt text" height="100" src="/assets/sample.png" style="height:100px;width:100px" width="100"></img>' +
-                        '<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-                    '</figure>'
+						'contenteditable="false" data-ckbox-resource-id="example-id">' +
+						'<img alt="alt text" height="100" src="/assets/sample.png" style="height:100px;width:100px" width="100"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>'
 				);
 			} );
 		} );
