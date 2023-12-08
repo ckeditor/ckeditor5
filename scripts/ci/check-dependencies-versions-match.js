@@ -61,7 +61,7 @@ function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappin
 		.filter( packageJson => packageJson.dependencies )
 		.forEach( packageJson => {
 			for ( const [ dependency, version ] of Object.entries( packageJson.dependencies ) ) {
-				if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
+				if ( version === expectedDependencies[ dependency ] ) {
 					continue;
 				}
 
@@ -88,9 +88,22 @@ function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappin
  * @param {Array.<Object>} packageJsons
  */
 function checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5Package ) {
-	const errors = packageJsons
+	const depsErrors = packageJsons
 		.filter( packageJson => packageJson.dependencies )
-		.flatMap( packageJson => Object.entries( getDepsAndDevDeps( packageJson ) )
+		.flatMap( packageJson => Object.entries( packageJson.dependencies )
+			.map( ( [ dependency, version ] ) => {
+				if ( version === expectedDependencies[ dependency ] ) {
+					return '';
+				}
+
+				return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
+			} )
+			.filter( Boolean )
+		);
+
+	const devDepsErrors = packageJsons
+		.filter( packageJson => packageJson.dependencies )
+		.flatMap( packageJson => Object.entries( packageJson.devDependencies )
 			.map( ( [ dependency, version ] ) => {
 				if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
 					return '';
@@ -100,6 +113,8 @@ function checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5
 			} )
 			.filter( Boolean )
 		);
+
+	const errors = [ ...depsErrors, ...devDepsErrors ];
 
 	if ( errors.length ) {
 		console.error( chalk.red( '❌  Errors found. Run this script with an argument: `--fix` to resolve the issues automatically:' ) );
