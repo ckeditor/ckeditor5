@@ -33,11 +33,6 @@
 		}
 	}
 
-	& .ck.ck-dialog__actions {
-		display: flex;
-		justify-content: flex-end;
-	}
-
 	@nest .ck.ck-dialog-overlay.ck-dialog-overlay__transparent & {
 		pointer-events: all;
 	}

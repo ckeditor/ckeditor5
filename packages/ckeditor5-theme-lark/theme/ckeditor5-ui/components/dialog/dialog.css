@@ -35,14 +35,6 @@
 			--ck-font-size-base: 15px;
 		}
 	}
-
-	& .ck.ck-dialog__actions {
-		padding: var(--ck-spacing-large);
-
-		& > * + * {
-			margin-left: var(--ck-spacing-large);
-		}
-	}
 }
 
 @keyframes ck-dialog-fade-in {

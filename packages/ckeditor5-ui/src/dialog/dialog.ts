@@ -13,8 +13,6 @@ import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dia
 import type { DialogActionButtonDefinition } from './dialogactionsview';
 import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 
-import '../../theme/components/dialog/dialog.css';
-
 /**
  * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.
  */
