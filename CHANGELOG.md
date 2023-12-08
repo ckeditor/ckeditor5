@@ -1,35 +1,59 @@
 Changelog
 =========
 
-## [40.2.0](https://github.com/ckeditor/ckeditor5/compare/v40.1.0...v40.2.0) (December 8, 2023)
+## [40.2.0](https://github.com/ckeditor/ckeditor5/compare/v40.1.0...v40.2.0) (December 12, 2023)
 
-### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
+We are happy to announce the release of CKEditor 5 v40.2.0.
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The configuration for AI Assistant has changed and will require update. Additionally, a proper adapter (`OpenAIAdapter`, `AWSAdapter`, or a custom adapter) must be now explicitly added to the plugin list. See migration guide.
+### Release highlights
+
+#### AI Assistant: AWS and custom integrations
+
+Enabling multiple AI model service was one of our priorities for the AI Assistant, as we want everyone to use the platform they are most convenient with.
+
+We are happy to inform that starting from now, you can use the AI Assistant together with the AWS Bedrock service.
+
+What’s more, you can now extend existing adapters to enable more advanced customizations, such as decorating the AI Assistant requests.
+
+Finally, you can even provide your own custom adapter to connect to your own model, or any model that doesn’t have an official adapter yet.
+
+Visit our new integration guide to learn more about integrating and customizing AI Assistant.
+
+Note that these improvements come with minor breaking changes in the editor configuration, so make sure to visit breaking changes section and the migration guide.
+
+#### Image editing
+
+The new release includes a CKBox image editing feature, now quickly accessible through the image toolbar. This tool enables users to perform image edits like cropping, resizing, and rotating within the asset manager, simplifying the content editing process.
+
+Additionally, the feature supports editing images not yet added to CKBox (e.g. hotlinked). This dual functionality, combined with server-side processing, ensures both ease of use and maintenance of high image quality and file integrity, providing a more efficient and reliable image editing experience within the CKEditor environment.
+
+Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html) to learn more about these changes.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `CollapsibleView` moved from the `list` package to the `ui` package. You can import it like this: `import { CollapsibleView } from '@ckeditor/ckeditor5-ui';`
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The configuration for AI Assistant has changed and will require update. Additionally, a proper adapter (`OpenAIAdapter`, `AWSAdapter`, or a custom adapter) must be now explicitly added to the plugin list. See migration guide.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `ImageInsertUI` plugin internals were cleaned up, as it worked a bit magically with hard-coded dependencies. For example, it automatically enabled the behavior of inserting image via URL. As of now, it won't enable any external behaviors. See the migration guide for details.
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `CollapsibleView` has been moved from the `@ckeditor/ckeditor5-list` package to `@ckeditor/ckeditor5-ui`. You can import it like this: `import { CollapsibleView } from '@ckeditor/ckeditor5-ui';`
 
 ### Features
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced AWS Bedrock support for AI Assistant. See AI Assistant integration guide to learn more.
-* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Enable editing of non-CKBox images. ([commit](https://github.com/ckeditor/ckeditor5/commit/448210c25f04d61e24fb0651d2f0f1ec40214b77))
-* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Integrates CKBox Image Editing feature with the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/11f18ac8d5d60dcdf2bfb56dc89c9067cb936c0a))
+* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Enabled editing of non-CKBox images in the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/448210c25f04d61e24fb0651d2f0f1ec40214b77))
+* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Integrated CKBox Image Editing feature with the editor. ([commit](https://github.com/ckeditor/ckeditor5/commit/11f18ac8d5d60dcdf2bfb56dc89c9067cb936c0a))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Introduced the image insert dropdown as a consistent UI to insert images through different available integrations like image upload, insert an image with the asset manager, and insert an image via URL. Closes [#15303](https://github.com/ckeditor/ckeditor5/issues/15303), [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
-* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Links can now be applied by pasting a URL on selected text. Closes [#5656](https://github.com/ckeditor/ckeditor5/issues/5656). ([commit](https://github.com/ckeditor/ckeditor5/commit/ba66ba1fb7ac1ce0675614d0f7ef516226d8485f))
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Links can now be applied by pasting a URL on a selected text. Closes [#5656](https://github.com/ckeditor/ckeditor5/issues/5656). ([commit](https://github.com/ckeditor/ckeditor5/commit/ba66ba1fb7ac1ce0675614d0f7ef516226d8485f))
 * **[markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)**: Added an experimental support for pasting from markdown. Closes [#2321](https://github.com/ckeditor/ckeditor5/issues/2321). ([commit](https://github.com/ckeditor/ckeditor5/commit/767e681e57c9cc8cbe5ef26076c63724f20dc1f0))
-* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Add support for short Dailymotion URLs (dai.ly) in media-embed. ([commit](https://github.com/ckeditor/ckeditor5/commit/da8c3ac422bef577b8a5e0766c96104a13524cd1))
+* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: Added support for short Dailymotion URLs (`dai.ly`) in media-embed. ([commit](https://github.com/ckeditor/ckeditor5/commit/da8c3ac422bef577b8a5e0766c96104a13524cd1))
 
   Thanks to [@Kocal](https://github.com/Kocal)!
 
 ### Bug fixes
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fake selection marker was not always properly removed when AI Assistant UI was closed.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: User prompt containing special characters was incorrectly displayed in the prompt field (special characters were incorrectly escaped).
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Assistant error message should be cleared upon closing the balloon.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The fake selection marker was not always properly removed when AI Assistant UI was closed.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: A user prompt containing special characters was incorrectly displayed in the prompt field (special characters were incorrectly escaped).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant error message should be cleared upon closing the balloon.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed crash happening in a very peculiar scenario involving reconversion of an element containing a marker. Closes [#15411](https://github.com/ckeditor/ckeditor5/issues/15411). ([commit](https://github.com/ckeditor/ckeditor5/commit/db1da2dd322ba240ef8416238e854a81d7f0bb52))
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: The `DocumentSelection` should not store the GHS `linkA` attribute if the `linkHref` attribute was removed by the two-step caret movement feature. Closes [#15051](https://github.com/ckeditor/ckeditor5/issues/15051). ([commit](https://github.com/ckeditor/ckeditor5/commit/73c2985923c930a0a7b2503e709370100d8568c1))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: `DocumentSelection` should not store the GHS `linkA` attribute if the `linkHref` attribute was removed by the two-step caret movement feature. Closes [#15051](https://github.com/ckeditor/ckeditor5/issues/15051). ([commit](https://github.com/ckeditor/ckeditor5/commit/73c2985923c930a0a7b2503e709370100d8568c1))
 * **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: The editor should not crash when there is a `<template>` element in the content. Closes [#14933](https://github.com/ckeditor/ckeditor5/issues/14933). ([commit](https://github.com/ckeditor/ckeditor5/commit/3388cfcf2eddefec6b0fca3c259b60353fef298b))
 * **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Content from Word documents should be pasted correctly (without HTML styles tag content) on Windows systems. Closes [#15333](https://github.com/ckeditor/ckeditor5/issues/15333), [#9002](https://github.com/ckeditor/ckeditor5/issues/9002). ([commit](https://github.com/ckeditor/ckeditor5/commit/18a88edab9f4c6f78508c766c6abaf7ac80b0497))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Prevented joining two block format suggestions made on widgets placed next to each other, which was undesirable behavior. Fixed related editor crash involving two tables with resized columns.
@@ -37,7 +61,7 @@ Changelog
 
 ### Other changes
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced support for OpenAI gpt-3.5-turbo-1106 model in AI Assistant.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced support for OpenAI `gpt-3.5-turbo-1106` model in AI Assistant.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Secured AI Assistant from incorrect responses that do not being with the processed HTML.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced `AITextAdapter` abstract class that can be extended to provide custom adapter for AI Assistant.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced `OpenAIAdapter` and `AWSAdapter` that can be extended to customize how AI Assistant requests and responses are handled.
@@ -45,15 +69,14 @@ Changelog
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Allowed to fully customize request headers by providing an object or a function to `requestHeaders` configuration parameter. See API docs and migration guide.
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `ImageUploadUI` plugin is loaded by default when the `ImageBlock` or `ImageInline` plugins are loaded. See [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The logic behind the two-step caret movement extracted to the common code in the two-step caret movement feature. ([commit](https://github.com/ckeditor/ckeditor5/commit/73c2985923c930a0a7b2503e709370100d8568c1))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `CollapsibleView` moved from the `list` package to the `ui` package. See [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `CollapsibleView` class has been moved from the `@ckeditor/ckeditor5-list` package to `@ckeditor/ckeditor5-ui`. See [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
 * **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: The logic behind the two-step caret movement extracted to the common code in the two-step caret movement feature. ([commit](https://github.com/ckeditor/ckeditor5/commit/73c2985923c930a0a7b2503e709370100d8568c1))
 * **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: Unified behavior of the `insertText` command for cases using the `DocumentSelection` and `Selection` as applied attributes behaved differently in those cases. ([commit](https://github.com/ckeditor/ckeditor5/commit/73c2985923c930a0a7b2503e709370100d8568c1))
-* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `CollapsibleView` moved from the `list` package to the `ui` package. See [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `CollapsibleView` class has been moved from the `@ckeditor/ckeditor5-list` package to `@ckeditor/ckeditor5-ui`. See [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `SplitButtonView` constructor and `createDropdown()` helper accepts an instance of a `ButtonView` as an action view customization. See [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
-* **[upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)**: The `FileDialogButtonView` is now an instance of the `ButtonView`, not just a wrapper on it. See [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
+* **[upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)**: The `FileDialogButtonView` class is now an instance of the `ButtonView`, not just a wrapper on it. See [#15149](https://github.com/ckeditor/ckeditor5/issues/15149). ([commit](https://github.com/ckeditor/ckeditor5/commit/0647ba65cd09575937a9ba8e60bc7b6837f81b40))
 * The `undo` and `redo` toolbar components described in the `@ckeditor/ckeditor5-essentials/src/ckeditor5-metadata.json` file are now defined in the package that registers those buttons (`@ckeditor/ckeditor5-undo`). Closes [#15414](https://github.com/ckeditor/ckeditor5/issues/15414). ([commit](https://github.com/ckeditor/ckeditor5/commit/0b9552b4d4f14063896e2e588195cfa368734690))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/e0f61406b8294f7d189c9c59b33d71413201aed0), [commit](https://github.com/ckeditor/ckeditor5/commit/c8379c676d691ad72bf8b8c8c9d5544ddf09f2f4), [commit](https://github.com/ckeditor/ckeditor5/commit/fb8eb673ec5c79fc26f0e8915044bcc89b908000))
-* updating dependencie as warned by dependabot.
 
 ### Released packages
 
