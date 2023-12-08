@@ -88,33 +88,31 @@ function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappin
  * @param {Array.<Object>} packageJsons
  */
 function checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5Package ) {
-	const depsErrors = packageJsons
+	const errors = packageJsons
 		.filter( packageJson => packageJson.dependencies )
-		.flatMap( packageJson => Object.entries( packageJson.dependencies )
-			.map( ( [ dependency, version ] ) => {
-				if ( version === expectedDependencies[ dependency ] ) {
-					return '';
-				}
+		.flatMap( packageJson => {
+			const depsErrors = Object.entries( packageJson.dependencies )
+				.map( ( [ dependency, version ] ) => {
+					if ( version === expectedDependencies[ dependency ] ) {
+						return '';
+					}
 
-				return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
-			} )
-			.filter( Boolean )
-		);
+					return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
+				} )
+				.filter( Boolean );
 
-	const devDepsErrors = packageJsons
-		.filter( packageJson => packageJson.dependencies )
-		.flatMap( packageJson => Object.entries( packageJson.devDependencies )
-			.map( ( [ dependency, version ] ) => {
-				if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
-					return '';
-				}
+			const devDepsErrors = Object.entries( packageJson.devDependencies )
+				.map( ( [ dependency, version ] ) => {
+					if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
+						return '';
+					}
 
-				return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
-			} )
-			.filter( Boolean )
-		);
+					return getWrongVersionErrorMsg( dependency, packageJson.name, version, expectedDependencies );
+				} )
+				.filter( Boolean );
 
-	const errors = [ ...depsErrors, ...devDepsErrors ];
+			return [ ...depsErrors, devDepsErrors ];
+		} );
 
 	if ( errors.length ) {
 		console.error( chalk.red( '❌  Errors found. Run this script with an argument: `--fix` to resolve the issues automatically:' ) );
