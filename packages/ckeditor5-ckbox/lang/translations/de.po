@@ -31,16 +31,16 @@ msgstr "Zugriff auf Standardarbeitsbereich nicht möglich."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "Bild bearbeiten"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "Das bearbeitete Bild wird verarbeitet."
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "Der Server konnte das Bild nicht verarbeiten."
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "Es konnte für das bearbeitete Bild keine Kategorie ermittelt werden."

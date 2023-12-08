@@ -31,7 +31,7 @@ Even if you do not plan to use the import from Word feature, we recommend follow
 #### Saving external comments and suggestions data
 
 <info-box>
-	This information applies only to integrations that use the **non-real-time** collaboration features.
+	This information applies only to integrations that use the **asynchronous** collaboration features.
 </info-box>
 
 The external data for external comments and suggestions is kept in the newly added `@external` {@link module:comments/comments/commentsrepository~Comment#attributes attribute}. It is an object with two fields: `authorName` (`String`) and `createdAt` (`Date`).

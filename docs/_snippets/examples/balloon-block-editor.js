@@ -15,7 +15,7 @@ BalloonEditor
 		blockToolbar: [
 			'undo', 'redo',
 			'|', 'heading',
-			'|', 'uploadImage', 'insertTable', 'mediaEmbed',
+			'|', 'insertImage', 'insertTable', 'mediaEmbed',
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		],
 		toolbar: [ 'bold', 'italic', 'link' ],

@@ -9,7 +9,7 @@ menu-title: License key and activation
 
 This article explains how to activate a commercial license of CKEditor&nbsp;5 and the following CKEditor premium features:
 
-* Non-real-time collaboration features, including:
+* Asynchronous collaboration features, including:
 	* {@link features/track-changes Track changes}
 	* {@link features/comments Comments}
 	* {@link features/revision-history Revision history}

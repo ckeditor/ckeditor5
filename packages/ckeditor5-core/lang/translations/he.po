@@ -55,16 +55,16 @@ msgstr "עורך פורמט טקסט עשיר. אזור עריכה: %0"
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "הוספה עם מנהל הקבצים"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "החלפה עם מנהל הקבצים"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "הוספת תמונה עם מנהל הקבצים"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "החלפת תמונה עם מנהל הקבצים"
