@@ -19,7 +19,7 @@ Finally, you can even provide your own custom adapter to connect to your own mod
 
 Visit our [integration guide](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant.html#integration-with-ai-services) to learn more about integrating and customizing the AI Assistant feature.
 
-Note that these improvements come with minor breaking changes in the editor configuration, so make sure to visit the [breaking changes](#minor-breaking-changes-ℹ%EF%B8%8F) section and the [migration guide(https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020)].
+Note that these improvements come with minor breaking changes in the editor configuration, so make sure to visit the breaking changes section and the [migration guide(https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020)].
 
 #### Image editing
 
