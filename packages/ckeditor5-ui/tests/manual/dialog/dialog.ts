@@ -102,6 +102,17 @@ class ModalWithText extends Plugin {
 							}
 						},
 						{
+							label: t( 'Button is active until dialog is moved...' ),
+							withText: true,
+							onExecute: () => {
+								// eslint-disable-next-line no-alert
+								alert( 'Drag the dialog to see how the button disables' );
+							},
+							onCreate: buttonView => {
+								buttonView.bind( 'isEnabled' ).to( dialog.view!, 'wasMoved', wasMoved => !wasMoved );
+							}
+						},
+						{
 							label: t( 'Cancel' ),
 							withText: true,
 							onExecute: () => dialog.hide()
