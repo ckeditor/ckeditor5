@@ -85,7 +85,28 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-By default, the function automatically detects all available upload methods. For example, it will detect and add the `ImageInsertViaUrl` if it is enabled. While no configuration is required for this feature, you might want to limit the options available from the image insert dropdown. Learn more about the toolbar dropdown configuration in the {@link features/images-installation#configuring-the-toolbar-dropdown installation guide}.
+By default, the function automatically detects all available upload methods. For example, it will detect and add the `ImageInsertViaUrl` if it is enabled. While no configuration is required for this feature, you may limit the methods included in the dropdown (apart from not installing a specific feature) or change their order. For this, you can use the `image.insert.integration` configuration option:
+
+```js
+import { Image } from '@ckeditor/ckeditor5-image';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, /* ... */ ],
+		toolbar: [ 'insertImage', /* ... */ ],
+		image: {
+			insert: {
+				// You do not need to provide this configuration key
+				// if the default list content and order reflects your needs.
+				integrations: [ 'assetManager', 'upload', 'url' ]
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+Learn more about the toolbar dropdown configuration in the {@link features/images-installation#configuring-the-toolbar-dropdown image installation guide}.
 
 #### Image upload plugins
 
