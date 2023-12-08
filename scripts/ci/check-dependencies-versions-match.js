@@ -89,9 +89,8 @@ function fixDependenciesVersions( expectedDependencies, packageJsons, pathMappin
  */
 function checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5Package ) {
 	const errors = packageJsons
-		.filter( packageJson => packageJson.dependencies )
 		.flatMap( packageJson => {
-			const depsErrors = Object.entries( packageJson.dependencies )
+			const depsErrors = Object.entries( packageJson.dependencies || {} )
 				.map( ( [ dependency, version ] ) => {
 					if ( version === expectedDependencies[ dependency ] ) {
 						return '';
@@ -101,7 +100,7 @@ function checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5
 				} )
 				.filter( Boolean );
 
-			const devDepsErrors = Object.entries( packageJson.devDependencies )
+			const devDepsErrors = Object.entries( packageJson.devDependencies || {} )
 				.map( ( [ dependency, version ] ) => {
 					if ( !isCkeditor5Package( dependency ) || version === expectedDependencies[ dependency ] ) {
 						return '';
@@ -111,7 +110,7 @@ function checkDependenciesMatch( expectedDependencies, packageJsons, isCkeditor5
 				} )
 				.filter( Boolean );
 
-			return [ ...depsErrors, devDepsErrors ];
+			return [ ...depsErrors, devDepsErrors ].flat();
 		} );
 
 	if ( errors.length ) {
@@ -141,10 +140,12 @@ function getWrongVersionErrorMsg( dependency, name, version, expectedDependencie
  */
 function getExpectedDepsVersions( packageJsons, isCkeditor5Package ) {
 	return packageJsons
-		.map( packageJson => getDepsAndDevDeps( packageJson ) )
-		.filter( Boolean )
-		.reduce( ( expectedDependencies, dependencies ) => {
-			for ( const [ dependency, version ] of Object.entries( dependencies ) ) {
+		.reduce( ( expectedDependencies, packageJson ) => {
+			for ( const [ dependency, version ] of Object.entries( packageJson.dependencies || {} ) ) {
+				expectedDependencies[ dependency ] = getNewestVersion( dependency, version, expectedDependencies[ dependency ] );
+			}
+
+			for ( const [ dependency, version ] of Object.entries( packageJson.devDependencies || {} ) ) {
 				if ( !isCkeditor5Package( dependency ) ) {
 					continue;
 				}
@@ -198,12 +199,4 @@ function getPackageJsons( directories ) {
 		.reduce( ( accum, packageJsonPath ) => ( { ...accum, [ require( packageJsonPath ).name ]: packageJsonPath } ), {} );
 
 	return [ packageJsons, nameToPathMappings ];
-}
-
-/**
- * @param {Object.<String, String>} packageJson
- * @returns {Object.<String, String>}
- */
-function getDepsAndDevDeps( packageJson ) {
-	return { ...packageJson.dependencies, ...( packageJson.devDependencies || {} ) };
 }
