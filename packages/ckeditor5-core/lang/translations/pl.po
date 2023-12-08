@@ -55,16 +55,16 @@ msgstr "Edytor tekstu. Obszar edycji: %0"
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "Wstaw za pomocą menedżera plików"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "Zastąp za pomocą menedżera plików"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "Wstaw obraz za pomocą menedżera plików"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "Zastąp obraz za pomocą menedżera plików"

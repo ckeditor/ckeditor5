@@ -67,8 +67,8 @@ ClassicEditor
 		toolbar: [ 'insertImage', /* ... */ ],
 		image: {
 			insert: {
-				// This is the default configuration, you do not need to provide 
-				// this configuration key if the list content and order reflects your needs. 
+				// This is the default configuration, you do not need to provide
+				// this configuration key if the list content and order reflects your needs.
 				integrations: [ 'upload', 'assetManager', 'url' ]
 			}
 		}

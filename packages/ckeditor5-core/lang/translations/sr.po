@@ -55,16 +55,16 @@ msgstr "Уређивач обогаћеног текста.Простор за �
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "Ubaci pomoću menadžera datoteka"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "Zameni pomoću menadžera datoteka"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "Ubaci sliku pomoću menadžera datoteka"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "Zameni sliku pomoću menadžera datoteka"
