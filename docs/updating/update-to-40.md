@@ -20,6 +20,49 @@ For the entire list of changes introduced in version 40.2.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
 
+### CKBox image editing
+
+The new release includes the {@link features/ckbox CKBox} image editing feature, now quickly accessible either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform image quick image edits such as cropping, resizing, flipping and rotating the image. As it is called from withing the editor and the process takes place right in the asset manager, it greatly speeds up and simplifies the content editing process.
+
+{@img assets/img/ckbox-editing-area.png 1062 CKBox image editing panel.}
+
+#### Adding CKBox image editing to CKEditor 5
+
+To use the CKBox image editing feature, you need to import it first into you editor. Please note, that it requires the `PictureEditing` plugin to work correctly.
+
+Then, add it to the plugin list and the toolbar as shown below.
+
+```js
+import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { CKBox, CKBoxImageEdit } from "@ckeditor/ckeditor5-ckbox";
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [  PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
+		toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
+		ckbox: {
+			// Feature configuration.
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+You can add the image editing button both to the main editor toolbar (as shown in the snippet above) and the image contextual toolbar for convenience.
+
+```js
+image: {
+	toolbar: [
+		'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+		'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit'
+	]
+},
+```
+
+You can read more about image editing in {@link @ckbox features/images/editing CKBox documentation}.
+
 ### Expanded image insert dropdown
 
 We have updated the toolbar `insertImage` component. By default, the image toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} provides access to all installed methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
@@ -67,7 +110,7 @@ Now there are:
 * {@icon @ckeditor/ckeditor5-core/theme/icons/image-asset-manager.svg Image manager} image manager icon
 * {@icon @ckeditor/ckeditor5-core/theme/icons/image-url.svg Insert via URL} insert via URL icon.
 
-If there are more than one insert method configured, the toolbar dropdown will use the {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} default icon. If only one image insert method is available, the toolbar will use the respective icon instead.
+The toolbar dropdown will use the {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon bu default. If no upload adapter is present, the toolbar will use the next available icon instead.
 
 ### Removal of the `insertImageViaUrl` option
 
@@ -105,7 +148,7 @@ The `type` setting accepts the following values:
 
 If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
 
-**Important**: If only one type of {@link features/images-installation#inline-and-block-images image plugin} is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
+**Important**: If only one type of {@link features/images-installation#inline-and-block-images image plugin} is enabled (for example, `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
 
 ### Updated image text alternative icon
 
@@ -227,7 +270,7 @@ The `CommentsArchive#resolvedThreads` property has been renamed to `#archivedThr
 
 The `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Additionally, now, `CommentsRepository` should never store deleted comment threads.
 
-Your custom code may need to be updated accordingly (e.g. if your application uses the comments outside the editor feature). Examples:
+Your custom code may need to be updated accordingly (for example if your application uses the comments outside the editor feature). Examples:
 
 ```js
 // Before:
