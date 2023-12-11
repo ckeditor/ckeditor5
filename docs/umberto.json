@@ -396,6 +396,14 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
+					"name": "AI Assistant",
+					"id": "features-ai-assistant",
+					"slug": "ai-assistant",
+					"badges": [
+						"premium"
+					]
+				},
+				{
 					"name": "Collaboration",
 					"id": "features-collaboration",
 					"slug": "collaboration",
