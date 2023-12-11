@@ -13,7 +13,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "ckeditor5": "40.1.0",
-    "blurhash": "^2.0.5",
+    "blurhash": "2.0.5",
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
