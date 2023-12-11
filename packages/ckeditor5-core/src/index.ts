@@ -37,6 +37,7 @@ import cancel from './../theme/icons/cancel.svg';
 import caption from './../theme/icons/caption.svg';
 import check from './../theme/icons/check.svg';
 import cog from './../theme/icons/cog.svg';
+import colorPalette from './../theme/icons/color-palette.svg';
 import eraser from './../theme/icons/eraser.svg';
 import history from './../theme/icons/history.svg';
 import lowVision from './../theme/icons/low-vision.svg';
@@ -86,6 +87,7 @@ export const icons = {
 	caption,
 	check,
 	cog,
+	colorPalette,
 	eraser,
 	history,
 	image,

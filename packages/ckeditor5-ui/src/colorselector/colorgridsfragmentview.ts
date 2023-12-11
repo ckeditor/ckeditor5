@@ -22,7 +22,7 @@ import type ViewCollection from '../viewcollection';
 import type { ColorSelectorExecuteEvent, ColorSelectorColorPickerShowEvent } from './colorselectorview';
 
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-import colorPaletteIcon from '../../theme/icons/color-palette.svg';
+import colorPaletteIcon from '@ckeditor/ckeditor5-core/theme/icons/color-palette.svg';
 
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
