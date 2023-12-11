@@ -10,6 +10,12 @@ swap:
   all caps: uppercase
   android: Android
   Api|api: API
+  auto correct|auto-correct: autocorrect
+  auto format|auto-format: autoformat
+  auto formatting|auto-formatting: autoformatting
+  auto link|auto-link: autolink
+  auto save|auto-save: autosave
+  auto saving|auto-saving: autosaving
   back-end|back end: backend
   boolean: Boolean
   bugfix: bug fix
@@ -71,6 +77,7 @@ swap:
   sanity (?:check|test): check for completeness
   semver: SemVer
   stand alone|stand-alone: standalone
+  strike-through|strike through: strikethrough
   stylesheet: style sheet
   (?i)todo list: to-do list
   (?<!.)TS: TypeScript

@@ -9,7 +9,7 @@ Changes for the past releases are available below.
 
 ### Features
 
-* Added auto format integration with the strike through using `~~` string. Closes [ckeditor/ckeditor5#6412](https://github.com/ckeditor/ckeditor5/issues/6412). ([9c3fd3e](https://github.com/ckeditor/ckeditor5-autoformat/commit/9c3fd3e))
+* Added auto format integration with the strikethrough using `~~` string. Closes [ckeditor/ckeditor5#6412](https://github.com/ckeditor/ckeditor5/issues/6412). ([9c3fd3e](https://github.com/ckeditor/ckeditor5-autoformat/commit/9c3fd3e))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v17.0.0...v18.0.0) (March 19, 2020)
