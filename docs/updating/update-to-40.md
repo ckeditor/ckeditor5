@@ -20,6 +20,58 @@ For the entire list of changes introduced in version 40.2.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
 
+### AI Assistant integration
+
+Below affects all editor integrations that use AI Assistant feature.
+
+We added support for AWS Bedrock service and for providing custom adapters that may extend our solutions or allow to connect to a custom model. To enable this, it was necessary to perform refactoring in the feature's plugins architecture and config structure. This also makes us ready for providing new AI-related features in the future, hopefully without introducing more breaking changes.
+
+Before, the OpenAI adapter was automatically required by the `AIAssistant` plugin. Now, the integrator must explicitly add chosen adapter to the list of plugins:
+
+```js
+// Before:
+import { AIAssistant } from '@ckeditor/ckeditor5-ai';
+
+ClassicEditor.create( element, {
+	plugins: [ AIAssistant, /* ... */ ]
+} );
+
+// After:
+import { AIAssistant, OpenAITextAdapter } from '@ckeditor/ckeditor5-ai';
+
+ClassicEditor.create( element, {
+	plugins: [ AIAssistant, OpenAITextAdapter, /* ... */ ]
+} );
+```
+
+Another change is connected to {@link module:ai/aiconfig~AIConfig configuration structure}. New `config.ai` namespace was introduced. `config.aiAssistant` was moved into `config.ai.aiAssistant`. Adapter-related properties were extracted to `config.ai.openAI`. Some properties were renamed.
+
+```js
+// Before:
+ClassicEditor.create( element, {
+	aiAssitant: {
+		authKey: 'OPENAI_API_KEY',
+		removeCommands: [ 'improveWriting', 'casual' ],
+		useTheme: false
+	}
+} );
+
+// After:
+ClassicEditor.create( element, {
+	ai: {
+		openAI: {
+			requestHeaders: {
+				Authorization: 'Bearer OPENAI_API_KEY'
+			}
+		},
+		aiAssistant: {
+			removeCommands: [ 'improveWriting', 'casual' ]
+		},
+		useTheme: false
+	}
+} );
+```
+
 ### CKBox image editing
 
 The new release includes the {@link features/ckbox CKBox} image editing feature, now quickly accessible either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform image quick image edits such as cropping, resizing, flipping and rotating the image. As it is called from withing the editor and the process takes place right in the asset manager, it greatly speeds up and simplifies the content editing process.
