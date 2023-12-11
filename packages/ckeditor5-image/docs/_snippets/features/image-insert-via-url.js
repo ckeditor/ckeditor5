@@ -35,7 +35,10 @@ ClassicEditor
 				'imageStyle:breakText',
 				'|',
 				'ckboxImageEdit'
-			]
+			],
+			insert: {
+				integrations: [ 'url' ]
+			}
 		},
 		cloudServices: CS_CONFIG
 	} )

@@ -188,7 +188,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Bug fixes
 
 * Destroying `FileDialogButtonView` should not throw an error. Closes [#66](https://github.com/ckeditor/ckeditor5-upload/issues/66). ([2d4ba62](https://github.com/ckeditor/ckeditor5-upload/commit/2d4ba62))
-* Images pasted with additional HTML content will not be handled by the upload plugin which prevents data pasted from MS Word to be treated as an image. Closes [#68](https://github.com/ckeditor/ckeditor5-upload/issues/68). ([8d0644a](https://github.com/ckeditor/ckeditor5-upload/commit/8d0644a))
+* Images pasted with additional HTML content will not be handled by the upload plugin which prevents data pasted from Microsoft Word to be treated as an image. Closes [#68](https://github.com/ckeditor/ckeditor5-upload/issues/68). ([8d0644a](https://github.com/ckeditor/ckeditor5-upload/commit/8d0644a))
 
 ### Other changes
 
@@ -204,7 +204,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* Image placeholder is now correctly displayed on Firefox and Edge. Closes [#56](https://github.com/ckeditor/ckeditor5-upload/issues/56). ([785e88b](https://github.com/ckeditor/ckeditor5-upload/commit/785e88b))
+* Image placeholder is now correctly displayed in Firefox and Edge. Closes [#56](https://github.com/ckeditor/ckeditor5-upload/issues/56). ([785e88b](https://github.com/ckeditor/ckeditor5-upload/commit/785e88b))
 * Upload command should not crash when upload adapter is not specified (instead, FileRepository logs an error). Closes [#59](https://github.com/ckeditor/ckeditor5-upload/issues/59). ([14b738b](https://github.com/ckeditor/ckeditor5-upload/commit/14b738b))
 
 ### Other changes

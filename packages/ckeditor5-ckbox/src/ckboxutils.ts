@@ -23,8 +23,7 @@ import {
 const DEFAULT_CKBOX_THEME_NAME = 'lark';
 
 /**
- * The CKBox editing feature. It introduces the {@link module:ckbox/ckboxcommand~CKBoxCommand CKBox command} and
- * {@link module:ckbox/ckboxuploadadapter~CKBoxUploadAdapter CKBox upload adapter}.
+ * The CKBox utilities plugin.
  */
 export default class CKBoxUtils extends Plugin {
 	/**

@@ -55,16 +55,16 @@ msgstr "Πρόγραμμα επεξεργασίας εμπλουτισμένου
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "Εισαγωγή με τη διαχείριση αρχείων"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "Αντικατάσταση με τη διαχείριση αρχείων"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "Εισαγωγή εικόνας με τη διαχείριση αρχείων"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "Αντικατάσταση εικόνας με τη διαχείριση αρχείων"
