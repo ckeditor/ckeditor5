@@ -126,6 +126,7 @@ export default class CKBoxCommand extends Command {
 	 * - language The language for CKBox dialog.
 	 * - tokenUrl The token endpoint URL.
 	 * - serviceOrigin The base URL of the API service.
+	 * - forceDemoLabel whether to force "Powered by CKBox" link.
 	 * - dialog.onClose The callback function invoked after closing the CKBox dialog.
 	 * - assets.onChoose The callback function invoked after choosing the assets.
 	 */
@@ -138,6 +139,7 @@ export default class CKBoxCommand extends Command {
 			language: ckboxConfig.language,
 			tokenUrl: ckboxConfig.tokenUrl,
 			serviceOrigin: ckboxConfig.serviceOrigin,
+			forceDemoLabel: ckboxConfig.forceDemoLabel,
 			dialog: {
 				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' )
 			},
