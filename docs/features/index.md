@@ -83,7 +83,7 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
-Our {@link features/ai-assistant AI Assistant} {@icon @ckeditor/ckeditor5-ai/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the already existing content to match your needs, or even come up with a completely new one!
+Our {@link features/ai-assistant-overview AI Assistant} {@icon @ckeditor/ckeditor5-ai/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the already existing content to match your needs, or even come up with a completely new one!
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spell and grammar check} to ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
