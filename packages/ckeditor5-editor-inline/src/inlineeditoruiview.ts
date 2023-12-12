@@ -21,7 +21,7 @@ import {
 	type Locale
 } from 'ckeditor5/src/utils';
 import type {
-	View
+	EditingView
 } from 'ckeditor5/src/engine';
 
 const toPx = toUnit( 'px' );
@@ -136,7 +136,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		editableElement?: HTMLElement,
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;

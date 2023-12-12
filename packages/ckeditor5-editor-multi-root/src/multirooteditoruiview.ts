@@ -9,7 +9,7 @@
 
 import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui';
 import type { Locale } from 'ckeditor5/src/utils';
-import type { View } from 'ckeditor5/src/engine';
+import type { EditingView } from 'ckeditor5/src/engine';
 
 /**
  * The multi-root editor UI view. It is a virtual view providing an inline
@@ -36,7 +36,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	/**
 	 * The editing view instance this view is related to.
 	 */
-	private readonly _editingView: View;
+	private readonly _editingView: EditingView;
 
 	/**
 	 * Creates an instance of the multi-root editor UI view.
@@ -55,7 +55,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		editableNames: Array<string>,
 		options: {
 			editableElements?: Record<string, HTMLElement>;

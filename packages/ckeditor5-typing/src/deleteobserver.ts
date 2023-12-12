@@ -25,7 +25,7 @@ import {
 	type ViewDocumentSelection,
 	type ViewSelection,
 	type ViewRange,
-	type View
+	type EditingView
 } from '@ckeditor/ckeditor5-engine';
 
 const DELETE_CHARACTER = 'character';
@@ -131,7 +131,7 @@ export default class DeleteObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		const document = view.document;
