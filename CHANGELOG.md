@@ -17,9 +17,9 @@ What is more, you can now extend existing adapters to enable more advanced custo
 
 Finally, you can even provide your own custom adapter to connect to your own model, or any model that does not have an official adapter yet.
 
-Visit our [integration guide](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant.html#integration-with-ai-services) to learn more about integrating and customizing the AI Assistant feature.
+Visit our [new integration guide](https://ckeditor.com/docs/ckeditor5/latest/features/ai-assistant/ai-assistant-integration.html) to learn more about integrating and customizing the AI Assistant feature.
 
-Note that these improvements come with minor breaking changes in the editor configuration, so make sure to visit the breaking changes section and the [migration guide(https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020)].
+Note that these improvements come with minor breaking changes in the editor configuration, so make sure to visit the breaking changes section and the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020).
 
 #### Image editing
 
@@ -46,7 +46,7 @@ We are excited to announce upcoming improvements to CKEditor 5's installation pr
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The configuration for AI Assistant has changed and will require an update. Additionally, a proper adapter (`OpenAIAdapter`, `AWSAdapter`, or a custom adapter) must be now explicitly added to the plugin list. See migration guide.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The configuration for AI Assistant has changed and will require an update. Additionally, a proper adapter (`OpenAIAdapter`, `AWSAdapter`, or a custom adapter) must be now explicitly added to the plugin list. See the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020) for details.
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `ImageInsertUI` plugin internals were cleaned up, as it worked a bit magically with hard-coded dependencies. For example, it automatically enabled the behavior of inserting image via URL. As of now, it will not enable any external behaviors. See the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020) for details.
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `CollapsibleView` has been moved from the `@ckeditor/ckeditor5-list` package to `@ckeditor/ckeditor5-ui`. You can import it like this: `import { CollapsibleView } from '@ckeditor/ckeditor5-ui';`
 
