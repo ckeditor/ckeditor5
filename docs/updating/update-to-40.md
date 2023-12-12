@@ -22,11 +22,11 @@ Listed below are the most important changes that require your attention when upg
 
 ### AI Assistant integration
 
-Below affects all editor integrations that use AI Assistant feature.
+The below information affects all editor integrations that use the AI Assistant feature.
 
-We added support for AWS Bedrock service and for providing custom adapters that may extend our solutions or allow to connect to a custom model. To enable this, it was necessary to perform refactoring in the feature's plugins architecture and config structure. This also makes us ready for providing new AI-related features in the future, hopefully without introducing more breaking changes.
+We added support for the AWS Bedrock service and for providing custom adapters that may extend our solutions or allow to connect to a custom model. To enable this, it was necessary to perform refactoring in the feature's plugins architecture and configuration structure. However, we hope it makes us ready for providing new AI-related features in the future without introducing more breaking changes.
 
-Before, the OpenAI adapter was automatically required by the `AIAssistant` plugin. Now, the integrator must explicitly add chosen adapter to the list of plugins:
+Before, the OpenAI adapter was automatically required by the `AIAssistant` plugin. Now, the integrator must explicitly add the chosen adapter to the list of plugins:
 
 ```js
 // Before:
@@ -44,7 +44,7 @@ ClassicEditor.create( element, {
 } );
 ```
 
-Another change is connected to {@link module:ai/aiconfig~AIConfig configuration structure}. New `config.ai` namespace was introduced. `config.aiAssistant` was moved into `config.ai.aiAssistant`. Adapter-related properties were extracted to `config.ai.openAI`. Some properties were renamed.
+Another change is connected to {@link module:ai/aiassistant~AIAssistantConfig configuration structure}. The new `config.ai` namespace was introduced. The `config.aiAssistant` option was moved into `config.ai.aiAssistant`. Adapter-related properties were extracted to `config.ai.openAI`. Also, some of the properties were renamed.
 
 ```js
 // Before:
