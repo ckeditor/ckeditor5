@@ -13,7 +13,7 @@ import {
 	FocusCycler,
 	LabeledFieldView,
 	SwitchButtonView,
-	ViewModel,
+	View,
 	ViewCollection
 } from '@ckeditor/ckeditor5-ui';
 
@@ -240,7 +240,7 @@ describe( 'ListPropertiesView', () => {
 		} );
 
 		it( 'should have #stylesView', () => {
-			expect( view.stylesView ).to.be.instanceOf( ViewModel );
+			expect( view.stylesView ).to.be.instanceOf( View );
 		} );
 
 		it( 'should have #startIndexFieldView', () => {

@@ -9,7 +9,7 @@
 
 /* istanbul ignore file -- @preserve */
 
-import { ViewModel } from '@ckeditor/ckeditor5-ui';
+import { View } from '@ckeditor/ckeditor5-ui';
 import { toUnit } from '@ckeditor/ckeditor5-utils';
 
 const toPx = toUnit( 'px' );
@@ -17,7 +17,7 @@ const toPx = toUnit( 'px' );
 /**
  * The horizontal drop target line view.
  */
-export default class LineView extends ViewModel {
+export default class LineView extends View {
 	/**
 	 * Controls whether the line is visible.
 	 *

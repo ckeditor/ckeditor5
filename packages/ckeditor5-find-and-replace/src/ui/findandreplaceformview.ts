@@ -8,7 +8,7 @@
  */
 
 import {
-	ViewModel,
+	View,
 	ButtonView,
 	FormHeaderView,
 	LabeledFieldView,
@@ -49,7 +49,7 @@ import { icons } from 'ckeditor5/src/core';
  *
  * See {@link module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView}.
  */
-export default class FindAndReplaceFormView extends ViewModel {
+export default class FindAndReplaceFormView extends View {
 	/**
 	 * Stores the number of matched search results.
 	 *
@@ -180,12 +180,12 @@ export default class FindAndReplaceFormView extends ViewModel {
 	/**
 	 * The fieldset aggregating the find UI.
 	 */
-	private readonly _findFieldsetView: ViewModel;
+	private readonly _findFieldsetView: View;
 
 	/**
 	 * The fieldset aggregating the replace UI.
 	 */
-	private readonly _replaceFieldsetView: ViewModel;
+	private readonly _replaceFieldsetView: View;
 
 	/**
 	 * Tracks information about the DOM focus in the form.
@@ -385,9 +385,9 @@ export default class FindAndReplaceFormView extends ViewModel {
 	/**
 	 * Configures and returns the `<fieldset>` aggregating all find controls.
 	 */
-	private _createFindFieldset(): ViewModel {
+	private _createFindFieldset(): View {
 		const locale = this.locale;
-		const fieldsetView = new ViewModel( locale );
+		const fieldsetView = new View( locale );
 
 		// Typing in the find field invalidates all previous results (the form is "dirty").
 		this._findInputView.fieldView.on( 'input', () => {
@@ -453,7 +453,7 @@ export default class FindAndReplaceFormView extends ViewModel {
 		const locale = this.locale;
 		const t = locale.t;
 		const bind = this.bindTemplate;
-		const resultsCounterView = new ViewModel( this.locale );
+		const resultsCounterView = new View( this.locale );
 
 		this.bind( '_resultsCounterText' ).to( this, 'highlightOffset', this, 'matchCount',
 			( highlightOffset, matchCount ) => t( '%0 of %1', [ highlightOffset, matchCount ] )
@@ -513,10 +513,10 @@ export default class FindAndReplaceFormView extends ViewModel {
 	/**
 	 * Configures and returns the `<fieldset>` aggregating all replace controls.
 	 */
-	private _createReplaceFieldset(): ViewModel {
+	private _createReplaceFieldset(): View {
 		const locale = this.locale;
 		const t = locale.t;
-		const fieldsetView = new ViewModel( this.locale );
+		const fieldsetView = new View( this.locale );
 
 		this._replaceButtonView.bind( 'isEnabled' ).to(
 			this, '_areCommandsEnabled',

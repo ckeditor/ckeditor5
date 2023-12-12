@@ -7,7 +7,7 @@
  * @module upload/ui/filedialogbuttonview
  */
 
-import { ButtonView, ViewModel, type ButtonExecuteEvent } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, View, type ButtonExecuteEvent } from '@ckeditor/ckeditor5-ui';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -104,7 +104,7 @@ export default class FileDialogButtonView extends ButtonView {
 /**
  * The hidden file input view class.
  */
-class FileInputView extends ViewModel<HTMLInputElement> {
+class FileInputView extends View<HTMLInputElement> {
 	/**
 	 * Accepted file types. Can be provided in form of file extensions, media type or one of:
 	 * * `audio/*`,

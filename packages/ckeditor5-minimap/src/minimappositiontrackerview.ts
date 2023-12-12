@@ -7,7 +7,7 @@
  * @module minimap/minimappositiontrackerview
  */
 
-import { ViewModel } from 'ckeditor5/src/ui';
+import { View } from 'ckeditor5/src/ui';
 import { toUnit, global, type Locale } from 'ckeditor5/src/utils';
 import type { MinimapDragEvent } from './minimapview';
 
@@ -18,7 +18,7 @@ const toPx = toUnit( 'px' );
  *
  * @internal
  */
-export default class MinimapPositionTrackerView extends ViewModel {
+export default class MinimapPositionTrackerView extends View {
 	/**
 	 * The CSS `height` of the tracker visualizing the subset of the content visible to the user.
 	 *

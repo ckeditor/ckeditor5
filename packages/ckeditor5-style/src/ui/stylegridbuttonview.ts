@@ -8,7 +8,7 @@
  */
 
 import type { Locale } from 'ckeditor5/src/utils';
-import { ButtonView, ViewModel } from 'ckeditor5/src/ui';
+import { ButtonView, View } from 'ckeditor5/src/ui';
 
 import type { NormalizedStyleDefinition } from '../styleutils';
 
@@ -24,7 +24,7 @@ export default class StyleGridButtonView extends ButtonView {
 	/**
 	 * The view rendering the preview of the style.
 	 */
-	public readonly previewView: ViewModel;
+	public readonly previewView: View;
 
 	/**
 	 * Creates an instance of the {@link module:style/ui/stylegridbuttonview~StyleGridButtonView} class.
@@ -56,8 +56,8 @@ export default class StyleGridButtonView extends ButtonView {
 	/**
 	 * Creates the view representing the preview of the style.
 	 */
-	private _createPreview(): ViewModel {
-		const previewView = new ViewModel( this.locale );
+	private _createPreview(): View {
+		const previewView = new View( this.locale );
 
 		previewView.setTemplate( {
 			tag: 'div',

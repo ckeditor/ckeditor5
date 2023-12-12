@@ -6,7 +6,7 @@
 import ListItemView from '../../src/list/listitemview';
 import ListItemGroupView from '../../src/list/listitemgroupview';
 import ViewCollection from '../../src/viewcollection';
-import { LabelView, ViewModel } from '../../src';
+import { LabelView, View } from '../../src';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import ListSeparatorView from '../../src/list/listseparatorview';
 
@@ -73,7 +73,7 @@ describe( 'ListItemGroupView', () => {
 				} );
 
 				it( 'accepts a custom label instance that implements the same label interface', () => {
-					class CustomLabel extends ViewModel {
+					class CustomLabel extends View {
 						constructor() {
 							super();
 

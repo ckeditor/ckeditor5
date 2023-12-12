@@ -7,7 +7,7 @@
  * @module table/ui/formrowview
  */
 
-import { ViewModel, type LabelView, type ViewCollection } from 'ckeditor5/src/ui';
+import { View, type LabelView, type ViewCollection } from 'ckeditor5/src/ui';
 import type { Locale } from 'ckeditor5/src/utils';
 
 import '../../theme/formrow.css';
@@ -21,7 +21,7 @@ import '../../theme/formrow.css';
  *
  * @internal
  */
-export default class FormRowView extends ViewModel {
+export default class FormRowView extends View {
 	/**
 	 * An additional CSS class added to the {@link #element}.
 	 *
@@ -61,7 +61,7 @@ export default class FormRowView extends ViewModel {
 	 * @param options.labelView When passed, the row gets the `group` and `aria-labelledby`
 	 * DOM attributes and gets described by the label.
 	 */
-	constructor( locale: Locale, options: { children?: Array<ViewModel>; class?: string; labelView?: LabelView } = {} ) {
+	constructor( locale: Locale, options: { children?: Array<View>; class?: string; labelView?: LabelView } = {} ) {
 		super( locale );
 
 		const bind = this.bindTemplate;

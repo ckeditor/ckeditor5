@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { ButtonView, ViewModel } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, View } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 import StyleGridButtonView from '../../src/ui/stylegridbuttonview';
@@ -61,7 +61,7 @@ describe( 'StyleGridButtonView', () => {
 			} );
 
 			it( 'should be set as #previewView', () => {
-				expect( button.previewView ).to.be.instanceOf( ViewModel );
+				expect( button.previewView ).to.be.instanceOf( View );
 			} );
 
 			it( 'should be a div', () => {

@@ -18,7 +18,7 @@ import {
 	LabelView,
 	submitHandler,
 	ToolbarView,
-	ViewModel,
+	View,
 	ViewCollection,
 	type DropdownView,
 	type InputTextView,
@@ -82,7 +82,7 @@ export interface TablePropertiesViewOptions {
  * The class representing a table properties form, allowing users to customize
  * certain style aspects of a table, for instance, border, background color, alignment, etc..
  */
-export default class TablePropertiesView extends ViewModel {
+export default class TablePropertiesView extends View {
 	/**
 	 * The value of the border style.
 	 *
@@ -601,7 +601,7 @@ export default class TablePropertiesView extends ViewModel {
 
 		// -- Operator ---------------------------------------------------
 
-		const operatorLabel = new ViewModel( locale );
+		const operatorLabel = new View( locale );
 		operatorLabel.setTemplate( {
 			tag: 'span',
 			attributes: {

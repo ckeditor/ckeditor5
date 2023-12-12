@@ -7,7 +7,7 @@
  * @module special-characters/ui/specialcharactersview
  */
 
-import { ViewModel, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui';
+import { View, FocusCycler, type ViewCollection } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 import type CharacterGridView from './charactergridview';
 import type CharacterInfoView from './characterinfoview';
@@ -20,7 +20,7 @@ import type SpecialCharactersNavigationView from './specialcharactersnavigationv
  * * the grid view (displays characters as a grid),
  * * and the info view (displays detailed info about a specific character).
  */
-export default class SpecialCharactersView extends ViewModel<HTMLDivElement> {
+export default class SpecialCharactersView extends View<HTMLDivElement> {
 	/**
 	 * A collection of the focusable children of the view.
 	 */

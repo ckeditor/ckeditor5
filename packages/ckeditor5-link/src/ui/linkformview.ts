@@ -12,7 +12,7 @@ import {
 	FocusCycler,
 	LabeledFieldView,
 	SwitchButtonView,
-	ViewModel,
+	View,
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler,
@@ -39,7 +39,7 @@ import '../../theme/linkform.css';
  *
  * See {@link module:link/ui/linkformview~LinkFormView}.
  */
-export default class LinkFormView extends ViewModel {
+export default class LinkFormView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
@@ -297,7 +297,7 @@ export default class LinkFormView extends ViewModel {
 		children.add( this.urlInputView );
 
 		if ( manualDecorators.length ) {
-			const additionalButtonsView = new ViewModel();
+			const additionalButtonsView = new View();
 
 			additionalButtonsView.setTemplate( {
 				tag: 'ul',

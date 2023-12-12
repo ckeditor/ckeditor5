@@ -18,7 +18,7 @@ import {
 	LabelView,
 	submitHandler,
 	ToolbarView,
-	ViewModel,
+	View,
 	ViewCollection,
 	type FocusableView,
 	type NormalizedColorOption,
@@ -69,7 +69,7 @@ export interface TableCellPropertiesViewOptions {
  * The class representing a table cell properties form, allowing users to customize
  * certain style aspects of a table cell, for instance, border, padding, text alignment, etc..
  */
-export default class TableCellPropertiesView extends ViewModel {
+export default class TableCellPropertiesView extends View {
 	/**
 	 * The value of the cell border style.
 	 *
@@ -200,12 +200,12 @@ export default class TableCellPropertiesView extends ViewModel {
 	/**
 	 * A toolbar with buttons that allow changing the horizontal text alignment in a table cell.
 	 */
-	public readonly horizontalAlignmentToolbar: ViewModel<HTMLElement>;
+	public readonly horizontalAlignmentToolbar: View<HTMLElement>;
 
 	/**
 	 * A toolbar with buttons that allow changing the vertical text alignment in a table cell.
 	 */
-	public readonly verticalAlignmentToolbar: ViewModel<HTMLElement>;
+	public readonly verticalAlignmentToolbar: View<HTMLElement>;
 
 	/**
 	 * The "Save" button view.
@@ -618,7 +618,7 @@ export default class TableCellPropertiesView extends ViewModel {
 	private _createDimensionFields(): {
 		dimensionsLabel: LabelView;
 		widthInput: LabeledFieldView;
-		operatorLabel: ViewModel;
+		operatorLabel: View;
 		heightInput: LabeledFieldView;
 		} {
 		const locale = this.locale;
@@ -645,7 +645,7 @@ export default class TableCellPropertiesView extends ViewModel {
 
 		// -- Operator ---------------------------------------------------
 
-		const operatorLabel = new ViewModel( locale );
+		const operatorLabel = new View( locale );
 		operatorLabel.setTemplate( {
 			tag: 'span',
 			attributes: {

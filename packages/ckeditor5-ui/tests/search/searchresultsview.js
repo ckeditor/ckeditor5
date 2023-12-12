@@ -9,7 +9,7 @@ import { Locale } from '@ckeditor/ckeditor5-utils';
 import SearchResultsView from '../../src/search/searchresultsview';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { ButtonView, ViewModel, ViewCollection } from '../../src';
+import { ButtonView, View, ViewCollection } from '../../src';
 
 describe( 'SearchResultsView', () => {
 	let locale, view;
@@ -86,7 +86,7 @@ describe( 'SearchResultsView', () => {
 	}
 
 	function createNonFocusableView() {
-		const view = new ViewModel();
+		const view = new View();
 
 		view.element = document.createElement( 'div' );
 		view.element.textContent = 'foo';

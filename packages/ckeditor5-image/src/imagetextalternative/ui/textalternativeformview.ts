@@ -11,7 +11,7 @@ import {
 	ButtonView,
 	FocusCycler,
 	LabeledFieldView,
-	ViewModel,
+	View,
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler,
@@ -29,7 +29,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 /**
  * The TextAlternativeFormView class.
  */
-export default class TextAlternativeFormView extends ViewModel {
+export default class TextAlternativeFormView extends View {
 	/**
 	 * Tracks information about the DOM focus in the form.
 	 */

@@ -10,7 +10,7 @@
 import { icons } from 'ckeditor5/src/core';
 import {
 	ButtonView,
-	ViewModel,
+	View,
 	ViewCollection,
 	FocusCycler,
 	LabeledFieldView,
@@ -24,7 +24,7 @@ import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils
  *
  * See {@link module:image/imageinsert/imageinsertviaurlui~ImageInsertViaUrlUI}.
  */
-export default class ImageInsertUrlView extends ViewModel {
+export default class ImageInsertUrlView extends View {
 	/**
 	 * The URL input field view.
 	 */
