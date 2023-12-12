@@ -23,11 +23,26 @@ Note that these improvements come with minor breaking changes in the editor conf
 
 #### Image editing
 
-The new release includes a CKBox image editing feature, now quickly accessible through the image contextual toolbar. This tool enables users to perform image edits like cropping, resizing, and rotating within the asset manager, simplifying the content editing process.
+CKBox’s image editing capabilities, introduced in CKBox v1.6.0, are now accessible straight from the CKEditor image toolbar. CKBox users can resize, crop or rotate images right within CKEditor.
 
-Additionally, the feature supports editing images not yet added to CKBox (for example hotlinked). This dual functionality, combined with server-side processing, ensures both ease of use and maintenance of high image quality and file integrity, providing a more efficient and reliable image editing experience within the CKEditor environment.
+Additionally, you can also edit images which are not yet added to CKBox (for example hotlinked images). CKBox will automatically download the images in the background, to allow users to edit them without having to leave CKEditor to manually add the image into CKBox. This dual functionality, combined with server-side processing, ensures ease of use and maintains high image quality and file integrity, providing a more efficient and reliable image editing experience within CKEditor.
 
 Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020) to learn more about these changes.
+
+#### (Experimental) Paste Markdown
+
+This release introduces the new Paste Markdown feature. It will automatically format any raw Markdown source or output copied and pasted directly into the editor – without having to switch to source editing. This feature is in its experimental phase, and its behavior may change in the future. Experience this functionality firsthand by pasting Markdown content into the [demo editor](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-markdown.html). We welcome your feedback and observations for ongoing improvements, so please share them in the [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/14003).
+
+
+#### (Coming soon!) New installation methods
+
+We are excited to announce upcoming improvements to CKEditor 5's installation process, set to release next year. Our goal is to address and resolve the accumulated pain points that you experienced over the years. For a detailed overview of our plans and the background behind them, dive into our [comprehensive proposal in the RFC](https://github.com/ckeditor/ckeditor5/issues/15502). Your feedback is crucial in refining and perfecting these improvements, and we eagerly await your input!
+
+
+#### Other notable improvements
+
+* **Improved insert image button**: our `insertImage` component now supports file managers, and automatically detects if you are using CKBox. We also changed the default icon for upload image from computer to better indicate it’s an upload action, not a generic image button.
+* **Paste link over text**: the editor automatically converts selected text to a link when you paste a URL onto it.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
