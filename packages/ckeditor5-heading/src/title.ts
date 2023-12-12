@@ -102,9 +102,9 @@ export default class Title extends Plugin {
 
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h1', dataViewH1Insertion, { priority: 'high' } );
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h2', dataViewH1Insertion, { priority: 'high' } );
-		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h3', dataViewH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h2', dataViewModelH1Insertion, { priority: 'high' } );
+		editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:h3', dataViewModelH1Insertion, { priority: 'high' } );
 
 		// Take care about correct `title` element structure.
 		model.document.registerPostFixer( writer => this._fixTitleContent( writer ) );
@@ -467,7 +467,7 @@ export default class Title extends Plugin {
  * @param data An object containing conversion input, a placeholder for conversion output and possibly other values.
  * @param conversionApi Conversion interface to be used by the callback.
  */
-function dataViewH1Insertion( evt: unknown, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
+function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<ViewElement>, conversionApi: UpcastConversionApi ) {
 	const modelCursor = data.modelCursor;
 	const viewItem = data.viewItem;
 

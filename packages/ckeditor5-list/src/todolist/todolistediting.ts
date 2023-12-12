@@ -37,7 +37,7 @@ import ListEditing from '../list/listediting';
 import CheckTodoListCommand from './checktodolistcommand';
 import {
 	dataModelViewInsertion,
-	dataViewCheckmarkInsertion,
+	dataViewModelCheckmarkInsertion,
 	mapModelToViewPosition,
 	modelViewChangeChecked,
 	modelViewChangeType,
@@ -109,7 +109,7 @@ export default class TodoListEditing extends Plugin {
 		);
 		data.upcastDispatcher.on<UpcastElementEvent>(
 			'element:input',
-			dataViewCheckmarkInsertion,
+			dataViewModelCheckmarkInsertion,
 			{ priority: 'high' }
 		);
 

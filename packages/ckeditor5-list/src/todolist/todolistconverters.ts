@@ -152,7 +152,7 @@ export function dataModelViewInsertion( model: Model ): GetCallback<DowncastInse
  *
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  */
-export const dataViewCheckmarkInsertion: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
+export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
 	const modelCursor = data.modelCursor;
 	const modelItem = modelCursor.parent;
 	const viewItem = data.viewItem;
