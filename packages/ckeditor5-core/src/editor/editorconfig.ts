@@ -34,6 +34,7 @@ import type Editor from './editor';
  * about setting configuration options.
  */
 export interface EditorConfig {
+
 	context?: Context;
 
 	/**
@@ -533,6 +534,11 @@ export interface EditorConfig {
 	 * [order a trial](https://orders.ckeditor.com/trial/premium-features).
 	 */
 	licenseKey?: string;
+
+	/**
+	 * Translations to be used in editor.
+	 */
+	translations?: Translations | Array<Translations>;
 }
 
 /**
@@ -694,3 +700,13 @@ export interface UiConfig {
 	 **/
 	poweredBy?: PoweredByConfig;
 }
+
+/**
+ * Translations object definition.
+ */
+export type Translations = {
+	[ language: string ]: {
+		dictionary: { [ messageId: string ]: string | ReadonlyArray<string> };
+		getPluralForm?: ( n: number ) => number;
+	};
+};

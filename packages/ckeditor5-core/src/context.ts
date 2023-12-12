@@ -158,7 +158,8 @@ export default class Context {
 
 		this.locale = new Locale( {
 			uiLanguage: typeof languageConfig === 'string' ? languageConfig : languageConfig.ui,
-			contentLanguage: this.config.get( 'language.content' )
+			contentLanguage: this.config.get( 'language.content' ),
+			translations: this.config.get( 'translations' )
 		} );
 
 		this.t = this.locale.t;

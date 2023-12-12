@@ -141,6 +141,7 @@
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.7",
     "nyc": "^15.0.1",
+    "pofile": "^1.1.4",
     "postcss-loader": "^4.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
