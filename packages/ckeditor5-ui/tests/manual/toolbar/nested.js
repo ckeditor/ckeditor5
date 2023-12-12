@@ -158,12 +158,7 @@ ClassicEditor
 		image: {
 			toolbar: [
 				'imageTextAlternative'
-			],
-			insert: {
-				integrations: [
-					'insertImageViaUrl'
-				]
-			}
+			]
 		}
 	} )
 	.then( editor => {

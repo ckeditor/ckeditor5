@@ -1,6 +1,7 @@
 ---
 title: Markdown output
 meta-title: Markdown output | CKEditor 5 Documentation
+meta-description: The Markdown plugin lets you switch the default CKEditor 5 output from HTML to Markdown.
 category: features
 ---
 
@@ -24,7 +25,7 @@ The editor below is configured to output GitHub Flavored Markdown. Edit the cont
 
  Coupled with the {@link features/autoformat autoformatting} feature, the Markdown plugin offers the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor&nbsp;5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
 
-Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor&nbsp;5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
+Please remember that Markdown syntax is really simple and it does not cover all the rich-text features. Some features provided by CKEditor&nbsp;5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
 ## Extending formatting support
 If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor&nbsp;5 plugins and extend the formatting capabilities.
@@ -41,7 +42,7 @@ editor.setData( 'This is **bold**.' );
 
 The data processor outputs the GFM Markdown syntax. "GFM" stands for "GitHub Flavored Markdown" &ndash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification (although the [CommonMark](https://commonmark.org/) initiative aims to close this gap) and has many dialects, often incompatible with one another.
 
-When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (e.g. the [marked](https://www.npmjs.com/package/marked) library).
+When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (for example, the [marked](https://www.npmjs.com/package/marked) library).
 
 <info-box info>
 	While the CKEditor&nbsp;5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
@@ -98,7 +99,7 @@ ClassicEditor
 ## Known issues
 
 <info-box info>
-	Please bear in mind that the Markdown data processor does not support all rich text features. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is very simple and only supports limited formatting options.
+	Please bear in mind that the Markdown data processor does not support all rich text features. The [Markdown syntax](https://daringfireball.net/projects/markdown/syntax) is really simple and only supports limited formatting options.
 
 	This means that advanced formatting like list styles, table styles, or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be converted from HTML to Markdown.
 </info-box>
@@ -116,6 +117,7 @@ Some other ways to output the edited content include:
 * {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
 * {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
+* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown formatted content straight into the editor.
 
 ## Contribute
 

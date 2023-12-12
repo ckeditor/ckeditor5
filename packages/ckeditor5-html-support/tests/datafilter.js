@@ -4045,6 +4045,110 @@ describe( 'DataFilter', () => {
 				'</p>'
 			);
 		} );
+
+		it( 'should remove GHS selection attribute for the same range as a coupled feature attribute was removed', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			editor.setData( '<p><a href="foo" class="bar">foobar</a></p>' );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data: '<paragraph><$text htmlA="(1)" linkHref="foo">[]foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'bar' ]
+					}
+				}
+			} );
+
+			expect( model.document.selection.getAttribute( 'linkHref' ) ).to.deep.equal( 'foo' );
+			expect( model.document.selection.getAttribute( 'htmlA' ) ).to.deep.equal( { classes: [ 'bar' ] } );
+
+			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foobar</a></p>' );
+
+			model.change( writer => {
+				writer.removeSelectionAttribute( 'linkHref' );
+			} );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data: '<paragraph>[]<$text htmlA="(1)" linkHref="foo">foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'bar' ]
+					}
+				}
+			} );
+
+			expect( model.document.selection.getAttribute( 'linkHref' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'htmlA' ) ).to.be.undefined;
+
+			expect( editor.getData() ).to.equal( '<p><a class="bar" href="foo">foobar</a></p>' );
+		} );
+
+		it( 'should not remove other GHS selection attribute when other coupled one is removed', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			editor.setData( '<p><span style="color:red;text-transform:uppercase;"><strong>foobar</strong></span></p>' );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data: '<paragraph><$text fontColor="red" htmlSpan="(1)" htmlStrong="(2)">[]foobar</$text></paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'text-transform': 'uppercase'
+						}
+					},
+					2: {}
+				}
+			} );
+
+			expect( model.document.selection.getAttribute( 'fontColor' ) ).to.deep.equal( 'red' );
+			expect( model.document.selection.getAttribute( 'htmlSpan' ) ).to.deep.equal( { styles: { 'text-transform': 'uppercase' } } );
+			expect( model.document.selection.getAttribute( 'htmlStrong' ) ).to.deep.equal( {} );
+
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:red;"><span style="text-transform:uppercase;"><strong>foobar</strong></span></span></p>'
+			);
+
+			model.change( writer => {
+				writer.removeSelectionAttribute( 'fontColor' );
+			} );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data:
+					'<paragraph>' +
+						'<$text htmlSpan="(1)" htmlStrong="(2)">[]</$text>' +
+						'<$text fontColor="red" htmlSpan="(3)" htmlStrong="(4)">foobar</$text>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						styles: {
+							'text-transform': 'uppercase'
+						}
+					},
+					2: {}
+				}
+			} );
+
+			expect( model.document.selection.getAttribute( 'fontColor' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'htmlSpan' ) ).to.deep.equal( { styles: { 'text-transform': 'uppercase' } } );
+			expect( model.document.selection.getAttribute( 'htmlStrong' ) ).to.deep.equal( {} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span style="color:red;"><span style="text-transform:uppercase;"><strong>foobar</strong></span></span>' +
+				'</p>'
+			);
+		} );
 	} );
 
 	describe( 'loadAllowedEmptyElementsConfig', () => {

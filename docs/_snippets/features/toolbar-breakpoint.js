@@ -16,7 +16,7 @@ ClassicEditor
 				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
 				'|', 'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
 				'-', // break point
-				'link', 'uploadImage', 'blockQuote', 'codeBlock',
+				'link', 'insertImage', 'blockQuote', 'codeBlock',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			],
@@ -28,7 +28,8 @@ ClassicEditor
 			}
 		},
 		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
+				'|', 'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit' ]
 		},
 		codeBlock: {
 			languages: [

@@ -8,6 +8,7 @@
  */
 
 import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services';
+import type { ArrayOrItem } from 'ckeditor5/src/utils';
 
 /**
  * The configuration of the {@link module:ckbox/ckbox~CKBox CKBox feature}.
@@ -92,6 +93,29 @@ export interface CKBoxConfig {
 	 * If defined, it is an error, when the user has no access to the specified workspace.
 	 */
 	defaultUploadWorkspaceId?: string;
+
+	/**
+	 * Enforces displaying the "Powered by CKBox" link regardless of the CKBox plan used.
+	 */
+	forceDemoLabel?: boolean;
+
+	/**
+	 * Allows editing images that are not hosted in CKBox service.
+	 *
+	 * This configuration option should whitelist URL(s) of images that should be editable.
+	 * Make sure that allowed image resources have CORS enabled.
+	 *
+	 * The image is editable if this option is:
+	 * * a regular expression and it matches the image URL, or
+	 * * a custom function that returns `true` for the image URL, or
+	 * * `'origin'` literal and the image URL is from the same origin, or
+	 * * an array of the above and the image URL matches one of the array elements.
+	 *
+	 * Images hosted in CKBox are always editable.
+	 *
+	 * @default []
+	 */
+	allowExternalImagesEditing?: ArrayOrItem<RegExp | 'origin' | ( ( src: string ) => boolean )>;
 
 	/**
 	 * Inserts the unique asset ID as the `data-ckbox-resource-id` attribute. To disable this behavior, set it to `true`.
@@ -340,4 +364,9 @@ export interface CKBoxRawAssetMetadataDefinition {
 	 * The blurhash placeholder value.
 	 */
 	blurHash?: string;
+
+	/**
+	 * The processing status of the asset.
+	 */
+	metadataProcessingStatus?: string;
 }

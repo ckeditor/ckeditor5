@@ -147,7 +147,9 @@ describe( 'MediaEmbedEditing', () => {
 							testMediaUpcast( [
 								'https://www.dailymotion.com/video/foo',
 								'www.dailymotion.com/video/foo',
-								'dailymotion.com/video/foo'
+								'dailymotion.com/video/foo',
+								'https://dai.ly/foo',
+								'dai.ly/foo'
 							],
 							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
 								'<iframe src="https://www.dailymotion.com/embed/video/foo" ' +

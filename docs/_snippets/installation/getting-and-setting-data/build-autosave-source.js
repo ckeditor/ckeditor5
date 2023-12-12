@@ -6,8 +6,15 @@
 /* globals window */
 
 import { Autosave } from '@ckeditor/ckeditor5-autosave';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import ClassicEditor from '../../build-classic';
 
 ClassicEditor.builtinPlugins.push( Autosave );
+ClassicEditor.builtinPlugins.push( CKBox );
+ClassicEditor.builtinPlugins.push( CKBoxImageEdit );
+ClassicEditor.builtinPlugins.push( PictureEditing );
+ClassicEditor.builtinPlugins.push( ImageResize );
+ClassicEditor.builtinPlugins.push( AutoImage );
 
 window.ClassicEditor = ClassicEditor;

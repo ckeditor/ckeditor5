@@ -6,8 +6,8 @@
 /* globals window */
 
 import { Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code } from '@ckeditor/ckeditor5-basic-styles';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
+import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 
@@ -15,6 +15,6 @@ import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import ClassicEditor from '../build-classic';
 
 ClassicEditor.builtinPlugins.push( Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code, RemoveFormat,
-	PictureEditing, ImageResize, AutoImage, LinkImage, CKBox );
+	PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 window.ClassicEditor = ClassicEditor;

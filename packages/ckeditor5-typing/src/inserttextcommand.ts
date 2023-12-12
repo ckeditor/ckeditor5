@@ -85,10 +85,14 @@ export default class InsertTextCommand extends Command {
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
+			// Store selection attributes before deleting old content to preserve formatting and link.
+			// This unifies the behavior between DocumentSelection and Selection provided as input option.
+			const selectionAttributes = Array.from( doc.selection.getAttributes() );
+
 			model.deleteContent( selection );
 
 			if ( text ) {
-				model.insertContent( writer.createText( text, doc.selection.getAttributes() ), selection );
+				model.insertContent( writer.createText( text, selectionAttributes ), selection );
 			}
 
 			if ( resultRange ) {

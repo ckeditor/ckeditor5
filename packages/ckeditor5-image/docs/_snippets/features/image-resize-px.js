@@ -15,7 +15,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -38,7 +38,7 @@ ClassicEditor
 					value: '200'
 				}
 			],
-			toolbar: [ 'resizeImage' ]
+			toolbar: [ 'resizeImage', 'ckboxImageEdit' ]
 		},
 		ui: {
 			viewportOffset: {

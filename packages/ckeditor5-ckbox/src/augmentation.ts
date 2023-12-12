@@ -7,7 +7,11 @@ import type {
 	CKBox,
 	CKBoxCommand,
 	CKBoxConfig,
-	CKBoxEditing
+	CKBoxEditing,
+	CKBoxImageEdit,
+	CKBoxImageEditEditing,
+	CKBoxImageEditCommand,
+	CKBoxImageEditUI
 } from './index';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -24,9 +28,21 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[ CKBox.pluginName ]: CKBox;
 		[ CKBoxEditing.pluginName ]: CKBoxEditing;
+		[ CKBoxImageEdit.pluginName ]: CKBoxImageEdit;
+		[ CKBoxImageEditEditing.pluginName ]: CKBoxImageEditEditing;
+		[ CKBoxImageEditUI.pluginName ]: CKBoxImageEditUI;
 	}
 
 	interface CommandsMap {
 		ckbox: CKBoxCommand;
+		ckboxImageEdit: CKBoxImageEditCommand;
 	}
+}
+
+declare global {
+	// eslint-disable-next-line no-var
+	var CKBox: {
+		mount( wrapper: Element, options: Record<string, unknown> ): void;
+		mountImageEditor( wrapper: Element, options: Record<string, unknown> ): void;
+	};
 }

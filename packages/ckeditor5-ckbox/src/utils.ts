@@ -116,3 +116,129 @@ export function blurHashToDataUrl( hash?: string ): string | undefined {
 		return undefined;
 	}
 }
+
+/**
+ * Sends the HTTP request.
+ *
+ * @internal
+ * @param config.url the URL where the request will be sent.
+ * @param config.method The HTTP method.
+ * @param config.data Additional data to send.
+ * @param config.onUploadProgress A callback informing about the upload progress.
+ */
+export function sendHttpRequest( {
+	url,
+	method = 'GET',
+	data,
+	onUploadProgress,
+	signal,
+	authorization
+}: {
+	url: URL;
+	signal: AbortSignal;
+	authorization: string;
+	method?: 'GET' | 'POST';
+	data?: FormData | null;
+	onUploadProgress?: ( evt: ProgressEvent ) => void;
+} ): Promise<any> {
+	const xhr = new XMLHttpRequest();
+
+	xhr.open( method, url.toString() );
+	xhr.setRequestHeader( 'Authorization', authorization );
+	xhr.setRequestHeader( 'CKBox-Version', 'CKEditor 5' );
+	xhr.responseType = 'json';
+
+	// The callback is attached to the `signal#abort` event.
+	const abortCallback = () => {
+		xhr.abort();
+	};
+
+	return new Promise<any>( ( resolve, reject ) => {
+		signal.throwIfAborted();
+		signal.addEventListener( 'abort', abortCallback );
+
+		xhr.addEventListener( 'loadstart', () => {
+			signal.addEventListener( 'abort', abortCallback );
+		} );
+
+		xhr.addEventListener( 'loadend', () => {
+			signal.removeEventListener( 'abort', abortCallback );
+		} );
+
+		xhr.addEventListener( 'error', () => {
+			reject();
+		} );
+
+		xhr.addEventListener( 'abort', () => {
+			reject();
+		} );
+
+		xhr.addEventListener( 'load', () => {
+			const response = xhr.response;
+
+			if ( !response || response.statusCode >= 400 ) {
+				return reject( response && response.message );
+			}
+
+			resolve( response );
+		} );
+
+		/* istanbul ignore else -- @preserve */
+		if ( onUploadProgress ) {
+			xhr.upload.addEventListener( 'progress', evt => {
+				onUploadProgress( evt );
+			} );
+		}
+
+		// Send the request.
+		xhr.send( data );
+	} );
+}
+
+const MIME_TO_EXTENSION: Record<string, string> = {
+	'image/gif': 'gif',
+	'image/jpeg': 'jpg',
+	'image/png': 'png',
+	'image/webp': 'webp',
+	'image/bmp': 'bmp',
+	'image/tiff': 'tiff'
+};
+
+/**
+ * Returns an extension a typical file in the specified `mimeType` format would have.
+ */
+export function convertMimeTypeToExtension( mimeType: string ): string {
+	return MIME_TO_EXTENSION[ mimeType ];
+}
+
+/**
+ * Tries to fetch the given `url` and returns 'content-type' of the response.
+ */
+export async function getContentTypeOfUrl( url: string, options: { signal: AbortSignal } ): Promise<string> {
+	try {
+		const response = await fetch( url, {
+			method: 'HEAD',
+			cache: 'force-cache',
+			...options
+		} );
+
+		if ( !response.ok ) {
+			return '';
+		}
+
+		return response.headers.get( 'content-type' ) || '';
+	} catch {
+		return '';
+	}
+}
+
+/**
+ * Returns an extension from the given value.
+ */
+export function getFileExtension( file: File ): string {
+	const fileName = file.name;
+	const extensionRegExp = /\.(?<ext>[^.]+)$/;
+	const match = fileName.match( extensionRegExp );
+
+	return match!.groups!.ext.toLowerCase();
+}

@@ -8,16 +8,14 @@
 import { BalloonEditor as BalloonEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
+import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading, Title } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { Image, ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
@@ -33,18 +31,18 @@ class BalloonEditor extends BalloonEditorBase {}
 
 BalloonEditor.builtinPlugins = [
 	Essentials,
-	UploadAdapter,
 	Autoformat,
 	BlockToolbar,
 	Bold,
 	Italic,
 	BlockQuote,
 	CKBox,
-	CKFinder,
+	CKBoxImageEdit,
 	CloudServices,
 	EasyImage,
 	Heading,
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
@@ -71,7 +69,7 @@ BalloonEditor.defaultConfig = {
 		'outdent',
 		'indent',
 		'|',
-		'uploadImage',
+		'insertImage',
 		'blockQuote',
 		'insertTable',
 		'mediaEmbed',
@@ -87,13 +85,15 @@ BalloonEditor.defaultConfig = {
 		]
 	},
 	image: {
+	// having this one here does not make the slightest sense
 		toolbar: [
 			'imageStyle:inline',
 			'imageStyle:block',
 			'imageStyle:side',
 			'|',
 			'toggleImageCaption',
-			'imageTextAlternative'
+			'imageTextAlternative',
+			'ckboxImageEdit'
 		]
 	},
 	table: {
@@ -124,7 +124,7 @@ BalloonEditor
 			'outdent',
 			'indent',
 			'|',
-			'uploadImage',
+			'insertImage',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed'

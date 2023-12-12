@@ -13,7 +13,9 @@ modified_at: 2021-06-17
 The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.
 
 ## Overview
+
 This package allows for adjusting the image appearance by:
+
 * **Applying CSS classes** - adding a particular [predefined](#ready-to-use-styles) or [custom](#configuring-the-styles) CSS class or removing any style-related CSS class,
 * **Managing the HTML representation** by changing the image type from inline to block and vice versa. Applying a style may change the type of the image, depending on the configuration of the style.
 
@@ -26,6 +28,7 @@ This package allows for adjusting the image appearance by:
 </info-box>
 
 ### Image classes
+
 The styles applied to the image can either add or remove the style-related class from it. This behavior depends on the particular configuration of the {@link module:image/imageconfig~ImageStyleOptionDefinition}. Only the definition with the {@link module:image/imageconfig~ImageStyleOptionDefinition#isDefault} flag set to true will remove any applied image style-related class.
 
 <info-box warning>
@@ -35,13 +38,16 @@ The styles applied to the image can either add or remove the style-related class
 </info-box>
 
 ### Inline and block images
+
 Images in the editor can be displayed as either inline or block.
 
 The inline type images are represented as inline HTML elements and can be inserted in the middle of a paragraph or in a link just like a regular text. The HTML representation of the inline image looks like this:
+
 * `<span class=”image-style-class”><img></img></span>` in the editable,
 * `<img class=”image-style-class”></img>` in the HTML content retrieved by the {@link module:core/editor/utils/dataapimixin~DataApi#getData} method.
 
 Block type images, on the other hand, can be inserted only between other blocks like paragraphs, tables or media. The HTML representation of the block image looks like this:
+
 * `<figure class=”image image-style-class”><img></img></figure>`.
 
 **Switching between these two types of images can be executed by applying/removing a style from the image**: Each of the defined style options provides a list of the image types which it can be applied to. Applying a style may change the type of the image, depending on the configuration of the style.
@@ -54,15 +60,18 @@ When a new image is inserted, the editor will, by default, choose the optimal im
 </info-box>
 
 ## UI
+
 Application of a style can be executed by using one of the toolbar buttons created by the `ImageStyle` plugin. Each of the defined styles (both [default](#ready-to-use-styles) and [custom](#configuring-the-styles)) will be registered under the name `imageStyle:image-style-name` in the {@link module:ui/componentfactory~ComponentFactory} and can be added to the image or main toolbar by referencing to this name.
 
 The default image toolbar has its standard configuration already set in the predefined builds.
+
 * The default UI of the classic, inline, balloon and balloon block builds consists of a set of buttons to apply only the [semantical styles](#semantical-styles) to support creating a structured content. [**See a live example**](#semantical-example).
 * The document editor build UI uses several buttons for applying [presentational styles](#presentational-styles) and also uses the [semantical styles](#semantical-styles) to reset the image appearance to default. [**See a live example**](#presentational-example).
 
 It is also possible to create a completely custom image styles UI, setting your own icons and tooltips, and grouping the image style buttons into the {@link module:image/imageconfig~ImageStyleDropdownDefinition custom drop-downs}. Read more about it in the [**customizing the image styles UI**](#configuring-the-styles) section of this guide.
 
 ## Approaches to styling images
+
 CKEditor5 offers two basic approaches to styling the images:
 * A particular style can define the image type, so it can be styled, for example, as an avatar, a banner, or an emoticon. It will be called a ["semantical style"](#semantical-styles) since it refers to the purpose of the particular image.
 * On the other hand, sometimes the user should be able to granularly control how an image is presented thanks to the ability to set the size and alignment separately and completely arbitrarily. The style that defines the image alignment will be called a ["presentational"](#presentational-styles) one since it refers only to the appearance of the image.
@@ -115,6 +124,7 @@ ClassicEditor
 ```
 
 ### Presentational styles
+
 Presentational styles do not relate to any special meaning of the content. They directly control the visual aspect of an image. The default available presentational styles determine the image alignment behavior. Check the list of the available semantical styles in the [table](#ready-to-use-styles) below.
 
 <info-box hint>
@@ -126,6 +136,7 @@ Presentational styles do not relate to any special meaning of the content. They 
 </info-box>
 
 The sample editor below uses predefined presentational image styles represented by buttons grouped in the drop-downs by the way the image is displayed in the document:
+
 * **Inline images** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline.svg Inline images} - displayed inside a line of text. It is a default style for the inline images and it does not apply any CSS class to the image.
 * **Images wrapped with text** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg Inline image aligned to the left} - these are the images with the CSS `float` property. They can be either in the inline or block mode, but to keep the valid HTML output, the block images (wrapped with the `<figure>` tags) can only be placed before or after paragraphs, not in the middle of one. It contains the following image styles:
   * `'align-left'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg Image aligned to the left},
@@ -165,6 +176,7 @@ At the moment it is not possible to apply multiple styles (classes) to the image
 ## Configuring the styles
 
 There are three ways of defining the image styles in the editor configuration:
+
 * using one of the predefined [default styles](#ready-to-use-styles),
 * modifying one of the styles mentioned above (you can change the class it applies to the image, the icon, the tooltip and the supported image type),
 * defining a completely custom image style.
@@ -350,6 +362,7 @@ placed on the editor margins. */
 	box-shadow: 0 0 18px #1a1a1a26
 }
 ```
+
 ### Ready-to-use styles
 
 The `ImageStyle` plugin provides a set of default styles depending on the loaded plugins. The table below presents the availability of these styles and the image behavior caused by an application of a particular style.

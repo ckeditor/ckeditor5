@@ -312,6 +312,43 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/15411.
+		it( 'should properly handle markers in reconverted elements', () => {
+			// This test is very silly, but it is very difficult to test it when you have to operate on mocks and stubs :/.
+			// There are simply too many things to set up and mock.
+			//
+			// So, we will stub the key things that caused the bug, but this is basically a direct test of the source code of `change()`,
+			// instead of testing the results we check whether two methods are called in a correct order.
+			//
+			// Still, maybe this is better than no test, at the very least it will start to fail if someone refactors code incorrectly.
+			//
+			const range = model.createRange(
+				model.createPositionFromPath( root, [ 0, 2 ] ),
+				model.createPositionFromPath( root, [ 0, 4 ] )
+			);
+
+			model.markers._set( 'markerName', range, false, false );
+
+			sinon.stub( mapper, 'flushDeferredBindings' ).callsFake( () => {
+				// Using private property here.
+				// Add `'markerName'` to markers to refresh.
+				mapper._unboundMarkerNames.add( 'markerName' );
+			} );
+
+			sinon.stub( dispatcher, '_convertMarkerRemove' );
+			sinon.stub( dispatcher, '_convertMarkerAdd' );
+
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, model.markers, writer );
+			} );
+
+			const unboundMarkers = mapper.flushUnboundMarkerNames();
+
+			expect( unboundMarkers.length ).to.equal( 0 );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'markerName', range ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'markerName', range ) );
+		} );
 	} );
 
 	describe( 'convert', () => {

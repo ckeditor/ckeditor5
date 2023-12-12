@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import ImageInsertUI from './imageinsert/imageinsertui';
+import ImageInsertViaUrlUI from './imageinsert/imageinsertviaurlui';
 
 /**
  * The image insert via URL plugin.
@@ -33,6 +34,6 @@ export default class ImageInsertViaUrl extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageInsertUI ] as const;
+		return [ ImageInsertViaUrlUI, ImageInsertUI ] as const;
 	}
 }

@@ -42,6 +42,7 @@ ESLint
 formatter
 Gantt
 [Gg]etter
+Grammarly
 hardcode
 Iframely
 Ivanov

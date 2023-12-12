@@ -16,11 +16,17 @@ ClassicEditor
 				'|', 'fontSize', 'fontFamily',
 				'|', 'bold', 'italic', 'underline', 'strikethrough', 'code', 'subscript', 'superscript',
 				'|', 'removeformat',
-				'-', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			],
 			shouldNotGroupWhenFull: true
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
+			]
 		},
 		ui: {
 			viewportOffset: {

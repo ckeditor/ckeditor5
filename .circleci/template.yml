@@ -103,8 +103,8 @@ jobs:
           command: yarn run check-dependencies:versions-match
       - run:
           when: always
-          name: Validate icons specified in "ckeditor5-metadata.json" files
-          command: node scripts/ci/validate-metadata-icons.js
+          name: Validate "ckeditor5-metadata.json" files
+          command: node scripts/ci/validate-metadata-files.js
       - run:
           when: always
           name: Check if all SVG files are optimized

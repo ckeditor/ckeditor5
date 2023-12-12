@@ -22,7 +22,6 @@ Observe the responsive image in the demo. You can also add another one with the 
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-
 ## Why responsive images?
 
 Responsive images have two main advantages over "traditional" image delivery:
@@ -74,7 +73,6 @@ Regardless of the original file format, the responsive versions will be served a
 </info-box>
 
 For detailed information on how to configure and use CKBox, please refer to the {@link features/ckbox#installation CKBox file manager} installation guide.
-
 
 ## Contribute
 

@@ -78,7 +78,8 @@ export { transformSets } from './model/operation/transform';
 export {
 	default as DocumentSelection,
 	type DocumentSelectionChangeRangeEvent,
-	type DocumentSelectionChangeMarkerEvent
+	type DocumentSelectionChangeMarkerEvent,
+	type DocumentSelectionChangeAttributeEvent
 } from './model/documentselection';
 export { default as Range } from './model/range';
 export { default as LiveRange, type LiveRangeChangeRangeEvent } from './model/liverange';
