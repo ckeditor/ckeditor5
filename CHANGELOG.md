@@ -25,7 +25,7 @@ Note that these improvements come with minor breaking changes in the editor conf
 
 CKBox’s image editing capabilities, introduced in CKBox v1.6.0, are now accessible straight from the CKEditor image toolbar. CKBox users can resize, crop or rotate images right within CKEditor.
 
-Additionally, you can also edit images which are not yet added to CKBox (e.g. hotlinked images). CKBox will automatically download the images in the background, to allow users to edit them without having to leave CKEditor to manually add the image into CKBox. This dual functionality, combined with server-side processing, ensures ease of use and maintains high image quality and file integrity, providing a more efficient and reliable image editing experience within CKEditor.
+Additionally, you can also edit images which are not yet added to CKBox (for example hotlinked images). CKBox will automatically download the images in the background, to allow users to edit them without having to leave CKEditor to manually add the image into CKBox. This dual functionality, combined with server-side processing, ensures ease of use and maintains high image quality and file integrity, providing a more efficient and reliable image editing experience within CKEditor.
 
 Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020) to learn more about these changes.
 
