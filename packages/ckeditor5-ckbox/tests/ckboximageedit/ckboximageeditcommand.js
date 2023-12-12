@@ -791,6 +791,26 @@ describe( 'CKBoxImageEditCommand', () => {
 				);
 			} );
 
+			it( 'should not be alt attribute if there is no one in the original image', () => {
+				setModelData( model, '[<imageBlock ' +
+						'ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				command._replaceImage( imageElement, dataMock );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
+			} );
+
 			it( 'should replace image with saved one (with blurHash placeholder) after it is processed', () => {
 				const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
 

@@ -719,7 +719,7 @@ searchView.render();
 document.querySelector( '.ui-search' ).append( searchView.element );
 ```
 
-Check out the {@link features/ai-assistant AI Assistant} feature to see how all the UI pieces work together in a more complex setup.
+Check out the {@link features/ai-assistant-overview#demo AI Assistant} feature to see how all the UI pieces work together in a more complex setup.
 
 ## Spinner
 
