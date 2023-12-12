@@ -12,7 +12,7 @@
 import type { Translations, Editor } from '@ckeditor/ckeditor5-core';
 import CKEditorError from './ckeditorerror';
 import global from './dom/global';
-import _ from 'lodash-es';
+import { merge } from 'lodash-es';
 
 declare global {
 	var CKEDITOR_TRANSLATIONS: Translations;
@@ -125,7 +125,7 @@ export function add(
 
 		if ( Array.isArray( existingTranslations ) ) {
 			mergedExistingTranslations = existingTranslations.reduce(
-				( acc, singleTranslationObject ) => _.merge( acc, singleTranslationObject ) ) as Translations | undefined;
+				( acc, singleTranslationObject ) => merge( acc, singleTranslationObject ) ) as Translations | undefined;
 		} else {
 			mergedExistingTranslations = existingTranslations as Translations | undefined;
 		}

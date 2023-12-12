@@ -13,7 +13,7 @@ import toArray from './toarray';
 import { _translate, type Message } from './translation-service';
 import { getLanguageDirection, type LanguageDirection } from './language';
 import type { Translations } from '@ckeditor/ckeditor5-core';
-import _ from 'lodash-es';
+import { merge } from 'lodash-es';
 
 /**
  * Represents the localization services.
@@ -129,7 +129,7 @@ export default class Locale {
 
 		if ( Array.isArray( translations ) ) {
 			unifiedTranslations = translations.reduce(
-				( acc, singleTranslationObject ) => _.merge( acc, singleTranslationObject ) ) as Translations | undefined;
+				( acc, singleTranslationObject ) => merge( acc, singleTranslationObject ) ) as Translations | undefined;
 		} else {
 			unifiedTranslations = translations as Translations | undefined;
 		}
