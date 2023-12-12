@@ -19,7 +19,7 @@ Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/ic
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-Each code block has a [specific programming language assigned](#configuring-code-block-languages) (e.g. "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
+Each code block has a [specific programming language assigned](#configuring-code-block-languages) (like "Java" or "CSS"; this is configurable) and supports basic editing tools, for instance, [changing the line indentation](#changing-line-indentation) using the keyboard.
 
 ## Configuring code block languages
 
@@ -81,7 +81,7 @@ ClassicEditor
 
 Although live code block highlighting ***is impossible when editing*** in CKEditor&nbsp;5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (for example, in blog posts or website content).
 
-The code language {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (e.g. [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
+The code language {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (for example, [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
 
 ## Tips and tweaks
 
