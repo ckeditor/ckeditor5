@@ -12,7 +12,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import { View, ButtonView, LabeledFieldView, SwitchButtonView } from '@ckeditor/ckeditor5-ui';
+import { ViewModel, ButtonView, LabeledFieldView, SwitchButtonView } from '@ckeditor/ckeditor5-ui';
 
 import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../../theme/icons/numberedlist.svg';
@@ -170,7 +170,7 @@ describe( 'ListPropertiesUI', () => {
 			} );
 
 			it( 'should not have numbered list properties', () => {
-				expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+				expect( listPropertiesView.stylesView ).to.be.instanceOf( ViewModel );
 				expect( listPropertiesView.startIndexFieldView ).to.be.null;
 				expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
 			} );
@@ -433,7 +433,7 @@ describe( 'ListPropertiesUI', () => {
 
 						const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-						expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+						expect( listPropertiesView.stylesView ).to.be.instanceOf( ViewModel );
 						expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
 						expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
 
@@ -458,7 +458,7 @@ describe( 'ListPropertiesUI', () => {
 
 						const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-						expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+						expect( listPropertiesView.stylesView ).to.be.instanceOf( ViewModel );
 						expect( listPropertiesView.startIndexFieldView ).to.be.null;
 						expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
 

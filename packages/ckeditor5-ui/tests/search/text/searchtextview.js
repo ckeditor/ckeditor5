@@ -14,7 +14,7 @@ import {
 	ListView,
 	SearchInfoView,
 	SearchTextView,
-	View,
+	ViewModel,
 	ViewCollection,
 	createLabeledInputNumber
 } from '../../../src';
@@ -94,7 +94,7 @@ describe( 'SearchTextView', () => {
 		} );
 
 		it( 'creates a #resultsView as a container for the #filteredView', () => {
-			expect( view.resultsView ).to.be.instanceOf( View );
+			expect( view.resultsView ).to.be.instanceOf( ViewModel );
 
 			expect( view.resultsView.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.resultsView.element.classList.contains( 'ck-search__results' ) ).to.true;
@@ -364,7 +364,7 @@ describe( 'SearchTextView', () => {
 			} );
 
 			it( 'accpets a view from the configuration', () => {
-				const customInfoView = new View();
+				const customInfoView = new ViewModel();
 				customInfoView.setTemplate( {
 					tag: 'div',
 					attributes: {
@@ -442,7 +442,7 @@ describe( 'SearchTextView', () => {
 				} );
 
 				it( 'should allow adding extra views to the focus cycling logic', () => {
-					const anotherFocusableView = new View();
+					const anotherFocusableView = new ViewModel();
 
 					anotherFocusableView.setTemplate( {
 						tag: 'div',

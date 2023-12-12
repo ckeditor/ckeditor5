@@ -6,7 +6,7 @@
 /* globals window, document, Event */
 
 import {
-	View,
+	ViewModel,
 	FormHeaderView,
 	LabeledFieldView,
 	ButtonView,
@@ -338,8 +338,8 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( view._replaceAllButtonView ).to.be.instanceOf( ButtonView );
 				expect( view._findInputView ).to.be.instanceOf( LabeledFieldView );
 				expect( view._replaceInputView ).to.be.instanceOf( LabeledFieldView );
-				expect( view._findFieldsetView ).to.be.instanceOf( View );
-				expect( view._replaceFieldsetView ).to.be.instanceOf( View );
+				expect( view._findFieldsetView ).to.be.instanceOf( ViewModel );
+				expect( view._replaceFieldsetView ).to.be.instanceOf( ViewModel );
 				expect( view._optionsDropdown ).to.be.instanceOf( DropdownView );
 			} );
 		} );
