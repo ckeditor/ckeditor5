@@ -188,6 +188,7 @@
 		"features/toolbar.html": "features/toolbar/toolbar.html",
 		"features/video.html": "features/media-embed.html",
 		"features/video-upload.html": "features/media-embed.html",
+		"features/ai-assistant/ai-assistant.html": "features/ai-assistant/ai-assistant-overview.html",
 		"framework/guides/architecture/core-editor-architecture.html": "framework/architecture/core-editor-architecture.html",
 		"framework/guides/architecture/editing-engine.html": "framework/architecture/editing-engine.html",
 		"framework/guides/architecture/intro.html": "framework/architecture/intro.html",
