@@ -7,7 +7,7 @@
  * @module style/ui/stylegroupview
  */
 
-import { LabelView, View } from 'ckeditor5/src/ui';
+import { LabelView, ViewModel } from 'ckeditor5/src/ui';
 import type { Locale } from 'ckeditor5/src/utils';
 
 import StyleGridView from './stylegridview';
@@ -20,7 +20,7 @@ import '../../theme/stylegroup.css';
  *
  * Renders a {@link module:style/ui/stylegridview~StyleGridView style grid} and a label.
  */
-export default class StyleGroupView extends View<HTMLDivElement> {
+export default class StyleGroupView extends ViewModel<HTMLDivElement> {
 	/**
 	 * The styles grid of the group.
 	 */

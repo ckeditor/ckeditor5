@@ -14,7 +14,7 @@ import {
 	ContextualBalloon,
 	getLocalizedColorOptions,
 	normalizeColorOptions,
-	type View
+	type ViewModel
 } from 'ckeditor5/src/ui';
 import type { Batch } from 'ckeditor5/src/engine';
 
@@ -431,7 +431,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	private _getValidatedPropertyChangeCallback(
 		options: {
 			commandName: `tableCell${ 'BorderColor' | 'BorderWidth' | 'Padding' | 'Width' | 'Height' | 'BackgroundColor' }`;
-			viewField: View & { errorText?: string | null };
+			viewField: ViewModel & { errorText?: string | null };
 			validator: ( arg0: string ) => boolean;
 			errorText: string;
 		}

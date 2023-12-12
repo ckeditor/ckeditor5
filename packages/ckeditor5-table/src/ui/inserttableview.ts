@@ -7,7 +7,7 @@
  * @module table/ui/inserttableview
  */
 
-import { View, ButtonView, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui';
+import { ViewModel, ButtonView, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui';
 
 import { KeystrokeHandler, FocusTracker, type Locale } from 'ckeditor5/src/utils';
 
@@ -18,7 +18,7 @@ import './../../theme/inserttable.css';
  *
  * It renders a 10x10 grid to choose the inserted table size.
  */
-export default class InsertTableView extends View {
+export default class InsertTableView extends ViewModel {
 	/**
 	 * A collection of table size box items.
 	 */

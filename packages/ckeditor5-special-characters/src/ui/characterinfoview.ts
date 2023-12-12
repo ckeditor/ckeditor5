@@ -8,7 +8,7 @@
  */
 
 import type { Locale } from 'ckeditor5/src/utils';
-import { View } from 'ckeditor5/src/ui';
+import { ViewModel } from 'ckeditor5/src/ui';
 
 import '../../theme/characterinfo.css';
 
@@ -16,7 +16,7 @@ import '../../theme/characterinfo.css';
  * The view displaying detailed information about a special character glyph, e.g. upon
  * hovering it with a mouse.
  */
-export default class CharacterInfoView extends View<HTMLDivElement> {
+export default class CharacterInfoView extends ViewModel<HTMLDivElement> {
 	/**
 	 * The character whose information is displayed by the view. For instance, "∑" or "¿".
 	 *

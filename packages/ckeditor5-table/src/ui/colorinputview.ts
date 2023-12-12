@@ -8,7 +8,7 @@
  */
 
 import {
-	View,
+	ViewModel,
 	InputTextView,
 	createDropdown,
 	FocusCycler,
@@ -39,7 +39,7 @@ export type ColorInputViewOptions = {
  *
  * @internal
  */
-export default class ColorInputView extends View implements FocusableView {
+export default class ColorInputView extends ViewModel implements FocusableView {
 	/**
 	 * The value of the input.
 	 *
@@ -220,7 +220,7 @@ export default class ColorInputView extends View implements FocusableView {
 		const bind = this.bindTemplate;
 		const colorSelector = this._createColorSelector( locale );
 		const dropdown = createDropdown( locale );
-		const colorPreview = new View();
+		const colorPreview = new ViewModel();
 
 		colorPreview.setTemplate( {
 			tag: 'span',

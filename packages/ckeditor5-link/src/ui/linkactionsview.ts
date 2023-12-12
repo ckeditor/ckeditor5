@@ -7,7 +7,7 @@
  * @module link/ui/linkactionsview
  */
 
-import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
+import { ButtonView, ViewModel, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils';
 import { icons } from 'ckeditor5/src/core';
 
@@ -24,7 +24,7 @@ import unlinkIcon from '../../theme/icons/unlink.svg';
  * The link actions view class. This view displays the link preview, allows
  * unlinking or editing the link.
  */
-export default class LinkActionsView extends View {
+export default class LinkActionsView extends ViewModel {
 	/**
 	 * Tracks information about DOM focus in the actions.
 	 */
@@ -38,7 +38,7 @@ export default class LinkActionsView extends View {
 	/**
 	 * The href preview view.
 	 */
-	public previewButtonView: View;
+	public previewButtonView: ViewModel;
 
 	/**
 	 * The unlink button view.

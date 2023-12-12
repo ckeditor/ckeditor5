@@ -8,7 +8,7 @@
  */
 
 import {
-	View,
+	ViewModel,
 	ViewCollection,
 	submitHandler,
 	FocusCycler,
@@ -25,7 +25,7 @@ import '../../../theme/imageinsert.css';
  *
  * See {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
  */
-export default class ImageInsertFormView extends View {
+export default class ImageInsertFormView extends ViewModel {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
@@ -57,7 +57,7 @@ export default class ImageInsertFormView extends View {
 	 * @param locale The localization services instance.
 	 * @param integrations An integrations object that contains components (or tokens for components) to be shown in the panel view.
 	 */
-	constructor( locale: Locale, integrations: Array<View> = [] ) {
+	constructor( locale: Locale, integrations: Array<ViewModel> = [] ) {
 		super( locale );
 
 		this.focusTracker = new FocusTracker();
@@ -164,6 +164,6 @@ export default class ImageInsertFormView extends View {
 	}
 }
 
-function isViewWithFocusCycler( view: View ): view is View & { focusCycler: FocusCycler } {
+function isViewWithFocusCycler( view: ViewModel ): view is ViewModel & { focusCycler: FocusCycler } {
 	return 'focusCycler' in view;
 }

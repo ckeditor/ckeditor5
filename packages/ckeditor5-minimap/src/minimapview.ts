@@ -7,7 +7,7 @@
  * @module minimap/minimapview
  */
 
-import { View } from 'ckeditor5/src/ui';
+import { ViewModel } from 'ckeditor5/src/ui';
 import { Rect, type Locale } from 'ckeditor5/src/utils';
 
 import MinimapIframeView from './minimapiframeview';
@@ -27,7 +27,7 @@ export type MinimapViewOptions = {
  *
  * @internal
  */
-export default class MinimapView extends View {
+export default class MinimapView extends ViewModel {
 	/**
 	 * An instance of the tracker view displayed over the minimap.
 	 */

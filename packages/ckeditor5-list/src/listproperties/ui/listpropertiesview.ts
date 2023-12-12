@@ -8,7 +8,7 @@
  */
 
 import {
-	View,
+	ViewModel,
 	ViewCollection,
 	FocusCycler,
 	SwitchButtonView,
@@ -38,7 +38,7 @@ import '../../../theme/listproperties.css';
  *
  * @internal
  */
-export default class ListPropertiesView extends View {
+export default class ListPropertiesView extends ViewModel {
 	/**
 	 * @inheritDoc
 	 */
@@ -262,7 +262,7 @@ export default class ListPropertiesView extends View {
 	 * @param styleGridAriaLabel The assistive technology label of the grid.
 	 */
 	private _createStylesView( styleButtons: Array<ButtonView>, styleGridAriaLabel: string ) {
-		const stylesView = new View( this.locale ) as StylesView;
+		const stylesView = new ViewModel( this.locale ) as StylesView;
 
 		stylesView.children = stylesView.createCollection();
 		stylesView.children.addMany( styleButtons );
@@ -397,7 +397,7 @@ export default class ListPropertiesView extends View {
 	}
 }
 
-export type StylesView = View & {
+export type StylesView = ViewModel & {
 	children: ViewCollection;
 	focusTracker: FocusTracker;
 	keystrokes: KeystrokeHandler;

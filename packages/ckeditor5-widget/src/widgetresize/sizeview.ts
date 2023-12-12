@@ -7,14 +7,14 @@
  * @module widget/widgetresize/sizeview
  */
 
-import { View } from '@ckeditor/ckeditor5-ui';
+import { ViewModel } from '@ckeditor/ckeditor5-ui';
 import type { ResizerOptions } from '../widgetresize';
 import type ResizeState from './resizerstate';
 
 /**
  * A view displaying the proposed new element size during the resizing.
  */
-export default class SizeView extends View {
+export default class SizeView extends ViewModel {
 	/**
 	 * The visibility of the view defined based on the existence of the host proposed dimensions.
 	 *

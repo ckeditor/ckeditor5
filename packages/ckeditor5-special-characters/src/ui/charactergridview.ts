@@ -8,7 +8,7 @@
  */
 
 import {
-	View,
+	ViewModel,
 	ButtonView,
 	addKeyboardHandlingForGrid,
 	type ViewCollection
@@ -26,7 +26,7 @@ import '../../theme/charactergrid.css';
  * A grid of character tiles. It allows browsing special characters and selecting the character to
  * be inserted into the content.
  */
-export default class CharacterGridView extends View<HTMLDivElement> {
+export default class CharacterGridView extends ViewModel<HTMLDivElement> {
 	/**
 	 * A collection of the child tile views. Each tile represents a particular character.
 	 */

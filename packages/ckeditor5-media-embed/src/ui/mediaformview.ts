@@ -12,7 +12,7 @@ import {
 	ButtonView,
 	FocusCycler,
 	LabeledFieldView,
-	View,
+	ViewModel,
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler
@@ -30,7 +30,7 @@ import '../../theme/mediaform.css';
  *
  * See {@link module:media-embed/ui/mediaformview~MediaFormView}.
  */
-export default class MediaFormView extends View {
+export default class MediaFormView extends ViewModel {
 	/**
 	 * Tracks information about the DOM focus in the form.
 	 */

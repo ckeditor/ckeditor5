@@ -15,7 +15,7 @@ import {
 	type ListDropdownItemDefinition,
 	type NormalizedColorOption,
 	type ToolbarView,
-	type View,
+	type ViewModel,
 	type ColorPickerConfig
 } from 'ckeditor5/src/ui';
 
@@ -159,7 +159,7 @@ export function getBorderStyleDefinitions(
  *
  * @param nameToValue A function that maps a button name to a value. By default names are the same as values.
  */
-export function fillToolbar<TView extends View, TPropertyName extends keyof TView>(
+export function fillToolbar<TView extends ViewModel, TPropertyName extends keyof TView>(
 	options: {
 		view: TView;
 		icons: Record<string, string>;

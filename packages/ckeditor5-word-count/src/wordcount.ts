@@ -9,7 +9,7 @@
 
 import { type DocumentChangeEvent } from 'ckeditor5/src/engine';
 import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Template, View } from 'ckeditor5/src/ui';
+import { Template, ViewModel } from 'ckeditor5/src/ui';
 import { env } from 'ckeditor5/src/utils';
 
 import { modelElementToPlainText } from './utils';
@@ -90,7 +90,7 @@ export default class WordCount extends Plugin {
 	/**
 	 * The reference to a {@link module:ui/view~View view object} that contains the self-updating HTML container.
 	 */
-	private _outputView: View | undefined;
+	private _outputView: ViewModel | undefined;
 
 	/**
 	 * A regular expression used to recognize words in the editor's content.
@@ -196,7 +196,7 @@ export default class WordCount extends Plugin {
 		const children = [];
 
 		if ( !this._outputView ) {
-			this._outputView = new View();
+			this._outputView = new ViewModel();
 
 			if ( displayWords || displayWords === undefined ) {
 				this.bind( '_wordsLabel' ).to( this, 'words', words => {

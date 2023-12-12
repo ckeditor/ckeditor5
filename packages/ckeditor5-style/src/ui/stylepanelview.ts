@@ -7,7 +7,7 @@
  * @module style/ui/stylepanelview
  */
 
-import { FocusCycler, View, ViewCollection } from 'ckeditor5/src/ui';
+import { FocusCycler, ViewModel, ViewCollection } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
 import StyleGroupView from './stylegroupview';
@@ -20,7 +20,7 @@ import '../../theme/stylepanel.css';
  * A class representing a panel with available content styles. It renders styles in button grids, grouped
  * in categories.
  */
-export default class StylePanelView extends View<HTMLDivElement> {
+export default class StylePanelView extends ViewModel<HTMLDivElement> {
 	/**
 	 * Tracks information about DOM focus in the panel.
 	 */

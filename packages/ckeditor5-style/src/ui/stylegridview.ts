@@ -7,7 +7,7 @@
  * @module style/ui/stylegridview
  */
 
-import { View, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui';
+import { ViewModel, addKeyboardHandlingForGrid, type ViewCollection } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
 
 import StyleGridButtonView from './stylegridbuttonview';
@@ -19,7 +19,7 @@ import '../../theme/stylegrid.css';
  * A class representing a grid of styles ({@link module:style/ui/stylegridbuttonview~StyleGridButtonView buttons}).
  * Allows users to select a style.
  */
-export default class StyleGridView extends View<HTMLDivElement> {
+export default class StyleGridView extends ViewModel<HTMLDivElement> {
 	/**
 	 * Tracks information about the DOM focus in the view.
 	 */

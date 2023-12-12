@@ -7,7 +7,7 @@
  * @module mention/ui/domwrapperview
  */
 
-import { View } from 'ckeditor5/src/ui';
+import { ViewModel } from 'ckeditor5/src/ui';
 import type { Locale } from 'ckeditor5/src/utils';
 
 /**
@@ -15,7 +15,7 @@ import type { Locale } from 'ckeditor5/src/utils';
  *
  * It allows to render any DOM element and use it in mentions list.
  */
-export default class DomWrapperView extends View {
+export default class DomWrapperView extends ViewModel {
 	/**
 	 * The DOM element for which wrapper was created.
 	 */
