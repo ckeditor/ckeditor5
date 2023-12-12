@@ -53,7 +53,7 @@ function createUrlChecker(
 	if ( allowExternalImagesEditing == 'origin' ) {
 		const origin = global.window.location.origin;
 
-		return src => src.startsWith( origin + '/' );
+		return src => new URL( src, global.document.baseURI ).origin == origin;
 	}
 
 	if ( typeof allowExternalImagesEditing == 'function' ) {

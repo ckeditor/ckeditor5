@@ -35,9 +35,9 @@ The {@link features/track-changes Track changes} feature shows change suggestion
 
 There is also a dedicated, configurable notifications system developed especially for the CKEditor 5 Premium module for Drupal. It helps the users stay up-to-date whenever someone mentions you in a document, comments, or replies to you, accepts or rejects suggestions, and so on. Integrate it with your own plugin to get notifications via email, Slack, or other services.
 
-### Asynchronous collaboration 
+### Asynchronous collaboration
 
-All the collaboration features **can also be used for {@link features/collaboration#non-real-time-asynchronous-collaboration asynchronous editing}**. It is a collaboration mode when a single actor can work on the document at once, using the revision history, track changes, and comments features to interact with previous and following editors, as the work is done sequentially.
+All the collaboration features **can also be used for {@link features/collaboration#asynchronous-collaboration asynchronous editing}**. It is a collaboration mode when a single actor can work on the document at once, using the revision history, track changes, and comments features to interact with previous and following editors, as the work is done sequentially.
 
 ## Productivity-improving features
 

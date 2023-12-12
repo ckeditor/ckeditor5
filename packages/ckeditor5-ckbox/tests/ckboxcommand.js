@@ -215,6 +215,7 @@ describe( 'CKBoxCommand', () => {
 						language: 'es',
 						serviceOrigin: 'https://service.ckeditor.com',
 						tokenUrl: 'token-url',
+						forceDemoLabel: true,
 						unsupportedOption: 'bar'
 					}
 				} );
@@ -232,6 +233,7 @@ describe( 'CKBoxCommand', () => {
 				expect( options ).to.have.property( 'language', 'es' );
 				expect( options ).to.have.property( 'serviceOrigin', 'https://service.ckeditor.com' );
 				expect( options ).to.have.property( 'tokenUrl', 'token-url' );
+				expect( options ).to.have.property( 'forceDemoLabel', true );
 				expect( options ).to.not.have.property( 'defaultUploadCategories' );
 				expect( options ).to.not.have.property( 'ignoreDataId' );
 				expect( options ).to.not.have.property( 'unsupportedOption' );
