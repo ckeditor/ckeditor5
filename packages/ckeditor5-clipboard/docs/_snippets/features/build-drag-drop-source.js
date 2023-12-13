@@ -124,6 +124,9 @@ const defaultConfig = {
 	table: {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 	},
+	ckbox: {
+		forceDemoLabel: true
+	},
 	ui: {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
