@@ -102,7 +102,7 @@ Note that the [documentation for the previous editor version (36.0.1)](https://c
 
 ### Breaking changes
 
-#### Non-real-time collaboration integration
+#### Asynchronous collaboration integration
 
 This concerns only applications that use the comments feature without real-time collaboration and provide their integration.
 

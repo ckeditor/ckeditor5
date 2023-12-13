@@ -32,7 +32,7 @@ ClassicEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote'
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},

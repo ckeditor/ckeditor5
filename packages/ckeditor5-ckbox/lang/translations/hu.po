@@ -31,16 +31,16 @@ msgstr "Nem lehetséges hozzáférni az alapértelmezett munkaterülethez."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "Kép szerkesztése"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "A szerkesztett kép feldolgozása."
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "A szerver nem tudta feldolgozni a képet."
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "Nem sikerült meghatározni a szerkesztett kép kategóriáját."
