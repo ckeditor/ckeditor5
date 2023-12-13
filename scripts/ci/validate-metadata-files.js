@@ -9,8 +9,6 @@
 
 'use strict';
 
-const CUSTOM_EXPORT_NAMES = {};
-
 const fs = require( 'fs-extra' );
 const upath = require( 'upath' );
 const parser = require( '@babel/parser' );
@@ -119,7 +117,7 @@ function getMissingExports( packageData ) {
 		return output;
 	}
 
-	const requiredExports = packageData.metadata.plugins.map( plugin => CUSTOM_EXPORT_NAMES[ plugin.className ] || plugin.className );
+	const requiredExports = packageData.metadata.plugins.map( plugin => plugin.className );
 
 	const ast = parser.parse( packageData.index, {
 		sourceType: 'module',
