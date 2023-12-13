@@ -7,13 +7,15 @@
 @import "../../../mixins/_shadow.css";
 
 :root {
-	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 )
+	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );
+	--ck-dialog-drop-shadow: 0px 0px 6px 2px hsl(0deg 0% 0% / 15%);
+	--ck-dialog-max-width: min(90vw, 800px);
+	--ck-dialog-max-height: 90vh;
 }
 
 .ck.ck-dialog-overlay {
 	animation: ck-dialog-fade-in .3s;
 	background: var(--ck-dialog-overlay-background-color);
-
 	z-index: var(--ck-z-dialog);
 }
 
@@ -21,11 +23,11 @@
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 
-	background: var(--ck-color-base-background);
-	max-height: 90vh;
-	max-width: min(90vw, 800px);
+	--ck-drop-shadow: var(--ck-dialog-drop-shadow);
 
-	--ck-drop-shadow: 0px 0px 6px 2px hsl(0deg 0% 0% / 15%);
+	background: var(--ck-color-base-background);
+	max-height: var(--ck-dialog-max-height);
+	max-width: var(--ck-dialog-max-width);
 	border: 1px solid var(--ck-color-base-border);
 
 	& .ck.ck-form__header  {
