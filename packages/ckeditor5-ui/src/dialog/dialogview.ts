@@ -28,6 +28,7 @@ import DialogActionsView, { type DialogActionButtonDefinition } from './dialogac
 import DialogContentView from './dialogcontentview';
 import type EditorUI from '../editorui/editorui';
 
+import '../../theme/components/dialog/dialog.css';
 // @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
 
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
