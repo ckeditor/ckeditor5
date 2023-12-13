@@ -70,20 +70,25 @@ export default class FindAndReplaceUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const isUiUsingDropdown = editor.config.get( 'findAndReplace.uiType' ) === FindAndReplaceUIType.DROPDOWN;
 
 		// Register the toolbar component: dropdown or button (that opens a dialog).
 		editor.ui.componentFactory.add( 'findAndReplace', () => {
 			let componentView: DropdownView | ButtonView;
 
-			if ( editor.config.get( 'findAndReplace.uiType' ) === FindAndReplaceUIType.DROPDOWN ) {
+			if ( isUiUsingDropdown ) {
 				componentView = this._createDropdown();
 			} else {
 				componentView = this._createDialogButton();
 			}
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-				( componentView instanceof ButtonView ? componentView : componentView.buttonView ).fire( 'execute' );
-				cancelEvent();
+				const componentButtonView = isUiUsingDropdown ? ( componentView as DropdownView ).buttonView : componentView;
+
+				if ( componentButtonView.isEnabled ) {
+					componentButtonView.fire( 'execute' );
+					cancelEvent();
+				}
 			} );
 
 			// Button should be disabled when in source editing mode. See #10001.
@@ -102,16 +107,15 @@ export default class FindAndReplaceUI extends Plugin {
 		const dropdownView = createDropdown( editor.locale );
 
 		dropdownView.once( 'change:isOpen', () => {
-			this.formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
-
-			dropdownView.panelView.children.addMany( [
+			this.formView = this._createFormView();
+			this.formView.children.add(
 				new FormHeaderView( editor.locale, {
 					label: t( 'Find and replace' )
 				} ),
-				this.formView
-			] );
+				0
+			);
 
-			this._setupFormView( this.formView );
+			dropdownView.panelView.children.add( this.formView );
 		} );
 
 		// Every time a dropdown is opened, the search text field should get focused and selected for better UX.
@@ -151,7 +155,6 @@ export default class FindAndReplaceUI extends Plugin {
 	private _createDialogButton(): ButtonView {
 		const editor = this.editor;
 		const buttonView = new ButtonView( editor.locale );
-		const formView = this.formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
 		const dialog = editor.plugins.get( 'Dialog' );
 		const t = editor.locale.t;
 
@@ -170,19 +173,23 @@ export default class FindAndReplaceUI extends Plugin {
 		// and let the find and replace editing feature know that all search results can be invalidated
 		// and no longer should be marked in the content.
 		buttonView.on( 'execute', () => {
+			if ( !this.formView ) {
+				this.formView = this._createFormView();
+			}
+
 			if ( buttonView.isOn ) {
 				dialog.hide();
 			} else {
 				dialog.show( {
 					id: 'findAndReplace',
 					title: t( 'Find and replace' ),
-					content: formView,
+					content: this.formView,
 					position: DialogViewPosition.EDITOR_TOP_SIDE,
 					onShow: () => {
-						formView.disableCssTransitions();
-						formView.reset();
-						formView._findInputView.fieldView.select();
-						formView.enableCssTransitions();
+						this.formView!.disableCssTransitions();
+						this.formView!.reset();
+						this.formView!._findInputView.fieldView.select();
+						this.formView!.enableCssTransitions();
 					},
 
 					onHide: () => {
@@ -192,8 +199,6 @@ export default class FindAndReplaceUI extends Plugin {
 			}
 		} );
 
-		this._setupFormView( formView );
-
 		return buttonView;
 	}
 
@@ -202,8 +207,9 @@ export default class FindAndReplaceUI extends Plugin {
 	 *
 	 * @param formView A related form view.
 	 */
-	private _setupFormView( formView: FindAndReplaceFormView ) {
+	private _createFormView(): FindAndReplaceFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;
+		const formView = new ( CssTransitionDisablerMixin( FindAndReplaceFormView ) )( editor.locale );
 		const commands = editor.commands;
 		const findAndReplaceEditing: FindAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
 		const editingState = findAndReplaceEditing.state!;
@@ -250,6 +256,8 @@ export default class FindAndReplaceUI extends Plugin {
 				this.fire( 'searchReseted' );
 			}
 		} );
+
+		return formView;
 	}
 }
 

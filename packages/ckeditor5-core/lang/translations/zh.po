@@ -55,16 +55,16 @@ msgstr "RTF 編輯器。編輯區：%0"
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "使用檔案管理員插入"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "使用檔案管理員替換"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "使用檔案管理員插入圖片"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "使用檔案管理員替換圖片"

@@ -31,16 +31,16 @@ msgstr "Немає доступу до робочого простору за з
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "Редагувати зображення"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "Обробка відредагованого зображення."
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "Серверу не вдалося обробити зображення."
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "Не вдалося визначити категорію відредагованого зображення."

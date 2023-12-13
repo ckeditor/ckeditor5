@@ -31,16 +31,16 @@ msgstr "Får ikke tilgang til standard arbeidsflate."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "Redigere bilde"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "Behandler det redigerte bildet."
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "Serveren klarte ikke å behandle bildet."
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "Kunne ikke bestemme kategori for det redigerte bildet."

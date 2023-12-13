@@ -89,10 +89,24 @@ describe( 'Dialog', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 
-				it( 'executing `onHide` callback', () => {
+				it( 'executing `_onHide` callback', () => {
 					const spy = sinon.spy( () => {} );
 
 					dialogPlugin._onHide = spy;
+
+					dialogPlugin.fire( 'hide' );
+
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'clearing the `_onHide` callback after execution', () => {
+					const spy = sinon.spy( () => {} );
+
+					dialogPlugin._onHide = spy;
+
+					dialogPlugin.fire( 'hide' );
+
+					dialogPlugin.fire( 'show', {} );
 
 					dialogPlugin.fire( 'hide' );
 

@@ -21,6 +21,8 @@ export { default as ButtonView } from './button/buttonview';
 export { default as ButtonLabelView } from './button/buttonlabelview';
 export { default as SwitchButtonView } from './button/switchbuttonview';
 
+export { default as CollapsibleView } from './collapsible/collapsibleview';
+
 export * from './colorgrid/utils';
 export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview';
 export { default as ColorTileView } from './colorgrid/colortileview';
@@ -87,8 +89,6 @@ export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchT
 export { default as SearchInfoView } from './search/searchinfoview';
 export { default as FilteredView, type FilteredViewExecuteEvent } from './search/filteredview';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview';
-
-export { default as CollapsibleView } from './collapsible/collapsibleview';
 
 export { default as TooltipManager } from './tooltipmanager';
 export { default as Template, type TemplateDefinition } from './template';

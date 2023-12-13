@@ -6,11 +6,11 @@
 .ck.ck-find-and-replace-form {
 	max-width: 100%;
 
-	& fieldset {
+	& .ck-find-and-replace-form__inputs, .ck-find-and-replace-form__actions {
 		display: flex;
 
-		/* The find fieldset */
-		&.ck-find-and-replace-form__find .ck-results-counter {
+		/* The inputs area styles */
+		&.ck-find-and-replace-form__inputs .ck-results-counter {
 			position: absolute;
 		}
 	}

@@ -31,16 +31,16 @@ msgstr "無法存取預設工作區。"
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "編輯圖片"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "正在處理已編輯的圖片。"
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "伺服器無法處理該圖片。"
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "無法判斷已編輯圖片的類別。"

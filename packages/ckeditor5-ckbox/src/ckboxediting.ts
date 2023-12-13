@@ -88,7 +88,7 @@ export default class CKBoxEditing extends Plugin {
 	}
 
 	/**
-	 * Checks if the at least one image plugin is loaded.
+	 * Checks if at least one image plugin is loaded.
 	 */
 	private _checkImagePlugins() {
 		const editor = this.editor;

@@ -31,16 +31,16 @@ msgstr "无法访问默认工作区"
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "编辑图片"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "正在处理已编辑的图片。"
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "服务器未能处理图片。"
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "未能确定已编辑图片的类别。"

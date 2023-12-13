@@ -31,16 +31,16 @@ msgstr "기본 작업 공간에 액세스할 수 없습니다."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "이미지 편집"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "편집한 이미지를 처리 중입니다."
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "서버가 이미지를 처리하지 못했습니다."
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "편집한 이미지의 카테고리를 결정하지 못했습니다."
