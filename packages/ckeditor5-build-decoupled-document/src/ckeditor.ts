@@ -34,10 +34,12 @@ import { Style } from '@ckeditor/ckeditor5-style';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
 	Image,
+	ImageInsert,
 	ImageCaption,
 	ImageResize,
 	ImageStyle,
 	ImageToolbar,
+	ImageUpload,
 	PictureEditing,
 	AutoImage,
 } from '@ckeditor/ckeditor5-image';
@@ -79,6 +81,7 @@ import { FullScreen } from './plugins/fullScreen/index';
 import { Source } from './plugins/source/index';
 import { RemoveBlockStyle } from './plugins/removeBlockStyle/index';
 import { HtmlInsert } from './plugins/htmlInsert/index';
+import { Image as OwnImagePlugin } from './plugins/image/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -107,9 +110,11 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Iframe,
 		Image,
 		ImageCaption,
+		ImageInsert,
 		ImageResize,
 		ImageStyle,
 		ImageToolbar,
+		ImageUpload,
 		Indent,
 		IndentBlock,
 		Italic,
@@ -138,7 +143,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		UploadAdapter,
 		RemoveBlockStyle,
 		HtmlInsert,
-		Image,
+		OwnImagePlugin,
 	];
 
 	public static override defaultConfig = {
@@ -187,7 +192,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'fullScreen',
 				'source',
 				'htmlInsert',
-				'image',
+				'ownImagePlugin',
 			],
 		},
 		image: {
