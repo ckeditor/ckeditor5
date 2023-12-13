@@ -49,6 +49,9 @@ ClassicEditor.defaultConfig = {
 			'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 		]
 	},
+	ckbox: {
+		forceDemoLabel: true
+	},
 	ui: {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
