@@ -165,7 +165,7 @@ describe( 'Dialog', () => {
 						sinon.assert.notCalled( keyEvtData.stopPropagation );
 					} );
 
-					it( 'should focus the editor if dialog view is focused', () => {
+					it( 'should focus the editing view if dialog view is focused', () => {
 						const spy = sinon.spy( editor.editing.view, 'focus' );
 
 						dialogPlugin.show( {} );
@@ -178,7 +178,7 @@ describe( 'Dialog', () => {
 						sinon.assert.calledOnce( spy );
 					} );
 
-					it( 'should focus the dialog if editor is focused', () => {
+					it( 'should focus the dialog if editing view is focused', () => {
 						dialogPlugin.show( {} );
 						editor.editing.view.focus();
 

@@ -29,5 +29,5 @@
 	"Accept": "Label of the button closing the color picker and confirming the changes done in the color selector component.",
 	"No results found": "The main text of the message shown to the user when given query does not match any results.",
 	"No searchable items": "The main text of the message shown to the user when no results are available.",
-	"Editor dialog": "Label of a dialog window displayed on top the editor contents."
+	"Editor dialog": "A default label of a dialog window displayed on top the editor."
 }
