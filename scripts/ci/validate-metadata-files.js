@@ -9,9 +9,7 @@
 
 'use strict';
 
-const CUSTOM_EXPORT_NAMES = {
-	'CKFinderUploadAdapter': 'UploadAdapter'
-};
+const CUSTOM_EXPORT_NAMES = {};
 
 const fs = require( 'fs-extra' );
 const upath = require( 'upath' );
@@ -136,7 +134,6 @@ function getMissingExports( packageData ) {
 				return node.specifiers.map( specifier => specifier.exported.loc.identifierName );
 			}
 		} );
-
 	output.missingExports = requiredExports.filter( requiredExport => !exports.includes( requiredExport ) );
 
 	return output;
