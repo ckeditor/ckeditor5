@@ -7,7 +7,7 @@
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
@@ -29,7 +29,7 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 export default class ClassicEditor extends ClassicEditorBase {
 	public static override builtinPlugins = [
 		Essentials,
-		UploadAdapter,
+		CKFinderUploadAdapter,
 		Autoformat,
 		Bold,
 		Italic,
