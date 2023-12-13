@@ -48,6 +48,8 @@ swap:
   git: Git
   Github: GitHub
   grayed-out|greyed-out: unavailable
+  hard code|hardcode: hard-code
+  hard coding|hardcoding: hard-coding
   in order to: to
   Javascript: JavaScript
   (?<!.)JS: JavaScript
