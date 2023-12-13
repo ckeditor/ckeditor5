@@ -95,14 +95,14 @@ export default class Dialog extends Plugin {
 		const editor = this.editor;
 
 		editor.keystrokes.set( 'Ctrl+F6', ( data, cancel ) => {
-			if ( !this.isOpen || !this.view ) {
+			if ( !this.isOpen || this.view!.isModal ) {
 				return;
 			}
 
-			if ( this.view.focusTracker.isFocused ) {
+			if ( this.view!.focusTracker.isFocused ) {
 				editor.editing.view.focus();
 			} else {
-				this.view.focus();
+				this.view!.focus();
 			}
 
 			cancel();

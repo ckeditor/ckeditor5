@@ -155,6 +155,16 @@ describe( 'Dialog', () => {
 						sinon.assert.notCalled( keyEvtData.stopPropagation );
 					} );
 
+					it( 'should do nothing if dialog view is a modal', () => {
+						dialogPlugin.show( { isModal: true } );
+						dialogPlugin.view.focusTracker.isFocused = true;
+
+						editor.keystrokes.press( keyEvtData );
+
+						sinon.assert.notCalled( keyEvtData.preventDefault );
+						sinon.assert.notCalled( keyEvtData.stopPropagation );
+					} );
+
 					it( 'should focus the editor if dialog view is focused', () => {
 						const spy = sinon.spy( editor.editing.view, 'focus' );
 
