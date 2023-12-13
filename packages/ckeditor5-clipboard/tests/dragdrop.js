@@ -77,7 +77,8 @@ describe( 'Drag and Drop', () => {
 					BlockQuote,
 					Bold,
 					Image,
-					ImageCaption
+					ImageCaption,
+					CustomTitle
 				]
 			} );
 
@@ -1296,6 +1297,40 @@ describe( 'Drag and Drop', () => {
 				` );
 			} );
 
+			it( 'should start dragging text from title to paragraph', () => {
+				setModelData( model, trim`
+					<title><title-content>[Foo] Bar</title-content></title>
+					<paragraph>Bar</paragraph>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const viewElement = viewDocument.getRoot().getChild( 1 );
+				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				viewDocument.fire( 'dragstart', {
+					domTarget: domConverter.mapViewToDom( viewElement ),
+					target: viewElement,
+					domEvent: {},
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'Foo' );
+
+				fireDragging( dataTransferMock, positionAfterHr );
+				expectDraggingMarker( positionAfterHr );
+
+				fireDrop(
+					dataTransferMock,
+					model.createPositionAt( root.getChild( 1 ), 3 )
+				);
+
+				expect( getModelData( model ) ).to.equal( trim`
+					<title><title-content> Bar</title-content></title>
+					<paragraph>BarFoo[]</paragraph>
+				` );
+			} );
+
 			it( 'should not drag parent paragraph when only portion of content is selected', () => {
 				setModelData( model,
 					'<paragraph>foobar</paragraph>' +
@@ -2504,5 +2539,40 @@ describe( 'Drag and Drop', () => {
 			.join( '' )
 			.trim()
 			.replace( />\s+</g, '><' );
+	}
+
+	function CustomTitle( editor ) {
+		const model = editor.model;
+
+		model.schema.register( 'title', { isBlock: true, allowIn: '$root' } );
+		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title', allowAttributes: [ 'alignment' ] } );
+		model.schema.extend( '$text', { allowIn: 'title-content' } );
+
+		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
+		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
+
+		editor.conversion.for( 'downcast' ).elementToElement( { model: 'title-content', view: 'h1' } );
+		editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on(
+			'insert:title',
+			( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			}
+		) );
+	}
+
+	function mapModelPositionToView( editingView ) {
+		return ( evt, data ) => {
+			const positionParent = data.modelPosition.parent;
+
+			if ( !positionParent.is( 'element', 'title' ) ) {
+				return;
+			}
+
+			const modelTitleElement = positionParent.parent;
+			const viewElement = data.mapper.toViewElement( modelTitleElement );
+
+			data.viewPosition = editingView.createPositionAt( viewElement, 0 );
+			evt.stop();
+		};
 	}
 } );
