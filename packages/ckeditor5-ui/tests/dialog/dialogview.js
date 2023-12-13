@@ -53,7 +53,7 @@ describe( 'DialogView', () => {
 			} );
 
 			it( 'should include an instance of FocusTracker', () => {
-				expect( view._focusTracker ).to.be.an.instanceOf( FocusTracker );
+				expect( view.focusTracker ).to.be.an.instanceOf( FocusTracker );
 			} );
 
 			it( 'should have #isVisible set', () => {
@@ -74,6 +74,10 @@ describe( 'DialogView', () => {
 
 			it( 'should have #className set', () => {
 				expect( view.className ).to.equal( '' );
+			} );
+
+			it( 'should have the `aria-label` attribute set', () => {
+				expect( view.ariaLabel ).to.equal( 'Editor dialog' );
 			} );
 
 			it( 'should have #position set', () => {
@@ -158,6 +162,15 @@ describe( 'DialogView', () => {
 				it( 'should have CSS left bound to #_left', () => {
 					view._left = 123;
 					expect( innerDialogElement.style.left ).to.equal( '123px' );
+				} );
+
+				it( 'should have a role set', () => {
+					expect( innerDialogElement.role ).to.equal( 'dialog' );
+				} );
+
+				it( 'should have aria-label bound to #ariaLabel', () => {
+					view.ariaLabel = 'foo';
+					expect( innerDialogElement.ariaLabel ).to.equal( 'foo' );
 				} );
 
 				it( 'should have CSS visibility bound to #isTransparent', () => {

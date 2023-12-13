@@ -88,7 +88,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * A focus tracker instance.
 	 */
-	private readonly _focusTracker: FocusTracker;
+	public readonly focusTracker: FocusTracker;
 
 	/**
 	 * A flag indicating that the dialog should be shown. Once set to `true`, the dialog will be shown
@@ -108,6 +108,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * A flag indicating if this DialogView is a modal.
 	 */
 	declare public isModal: boolean;
+
+	/**
+	 * A label for the view dialog element.
+	 */
+	declare public ariaLabel: string;
 
 	/**
 	 * A flag indicating if the dialog was moved manually. If so, its position
@@ -174,9 +179,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		super( locale );
 
 		const bind = this.bindTemplate;
+		const t = locale.t;
 
 		this.set( 'isVisible', false );
 		this.set( 'className', '' );
+		this.set( 'ariaLabel', t( 'Editor dialog' ) );
 		this.set( 'isModal', false );
 		this.set( 'isTransparent', false );
 		this.set( 'wasMoved', false );
@@ -191,11 +198,11 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.parts = this.createCollection();
 
 		this.keystrokes = new KeystrokeHandler();
-		this._focusTracker = new FocusTracker();
+		this.focusTracker = new FocusTracker();
 		this._focusables = new ViewCollection();
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
-			focusTracker: this._focusTracker,
+			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate form fields backwards using the Shift + Tab keystroke.
@@ -228,6 +235,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 							'ck-dialog',
 							bind.to( 'className' )
 						],
+						role: 'dialog',
+						'aria-label': bind.to( 'ariaLabel' ),
 						style: {
 							top: bind.to( '_top', top => toPx( top ) ),
 							left: bind.to( '_left', left => toPx( left ) ),
@@ -322,6 +331,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			this.closeButtonView = this._createCloseButton();
 			this.headerView.children.add( this.closeButtonView );
 			this.headerView.label = title;
+			this.ariaLabel = title;
 			this.parts.add( this.headerView, 0 );
 		}
 
@@ -604,7 +614,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		focusables.forEach( focusable => {
 			this._focusables.add( focusable );
-			this._focusTracker.add( focusable.element! );
+			this.focusTracker.add( focusable.element! );
 
 			if ( isViewWithFocusCycler( focusable ) ) {
 				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {

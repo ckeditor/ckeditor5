@@ -56,6 +56,7 @@ export default class Dialog extends Plugin {
 		super( editor );
 
 		this._initShowHideListeners();
+		this._initFocusToggler();
 		this._initMultiRootIntegration();
 
 		this.set( 'isOpen', false );
@@ -83,6 +84,27 @@ export default class Dialog extends Plugin {
 			this._onHide?.( this );
 			this._onHide = undefined;
 		}, { priority: 'low' } );
+	}
+
+	/**
+	 * Initiates keystroke handler for toggling the focus between the editor and dialog view.
+	 */
+	private _initFocusToggler() {
+		const editor = this.editor;
+
+		editor.keystrokes.set( 'Ctrl+F6', ( data, cancel ) => {
+			if ( !this.isOpen || this.view!.isModal ) {
+				return;
+			}
+
+			if ( this.view!.focusTracker.isFocused ) {
+				editor.editing.view.focus();
+			} else {
+				this.view!.focus();
+			}
+
+			cancel();
+		} );
 	}
 
 	/**
@@ -140,12 +162,15 @@ export default class Dialog extends Plugin {
 			}
 		} );
 
-		this.view.on<DialogViewCloseEvent>( 'close', () => {
+		const view = this.view;
+
+		view.on<DialogViewCloseEvent>( 'close', () => {
 			this.hide();
 		} );
 
-		editor.ui.view.body.add( this.view );
-		editor.ui.focusTracker.add( this.view.element! );
+		editor.ui.view.body.add( view );
+		editor.ui.focusTracker.add( view.element! );
+		editor.keystrokes.listenTo( view.element! );
 
 		// Unless the user specified a position, modals should always be centered on the screen.
 		// Otherwise, let's keep dialogs centered in the editing root by default.
@@ -153,14 +178,14 @@ export default class Dialog extends Plugin {
 			position = isModal ? DialogViewPosition.SCREEN_CENTER : DialogViewPosition.EDITOR_CENTER;
 		}
 
-		this.view.set( {
+		view.set( {
 			position,
 			isVisible: true,
 			className,
 			isModal
 		} );
 
-		this.view.setupParts( {
+		view.setupParts( {
 			title,
 			content,
 			actionButtons
@@ -206,6 +231,7 @@ export default class Dialog extends Plugin {
 
 		editor.ui.view.body.remove( view );
 		editor.ui.focusTracker.remove( view.element! );
+		editor.keystrokes.stopListening( view.element! );
 
 		view.destroy();
 		editor.editing.view.focus();
