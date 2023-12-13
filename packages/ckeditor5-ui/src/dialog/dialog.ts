@@ -12,6 +12,7 @@ import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview';
 import type { DialogActionButtonDefinition } from './dialogactionsview';
 import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
+import type { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 import '../../theme/components/dialog/dialog.css';
 
@@ -128,6 +129,7 @@ export default class Dialog extends Plugin {
 		actionButtons,
 		className,
 		isModal,
+		isVisibleInSourceMode,
 		position,
 		onHide
 	}: DialogDefinition ) {
@@ -145,6 +147,18 @@ export default class Dialog extends Plugin {
 		this.view.on<DialogViewCloseEvent>( 'close', () => {
 			this.hide();
 		} );
+
+		if ( editor.plugins.has( 'SourceEditing' ) ) {
+			const sourceEditing: SourceEditing = editor.plugins.get( 'SourceEditing' );
+
+			this.listenTo( sourceEditing, 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
+				if ( this.isOpen && isSourceEditingMode && !isVisibleInSourceMode ) {
+					this.hide();
+				} else if ( !this.view?.wasMoved ) {
+					this.view?.updatePosition();
+				}
+			} );
+		}
 
 		editor.ui.view.body.add( this.view );
 		editor.ui.focusTracker.add( this.view.element! );
@@ -228,6 +242,7 @@ export type DialogDefinition = {
 	title?: string;
 	className?: string;
 	isModal?: boolean;
+	isVisibleInSourceMode?: boolean;
 	position?: DialogViewPosition;
 	onShow?: ( dialog: Dialog ) => void;
 	onHide?: ( dialog: Dialog ) => void;

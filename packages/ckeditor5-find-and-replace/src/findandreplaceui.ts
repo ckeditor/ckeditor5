@@ -184,6 +184,7 @@ export default class FindAndReplaceUI extends Plugin {
 					id: 'findAndReplace',
 					title: t( 'Find and replace' ),
 					content: this.formView,
+					isVisibleInSourceMode: false,
 					position: DialogViewPosition.EDITOR_TOP_SIDE,
 					onShow: () => {
 						this.formView!.disableCssTransitions();

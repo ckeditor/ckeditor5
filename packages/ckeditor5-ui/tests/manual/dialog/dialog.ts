@@ -126,6 +126,91 @@ class ModalWithText extends Plugin {
 	}
 }
 
+class DialogWithText extends Plugin {
+	public static get requires() {
+		return [ Dialog ] as const;
+	}
+
+	public init(): void {
+		const t = this.editor.locale.t;
+
+		this.editor.ui.componentFactory.add( 'dialogWithText', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Dialog' ),
+				tooltip: true,
+				withText: true
+			} );
+
+			buttonView.on( 'execute', () => {
+				const dialog = this.editor.plugins.get( 'Dialog' );
+				const textView = new View( locale );
+
+				textView.setTemplate( {
+					tag: 'div',
+					attributes: {
+						style: {
+							padding: 'var(--ck-spacing-large)',
+							whiteSpace: 'initial',
+							width: '100%',
+							maxWidth: '500px'
+						},
+						tabindex: -1
+					},
+					children: [
+						`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+						dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+						commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+						nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+						anim id est laborum.`
+					]
+				} );
+
+				dialog.show( {
+					isVisibleInSourceMode: true,
+					title: t( 'Modal with text' ),
+					content: textView,
+					actionButtons: [
+						{
+							label: t( 'Let\'s do this!' ),
+							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => dialog.hide()
+						},
+						{
+							label: t( 'Set custom title' ),
+							icon: icons.colorPaletteIcon,
+							withText: true,
+							onExecute: () => {
+								dialog.view!.headerView!.label = 'New title';
+							}
+						},
+						{
+							label: t( 'Button is active until dialog is moved...' ),
+							withText: true,
+							onExecute: () => {
+								// eslint-disable-next-line no-alert
+								alert( 'Drag the dialog to see how the button disables' );
+							},
+							onCreate: buttonView => {
+								buttonView.bind( 'isEnabled' ).to( dialog.view!, 'wasMoved', wasMoved => !wasMoved );
+							}
+						},
+						{
+							label: t( 'Cancel' ),
+							withText: true,
+							onExecute: () => dialog.hide()
+						}
+					]
+				} );
+			} );
+
+			return buttonView;
+		} );
+	}
+}
+
 class MinimalisticDialogs extends Plugin {
 	public static get requires() {
 		return [ Dialog ] as const;
@@ -197,13 +282,14 @@ function initEditor( editorName, editorClass, direction = 'ltr', customCallback?
 			SpecialCharactersEmoji,
 			SourceEditing,
 			ModalWithText,
+			DialogWithText,
 			MinimalisticDialogs
 		],
 		toolbar: {
 			items: [
-				'heading', 'bold', 'italic', 'link',
+				'heading', 'bold', 'italic', 'link', 'sourceediting',
 				'-',
-				'findAndReplace', 'modalWithText', ...POSSIBLE_DIALOG_POSITIONS
+				'findAndReplace', 'modalWithText', 'dialogWithText', ...POSSIBLE_DIALOG_POSITIONS
 			],
 			shouldNotGroupWhenFull: true
 		},

@@ -414,7 +414,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	public updatePosition(): void {
 		let configuredPosition = this.position;
 
-		if ( !this._getCurrentDomRoot() ) {
+		if ( !this._getCurrentDomRoot() || this._getCurrentDomRoot().classList.contains( 'ck-hidden' ) ) {
 			configuredPosition = DialogViewPosition.SCREEN_CENTER;
 		}
 
