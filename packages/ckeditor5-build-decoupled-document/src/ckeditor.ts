@@ -34,12 +34,10 @@ import { Style } from '@ckeditor/ckeditor5-style';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
 	Image,
-	ImageInsert,
 	ImageCaption,
 	ImageResize,
 	ImageStyle,
 	ImageToolbar,
-	ImageUpload,
 	PictureEditing,
 	AutoImage,
 } from '@ckeditor/ckeditor5-image';
@@ -109,11 +107,9 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		Iframe,
 		Image,
 		ImageCaption,
-		ImageInsert,
 		ImageResize,
 		ImageStyle,
 		ImageToolbar,
-		ImageUpload,
 		Indent,
 		IndentBlock,
 		Italic,
@@ -142,6 +138,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		UploadAdapter,
 		RemoveBlockStyle,
 		HtmlInsert,
+		Image,
 	];
 
 	public static override defaultConfig = {
@@ -169,7 +166,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'outdent',
 				'indent',
 				'|',
-				'insertImage',
 				'insertTable',
 				'mediaEmbed',
 				'codeBlock',
@@ -191,6 +187,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'fullScreen',
 				'source',
 				'htmlInsert',
+				'image',
 			],
 		},
 		image: {
