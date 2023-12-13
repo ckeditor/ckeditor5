@@ -25,11 +25,12 @@ ClassicEditor
 			CKBox,
 			Mermaid
 		] ),
+		removePlugins: [ 'UploadImage' ],
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'mermaid',
+				'|', 'link', 'insertImage', 'insertTable', 'blockQuote', 'mediaEmbed', 'mermaid',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},

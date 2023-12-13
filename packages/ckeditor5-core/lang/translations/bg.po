@@ -55,16 +55,16 @@ msgstr "Rich Text Editor. Зона за редактиране: %0"
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "Вмъкване с файловия мениджър"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "Заменете с файловия мениджър"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "Вмъкнете изображение с файловия мениджър"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "Заменете изображението с файловия мениджър"
