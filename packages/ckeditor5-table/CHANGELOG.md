@@ -202,10 +202,10 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Features
 
-* Implemented the table post–fixer which bulletproofs the feature in various complex use–cases (e.g. pasting and real-time collaborative editing). Closes [#13](https://github.com/ckeditor/ckeditor5-table/issues/13). ([01f9a3b](https://github.com/ckeditor/ckeditor5-table/commit/01f9a3b))
+* Implemented the table post–fixer which bulletproofs the feature in various complex use–cases (for example, pasting and real-time collaborative editing). Closes [#13](https://github.com/ckeditor/ckeditor5-table/issues/13). ([01f9a3b](https://github.com/ckeditor/ckeditor5-table/commit/01f9a3b))
 * Introduced the toolbar for the table widget (previously it was available only for single cells). Changed the toolbar configuration option from `table.toolbar` to `table.contentToolbar`. Closes [#113](https://github.com/ckeditor/ckeditor5-table/issues/113). Closes [#106](https://github.com/ckeditor/ckeditor5-table/issues/106). ([9f9486d](https://github.com/ckeditor/ckeditor5-table/commit/9f9486d))
 
-  Other: `config.table.toolbar` is marked as depracted. Use `config.table.contentToolbar` instead.
+  Other: `config.table.toolbar` is marked as deprecated. Use `config.table.contentToolbar` instead.
 * Introduced a support for block content inside tables. Closes [#56](https://github.com/ckeditor/ckeditor5-table/issues/56). ([cdf718e](https://github.com/ckeditor/ckeditor5-table/commit/cdf718e))
 
 ### Bug fixes

@@ -729,7 +729,7 @@ root.render(
 );
 ```
 
-Please note that each product comes with its own image (e.g. `product1.jpg`), which should be stored in the `assets/` directory to load correctly with the CSS `background-image`. Learn more about styles in the [next section](#styles-and-assets).
+Each product comes with its own image (like `product1.jpg`), which should be stored in the `assets/` directory to load correctly with the CSS `background-image`. Learn more about styles in the [next section](#styles-and-assets).
 
 ## Styles and assets
 
@@ -898,7 +898,7 @@ The application needs some styling to look good. You are going to put them in th
 }
 ```
 
-The product preview (`.product-preview` class) uses `background-image: var(--product-image)` to set its background. It means that all images must be stored in the `assets/` directory next to the `styles.css` file in order to load properly.
+The product preview (`.product-preview` class) uses `background-image: var(--product-image)` to set its background. It means that all images must be stored in the `assets/` directory next to the `styles.css` file to load properly.
 
 ## Demo
 

@@ -10,7 +10,7 @@ modified_at: 2023-08-16
 
 ## The editor
 
-The editors come in a few flavors. While each looks very different visually, they are very similar under the hood and consist of two parts:
+The editors come in a few flavors. While each looks different visually, they are similar under the hood and consist of two parts:
 
 * Editing engine,
 * Editing UI.
