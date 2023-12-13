@@ -157,6 +157,22 @@ describe( 'DialogActionsView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should enable #onCreate callbacks from definitions', () => {
+			const spy = sinon.spy();
+
+			view.setButtons( [
+				{
+					label: 'foo',
+					class: 'ck-button-action',
+					withText: true,
+					onExecute: () => {},
+					onCreate: spy
+				}
+			] );
+
+			sinon.assert.calledOnce( spy );
+		} );
 	} );
 
 	describe( 'focus()', () => {

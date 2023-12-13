@@ -55,16 +55,16 @@ msgstr "রিচ টেক্সট এডিটর। সম্পাদনা
 
 msgctxt "The label for the insert image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Insert with file manager"
-msgstr ""
+msgstr "ফাইল ম্যানেজার দিয়ে প্রবেশ করান"
 
 msgctxt "The label for the replace image with the file manager toolbar button with visible label in insert image dropdown."
 msgid "Replace with file manager"
-msgstr ""
+msgstr "ফাইল ম্যানেজার দিয়ে প্রতিস্থাপন করুন"
 
 msgctxt "The label for the insert image with the file manager toolbar button."
 msgid "Insert image with file manager"
-msgstr ""
+msgstr "ফাইল ম্যানেজার দিয়ে ছবি প্রবেশ করান"
 
 msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
-msgstr ""
+msgstr "ফাইল ম্যানেজার দিয়ে ছবি প্রতিস্থাপন করুন"

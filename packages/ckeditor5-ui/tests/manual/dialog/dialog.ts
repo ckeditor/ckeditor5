@@ -102,6 +102,17 @@ class ModalWithText extends Plugin {
 							}
 						},
 						{
+							label: t( 'Button is active until dialog is moved...' ),
+							withText: true,
+							onExecute: () => {
+								// eslint-disable-next-line no-alert
+								alert( 'Drag the dialog to see how the button disables' );
+							},
+							onCreate: buttonView => {
+								buttonView.bind( 'isEnabled' ).to( dialog.view!, 'wasMoved', wasMoved => !wasMoved );
+							}
+						},
+						{
 							label: t( 'Cancel' ),
 							withText: true,
 							onExecute: () => dialog.hide()
@@ -190,11 +201,9 @@ function initEditor( editorName, editorClass, direction = 'ltr', customCallback?
 		],
 		toolbar: {
 			items: [
-				'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText',
+				'heading', 'bold', 'italic', 'link',
 				'-',
-				...POSSIBLE_DIALOG_POSITIONS,
-				'-',
-				'heading', '|', 'bold', 'italic', 'link'
+				'findAndReplace', 'modalWithText', ...POSSIBLE_DIALOG_POSITIONS
 			],
 			shouldNotGroupWhenFull: true
 		},
@@ -445,11 +454,9 @@ MultiRootEditor
 		],
 		toolbar: {
 			items: [
-				'findAndReplace', 'specialCharacters', 'mediaEmbed', 'sourceEditingDialog', 'modalWithText',
+				'heading', 'bold', 'italic', 'link',
 				'-',
-				...POSSIBLE_DIALOG_POSITIONS,
-				'-',
-				'heading', '|', 'bold', 'italic', 'link',
+				'findAndReplace', 'modalWithText', ...POSSIBLE_DIALOG_POSITIONS,
 				{
 					label: 'Multi-root',
 					withText: true,
@@ -468,9 +475,9 @@ MultiRootEditor
 		}
 	} )
 	.then( editor => {
-		Object.assign( window, { 'multiroot': editor } );
+		Object.assign( window, { 'editor-multiroot': editor } );
 
-		window.CKEditorInspector.attach( { 'multiroot': editor } );
+		window.CKEditorInspector.attach( { 'editor-multiroot': editor } );
 
 		// Append toolbar to a proper container.
 		const toolbarContainer = document.querySelector( '#toolbar' )!;

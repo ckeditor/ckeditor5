@@ -102,11 +102,14 @@ export default class DialogActionsView extends View {
 			const button = new ButtonView( this.locale );
 
 			let property: keyof DialogActionButtonDefinition;
+			button.on<ButtonExecuteEvent>( 'execute', () => definition.onExecute() );
+
+			if ( definition.onCreate ) {
+				definition.onCreate( button );
+			}
 
 			for ( property in definition ) {
-				if ( property == 'onExecute' ) {
-					button.on<ButtonExecuteEvent>( 'execute', () => definition.onExecute() );
-				} else {
+				if ( property != 'onExecute' && property != 'onCreate' ) {
 					button.set( property, definition[ property ] );
 				}
 			}
@@ -147,4 +150,7 @@ export default class DialogActionsView extends View {
 export type DialogActionButtonDefinition =
 	Pick<Button, 'label'> &
 	Partial<Pick<Button, 'withText' | 'class' | 'icon'>> &
-	{ onExecute: Function };
+	{
+		onExecute: Function;
+		onCreate?: ( button: ButtonView ) => void;
+	};

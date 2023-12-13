@@ -31,16 +31,16 @@ msgstr "Impossibile accedere all'area di lavoro predefinita."
 
 msgctxt "Image toolbar button tooltip for opening a dialog to manipulate the image."
 msgid "Edit image"
-msgstr ""
+msgstr "Modifica immagine"
 
 msgctxt "A message stating that image editing is in progress."
 msgid "Processing the edited image."
-msgstr ""
+msgstr "Elaborazione dell'immagine modificata."
 
 msgctxt "A message is displayed when the server fails to process an image or doesn't respond."
 msgid "Server failed to process the image."
-msgstr ""
+msgstr "Il server non è riuscito a elaborare l'immagine."
 
 msgctxt "A message is displayed when category of the image user wants to edit can't be determined."
 msgid "Failed to determine category of edited image."
-msgstr ""
+msgstr "Impossibile determinare la categoria dell'immagine modificata."
