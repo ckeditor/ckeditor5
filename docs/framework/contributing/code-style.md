@@ -1160,3 +1160,14 @@ import AlignmentEditing from './alignmentediting';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/14329)
+
+### Mandatory file extensions in imports: `ckeditor5-rules/require-file-extensions-in-imports`
+
+As required by the [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports must include a file extension. If the import doesn't include it, this rule will try to automatically detect the correct file extension, but in two cases this is not possible:
+
+* the imported file has an extension other than `.ts`, `.js` or `.json`,
+* the imported file doesn't exist in the file system.
+
+The second case is common in documentation, because its pieces are in different directories and repositories. These pieces are merged during the build step, but before that the imports are technically invalid.
+
+In such cases, the file extension must be added manually. Imports with file extensions are not validated.
