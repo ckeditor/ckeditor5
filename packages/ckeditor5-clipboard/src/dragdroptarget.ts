@@ -408,7 +408,7 @@ function findDropTargetRange(
 		}
 		else if ( model.schema.checkChild( modelElement, '$block' ) ) {
 			const childNodes = Array.from( modelElement.getChildren() )
-				.filter( ( node ): node is Element => node.is( 'element' ) && !isFloatingElement( editor, node ) );
+				.filter( ( node ): node is Element => node.is( 'element' ) && !shouldIgnoreElement( editor, node ) );
 
 			let startIndex = 0;
 			let endIndex = childNodes.length;
@@ -438,13 +438,18 @@ function findDropTargetRange(
 }
 
 /**
- * Returns true for elements with floating style set.
+ * Returns true for elements which should be ignored.
  */
-function isFloatingElement( editor: Editor, modelElement: Element ): boolean {
+function shouldIgnoreElement( editor: Editor, modelElement: Element ): boolean {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 
 	const viewElement = mapper.toViewElement( modelElement )!;
+
+	if ( !viewElement ) {
+		return true;
+	}
+
 	const domElement = domConverter.mapViewToDom( viewElement )!;
 
 	return global.window.getComputedStyle( domElement ).float != 'none';
