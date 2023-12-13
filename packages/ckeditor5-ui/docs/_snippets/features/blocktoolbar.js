@@ -125,6 +125,9 @@ BalloonEditor
 		toolbar: {
 			items: [ 'bold', 'italic', '|', 'link' ]
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
