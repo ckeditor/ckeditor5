@@ -138,7 +138,7 @@ BalloonEditor
 			'|',
 			'paragraph', 'heading1', 'heading2', 'heading3',
 			'|',
-			'uploadImage', 'blockQuote',
+			'insertImage', 'blockQuote',
 			'|',
 			'bulletedList', 'numberedList',
 			'|',

@@ -22,7 +22,7 @@ ClassicEditor
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'ckbox', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
