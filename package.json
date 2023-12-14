@@ -94,6 +94,7 @@
     "@ckeditor/ckeditor5-dev-dependency-checker": "^39.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^39.0.0",
     "@ckeditor/ckeditor5-dev-release-tools": "^39.0.0",
+    "@ckeditor/ckeditor5-dev-stale-bot": "^39.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^39.0.0",
     "@ckeditor/ckeditor5-dev-transifex": "^39.0.0",
     "@ckeditor/ckeditor5-dev-translations": "^39.0.0",
