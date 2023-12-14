@@ -16,6 +16,15 @@ ClassicEditor
 			'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 			'|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent'
 		],
+		image: {
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit'
+			]
+		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
