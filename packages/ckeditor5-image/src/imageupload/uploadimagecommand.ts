@@ -21,7 +21,7 @@ import type ImageUtils from '../imageutils';
  * and it is also available via aliased `imageUpload` name.
  *
  * In order to upload an image at the current selection position
- * (according to the {@link module:widget/utils~findOptimalInsertionRange} algorithm),
+ * (according to the {@link module:engine/model/schema~Schema#findOptimalInsertionRange} algorithm),
  * execute the command and pass the native image file instance:
  *
  * ```ts

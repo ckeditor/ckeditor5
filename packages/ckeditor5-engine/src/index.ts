@@ -110,8 +110,6 @@ export type { default as Selection, Selectable } from './model/selection';
 export type { default as TypeCheckable } from './model/typecheckable';
 export type { default as Writer } from './model/writer';
 
-export { findOptimalInsertionRange } from './model/utils/findoptimalinsertionrange';
-
 // Model Events.
 export type { DocumentChangeEvent } from './model/document';
 export type { DocumentSelectionChangeEvent } from './model/documentselection';
