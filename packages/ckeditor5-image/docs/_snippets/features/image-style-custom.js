@@ -15,6 +15,9 @@ import sideIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/side.svg';
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-semantical-style-custom' ), {
 		removePlugins: [ 'ImageResize' ],
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
