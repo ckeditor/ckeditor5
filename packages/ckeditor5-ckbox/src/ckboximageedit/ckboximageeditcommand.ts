@@ -377,10 +377,10 @@ export default class CKBoxImageEditCommand extends Command {
 				source: {
 					src: imageFallbackUrl,
 					sources: imageSources,
-					alt: element.getAttribute( 'alt' ),
 					width: imageWidth,
 					height: imageHeight,
-					...( imagePlaceholder ? { placeholder: imagePlaceholder } : null )
+					...( imagePlaceholder ? { placeholder: imagePlaceholder } : null ),
+					...( element.hasAttribute( 'alt' ) ? { alt: element.getAttribute( 'alt' ) } : null )
 				}
 			} );
 
