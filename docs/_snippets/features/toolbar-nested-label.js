@@ -22,6 +22,12 @@ ClassicEditor
 				label: 'Basic styles',
 				withText: true,
 				items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
+			},
+			'|',
+			{
+				label: 'Inserting',
+				withText: true,
+				items: [ 'insertImage', 'insertTable' ]
 			}
 		],
 		image: {

@@ -29,7 +29,9 @@ ClassicEditor
 				withText: true,
 				icon: false,
 				items: [ 'bulletedList', 'numberedList', 'todoList' ]
-			}
+			},
+			'|',
+			'insertImage', 'insertTable'
 		],
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
