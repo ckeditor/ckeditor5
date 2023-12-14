@@ -143,6 +143,7 @@ export default class Dialog extends Plugin {
 	 */
 	private _show( {
 		id,
+		icon,
 		title,
 		content,
 		actionButtons,
@@ -186,6 +187,7 @@ export default class Dialog extends Plugin {
 		} );
 
 		view.setupParts( {
+			icon,
 			title,
 			content,
 			actionButtons
@@ -250,6 +252,7 @@ export type DialogDefinition = {
 	content?: View | Array<View>;
 	actionButtons?: Array<DialogActionButtonDefinition>;
 	title?: string;
+	icon?: string;
 	className?: string;
 	isModal?: boolean;
 	position?: DialogViewPosition;

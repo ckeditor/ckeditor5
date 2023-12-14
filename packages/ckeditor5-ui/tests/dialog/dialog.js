@@ -15,6 +15,8 @@ describe( 'Dialog', () => {
 	let editor, editorElement, dialogPlugin;
 
 	beforeEach( () => {
+		Dialog.visibleDialogPlugin = undefined;
+
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 

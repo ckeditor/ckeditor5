@@ -321,13 +321,14 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 *
 	 * @internal
 	 */
-	public setupParts( { title, content, actionButtons }: {
+	public setupParts( { icon, title, content, actionButtons }: {
+		icon?: string;
 		title?: string;
 		content?: View | Array<View>;
 		actionButtons?: Array<DialogActionButtonDefinition>;
 	} ): void {
 		if ( title ) {
-			this.headerView = new FormHeaderView( this.locale );
+			this.headerView = new FormHeaderView( this.locale, { icon } );
 			this.closeButtonView = this._createCloseButton();
 			this.headerView.children.add( this.closeButtonView );
 			this.headerView.label = title;
