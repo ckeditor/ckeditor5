@@ -16,7 +16,7 @@ swap:
   auto link|auto-link: autolink
   auto save|auto-save: autosave
   auto saving|auto-saving: autosaving
-  back-end|back end: backend
+  back-end|back end|back–end: backend
   backwards compatibility: backward compatibility
   backwards compatible: backward compatible
   boolean: Boolean
@@ -44,7 +44,7 @@ swap:
   "(?:e-mail|Email|E-mail)": email
   Fckeditor|FCkeditor|FCKEditor: FCKeditor
   fewer data: less data
-  front-end|front end: frontend
+  front-end|front end|front–end: frontend
   git: Git
   Github: GitHub
   grayed-out|greyed-out: unavailable
