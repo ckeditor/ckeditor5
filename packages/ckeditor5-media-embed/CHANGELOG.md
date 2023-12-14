@@ -94,7 +94,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * Aligned to the new `WidgetToolbarRepository` API. Replaced the `isMediaWidgetSelected()` utility with `getSelectedMediaViewWidget()`. Renamed `getSelectedMediaElement()` to `getSelectedMediaModelWidget()`. (see [ckeditor/ckeditor5-widget#60](https://github.com/ckeditor/ckeditor5-widget/issues/60)). ([dc89e45](https://github.com/ckeditor/ckeditor5-media-embed/commit/dc89e45))
-* The help text under the media URL input should be displayed when it's empty. The quick insertion tip should pop out when the user started typing in the input (see [#5](https://github.com/ckeditor/ckeditor5-media-embed/issues/5)). ([55396b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/55396b5))
+* The help text under the media URL input should be displayed when it is empty. The quick insertion tip should pop out when the user starts typing in the input (see [#5](https://github.com/ckeditor/ckeditor5-media-embed/issues/5)). ([55396b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/55396b5))
 * Updated translations. ([a07783b](https://github.com/ckeditor/ckeditor5-media-embed/commit/a07783b)) ([f7942b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/f7942b5)) ([5315b1a](https://github.com/ckeditor/ckeditor5-media-embed/commit/5315b1a))
 
 ### BREAKING CHANGES

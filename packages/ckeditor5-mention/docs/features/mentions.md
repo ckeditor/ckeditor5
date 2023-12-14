@@ -13,7 +13,7 @@ The mention feature enables smart autocompletion based on user input. When you t
 
 ## Demo
 
-You can type the "@" character to invoke the mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marry Ann", "Marshall", "Robin", and "Ted").
+You can type the "@" character to invoke the mention autocomplete UI. The demo below is configured to suggest a static list of names (`Barney`, `Lily`, `Marry Ann`, `Marshall`, `Robin`, and `Ted`).
 
 {@snippet features/mention}
 
@@ -54,8 +54,8 @@ ClassicEditor
 
 Additionally, you can configure:
 
-* How the item is rendered in the autocomplete panel (via setting {@link module:mention/mentionconfig~MentionFeed `itemRenderer`}). See ["Customizing the autocomplete list"](#customizing-the-autocomplete-list).
-* How the item is converted during the {@link framework/architecture/editing-engine#conversion conversion}. See ["Customizing the output"](#customizing-the-output).
+* How the item is rendered in the autocomplete panel (via setting {@link module:mention/mentionconfig~MentionFeed `itemRenderer`}). See [Customizing the autocomplete list](#customizing-the-autocomplete-list).
+* How the item is converted during the {@link framework/architecture/editing-engine#conversion conversion}. See [Customizing the output](#customizing-the-output).
 * Multiple feeds. The demo above uses only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `'#'` for tags.
 
 ### Providing the feed
@@ -63,9 +63,9 @@ Additionally, you can configure:
 The {@link module:mention/mentionconfig~MentionFeed `feed`} can be provided as:
 
 * A static array &ndash; Good for scenarios with a relatively small set of autocomplete items.
-* A callback &ndash; It provides more control over the returned list of items.
+* A callback &ndash; Provides more control over the returned list of items.
 
-When using a callback you can return a `Promise` that resolves with the list of {@link module:mention/mentionconfig~MentionFeedItem matching feed items}. These can be simple strings or plain objects with at least the `name` property. The other properties of this object can later be used e.g. when [customizing the autocomplete list](#customizing-the-autocomplete-list) or [customizing the output](#customizing-the-output).
+When using a callback you can return a `Promise` that resolves with the list of {@link module:mention/mentionconfig~MentionFeedItem matching feed items}. These can be simple strings or plain objects with at least the `name` property. The other properties of this object can later be used when [customizing the autocomplete list](#customizing-the-autocomplete-list) or [customizing the output](#customizing-the-output).
 
 <info-box>
 	When using external resources to obtain the feed it is recommended to add some caching mechanism so subsequent calls for the same suggestion would load faster.
@@ -256,9 +256,9 @@ The converters must be defined with a `'high'` priority to be executed before th
 
 To control how the mention element is wrapped by other attribute elements (like bold, italic, etc) set its {@link module:engine/view/attributeelement~AttributeElement#priority}. To replicate default plugin behavior and make mention to be wrapped by other elements set priority to `20`.
 
-By default, attribute elements that are next to each other and have the same value will be rendered as a single HTML element. To prevent this the model attribute value object expose a unique id of each inserted mention to the model as `uid`. To prevent merging subsequent mentions set it as {@link module:engine/view/attributeelement~AttributeElement#id}.
+By default, attribute elements that are next to each other and have the same value will be rendered as a single HTML element. To prevent this, the model attribute value object exposes a unique ID of each inserted mention to the model as `uid`. To prevent merging subsequent mentions, set it as {@link module:engine/view/attributeelement~AttributeElement#id}.
 
-**Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:utils/priorities~PrioritiesType#highest `'highest'` priority} controls this behaviour; thus, we do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results.
+**Note:** The feature prevents copying fragments of existing mentions. If only a part of a mention is selected, it will be copied as plain text. The internal converter with the {@link module:utils/priorities~PrioritiesType#highest `'highest'` priority} controls this behavior. We do not recommend adding mention converters with the `'highest'` priority to avoid collisions and quirky results.
 
 ```js
 ClassicEditor
@@ -482,7 +482,7 @@ function customItemRenderer( item ) {
 
 #### Using CSS variables
 
-The mention feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [Lark theme stylesheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-mention/mention.css). Thanks to that, mention styles can be {@link framework/theme-customization easily customized}:
+The mention feature uses the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [Lark theme style sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-mention/mention.css). Thanks to that, mention styles can be {@link framework/theme-customization easily customized}:
 
 ```css
 :root {

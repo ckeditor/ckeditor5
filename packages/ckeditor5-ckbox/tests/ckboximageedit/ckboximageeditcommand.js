@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, console, btoa, AbortController */
+/* global window, console, btoa, setTimeout, AbortController */
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core';
@@ -26,8 +26,8 @@ import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock
 import _ from 'lodash-es';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
 import CKBoxEditing from '../../src/ckboxediting';
+import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting';
 
-import CKBoxImageEditCommand from '../../src/ckboximageedit/ckboximageeditcommand';
 import { blurHashToDataUrl } from '../../src/utils';
 
 const CKBOX_API_URL = 'https://upload.example.com';
@@ -65,20 +65,21 @@ describe( 'CKBoxImageEditCommand', () => {
 				PictureEditing,
 				ImageUploadEditing,
 				ImageUploadProgress,
-				CKBoxEditing
+				CKBoxEditing,
+				CKBoxImageEditEditing
 			],
 			ckbox: {
 				serviceOrigin: CKBOX_API_URL,
-				tokenUrl: 'foo'
+				tokenUrl: 'foo',
+				allowExternalImagesEditing: () => true
 			},
 			substitutePlugins: [
 				CloudServicesCoreMock
 			]
 		} );
 
-		command = new CKBoxImageEditCommand( editor );
+		command = editor.commands.get( 'ckboxImageEdit' );
 		command.isEnabled = true;
-		editor.commands.add( 'ckboxImageEdit', command );
 		model = editor.model;
 
 		dataMock = {
@@ -139,18 +140,23 @@ describe( 'CKBoxImageEditCommand', () => {
 	} );
 
 	describe( 'execute', () => {
-		it( 'should open CKBox image editor', () => {
+		it( 'should open CKBox image editor', async () => {
 			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 			command.execute();
 
+			await new Promise( resolve => setTimeout( resolve, 0 ) );
+
 			expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
+			expect( window.CKBox.mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'assetId' ).that.equals( 'example-id' );
 		} );
 	} );
 
 	describe( 'save edited image logic', () => {
 		describe( 'opening dialog', () => {
+			let clock;
+
 			beforeEach( () => {
-				sinon.useFakeTimers( { now: Date.now() } );
+				clock = sinon.useFakeTimers( { now: Date.now() } );
 			} );
 
 			afterEach( () => {
@@ -201,17 +207,19 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( command._wrapper ).to.equal( wrapper );
 			} );
 
-			it( 'should open the CKBox Image Editor dialog instance only once', () => {
+			it( 'should open the CKBox Image Editor dialog instance only once', async () => {
 				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
 				command.execute();
 				command.execute();
 				command.execute();
 
+				await clock.tickAsync( 0 );
+
 				expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
 			} );
 
-			it( 'should prepare options for the CKBox Image Editing dialog instance', () => {
+			it( 'should prepare options for the CKBox Image Editing dialog instance (ckbox image)', async () => {
 				const ckboxImageId = 'example-id';
 
 				setModelData( model,
@@ -220,21 +228,68 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
-				const options = command._prepareOptions( {
+				const options = await command._prepareOptions( {
 					element: imageElement,
-					ckboxImageId,
 					controller: new AbortController()
 				} );
 
+				expect( options ).to.have.property( 'assetId', ckboxImageId );
 				expect( options ).to.have.property( 'tokenUrl', 'foo' );
 				expect( options.imageEditing.allowOverwrite ).to.be.false;
 				expect( options.onSave ).to.be.a( 'function' );
 				expect( options.onClose ).to.be.a( 'function' );
 			} );
+
+			it( 'should prepare options for the CKBox Image Editing dialog instance (external image)', async () => {
+				const imageUrl = 'https://example.com/assets/sample.png';
+				const categoryId = 'id-category-1';
+
+				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).resolves( categoryId );
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" src="${ imageUrl }"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					controller: new AbortController()
+				} );
+
+				expect( options ).to.not.have.property( 'assetId' );
+				expect( options ).to.have.property( 'imageUrl', imageUrl );
+				expect( options ).to.have.property( 'uploadCategoryId', categoryId );
+				expect( options ).to.have.property( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).to.be.false;
+				expect( options.onSave ).to.be.a( 'function' );
+				expect( options.onClose ).to.be.a( 'function' );
+			} );
+
+			it( 'should handle error when preparing options', async () => {
+				const notification = editor.plugins.get( Notification );
+				const notificationStub = sinon.stub( notification, 'showWarning' );
+				const consoleStub = sinon.stub( console, 'error' );
+				const reason = 'getCategoryIdForFile behavied very badly.';
+
+				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).returns( Promise.reject( reason ) );
+
+				setModelData( model,
+					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
+				);
+
+				command.execute();
+
+				await clock.tickAsync( 0 );
+
+				expect( command._wrapper ).to.be.null;
+				expect( consoleStub.calledOnceWith( reason ) ).to.be.true;
+				expect( notificationStub.calledOnce ).to.be.true;
+			} );
 		} );
 
 		describe( 'closing dialog', () => {
-			it( 'should remove the wrapper after closing the CKBox Image Editor dialog', () => {
+			it( 'should remove the wrapper after closing the CKBox Image Editor dialog', async () => {
 				const ckboxImageId = 'example-id';
 
 				setModelData( model,
@@ -243,11 +298,10 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
-				const onClose = command._prepareOptions( {
+				const options = await command._prepareOptions( {
 					element: imageElement,
-					ckboxImageId,
 					controller: new AbortController()
-				} ).onClose;
+				} );
 
 				command.execute();
 
@@ -255,13 +309,13 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const spy = sinon.spy( command._wrapper, 'remove' );
 
-				onClose();
+				options.onClose();
 
 				expect( spy.callCount ).to.equal( 1 );
 				expect( command._wrapper ).to.equal( null );
 			} );
 
-			it( 'should focus view after closing the CKBox Image Editor dialog', () => {
+			it( 'should focus view after closing the CKBox Image Editor dialog', async () => {
 				const ckboxImageId = 'example-id';
 
 				setModelData( model,
@@ -270,26 +324,53 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
-				const onClose = command._prepareOptions( {
+				const options = await command._prepareOptions( {
 					element: imageElement,
 					ckboxImageId,
 					controller: new AbortController()
-				} ).onClose;
+				} );
 
 				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 				command.execute();
 
-				onClose();
+				options.onClose();
 
 				sinon.assert.calledOnce( focusSpy );
+			} );
+
+			it( 'should refresh the command after closing the CKBox Image Editor dialog', async () => {
+				const ckboxImageId = 'example-id';
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} );
+
+				const refreshSpy = testUtils.sinon.spy( command, 'refresh' );
+
+				expect( command.value ).to.be.false;
+
+				command.execute();
+				expect( command.value ).to.be.true;
+
+				options.onClose();
+				expect( command.value ).to.be.false;
+				sinon.assert.calledOnce( refreshSpy );
 			} );
 		} );
 
 		describe( 'saving edited asset', () => {
-			let onSave, sinonXHR, jwtToken, clock;
+			let options, sinonXHR, jwtToken, clock;
 
-			beforeEach( () => {
+			beforeEach( async () => {
 				const ckboxImageId = 'example-id';
 
 				setModelData( model,
@@ -300,11 +381,11 @@ describe( 'CKBoxImageEditCommand', () => {
 				const imageElement = editor.model.document.selection.getSelectedElement();
 
 				jwtToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
-				onSave = command._prepareOptions( {
+				options = await command._prepareOptions( {
 					element: imageElement,
 					ckboxImageId,
 					controller: new AbortController()
-				} ).onSave;
+				} );
 				sinonXHR = testUtils.sinon.useFakeServer();
 				sinonXHR.autoRespond = true;
 			} );
@@ -317,7 +398,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				}
 			} );
 
-			it( 'should pool data for edited image and if success status, save it', done => {
+			it( 'should poll data for edited image and if success status, save it', async () => {
 				clock = sinon.useFakeTimers();
 
 				sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/assets/image-id1', xhr => {
@@ -332,11 +413,9 @@ describe( 'CKBoxImageEditCommand', () => {
 					);
 				} );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
-				clock.tick( 1500 );
-
-				done();
+				await clock.tickAsync( 1500 );
 			} );
 
 			it( 'should abort when image was removed while processing on server', async () => {
@@ -352,7 +431,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 100 );
 
@@ -390,7 +469,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 20000 );
 
@@ -407,7 +486,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					throw new Error( 'unhandled' );
 				} );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 20000 );
 
@@ -432,7 +511,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( command.isEnabled ).to.be.true;
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 10 );
 
@@ -453,7 +532,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 10 );
 
@@ -479,7 +558,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 10 );
 
@@ -499,7 +578,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					return xhr.error();
 				} );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 20000 );
 
@@ -523,14 +602,14 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 20000 );
 
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'should stop pooling if limit was reached', async () => {
+			it( 'should stop polling if limit was reached', async () => {
 				clock = sinon.useFakeTimers();
 
 				const respondSpy = sinon.spy( sinonXHR, 'respond' );
@@ -545,7 +624,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				await clock.tickAsync( 15000 );
 
@@ -586,7 +665,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					} )
 				] );
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				expect( pendingActions.hasAny ).to.be.true;
 				expect( pendingActions._actions.length ).to.equal( 1 );
@@ -594,7 +673,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				await clock.tickAsync( 1000 );
 
-				onSave( dataMock2 );
+				options.onSave( dataMock2 );
 
 				expect( pendingActions.hasAny ).to.be.true;
 				expect( pendingActions._actions.length ).to.equal( 2 );
@@ -712,6 +791,26 @@ describe( 'CKBoxImageEditCommand', () => {
 				);
 			} );
 
+			it( 'should not be alt attribute if there is no one in the original image', () => {
+				setModelData( model, '[<imageBlock ' +
+						'ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				command._replaceImage( imageElement, dataMock );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
+			} );
+
 			it( 'should replace image with saved one (with blurHash placeholder) after it is processed', () => {
 				const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
 
@@ -745,7 +844,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					'</figure>'
 				);
 
-				onSave( dataMock );
+				options.onSave( dataMock );
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image image-processing" ' +

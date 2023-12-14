@@ -27,15 +27,15 @@ msgstr "بەلگە تىزىملىك"
 
 msgctxt "Toolbar button tooltip for the To-do List feature."
 msgid "To-do List"
-msgstr ""
+msgstr "ئىش تىزىمى"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the bulleted list style."
 msgid "Bulleted list styles toolbar"
-msgstr ""
+msgstr "تۈر بەلگە تىزىمى ئۇسلۇبىدىكى قورال بالداق"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the numbered list style."
 msgid "Numbered list styles toolbar"
-msgstr ""
+msgstr "تۈر نومۇرى تىزىمى ئۇسلۇبىدىكى قورال بالداق"
 
 msgctxt "The ARIA label of the button that toggles the \"disc\" list style."
 msgid "Toggle the disc list style"

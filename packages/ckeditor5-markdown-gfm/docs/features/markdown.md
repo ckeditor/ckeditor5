@@ -1,6 +1,7 @@
 ---
 title: Markdown output
 meta-title: Markdown output | CKEditor 5 Documentation
+meta-description: The Markdown plugin lets you switch the default CKEditor 5 output from HTML to Markdown.
 category: features
 ---
 
@@ -41,7 +42,7 @@ editor.setData( 'This is **bold**.' );
 
 The data processor outputs the GFM Markdown syntax. "GFM" stands for "GitHub Flavored Markdown" &ndash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification (although the [CommonMark](https://commonmark.org/) initiative aims to close this gap) and has many dialects, often incompatible with one another.
 
-When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (for example the [marked](https://www.npmjs.com/package/marked) library).
+When converting the output produced by this data processor, make sure to use a compatible Markdown-to-HTML converter (for example, the [marked](https://www.npmjs.com/package/marked) library).
 
 <info-box info>
 	While the CKEditor&nbsp;5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
@@ -112,6 +113,7 @@ Some other ways to output the edited content include:
 * {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
 * {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
+* {@link features/paste-markdown Paste Markdown} &ndash; Paste Markdown formatted content straight into the editor.
 
 ## Contribute
 

@@ -12,6 +12,7 @@ import { Widget } from 'ckeditor5/src/widget';
 
 import ImageTextAlternative from './imagetextalternative';
 import ImageBlockEditing from './image/imageblockediting';
+import ImageInsertUI from './imageinsert/imageinsertui';
 
 import '../theme/image.css';
 
@@ -31,7 +32,7 @@ export default class ImageBlock extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ImageBlockEditing, Widget, ImageTextAlternative ] as const;
+		return [ ImageBlockEditing, Widget, ImageTextAlternative, ImageInsertUI ] as const;
 	}
 
 	/**

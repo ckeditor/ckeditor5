@@ -24,13 +24,13 @@ Listed below are the most important changes that require your attention when upg
 
 ## The `ListStyle` plugin is now deprecated
 
-Due to the introduction of the new {@link features/lists#list-properties list properties}, the `ListStyle` plugin used so far became obsolete as it was replaced by the {@link module:list/listproperties~ListProperties `ListProperties`} plugin. Please refer to the {@link features/lists##list-properties-2 list feature installation guide} for details on how to handle the upgrade.
+Due to the introduction of the new {@link features/lists#list-properties list properties}, the `ListStyle` plugin used so far became obsolete as it was replaced by the {@link module:list/listproperties~ListProperties `ListProperties`} plugin. Refer to the {@link features/lists##list-properties-2 list feature installation guide} for details on how to handle the upgrade.
 
 ## Revision history
 
-The revision history feature was adapted to the upcoming support for real-time editing integration. Unfortunately, this introduced several breaking changes for the non-real-time integrations as well. You can find the migration instructions below. We also recommend revisiting the {@link features/revision-history-integration revision history integration guide}.
+The revision history feature was adapted to the upcoming support for real-time editing integration. Unfortunately, this introduced several breaking changes for the asynchronous integrations as well. You can find the migration instructions below. We also recommend revisiting the {@link features/revision-history-integration revision history integration guide}.
 
-In case of any problems with migrating to CKEditor&nbsp;5 v32.0.0, please [contact our support team](https://ckeditor.com/contact/).
+In case of any problems with migrating to CKEditor&nbsp;5 v32.0.0, [contact our support team](https://ckeditor.com/contact/).
 
 ### Revisions data
 

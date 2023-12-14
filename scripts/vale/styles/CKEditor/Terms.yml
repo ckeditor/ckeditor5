@@ -22,6 +22,7 @@ swap:
   Cksource|CKsource|CK Source: CKSource
   clean-up: cleanup
   click on: click|click in
+  clicking on: clicking|clicking in
   config: configuration
   data are: data is
   deselect: clear
@@ -46,10 +47,14 @@ swap:
   Lo-Dash|lodash: Lodash
   MacOS: macOS
   "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
+  "(?:MSExcel|MS Excel)": Microsoft Excel
   "(?:MSOffice|MS Office)": Microsoft Office
   "(?:MSWord|MS Word)": Microsoft Word
   "(?:[nN]odejs|[nN]ode.JS|node.js)": Node.js
   non-real-time|non real-time|non real time|non-RTC: asynchronous
+  on Chrome: in Chrome
+  on Edge: in Edge
+  on Firefox: in Firefox
   on-premise|on-prem: on-premises
   plaintext|plain-text: plain text
   plug-in: plugin
@@ -65,6 +70,7 @@ swap:
   SAAS: SaaS
   sanity (?:check|test): check for completeness
   semver: SemVer
+  stand alone|stand-alone: standalone
   stylesheet: style sheet
   (?i)todo list: to-do list
   (?<!.)TS: TypeScript

@@ -12,7 +12,7 @@ This guide will show you how to create a simple abbreviation plugin for CKEditor
 
 We will create a toolbar button that lets the users insert abbreviations into their document. These abbreviations will use the [`<abbr>` <abbr title="HyperText Markup Language">HTML</abbr> element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr) with a ‘title’ attribute that will show up in a tooltip when the user hovers over the element. You can check the mechanism hovering over the underlined "HTML" text in the previous sentence.
 
-This first part of the tutorial will only cover the basics. We will just insert one possible abbreviation: "WYSIWYG". We will get user input in the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 next part of this tutorial series}.
+This first part of the tutorial will only cover the basics. We will just insert one possible abbreviation: "WYSIWYG." We will get user input in the {@link tutorials/abbreviation-plugin-tutorial/abbreviation-plugin-level-2 next part of this tutorial series}.
 
 If you want to see the final product of this tutorial before you plunge in, check out the [live demo](#demo).
 
@@ -244,7 +244,7 @@ Converting the full title of the abbreviation is a little bit tricky, because we
 
 In the downcast conversion, we will use one of our conversion helpers &ndash; {@link framework/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()`} &ndash; to transform the model abbreviation attribute into the view `<abbr>` element.
 
-We will need to use a callback function, in order to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the `DowncastConversionApi` object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the `DowncastWriter`.
+We will need to use a callback function to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the `DowncastConversionApi` object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the `DowncastWriter`.
 
 ```js
 // abbreviation/abbreviationediting.js

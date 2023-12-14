@@ -23,7 +23,7 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -57,7 +57,7 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -97,7 +97,7 @@
 				{
 					"type": "Button",
 					"name": "toggleImageCaption",
-					"iconPath": "",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/caption.svg",
 					"toolbars": [
 						"image.toolbar"
 					]

@@ -37,7 +37,7 @@ Most of these formatting options can be applied from the {@link getting-started/
 
 ### Advanced content editing
 
-Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} and create a responsive design. If that is not enough, {@link features/media-embed embed media} {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Media} into your content.
+Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} and create a responsive design. If that is not enough, {@link features/media-embed embed media} {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Media} into your content.
 
 An essential feature for online content are {@link features/link links} {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} - these can be easily pasted, changed and attributed.
 
@@ -83,7 +83,7 @@ Keep full control of your work. Be safe and never lose anything thanks to the {@
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
-Our {@link features/ai-assistant AI Assistant} {@icon @ckeditor/ckeditor5-ai/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the already existing content to match your needs, or even come up with a completely new one!
+Our {@link features/ai-assistant-overview AI Assistant} {@icon @ckeditor/ckeditor5-ai/theme/icons/robot-pencil.svg AI Assistant} will help you rewrite, edit, or translate the already existing content to match your needs, or even come up with a completely new one!
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed the editing process, employ {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spell and grammar check} to ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 

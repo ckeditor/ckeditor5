@@ -17,7 +17,7 @@ npm install --save @ckeditor/ckeditor5-image
 	You may want to install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package if you want to use the {@link features/images-linking `LinkImage`} plugin in your editor.
 </info-box>
 
-Next, add the {@link features/images-overview#image-features plugins that you need} to your plugin list. You also need to set the desired image toolbar items. Notice the {@link getting-started/setup/toolbar#separating-toolbar-items separators} used to organize the toolbar.
+Next, add the {@link features/images-overview#image-features plugins that you need} to your plugin list and to the editor toolbar.
 
 ```js
 import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
@@ -26,6 +26,69 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
+		toolbar: [ 'insertImage', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+## Configuring the toolbar dropdown
+
+The Image feature comes with the unified image insert dropdown component {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image insert}. It automatically collects installed image insert methods. For example, if you install the `ImageUpload` plugin, the corresponding button will automatically appear in the dropdown. You only need to add a button to the toolbar:
+
+```js
+import { Image } from '@ckeditor/ckeditor5-image';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image ],
+		toolbar: [ 'insertImage', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+The feature is pre-configured to include the following image insertion methods:
+
+* `upload` - Upload image from computer. It uses the configured image upload adapter. {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload}
+* `assetManager` - Opens the installed asset manager (for example the CKBox). {@icon @ckeditor/ckeditor5-core/theme/icons/image-asset-manager.svg Asset manager}
+* `url` - Allows inserting an image by directly specifying its URL. Integration provided by `ImageInsertViaUrl` feature. {@icon @ckeditor/ckeditor5-core/theme/icons/image-url.svg Insert via URL}
+
+Note that the insert methods mentioned above will only be added if you install dedicated features. However, not all features are required. If only one is available, it will be indicated by the toolbar dropdown icon.
+
+If you need to limit the methods included in the dropdown (apart from not installing a specific feature) or change their order you can use the `image.insert.integration` configuration option:
+
+```js
+import { Image } from '@ckeditor/ckeditor5-image';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image ],
+		toolbar: [ 'insertImage', /* ... */ ],
+		image: {
+			insert: {
+				// This is the default configuration, you do not need to provide
+				// this configuration key if the list content and order reflects your needs.
+				integrations: [ 'upload', 'assetManager', 'url' ]
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+## Configuring the contextual image toolbar
+
+You also need to configure the desired contextual image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
+
+```js
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
+		toolbar: [ 'insertImage', /* ... */ ],
 		image: {
 			toolbar: [
 				'imageStyle:block',
@@ -111,7 +174,7 @@ The `type` setting accepts the following three values:
 
 If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
 
-**Important**: If only one type of image plugin is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the supported image type will be used.
+**Important**: If only one type of image plugin is enabled (for example, `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the supported image type will be used.
 
 ## Contribute
 

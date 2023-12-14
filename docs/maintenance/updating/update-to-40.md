@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-11-13
+modified_at: 2023-12-06
 ---
 
 # Update to CKEditor&nbsp;5 v40.x
@@ -13,6 +13,181 @@ modified_at: 2023-11-13
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v40.2.0
+
+For the entire list of changes introduced in version 40.2.0, see the [release notes for CKEditor&nbsp;5 v40.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.2.0).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
+
+### AI Assistant integration
+
+The below information affects all editor integrations that use the AI Assistant feature.
+
+We added support for the AWS Bedrock service and for providing custom adapters that may extend our solutions or allow to connect to a custom model. To enable this, it was necessary to perform refactoring in the feature's plugins architecture and configuration structure. However, we hope it makes us ready for providing new AI-related features in the future without introducing more breaking changes.
+
+Before, the OpenAI adapter was automatically required by the `AIAssistant` plugin. Now, the integrator must explicitly add the chosen adapter to the list of plugins:
+
+```js
+// Before:
+import { AIAssistant } from '@ckeditor/ckeditor5-ai';
+
+ClassicEditor.create( element, {
+	plugins: [ AIAssistant, /* ... */ ]
+} );
+
+// After:
+import { AIAssistant, OpenAITextAdapter } from '@ckeditor/ckeditor5-ai';
+
+ClassicEditor.create( element, {
+	plugins: [ AIAssistant, OpenAITextAdapter, /* ... */ ]
+} );
+```
+
+Another change is connected to {@link module:ai/aiassistant~AIAssistantConfig configuration structure}. The new `config.ai` namespace was introduced. The `config.aiAssistant` option was moved into `config.ai.aiAssistant`. Adapter-related properties were extracted to `config.ai.openAI`. Also, some of the properties were renamed.
+
+```js
+// Before:
+ClassicEditor.create( element, {
+	aiAssitant: {
+		authKey: 'OPENAI_API_KEY',
+		removeCommands: [ 'improveWriting', 'casual' ],
+		useTheme: false
+	}
+} );
+
+// After:
+ClassicEditor.create( element, {
+	ai: {
+		openAI: {
+			requestHeaders: {
+				Authorization: 'Bearer OPENAI_API_KEY'
+			}
+		},
+		aiAssistant: {
+			removeCommands: [ 'improveWriting', 'casual' ]
+		},
+		useTheme: false
+	}
+} );
+```
+
+### CKBox image editing
+
+The new release includes the {@link features/ckbox CKBox} image editing feature, now quickly accessible either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform image quick image edits such as cropping, resizing, flipping and rotating the image. As it is called from withing the editor and the process takes place right in the asset manager, it greatly speeds up and simplifies the content editing process.
+
+{@img assets/img/ckbox-editing-area.png 1062 CKBox image editing panel.}
+
+#### Adding CKBox image editing to CKEditor 5
+
+To use the CKBox image editing feature, you need to import it first into you editor. Please note, that it requires the `PictureEditing` plugin to work correctly.
+
+Then, add it to the plugin list and the toolbar as shown below.
+
+```js
+import { ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { CKBox, CKBoxImageEdit } from "@ckeditor/ckeditor5-ckbox";
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [  PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
+		toolbar: [ 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
+		ckbox: {
+			// Feature configuration.
+			// ...
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+You can add the image editing button both to the main editor toolbar (as shown in the snippet above) and the image contextual toolbar for convenience.
+
+```js
+image: {
+	toolbar: [
+		'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+		'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit'
+	]
+},
+```
+
+You can read more about image editing in {@link @ckbox features/images/editing CKBox documentation}.
+
+### Expanded image insert dropdown
+
+We have updated the toolbar `insertImage` component. By default, the image toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} provides access to all installed methods of inserting images into content, such as {@link features/image-upload uploading images from your computer}, adding images from {@link features/using-file-managers file managers} or {@link features/images-inserting inserting images via URL}.
+
+{@img assets/img/image_insert_dropdown.png 772 Image insert dropdown in the main editor toolbar.}
+
+You may want to update your toolbar configuration to make use of the updated feature if you did not use it before.
+
+```js
+import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage ],
+		// the insert image dropdown toolbar item
+		toolbar: [ 'insertImage', /* ... */ ],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+By default, the function automatically detects all available upload methods. For example, it will detect and add the `ImageInsertViaUrl` if it is enabled. While no configuration is required for this feature, you may limit the methods included in the dropdown (apart from not installing a specific feature) or change their order. For this, you can use the `image.insert.integration` configuration option:
+
+```js
+import { Image } from '@ckeditor/ckeditor5-image';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Image, /* ... */ ],
+		toolbar: [ 'insertImage', /* ... */ ],
+		image: {
+			insert: {
+				// You do not need to provide this configuration key
+				// if the default list content and order reflects your needs.
+				integrations: [ 'assetManager', 'upload', 'url' ]
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+Learn more about the toolbar dropdown configuration in the {@link features/images-installation#configuring-the-toolbar-dropdown image installation guide}.
+
+#### Image upload plugins
+
+These are all available plugins that provide integrations to the insert image dropdown:
+
+* `ImageUpload` &ndash; provides the default upload from computer toolbar button
+* `ImageInsertViaUrl` &ndash; provides the insert image via URL integration and toolbar item
+* `ImageInsert` &ndash; delivers both of the integrations mentioned above:
+	* `ImageUpload`
+	* `ImageInsertViaUrl`
+
+Additional image inserting plugins:
+* `CKBox` &ndash; asset manager that provides image upload and editing capabilities
+* `CKFinder` &ndash; image manager
+
+#### New image upload icons
+
+Due to the changes to the image insert mechanisms, new toolbar icons have been introduced and replaced the old {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} image icon.
+
+Now there are:
+* {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon that is the default for the dropdown or for the upload from computer command
+* {@icon @ckeditor/ckeditor5-core/theme/icons/image-asset-manager.svg Image manager} image manager icon
+* {@icon @ckeditor/ckeditor5-core/theme/icons/image-url.svg Insert via URL} insert via URL icon.
+
+The toolbar dropdown will use the {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon bu default. If no upload adapter is present, the toolbar will use the next available icon instead.
+
+### Removal of the `insertImageViaUrl` option
+
+The `insertImageViaUrl` configuration option was not used and has been removed. If you have it somewhere in your editor configuration, please remove it to avoid getting an error. 
 
 ## Update to CKEditor&nbsp;5 v40.1.0
 
@@ -46,7 +221,7 @@ The `type` setting accepts the following values:
 
 If the `type` setting is omitted from the configuration, the behavior defaults to inserting images as a block.
 
-**Important**: If only one type of {@link features/images-installation#inline-and-block-images image plugin} is enabled (e.g., `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
+**Important**: If only one type of {@link features/images-installation#inline-and-block-images image plugin} is enabled (for example, `ImageInline` is enabled but `ImageBlock` is not), the `image.insert.type` configuration will be effectively ignored and the only supported image type will be used.
 
 ### Updated image text alternative icon
 
@@ -168,7 +343,7 @@ The `CommentsArchive#resolvedThreads` property has been renamed to `#archivedThr
 
 The `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Additionally, now, `CommentsRepository` should never store deleted comment threads.
 
-Your custom code may need to be updated accordingly (e.g. if your application uses the comments outside the editor feature). Examples:
+Your custom code may need to be updated accordingly (for example if your application uses the comments outside the editor feature). Examples:
 
 ```js
 // Before:

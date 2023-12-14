@@ -124,11 +124,6 @@ const defaultConfig = {
 	table: {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 	},
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
-		]
-	},
 	ui: {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
