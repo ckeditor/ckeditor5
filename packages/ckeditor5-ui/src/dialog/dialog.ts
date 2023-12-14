@@ -63,6 +63,22 @@ export default class Dialog extends Plugin {
 		this.set( 'isOpen', false );
 	}
 
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'SourceEditing' ) ) {
+			const sourceEditing: SourceEditing = editor.plugins.get( 'SourceEditing' );
+
+			this.listenTo( sourceEditing, 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
+				if ( this.isOpen && isSourceEditingMode && !this.view!.isVisibleInSourceMode ) {
+					this.hide();
+				} else if ( this.isOpen && !this.view?.wasMoved ) {
+					this.view?.updatePosition();
+				}
+			} );
+		}
+	}
+
 	/**
 	 * Initiates listeners for the `show` and `hide` events emitted by this plugin.
 	 */
@@ -171,18 +187,6 @@ export default class Dialog extends Plugin {
 			this.hide();
 		} );
 
-		if ( editor.plugins.has( 'SourceEditing' ) ) {
-			const sourceEditing: SourceEditing = editor.plugins.get( 'SourceEditing' );
-
-			this.listenTo( sourceEditing, 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
-				if ( this.isOpen && isSourceEditingMode && !isVisibleInSourceMode ) {
-					this.hide();
-				} else if ( !this.view?.wasMoved ) {
-					this.view?.updatePosition();
-				}
-			} );
-		}
-
 		editor.ui.view.body.add( view );
 		editor.ui.focusTracker.add( view.element! );
 		editor.keystrokes.listenTo( view.element! );
@@ -199,6 +203,8 @@ export default class Dialog extends Plugin {
 			className,
 			isModal
 		} );
+
+		view.isVisibleInSourceMode = isVisibleInSourceMode;
 
 		view.setupParts( {
 			icon,

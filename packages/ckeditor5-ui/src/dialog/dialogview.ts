@@ -164,6 +164,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 */
 	private readonly _focusCycler: FocusCycler;
 
+	public isVisibleInSourceMode?: boolean = false;
+
 	/**
 	 * @inheritDoc
 	 */
