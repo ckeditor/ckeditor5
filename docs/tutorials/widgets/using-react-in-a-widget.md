@@ -495,7 +495,7 @@ export default class ProductPreview extends React.Component {
 
 ### Main application component
 
-So far, you have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together in the `App` class.
+At the moment, you have CKEditor classes that bring the product preview into the content, a list of products, and a product component ready. It is time to glue things together in the `App` class.
 
 You are going to extend the [main application file](#lets-start) skeleton that you created earlier in this tutorial so it renders the {@link installation/integrations/react official `<CKEditor>` React component} on the left side, and the list of available products on the right.
 

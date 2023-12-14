@@ -363,7 +363,7 @@ Additional rules apply to private properties:
 
 * The names of private and protected properties that are exposed in a class prototype (or in any other way) should be prefixed with an underscore.
 * When documenting a private variable that is not added to a class prototype (or exposed in any other way), `//` comments should be used and using `@private` is not necessary.
-* A symbol property (e.g. `this[ Symbol( 'symbolName' ) ]`) should be documented as `@property {Type} _symbolName`.
+* A symbol property (like `this[ Symbol( 'symbolName' ) ]`) should be documented as `@property {Type} _symbolName`.
 
 Example:
 
@@ -512,7 +512,7 @@ There are some special rules and tips for tests.
 	```
 
 	Using titles like *"utils"* is not fine as there are multiple utils in the entire project. *"Table utils"* would be better.
-* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), e.g. *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
+* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), for example, *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
 * Avoid test descriptions like *"does not crash when two ranges get merged."* Instead, explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged."*
 * Most often, using words like "correctly," "works fine" is a code smell. Think about the requirements &ndash; when writing them you do not say that feature X should "work fine." You document how it should work.
 * Ideally, it should be possible to recreate an algorithm just by reading the test descriptions.
