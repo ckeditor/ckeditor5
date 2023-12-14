@@ -28,7 +28,7 @@ Simply paste some Markdown-formatted content into the demo editor below and see 
 ## Installation
 
 <info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
+	This feature is not available in any of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds}.
 </info-box>
 
 To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
@@ -68,7 +68,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+	Read more about {@link framework/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Known issues

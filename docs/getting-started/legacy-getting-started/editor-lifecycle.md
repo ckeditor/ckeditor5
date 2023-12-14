@@ -6,10 +6,8 @@ order: 60
 
 # Editor's lifecycle
 
-<info-box hint>
-**Quick recap**
-
-In the {@link getting-started/setup/configuration previous guide} you have explored available configuration options of the editor. This article shows the lifecycle methods to create and destroy the editor.
+<info-box warning>
+	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
 </info-box>
 
 Each CKEditor 5 **type** provides a different **editor class** that handles the creation of editor instances. Most of the examples in the documentation use the {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} class, but things should work similarly with other types.
@@ -104,9 +102,3 @@ editor.destroy().catch( error => {
 ```
 
 Once destroyed, resources used by the editor instance are released and the original element used to create the editor is automatically displayed and updated to reflect the final editor data.
-
-<info-box hint>
-**What's next?**
-
-Now you know how to initialize the editor instance. But an editor without the ability to get its content is not particularly useful. It is time to learn how to work with the editor's data {@link getting-started/getting-and-setting-data in the following guide}.
-</info-box>

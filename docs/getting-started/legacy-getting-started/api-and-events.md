@@ -6,10 +6,8 @@ order: 80
 
 # API and events
 
-<info-box hint>
-**Quick recap**
-
-In the {@link getting-started/getting-and-setting-data previous guide} you have learned how to set and get data from the editor. You can also start using the editor's API and events.
+<info-box warning>
+	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
 </info-box>
 
 CKEditor 5 API allows developers to interact with the editor and its plugins to create new behaviors. Through the event system, you can tailor reactions to specific actions that are happening.
@@ -69,9 +67,3 @@ editor.editing.view.document.on( 'enter', ( evt, data ) => {
 ```
 
 You can find more information about events in {@link framework/architecture/core-editor-architecture#event-system-and-observables the framework documentation}.
-
-<info-box hint>
-**What's next?**
-
-Having explored the API and events, it is time to take the next step: {@link getting-started/legacy-getting-started/extending-features extend your editor's features}.
-</info-box>

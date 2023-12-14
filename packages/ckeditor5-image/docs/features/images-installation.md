@@ -79,7 +79,7 @@ ClassicEditor
 
 ## Configuring the contextual image toolbar
 
-You also need to configure the desired contextual image toolbar items. Notice the {@link features/toolbar#separating-toolbar-items separators} used to organize the toolbar.
+You also need to configure the desired contextual image toolbar items. Notice the {@link getting-started/setup/toolbar#separating-toolbar-items separators} used to organize the toolbar.
 
 ```js
 import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';

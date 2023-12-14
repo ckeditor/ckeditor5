@@ -7,6 +7,10 @@ modified_at: 2022-03-15
 
 # Customized installation
 
+<info-box warning>
+	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+</info-box>
+
 ## Introduction
 
 This guide will teach you how to run your own CKEditor&nbsp;5 instance. Below you can find two unique paths describing the installation process. Choose one (or both!) and start your CKEditor&nbsp;5 journey!
@@ -497,12 +501,4 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
-</info-box>
-
-<info-box hint>
-**What's next?**
-
-Congratulations, you have just run your first CKEditor&nbsp;5 instance! Now it is time to learn more about customization, so jump in straight to the {@link getting-started/setup/configuration Configuration guide}.
-
-P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link getting-started/integrations/overview Frameworks section}.
 </info-box>

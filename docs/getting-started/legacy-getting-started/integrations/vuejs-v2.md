@@ -9,6 +9,10 @@ order: 40
 
 # Vue.js 2.x rich text editor component
 
+<info-box warning>
+	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 Angular integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v2 CKEditor 5 integration} guide.
+</info-box>
+
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2" target="_blank" rel="noopener">
 		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue2.svg" alt="npm version" loading="lazy">

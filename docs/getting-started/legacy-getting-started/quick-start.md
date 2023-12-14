@@ -10,6 +10,10 @@ modified_at: 2022-06-27
 
 # Quick start
 
+<info-box warning>
+	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+</info-box>
+
 ## Introduction
 In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor&nbsp;5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
 
@@ -315,13 +319,3 @@ After you sign up, you will find in the customer dashboard the full code snippet
 ## Adjusting plugins included in the CKEditor&nbsp;5 superbuild
 
 You may disable any features available in the superbuild using the {@link getting-started/setup/adding-removing-features#removing-features `removePlugins` configuration option}. For a full list of features currently available in the superbuild, please consult the {@link getting-started/legacy-getting-started/predefined-builds#list-of-plugins-included-in-the-ckeditor-5-predefined-builds predefined editor builds} guide. Please note, that removing certain features may make the editor unusable.
-
-<info-box hint>
-**What's next?**
-
-Congratulations, you have just run your first CKEditor&nbsp;5 instance!
-
-You can also try another simple installation method, like the {@link getting-started/legacy-getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
-
-And if you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link getting-started/integrations/overview Frameworks section}.
-</info-box>

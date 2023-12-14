@@ -8,6 +8,10 @@ modified_at: 2022-07-12
 
 # Predefined CKEditor&nbsp;5 builds
 
+<info-box warning>
+	This is a legacy guide kept for users' convenience. If you are looking for current CKEditor 5 installation instructions, please refer to the newest version of the {@link getting-started/quick-start CKEditor 5 Quick Start} guide.
+</info-box>
+
 ## Overview
 
 Predefined CKEditor&nbsp;5 builds are a set of ready-to-use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration. They provide convenient solutions that can be installed with no effort and that satisfy the most common editing use cases.
