@@ -3,30 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* TODO: Move things to theme-lark */
-
-@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css";
-@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css";
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-
-:root {
-	--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 )
-}
-
 .ck.ck-dialog-overlay {
 	user-select: none;
 	overscroll-behavior: none;
-
-	animation: ck-dialog-fade-in .3s;
-	background: var(--ck-dialog-overlay-background-color);
 
 	position: fixed;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	top: 0;
-
-	z-index: var(--ck-z-dialog);
 
 	&.ck-dialog-overlay__transparent {
 		pointer-events: none;
@@ -36,50 +21,19 @@
 }
 
 .ck.ck-dialog {
-	@mixin ck-rounded-corners;
-	@mixin ck-drop-shadow;
-
-	background: var(--ck-color-base-background);
-	max-height: 90vh;
-	max-width: min(90vw, 800px);
 	overscroll-behavior: none;
 	width: fit-content;
 	position: absolute;
 
-	--ck-drop-shadow: 0px 0px 6px 2px hsl(0deg 0% 0% / 15%);
-	border: 1px solid var(--ck-color-base-border);
-
 	& .ck.ck-form__header  {
 		flex-shrink: 0;
-		--ck-form-header-height: 44px;
 
 		& .ck-form__header__label {
-			--ck-font-size-base: 15px;
 			cursor: grab;
-		}
-	}
-
-	& .ck.ck-dialog__actions {
-		display: flex;
-		justify-content: flex-end;
-		padding: var(--ck-spacing-large);
-
-		& > * + * {
-			margin-left: var(--ck-spacing-large);
 		}
 	}
 
 	@nest .ck.ck-dialog-overlay.ck-dialog-overlay__transparent & {
 		pointer-events: all;
-	}
-}
-
-@keyframes ck-dialog-fade-in {
-	0% {
-		background: hsla( 0, 0%, 0%, 0 );
-	}
-
-	100% {
-		background: var(--ck-dialog-overlay-background-color);
 	}
 }
