@@ -25,7 +25,7 @@ Besides that, the editor exposes a few of methods:
 * {@link module:core/editor/editor~Editor.create `create()`} &ndash; The static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
 * {@link module:core/editor/editor~Editor#destroy `destroy()`} &ndash; Destroys the editor.
 * {@link module:core/editor/editor~Editor#execute `execute()`} &ndash; Executes the given command.
-* {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`} and {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} &ndash; A way to retrieve the data from the editor and set the data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
+* {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`} and {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} &ndash; A way to retrieve the data from the editor and set the data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor}. It does not need to be a string (it can be, for example, a JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
 
 For the full list of methods check the {@link api/index API docs} of the editor class you use. Specific editor implementations may provide additional methods.
 
@@ -35,9 +35,9 @@ The {@link module:core/editor/editor~Editor `Editor`} class is a base to impleme
 
 Plugins are a way to introduce editor features. In CKEditor&nbsp;5 even {@link module:typing/typing~Typing typing} is a plugin. What is more, the {@link module:typing/typing~Typing} plugin depends on the {@link module:typing/input~Input} and {@link module:typing/delete~Delete} plugins which are responsible for handling the methods of inserting text and deleting content, respectively. At the same time, some plugins need to customize <kbd>Backspace</kbd> behavior in certain cases and handle it by themselves. This leaves the base plugins free of any non-generic knowledge.
 
-Another important aspect of how existing CKEditor&nbsp;5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces the schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold/boldui~BoldUI} plugin adds the UI of the feature (i.e. the button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor&nbsp;5 on the server side. Finally, there is the {@link module:basic-styles/bold~Bold} plugin that brings both plugins for a full experience.
+Another important aspect of how existing CKEditor&nbsp;5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces the schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold/boldui~BoldUI} plugin adds the UI of the feature (that is, the button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor&nbsp;5 on the server side. Finally, there is the {@link module:basic-styles/bold~Bold} plugin that brings both plugins for a full experience.
 
-The tl;dr of this is that:
+The summary of this is that:
 
 * Every feature is implemented or at least enabled by a plugin.
 * Plugins are highly granular.
@@ -115,13 +115,13 @@ refresh() {
 
 This method is called automatically (by the command itself) when {@link module:engine/model/document~Document#event:change any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
 
-The important thing about commands is that every change in their state as well as calling the `execute()` method fire events (e.g. {@link module:core/command~Command#event-set:{property} `#set:value`} and {@link module:core/command~Command#event-change:{property} `#change:value`} when you change the `#value` property and {@link module:core/command~Command#event:execute `#execute`} when you execute the command).
+The important thing about commands is that every change in their state as well as calling the `execute()` method fire events. Some examples of these are {@link module:core/command~Command#event-set:{property} `#set:value`} and {@link module:core/command~Command#event-change:{property} `#change:value`} when you change the `#value` property and {@link module:core/command~Command#event:execute `#execute`} when you execute the command.
 
 <info-box>
 	Read more about this mechanism in the {@link framework/deep-dive/observables Observables} deep dive guide.
 </info-box>
 
-These events make it possible to control the command from the outside. For instance, if you want to disable specific commands when some condition is true (for example, according to your application logic, they should be temporarily disabled) and there is no other, cleaner way to do that, you can block the command manually:
+These events make it possible to control the command from the outside. For instance, if you want to block specific commands when some condition is true (for example, according to your application logic, they should be temporarily unavailable) and there is no other, cleaner way to do that, you can block the command manually:
 
 ```js
 function disableCommand( cmd ) {
@@ -150,9 +150,9 @@ const enableBold = disableCommand( editor.commands.get( 'bold' ) );
 enableBold();
 ```
 
-The command will now be disabled as long as you do not {@link module:utils/emittermixin~Emitter#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
+The command will now be blocked as long as you do not {@link module:utils/emittermixin~Emitter#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
 
-By default, editor commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode. However, if your command does not change the editor data and you want it to stay enabled in the read-only mode, you can set the {@link module:core/command~Command#affectsData `affectsData`} flag to `false`:
+By default, editor commands are blocked when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode. However, if your command does not change the editor data and you want it to stay enabled in the read-only mode, you can set the {@link module:core/command~Command#affectsData `affectsData`} flag to `false`:
 
 ```js
 class MyAlwaysEnabledCommand extends Command {
@@ -168,7 +168,7 @@ class MyAlwaysEnabledCommand extends Command {
 The {@link module:core/command~Command#affectsData `affectsData`} flag will also affect the command in {@link features/read-only#related-features other editor modes} that restrict user write permissions.
 
 <info-box>
-	The `affectsData` flag is set to `true` by default for all editor commands and, unless your command should be enabled when the editor is read-only, you do not need to change it. Also, please keep in mind that the flag is immutable during the lifetime of the editor.
+	The `affectsData` flag is set to `true` by default for all editor commands and, unless your command should be enabled when the editor is read-only, you do not need to change it. The flag is immutable during the lifetime of the editor.
 </info-box>
 
 ## Event system and observables
@@ -201,7 +201,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-The second listener to `'execute'` shows one of the very common practices in CKEditor&nbsp;5 code. Basically, the default action of `'execute'` (which is calling the `execute()` method) is registered as a listener to that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities you can execute some code before or after `execute()` is really called. If you stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~Observable#decorate `ObservableMixin#decorate()`} function:
+The second listener to `'execute'` shows one of the common practices in CKEditor&nbsp;5 code. Basically, the default action of `'execute'` (which is calling the `execute()` method) is registered as a listener to that event with a default priority. Thanks to that, by listening to the event using `'low'` or `'high'` priorities you can execute some code before or after `execute()` is really called. If you stop the event, then the `execute()` method will not be called at all. In this particular case, the {@link module:core/command~Command#execute `Command#execute()`} method was decorated with the event using the {@link module:utils/observablemixin~Observable#decorate `ObservableMixin#decorate()`} function:
 
 ```js
 import { ObservableMixin, mix } from '@ckeditor/ckeditor5-utils';

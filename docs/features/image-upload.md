@@ -80,6 +80,6 @@ The {@link features/base64-upload-adapter Base64 upload feature} converts images
 
 ## Implementing your own upload adapter
 
-CKEditor&nbsp;5 provides an open API that allows you to develop your upload adapters. Tailored to your project, a custom adapter will allow you to take full control over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
+CKEditor&nbsp;5 provides an open API that allows you to develop your upload adapters. Tailored to your project, a custom adapter will allow you to take full control over the upload process. This includes both sending the files to the server and passing the response from the server (for example, the URL to the saved file) back to the WYSIWYG editor.
 
 {@link framework/deep-dive/upload-adapter **Learn how to develop a custom upload adapter for CKEditor&nbsp;5**}.

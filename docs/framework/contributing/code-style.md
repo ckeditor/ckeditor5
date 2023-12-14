@@ -516,7 +516,7 @@ There are some special rules and tips for tests.
 * Avoid test descriptions like *"does not crash when two ranges get merged."* Instead, explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged."*
 * Most often, using words like "correctly," "works fine" is a code smell. Think about the requirements &ndash; when writing them you do not say that feature X should "work fine." You document how it should work.
 * Ideally, it should be possible to recreate an algorithm just by reading the test descriptions.
-* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
+* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test, for example, how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
 * Every test should clean after itself, including destroying all editors and removing all elements that have been added.
 
 ### Test implementation
@@ -704,7 +704,7 @@ Acronyms and, partially, proper names are naturally written in uppercase. This m
 	* Original case if at the beginning of the class name: `class CKEditorError`.
 	* Original case inside the variable or class name: `function getCKEditorError()`.
 
-However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. So e.g. `getUI` (not `getUi`).
+However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. For example: `getUI`, not `getUi`.
 
 <info-box>
 	Two most frequently used acronyms which cause problems:
@@ -1107,7 +1107,7 @@ import { Table } from '@ckeditor/ckeditor5-table';
 
 In TypeScript, the types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but in some cases a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
 
-The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (e.g. `delete'` literal string instead of generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
+The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
 
 👎&nbsp; Examples of an incorrect code for this rule:
 
