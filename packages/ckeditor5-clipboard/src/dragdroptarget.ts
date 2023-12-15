@@ -293,6 +293,11 @@ export default class DragDropTarget extends Plugin {
 		const domElementAfter = viewElementAfter ? editing.view.domConverter.mapViewToDom( viewElementAfter ) : null;
 
 		const viewElementParent = editing.mapper.toViewElement( nodeParent )!;
+
+		if ( !viewElementParent ) {
+			return;
+		}
+
 		const domElementParent = editing.view.domConverter.mapViewToDom( viewElementParent )!;
 
 		const domScrollableRect = this._getScrollableRect( viewElementParent );
