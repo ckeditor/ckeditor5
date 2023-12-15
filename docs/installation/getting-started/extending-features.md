@@ -58,7 +58,7 @@ It is not possible to do everything with simple plugins as shown above.
 
 **Standard plugins capabilities:**
 
-* Adding new UI elements (e.g., a new button to a toolbar).
+* Adding new UI elements (for example, a new button to a toolbar).
 * Creation of widgets or new commands.
 * Depending on other plugins' or commands' behaviors.
 

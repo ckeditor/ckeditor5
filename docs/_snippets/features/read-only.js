@@ -22,8 +22,11 @@ ClassicEditor
 		image: {
 			toolbar: [
 				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
-				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
+				'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit'
 			]
+		},
+		ckbox: {
+			forceDemoLabel: true
 		},
 		ui: {
 			viewportOffset: {

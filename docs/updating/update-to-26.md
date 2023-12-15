@@ -23,7 +23,7 @@ While [allowing to extend builds](https://github.com/ckeditor/ckeditor5/issues/8
 
 Before, each plugin had its direct requirements that would be automatically loaded by the editor before the plugin is loaded. These plugins were specified in the `static get() {}` callback of a plugin class in the form of plugin constructors (dependencies).
 
-Starting from v26.0.0 not all plugins can be directly imported by other plugins. However, a plugin can define that it requires another plugin (called for example `'Foo'`) by returning a string from `static get() {}`. This tells the editor that such a plugin must be provided by the integrator (you) either prior to building (via {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}) or when creating a new instance of the editor (e.g. via {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`}).
+Starting from v26.0.0 not all plugins can be directly imported by other plugins. However, a plugin can define that it requires another plugin (called, for example, `'Foo'`) by returning a string from `static get() {}`. This tells the editor that such a plugin must be provided by the integrator (you) either before building (via {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}) or when creating a new instance of the editor (for example, via {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`}).
 
 Therefore, when upgrading to version 26.0.0, you may stumble upon the {@link support/error-codes#error-plugincollection-soft-required `plugincollection-soft-required`} error. This tells you that some dependencies are now missing and you need to provide them.
 
@@ -198,9 +198,9 @@ For example, a registered keystroke `Ctrl+A` will now be translated to `Cmd+A` o
 
 The naming conventions for both buttons and commands have been reviewed and unified to maintain maximum consistency and provide sane rules that match real-life cases.
 
-All buttons follow the **verb + noun** (i.e. `insertTable`, `selectAll`) or the **noun** (i.e. `bold`, `mediaEmbed`) convention.
+All buttons follow the **verb + noun** (for example, `insertTable`, `selectAll`) or the **noun** (for example, `bold`, `mediaEmbed`) convention.
 
-It was trickier for commands, because there are more possible name combinations than there are for buttons. For commands, the proper name should in most cases start with the **action** followed by the **feature** name (i.e. `checkTodoList`, `insertTable`).
+It was trickier for commands, because there are more possible name combinations than there are for buttons. For commands, the proper name should in most cases start with the **action** followed by the **feature** name (like `checkTodoList`, `insertTable`).
 
 Toolbar button name changes (before → after):
 

@@ -33,6 +33,9 @@ ClassicEditor
 		alignment: {
 			options: [ 'left', 'right' ]
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
