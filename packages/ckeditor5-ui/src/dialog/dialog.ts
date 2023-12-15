@@ -72,8 +72,11 @@ export default class Dialog extends Plugin {
 			this.listenTo( sourceEditing, 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
 				if ( this.isOpen && isSourceEditingMode && !this.view!.isVisibleInSourceMode ) {
 					this.hide();
-				} else if ( this.isOpen && !this.view?.wasMoved ) {
-					this.view?.updatePosition();
+				}
+				// Don't reposition the dialog while switching between source and WYSIWYG modes,
+				// no matter in which one it was opened.
+				else if ( this.isOpen ) {
+					this.view!.isStuck = true;
 				}
 			} );
 		}

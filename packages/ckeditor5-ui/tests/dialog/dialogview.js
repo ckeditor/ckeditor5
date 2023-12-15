@@ -68,8 +68,8 @@ describe( 'DialogView', () => {
 				expect( view.isModal ).to.be.false;
 			} );
 
-			it( 'should have #wasMoved set', () => {
-				expect( view.wasMoved ).to.be.false;
+			it( 'should have #isStuck set', () => {
+				expect( view.isStuck ).to.be.false;
 			} );
 
 			it( 'should have #className set', () => {
@@ -325,19 +325,19 @@ describe( 'DialogView', () => {
 		} );
 
 		it( 'should move the dialog upon the #drag event', () => {
-			expect( view.wasMoved ).to.be.false;
+			expect( view.isStuck ).to.be.false;
 			expect( view.element.firstChild.style.left ).to.equal( '0px' );
 			expect( view.element.firstChild.style.top ).to.equal( '0px' );
 
 			view.fire( 'drag', { deltaX: 40, deltaY: 50 } );
 
-			expect( view.wasMoved ).to.be.true;
+			expect( view.isStuck ).to.be.true;
 			expect( view.element.firstChild.style.left ).to.equal( '40px' );
 			expect( view.element.firstChild.style.top ).to.equal( '50px' );
 
 			view.fire( 'drag', { deltaX: 10, deltaY: -20 } );
 
-			expect( view.wasMoved ).to.be.true;
+			expect( view.isStuck ).to.be.true;
 			expect( view.element.firstChild.style.left ).to.equal( '50px' );
 			expect( view.element.firstChild.style.top ).to.equal( '30px' );
 		} );
@@ -347,7 +347,7 @@ describe( 'DialogView', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
 				view.isVisible = true;
-				view.wasMoved = false;
+				view.isStuck = false;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
 				sinon.assert.calledOnce( spy );
@@ -357,7 +357,7 @@ describe( 'DialogView', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
 				view.isVisible = false;
-				view.wasMoved = false;
+				view.isStuck = false;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
 				sinon.assert.notCalled( spy );
@@ -367,7 +367,7 @@ describe( 'DialogView', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
 				view.isVisible = true;
-				view.wasMoved = true;
+				view.isStuck = true;
 
 				global.window.dispatchEvent( new Event( 'resize' ) );
 				sinon.assert.notCalled( spy );
@@ -379,7 +379,7 @@ describe( 'DialogView', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
 				view.isVisible = true;
-				view.wasMoved = false;
+				view.isStuck = false;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
 				sinon.assert.calledOnce( spy );
@@ -389,7 +389,7 @@ describe( 'DialogView', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
 				view.isVisible = false;
-				view.wasMoved = false;
+				view.isStuck = false;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
 				sinon.assert.notCalled( spy );
@@ -399,7 +399,7 @@ describe( 'DialogView', () => {
 				const spy = sinon.spy( view, 'updatePosition' );
 
 				view.isVisible = true;
-				view.wasMoved = true;
+				view.isStuck = true;
 
 				global.document.dispatchEvent( new Event( 'scroll' ) );
 				sinon.assert.notCalled( spy );

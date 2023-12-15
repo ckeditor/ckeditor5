@@ -115,10 +115,10 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	declare public ariaLabel: string;
 
 	/**
-	 * A flag indicating if the dialog was moved manually. If so, its position
-	 * won't be updated automatically upon window resize or document scroll.
+	 * A flag indicating if the dialog position should not be updated automatically
+	 * upon window resize or document scroll. It's used e.g. if the dialog was moved manually.
 	 */
-	declare public wasMoved: boolean;
+	declare public isStuck: boolean;
 
 	/**
 	 * A custom class name to be added to the dialog element.
@@ -164,6 +164,9 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 */
 	private readonly _focusCycler: FocusCycler;
 
+	/**
+	 * A flag indicating if the dialog should be visible in the source editing mode.
+	 */
 	public isVisibleInSourceMode?: boolean = false;
 
 	/**
@@ -188,7 +191,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		this.set( 'ariaLabel', t( 'Editor dialog' ) );
 		this.set( 'isModal', false );
 		this.set( 'isTransparent', false );
-		this.set( 'wasMoved', false );
+		this.set( 'isStuck', false );
 		this.set( 'position', DialogViewPosition.SCREEN_CENTER );
 		this.set( '_top', 0 );
 		this.set( '_left', 0 );
@@ -264,20 +267,20 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 
 		// Support for dragging the modal.
 		this.on<DraggableViewDragEvent>( 'drag', ( evt: EventInfo, { deltaX, deltaY } ) => {
-			this.wasMoved = true;
+			this.isStuck = true;
 			this.moveBy( deltaX, deltaY );
 		} );
 
 		// Update dialog position upon window resize, if the position was not changed manually.
 		this.listenTo( global.window, 'resize', () => {
-			if ( this.isVisible && !this.wasMoved ) {
+			if ( this.isVisible && !this.isStuck ) {
 				this.updatePosition();
 			}
 		} );
 
 		// Update dialog position upon document scroll, if the position was not changed manually.
 		this.listenTo( global.document, 'scroll', () => {
-			if ( this.isVisible && !this.wasMoved ) {
+			if ( this.isVisible && !this.isStuck ) {
 				this.updatePosition();
 			}
 		} );
@@ -428,6 +431,8 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	public updatePosition(): void {
 		let configuredPosition = this.position;
 
+		// If there's no DOM root or it's hidden (e.g. due to source editing mode active),
+		// then the dialog should be displayed in the center of the screen.
 		if ( !this._getCurrentDomRoot() || this._getCurrentDomRoot().classList.contains( 'ck-hidden' ) ) {
 			configuredPosition = DialogViewPosition.SCREEN_CENTER;
 		}

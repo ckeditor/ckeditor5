@@ -234,7 +234,7 @@ export default class ClassicEditorUI extends EditorUI {
 
 			dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
 				// Engage only when the panel is sticky, and the dialog is using one of default positions.
-				if ( !stickyPanel.isSticky || dialogView.wasMoved ) {
+				if ( !stickyPanel.isSticky || dialogView.isStuck ) {
 					return;
 				}
 
