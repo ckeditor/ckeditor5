@@ -78,13 +78,13 @@ class SimpleWidgetEditing extends Plugin {
 						<legend>Ignored container with <strong>data-cke-ignore-events="true"</strong></legend>
 						<input>
 						<button>Click!</button>
-						<img src="https://placekitten.com/30/30" height="30">
+						<img src="https://placehold.co/60x30" height="30">
 					</fieldset>
 					<fieldset>
 						<legend>Regular container</legend>
 						<input>
 						<button>Click!</button>
-						<img src="https://placekitten.com/30/30" height="30">
+						<img src="https://placehold.co/60x30" height="30">
 					</fieldset>
 				`;
 			} );
