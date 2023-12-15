@@ -192,7 +192,7 @@ The table selection plugin is loaded automatically by the `Table` plugin and can
 
 The table feature allows for creating block content (like paragraphs, lists, headings, etc.) inside table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), the cell content is considered "inline" and the paragraph is not rendered.
 
-This means that a table cell can have two states: with inline content or with block content. The reason for this differentiation is that most tables contain only inline content (e.g. in the [demo](#demo) above) and it is common for "data tables" to not contain any block content. In such a scenario, printing out `<p>` elements would be semantically incorrect and also unnecessary. There are, however, scenarios where the user wants to create, for example, a list inside a table cell and then the support for block content is necessary.
+This means that a table cell can have two states: with inline content or with block content. The reason for this differentiation is that most tables contain only inline content (like the [demo](#demo) above) and it is common for "data tables" to not contain any block content. In such a scenario, printing out `<p>` elements would be semantically wrong and also unnecessary. There are, however, scenarios where the user wants to create, for example, a list inside a table cell and then the support for block content is necessary.
 
 <info-box>
 	"Rendering" here refers to the view layer. In the model, a cell is always filled with at least a `<paragraph>`. This is because of consistency, as &ndash; since a cell always has some block content &ndash; the text is never directly inside the `<tableCell>`. This also allows features like <kbd>Enter</kbd> support to work out of the box (since a `<paragraph>` exists in the model, it can be split despite the fact that it is not present in the view).
@@ -326,7 +326,7 @@ ClassicEditor
 
 ### Default table headers
 
-To make every inserted table have `n` number of rows and columns as table headers by default, set an optional table config property `defaultHeadings` as follows:
+To make every inserted table have `n` number of rows and columns as table headers by default, set an optional table configuration property `defaultHeadings` as follows:
 
 ```js
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';

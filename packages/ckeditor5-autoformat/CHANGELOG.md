@@ -9,7 +9,7 @@ Changes for the past releases are available below.
 
 ### Features
 
-* Added auto format integration with the strike through using `~~` string. Closes [ckeditor/ckeditor5#6412](https://github.com/ckeditor/ckeditor5/issues/6412). ([9c3fd3e](https://github.com/ckeditor/ckeditor5-autoformat/commit/9c3fd3e))
+* Added auto format integration with the strikethrough using `~~` string. Closes [ckeditor/ckeditor5#6412](https://github.com/ckeditor/ckeditor5/issues/6412). ([9c3fd3e](https://github.com/ckeditor/ckeditor5-autoformat/commit/9c3fd3e))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v17.0.0...v18.0.0) (March 19, 2020)
@@ -166,7 +166,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Bug fixes
 
 * The `Autoformat` plugin should not require other features. Closes [#5](https://github.com/ckeditor/ckeditor5-autoformat/issues/5) and [#17](https://github.com/ckeditor/ckeditor5-autoformat/issues/17). ([d22c5b6](https://github.com/ckeditor/ckeditor5-autoformat/commit/d22c5b6))
-* Autoformatting will not be triggered if the batch with changes is `transparent` (e.g. it represents other user's changes). ([f1131bc](https://github.com/ckeditor/ckeditor5-autoformat/commit/f1131bc))
+* Autoformatting will not be triggered if the batch with changes is `transparent` (for example, it represents other user's changes). ([f1131bc](https://github.com/ckeditor/ckeditor5-autoformat/commit/f1131bc))
 
 ### Features
 

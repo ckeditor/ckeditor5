@@ -271,4 +271,4 @@ public getDefaultCommands() {
 ## Known limitations
 
 - Currently it is impossible to change the chosen editor's language at runtime without destroying the editor.
-- Currently it is impossible to add more than one language to the bundle using the the CKEditor&nbsp;5 webpack plugin. In case where multiple *translation assets* should be added to the application, they should be added using the `<script>` tags or imports to the generated *translation assets*.
+- Currently it is impossible to add more than one language to the bundle using the CKEditor&nbsp;5 webpack plugin. In case where multiple *translation assets* should be added to the application, they should be added using the `<script>` tags or imports to the generated *translation assets*.

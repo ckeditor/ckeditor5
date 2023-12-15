@@ -228,7 +228,7 @@ We are happy to announce the release of CKEditor&nbsp;5 v15.0.0. This editor ver
 
 Regarding the build itself, we added the [list indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html#indenting-lists) button to the build's default setup. See [ckeditor/ckeditor5#1844](https://github.com/ckeditor/ckeditor5/issues/1844). ([5dc1e87](https://github.com/ckeditor/ckeditor5-build-classic/commit/5dc1e87))
 
-From other news, we changed the versioning policy. Now, all packages will have the same major version, hence, we needed to release this one as v15.0.0 (we skipped versions 13.0.0 and 14.0.0). Read more about the [new versioning policy](https://ckeditor.com/docs/ckeditor5/latest/updating/versioning-policy.html).
+In other news, we changed the versioning policy. Now, all packages will have the same major version, hence, we needed to release this one as v15.0.0 (we skipped versions 13.0.0 and 14.0.0). Read more about the [new versioning policy](https://ckeditor.com/docs/ckeditor5/latest/updating/versioning-policy.html).
 
 Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v15.0.0-with-horizontal-line-page-break-responsive-toolbar-and-SVG-upload-support/
 
@@ -316,13 +316,13 @@ Patch releases (bug fixes, internal changes):
 
 ### Other changes
 
-* Bumped style-loader to v1.0.0. Aligned the webpack config to the new loader API. See [ckeditor/ckeditor5#1945](https://github.com/ckeditor/ckeditor5/issues/1945). ([9e69c1e](https://github.com/ckeditor/ckeditor5-build-classic/commit/9e69c1e))
+* Bumped style-loader to v1.0.0. Aligned the webpack configuration to the new loader API. See [ckeditor/ckeditor5#1945](https://github.com/ckeditor/ckeditor5/issues/1945). ([9e69c1e](https://github.com/ckeditor/ckeditor5-build-classic/commit/9e69c1e))
 * The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([8b4af5d](https://github.com/ckeditor/ckeditor5-build-classic/commit/8b4af5d))
 
 
 ## [12.3.1](https://github.com/ckeditor/ckeditor5-build-classic/compare/v12.3.0...v12.3.1) (July 10, 2019)
 
-We are happy to report the release of CKEditor&nbsp;5 v12.3.0 (and v12.3.1 with a small fix). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
+We are happy to report the release of CKEditor&nbsp;5 v12.3.0 (and v12.3.1 with a small fix). This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (like the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
 
 ### Dependencies
 
@@ -360,7 +360,7 @@ Patch releases (bug fixes, internal changes):
 
 ## [12.3.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v12.2.0...v12.3.0) (July 4, 2019)
 
-We are happy to report the release of CKEditor&nbsp;5 v12.3.0. This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (e.g. the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
+We are happy to report the release of CKEditor&nbsp;5 v12.3.0. This release introduces several new features ([word count](https://ckeditor.com/docs/ckeditor5/latest/features/word-count.html), [automatic text transformations](https://ckeditor.com/docs/ckeditor5/latest/features/text-transformation.html), [ability to control link attributes such as `target`](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators) and [block indentation](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html)). It also brings improvements to existing features (like the ["document colors" section](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#documents-colors) in the font color picker dropdowns) and many bug fixes.
 
 ### Dependencies
 
@@ -537,7 +537,7 @@ Major releases (contain breaking changes):
 
 ## [11.2.0](https://github.com/ckeditor/ckeditor5-build-classic/compare/v11.1.1...v11.2.0) (December 5, 2018)
 
-We are happy to report the release of CKEditor&nbsp;5 v11.2.0. This editor version brings the long-awaited [support for paste from Office](https://ckeditor.com/docs/ckeditor5/latest/features/paste-from-word.html) (e.g. from Microsoft Word), [integration with CKFinder file manager](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html), improved [image upload documentation](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html), improved [editor UI on mobile devices](https://github.com/ckeditor/ckeditor5/issues/416#issuecomment-430246472), as well as many smaller features and improvements.
+We are happy to report the release of CKEditor&nbsp;5 v11.2.0. This editor version brings the long-awaited [support for paste from Office](https://ckeditor.com/docs/ckeditor5/latest/features/paste-from-word.html) (for example, from Microsoft Word), [integration with CKFinder file manager](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html), improved [image upload documentation](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html), improved [editor UI on mobile devices](https://github.com/ckeditor/ckeditor5/issues/416#issuecomment-430246472), as well as many smaller features and improvements.
 
 Blog post is coming soon...
 
