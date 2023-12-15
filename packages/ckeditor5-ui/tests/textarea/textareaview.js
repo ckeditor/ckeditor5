@@ -213,6 +213,10 @@ describe( 'TextareaView', () => {
 
 				// Inject the view back into DOM. Anything that was pending should get executed.
 				document.body.appendChild( wrapper );
+
+				// The first one is for the ResizeObserver to notice the view is visible again.
+				// The second one is fo the auto-grow logic executed in another RAF.
+				await requestAnimationFrame();
 				await requestAnimationFrame();
 
 				const heightAfterShow = parseFloat( view.element.style.height );
@@ -247,6 +251,10 @@ describe( 'TextareaView', () => {
 
 				// Inject the view back into DOM. Anything that was pending should get executed.
 				document.body.appendChild( wrapper );
+
+				// The first one is for the ResizeObserver to notice the view is visible again.
+				// The second one is fo the auto-grow logic executed in another RAF.
+				await requestAnimationFrame();
 				await requestAnimationFrame();
 
 				const heightAfterShow = parseFloat( view.element.style.height );
