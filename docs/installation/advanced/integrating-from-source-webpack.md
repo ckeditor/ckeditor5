@@ -157,7 +157,10 @@ module.exports = {
 		} )
 	],
 	resolve: {
-		extensions: [ '.js', '.ts' ]
+		extensions: [ '.ts', '.js', '.json' ],
+		extensionAlias: {
+			'.js': [ '.js', '.ts' ]
+		}
 	},
 	module: {
 		rules: [

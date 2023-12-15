@@ -69,7 +69,10 @@ module.exports = {
 	},
 
 	resolve: {
-		extensions: [ '.ts', '.js', '.json' ]
+		extensions: [ '.ts', '.js', '.json' ],
+		extensionAlias: {
+			'.js': [ '.js', '.ts' ]
+		}
 	}
 };
 
