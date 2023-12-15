@@ -8,6 +8,7 @@ swap:
   admin: administrator
   a\.k\.a|aka: or|also known as
   all caps: uppercase
+  alt: alternative
   android: Android
   Api|api: API
   auto correct|auto-correct: autocorrect
@@ -90,6 +91,7 @@ swap:
   "un(?:check|select)": clear
   url(?!-parse): URL
   utils: utilities
+  walk-through: walkthrough
   webpage: web page|page|website
   web site: website
   yarn: Yarn

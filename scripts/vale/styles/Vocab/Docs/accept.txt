@@ -30,6 +30,7 @@ codebase
 Cordova
 cycler
 Dailymotion
+declutter
 DLL
 Dmitry
 DOM
@@ -122,6 +123,7 @@ upvoting
 (?i)viewport
 Vite
 Vue
+walkthrough
 webpack
 Wirtz
 Wolt
