@@ -62,6 +62,20 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	declare public _height: number | null;
 
 	/**
+	 * An instance of the intersection observer used to detect when the view is visible or not and update
+	 * its height if any changes that affect it were made while it was invisible.
+	 *
+	 * **Note:** Created in {@link #render}.
+	 */
+	private _intersectionObserver: IntersectionObserver | null;
+
+	/**
+	 * A flag that indicates whether the {@link #_updateAutoGrowHeight} method should be called when the view becomes
+	 * visible again. See {@link #_intersectionObserver}.
+	 */
+	private _isUpdateAutoGrowHeightPending: boolean = false;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -73,6 +87,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		this.set( 'maxRows', 5 );
 		this.set( '_height', null );
 		this.set( 'resize', 'none' );
+		this._intersectionObserver = null;
 
 		this.on( 'change:minRows', this._validateMinMaxRows.bind( this ) );
 		this.on( 'change:maxRows', this._validateMinMaxRows.bind( this ) );
@@ -99,6 +114,8 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	public override render(): void {
 		super.render();
 
+		let wasVisible: boolean = false;
+
 		this.on( 'input', () => {
 			this._updateAutoGrowHeight( true );
 			this.fire<TextareaViewUpdateEvent>( 'update' );
@@ -107,12 +124,45 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		this.on( 'change:value', () => {
 			// The content needs to be updated by the browser after the value is changed. It takes a few ms.
 			global.window.requestAnimationFrame( () => {
-				if ( isVisible( this.element ) ) {
-					this._updateAutoGrowHeight();
-					this.fire<TextareaViewUpdateEvent>( 'update' );
+				if ( !isVisible( this.element ) ) {
+					this._isUpdateAutoGrowHeightPending = true;
+
+					return;
 				}
+
+				this._updateAutoGrowHeight();
+				this.fire<TextareaViewUpdateEvent>( 'update' );
 			} );
 		} );
+
+		// This logic handles cases when textarea has been hidden while changes were made to its content but they could not
+		// be reflected to its height (auto-grown) because it was invisible or detached from DOM. The auto-grow logic
+		// gets executed as soon as the textarea becomes visible again.
+		this._intersectionObserver = new IntersectionObserver( ( [ entry ] ) => {
+			const isVisible = entry.intersectionRatio > 0;
+
+			if ( wasVisible && isVisible && this._isUpdateAutoGrowHeightPending ) {
+				this._isUpdateAutoGrowHeightPending = false;
+				this._updateAutoGrowHeight();
+				this.fire<TextareaViewUpdateEvent>( 'update' );
+			}
+
+			wasVisible = !isVisible;
+		}, {
+			root: this.element!.ownerDocument.body,
+			threshold: 1
+		} );
+
+		this._intersectionObserver.observe( this.element! );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		if ( this._intersectionObserver ) {
+			this._intersectionObserver.disconnect();
+		}
 	}
 
 	/**
@@ -132,6 +182,13 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	 */
 	private _updateAutoGrowHeight( shouldScroll?: boolean ): void {
 		const viewElement = this.element!;
+
+		if ( !viewElement.offsetParent ) {
+			this._isUpdateAutoGrowHeightPending = true;
+
+			return;
+		}
+
 		const singleLineContentClone = getTextareaElementClone( viewElement, '1' );
 		const fullTextValueClone = getTextareaElementClone( viewElement, viewElement.value );
 		const singleLineContentStyles = singleLineContentClone.ownerDocument.defaultView!.getComputedStyle( singleLineContentClone );
