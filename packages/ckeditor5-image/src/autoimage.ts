@@ -13,8 +13,10 @@ import { LivePosition, LiveRange } from 'ckeditor5/src/engine';
 import { Undo } from 'ckeditor5/src/undo';
 import { Delete } from 'ckeditor5/src/typing';
 import { global } from 'ckeditor5/src/utils';
+import { type FileLoader } from 'ckeditor5/src/upload';
 
 import ImageUtils from './imageutils';
+import { fetchImage } from './imageupload/utils';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.
 const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w.~:/[\]@!$&'()*+,;=%-]+/.source +
@@ -151,6 +153,15 @@ export default class AutoImage extends Plugin {
 				return;
 			}
 
+			// If the FileRepository plugin is available, we should upload the image rather than hotlinking it.
+			let loader: FileLoader | null = null;
+
+			if ( editor.plugins.has( 'FileRepository' ) ) {
+				const fileRepository = editor.plugins.get( 'FileRepository' );
+				const imagePromise = fetchImage( src );
+				loader = fileRepository.createLoader( imagePromise );
+			}
+
 			editor.model.change( writer => {
 				this._timeoutId = null;
 
@@ -165,7 +176,15 @@ export default class AutoImage extends Plugin {
 					insertionPosition = this._positionToInsert!.toPosition();
 				}
 
-				imageUtils.insertImage( { ...selectionAttributes, src }, insertionPosition );
+				let sourceDefinition;
+
+				if ( loader ) {
+					sourceDefinition = { uploadId: loader.id };
+				} else {
+					sourceDefinition = { src };
+				}
+
+				imageUtils.insertImage( { ...selectionAttributes, ...sourceDefinition }, insertionPosition );
 
 				this._positionToInsert!.detach();
 				this._positionToInsert = null;

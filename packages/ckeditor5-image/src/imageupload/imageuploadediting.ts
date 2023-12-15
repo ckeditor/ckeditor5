@@ -26,7 +26,7 @@ import { env } from 'ckeditor5/src/utils';
 
 import ImageUtils from '../imageutils';
 import UploadImageCommand from './uploadimagecommand';
-import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
+import { fetchImage, isImage } from '../../src/imageupload/utils';
 import { createImageTypeRegExp } from './utils';
 
 /**
@@ -137,7 +137,7 @@ export default class ImageUploadEditing extends Plugin {
 			} );
 		} );
 
-		// Handle HTML pasted with images with base64 or blob sources.
+		// Handle HTML pasted with images.
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
@@ -145,9 +145,9 @@ export default class ImageUploadEditing extends Plugin {
 			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
 				.map( value => value.item as ViewElement )
 				.filter( viewElement =>
-					isLocalImage( imageUtils, viewElement ) &&
+					isImage( imageUtils, viewElement ) &&
 					!viewElement.getAttribute( 'uploadProcessed' ) )
-				.map( viewElement => { return { promise: fetchLocalImage( viewElement ), imageElement: viewElement }; } );
+				.map( viewElement => { return { promise: fetchImage( viewElement.getAttribute( 'src' )! ), imageElement: viewElement }; } );
 
 			if ( !fetchableImages.length ) {
 				return;
