@@ -9,7 +9,7 @@ modified_at: 2022-11-15
 
 In this tutorial, you will learn how to implement a widget that fetches data from an external source and updates all own instances in a set interval of time.
 
-You will build an "external data fetch" feature that allows users to insert a predefined widget that will show the current Bitcoin rate and it will be updated with the set time interval fetching data from a predefined external source. You will use widget utilities and conversion in order to define the behavior of this feature. Later on, you will use {@link framework/architecture/ui-library UI library} to create a {@link module:ui/button/buttonview~ButtonView} that will allow for inserting new instances of external source widgets. You will also learn how to update the widget data based on the editor API.
+You will build an "external data fetch" feature that allows users to insert a predefined widget that will show the current Bitcoin rate and it will be updated with the set time interval fetching data from a predefined external source. You will use widget utilities and conversion to define the behavior of this feature. Later on, you will use {@link framework/architecture/ui-library UI library} to create a {@link module:ui/button/buttonview~ButtonView} that will allow for inserting new instances of external source widgets. You will also learn how to update the widget data based on the editor API.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -242,7 +242,7 @@ After the build is completed, open `index.html` in your browser to check if all 
 
 ## The model and the view layers
 
-The external data widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text e.g. `<paragraph>`. The external data widget will also have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
+The external data widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text, like `<paragraph>`. The external data widget will also have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
 
 ```
 <paragraph>
@@ -257,7 +257,7 @@ The external data widget feature will be {@link module:engine/model/schema~Schem
 ### Defining the schema
 
 The schema definition of this widget is almost the same as in the {@link tutorials/widgets/implementing-an-inline-widget#defining-the-schema inline widget} tutorial, the only thing that is different is the `allowAttributes`. In our case we want to allow the `'data-resource-url'` attribute.
-Instead of passing all the attributes to the config object we can use {@link framework/deep-dive/schema#generic-items generic items} to inherit already predefined options.
+Instead of passing all the attributes to the configuration object we can use {@link framework/deep-dive/schema#generic-items generic items} to inherit already predefined options.
 
 You can also use this opportunity to import the theme file (`theme/externaldatawidget.css`).
 
@@ -293,7 +293,7 @@ Once the schema is defined, you can now define the model-view converters.
 
 ### Defining converters
 
-The HTML structure (data output) of the converter will be a `<span>` with a `data-resource-url` attribute with the external resource url as its value.
+The HTML structure (data output) of the converter will be a `<span>` with a `data-resource-url` attribute with the external resource URL as its value.
 
 ```html
 <span data-resource-url="RESOURCE_URL"></span>

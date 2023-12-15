@@ -56,6 +56,9 @@ ClassicEditor
 			]
 		},
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

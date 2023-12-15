@@ -24,7 +24,7 @@ Listed below are the most important changes that require your attention when upg
 
 In this release, we are introducing external comments and suggestions. Currently, they are used by the import from Word feature. However, other features may use them in the future as well.
 
-External comments and suggestions display their content, author name and date as provided from an external source (e.g. a Word document).
+External comments and suggestions display their content, author name, and date as provided from an external source (like a Word document).
 
 Even if you do not plan to use the import from Word feature, we recommend following this migration guide. It will make your integration ready in case you decide to use external comments or suggestions in the future.
 
@@ -264,7 +264,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### The source element is not updated automatically after the editor destroy
 
-The last version of CKEditor&nbsp;5 changes the default behavior of the source element after the editor is destroyed (when `editor.destroy()` is called). So far, the source element was updated with the output coming from `editor.getData()`. Now, the source element becomes empty after the editor is destroyed and it is not updated anymore.
+The last version of CKEditor&nbsp;5 changes the default behavior of the source element after the editor is destroyed (when `editor.destroy()` is called). Before, the source element was updated with the output coming from `editor.getData()`. Now, the source element becomes empty after the editor is destroyed and it is not updated anymore.
 
 However, this behavior is configurable and could be enabled with the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option:
 

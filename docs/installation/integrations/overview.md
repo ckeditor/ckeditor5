@@ -7,7 +7,7 @@ menu-title: Overview
 
 # CKEditor&nbsp;5 integrations
 
-CKEditor&nbsp;5 is framework agnostic and can be integrated with any JavaScript framework. CKEditor&nbsp;5 is a native JavaScript rich-text editing component written in TypeScript. It does not require any uncommon techniques or technologies to be used. Therefore, unless the framework you use has very atypical limitations, CKEditor&nbsp;5 is compatible with it. Native integrations with the most popular libraries will save you time and effort.
+CKEditor&nbsp;5 is framework agnostic and can be integrated with any JavaScript framework. CKEditor&nbsp;5 is a native JavaScript rich-text editing component written in TypeScript. It does not require any uncommon techniques or technologies to be used. Therefore, unless the framework you use has atypical limitations, CKEditor&nbsp;5 is compatible with it. Native integrations with the most popular libraries will save you time and effort.
 
 ## Official WYSIWYG editor integrations
 
@@ -30,7 +30,7 @@ When checking how to integrate CKEditor&nbsp;5 with your framework, you can foll
 
 1. **Check whether an [official integration](#official-wysiwyg-editor-integrations) exists.**
 
-	So far, there are four official integrations: for {@link installation/integrations/react React}, {@link installation/integrations/angular Angular}, {@link installation/integrations/vuejs-v2 Vue.js 2.x}, and {@link installation/integrations/vuejs-v3 Vue.js 3.x}.
+	There are four official integrations available so far: for {@link installation/integrations/react React}, {@link installation/integrations/angular Angular}, {@link installation/integrations/vuejs-v2 Vue.js 2.x}, and {@link installation/integrations/vuejs-v3 Vue.js 3.x}.
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor&nbsp;5 with your framework by yourself.**
 

@@ -8,7 +8,7 @@ meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
 
 In this tutorial, you will learn how to implement an inline widget.
 
-You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document. You will use widget utilities and conversion in order to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
+You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document. You will use widget utilities and conversion to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
 
 <info-box>
 	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
@@ -368,7 +368,7 @@ export default class PlaceholderEditing extends Plugin {
 
 ### Feature styles
 
-As you could notice, the editing part imports the `./theme/placeholder.css` CSS file which describes how the placeholder is displayed in th editing view:
+As you could notice, the editing part imports the `./theme/placeholder.css` CSS file which describes how the placeholder is displayed in the editing view:
 
 ```css
 /* placeholder/theme/placeholder.css */
@@ -475,7 +475,7 @@ This should result in:
 
 ### Fixing position mapping
 
-If you play more with the widget (e.g. try to select it by dragging the mouse from its right to the left edge) you will see the following error logged to the console:
+If you play more with the widget (for example, try to select it by dragging the mouse from its right to the left edge), you will see the following error logged to the console:
 
 ```
 Uncaught CKEditorError: model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.

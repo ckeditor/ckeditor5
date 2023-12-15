@@ -21,9 +21,9 @@ The block toolbar plugin provides an additional [configurable](#configuration) t
 
 ## Additional feature information
 
-To access the block toolbar, you need to click the button with braille pattern dots icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator}  on the left-hand side of the content area (the gutter). The button appears next to the selected block element (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
+To access the block toolbar, you need to click the button with braille pattern dots icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator}  on the left-hand side of the content area (the gutter). The button appears next to the selected block element (for example, a paragraph), following the caret as the user edits the content and navigates the document.
 
-The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator}  is also a handle to drag blocks of content around the editor. E.g. click on a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
+The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator}  is also a handle to drag blocks of content around the editor. Click a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
 
 The block toolbar complements the {@link installation/getting-started/predefined-builds#balloon-editor balloon editor} where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. You can read more about it in the {@link installation/getting-started/predefined-builds#balloon-block-editor balloon block editor overview}.
 
@@ -34,7 +34,7 @@ See the {@link examples/builds/balloon-block-editor balloon block editor example
 The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.
 
 <info-box hint>
-	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (e.g. create {@link features/headings headings}) or insert objects (e.g. {@link features/images-overview images} or {@link features/tables tables}) rather than inline styles (e.g. {@link features/basic-styles bold or italic}).
+	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (for example, create {@link features/headings headings}) or insert objects (like {@link features/images-overview images} or {@link features/tables tables}) rather than inline styles (like {@link features/basic-styles bold or italic}).
 </info-box>
 
 To adjust the position of the block toolbar button to match the styles of your website, use the CSS `transform` property:

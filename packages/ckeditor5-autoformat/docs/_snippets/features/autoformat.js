@@ -53,6 +53,9 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {

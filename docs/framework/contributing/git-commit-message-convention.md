@@ -195,7 +195,7 @@ Changelog
 
 ### Fixing errors
 
-If the commit message was wrong but it was already too late to fix (e.g. already merged into `master`), you can push an empty commit with the correct message straight to `master`:
+If the commit message was wrong but it was already too late to fix (for example, already merged into `master`), you can push an empty commit with the correct message straight to `master`:
 
 ```
 git checkout master

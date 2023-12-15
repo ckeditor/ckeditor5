@@ -44,6 +44,7 @@ ClassicEditor
 			]
 		},
 		ckbox: {
+			forceDemoLabel: true,
 			tokenUrl: TOKEN_URL
 		},
 		table: {

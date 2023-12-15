@@ -60,6 +60,9 @@ ClassicEditor
 				{ name: 'script' }
 			]
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

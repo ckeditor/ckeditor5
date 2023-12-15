@@ -55,11 +55,11 @@ Here are some examples of snippets changed by the text transformation feature:
 	</tbody>
 </table>
 
-This feature comes pre-configured with a set of the most popular transformations. You can, however, disable existing ones or add your own autocorrect entries.
+This feature comes pre-configured with a set of the most popular transformations. You can, however, remove existing ones or add your own autocorrect entries.
 
-While most often this feature is used to easily insert special characters that are not present on your keyboard, it can also be used to achieve other goals. For instance, you can improve the users' productivity by configuring it to expand some abbreviations (e.g. team or company names) into their full forms.
+While most often this feature is used to easily insert special characters that are not present on your keyboard, it can also be used to achieve other goals. For instance, you can improve the users' productivity by configuring it to expand some abbreviations (like team or company names) into their full forms.
 
-You may find additional interesting details and usage examples in the [Automatic text transformation in CKEditor&nbsp;5](https://ckeditor.com/blog/feature-of-the-month-automatic-text-transformation-in-ckeditor-5/) blog post after reading this guide.
+You may find interesting details and usage examples in the [Automatic text transformation in CKEditor&nbsp;5](https://ckeditor.com/blog/feature-of-the-month-automatic-text-transformation-in-ckeditor-5/) blog post after reading this guide.
 
 ## Configuring transformations
 

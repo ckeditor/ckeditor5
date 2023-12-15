@@ -62,7 +62,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * It should be possible to type before a mention which is at the beginning of a block. Closes [#77](https://github.com/ckeditor/ckeditor5-mention/issues/77). ([946e762](https://github.com/ckeditor/ckeditor5-mention/commit/946e762))
 * Mentions should work when different UTF character classes are used in the feed configuration. Closes [#38](https://github.com/ckeditor/ckeditor5-mention/issues/38). ([764f099](https://github.com/ckeditor/ckeditor5-mention/commit/764f099))
-* Partial mentions should not be downcasted (e.g. not copied to clipboard). Closes [#24](https://github.com/ckeditor/ckeditor5-mention/issues/24). ([8956b1f](https://github.com/ckeditor/ckeditor5-mention/commit/8956b1f))
+* Partial mentions should not be downcasted (for example, copied to clipboard). Closes [#24](https://github.com/ckeditor/ckeditor5-mention/issues/24). ([8956b1f](https://github.com/ckeditor/ckeditor5-mention/commit/8956b1f))
 
 ### Other changes
 
@@ -77,7 +77,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* A mention can now be preceded by characters such as brackets, quotes, soft break, etc. Closes [#44](https://github.com/ckeditor/ckeditor5-mention/issues/44). ([86262d1](https://github.com/ckeditor/ckeditor5-mention/commit/86262d1))
+* A mention can now be preceded by characters such as brackets, quotes, soft breaks, etc. Closes [#44](https://github.com/ckeditor/ckeditor5-mention/issues/44). ([86262d1](https://github.com/ckeditor/ckeditor5-mention/commit/86262d1))
 * The mention plugin should not throw errors when another `ContextualBalloon` is already visible. Closes [#67](https://github.com/ckeditor/ckeditor5-mention/issues/67). ([de9ee71](https://github.com/ckeditor/ckeditor5-mention/commit/de9ee71))
 * The mention panel should have precedence over all other panels. Closes [#74](https://github.com/ckeditor/ckeditor5-mention/issues/74). ([3e8a84c](https://github.com/ckeditor/ckeditor5-mention/commit/3e8a84c))
 * The Mention UI will use `ContextualBalloon` plugin to display to prevent balloon collisions with other features. Closes [#27](https://github.com/ckeditor/ckeditor5-mention/issues/27). ([9ae7f30](https://github.com/ckeditor/ckeditor5-mention/commit/9ae7f30))
