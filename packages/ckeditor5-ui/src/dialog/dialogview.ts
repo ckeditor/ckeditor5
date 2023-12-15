@@ -424,6 +424,10 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * and moves it to the new position.
 	 */
 	public updatePosition(): void {
+		if ( !this.element?.parentNode ) {
+			return;
+		}
+
 		let configuredPosition = this.position;
 
 		if ( !this._getCurrentDomRoot() ) {

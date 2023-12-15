@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event, KeyboardEvent, MouseEvent */
+/* global document, Event, KeyboardEvent, MouseEvent, console */
 
 import { FocusTracker, KeystrokeHandler, Locale, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, FormHeaderView, View, ViewCollection } from '../../src';
@@ -1043,6 +1043,35 @@ describe( 'DialogView', () => {
 
 			expect( view.element.firstChild.style.left ).to.equal( '115px' );
 			expect( view.element.firstChild.style.top ).to.equal( '115px' );
+		} );
+
+		it( 'should not warn or throw if the view has not been rendered yet', () => {
+			const warnStub = testUtils.sinon.stub( console, 'warn' );
+
+			view.element.remove();
+
+			expect( () => {
+				view.updatePosition();
+			} ).not.to.throw();
+
+			sinon.assert.notCalled( warnStub );
+		} );
+
+		it( 'should not warn or throw if the view is detached from DOM', () => {
+			const warnStub = testUtils.sinon.stub( console, 'warn' );
+
+			const view = new DialogView( locale, {
+				getCurrentDomRoot: getCurrentDomRootStub,
+				getViewportOffset: getViewportOffsetStub
+			} );
+
+			expect( () => {
+				view.updatePosition();
+			} ).not.to.throw();
+
+			sinon.assert.notCalled( warnStub );
+
+			view.destroy();
 		} );
 	} );
 

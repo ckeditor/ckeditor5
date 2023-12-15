@@ -7,7 +7,7 @@
  * @module ui/textarea/textareaview
  */
 
-import { Rect, type Locale, toUnit, getBorderWidths, global, CKEditorError, isVisible } from '@ckeditor/ckeditor5-utils';
+import { Rect, type Locale, toUnit, getBorderWidths, global, CKEditorError, isVisible, ResizeObserver } from '@ckeditor/ckeditor5-utils';
 import InputBase from '../input/inputbase';
 
 import '../../theme/components/input/input.css';
@@ -62,6 +62,20 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	declare public _height: number | null;
 
 	/**
+	 * An instance of the resize observer used to detect when the view is visible or not and update
+	 * its height if any changes that affect it were made while it was invisible.
+	 *
+	 * **Note:** Created in {@link #render}.
+	 */
+	private _resizeObserver: ResizeObserver | null;
+
+	/**
+	 * A flag that indicates whether the {@link #_updateAutoGrowHeight} method should be called when the view becomes
+	 * visible again. See {@link #_intersectionObserver}.
+	 */
+	private _isUpdateAutoGrowHeightPending: boolean = false;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -73,6 +87,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		this.set( 'maxRows', 5 );
 		this.set( '_height', null );
 		this.set( 'resize', 'none' );
+		this._resizeObserver = null;
 
 		this.on( 'change:minRows', this._validateMinMaxRows.bind( this ) );
 		this.on( 'change:maxRows', this._validateMinMaxRows.bind( this ) );
@@ -99,6 +114,8 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	public override render(): void {
 		super.render();
 
+		let wasVisible: boolean = false;
+
 		this.on( 'input', () => {
 			this._updateAutoGrowHeight( true );
 			this.fire<TextareaViewUpdateEvent>( 'update' );
@@ -107,12 +124,44 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 		this.on( 'change:value', () => {
 			// The content needs to be updated by the browser after the value is changed. It takes a few ms.
 			global.window.requestAnimationFrame( () => {
-				if ( isVisible( this.element ) ) {
-					this._updateAutoGrowHeight();
-					this.fire<TextareaViewUpdateEvent>( 'update' );
+				if ( !isVisible( this.element ) ) {
+					this._isUpdateAutoGrowHeightPending = true;
+
+					return;
 				}
+
+				this._updateAutoGrowHeight();
+				this.fire<TextareaViewUpdateEvent>( 'update' );
 			} );
 		} );
+
+		// This logic handles cases when textarea has been hidden while changes were made to its content but they could not
+		// be reflected to its height (auto-grown) because it was invisible or detached from DOM. The auto-grow logic
+		// gets executed as soon as the textarea becomes visible again.
+		this._resizeObserver = new ResizeObserver( this.element!, evt => {
+			const isVisible = !!evt.contentRect.width && !!evt.contentRect.height;
+
+			if ( !wasVisible && isVisible && this._isUpdateAutoGrowHeightPending ) {
+				// We're wrapping the auto-grow logic in RAF because otherwise there is an error thrown
+				// by the browser about recursive calls to the ResizeObserver. It used to happen in unit
+				// tests only, though. Since there is no risk of infinite loop here, it can stay here
+				global.window.requestAnimationFrame( () => {
+					this._updateAutoGrowHeight();
+					this.fire<TextareaViewUpdateEvent>( 'update' );
+				} );
+			}
+
+			wasVisible = isVisible;
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+		}
 	}
 
 	/**
@@ -132,6 +181,15 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 	 */
 	private _updateAutoGrowHeight( shouldScroll?: boolean ): void {
 		const viewElement = this.element!;
+
+		if ( !viewElement.offsetParent ) {
+			this._isUpdateAutoGrowHeightPending = true;
+
+			return;
+		}
+
+		this._isUpdateAutoGrowHeightPending = false;
+
 		const singleLineContentClone = getTextareaElementClone( viewElement, '1' );
 		const fullTextValueClone = getTextareaElementClone( viewElement, viewElement.value );
 		const singleLineContentStyles = singleLineContentClone.ownerDocument.defaultView!.getComputedStyle( singleLineContentClone );
