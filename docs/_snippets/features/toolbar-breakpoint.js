@@ -22,6 +22,9 @@ ClassicEditor
 			],
 			shouldNotGroupWhenFull: true
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

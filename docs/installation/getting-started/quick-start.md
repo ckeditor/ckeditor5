@@ -14,14 +14,14 @@ modified_at: 2022-06-27
 In this guide, you will find the quickest and easiest way to run ready-to-use CKEditor&nbsp;5 with minimal effort &ndash; by running the editor from [CDN](https://cdn.ckeditor.com/).
 
 <info-box>
-	Please bear in mind that the CDN solution only offers {@link installation/getting-started/predefined-builds ready-to-use predefined editor builds}, hence it is not possible to add new plugins and all the features available in the editor are preset.
+	The CDN solution only offers {@link installation/getting-started/predefined-builds ready-to-use predefined editor builds}, hence it is impossible to add new plugins and all the features available in the editor are preset.
 
 	Should you need a more flexible solution, consider using the {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder Online builder} or try {@link installation/getting-started/quick-start-other#building-the-editor-from-source building the editor from source}.
 </info-box>
 
 ## Running a simple editor
 
-Creating an editor using a CKEditor&nbsp;5 build is very simple and can be described in two steps:
+Creating an editor using a CKEditor&nbsp;5 build is simple and can be described in two steps:
 
 1. Load the desired editor via the `<script>` tag.
 2. Call the static `create()` method to create the editor.

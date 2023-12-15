@@ -92,7 +92,7 @@ export default {
 };
 ```
 
-Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable to which webpack will assign this object. So far it was called `ClassicEditor`. A more adequate name now would be for example `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
+Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable to which webpack will assign this object. It was called `ClassicEditor` before. A more adequate name now would be, for example, `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
 
 ```diff
 diff --git a/webpack.config.js b/webpack.config.js
@@ -110,7 +110,7 @@ index c57e371..04fc9fe 100644
          filename: 'ckeditor.js',
 ```
 
-Once you changed the `src/ckeditor.js` and `webpack.config.js` files it is time to rebuild the build:
+Once you changed the `src/ckeditor.js` and `webpack.config.js` files, it is time to rebuild the build:
 
 ```bash
 npm run build

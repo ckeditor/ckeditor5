@@ -37,7 +37,7 @@ The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also
 
 With CKEditor&nbsp;5 you do not need to worry about pasting messy content from Google Docs (or any other possible sources). Thanks to the CKEditor&nbsp;5 {@link framework/index custom data model}, only content that is specifically handled by the loaded rich-text editor features will be preserved.
 
-This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Google Docs and other sources (e.g. other websites).
+This means that if you did not enable, for instance, {@link features/font font family and font size} features, this sort of formatting will be automatically stripped off when you paste content from Google Docs and other sources (like other websites).
 
 ## Installation
 

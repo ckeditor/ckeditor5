@@ -8,7 +8,7 @@ meta-title: Chat with mentions | CKEditor 5 Documentation
 
 # Chat with mentions
 
-The {@link features/mentions mention} feature allows developing rich–text applications (e.g. chats) with autocomplete suggestions displayed in a dedicated panel as the user types a pre–configured marker. For instance, in the editor below, type **"@"** to mention users and **"#"** to select from the list of available tags.
+The {@link features/mentions mention} feature allows developing rich–text applications (like chats) with autocomplete suggestions displayed in a dedicated panel as the user types a pre-configured marker. For instance, in the editor below, type **"@"** to mention users and **"#"** to select from the list of available tags.
 
 {@snippet examples/chat-with-mentions}
 

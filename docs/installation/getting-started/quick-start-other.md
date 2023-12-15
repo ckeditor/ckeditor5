@@ -18,7 +18,7 @@ Available paths:
 
 ## Creating custom builds with online builder
 
-Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link installation/getting-started/predefined-builds predefined builds}, sometimes you need more flexibility. A need for more customized editors arises. Some of the reasons for creating custom builds are:
+Although the CKEditor&nbsp;5 WYSIWYG editor comes with handy {@link installation/getting-started/predefined-builds predefined builds}, sometimes you need more flexibility. A need for more customized editors arises. Some reasons for creating custom builds are:
 
 * Adding {@link installation/plugins/plugins plugin-driven features} not included in the existing builds.
 * Removing unnecessary features present in a build.
@@ -50,12 +50,12 @@ The basic build comes with a predefined set of plugins grouped in a bar at the t
 
 {@img assets/img/online-builder-02-predefined-plugins.png 778 Predefined plugins. Feel free to remove unneeded ones.}
 
-Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs. Some of the plugins may not work well with others or may require dependencies. Online builder will provide information in such cases.
+Below the top bar with preselected plugins, you will find a sizable collection of features. You can add them to your custom build. Choose the ones that best suit your needs. Some plugins may not work well with others or may require dependencies. Online builder will provide information in such cases.
 
-{@img assets/img/online-builder-03-plugin-choice.png 778 Predefined plugins. Some of the plugins to choose from.}
+{@img assets/img/online-builder-03-plugin-choice.png 778 Predefined plugins. Some plugins to choose from.}
 
 <info-box hint>
-	Note that some of the plugins require other plugins to work. These dependencies are mentioned in the **Requires plugins** section of the description box for each plugin. If this section is not present, the plugin does not need any other plugin to work.
+	Some plugins require other plugins to work. These dependencies are mentioned in the **Requires plugins** section of the description box for each plugin. If this section is not present, the plugin does not need any other plugin to work.
 
 	Some of these plugins are **premium features** which require an additional license to run. They are marked with an appropriate <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> badge.
 </info-box>
@@ -64,7 +64,7 @@ Once you have chosen all the desired plugins, press the **Next step** button on 
 
 ### Toolbar composition
 
-The next step allows you to compose the toolbar. A simple drag-and-drop workspace allows adding buttons (representing the plugins chosen in the previous step) to the toolbar. You may also change the order of the buttons and dropdowns and group them accordingly. Note that online builder allows you to create a multiline toolbar layout, too. Just drag any button below the already placed ones to create a new toolbar line.
+The next step allows you to compose the toolbar. A simple drag-and-drop workspace allows adding buttons (representing the plugins chosen in the previous step) to the toolbar. You may also change the order of the buttons and dropdowns and group them accordingly. Online builder allows you to create a multiline toolbar layout, too. Just drag any button below the already placed ones to create a new toolbar line.
 
 {@img assets/img/online-builder-04-toolbar-configurator.gif 753 The toolbar drag-and-drop configurator.}
 
@@ -92,8 +92,8 @@ Now you have two options: to [customize your build](#customizing-builds) or [run
 
 Every build comes with a default set of features and their default configuration. Although the builds try to fit many use cases, you may still need to adjust them in some integrations. The following modifications are possible:
 
-* You can override the default **configuration of features** (e.g. define different image styles or heading levels).
-* You can change the default **toolbar configuration** (e.g. remove undo/redo buttons).
+* You can override the default **configuration of features** (for example, define different image styles or heading levels).
+* You can change the default **toolbar configuration** (for example, remove the undo and redo buttons).
 * You can also **remove features** (plugins).
 
 Read more in the {@link installation/getting-started/configuration Configuration guide}.
@@ -112,7 +112,7 @@ Some of the reasons for creating custom builds are:
 * Enabling bug fixes that are still not a part of any public release.
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a custom build through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor&nbsp;5, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It allows you to create a custom build through a simple and intuitive UI.
 </info-box>
 
 ### Requirements
@@ -147,7 +147,7 @@ First, you need to install dependencies that are already specified in the build'
 npm install
 ```
 
-Then, you can add missing dependencies (i.e. packages you want to add to your build). The easiest way to do so is by typing:
+Then, you can add missing dependencies (that is, packages you want to add to your build). The easiest way to do so is by typing:
 
 ```bash
 npm install @ckeditor/ckeditor5-alignment
@@ -395,7 +395,7 @@ Based on these packages you can create a simple application.
 </info-box>
 
 <info-box warning>
-	Note that in this guide, the editor class is used directly (i.e. you use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
+	In this guide, the editor class is used directly, so you use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`.
 
 	No {@link installation/getting-started/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/plugins/installing-plugins customizing a build} or by including the CKEditor&nbsp;5 source into your application (like in this guide).
 </info-box>
@@ -453,7 +453,7 @@ npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you
 	**Note:** CKEditor&nbsp;5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the latter one seems to no longer be supported](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 
-If everything worked correctly, you should see:
+If everything worked, you should see:
 
 ```
 p@m /workspace/quick-start> ./node_modules/.bin/webpack --mode development
@@ -496,7 +496,7 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 {@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of CKEditor&nbsp;5 classic editor with bold and italic features.}
 
 <info-box>
-	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and more.
 </info-box>
 
 <info-box hint>
@@ -504,5 +504,5 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 
 Congratulations, you have just run your first CKEditor&nbsp;5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
 
-P.S. If you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
+If you use Angular, React, or Vue.js and want to integrate CKEditor&nbsp;5 in your application, refer to the {@link installation/integrations/overview Frameworks section}.
 </info-box>
