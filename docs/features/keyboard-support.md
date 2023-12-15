@@ -71,11 +71,11 @@ Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 an
 			<td><kbd>Cmd</kbd> + <kbd>K</kbd></td>
 		</tr>
 		<tr>
-			<td>Insert a hard break (e.g. a new paragraph)</td>
+			<td>Insert a hard break (a new paragraph)</td>
 			<td colspan="2"><kbd>Enter</kbd></td>
 		</tr>
 		<tr>
-			<td>Insert a soft break (i.e. a <code>&lt;br&gt;</code>)</td>
+			<td>Insert a soft break (a <code>&lt;br&gt;</code>)</td>
 			<td colspan="2"><kbd>Shift</kbd> + <kbd>Enter</kbd></td>
 		</tr>
 		<tr>

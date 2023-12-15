@@ -21,6 +21,9 @@ ClassicEditor
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

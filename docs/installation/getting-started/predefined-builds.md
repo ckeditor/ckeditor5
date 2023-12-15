@@ -180,7 +180,7 @@ Full code example:
 
 ### Inline editor
 
-Inline editor comes with a floating toolbar that becomes visible when the editor is focused (e.g. by clicking it). Unlike classic editor, inline editor does not render *instead* of the given element, it simply makes it editable. As a consequence the styles of the edited content will be exactly the same before and after the editor is created.
+Inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). Unlike classic editor, inline editor does not render *instead* of the given element, it simply makes it editable. As a consequence the styles of the edited content will be exactly the same before and after the editor is created.
 
 A common scenario for using inline editor is offering users the possibility to edit content in its real location on a web page instead of doing it in a separate administration section.
 
@@ -250,7 +250,7 @@ Full code example:
 
 ### Balloon editor
 
-Balloon editor is very similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty):
+Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty):
 
 {@img assets/img/editor-balloon.png 789 Screenshot of a balloon toolbar editor.}
 
@@ -410,7 +410,7 @@ npm install --save @ckeditor/ckeditor5-build-decoupled-document
 
 Then bundle it together with your app.
 
-Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (for example, one of the `then( () => { ... } )` blocks).
 
 <info-box>
 	The following snippet will run the document editor but to make the most of it check out the {@link framework/document-editor comprehensive tutorial} which explains step by step how to configure and style the application for the best editing experience.
@@ -1475,9 +1475,9 @@ The document lists feature is required by the import from Word plugin to run cor
 
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
 
-* by a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (e.g. [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)),
-* by [RequireJS](http://requirejs.org/) (or any other AMD library),
-* from the global namespace if none of the above loaders is available.
+* By a [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)-compatible loader (like [webpack](https://webpack.js.org) or [Browserify](http://browserify.org/)).
+* By [RequireJS](http://requirejs.org/) (or any other AMD library).
+* From the global namespace if none of these loaders is available.
 
 For example:
 

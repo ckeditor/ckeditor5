@@ -182,7 +182,7 @@ And now see if everything worked well by opening the index page in your browser.
 
 ## Plugin structure
 
-Once the editor is up and running you can start implementing the plugin. The entire plugin code can be kept in a single file, however, it is recommended to split its "editing" and "UI" layers and create a master plugin which loads both. This way, you ensure better separation of concerns and allow for recomposing the features (e.g. picking the editing part of an existing feature but writing your own UI for it). All official CKEditor&nbsp;5 plugins follow this pattern.
+Once the editor is up and running you can start implementing the plugin. You can keep the entire plugin code in a single file, however, it is recommended to split its "editing" and "UI" layers and create a master plugin which loads both. This way, you ensure better separation of concerns and allow for recomposing the features (for example, picking the editing part of an existing feature but writing your own UI for it). All official CKEditor&nbsp;5 plugins follow this pattern.
 
 Additionally, you will split the code of commands, buttons and other "self-contained" components to separate files, too. In order not to mix up these files with your project's `app.js` and `webpack.config.js` files, create this directory structure:
 
@@ -281,7 +281,7 @@ ClassicEditor
 	} );
 ```
 
-Rebuild your project, refresh the browser and you should see that the the `SimpleBoxEditing` and `SmpleBoxUI` plugins were loaded:
+Rebuild your project, refresh the browser and you should see that the `SimpleBoxEditing` and `SmpleBoxUI` plugins were loaded:
 
 {@img assets/img/tutorial-implementing-a-widget-2.png Screenshot of a classic editor initialized from source with the "SimpleBoxEditing#init() got called" and "SimpleBoxUI#init() got called" messages on the console.}
 
@@ -362,7 +362,7 @@ For the simple box plugin to start doing anything you need to define model-view 
 
 ### Defining converters
 
-Converters tell the editor how to convert the view to the model (e.g. when loading the data to the editor or handling pasted content) and how to render the model to the view (for editing purposes, or when retrieving the editor data).
+Converters tell the editor how to convert the view to the model (for example, when loading the data to the editor or handling pasted content) and how to render the model to the view (for editing purposes, or when retrieving the editor data).
 
 <info-box>
 	Read more about the {@link framework/deep-dive/conversion/downcast conversion in the editor}.
@@ -574,7 +574,7 @@ It is time to check if the simple box behaves like you would like it to. You can
 * If you try to select the entire simple box instance and press <kbd>Delete</kbd>, it will be deleted as a whole. The same when you copy and paste it. This is because it was marked as an `isObject` element in the schema.
 * You cannot easily select the entire simple box instance by clicking it. Also, the cursor pointer does not change when you hover it. In other words, it seems a bit dead. This is because you have not defined the view behavior yet.
 
-Pretty cool so far, right? With very little code, you were able to define the behavior of your simple box plugin which maintains the integrity of these elements. The engine ensures that the user does not break these instances.
+Pretty cool so far, right? With little code, you were able to define the behavior of your simple box plugin which maintains the integrity of these elements. The engine ensures that the user does not break these instances.
 
 See what else you can improve.
 
@@ -604,7 +604,7 @@ npm install --save @ckeditor/ckeditor5-widget
 
 Now it is time to revisit the `_defineConverters()` method that you defined earlier. You will use the {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement `elementToElement()` upcast helper} and the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()` downcast helper} instead of the two-way `elementToElement()` converter helper.
 
-Additionally, you need to ensure that the {@link module:widget/widget~Widget `Widget`} plugin is loaded. If you omit it, the elements in the view will have all the classes (e.g. `ck-widget`) but there will be no "behaviors" loaded (e.g. clicking a widget will not select it).
+Additionally, you need to ensure that the {@link module:widget/widget~Widget `Widget`} plugin is loaded. If you omit it, the elements in the view will have all the classes (like `ck-widget`) but there will be no "behaviors" loaded (for example, clicking a widget will not select it).
 
 ```js
 // simplebox/simpleboxediting.js
@@ -735,7 +735,7 @@ This is all that you need from the model and the view layers for now. In terms o
 
 ## Creating a command
 
-A {@link framework/architecture/core-editor-architecture#commands command} is a combination of an action and a state. You can interact with most of the editor features by the commands they expose. This allows not only for executing these features (e.g. bolding a fragment of text) but also checking if this action can be executed in the selection's current location as well as observing other state properties (such as whether the currently selected text is bolded).
+A {@link framework/architecture/core-editor-architecture#commands command} is a combination of an action and a state. You can interact with most of the editor features by the commands they expose. This allows not only for executing these features (like bolding a fragment of text) but also checking if this action can be executed in the selection's current location as well as observing other state properties (such as whether the currently selected text is bolded).
 
 In the case of the simple box the situation is simple:
 
@@ -820,7 +820,7 @@ export default class SimpleBoxEditing extends Plugin {
 }
 ```
 
-You can now execute this command in order to insert a new simple box. Calling:
+You can now execute this command to insert a new simple box. Calling:
 
 ```js
 editor.execute( 'insertSimpleBox' );

@@ -42,7 +42,7 @@ We are doing our best to deliver the best RTL support to our users and we consta
 
 ## Loading additional languages from CDN, npm, and a zip file
 
- By default, the editor will display in English. This is the language built into the `ckeditor.js` files. In order to change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
+ By default, the editor will display in English. This is the language built into the `ckeditor.js` files. To change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
 
 * [CDN](#cdn),
 * [npm](#npm),
@@ -86,7 +86,7 @@ See the {@link installation/getting-started/predefined-builds#cdn CDN installati
 
 After installing the build from npm, languages will be available in `node_modules/@ckeditor/ckeditor5-build-[name]/build/translations/[lang].js`.
 
-A single language can be loaded directly to your code by importing e.g. `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
+You can load a single language directly to your code by importing, for example, `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
 
 See the {@link installation/getting-started/predefined-builds#npm npm installation guide} for more information.
 
@@ -125,7 +125,7 @@ If you build CKEditor&nbsp;5 from scratch or integrate it directly into your app
 	module.exports = {
 		// Define webpack plugins.
 		// ...
-		
+
 		plugins: [
 			new CKEditorTranslationsPlugin( {
 				// The main language that will be built into the main bundle.
@@ -170,12 +170,12 @@ If you build CKEditor&nbsp;5 from scratch or integrate it directly into your app
 	```
 
 <info-box>
-	We are aware that the current localization method is not sufficient for some needs. It does not support different bundlers (e.g. Rollup or Browserify). We will be extending the localization possibilities in the future.
+	We are aware that the current localization method is not sufficient for some needs. It does not support different bundlers (for example, Rollup or Browserify). We will be extending the localization possibilities in the future.
 </info-box>
 
 ## Setting the language of the content
 
-In CKEditor&nbsp;5 you can separately configure the language of the UI and the language of the content. This means you can use the English UI of the editor but type your content in Arabic or Hebrew. The language of the content has an impact on the editing experience, for instance it affects screen readers and spell checkers. It is also particularly useful for typing in certain languages (e.g. [right–to–left](#righttoleft-rtl-languages-support) ones) because it changes the default alignment of the text.
+In CKEditor&nbsp;5 you can separately configure the language of the UI and the language of the content. This means you can use the English UI of the editor but type your content in Arabic or Hebrew. The language of the content has an impact on the editing experience, for instance it affects screen readers and spell checkers. It is also particularly useful for typing in certain languages (like [right–to–left](#righttoleft-rtl-languages-support) ones) because it changes the default alignment of the text.
 
 Configure {@link module:core/editor/editorconfig~EditorConfig#language `config.language`} to change the language of the content. In this example, the UI of the editor will be English but the content will be Arabic:
 

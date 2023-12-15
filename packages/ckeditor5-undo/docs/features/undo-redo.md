@@ -77,7 +77,7 @@ The `UndoEditing` feature registers the following commands:
 	editor.execute( 'undo');
 	```
 
-	It can be used to retrieve changes from the latest batch, or from some previous batch (e.g. changes made by a selected user in a collaborative environment):
+	You can use it to retrieve changes from the latest batch, or from some previous batch (for example, changes made by a selected user in a collaborative environment):
 
 	```js
 	editor.execute( 'undo', batchToUndo );

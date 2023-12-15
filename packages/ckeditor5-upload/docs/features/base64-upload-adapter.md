@@ -10,9 +10,9 @@ order: 50
 The Base64 image upload adapter converts inserted images into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/getting-started/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
 
 <info-box warning>
-    Please remember that while `Base64` upload is a very easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.
+    Remember that while `Base64` upload is an easy solution, it is also highly inefficient. The image file is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.
 
-This can be troublesome for some features: {@link features/revision-history revision history} may hence take longer to load revisions; the same applies e.g. to {@link features/comments comments}. Content with `Base64` images may also exceed the allowed file size when your document is {@link features/export-pdf exported to PDF} or {@link features/export-word to Word}.
+This can be troublesome for some features: {@link features/revision-history revision history} may hence take longer to load revisions. The same applies to {@link features/comments comments}. Content with `Base64` images may also exceed the allowed file size when your document is {@link features/export-pdf exported to PDF} or {@link features/export-word to Word}.
 
 Therefore using the `Base64` feature is a less efficient option to use than some other available ones. Check out the comprehensive {@link features/image-upload image upload overview} guide to learn about other ways to upload images into CKEditor&nbsp;5.
 </info-box>
@@ -72,11 +72,11 @@ The allowed file types that can be uploaded should actually be configured in two
 
 Use the {@link module:image/imageconfig~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor&nbsp;5.
 
-By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files. You can customize this behavior to accept, for example, SVG files (in this case use `svg+xml` type).
+By default, users can upload `jpeg`, `png`, `gif`, `bmp`, `webp`, and `tiff` files. You can customize this behavior to accept, for example, SVG files (in this case use the `svg+xml` type).
 
 #### Server-side configuration
 
-It is up to you to implement any filtering mechanisms on your server in order to restrict the types of images that are allowed to be uploaded.
+It is up to you to implement any filtering mechanisms on your server to restrict the types of images allowed to be uploaded.
 
 ## What's next?
 
