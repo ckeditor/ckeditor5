@@ -75,7 +75,7 @@ We are excited to announce upcoming improvements to CKEditor 5's installation pr
 ### Other changes
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced support for the OpenAI `gpt-3.5-turbo-1106` model in AI Assistant.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Secured AI Assistant from incorrect responses that do not being with the processed HTML.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Secured AI Assistant from incorrect responses that do not begin with the processed HTML.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced the `AITextAdapter` abstract class that can be extended to provide a custom adapter for AI Assistant.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Introduced `OpenAIAdapter` and `AWSAdapter` that can be extended to customize how AI Assistant's requests and responses are handled.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Reorganized the configuration parameters for AI Assistant. See the API documentation and update guide.
