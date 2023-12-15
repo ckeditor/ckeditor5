@@ -9,8 +9,8 @@
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type ViewCollection from './viewcollection';
-import View from './view';
+import type ViewCollection from './viewcollection.js';
+import View from './view.js';
 
 import '../theme/components/arialiveannouncer/arialiveannouncer.css';
 

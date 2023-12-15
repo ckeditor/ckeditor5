@@ -5,9 +5,9 @@
 
 /* globals console:false, window, document, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import LinkImage from '../../src/linkimage';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import LinkImage from '../../src/linkimage.js';
 
 // Just to have nicely styles switchbutton;
 import '@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/list/list.css';

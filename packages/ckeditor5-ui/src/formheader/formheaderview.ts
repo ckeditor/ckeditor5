@@ -7,9 +7,9 @@
  * @module ui/formheader/formheaderview
  */
 
-import View from '../view';
-import type ViewCollection from '../viewcollection';
-import IconView from '../icon/iconview';
+import View from '../view.js';
+import type ViewCollection from '../viewcollection.js';
+import IconView from '../icon/iconview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

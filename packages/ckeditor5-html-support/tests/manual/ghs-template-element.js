@@ -5,20 +5,20 @@
 
 /* globals console:false, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed.js';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

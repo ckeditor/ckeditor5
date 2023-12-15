@@ -7,8 +7,8 @@
  * @module page-break/pagebreakcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import type { DocumentSelection, Element, Model, Schema } from 'ckeditor5/src/engine';
+import { Command } from 'ckeditor5/src/core.js';
+import type { DocumentSelection, Element, Model, Schema } from 'ckeditor5/src/engine.js';
 
 /**
  * The page break command.

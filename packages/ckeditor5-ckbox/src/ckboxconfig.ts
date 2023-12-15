@@ -8,7 +8,7 @@
  */
 
 import type { TokenUrl } from '@ckeditor/ckeditor5-cloud-services';
-import type { ArrayOrItem } from 'ckeditor5/src/utils';
+import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 /**
  * The configuration of the {@link module:ckbox/ckbox~CKBox CKBox feature}.

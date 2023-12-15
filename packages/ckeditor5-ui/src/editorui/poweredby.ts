@@ -15,9 +15,9 @@ import {
 	type PositionOptions,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
-import BalloonPanelView from '../panel/balloon/balloonpanelview';
-import IconView from '../icon/iconview';
-import View from '../view';
+import BalloonPanelView from '../panel/balloon/balloonpanelview.js';
+import IconView from '../icon/iconview.js';
+import View from '../view.js';
 import { throttle, type DebouncedFunc } from 'lodash-es';
 
 import poweredByIcon from '../../theme/icons/project-logo.svg';

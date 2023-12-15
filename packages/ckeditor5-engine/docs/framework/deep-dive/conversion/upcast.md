@@ -124,13 +124,13 @@ The above converter will handle the conversion of every `<div class="example">` 
 
 As you have learnt in the {@link framework/deep-dive/conversion/downcast previous chapter}, a single model element can be downcast into a structure of multiple view elements.
 
-The opposite process will have to detect that structure (e.g. the main element) and convert it into a simple model element.
+The opposite process will have to detect that structure (for example, the main element) and convert it into a simple model element.
 
-There is no `structureToElement()` helper available for the upcast conversion. In order to register an upcast converter for the entire structure and create a single model element, you must use the event based API. The following example shows how to achieve it:
+There is no `structureToElement()` helper available for the upcast conversion. In order to register an upcast converter for the entire structure and create a single model element, you must use the event-based API. The following example shows how to achieve it:
 
 ```js
 editor.conversion.for( 'upcast' ).add( dispatcher => {
-	// Look for every view div element.
+	// Look for every view <div> element.
 	dispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
 		// Get all the necessary items from the conversion API object.
 		const {
@@ -161,7 +161,7 @@ editor.conversion.for( 'upcast' ).add( dispatcher => {
 		// Get the first child element.
 		const firstChildItem = viewItem.getChild( 0 );
 
-		// Check if the first element is a div.
+		// Check if the first element is a <div>.
 		if ( !firstChildItem.is( 'element', 'div' ) ) {
 			return;
 		}
@@ -194,7 +194,7 @@ editor.conversion.for( 'upcast' ).add( dispatcher => {
 } );
 ```
 
-The above converter will detect all `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures (by scanning for the outer `<div>`s and turning those into a single `<myElement>` model element). The effect should return as follows:
+This converter will detect all `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures (by scanning for the outer `<div>`s and turning those into a single `<myElement>` model element). The effect should return as follows:
 
 {@snippet framework/mini-inspector-structure}
 

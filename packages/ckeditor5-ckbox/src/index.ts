@@ -7,15 +7,15 @@
  * @module ckbox
  */
 
-export { default as CKBox } from './ckbox';
-export { default as CKBoxEditing } from './ckboxediting';
-export { default as CKBoxUI } from './ckboxui';
-export { default as CKBoxImageEditEditing } from './ckboximageedit/ckboximageeditediting';
-export { default as CKBoxImageEditUI } from './ckboximageedit/ckboximageeditui';
-export { default as CKBoxImageEdit } from './ckboximageedit';
+export { default as CKBox } from './ckbox.js';
+export { default as CKBoxEditing } from './ckboxediting.js';
+export { default as CKBoxUI } from './ckboxui.js';
+export { default as CKBoxImageEditEditing } from './ckboximageedit/ckboximageeditediting.js';
+export { default as CKBoxImageEditUI } from './ckboximageedit/ckboximageeditui.js';
+export { default as CKBoxImageEdit } from './ckboximageedit.js';
 
-export type { default as CKBoxCommand } from './ckboxcommand';
-export type { default as CKBoxImageEditCommand } from './ckboximageedit/ckboximageeditcommand';
-export type { CKBoxConfig } from './ckboxconfig';
+export type { default as CKBoxCommand } from './ckboxcommand.js';
+export type { default as CKBoxImageEditCommand } from './ckboximageedit/ckboximageeditcommand.js';
+export type { CKBoxConfig } from './ckboxconfig.js';
 
-import './augmentation';
+import './augmentation.js';

@@ -7,9 +7,9 @@
  * @module image/imageinsertviaurl
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageInsertUI from './imageinsert/imageinsertui';
-import ImageInsertViaUrlUI from './imageinsert/imageinsertviaurlui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageInsertUI from './imageinsert/imageinsertui.js';
+import ImageInsertViaUrlUI from './imageinsert/imageinsertviaurlui.js';
 
 /**
  * The image insert via URL plugin.

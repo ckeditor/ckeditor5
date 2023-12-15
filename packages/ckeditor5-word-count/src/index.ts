@@ -7,7 +7,7 @@
  * @module word-count
  */
 
-export { default as WordCount, type WordCountUpdateEvent } from './wordcount';
-export { WordCountConfig } from './wordcountconfig';
+export { default as WordCount, type WordCountUpdateEvent } from './wordcount.js';
+export { WordCountConfig } from './wordcountconfig.js';
 
-import './augmentation';
+import './augmentation.js';

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Heading from '../src/heading';
-import HeadingEditing from '../src/headingediting';
-import HeadingUI from '../src/headingui';
+import Heading from '../src/heading.js';
+import HeadingEditing from '../src/headingediting.js';
+import HeadingUI from '../src/headingui.js';
 
 describe( 'Heading', () => {
 	it( 'should require HeadingEditing and HeadingUI', () => {

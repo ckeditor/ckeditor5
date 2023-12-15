@@ -7,19 +7,19 @@
  * @module engine/model/schema
  */
 
-import Element from './element';
-import Position from './position';
-import Range from './range';
-import Text from './text';
-import TreeWalker from './treewalker';
+import Element from './element.js';
+import Position from './position.js';
+import Range from './range.js';
+import Text from './text.js';
+import TreeWalker from './treewalker.js';
 
-import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
-import type Item from './item';
-import type Model from './model';
-import type Node from './node';
-import type Selection from './selection';
-import type Writer from './writer';
+import type DocumentFragment from './documentfragment.js';
+import type DocumentSelection from './documentselection.js';
+import type Item from './item.js';
+import type Model from './model.js';
+import type Node from './node.js';
+import type Selection from './selection.js';
+import type Writer from './writer.js';
 
 import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 

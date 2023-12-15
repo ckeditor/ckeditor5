@@ -7,11 +7,11 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import BalloonPanelView from './balloonpanelview';
-import View from '../../view';
-import ButtonView from '../../button/buttonview';
-import type { ButtonExecuteEvent } from '../../button/button';
-import type ViewCollection from '../../viewcollection';
+import BalloonPanelView from './balloonpanelview.js';
+import View from '../../view.js';
+import ButtonView from '../../button/buttonview.js';
+import type { ButtonExecuteEvent } from '../../button/button.js';
+import type ViewCollection from '../../viewcollection.js';
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {

@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { modelTable, viewTable } from '../_utils/utils';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { modelTable, viewTable } from '../_utils/utils.js';
 
-import TableEditing from '../../src/tableediting';
+import TableEditing from '../../src/tableediting.js';
 
 describe( 'downcast converters', () => {
 	let editor, model, root, view, viewRoot;

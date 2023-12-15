@@ -14,15 +14,15 @@ import {
 	type GetCallback
 } from '@ckeditor/ckeditor5-utils';
 
-import RootEditableElement from '../view/rooteditableelement';
-import View from '../view/view';
-import Mapper from '../conversion/mapper';
+import RootEditableElement from '../view/rooteditableelement.js';
+import View from '../view/view.js';
+import Mapper from '../conversion/mapper.js';
 import DowncastDispatcher, {
 	type DowncastInsertEvent,
 	type DowncastRemoveEvent,
 	type DowncastSelectionEvent,
 	type DowncastCleanSelectionEvent
-} from '../conversion/downcastdispatcher';
+} from '../conversion/downcastdispatcher.js';
 import {
 	cleanSelection,
 	convertCollapsedSelection,
@@ -30,22 +30,22 @@ import {
 	insertAttributesAndChildren,
 	insertText,
 	remove
-} from '../conversion/downcasthelpers';
+} from '../conversion/downcasthelpers.js';
 
-import { convertSelectionChange } from '../conversion/upcasthelpers';
+import { convertSelectionChange } from '../conversion/upcasthelpers.js';
 
-import { tryFixingRange } from '../model/utils/selection-post-fixer';
+import { tryFixingRange } from '../model/utils/selection-post-fixer.js';
 
-import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model';
-import type ModelItem from '../model/item';
-import type ModelText from '../model/text';
-import type ModelTextProxy from '../model/textproxy';
-import type Schema from '../model/schema';
-import type { DocumentChangeEvent } from '../model/document';
-import type { Marker } from '../model/markercollection';
-import type { StylesProcessor } from '../view/stylesmap';
-import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver';
-import type { ViewDocumentInputEvent } from '../view/observer/inputobserver';
+import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model.js';
+import type ModelItem from '../model/item.js';
+import type ModelText from '../model/text.js';
+import type ModelTextProxy from '../model/textproxy.js';
+import type Schema from '../model/schema.js';
+import type { DocumentChangeEvent } from '../model/document.js';
+import type { Marker } from '../model/markercollection.js';
+import type { StylesProcessor } from '../view/stylesmap.js';
+import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver.js';
+import type { ViewDocumentInputEvent } from '../view/observer/inputobserver.js';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 

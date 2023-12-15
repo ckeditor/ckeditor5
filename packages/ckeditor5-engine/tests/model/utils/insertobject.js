@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
-import insertObject from '../../../src/model/utils/insertobject';
-import Element from '../../../src/model/element';
-import Text from '../../../src/model/text';
-import { setData, getData } from '../../../src/dev-utils/model';
+import Model from '../../../src/model/model.js';
+import insertObject from '../../../src/model/utils/insertobject.js';
+import Element from '../../../src/model/element.js';
+import Text from '../../../src/model/text.js';
+import { setData, getData } from '../../../src/dev-utils/model.js';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 /* global console */
 

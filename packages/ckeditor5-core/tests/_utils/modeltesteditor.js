@@ -5,8 +5,8 @@
 
 /* eslint-disable new-cap */
 
-import Editor from '../../src/editor/editor';
-import DataApiMixin from '../../src/editor/utils/dataapimixin';
+import Editor from '../../src/editor/editor.js';
+import DataApiMixin from '../../src/editor/utils/dataapimixin.js';
 
 /**
  * A simple editor implementation with a functional model part of the engine (the document).

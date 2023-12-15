@@ -7,26 +7,26 @@
  * @module image/image/imageblockediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ClipboardPipeline, type ClipboardInputTransformationEvent, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard';
-import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ClipboardPipeline, type ClipboardInputTransformationEvent, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
+import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
 
 import {
 	downcastImageAttribute,
 	downcastSrcsetAttribute,
 	upcastImageFigure
-} from './converters';
+} from './converters.js';
 
-import ImageEditing from './imageediting';
-import ImageSizeAttributes from '../imagesizeattributes';
-import ImageTypeCommand from './imagetypecommand';
-import ImageUtils from '../imageutils';
+import ImageEditing from './imageediting.js';
+import ImageSizeAttributes from '../imagesizeattributes.js';
+import ImageTypeCommand from './imagetypecommand.js';
+import ImageUtils from '../imageutils.js';
 import {
 	getImgViewElementMatcher,
 	createBlockImageViewElement,
 	determineImageTypeForInsertionAtSelection
-} from './utils';
-import ImagePlaceholder from './imageplaceholder';
+} from './utils.js';
+import ImagePlaceholder from './imageplaceholder.js';
 
 /**
  * The image block plugin.

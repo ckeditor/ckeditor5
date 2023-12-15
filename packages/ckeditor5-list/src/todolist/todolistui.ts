@@ -7,9 +7,9 @@
  * @module list/todolist/todolistui
  */
 
-import { createUIComponent } from '../list/utils';
+import { createUIComponent } from '../list/utils.js';
 import todoListIcon from '../../theme/icons/todolist.svg';
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 /**
  * The to-do list UI feature. It introduces the `'todoList'` button that

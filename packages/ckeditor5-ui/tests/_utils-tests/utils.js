@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import testUtils from '../../tests/_utils/utils';
+import testUtils from '../../tests/_utils/utils.js';
 
 describe( 'utils', () => {
 	describe( 'createTestUIView', () => {

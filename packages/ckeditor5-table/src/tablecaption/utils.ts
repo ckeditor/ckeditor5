@@ -12,9 +12,9 @@ import type {
 	DocumentSelection,
 	Element,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { getSelectionAffectedTable } from '../utils/common';
+import { getSelectionAffectedTable } from '../utils/common.js';
 
 /**
  * Checks if the provided model element is a `table`.

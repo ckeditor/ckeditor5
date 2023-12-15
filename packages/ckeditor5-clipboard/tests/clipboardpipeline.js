@@ -3,25 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClipboardPipeline from '../src/clipboardpipeline';
-import ClipboardObserver from '../src/clipboardobserver';
-import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
+import ClipboardPipeline from '../src/clipboardpipeline.js';
+import ClipboardObserver from '../src/clipboardobserver.js';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
+import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text.js';
 import {
 	stringify as stringifyView,
 	parse as parseView
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import {
 	stringify as stringifyModel,
 	setData as setModelData,
 	getData as getModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ClipboardPipeline feature', () => {
 	let editor, view, viewDocument, clipboardPlugin, scrollSpy;

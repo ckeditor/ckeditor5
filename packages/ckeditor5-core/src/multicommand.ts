@@ -7,7 +7,7 @@
  * @module core/multicommand
  */
 
-import Command from './command';
+import Command from './command.js';
 
 import {
 	insertToPriorityArray,

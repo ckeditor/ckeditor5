@@ -326,7 +326,7 @@ Note that the editor will automatically distinguish text and block styles and gr
 
 ## Known issues
 
-At present, the style feature may clash with other features that bring in similar content (e.g. headings). Problems with overlapping styles applied to the same element may also occur.
+At present, the style feature may clash with other features that bring in similar content (like headings). Problems with overlapping styles applied to the same element may also occur.
 
 ## Related features
 

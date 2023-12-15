@@ -7,10 +7,10 @@
  * @module media-embed/mediaembedcommand
  */
 
-import type { DocumentSelection, Element, Model, Selection } from 'ckeditor5/src/engine';
-import { Command } from 'ckeditor5/src/core';
+import type { DocumentSelection, Element, Model, Selection } from 'ckeditor5/src/engine.js';
+import { Command } from 'ckeditor5/src/core.js';
 
-import { getSelectedMediaModelWidget, insertMedia } from './utils';
+import { getSelectedMediaModelWidget, insertMedia } from './utils.js';
 
 /**
  * The insert media command.

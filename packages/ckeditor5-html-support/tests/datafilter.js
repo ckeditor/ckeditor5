@@ -5,21 +5,21 @@
 
 /* global document, console */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting';
-import DataFilter from '../src/datafilter';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { getModelDataWithAttributes } from './_utils/utils';
-import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
-import { getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
+import DataFilter from '../src/datafilter.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { getModelDataWithAttributes } from './_utils/utils.js';
+import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background.js';
+import { getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
-import GeneralHtmlSupport from '../src/generalhtmlsupport';
+import GeneralHtmlSupport from '../src/generalhtmlsupport.js';
 
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema, htmlSupport;

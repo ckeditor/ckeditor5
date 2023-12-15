@@ -9,6 +9,7 @@ import Babel from 'babel-standalone';
 
 // Imports necessary to run a React application.
 import React from 'react';
+// eslint-disable-next-line ckeditor5-rules/require-file-extensions-in-imports
 import { createRoot } from 'react-dom/client';
 
 // The official <CKEditor> component for React.

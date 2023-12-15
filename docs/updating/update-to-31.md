@@ -35,10 +35,10 @@ Starting from v31.1.0, the editor engine will detect attributes that may interru
 ```
 
 <info-box>
-	Please keep in mind, that this new mechanism does not affect the {@link installation/getting-started/getting-and-setting-data data saved by the editor} (e.g. the output of `editor.getData()`). The filtering only applies during the editing when the user interacts with the editor.
+	This new mechanism does not affect the {@link installation/getting-started/getting-and-setting-data data saved by the editor} (for example, the output of `editor.getData()`). The filtering only applies during the editing when the user interacts with the editor.
 </info-box>
 
-If you are the author of a plugin that generates this kind of content in the {@link framework/architecture/editing-engine#editing-pipeline editing pipeline} and you want it to be preserved, you can configure this when creating the element using {@link module:engine/view/downcastwriter~DowncastWriter} during the {@link framework/architecture/editing-engine#conversion model–view conversion}. Methods such as {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement}, {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement}, or {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} accept an option that will disable filtering of specific attributes:
+If you are the author of a plugin that generates this kind of content in the {@link framework/architecture/editing-engine#editing-pipeline editing pipeline} and you want it to be preserved, you can configure this when creating the element using {@link module:engine/view/downcastwriter~DowncastWriter} during the {@link framework/architecture/editing-engine#conversion model–view conversion}. Methods such as {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement}, {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement}, or {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} accept an option that will turn off filtering of specific attributes:
 
 ```js
 /* Before v31.1.0. */
@@ -66,21 +66,21 @@ const paragraph = writer.createContainerElement( 'p',
 
 Also starting from v31.1.0, any `<script>` element that would find its way to the editing layer of the editor (and the user interacting with it) will be filtered out (renamed to `<span data-ck-unsafe-element="script"></span>`).
 
-Please keep in mind that this mechanism will not change the output of the editor (e.g. the result of `editor.getData()` will include full `<script>...</script>` tags) and there is no way to opt out of it.
+This mechanism will not change the output of the editor. For example, the result of `editor.getData()` will include full `<script>...</script>` tags. There is no way to opt out of it.
 
 ### The `table` and `tableCell` attributes' names change
 
 Names of the `table` elements' attributes have changed. A `table` prefix has been added to all the names.
 
-The affected attributes include: `borderStyle`, `borderColor`, `borderWidth`, `backgroundColor`, `alignment`, `width` and `height`.
+The affected attributes include: `borderStyle`, `borderColor`, `borderWidth`, `backgroundColor`, `alignment`, `width`, and `height`.
 
-These are now respectively: `tableBorderStyle`, `tableBorderColor`, `tableBorderWidth`, `tableBackgroundColor`, `tableAlignment`, `tableWidth` and `tableHeight`.
+These are now: `tableBorderStyle`, `tableBorderColor`, `tableBorderWidth`, `tableBackgroundColor`, `tableAlignment`, `tableWidth`, and `tableHeight`.
 
 Names of the `tableCell` elements' attributes have changed. A `tableCell` prefix has been added to all the names.
 
-The affected attributes include: `backgroundColor`, `padding`, `width`, `height`, `borderStyle`, `borderColor`, `borderWidth`, `verticalAlignment` and `horizontalAlignment`.
+The affected attributes include: `backgroundColor`, `padding`, `width`, `height`, `borderStyle`, `borderColor`, `borderWidth`, `verticalAlignment`, and `horizontalAlignment`.
 
-These were changed to `tableCellBackgroundColor`, `tableCellPadding`, `tableCellWidth`, `tableCellHeight`, `tableCellBorderStyle`, `tableCellBorderColor`, `tableCellBorderWidth`, `tableCellVerticalAlignment` and `tableCellHorizontalAlignment` respectively.
+These were changed to `tableCellBackgroundColor`, `tableCellPadding`, `tableCellWidth`, `tableCellHeight`, `tableCellBorderStyle`, `tableCellBorderColor`, `tableCellBorderWidth`, `tableCellVerticalAlignment`, and `tableCellHorizontalAlignment`.
 
 
 ## Update to CKEditor&nbsp;5 v31.0.0

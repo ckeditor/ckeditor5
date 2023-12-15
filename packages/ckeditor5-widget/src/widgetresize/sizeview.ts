@@ -8,8 +8,8 @@
  */
 
 import { View } from '@ckeditor/ckeditor5-ui';
-import type { ResizerOptions } from '../widgetresize';
-import type ResizeState from './resizerstate';
+import type { ResizerOptions } from '../widgetresize.js';
+import type ResizeState from './resizerstate.js';
 
 /**
  * A view displaying the proposed new element size during the resizing.

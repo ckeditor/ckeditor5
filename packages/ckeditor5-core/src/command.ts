@@ -15,7 +15,7 @@ import {
 	type ObservableSetEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor';
+import type Editor from './editor/editor.js';
 
 /**
  * Base class for the CKEditor commands.

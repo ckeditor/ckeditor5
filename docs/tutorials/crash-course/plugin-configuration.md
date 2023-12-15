@@ -84,4 +84,4 @@ Finally, in the browser, select some of the text in the editor and press the <kb
 
 Congratulations, you have just finished this tutorial!
 
-But this is not the end. If you want to continue learning, go to the {@link framework/index Framework section} of our documentation.
+This is not the end, though. If you want to continue learning, go to the {@link framework/index Framework section} of our documentation.

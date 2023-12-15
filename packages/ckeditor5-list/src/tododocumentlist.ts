@@ -7,9 +7,9 @@
  * @module list/tododocumentlist
  */
 
-import TodoDocumentListEditing from './tododocumentlist/tododocumentlistediting';
-import TodoListUI from './todolist/todolistui';
-import { Plugin } from 'ckeditor5/src/core';
+import TodoDocumentListEditing from './tododocumentlist/tododocumentlistediting.js';
+import TodoListUI from './todolist/todolistui.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 import '../theme/todolist.css';
 

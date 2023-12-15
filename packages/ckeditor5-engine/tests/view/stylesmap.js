@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import StylesMap, { StylesProcessor } from '../../src/view/stylesmap';
+import StylesMap, { StylesProcessor } from '../../src/view/stylesmap.js';
 import encodedImage from './_utils/encodedimage.txt';
-import { addMarginRules } from '../../src/view/styles/margin';
-import { addBorderRules } from '../../src/view/styles/border';
-import { getBoxSidesValueReducer } from '../../src/view/styles/utils';
+import { addMarginRules } from '../../src/view/styles/margin.js';
+import { addBorderRules } from '../../src/view/styles/border.js';
+import { getBoxSidesValueReducer } from '../../src/view/styles/utils.js';
 
 describe( 'StylesMap', () => {
 	let stylesMap, stylesProcessor;

@@ -7,14 +7,14 @@
  * @module style/styleutils
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Element, MatcherObjectPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine';
-import type { DecoratedMethodEvent } from 'ckeditor5/src/utils';
-import type { TemplateDefinition } from 'ckeditor5/src/ui';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { Element, MatcherObjectPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine.js';
+import type { DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
+import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
 import type { DataFilter, DataSchema, GeneralHtmlSupport, DataSchemaBlockElementDefinition } from '@ckeditor/ckeditor5-html-support';
 
-import type { StyleDefinition } from './styleconfig';
+import type { StyleDefinition } from './styleconfig.js';
 import { isObject } from 'lodash-es';
 
 // These are intermediate element names that can't be rendered as style preview because they don't make sense standalone.

@@ -52,7 +52,7 @@ import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 	Respectively, `ItalicEditing`, `UnderlineEditing`, `HeadingEditing`, and `UndoEditing` are also imported.
 </info-box>
 
-Having imported the very basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
+After importing the basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
 
 ```js
 // Extending the Editor class, which brings the base editor API.
@@ -213,7 +213,7 @@ as different headings are selected. */
 
 ## Binding the UI with the editor
 
-At this stage, you should bind the editor created at the very beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:ui/editorui/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
+At this stage, you should bind the editor created at the beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:ui/editorui/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
 
 ```js
 this.ui = new BootstrapEditorUI( this );
@@ -327,13 +327,13 @@ class BootstrapEditorUI extends EditorUI {
 }
 ```
 
-Almost every feature in the editor defines some command, e.g. {@link module:heading/headingcommand~HeadingCommand} or {@link module:undo/undocommand~UndoCommand}. Commands can be executed:
+Almost every feature in the editor defines some command, for example, {@link module:heading/headingcommand~HeadingCommand} or {@link module:undo/undocommand~UndoCommand}. Commands can be executed:
 
 ```js
 editor.execute( 'undo' );
 ```
 
-But they also come with default observable properties like `value` and `isEnabled`. These are the entry points when it comes to creating a custom user interface because their values represent the actual state of the editor and can be followed in simple event listeners:
+They also come with default observable properties like `value` and `isEnabled`. These are the entry points when it comes to creating a custom user interface because their values represent the actual state of the editor. You can follow them in simple event listeners:
 
 ```js
 const command = editor.commands.get( 'undo' );

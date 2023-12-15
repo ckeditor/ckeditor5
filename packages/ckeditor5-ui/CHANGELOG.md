@@ -352,7 +352,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed `createButtonDropdown()` and `ButtonDropdownView`. See [#356](https://github.com/ckeditor/ckeditor5-ui/issues/356).
 * Removed `createListDropdown()` and `ListDropdownView`. See [#356](https://github.com/ckeditor/ckeditor5-ui/issues/356).
 * The DOM structure of the dropdown component has changed. Please refer to the documentation to find out more.
-* Basic properties of the balloon panel component have changed (i.e. the location of the arrow, the default positions), which may have an impact on existing integrations.
+* Basic properties of the balloon panel component (the location of the arrow, the default positions) have changed, which may have an impact on existing integrations.
 * The styles are no longer developed in SASS which means the `.scss` files became unavailable. Please refer to the [Theme Customization](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
 
 

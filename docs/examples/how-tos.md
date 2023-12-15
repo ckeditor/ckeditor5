@@ -198,7 +198,7 @@ editor.model.change( writer => {
 } );
 ```
 
-### How to delete all specific elements (e.g. block images) in the editor?
+### How to delete all specific elements (like block images) in the editor?
 
 ```js
 editor.model.change( writer => {
@@ -207,13 +207,13 @@ editor.model.change( writer => {
 
 	for ( const value of range.getWalker() ) {
 		if ( value.item.is( 'element', 'imageBlock' ) ) {
-			// a different `is` usage.
+			// A different `is` usage.
 			itemsToRemove.push( value.item );
 		}
 	}
 
 	for ( const item of itemsToRemove ) {
-		writer.remove( item ); // remove all of the items.
+		writer.remove( item ); // Remove all the items.
 	}
 } );
 ```
@@ -293,7 +293,7 @@ for ( const range of wordRanges ) {
 }
 ```
 
-### How to listen on a double-click (e.g. link elements)?
+### How to listen on a double-click (for example, link elements)?
 
 ```js
 // Add observer for double click and extend a generic DomEventObserver class by a native DOM dblclick event:

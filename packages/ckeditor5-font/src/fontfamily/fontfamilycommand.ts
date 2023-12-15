@@ -7,9 +7,9 @@
  * @module font/fontfamily/fontfamilycommand
  */
 
-import type { Editor } from 'ckeditor5/src/core';
-import FontCommand from '../fontcommand';
-import { FONT_FAMILY } from '../utils';
+import type { Editor } from 'ckeditor5/src/core.js';
+import FontCommand from '../fontcommand.js';
+import { FONT_FAMILY } from '../utils.js';
 
 /**
  * The font family command. It is used by {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing}

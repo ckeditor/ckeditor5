@@ -7,11 +7,11 @@
  * @module mention
  */
 
-export { default as Mention } from './mention';
-export { default as MentionEditing } from './mentionediting';
-export { default as MentionUI } from './mentionui';
+export { default as Mention } from './mention.js';
+export { default as MentionEditing } from './mentionediting.js';
+export { default as MentionUI } from './mentionui.js';
 
-export type { MentionConfig, MentionFeed, ItemRenderer } from './mentionconfig';
-export type { default as MentionCommand } from './mentioncommand';
+export type { MentionConfig, MentionFeed, ItemRenderer } from './mentionconfig.js';
+export type { default as MentionCommand } from './mentioncommand.js';
 
-import './augmentation';
+import './augmentation.js';

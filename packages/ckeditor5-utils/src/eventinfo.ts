@@ -7,7 +7,7 @@
  * @module utils/eventinfo
  */
 
-import spy from './spy';
+import spy from './spy.js';
 
 /**
  * The event object passed to event callbacks. It is used to provide information about the event as well as a tool to

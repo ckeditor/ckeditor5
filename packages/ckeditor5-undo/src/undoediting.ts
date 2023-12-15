@@ -9,8 +9,8 @@
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
-import UndoCommand, { type UndoCommandRevertEvent } from './undocommand';
-import RedoCommand from './redocommand';
+import UndoCommand, { type UndoCommandRevertEvent } from './undocommand.js';
+import RedoCommand from './redocommand.js';
 
 import type {
 	Batch,

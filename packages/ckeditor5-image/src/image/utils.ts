@@ -15,11 +15,11 @@ import type {
 	ViewContainerElement,
 	DowncastWriter,
 	ViewElement
-} from 'ckeditor5/src/engine';
-import type { Editor } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/engine.js';
+import type { Editor } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
 
-import type ImageUtils from '../imageutils';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * Creates a view element representing the inline image.

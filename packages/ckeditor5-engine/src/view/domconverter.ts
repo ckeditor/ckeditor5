@@ -9,19 +9,19 @@
 
 /* globals Node, NodeFilter, DOMParser */
 
-import ViewText from './text';
-import ViewElement from './element';
-import ViewUIElement from './uielement';
-import ViewPosition from './position';
-import ViewRange from './range';
-import ViewSelection from './selection';
-import ViewDocumentFragment from './documentfragment';
-import ViewTreeWalker from './treewalker';
-import { default as Matcher, type MatcherPattern } from './matcher';
+import ViewText from './text.js';
+import ViewElement from './element.js';
+import ViewUIElement from './uielement.js';
+import ViewPosition from './position.js';
+import ViewRange from './range.js';
+import ViewSelection from './selection.js';
+import ViewDocumentFragment from './documentfragment.js';
+import ViewTreeWalker from './treewalker.js';
+import { default as Matcher, type MatcherPattern } from './matcher.js';
 import {
 	BR_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER,
 	getDataWithoutFiller, isInlineFiller, startsWithFiller
-} from './filler';
+} from './filler.js';
 
 import {
 	global,
@@ -35,12 +35,12 @@ import {
 	env
 } from '@ckeditor/ckeditor5-utils';
 
-import type ViewNode from './node';
-import type Document from './document';
-import type DocumentSelection from './documentselection';
-import type EditableElement from './editableelement';
-import type ViewTextProxy from './textproxy';
-import type ViewRawElement from './rawelement';
+import type ViewNode from './node.js';
+import type Document from './document.js';
+import type DocumentSelection from './documentselection.js';
+import type EditableElement from './editableelement.js';
+import type ViewTextProxy from './textproxy.js';
+import type ViewRawElement from './rawelement.js';
 
 type DomNode = globalThis.Node;
 type DomElement = globalThis.HTMLElement;

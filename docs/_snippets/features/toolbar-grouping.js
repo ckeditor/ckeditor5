@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#toolbar-grouping' ), {
@@ -18,6 +18,9 @@ ClassicEditor
 				'|', 'link', 'insertImage', 'blockQuote', 'codeBlock',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
+		},
+		ckbox: {
+			forceDemoLabel: true
 		},
 		ui: {
 			viewportOffset: {

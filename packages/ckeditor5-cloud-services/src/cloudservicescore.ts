@@ -7,10 +7,10 @@
  * @module cloud-services/cloudservicescore
  */
 
-import { ContextPlugin } from 'ckeditor5/src/core';
-import type { TokenUrl } from './cloudservicesconfig';
-import Token, { type InitializedToken, type TokenOptions } from './token/token';
-import UploadGateway from './uploadgateway/uploadgateway';
+import { ContextPlugin } from 'ckeditor5/src/core.js';
+import type { TokenUrl } from './cloudservicesconfig.js';
+import Token, { type InitializedToken, type TokenOptions } from './token/token.js';
+import UploadGateway from './uploadgateway/uploadgateway.js';
 
 /**
  * The `CloudServicesCore` plugin exposes the base API for communication with CKEditor Cloud Services.

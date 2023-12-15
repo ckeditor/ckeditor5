@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { priorities } from 'ckeditor5/src/utils';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { priorities } from 'ckeditor5/src/utils.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from '../_utils/utils';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
 
 import { range } from 'lodash-es';
 

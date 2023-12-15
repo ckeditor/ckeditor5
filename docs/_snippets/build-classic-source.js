@@ -6,7 +6,7 @@
 /* globals window */
 
 import { AutoImage, ImageInsert } from '@ckeditor/ckeditor5-image';
-import ClassicEditor from './build-classic';
+import ClassicEditor from './build-classic.js';
 
 window.ClassicEditor = ClassicEditor;
 

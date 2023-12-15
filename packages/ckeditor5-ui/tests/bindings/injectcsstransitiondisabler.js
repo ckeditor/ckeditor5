@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import injectCssTransitionDisabler from '../../src/bindings/injectcsstransitiondisabler';
-import View from '../../src/view';
+import injectCssTransitionDisabler from '../../src/bindings/injectcsstransitiondisabler.js';
+import View from '../../src/view.js';
 
 describe( 'injectCssTransitionDisabler()', () => {
 	let view;

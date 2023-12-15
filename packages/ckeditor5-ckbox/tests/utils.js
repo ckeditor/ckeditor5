@@ -5,9 +5,9 @@
 
 /* global btoa, atob, window, AbortController, Response */
 
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getWorkspaceId, getImageUrls, blurHashToDataUrl, convertMimeTypeToExtension, getContentTypeOfUrl } from '../src/utils';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { getWorkspaceId, getImageUrls, blurHashToDataUrl, convertMimeTypeToExtension, getContentTypeOfUrl } from '../src/utils.js';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();

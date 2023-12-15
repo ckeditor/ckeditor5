@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DocumentListCommand from '../../src/documentlist/documentlistcommand';
-import DocumentListEditing from '../../src/documentlist/documentlistediting';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import DocumentListCommand from '../../src/documentlist/documentlistcommand.js';
+import DocumentListEditing from '../../src/documentlist/documentlistediting.js';
 
-import stubUid from './_utils/uid';
-import { modelList } from './_utils/utils';
+import stubUid from './_utils/uid.js';
+import { modelList } from './_utils/utils.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DocumentListCommand (multiBlock=false)', () => {
 	let editor, command, model, root, changedBlocks;

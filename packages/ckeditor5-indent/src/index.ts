@@ -7,12 +7,12 @@
  * @module indent
  */
 
-export { default as Indent } from './indent';
-export { default as IndentEditing } from './indentediting';
-export { default as IndentUI } from './indentui';
-export { default as IndentBlock } from './indentblock';
+export { default as Indent } from './indent.js';
+export { default as IndentEditing } from './indentediting.js';
+export { default as IndentUI } from './indentui.js';
+export { default as IndentBlock } from './indentblock.js';
 
-export type { IndentBlockConfig } from './indentconfig';
-export type { default as IndentBlockCommand } from './indentblockcommand';
+export type { IndentBlockConfig } from './indentconfig.js';
+export type { default as IndentBlockCommand } from './indentblockcommand.js';
 
-import './augmentation';
+import './augmentation.js';

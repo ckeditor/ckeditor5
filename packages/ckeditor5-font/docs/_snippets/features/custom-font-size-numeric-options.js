@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-custom-font-size-numeric-options' ), {
@@ -26,6 +26,9 @@ ClassicEditor
 				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
 				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 			]
+		},
+		ckbox: {
+			forceDemoLabel: true
 		},
 		ui: {
 			viewportOffset: {

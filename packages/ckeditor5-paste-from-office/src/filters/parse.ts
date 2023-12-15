@@ -14,9 +14,9 @@ import {
 	ViewDocument,
 	type StylesProcessor,
 	type ViewDocumentFragment
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { normalizeSpacing, normalizeSpacerunSpans } from './space';
+import { normalizeSpacing, normalizeSpacerunSpans } from './space.js';
 
 /**
  * Parses the provided HTML extracting contents of `<body>` and `<style>` tags.

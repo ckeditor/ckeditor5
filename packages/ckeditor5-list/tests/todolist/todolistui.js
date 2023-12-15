@@ -5,13 +5,13 @@
 
 /* globals document */
 
-import TodoListEditing from '../../src/todolist/todolistediting';
-import TodoListUI from '../../src/todolist/todolistui';
+import TodoListEditing from '../../src/todolist/todolistediting.js';
+import TodoListUI from '../../src/todolist/todolistui.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'TodoListUI', () => {
 	let editorElement, editor, model, button;

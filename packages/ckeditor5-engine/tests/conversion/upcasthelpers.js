@@ -3,35 +3,35 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
+import UpcastDispatcher from '../../src/conversion/upcastdispatcher.js';
 
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewDocumentFragment from '../../src/view/documentfragment';
-import ViewText from '../../src/view/text';
-import ViewUIElement from '../../src/view/uielement';
-import ViewAttributeElement from '../../src/view/attributeelement';
-import ViewDocument from '../../src/view/document';
+import ViewContainerElement from '../../src/view/containerelement.js';
+import ViewDocumentFragment from '../../src/view/documentfragment.js';
+import ViewText from '../../src/view/text.js';
+import ViewUIElement from '../../src/view/uielement.js';
+import ViewAttributeElement from '../../src/view/attributeelement.js';
+import ViewDocument from '../../src/view/document.js';
 
-import Model from '../../src/model/model';
-import ModelDocumentFragment from '../../src/model/documentfragment';
-import ModelElement from '../../src/model/element';
-import ModelText from '../../src/model/text';
-import ModelRange from '../../src/model/range';
-import ModelPosition from '../../src/model/position';
+import Model from '../../src/model/model.js';
+import ModelDocumentFragment from '../../src/model/documentfragment.js';
+import ModelElement from '../../src/model/element.js';
+import ModelText from '../../src/model/text.js';
+import ModelRange from '../../src/model/range.js';
+import ModelPosition from '../../src/model/position.js';
 
-import UpcastHelpers, { convertToModelFragment, convertText, convertSelectionChange } from '../../src/conversion/upcasthelpers';
+import UpcastHelpers, { convertToModelFragment, convertText, convertSelectionChange } from '../../src/conversion/upcasthelpers.js';
 
-import { getData as modelGetData, setData as modelSetData, stringify } from '../../src/dev-utils/model';
-import View from '../../src/view/view';
-import createViewRoot from '../view/_utils/createroot';
-import { setData as viewSetData, parse as viewParse } from '../../src/dev-utils/view';
-import Mapper from '../../src/conversion/mapper';
-import ViewSelection from '../../src/view/selection';
-import ViewRange from '../../src/view/range';
-import { StylesProcessor } from '../../src/view/stylesmap';
-import Writer from '../../src/model/writer';
+import { getData as modelGetData, setData as modelSetData, stringify } from '../../src/dev-utils/model.js';
+import View from '../../src/view/view.js';
+import createViewRoot from '../view/_utils/createroot.js';
+import { setData as viewSetData, parse as viewParse } from '../../src/dev-utils/view.js';
+import Mapper from '../../src/conversion/mapper.js';
+import ViewSelection from '../../src/view/selection.js';
+import ViewRange from '../../src/view/range.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
+import Writer from '../../src/model/writer.js';
 
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray.js';
 
 describe( 'UpcastHelpers', () => {
 	let upcastDispatcher, model, schema, upcastHelpers, viewDocument;

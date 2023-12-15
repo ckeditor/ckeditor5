@@ -187,7 +187,10 @@ function getWebpackConfig() {
 		},
 		resolve: {
 			modules: getModuleResolvePaths(),
-			extensions: [ '.ts', '.js', '.json' ]
+			extensions: [ '.ts', '.js', '.json' ],
+			extensionAlias: {
+				'.js': [ '.js', '.ts' ]
+			}
 		},
 		resolveLoader: {
 			modules: getModuleResolvePaths()

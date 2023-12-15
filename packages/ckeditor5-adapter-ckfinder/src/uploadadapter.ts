@@ -9,16 +9,16 @@
  * @module adapter-ckfinder/uploadadapter
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	FileRepository,
 	type UploadAdapter as UploadAdapterInterface,
 	type FileLoader,
 	type UploadResponse
-} from 'ckeditor5/src/upload';
-import type { LocaleTranslate } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/upload.js';
+import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 
-import { getCsrfToken } from './utils';
+import { getCsrfToken } from './utils.js';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKFinder server–side connector.

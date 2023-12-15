@@ -6,12 +6,12 @@
 /**
  * @module code-block/indentcodeblockcommand
  */
-import { Command, type Editor } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	getIndentOutdentPositions,
 	isModelSelectionInCodeBlock
-} from './utils';
+} from './utils.js';
 
 /**
  * The code block indentation increase command plugin.

@@ -5,12 +5,12 @@
 
 /* global document, window, console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
-import SourceEditing from '../../src/sourceediting';
+import SourceEditing from '../../src/sourceediting.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

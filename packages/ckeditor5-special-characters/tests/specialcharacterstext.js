@@ -5,10 +5,10 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import SpecialCharacters from '../src/specialcharacters';
-import SpecialCharactersText from '../src/specialcharacterstext';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import SpecialCharacters from '../src/specialcharacters.js';
+import SpecialCharactersText from '../src/specialcharacterstext.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SpecialCharactersText', () => {
 	testUtils.createSinonSandbox();

@@ -5,7 +5,7 @@
 
 /* globals AbortController, AbortSignal */
 
-import wait from '../src/wait';
+import wait from '../src/wait.js';
 
 describe( 'utils', () => {
 	let clock;

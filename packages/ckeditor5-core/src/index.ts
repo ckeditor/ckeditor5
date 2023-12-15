@@ -7,31 +7,31 @@
  * @module core
  */
 
-export { default as Plugin, type PluginDependencies, type PluginConstructor } from './plugin';
-export { default as Command, type CommandExecuteEvent } from './command';
-export { default as MultiCommand } from './multicommand';
-export type { CommandsMap } from './commandcollection';
-export type { PluginsMap, default as PluginCollection } from './plugincollection';
+export { default as Plugin, type PluginDependencies, type PluginConstructor } from './plugin.js';
+export { default as Command, type CommandExecuteEvent } from './command.js';
+export { default as MultiCommand } from './multicommand.js';
+export type { CommandsMap } from './commandcollection.js';
+export type { PluginsMap, default as PluginCollection } from './plugincollection.js';
 
-export { default as Context, type ContextConfig } from './context';
-export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin';
-export { type EditingKeystrokeCallback } from './editingkeystrokehandler';
+export { default as Context, type ContextConfig } from './context.js';
+export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin.js';
+export { type EditingKeystrokeCallback } from './editingkeystrokehandler.js';
 
-export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor';
+export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor.js';
 export type {
 	EditorConfig,
 	LanguageConfig,
 	ToolbarConfig,
 	ToolbarConfigItem,
 	UiConfig
-} from './editor/editorconfig';
+} from './editor/editorconfig.js';
 
-export { default as attachToForm } from './editor/utils/attachtoform';
-export { default as DataApiMixin, type DataApi } from './editor/utils/dataapimixin';
-export { default as ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin';
-export { default as secureSourceElement } from './editor/utils/securesourceelement';
+export { default as attachToForm } from './editor/utils/attachtoform.js';
+export { default as DataApiMixin, type DataApi } from './editor/utils/dataapimixin.js';
+export { default as ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin.js';
+export { default as secureSourceElement } from './editor/utils/securesourceelement.js';
 
-export { default as PendingActions, type PendingAction } from './pendingactions';
+export { default as PendingActions, type PendingAction } from './pendingactions.js';
 
 import cancel from './../theme/icons/cancel.svg';
 import caption from './../theme/icons/caption.svg';
@@ -130,4 +130,4 @@ export const icons = {
 	dragIndicator
 };
 
-import './augmentation';
+import './augmentation.js';

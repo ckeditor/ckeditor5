@@ -9,7 +9,7 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Editor, EditorDestroyEvent } from '../editor';
+import type { default as Editor, EditorDestroyEvent } from '../editor.js';
 
 /**
  * Marks the source element on which the editor was initialized. This prevents other editor instances from using this element.

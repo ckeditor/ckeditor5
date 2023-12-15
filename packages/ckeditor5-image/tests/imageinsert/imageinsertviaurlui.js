@@ -5,20 +5,20 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Model from '@ckeditor/ckeditor5-ui/src/model.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
 import { CollapsibleView, DropdownButtonView } from '@ckeditor/ckeditor5-ui';
 import { icons } from '@ckeditor/ckeditor5-core';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Image from '../../src/image';
-import ImageInsertFormView from '../../src/imageinsert/ui/imageinsertformview';
-import ImageInsertViaUrlUI from '../../src/imageinsert/imageinsertviaurlui';
-import { ImageInsertViaUrl } from '../../src';
-import ImageInsertUrlView from '../../src/imageinsert/ui/imageinserturlview';
+import Image from '../../src/image.js';
+import ImageInsertFormView from '../../src/imageinsert/ui/imageinsertformview.js';
+import ImageInsertViaUrlUI from '../../src/imageinsert/imageinsertviaurlui.js';
+import { ImageInsertViaUrl } from '../../src/index.js';
+import ImageInsertUrlView from '../../src/imageinsert/ui/imageinserturlview.js';
 
 describe( 'ImageInsertViaUrlUI', () => {
 	let editor, editorElement, insertImageUI;

@@ -7,11 +7,11 @@
  * @module block-quote/blockquoteediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
-import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
+import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
 
-import BlockQuoteCommand from './blockquotecommand';
+import BlockQuoteCommand from './blockquotecommand.js';
 
 /**
  * The block quote editing.

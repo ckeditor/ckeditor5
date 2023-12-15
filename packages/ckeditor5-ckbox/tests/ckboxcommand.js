@@ -5,27 +5,27 @@
 
 /* global document, window, btoa */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import CloudServicesCoreMock from './_utils/cloudservicescoremock';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 
-import CKBoxEditing from '../src/ckboxediting';
-import CKBoxCommand from '../src/ckboxcommand';
-import { blurHashToDataUrl } from '../src/utils';
+import CKBoxEditing from '../src/ckboxediting.js';
+import CKBoxCommand from '../src/ckboxcommand.js';
+import { blurHashToDataUrl } from '../src/utils.js';
 
 describe( 'CKBoxCommand', () => {
 	let editor, model, command, originalCKBox;

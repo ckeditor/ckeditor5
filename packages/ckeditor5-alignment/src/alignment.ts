@@ -7,10 +7,10 @@
  * @module alignment/alignment
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import AlignmentEditing from './alignmentediting';
-import AlignmentUI from './alignmentui';
+import AlignmentEditing from './alignmentediting.js';
+import AlignmentUI from './alignmentui.js';
 
 /**
  * The text alignment plugin.

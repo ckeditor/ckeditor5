@@ -5,7 +5,7 @@
 
 /* globals AbortController, AbortSignal, setTimeout */
 
-import retry, { exponentialDelay } from '../src/retry';
+import retry, { exponentialDelay } from '../src/retry.js';
 
 describe( 'utils', () => {
 	let clock;

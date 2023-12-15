@@ -7,8 +7,8 @@
  * @module horizontal-line/horizontallinecommand
  */
 
-import type { DocumentSelection, Element, Model, Schema, Selection } from 'ckeditor5/src/engine';
-import { Command } from 'ckeditor5/src/core';
+import type { DocumentSelection, Element, Model, Schema, Selection } from 'ckeditor5/src/engine.js';
+import { Command } from 'ckeditor5/src/core.js';
 
 /**
  * The horizontal line command.

@@ -7,24 +7,24 @@
  * @module engine/model/differ
  */
 
-import Position from './position';
-import Range from './range';
+import Position from './position.js';
+import Range from './range.js';
 
-import type { default as MarkerCollection, MarkerData } from './markercollection';
-import type AttributeOperation from './operation/attributeoperation';
-import type DocumentFragment from './documentfragment';
-import type Element from './element';
-import type InsertOperation from './operation/insertoperation';
-import type Item from './item';
-import type MergeOperation from './operation/mergeoperation';
-import type MoveOperation from './operation/moveoperation';
-import type Node from './node';
-import type RootElement from './rootelement';
-import type Operation from './operation/operation';
-import type RenameOperation from './operation/renameoperation';
-import type SplitOperation from './operation/splitoperation';
-import type RootOperation from './operation/rootoperation';
-import type RootAttributeOperation from './operation/rootattributeoperation';
+import type { default as MarkerCollection, MarkerData } from './markercollection.js';
+import type AttributeOperation from './operation/attributeoperation.js';
+import type DocumentFragment from './documentfragment.js';
+import type Element from './element.js';
+import type InsertOperation from './operation/insertoperation.js';
+import type Item from './item.js';
+import type MergeOperation from './operation/mergeoperation.js';
+import type MoveOperation from './operation/moveoperation.js';
+import type Node from './node.js';
+import type RootElement from './rootelement.js';
+import type Operation from './operation/operation.js';
+import type RenameOperation from './operation/renameoperation.js';
+import type SplitOperation from './operation/splitoperation.js';
+import type RootOperation from './operation/rootoperation.js';
+import type RootAttributeOperation from './operation/rootattributeoperation.js';
 
 /**
  * Calculates the difference between two model states.

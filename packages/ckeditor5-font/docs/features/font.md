@@ -20,7 +20,7 @@ Use the toolbar dropdowns in the demo below to control the font size {@icon @cke
 
 ## Additional feature information
 
-The font styles, just like the {@link features/basic-styles basic text styles} can serve numerous purposes. Font size setting can be applied globally or to a selected part of the text only making it catch the eye of the reader. Using different font families can help differentiate between sections of the content that serve various purposes (e.g. main text and a side quotation or a recap). Different font colors can work as markers and guides just like font background colors, that stand out even more and draw attention.
+The font styles, just like the {@link features/basic-styles basic text styles}, can serve many purposes. Font size setting can be applied globally or to a selected part of the text only making it catch the eye of the reader. Using different font families can help differentiate between sections of the content that serve various purposes (like main text and a side quotation or a recap). Different font colors can work as markers and guides just like font background colors, that stand out even more and draw attention.
 
 The plugin enables the following features in the rich-text editor:
 * {@link module:font/fontfamily~FontFamily} &ndash; Allows to change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.

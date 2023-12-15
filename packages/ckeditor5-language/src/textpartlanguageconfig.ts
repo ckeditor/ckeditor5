@@ -7,7 +7,7 @@
  * @module language/textpartlanguageconfig
  */
 
-import type { LanguageDirection } from 'ckeditor5/src/utils';
+import type { LanguageDirection } from 'ckeditor5/src/utils.js';
 
 /**
  * The text part language feature option descriptor.

@@ -7,10 +7,10 @@
  * @module table/tablecellproperties
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
-import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
+import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui.js';
+import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting.js';
 
 /**
  * The table cell properties feature. Enables support for setting properties of table cells (size, border, background, etc.).

@@ -16,15 +16,15 @@ Below you can see a demo of an editor with the dark theme as a result of customi
 
 ## Styles processing and bundling
 
-CKEditor&nbsp;5 is bundled using [webpack](https://webpack.js.org/) and it handles the importing and processing of styles using [loaders](https://webpack.js.org/concepts/loaders/). Its configuration can be found in the `webpack.config.js` file.
+CKEditor&nbsp;5 is bundled using [webpack](https://webpack.js.org/) and it handles the importing and processing of styles using [loaders](https://webpack.js.org/concepts/loaders/). You can find its configuration in the `webpack.config.js` file.
 
 <info-box info>
 	To learn more about building CKEditor, check out the {@link installation/getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.
 </info-box>
 
-The entire process of building and managing the styles boils down to three steps:
+The entire process of building and managing the styles consists of three steps:
 
-1. **Collecting**: Each JavaScript file in the project can import multiple `.css` files using the ES6 [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) directive. Imported files are handled by [PostCSS Loader](https://www.npmjs.com/package/postcss-loader).
+1. **Collecting**: Each JavaScript file in the project can import many `.css` files using the ES6 [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) directive. Imported files are handled by [PostCSS Loader](https://www.npmjs.com/package/postcss-loader).
 
 	```js
 	import '../theme/styles.css';
@@ -185,7 +185,7 @@ This file can be referenced directly in HTML **after the `<link>` tag injected b
 <link rel="stylesheet" href="custom.css" type="text/css">
 ```
 
-Alternatively, the style sheet can also be imported into a JavaScript file that is processed by webpack and the [loaders](#styles-processing-and-bundling), becoming a part of the build, e.g. an entry point of the application.
+Alternatively, the style sheet can also be imported into a JavaScript file that is processed by webpack and the [loaders](#styles-processing-and-bundling), becoming a part of the build, like an entry point of the application.
 
 <info-box info>
 	Learn more about {@link framework/quick-start building the editor using webpack}.

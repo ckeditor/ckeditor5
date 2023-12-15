@@ -5,7 +5,7 @@
 
 /* globals window, document, console, ClassicEditor, SpecialCharactersEssentials */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 function SpecialCharactersExtended( editor ) {
 	editor.plugins.get( 'SpecialCharacters' ).addItems( 'Mathematical', [
@@ -25,6 +25,9 @@ ClassicEditor
 				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'specialCharacters',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
+		},
+		ckbox: {
+			forceDemoLabel: true
 		},
 		ui: {
 			viewportOffset: {

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import LinkCommand from '../src/linkcommand';
-import ManualDecorator from '../src/utils/manualdecorator';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import AutomaticDecorators from '../src/utils/automaticdecorators';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import LinkCommand from '../src/linkcommand.js';
+import ManualDecorator from '../src/utils/manualdecorator.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import AutomaticDecorators from '../src/utils/automaticdecorators.js';
 
 describe( 'LinkCommand', () => {
 	let editor, model, command;

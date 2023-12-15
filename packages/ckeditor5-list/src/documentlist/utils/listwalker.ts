@@ -7,10 +7,10 @@
  * @module list/documentlist/utils/listwalker
  */
 
-import { first, toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
-import { isListItemBlock, type ListElement } from './model';
+import { first, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import { isListItemBlock, type ListElement } from './model.js';
 
-import type { Element, Node } from 'ckeditor5/src/engine';
+import type { Element, Node } from 'ckeditor5/src/engine.js';
 
 /**
  * Document list blocks iterator.

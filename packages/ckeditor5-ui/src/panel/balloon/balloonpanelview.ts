@@ -7,8 +7,8 @@
  * @module ui/panel/balloon/balloonpanelview
  */
 
-import View from '../../view';
-import type ViewCollection from '../../viewcollection';
+import View from '../../view.js';
+import type ViewCollection from '../../viewcollection.js';
 
 import {
 	getOptimalPosition,

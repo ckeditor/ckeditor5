@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import getText from '../../src/utils/getlasttextline';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import getText from '../../src/utils/getlasttextline.js';
 
 describe( 'utils', () => {
 	let model, doc, root;

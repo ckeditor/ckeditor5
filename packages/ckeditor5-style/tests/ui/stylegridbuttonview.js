@@ -6,7 +6,7 @@
 import { ButtonView, View } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
-import StyleGridButtonView from '../../src/ui/stylegridbuttonview';
+import StyleGridButtonView from '../../src/ui/stylegridbuttonview.js';
 
 describe( 'StyleGridButtonView', () => {
 	let locale, button;

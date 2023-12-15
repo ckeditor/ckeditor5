@@ -5,8 +5,8 @@
 
 /* global console, setTimeout */
 
-import diff from '../../../src/diff';
-import getLongText from '../../_utils/longtext';
+import diff from '../../../src/diff.js';
+import getLongText from '../../_utils/longtext.js';
 
 // Tests
 setTimeout( () => {

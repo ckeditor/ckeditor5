@@ -7,19 +7,19 @@
  * @module heading/headingui
  */
 
-import { Plugin, type Command } from 'ckeditor5/src/core';
+import { Plugin, type Command } from 'ckeditor5/src/core.js';
 import {
 	Model,
 	createDropdown,
 	addListToDropdown,
 	type ButtonExecuteEvent,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { Collection } from 'ckeditor5/src/utils';
-import type { ParagraphCommand } from 'ckeditor5/src/paragraph';
+} from 'ckeditor5/src/ui.js';
+import { Collection } from 'ckeditor5/src/utils.js';
+import type { ParagraphCommand } from 'ckeditor5/src/paragraph.js';
 
-import { getLocalizedOptions } from './utils';
-import type HeadingCommand from './headingcommand';
+import { getLocalizedOptions } from './utils.js';
+import type HeadingCommand from './headingcommand.js';
 
 import '../theme/heading.css';
 

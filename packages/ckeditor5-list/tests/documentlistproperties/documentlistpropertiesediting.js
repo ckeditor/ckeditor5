@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
-import { modelList } from '../documentlist/_utils/utils';
-import stubUid from '../documentlist/_utils/uid';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting.js';
+import { modelList } from '../documentlist/_utils/utils.js';
+import stubUid from '../documentlist/_utils/uid.js';
 
 describe( 'DocumentListPropertiesEditing', () => {
 	let editor, model;

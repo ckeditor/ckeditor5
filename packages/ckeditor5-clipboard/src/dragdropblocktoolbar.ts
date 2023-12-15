@@ -19,7 +19,7 @@ import {
 
 import type { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 
-import ClipboardObserver from './clipboardobserver';
+import ClipboardObserver from './clipboardobserver.js';
 
 /**
  * Integration of a block Drag and Drop support with the block toolbar.

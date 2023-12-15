@@ -7,8 +7,8 @@
  * @module enter/shiftenter
  */
 
-import ShiftEnterCommand from './shiftentercommand';
-import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver';
+import ShiftEnterCommand from './shiftentercommand.js';
+import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 /**

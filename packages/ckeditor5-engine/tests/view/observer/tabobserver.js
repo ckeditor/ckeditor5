@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import TabObserver from '../../../src/view/observer/tabobserver';
-import View from '../../../src/view/view';
-import createViewRoot from '../../../tests/view/_utils/createroot';
+import TabObserver from '../../../src/view/observer/tabobserver.js';
+import View from '../../../src/view/view.js';
+import createViewRoot from '../../../tests/view/_utils/createroot.js';
 
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'TabObserver', () => {
 	let view, viewDocument;

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import toArray from '../src/toarray';
+import toArray from '../src/toarray.js';
 
 describe( 'utils', () => {
 	describe( 'toArray', () => {

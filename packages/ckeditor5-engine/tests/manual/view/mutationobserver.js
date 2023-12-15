@@ -5,10 +5,10 @@
 
 /* globals console, document */
 
-import View from '../../../src/view/view';
-import createViewRoot from '../../view/_utils/createroot';
-import { setData } from '../../../src/dev-utils/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import View from '../../../src/view/view.js';
+import createViewRoot from '../../view/_utils/createroot.js';
+import { setData } from '../../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 const view = new View( new StylesProcessor() );
 const viewDocument = view.document;

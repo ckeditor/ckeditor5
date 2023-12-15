@@ -7,9 +7,9 @@
  * @module list/documentlist/utils/postfixers
  */
 
-import type { Position, Writer } from 'ckeditor5/src/engine';
-import { iterateSiblingListBlocks, type ListIteratorValue } from './listwalker';
-import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model';
+import type { Position, Writer } from 'ckeditor5/src/engine.js';
+import { iterateSiblingListBlocks, type ListIteratorValue } from './listwalker.js';
+import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model.js';
 
 /**
  * Based on the provided positions looks for the list head and stores it in the provided map.

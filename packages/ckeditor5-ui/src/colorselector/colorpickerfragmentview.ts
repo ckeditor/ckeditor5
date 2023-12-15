@@ -7,17 +7,17 @@
  * @module ui/colorselector/colorpickerfragmentview
  */
 
-import View from '../view';
-import ButtonView from '../button/buttonview';
-import type ViewCollection from '../viewcollection';
+import View from '../view.js';
+import ButtonView from '../button/buttonview.js';
+import type ViewCollection from '../viewcollection.js';
 import {
 	default as ColorPickerView,
 	type ColorPickerColorSelectedEvent
-} from '../colorpicker/colorpickerview';
+} from '../colorpicker/colorpickerview.js';
 
 import type { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
-import type { ColorPickerViewConfig } from '../colorpicker/utils';
-import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview';
+import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
+import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview.js';
 
 import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';

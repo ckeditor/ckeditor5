@@ -175,7 +175,7 @@ A relatively simple yet efficient strategy of adopting CKEditor&nbsp;5 into exis
 
 ### Installation and integration
 
-The very first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all available installation and integration options.
+The first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all available installation and integration options.
 
 The API for integrating CKEditor with your pages changed, too. It is worth checking the {@link installation/getting-started/editor-lifecycle Editor lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
 

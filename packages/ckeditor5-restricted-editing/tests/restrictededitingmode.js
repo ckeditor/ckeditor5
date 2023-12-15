@@ -5,13 +5,13 @@
 
 /* global document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 
-import RestrictedEditingMode from './../src/restrictededitingmode';
-import RestrictedEditingModeUI from './../src/restrictededitingmodeui';
-import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting';
+import RestrictedEditingMode from './../src/restrictededitingmode.js';
+import RestrictedEditingModeUI from './../src/restrictededitingmodeui.js';
+import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
 
 describe( 'RestrictedEditingMode', () => {
 	let editor, element;
