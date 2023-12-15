@@ -7,11 +7,11 @@
  * @module engine/view/observer/tabobserver
  */
 
-import type View from '../view';
-import Observer from './observer';
-import BubblingEventInfo from './bubblingeventinfo';
-import type { KeyEventData, ViewDocumentKeyDownEvent } from './keyobserver';
-import type { BubblingEvent } from './bubblingemittermixin';
+import type View from '../view.js';
+import Observer from './observer.js';
+import BubblingEventInfo from './bubblingeventinfo.js';
+import type { KeyEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
+import type { BubblingEvent } from './bubblingemittermixin.js';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 

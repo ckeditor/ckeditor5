@@ -5,7 +5,7 @@
 
 /* global window, document, console, BalloonEditor */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const maxCharacters = 120;
 const container = document.querySelector( '.demo-update' );

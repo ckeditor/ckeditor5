@@ -7,12 +7,12 @@
  * @module indent/indentblockcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
 import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
-import { first } from 'ckeditor5/src/utils';
+import { first } from 'ckeditor5/src/utils.js';
 
-import type { IndentBehavior } from './indentcommandbehavior/indentbehavior';
+import type { IndentBehavior } from './indentcommandbehavior/indentbehavior.js';
 
 /**
  * The indent block command.

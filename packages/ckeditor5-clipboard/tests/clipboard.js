@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Clipboard from '../src/clipboard';
-import ClipboardPipeline from '../src/clipboardpipeline';
-import DragDrop from '../src/dragdrop';
-import PastePlainText from '../src/pasteplaintext';
+import Clipboard from '../src/clipboard.js';
+import ClipboardPipeline from '../src/clipboardpipeline.js';
+import DragDrop from '../src/dragdrop.js';
+import PastePlainText from '../src/pasteplaintext.js';
 
 describe( 'Clipboard Feature', () => {
 	it( 'requires ClipboardPipeline, DragDrop and PastePlainText', () => {

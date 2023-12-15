@@ -9,18 +9,18 @@
 
 import {
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
 import {
 	EditorUI,
 	normalizeToolbarConfig,
 	type EditorUIReadyEvent,
 	type EditorUIUpdateEvent
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type InlineEditorUIView from './inlineeditoruiview';
+import type InlineEditorUIView from './inlineeditoruiview.js';
 
 /**
  * The inline editor UI class.

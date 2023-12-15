@@ -9,7 +9,7 @@
 
 /* globals console */
 
-import getSubNodes from './getsubnodes';
+import getSubNodes from './getsubnodes.js';
 
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.

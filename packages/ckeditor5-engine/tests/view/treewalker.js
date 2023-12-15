@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Document from '../../src/view/document';
-import DocumentFragment from '../../src/view/documentfragment';
-import AttributeElement from '../../src/view/attributeelement';
-import ContainerElement from '../../src/view/containerelement';
-import Text from '../../src/view/text';
-import TreeWalker from '../../src/view/treewalker';
-import Position from '../../src/view/position';
-import Range from '../../src/view/range';
-import createViewRoot from './_utils/createroot';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import Document from '../../src/view/document.js';
+import DocumentFragment from '../../src/view/documentfragment.js';
+import AttributeElement from '../../src/view/attributeelement.js';
+import ContainerElement from '../../src/view/containerelement.js';
+import Text from '../../src/view/text.js';
+import TreeWalker from '../../src/view/treewalker.js';
+import Position from '../../src/view/position.js';
+import Range from '../../src/view/range.js';
+import createViewRoot from './_utils/createroot.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding;

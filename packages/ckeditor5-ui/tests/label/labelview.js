@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import LabelView from '../../src/label/labelview';
+import LabelView from '../../src/label/labelview.js';
 
 describe( 'LabelView', () => {
 	let view;

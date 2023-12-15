@@ -5,10 +5,10 @@
 
 /* global document */
 
-import BlockQuoteEditing from '../src/blockquoteediting';
-import BlockQuoteUI from '../src/blockquoteui';
+import BlockQuoteEditing from '../src/blockquoteediting.js';
+import BlockQuoteUI from '../src/blockquoteui.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'BlockQuoteUI', () => {
 	let editor, command, element;

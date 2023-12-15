@@ -7,8 +7,8 @@
  * @module code-block/codeblockediting
  */
 
-import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
-import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
+import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
 import {
 	UpcastWriter,
@@ -20,25 +20,25 @@ import {
 	type UpcastElementEvent,
 	type UpcastTextEvent,
 	type Element
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 import type { DocumentListEditing } from '@ckeditor/ckeditor5-list';
 
-import CodeBlockCommand from './codeblockcommand';
-import IndentCodeBlockCommand from './indentcodeblockcommand';
-import OutdentCodeBlockCommand from './outdentcodeblockcommand';
+import CodeBlockCommand from './codeblockcommand.js';
+import IndentCodeBlockCommand from './indentcodeblockcommand.js';
+import OutdentCodeBlockCommand from './outdentcodeblockcommand.js';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
 	rawSnippetTextToViewDocumentFragment
-} from './utils';
+} from './utils.js';
 import {
 	modelToViewCodeBlockInsertion,
 	modelToDataViewSoftBreakInsertion,
 	dataViewToModelCodeBlockInsertion,
 	dataViewToModelTextNewlinesInsertion,
 	dataViewToModelOrphanNodeConsumer
-} from './converters';
+} from './converters.js';
 
 const DEFAULT_ELEMENT = 'paragraph';
 

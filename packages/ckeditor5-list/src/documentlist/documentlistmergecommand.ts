@@ -7,8 +7,8 @@
  * @module list/documentlist/documentlistmergecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { DocumentSelection, Element, Node, Selection } from 'ckeditor5/src/engine';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { DocumentSelection, Element, Node, Selection } from 'ckeditor5/src/engine.js';
 
 import {
 	getNestedListBlocks,
@@ -20,8 +20,8 @@ import {
 	getSelectedBlockObject,
 	isListItemBlock,
 	type ListElement
-} from './utils/model';
-import ListWalker from './utils/listwalker';
+} from './utils/model.js';
+import ListWalker from './utils/listwalker.js';
 
 /**
  * The document list merge command. It is used by the {@link module:list/documentlist~DocumentList list feature}.

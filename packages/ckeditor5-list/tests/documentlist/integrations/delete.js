@@ -5,24 +5,24 @@
 
 /* global document */
 
-import DocumentListEditing from '../../../src/documentlist/documentlistediting';
+import DocumentListEditing from '../../../src/documentlist/documentlistediting.js';
 
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
-import stubUid from '../_utils/uid';
-import { modelList } from '../_utils/utils';
-import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
+import stubUid from '../_utils/uid.js';
+import { modelList } from '../_utils/utils.js';
+import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo.js';
 
 describe( 'DocumentListEditing integrations: backspace & delete', () => {
 	const blocksChangedByCommands = [];

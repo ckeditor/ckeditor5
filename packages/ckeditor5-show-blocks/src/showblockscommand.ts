@@ -7,7 +7,7 @@
  * @module show-blocks/showblockscommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 /**
  * The show blocks command.

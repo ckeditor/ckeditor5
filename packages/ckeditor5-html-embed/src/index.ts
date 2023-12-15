@@ -7,10 +7,10 @@
  * @module html-embed
  */
 
-export { default as HtmlEmbed } from './htmlembed';
-export { default as HtmlEmbedEditing } from './htmlembedediting';
-export { default as HtmlEmbedUI } from './htmlembedui';
-export type { default as HtmlEmbedCommand } from './htmlembedcommand';
-export type { HtmlEmbedConfig } from './htmlembedconfig';
+export { default as HtmlEmbed } from './htmlembed.js';
+export { default as HtmlEmbedEditing } from './htmlembedediting.js';
+export { default as HtmlEmbedUI } from './htmlembedui.js';
+export type { default as HtmlEmbedCommand } from './htmlembedcommand.js';
+export type { HtmlEmbedConfig } from './htmlembedconfig.js';
 
-import './augmentation';
+import './augmentation.js';

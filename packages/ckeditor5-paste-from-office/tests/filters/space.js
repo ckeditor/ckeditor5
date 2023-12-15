@@ -5,7 +5,7 @@
 
 /* globals DOMParser */
 
-import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space';
+import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space.js';
 
 describe( 'PasteFromOffice - filters', () => {
 	describe( 'space', () => {

@@ -7,6 +7,6 @@
  * @module essentials
  */
 
-export { default as Essentials } from './essentials';
+export { default as Essentials } from './essentials.js';
 
-import './augmentation';
+import './augmentation.js';

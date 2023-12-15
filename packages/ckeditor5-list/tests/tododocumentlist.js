@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TodoDocumentList from '../src/tododocumentlist';
-import TodoDocumentListEditing from '../src/tododocumentlist/tododocumentlistediting';
-import TodoListUI from '../src/todolist/todolistui';
+import TodoDocumentList from '../src/tododocumentlist.js';
+import TodoDocumentListEditing from '../src/tododocumentlist/tododocumentlistediting.js';
+import TodoListUI from '../src/todolist/todolistui.js';
 
 describe( 'TodoDocumentList', () => {
 	it( 'should be named', () => {

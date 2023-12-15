@@ -7,9 +7,9 @@
  * @module engine/view/renderer
  */
 
-import ViewText from './text';
-import ViewPosition from './position';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
+import ViewText from './text.js';
+import ViewPosition from './position.js';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler.js';
 
 import {
 	CKEditorError,
@@ -26,11 +26,11 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type { ChangeType } from './document';
-import type DocumentSelection from './documentselection';
-import type DomConverter from './domconverter';
-import type ViewElement from './element';
-import type ViewNode from './node';
+import type { ChangeType } from './document.js';
+import type DocumentSelection from './documentselection.js';
+import type DomConverter from './domconverter.js';
+import type ViewElement from './element.js';
+import type ViewNode from './node.js';
 
 import '../../theme/renderer.css';
 

@@ -10,12 +10,12 @@
 import {
 	Plugin,
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 import {
 	logWarning,
 	type Locale,
 	type Observable
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 import {
 	createDropdown,
 	SplitButtonView,
@@ -23,10 +23,10 @@ import {
 	type DropdownButtonView,
 	type DropdownView,
 	type FocusableView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import ImageInsertFormView from './ui/imageinsertformview';
-import ImageUtils from '../imageutils';
+import ImageInsertFormView from './ui/imageinsertformview.js';
+import ImageUtils from '../imageutils.js';
 
 /**
  * The image insert dropdown plugin.

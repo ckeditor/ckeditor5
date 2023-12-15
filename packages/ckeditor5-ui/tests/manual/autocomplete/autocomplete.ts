@@ -13,7 +13,7 @@ import {
 	AutocompleteView,
 	type FilteredView,
 	type FilteredViewExecuteEvent
-} from '../../../src';
+} from '../../../src/index.js';
 
 const locale = new Locale();
 

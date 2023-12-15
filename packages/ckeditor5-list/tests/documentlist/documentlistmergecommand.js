@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { modelList } from './_utils/utils';
-import DocumentListMergeCommand from '../../src/documentlist/documentlistmergecommand';
+import { modelList } from './_utils/utils.js';
+import DocumentListMergeCommand from '../../src/documentlist/documentlistmergecommand.js';
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DocumentListMergeCommand', () => {
 	let editor, model, doc, command;

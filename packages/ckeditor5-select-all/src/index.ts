@@ -7,9 +7,9 @@
  * @module select-all
  */
 
-export { default as SelectAll } from './selectall';
-export { default as SelectAllEditing } from './selectallediting';
-export { default as SelectAllUI } from './selectallui';
-export type { default as SelectAllCommand } from './selectallcommand';
+export { default as SelectAll } from './selectall.js';
+export { default as SelectAllEditing } from './selectallediting.js';
+export { default as SelectAllUI } from './selectallui.js';
+export type { default as SelectAllCommand } from './selectallcommand.js';
 
-import './augmentation';
+import './augmentation.js';

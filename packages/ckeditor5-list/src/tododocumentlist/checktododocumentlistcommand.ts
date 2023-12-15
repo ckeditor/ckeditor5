@@ -7,9 +7,9 @@
  * @module list/tododocumentlist/checktododocumentlistcommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type { Element } from 'ckeditor5/src/engine';
-import { getAllListItemBlocks } from '../documentlist/utils/model';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { getAllListItemBlocks } from '../documentlist/utils/model.js';
 
 /**
  * The check to-do command.

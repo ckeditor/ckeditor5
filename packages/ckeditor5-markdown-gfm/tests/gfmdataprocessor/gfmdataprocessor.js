@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import GFMDataProcessor from '../../src/gfmdataprocessor';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
+import GFMDataProcessor from '../../src/gfmdataprocessor.js';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'GFMDataProcessor', () => {
 	let dataProcessor, viewDocument;

@@ -7,12 +7,12 @@
  * @module list/documentlistproperties/documentliststartcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
+import { Command } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
 import {
 	expandListBlocksToCompleteList,
 	isListItemBlock
-} from '../documentlist/utils/model';
+} from '../documentlist/utils/model.js';
 
 /**
  * The list start index command. It changes the `listStart` attribute of the selected list items,

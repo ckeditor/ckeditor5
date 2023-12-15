@@ -5,12 +5,12 @@
 
 /* global document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import StandardEditingMode from './../src/standardeditingmode';
-import StandardEditingModeUI from './../src/standardeditingmodeui';
-import StandardEditingModeEditing from './../src/standardeditingmodeediting';
+import StandardEditingMode from './../src/standardeditingmode.js';
+import StandardEditingModeUI from './../src/standardeditingmodeui.js';
+import StandardEditingModeEditing from './../src/standardeditingmodeediting.js';
 
 describe( 'StandardEditingMode', () => {
 	let editor, element;

@@ -21,7 +21,7 @@ module.exports = {
 
 	output: {
 		// The name under which the editor will be exported.
-		library: 'DecoupledEditor',
+		library: 'BalloonEditor',
 
 		path: path.resolve( __dirname, 'build' ),
 		filename: 'ckeditor.js',
@@ -69,6 +69,9 @@ module.exports = {
 	},
 
 	resolve: {
-		extensions: [ '.ts', '.js', '.json' ]
+		extensions: [ '.ts', '.js', '.json' ],
+		extensionAlias: {
+			'.js': [ '.js', '.ts' ]
+		}
 	}
 };

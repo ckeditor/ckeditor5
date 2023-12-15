@@ -5,34 +5,34 @@
 
 /* globals document, console, setTimeout, FocusEvent */
 
-import View from '../../../src/view/view';
-import Observer from '../../../src/view/observer/observer';
-import KeyObserver from '../../../src/view/observer/keyobserver';
-import TabObserver from '../../../src/view/observer/tabobserver';
-import InputObserver from '../../../src/view/observer/inputobserver';
-import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
-import MutationObserver from '../../../src/view/observer/mutationobserver';
-import SelectionObserver from '../../../src/view/observer/selectionobserver';
-import FocusObserver from '../../../src/view/observer/focusobserver';
-import CompositionObserver from '../../../src/view/observer/compositionobserver';
-import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver';
-import ViewRange from '../../../src/view/range';
-import ViewElement from '../../../src/view/element';
-import ViewContainerElement from '../../../src/view/containerelement';
-import ViewText from '../../../src/view/text';
-import ViewPosition from '../../../src/view/position';
-import ViewSelection from '../../../src/view/selection';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import View from '../../../src/view/view.js';
+import Observer from '../../../src/view/observer/observer.js';
+import KeyObserver from '../../../src/view/observer/keyobserver.js';
+import TabObserver from '../../../src/view/observer/tabobserver.js';
+import InputObserver from '../../../src/view/observer/inputobserver.js';
+import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver.js';
+import MutationObserver from '../../../src/view/observer/mutationobserver.js';
+import SelectionObserver from '../../../src/view/observer/selectionobserver.js';
+import FocusObserver from '../../../src/view/observer/focusobserver.js';
+import CompositionObserver from '../../../src/view/observer/compositionobserver.js';
+import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver.js';
+import ViewRange from '../../../src/view/range.js';
+import ViewElement from '../../../src/view/element.js';
+import ViewContainerElement from '../../../src/view/containerelement.js';
+import ViewText from '../../../src/view/text.js';
+import ViewPosition from '../../../src/view/position.js';
+import ViewSelection from '../../../src/view/selection.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import createViewRoot from '../_utils/createroot';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { stubGeometry, assertScrollPosition } from '@ckeditor/ckeditor5-utils/tests/_utils/scroll';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import createViewRoot from '../_utils/createroot.js';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubGeometry, assertScrollPosition } from '@ckeditor/ckeditor5-utils/tests/_utils/scroll.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 9;

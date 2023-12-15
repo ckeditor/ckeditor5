@@ -7,9 +7,9 @@
  * @module utils/dom/scroll
  */
 
-import isRange from './isrange';
-import Rect from './rect';
-import isText from './istext';
+import isRange from './isrange.js';
+import Rect from './rect.js';
+import isText from './istext.js';
 
 type IfTrue<T> = T extends true ? true : never;
 

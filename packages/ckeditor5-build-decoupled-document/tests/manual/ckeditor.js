@@ -5,7 +5,7 @@
 
 /* globals window, document, console */
 
-import DecoupledEditor from '../../build/ckeditor';
+import DecoupledEditor from '../../build/ckeditor.js';
 
 DecoupledEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {

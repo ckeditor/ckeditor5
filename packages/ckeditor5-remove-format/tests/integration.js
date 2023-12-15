@@ -5,21 +5,21 @@
 
 /* global document */
 
-import RemoveFormat from '../src/removeformat';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import RemoveFormat from '../src/removeformat.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'RemoveFormat', () => {
 	let editor, model, element;

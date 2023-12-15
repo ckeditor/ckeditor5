@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting';
-import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting.js';
+import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand.js';
 
 describe( 'ImageTextAlternativeEditing', () => {
 	let editor;

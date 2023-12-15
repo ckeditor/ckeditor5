@@ -5,18 +5,18 @@
 
 /* globals document, Event */
 
-import ImageInsertFormView from '../../../src/imageinsert/ui/imageinsertformview';
-import ImageInsertUrlView from '../../../src/imageinsert/ui/imageinserturlview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ImageInsertFormView from '../../../src/imageinsert/ui/imageinsertformview.js';
+import ImageInsertUrlView from '../../../src/imageinsert/ui/imageinserturlview.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import CollapsibleView from '@ckeditor/ckeditor5-ui/src/collapsible/collapsibleview';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import CollapsibleView from '@ckeditor/ckeditor5-ui/src/collapsible/collapsibleview.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ImageInsertFormView', () => {
 	let view;

@@ -7,7 +7,7 @@
  * @module ui/spinner/spinnerview
  */
 
-import View from '../view';
+import View from '../view.js';
 
 import '../../theme/components/spinner/spinner.css';
 

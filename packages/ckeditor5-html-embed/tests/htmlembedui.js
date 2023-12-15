@@ -5,11 +5,11 @@
 
 /* global document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import HtmlEmbedEditing from '../src/htmlembedediting';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import HtmlEmbedUI from '../src/htmlembedui';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import HtmlEmbedEditing from '../src/htmlembedediting.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import HtmlEmbedUI from '../src/htmlembedui.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
 describe( 'HtmlEmbedUI', () => {
 	let element, editor, htmlEmbedView;

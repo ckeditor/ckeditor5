@@ -5,16 +5,16 @@
 
 /* globals console:false, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '../../src/bold';
-import Italic from '../../src/italic';
-import Strikethrough from '../../src/strikethrough';
-import Underline from '../../src/underline';
-import Code from '../../src/code';
-import Subscript from '../../src/subscript';
-import Superscript from '../../src/superscript';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Bold from '../../src/bold.js';
+import Italic from '../../src/italic.js';
+import Strikethrough from '../../src/strikethrough.js';
+import Underline from '../../src/underline.js';
+import Code from '../../src/code.js';
+import Subscript from '../../src/subscript.js';
+import Superscript from '../../src/superscript.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -7,7 +7,7 @@
  * @module list/tododocumentlist/todocheckboxchangeobserver
  */
 
-import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine';
+import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine.js';
 
 /**
  * Observes all to-do list checkboxes state changes.

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import SearchInfoView from '../../src/search/searchinfoview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import SearchInfoView from '../../src/search/searchinfoview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SearchInfoView', () => {
 	let view;

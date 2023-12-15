@@ -10,7 +10,7 @@
  */
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	Range,
 	type DocumentSelection,
@@ -22,14 +22,14 @@ import {
 	type UpcastElementEvent,
 	type ViewElement,
 	type Writer
-} from 'ckeditor5/src/engine';
-import { logError, type DecoratedMethodEvent } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/engine.js';
+import { logError, type DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 
-import type { CKBoxAssetDefinition } from './ckboxconfig';
+import type { CKBoxAssetDefinition } from './ckboxconfig.js';
 
-import CKBoxCommand from './ckboxcommand';
-import CKBoxUploadAdapter from './ckboxuploadadapter';
-import CKBoxUtils from './ckboxutils';
+import CKBoxCommand from './ckboxcommand.js';
+import CKBoxUploadAdapter from './ckboxuploadadapter.js';
+import CKBoxUtils from './ckboxutils.js';
 
 import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
 

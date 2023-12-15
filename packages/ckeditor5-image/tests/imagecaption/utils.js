@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element.js';
 
-import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
-import ImageCaptionUtils from '../../src/imagecaption/imagecaptionutils';
+import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting.js';
+import ImageCaptionUtils from '../../src/imagecaption/imagecaptionutils.js';
 
 describe( 'image captioning utils', () => {
 	let editor, view, document, imageCaptionUtils;

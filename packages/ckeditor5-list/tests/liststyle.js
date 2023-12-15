@@ -5,8 +5,8 @@
 
 /* global console */
 
-import ListStyle from '../src/liststyle';
-import ListProperties from '../src/listproperties';
+import ListStyle from '../src/liststyle.js';
+import ListProperties from '../src/listproperties.js';
 
 describe( 'ListStyle', () => {
 	it( 'should be named', () => {

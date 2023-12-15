@@ -7,30 +7,30 @@
  * @module engine/view/downcastwriter
  */
 
-import Position, { type PositionOffset } from './position';
-import Range from './range';
+import Position, { type PositionOffset } from './position.js';
+import Range from './range.js';
 import Selection, {
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions
-} from './selection';
-import ContainerElement from './containerelement';
-import AttributeElement from './attributeelement';
-import EmptyElement from './emptyelement';
-import UIElement from './uielement';
-import RawElement from './rawelement';
+} from './selection.js';
+import ContainerElement from './containerelement.js';
+import AttributeElement from './attributeelement.js';
+import EmptyElement from './emptyelement.js';
+import UIElement from './uielement.js';
+import RawElement from './rawelement.js';
 import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
-import DocumentFragment from './documentfragment';
-import Text from './text';
-import EditableElement from './editableelement';
+import DocumentFragment from './documentfragment.js';
+import Text from './text.js';
+import EditableElement from './editableelement.js';
 import { isPlainObject } from 'lodash-es';
 
-import type Document from './document';
-import type Node from './node';
-import type { default as Element, ElementAttributes } from './element';
-import type DomConverter from './domconverter';
-import type Item from './item';
-import type { SlotFilter } from '../conversion/downcasthelpers';
+import type Document from './document.js';
+import type Node from './node.js';
+import type { default as Element, ElementAttributes } from './element.js';
+import type DomConverter from './domconverter.js';
+import type Item from './item.js';
+import type { SlotFilter } from '../conversion/downcasthelpers.js';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;

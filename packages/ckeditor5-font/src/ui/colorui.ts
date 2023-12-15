@@ -7,8 +7,8 @@
  * @module font/ui/colorui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Batch } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { Batch } from 'ckeditor5/src/engine.js';
 import {
 	createDropdown,
 	normalizeColorOptions,
@@ -18,17 +18,17 @@ import {
 	type ColorSelectorExecuteEvent,
 	type ColorSelectorColorPickerCancelEvent,
 	type ColorSelectorColorPickerShowEvent
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import {
 	addColorSelectorToDropdown,
 	type ColorSelectorDropdownView,
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR
-} from '../utils';
-import type FontColorCommand from '../fontcolor/fontcolorcommand';
-import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand';
-import type { FontColorConfig } from '../fontconfig';
+} from '../utils.js';
+import type FontColorCommand from '../fontcolor/fontcolorcommand.js';
+import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand.js';
+import type { FontColorConfig } from '../fontconfig.js';
 
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.

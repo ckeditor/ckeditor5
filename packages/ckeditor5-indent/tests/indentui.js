@@ -5,12 +5,12 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
-import IndentEditing from '../src/indentediting';
-import IndentUI from '../src/indentui';
+import IndentEditing from '../src/indentediting.js';
+import IndentUI from '../src/indentui.js';
 
 import indentIcon from '../theme/icons/indent.svg';
 import outdentIcon from '../theme/icons/outdent.svg';

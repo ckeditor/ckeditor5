@@ -5,7 +5,7 @@
 
 /* global document */
 
-import { ButtonView, ListItemGroupView, ListItemView, ListView } from '../../../src';
+import { ButtonView, ListItemGroupView, ListItemView, ListView } from '../../../src/index.js';
 
 const playground = document.querySelector( '#playground' );
 

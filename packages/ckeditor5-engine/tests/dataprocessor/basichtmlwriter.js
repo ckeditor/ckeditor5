@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter';
+import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter.js';
 
 describe( 'BasicHtmlWriter', () => {
 	const basicHtmlWriter = new BasicHtmlWriter();

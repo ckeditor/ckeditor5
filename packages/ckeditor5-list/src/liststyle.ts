@@ -7,9 +7,9 @@
  * @module list/liststyle
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import ListProperties from './listproperties';
-import { logWarning } from 'ckeditor5/src/utils';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import ListProperties from './listproperties.js';
+import { logWarning } from 'ckeditor5/src/utils.js';
 
 /**
  * The list style feature.

@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import remove from '../../src/dom/remove';
+import remove from '../../src/dom/remove.js';
 
 describe( 'remove', () => {
 	it( 'should remove element form parent', () => {

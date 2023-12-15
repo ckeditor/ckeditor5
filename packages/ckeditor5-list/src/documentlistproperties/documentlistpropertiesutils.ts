@@ -7,13 +7,13 @@
  * @module list/documentlistproperties/documentlistpropertiesutils
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	getAllSupportedStyleTypes,
 	getListStyleTypeFromTypeAttribute,
 	getListTypeFromListStyleType,
 	getTypeAttributeFromListStyleType
-} from './utils/style';
+} from './utils/style.js';
 
 /**
  * A set of helpers related to document lists.

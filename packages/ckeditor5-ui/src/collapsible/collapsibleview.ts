@@ -9,9 +9,9 @@
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
-import View from '../view';
-import ButtonView from '../button/buttonview';
-import type ViewCollection from '../viewcollection';
+import View from '../view.js';
+import ButtonView from '../button/buttonview.js';
+import type ViewCollection from '../viewcollection.js';
 
 import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 

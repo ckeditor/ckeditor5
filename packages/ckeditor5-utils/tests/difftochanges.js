@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import diff from '../src/diff';
-import diffToChanges from '../src/difftochanges';
+import diff from '../src/diff.js';
+import diffToChanges from '../src/difftochanges.js';
 
 describe( 'diffToChanges', () => {
 	describe( 'equal patterns', () => {

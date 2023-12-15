@@ -5,21 +5,21 @@
 
 /* global setTimeout */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import ReplaceImageSourceCommand from '../src/image/replaceimagesourcecommand';
-import ImageBlockEditing from '../src/image/imageblockediting';
-import ImageInlineEditing from '../src/image/imageinlineediting';
-import ImageSizeAttributes from '../src/imagesizeattributes';
-import ImageResizeEditing from '../src/imageresize/imageresizeediting';
-import PictureEditing from '../src/pictureediting';
-import ImageUtils from '../src/imageutils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ReplaceImageSourceCommand from '../src/image/replaceimagesourcecommand.js';
+import ImageBlockEditing from '../src/image/imageblockediting.js';
+import ImageInlineEditing from '../src/image/imageinlineediting.js';
+import ImageSizeAttributes from '../src/imagesizeattributes.js';
+import ImageResizeEditing from '../src/imageresize/imageresizeediting.js';
+import PictureEditing from '../src/pictureediting.js';
+import ImageUtils from '../src/imageutils.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'ImageSizeAttributes', () => {
 	let editor, model, view;

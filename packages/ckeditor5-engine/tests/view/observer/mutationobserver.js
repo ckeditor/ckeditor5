@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import View from '../../../src/view/view';
-import MutationObserver from '../../../src/view/observer/mutationobserver';
-import UIElement from '../../../src/view/uielement';
-import RawElement from '../../../src/view/rawelement';
-import createViewRoot from '../_utils/createroot';
-import { parse } from '../../../src/dev-utils/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import View from '../../../src/view/view.js';
+import MutationObserver from '../../../src/view/observer/mutationobserver.js';
+import UIElement from '../../../src/view/uielement.js';
+import RawElement from '../../../src/view/rawelement.js';
+import createViewRoot from '../_utils/createroot.js';
+import { parse } from '../../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MutationObserver', () => {
 	let view, domRoot, viewDocument, viewRoot, mutationObserver, domWrapper, spyRenderedMarkToSync;

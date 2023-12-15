@@ -7,8 +7,8 @@
  * @module find-and-replace/replacecommand
 */
 
-import type { ResultType } from './findandreplace';
-import { ReplaceCommandBase } from './replacecommandbase';
+import type { ResultType } from './findandreplace.js';
+import { ReplaceCommandBase } from './replacecommandbase.js';
 
 /**
  * The replace command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.

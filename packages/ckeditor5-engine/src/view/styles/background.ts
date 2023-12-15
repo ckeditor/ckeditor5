@@ -7,8 +7,8 @@
  * @module engine/view/styles/background
  */
 
-import type { StylesProcessor, PropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap';
-import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL } from './utils';
+import type { StylesProcessor, PropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap.js';
+import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL } from './utils.js';
 
 /**
  * Adds a background CSS styles processing rules.

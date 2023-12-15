@@ -5,19 +5,19 @@
 
 /* global window */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import { icons } from 'ckeditor5/src/core';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
-import CKFinder from '../src/ckfinder';
+import CKFinder from '../src/ckfinder.js';
 import browseFilesIcon from '../theme/icons/browse-files.svg';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+import Model from '@ckeditor/ckeditor5-ui/src/model.js';
 
 describe( 'CKFinderUI', () => {
 	let editorElement, editor, button;

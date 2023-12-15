@@ -5,24 +5,24 @@
 
 /* globals document, Event, console */
 
-import SourceEditing from '../src/sourceediting';
+import SourceEditing from '../src/sourceediting.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'SourceEditing', () => {
 	let editor, editorElement, plugin, button;

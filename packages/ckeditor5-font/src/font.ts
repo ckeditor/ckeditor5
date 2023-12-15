@@ -7,12 +7,12 @@
  * @module font/font
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import FontFamily from './fontfamily';
-import FontSize from './fontsize';
-import FontColor from './fontcolor';
-import FontBackgroundColor from './fontbackgroundcolor';
+import FontFamily from './fontfamily.js';
+import FontSize from './fontsize.js';
+import FontColor from './fontcolor.js';
+import FontBackgroundColor from './fontbackgroundcolor.js';
 
 /**
  * A plugin that enables a set of text styling features:

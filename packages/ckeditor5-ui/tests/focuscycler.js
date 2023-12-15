@@ -5,12 +5,12 @@
 
 /* global document */
 
-import ViewCollection from '../src/viewcollection';
-import View from '../src/view';
-import FocusCycler from '../src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ViewCollection from '../src/viewcollection.js';
+import View from '../src/view.js';
+import FocusCycler from '../src/focuscycler.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'FocusCycler', () => {
 	let focusables, focusTracker, cycler, viewIndex;

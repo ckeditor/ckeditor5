@@ -5,7 +5,7 @@
 
 /* globals window, document, console */
 
-import InlineEditor from '../../build/ckeditor';
+import InlineEditor from '../../build/ckeditor.js';
 
 InlineEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {

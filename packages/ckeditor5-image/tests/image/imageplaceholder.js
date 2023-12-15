@@ -5,16 +5,16 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import ImagePlaceholder from '../../src/image/imageplaceholder';
-import ImageUtils from '../../src/imageutils';
-import ImageBlock from '../../src/imageblock';
-import ImageInline from '../../src/imageinline';
+import ImagePlaceholder from '../../src/image/imageplaceholder.js';
+import ImageUtils from '../../src/imageutils.js';
+import ImageBlock from '../../src/imageblock.js';
+import ImageInline from '../../src/imageinline.js';
 
 describe( 'ImagePlaceholder', () => {
 	let editor, element, model, doc, view;

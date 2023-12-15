@@ -7,7 +7,7 @@
  * @module paste-from-office/filters/removeinvalidtablewidth
  */
 
-import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine';
+import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js';
 
 /**
  * Removes the `width:0px` style from table pasted from Google Sheets.

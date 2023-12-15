@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
@@ -17,43 +17,43 @@ import { Link } from '@ckeditor/ckeditor5-link';
 import { DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
-import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
-import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
-import Mention from '@ckeditor/ckeditor5-mention/src/mention';
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import Style from '@ckeditor/ckeditor5-style/src/style';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily.js';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize.js';
+import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
+import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed.js';
+import AutoLink from '@ckeditor/ckeditor5-link/src/autolink.js';
+import Mention from '@ckeditor/ckeditor5-mention/src/mention.js';
+import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import Style from '@ckeditor/ckeditor5-style/src/style.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor-classic-lists' ), {

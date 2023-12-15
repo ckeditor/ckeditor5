@@ -7,7 +7,7 @@
  * @module indent/indentcommandbehavior/indentusingclasses
  */
 
-import type { IndentBehavior } from './indentbehavior';
+import type { IndentBehavior } from './indentbehavior.js';
 
 /**
  * The block indentation behavior that uses classes to set indentation.

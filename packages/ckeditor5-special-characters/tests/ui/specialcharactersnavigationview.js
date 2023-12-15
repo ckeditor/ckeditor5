@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
+import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import FormHeaderView from '@ckeditor/ckeditor5-ui/src/formheader/formheaderview.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 
 describe( 'SpecialCharactersNavigationView', () => {
 	let view, locale;

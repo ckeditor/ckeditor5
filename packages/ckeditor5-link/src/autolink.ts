@@ -7,14 +7,14 @@
  * @module link/autolink
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard';
-import type { DocumentSelectionChangeEvent, Element, Model, Position, Range, Writer } from 'ckeditor5/src/engine';
-import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing';
-import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
+import type { DocumentSelectionChangeEvent, Element, Model, Position, Range, Writer } from 'ckeditor5/src/engine.js';
+import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing.js';
+import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter.js';
 
-import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils';
-import LinkEditing from './linkediting';
+import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils.js';
+import LinkEditing from './linkediting.js';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 

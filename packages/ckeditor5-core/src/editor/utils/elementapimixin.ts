@@ -14,7 +14,7 @@ import {
 	type Mixed
 } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from '../editor';
+import type Editor from '../editor.js';
 
 /**
  * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.

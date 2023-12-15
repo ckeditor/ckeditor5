@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ImageResize from '../../src/imageresize';
-import ImageResizeButtons from '../../src/imageresize/imageresizebuttons';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
+import ImageResize from '../../src/imageresize.js';
+import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
+import ImageResizeHandles from '../../src/imageresize/imageresizehandles.js';
 
 describe( 'ImageResize', () => {
 	it( 'should require "ImageResizeEditing", "ImageResizeHandles", and "ImageResizeButtons"', () => {

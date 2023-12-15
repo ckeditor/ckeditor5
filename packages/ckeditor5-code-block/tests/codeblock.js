@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import CodeBlock from '../src/codeblock';
-import CodeBlockEditing from '../src/codeblockediting';
-import CodeBlockUI from '../src/codeblockui';
+import CodeBlock from '../src/codeblock.js';
+import CodeBlockEditing from '../src/codeblockediting.js';
+import CodeBlockUI from '../src/codeblockui.js';
 
 describe( 'CodeBlock', () => {
 	it( 'should require CodeBlockEditing and CodeBlockUI plugins', () => {

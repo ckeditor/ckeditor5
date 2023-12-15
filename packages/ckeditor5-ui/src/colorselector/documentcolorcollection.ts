@@ -7,7 +7,7 @@
  * @module ui/colorselector/documentcolorcollection
  */
 
-import type { ColorDefinition } from '../colorgrid/colorgridview';
+import type { ColorDefinition } from '../colorgrid/colorgridview.js';
 import {
 	Collection,
 	ObservableMixin,

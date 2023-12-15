@@ -4,9 +4,9 @@
  */
 
 import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
-import type View from './view';
-import type DomEventData from './observer/domeventdata';
-import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver';
+import type View from './view.js';
+import type DomEventData from './observer/domeventdata.js';
+import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 
 /**
  * Set of utilities related to handling block and inline fillers.

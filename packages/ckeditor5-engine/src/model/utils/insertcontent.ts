@@ -7,20 +7,20 @@
  * @module engine/model/utils/insertcontent
  */
 
-import DocumentSelection from '../documentselection';
-import Element from '../element';
-import LivePosition from '../liveposition';
-import LiveRange from '../liverange';
-import Position from '../position';
-import Range from '../range';
+import DocumentSelection from '../documentselection.js';
+import Element from '../element.js';
+import LivePosition from '../liveposition.js';
+import LiveRange from '../liverange.js';
+import Position from '../position.js';
+import Range from '../range.js';
 
-import type DocumentFragment from '../documentfragment';
-import type Item from '../item';
-import type Model from '../model';
-import type Schema from '../schema';
-import type Writer from '../writer';
-import type Node from '../node';
-import type Selection from '../selection';
+import type DocumentFragment from '../documentfragment.js';
+import type Item from '../item.js';
+import type Model from '../model.js';
+import type Schema from '../schema.js';
+import type Writer from '../writer.js';
+import type Node from '../node.js';
+import type Selection from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 

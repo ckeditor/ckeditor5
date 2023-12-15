@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ConversionHelpers from '../../src/conversion/conversionhelpers';
+import ConversionHelpers from '../../src/conversion/conversionhelpers.js';
 
 describe( 'ConversionHelpers', () => {
 	describe( 'add()', () => {

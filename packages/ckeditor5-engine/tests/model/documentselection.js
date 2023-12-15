@@ -5,22 +5,22 @@
 
 /* globals console */
 
-import Model from '../../src/model/model';
-import Batch from '../../src/model/batch';
-import Element from '../../src/model/element';
-import Text from '../../src/model/text';
-import Range from '../../src/model/range';
-import Position from '../../src/model/position';
-import LiveRange from '../../src/model/liverange';
-import DocumentSelection from '../../src/model/documentselection';
-import InsertOperation from '../../src/model/operation/insertoperation';
-import MoveOperation from '../../src/model/operation/moveoperation';
-import AttributeOperation from '../../src/model/operation/attributeoperation';
-import SplitOperation from '../../src/model/operation/splitoperation';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import { setData, getData } from '../../src/dev-utils/model';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Model from '../../src/model/model.js';
+import Batch from '../../src/model/batch.js';
+import Element from '../../src/model/element.js';
+import Text from '../../src/model/text.js';
+import Range from '../../src/model/range.js';
+import Position from '../../src/model/position.js';
+import LiveRange from '../../src/model/liverange.js';
+import DocumentSelection from '../../src/model/documentselection.js';
+import InsertOperation from '../../src/model/operation/insertoperation.js';
+import MoveOperation from '../../src/model/operation/moveoperation.js';
+import AttributeOperation from '../../src/model/operation/attributeoperation.js';
+import SplitOperation from '../../src/model/operation/splitoperation.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { setData, getData } from '../../src/dev-utils/model.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'DocumentSelection', () => {
 	let model, doc, root, selection, liveRange, range;

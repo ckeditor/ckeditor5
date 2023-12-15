@@ -5,17 +5,17 @@
 
 /* globals document */
 
-import ViewElement from '../../../src/view/element';
-import ViewDocumentSelection from '../../../src/view/documentselection';
-import DomConverter from '../../../src/view/domconverter';
-import ViewDocumentFragment from '../../../src/view/documentfragment';
-import ViewDocument from '../../../src/view/document';
-import { INLINE_FILLER } from '../../../src/view/filler';
+import ViewElement from '../../../src/view/element.js';
+import ViewDocumentSelection from '../../../src/view/documentselection.js';
+import DomConverter from '../../../src/view/domconverter.js';
+import ViewDocumentFragment from '../../../src/view/documentfragment.js';
+import ViewDocument from '../../../src/view/document.js';
+import { INLINE_FILLER } from '../../../src/view/filler.js';
 
-import { parse } from '../../../src/dev-utils/view';
+import { parse } from '../../../src/dev-utils/view.js';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;

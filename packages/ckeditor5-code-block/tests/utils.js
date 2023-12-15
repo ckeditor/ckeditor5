@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
 
-import { canBeCodeBlock } from '../src/utils';
+import { canBeCodeBlock } from '../src/utils.js';
 
 describe( 'CodeBlock - utils', () => {
 	describe( 'canBecomeCodeBlock()', () => {
