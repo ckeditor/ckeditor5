@@ -28,6 +28,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+import { CustomTitle } from './utils/customtitleplugin';
+
 describe( 'Drag and Drop', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter;
 
@@ -1305,7 +1307,7 @@ describe( 'Drag and Drop', () => {
 
 				const dataTransferMock = createDataTransfer();
 				const viewElement = viewDocument.getRoot().getChild( 1 );
-				const positionAfterHr = model.createPositionAt( root.getChild( 1 ), 'after' );
+				const position = model.createPositionAt( root.getChild( 1 ), 'after' );
 
 				viewDocument.fire( 'dragstart', {
 					domTarget: domConverter.mapViewToDom( viewElement ),
@@ -1317,8 +1319,8 @@ describe( 'Drag and Drop', () => {
 
 				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'Foo' );
 
-				fireDragging( dataTransferMock, positionAfterHr );
-				expectDraggingMarker( positionAfterHr );
+				fireDragging( dataTransferMock, position );
+				expectDraggingMarker( position );
 
 				fireDrop(
 					dataTransferMock,
@@ -1328,6 +1330,38 @@ describe( 'Drag and Drop', () => {
 				expect( getModelData( model ) ).to.equal( trim`
 					<title><title-content> Bar</title-content></title>
 					<paragraph>BarFoo[]</paragraph>
+				` );
+			} );
+
+			it( 'should start dragging text from paragraph to title', () => {
+				setModelData( model, trim`
+					<title><title-content>Foo Bar</title-content></title>
+					<paragraph>[Baz]</paragraph>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const viewElement = viewDocument.getRoot().getChild( 0 );
+
+				viewDocument.fire( 'dragstart', {
+					domTarget: domConverter.mapViewToDom( viewElement ),
+					target: viewElement,
+					domEvent: {},
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '<p>Baz</p>' );
+
+				fireDragging( dataTransferMock, model.createPositionAt( root.getChild( 0 ).getChild( 0 ), 3 ) );
+
+				fireDrop(
+					dataTransferMock,
+					model.createPositionAt( root.getChild( 0 ).getChild( 0 ), 3 )
+				);
+
+				expect( getModelData( model ) ).to.equal( trim`
+					<paragraph>Baz[]</paragraph>
+					<title><title-content>Foo Bar</title-content></title>
 				` );
 			} );
 
@@ -2539,40 +2573,5 @@ describe( 'Drag and Drop', () => {
 			.join( '' )
 			.trim()
 			.replace( />\s+</g, '><' );
-	}
-
-	function CustomTitle( editor ) {
-		const model = editor.model;
-
-		model.schema.register( 'title', { isBlock: true, allowIn: '$root' } );
-		model.schema.register( 'title-content', { isBlock: true, allowIn: 'title', allowAttributes: [ 'alignment' ] } );
-		model.schema.extend( '$text', { allowIn: 'title-content' } );
-
-		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
-		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
-
-		editor.conversion.for( 'downcast' ).elementToElement( { model: 'title-content', view: 'h1' } );
-		editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on(
-			'insert:title',
-			( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item, evt.name );
-			}
-		) );
-	}
-
-	function mapModelPositionToView( editingView ) {
-		return ( evt, data ) => {
-			const positionParent = data.modelPosition.parent;
-
-			if ( !positionParent.is( 'element', 'title' ) ) {
-				return;
-			}
-
-			const modelTitleElement = positionParent.parent;
-			const viewElement = data.mapper.toViewElement( modelTitleElement );
-
-			data.viewPosition = editingView.createPositionAt( viewElement, 0 );
-			evt.stop();
-		};
 	}
 } );
