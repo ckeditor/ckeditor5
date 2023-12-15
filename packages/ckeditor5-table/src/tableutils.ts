@@ -822,6 +822,41 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
+	 * Returns the rows for a given table grouped by their rowGroup attribute.
+	 *
+	 * ```ts
+	 * editor.plugins.get( 'TableUtils' ).getGroupedRows( table );
+	 * ```
+	 *
+	 * @param table The table to analyze.
+	 */
+	public getGroupedRows( table: Element ): Map<number, Array<Element>> {
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		const tableRowElements = Array.from( table.getChildren() )
+			.filter( child => child.is( 'element', 'tableRow' ) && child.index! >= headingRows );
+		const rowGroupMap = new Map();
+		let currentGroup = 0;
+
+		tableRowElements.forEach( trElement => {
+			// Ensure a rowGroup exists.
+			// This is a workaround / idea - currently if a row is inserted, it won't have the rowGroup attribute.
+			// Currently just putting it into the previous row group, although this won't always be intentional.
+			// If this approach to row groups in general is accepted this could be resolved in tableUtils.insertRows by
+			// copying the rewGroup from the row used as reference.
+			currentGroup = trElement.hasAttribute( 'rowGroup' ) ? Number( trElement.getAttribute( 'rowGroup' ) ) : currentGroup;
+			trElement._setAttribute( 'rowGroup', currentGroup );
+
+			if ( !rowGroupMap.has( currentGroup ) ) {
+				rowGroupMap.set( currentGroup, [] );
+			}
+
+			rowGroupMap.get( currentGroup ).push( trElement );
+		} );
+
+		return rowGroupMap;
+	}
+
+	/**
 	 * Creates an instance of the table walker.
 	 *
 	 * The table walker iterates internally by traversing the table from row index = 0 and column index = 0.

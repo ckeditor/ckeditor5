@@ -35,16 +35,23 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 			);
 		}
 
-		// Table body slot.
+		// Table body slots.
 		if ( headingRows < tableUtils.getRows( table ) ) {
-			writer.insert(
-				writer.createPositionAt( tableElement, 'end' ),
-				writer.createContainerElement(
-					'tbody',
-					null,
-					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! >= headingRows )
-				)
-			);
+			const rowGroupMap = tableUtils.getGroupedRows( table );
+			for ( const key of rowGroupMap.keys() ) {
+				writer.insert(
+					writer.createPositionAt( tableElement, 'end' ),
+					writer.createContainerElement(
+						'tbody',
+						null,
+						writer.createSlot( element => {
+							return element.is( 'element', 'tableRow' ) &&
+								element.index! >= headingRows &&
+								element.getAttribute( 'rowGroup' ) == key;
+						} )
+					)
+				);
+			}
 		}
 
 		// Dynamic slots.
@@ -108,7 +115,9 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
-				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+				const isHeading = tableSlot.row < headingRows ||
+					tableSlot.column < headingColumns ||
+					tableCell.getAttribute( 'role' ) == 'heading';
 				const cellElementName = isHeading ? 'th' : 'td';
 
 				result = options.asWidget ?

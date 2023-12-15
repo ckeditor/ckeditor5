@@ -84,13 +84,14 @@ export default class TableEditing extends Plugin {
 
 		schema.register( 'tableRow', {
 			allowIn: 'table',
+			allowAttributes: [ 'rowGroup' ],
 			isLimit: true
 		} );
 
 		schema.register( 'tableCell', {
 			allowContentOf: '$container',
 			allowIn: 'tableRow',
-			allowAttributes: [ 'colspan', 'rowspan' ],
+			allowAttributes: [ 'colspan', 'rowspan', 'role' ],
 			isLimit: true,
 			isSelectable: true
 		} );
@@ -122,7 +123,12 @@ export default class TableEditing extends Plugin {
 		} );
 
 		// Table row conversion.
-		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
+		conversion.for( 'upcast' ).elementToElement( {
+			view: 'tr',
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( 'tableRow', { rowGroup: viewElement.getCustomProperty( 'rowGroup' ) } );
+			}
+		} );
 		conversion.for( 'upcast' ).add( skipEmptyTableRow() );
 
 		conversion.for( 'downcast' ).elementToElement( {
@@ -131,8 +137,16 @@ export default class TableEditing extends Plugin {
 		} );
 
 		// Table cell conversion.
-		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
-		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'th' } );
+		conversion.for( 'upcast' ).elementToElement( {
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( 'tableCell', { role: 'data' } );
+			}, view: 'td'
+		} );
+		conversion.for( 'upcast' ).elementToElement( {
+			model: ( viewElement, { writer } ) => {
+				return writer.createElement( 'tableCell', { role: 'heading' } );
+			}, view: 'th'
+		} );
 		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'td' ) );
 		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'th' ) );
 

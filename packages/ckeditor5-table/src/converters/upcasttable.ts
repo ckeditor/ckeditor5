@@ -223,7 +223,7 @@ function scanTable( viewTable: ViewElement ) {
 	// Only the first <thead> from the view will be used as a heading row and the others will be converted to body rows.
 	let firstTheadElement;
 
-	for ( const tableChild of Array.from( viewTable.getChildren() as IterableIterator<ViewElement> ) ) {
+	for ( const [ index, tableChild ] of Array.from( viewTable.getChildren() as IterableIterator<ViewElement> ).entries() ) {
 		// Only `<thead>`, `<tbody>` & `<tfoot>` from allowed table children can have `<tr>`s.
 		// The else is for future purposes (mainly `<caption>`).
 		if ( tableChild.name !== 'tbody' && tableChild.name !== 'thead' && tableChild.name !== 'tfoot' ) {
@@ -242,6 +242,8 @@ function scanTable( viewTable: ViewElement ) {
 		);
 
 		for ( const tr of trs ) {
+			// Set a custom attribute of rowGroup to allow multiple tbody elements.
+			tr._setCustomProperty( 'rowGroup', index );
 			// This <tr> is a child of a first <thead> element.
 			if (
 				( firstTheadElement && tableChild === firstTheadElement ) ||
