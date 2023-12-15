@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document, global, CKEditorInspector */
+/* globals console, window, document, CKEditorInspector */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
@@ -51,7 +51,7 @@ function createEditor( target, inspectorName ) {
 		} );
 }
 
-const modelDiv = global.document.querySelector( '#model' );
+const modelDiv = document.querySelector( '#model' );
 
 function printModelContents( editor ) {
 	modelDiv.innerHTML = formatTable( getData( editor.model ) )
