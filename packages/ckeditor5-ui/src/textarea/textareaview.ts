@@ -8,7 +8,7 @@
  */
 
 import { Rect, type Locale, toUnit, getBorderWidths, global, CKEditorError, isVisible } from '@ckeditor/ckeditor5-utils';
-import InputBase from '../input/inputbase';
+import InputBase from '../input/inputbase.js';
 
 import '../../theme/components/input/input.css';
 import '../../theme/components/textarea/textarea.css';

@@ -7,11 +7,11 @@
  * @module cloud-services/cloudservices
  */
 
-import { ContextPlugin } from 'ckeditor5/src/core';
-import { CKEditorError } from 'ckeditor5/src/utils';
-import CloudServicesCore from './cloudservicescore';
-import type { CloudServicesConfig, TokenUrl } from './cloudservicesconfig';
-import type { InitializedToken } from './token/token';
+import { ContextPlugin } from 'ckeditor5/src/core.js';
+import { CKEditorError } from 'ckeditor5/src/utils.js';
+import CloudServicesCore from './cloudservicescore.js';
+import type { CloudServicesConfig, TokenUrl } from './cloudservicesconfig.js';
+import type { InitializedToken } from './token/token.js';
 
 /**
  * Plugin introducing the integration between CKEditor 5 and CKEditor Cloud Services .

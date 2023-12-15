@@ -7,13 +7,13 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { Rect, type PositionOptions } from 'ckeditor5/src/utils';
-import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui';
-import type { Editor } from 'ckeditor5/src/core';
-import type { Element, Position, Range } from 'ckeditor5/src/engine';
+import { Rect, type PositionOptions } from 'ckeditor5/src/utils.js';
+import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui.js';
+import type { Editor } from 'ckeditor5/src/core.js';
+import type { Element, Position, Range } from 'ckeditor5/src/engine.js';
 
-import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from './widget';
-import { getSelectionAffectedTable } from '../common';
+import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from './widget.js';
+import { getSelectionAffectedTable } from '../common.js';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
 

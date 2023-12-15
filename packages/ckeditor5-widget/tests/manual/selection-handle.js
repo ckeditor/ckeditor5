@@ -5,10 +5,10 @@
 
 /* globals console, window, document */
 
-import Widget from '../../src/widget';
-import { toWidget } from '../../src/utils';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Widget from '../../src/widget.js';
+import { toWidget } from '../../src/utils.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 function MyPlugin( editor ) {
 	editor.model.schema.register( 'div', {

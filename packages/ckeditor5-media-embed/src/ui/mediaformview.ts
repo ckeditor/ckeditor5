@@ -16,9 +16,9 @@ import {
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports

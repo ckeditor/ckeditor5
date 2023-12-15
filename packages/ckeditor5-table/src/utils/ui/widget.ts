@@ -7,9 +7,9 @@
  * @module table/utils/ui/widget
  */
 
-import type { ViewDocumentFragment, ViewDocumentSelection, ViewElement, ViewNode } from 'ckeditor5/src/engine';
+import type { ViewDocumentFragment, ViewDocumentSelection, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
 
-import { isWidget } from 'ckeditor5/src/widget';
+import { isWidget } from 'ckeditor5/src/widget.js';
 
 /**
  * Depending on the position of the selection either return the selected table or the table higher in the hierarchy.

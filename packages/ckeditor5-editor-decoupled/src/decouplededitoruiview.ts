@@ -7,9 +7,9 @@
  * @module editor-decoupled/decouplededitoruiview
  */
 
-import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui';
-import type { Locale } from 'ckeditor5/src/utils';
-import type { View } from 'ckeditor5/src/engine';
+import { EditorUIView, InlineEditableUIView, ToolbarView } from 'ckeditor5/src/ui.js';
+import type { Locale } from 'ckeditor5/src/utils.js';
+import type { View } from 'ckeditor5/src/engine.js';
 
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline

@@ -7,7 +7,7 @@
  * @module markdown-gfm
  */
 
-export { default as Markdown } from './markdown';
-export { default as PasteFromMarkdownExperimental } from './pastefrommarkdownexperimental';
+export { default as Markdown } from './markdown.js';
+export { default as PasteFromMarkdownExperimental } from './pastefrommarkdownexperimental.js';
 
-import './augmentation';
+import './augmentation.js';

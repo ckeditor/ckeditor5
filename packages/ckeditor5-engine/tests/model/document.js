@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../src/model/model';
-import Document from '../../src/model/document';
-import RootElement from '../../src/model/rootelement';
-import Text from '../../src/model/text';
-import Batch from '../../src/model/batch';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Model from '../../src/model/model.js';
+import Document from '../../src/model/document.js';
+import RootElement from '../../src/model/rootelement.js';
+import Text from '../../src/model/text.js';
+import Batch from '../../src/model/batch.js';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Document', () => {
 	let model, doc;

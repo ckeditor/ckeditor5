@@ -7,11 +7,11 @@
  * @module ui/labeledfield/labeledfieldview
  */
 
-import View from '../view';
-import LabelView from '../label/labelview';
+import View from '../view.js';
+import LabelView from '../label/labelview.js';
 
-import type { FocusableView } from '../focuscycler';
-import type ViewCollection from '../viewcollection';
+import type { FocusableView } from '../focuscycler.js';
+import type ViewCollection from '../viewcollection.js';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 

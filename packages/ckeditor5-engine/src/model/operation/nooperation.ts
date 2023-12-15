@@ -7,8 +7,8 @@
  * @module engine/model/operation/nooperation
  */
 
-import Operation from './operation';
-import type { Selectable } from '../selection';
+import Operation from './operation.js';
+import type { Selectable } from '../selection.js';
 
 /**
  * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop"). This is an operation,

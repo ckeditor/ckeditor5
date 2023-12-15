@@ -5,7 +5,7 @@
 
 /* global document, window */
 
-import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
+import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview.js';
 
 window.createPanel = selector => {
 	const view = new BalloonPanelView();

@@ -7,9 +7,9 @@
  * @module engine/model/rootelement
  */
 
-import Element from './element';
+import Element from './element.js';
 
-import type Document from './document';
+import type Document from './document.js';
 
 /**
  * Type of {@link module:engine/model/element~Element} that is a root of a model tree.

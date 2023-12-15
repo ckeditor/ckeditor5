@@ -7,10 +7,10 @@
  * @module utils/collection
  */
 
-import EmitterMixin from './emittermixin';
-import CKEditorError from './ckeditorerror';
-import uid from './uid';
-import isIterable from './isiterable';
+import EmitterMixin from './emittermixin.js';
+import CKEditorError from './ckeditorerror.js';
+import uid from './uid.js';
+import isIterable from './isiterable.js';
 
 /**
  * Collections are ordered sets of objects. Items in the collection can be retrieved by their indexes

@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import stubUid from '@ckeditor/ckeditor5-list/tests/documentlist/_utils/uid';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import stubUid from '@ckeditor/ckeditor5-list/tests/documentlist/_utils/uid.js';
 
-import { getModelDataWithAttributes } from '../_utils/utils';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 /* global document */
 

@@ -32,7 +32,7 @@ import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
 
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import boldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
-import { icons as coreIcons } from 'ckeditor5/src/core';
+import { icons as coreIcons } from 'ckeditor5/src/core.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';

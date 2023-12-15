@@ -5,16 +5,16 @@
 
 /* global document */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import Style from '../../src/style';
+import Style from '../../src/style.js';
 
 describe( 'Integration with RemoveFormat', () => {
 	let editor, editorElement, model;

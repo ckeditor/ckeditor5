@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview';
+import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview.js';
 
 import {
 	ButtonView,

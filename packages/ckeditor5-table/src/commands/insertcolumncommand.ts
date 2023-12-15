@@ -7,8 +7,8 @@
  * @module table/commands/insertcolumncommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type TableUtils from '../tableutils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type TableUtils from '../tableutils.js';
 
 /**
  * The insert column command.

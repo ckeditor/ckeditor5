@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import EnterObserver from '../src/enterobserver';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { fireBeforeInputDomEvent } from '@ckeditor/ckeditor5-typing/tests/_utils/utils';
+import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import EnterObserver from '../src/enterobserver.js';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { fireBeforeInputDomEvent } from '@ckeditor/ckeditor5-typing/tests/_utils/utils.js';
 import { getCode, env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'EnterObserver', () => {

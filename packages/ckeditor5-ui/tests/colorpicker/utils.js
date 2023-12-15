@@ -6,7 +6,7 @@
 import {
 	convertToHex,
 	convertColor
-} from './../../src/colorpicker/utils';
+} from './../../src/colorpicker/utils.js';
 import parse from 'color-parse';
 
 describe( 'utils', () => {

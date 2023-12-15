@@ -5,7 +5,7 @@
 
 /* globals console, document */
 
-import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
+import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils.js';
 
 const editorCount = 5;
 

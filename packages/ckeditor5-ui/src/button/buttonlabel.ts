@@ -7,7 +7,7 @@
  * @module ui/button/buttonlabel
 */
 
-import type View from '../view';
+import type View from '../view.js';
 
 /**
  * The button label interface. Implemented by the {@link module:ui/button/buttonlabelview~ButtonLabelView}

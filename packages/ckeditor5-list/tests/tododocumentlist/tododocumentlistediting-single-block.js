@@ -5,28 +5,28 @@
 
 /* global document */
 
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import TodoDocumentListEditing from '../../src/tododocumentlist/tododocumentlistediting';
-import DocumentListEditing from '../../src/documentlist/documentlistediting';
-import DocumentListCommand from '../../src/documentlist/documentlistcommand';
-import CheckTodoDocumentListCommand from '../../src/tododocumentlist/checktododocumentlistcommand';
-import TodoCheckboxChangeObserver from '../../src/tododocumentlist/todocheckboxchangeobserver';
-import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
+import TodoDocumentListEditing from '../../src/tododocumentlist/tododocumentlistediting.js';
+import DocumentListEditing from '../../src/documentlist/documentlistediting.js';
+import DocumentListCommand from '../../src/documentlist/documentlistcommand.js';
+import CheckTodoDocumentListCommand from '../../src/tododocumentlist/checktododocumentlistcommand.js';
+import TodoCheckboxChangeObserver from '../../src/tododocumentlist/todocheckboxchangeobserver.js';
+import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting.js';
 
-import stubUid from '../documentlist/_utils/uid';
+import stubUid from '../documentlist/_utils/uid.js';
 
 describe( 'TodoDocumentListEditing (multiBlock=false)', () => {
 	let editor, model, view, editorElement;

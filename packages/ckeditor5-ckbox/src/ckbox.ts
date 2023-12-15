@@ -7,10 +7,10 @@
  * @module ckbox/ckbox
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import CKBoxUI from './ckboxui';
-import CKBoxEditing from './ckboxediting';
+import CKBoxUI from './ckboxui.js';
+import CKBoxEditing from './ckboxediting.js';
 
 /**
  * The CKBox feature, a bridge between the CKEditor 5 WYSIWYG editor and the CKBox file manager and uploader.

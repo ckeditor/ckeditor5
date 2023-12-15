@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 
-import { getData } from '../../../src/dev-utils/model';
+import { getData } from '../../../src/dev-utils/model.js';
 
 // NOTE:
 // dev utils' setData() loses white spaces so don't use it for tests here!!!

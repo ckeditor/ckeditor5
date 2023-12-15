@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DataApiMixin from '../../../src/editor/utils/dataapimixin';
-import Editor from '../../../src/editor/editor';
-import testUtils from '../../../tests/_utils/utils';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import DataApiMixin from '../../../src/editor/utils/dataapimixin.js';
+import Editor from '../../../src/editor/editor.js';
+import testUtils from '../../../tests/_utils/utils.js';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DataApiMixin', () => {
 	let editor;

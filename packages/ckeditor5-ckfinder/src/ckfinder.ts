@@ -7,10 +7,10 @@
  * @module ckfinder/ckfinder
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import CKFinderUI from './ckfinderui';
-import CKFinderEditing from './ckfinderediting';
+import CKFinderUI from './ckfinderui.js';
+import CKFinderEditing from './ckfinderediting.js';
 
 /**
  * The CKFinder feature, a bridge between the CKEditor 5 WYSIWYG editor and the

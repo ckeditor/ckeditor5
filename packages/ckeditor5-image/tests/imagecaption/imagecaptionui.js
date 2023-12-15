@@ -5,15 +5,15 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { icons } from 'ckeditor5/src/core';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
-import ImageCaptionUI from '../../src/imagecaption/imagecaptionui';
-import ImageBlockEditing from '../../src/image/imageblockediting';
+import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting.js';
+import ImageCaptionUI from '../../src/imagecaption/imagecaptionui.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
 
 describe( 'ImageCaptionUI', () => {
 	let editor, editorElement;

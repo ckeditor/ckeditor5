@@ -5,9 +5,9 @@
 
 /* global console:false */
 
-import EmitterMixin from '../../src/emittermixin';
-import CKEditorError from '../../src/ckeditorerror';
-import areConnectedThroughProperties from '../../src/areconnectedthroughproperties';
+import EmitterMixin from '../../src/emittermixin.js';
+import CKEditorError from '../../src/ckeditorerror.js';
+import areConnectedThroughProperties from '../../src/areconnectedthroughproperties.js';
 
 /**
  * Creates an instance inheriting from {@link module:utils/emittermixin~Emitter} with one additional method `observe()`.

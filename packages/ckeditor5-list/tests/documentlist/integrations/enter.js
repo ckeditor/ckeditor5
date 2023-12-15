@@ -3,28 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DocumentListEditing from '../../../src/documentlist/documentlistediting';
+import DocumentListEditing from '../../../src/documentlist/documentlistediting.js';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
-import stubUid from '../_utils/uid';
-import { modelList } from '../_utils/utils';
+import stubUid from '../_utils/uid.js';
+import { modelList } from '../_utils/utils.js';
 
 describe( 'DocumentListEditing integrations: enter key', () => {
 	const changedBlocks = [];

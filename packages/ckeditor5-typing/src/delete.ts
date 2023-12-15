@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import DeleteCommand from './deletecommand';
-import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver';
+import DeleteCommand from './deletecommand.js';
+import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver.js';
 
 /**
  * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other

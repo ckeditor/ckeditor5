@@ -7,9 +7,9 @@
  * @module list/list/indentcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
 
 /**
  * The list indent command. It is used by the {@link module:list/list~List list feature}.

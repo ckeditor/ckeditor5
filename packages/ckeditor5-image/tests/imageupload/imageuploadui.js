@@ -5,24 +5,24 @@
 
 /* globals document, Event */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Image from '../../src/image';
-import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import ImageUploadUI from '../../src/imageupload/imageuploadui';
-import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import { icons } from 'ckeditor5/src/core';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Image from '../../src/image.js';
+import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview.js';
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import ImageUploadUI from '../../src/imageupload/imageuploadui.js';
+import ImageUploadEditing from '../../src/imageupload/imageuploadediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import Model from '@ckeditor/ckeditor5-ui/src/model.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ImageUploadUI', () => {
 	let editor, model, editorElement, fileRepository;

@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import SpecialCahractersView from '../../src/ui/specialcharactersview';
-import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview';
-import CharacterGridView from '../../src/ui/charactergridview';
-import CharacterInfoView from '../../src/ui/characterinfoview';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import SpecialCahractersView from '../../src/ui/specialcharactersview.js';
+import SpecialCharactersNavigationView from '../../src/ui/specialcharactersnavigationview.js';
+import CharacterGridView from '../../src/ui/charactergridview.js';
+import CharacterInfoView from '../../src/ui/characterinfoview.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'SpecialCahractersView', () => {
 	let view, navigationView, gridView, infoView, locale;

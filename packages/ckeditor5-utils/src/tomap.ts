@@ -7,8 +7,8 @@
  * @module utils/tomap
  */
 
-import objectToMap from './objecttomap';
-import isIterable from './isiterable';
+import objectToMap from './objecttomap.js';
+import isIterable from './isiterable.js';
 
 /**
  * Transforms object or iterable to map. Iterable needs to be in the format acceptable by the `Map` constructor.

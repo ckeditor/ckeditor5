@@ -3,28 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DocumentListEditing from '../../src/documentlist/documentlistediting';
+import DocumentListEditing from '../../src/documentlist/documentlistediting.js';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
-import DocumentListSplitCommand from '../../src/documentlist/documentlistsplitcommand';
+import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand.js';
+import DocumentListSplitCommand from '../../src/documentlist/documentlistsplitcommand.js';
 
-import stubUid from './_utils/uid';
-import { prepareTest } from './_utils/utils';
+import stubUid from './_utils/uid.js';
+import { prepareTest } from './_utils/utils.js';
 
 describe( 'DocumentListEditing (multiBlock=false)', () => {
 	let editor, model, view;

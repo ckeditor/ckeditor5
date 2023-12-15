@@ -5,9 +5,9 @@
 
 /* global window, document, Text */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { stubGeometry, assertScrollPosition } from '../_utils/scroll';
-import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubGeometry, assertScrollPosition } from '../_utils/scroll.js';
+import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll.js';
 
 describe( 'scrollAncestorsToShowTarget()', () => {
 	let target, element, firstAncestor, secondAncestor;

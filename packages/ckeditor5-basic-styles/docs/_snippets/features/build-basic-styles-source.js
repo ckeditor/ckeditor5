@@ -12,7 +12,7 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code, RemoveFormat,
 	PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );

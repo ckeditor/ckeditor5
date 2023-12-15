@@ -7,10 +7,10 @@
  * @module table/plaintableoutput
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { DowncastWriter, Element, Node, ViewContainerElement } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { DowncastWriter, Element, Node, ViewContainerElement } from 'ckeditor5/src/engine.js';
 
-import Table from './table';
+import Table from './table.js';
 
 /**
  * The plain table output feature.

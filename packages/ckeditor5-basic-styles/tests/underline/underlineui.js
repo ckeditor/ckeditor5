@@ -5,15 +5,15 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import UnderlineEditing from '../../src/underline/underlineediting';
-import UnderlineUI from '../../src/underline/underlineui';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import UnderlineEditing from '../../src/underline/underlineediting.js';
+import UnderlineUI from '../../src/underline/underlineui.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'Underline', () => {
 	let editor, underlineView, editorElement;

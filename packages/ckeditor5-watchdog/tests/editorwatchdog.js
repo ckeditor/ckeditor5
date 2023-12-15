@@ -5,14 +5,14 @@
 
 /* globals setTimeout, window, console, document */
 
-import EditorWatchdog from '../src/editorwatchdog';
-import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import EditorWatchdog from '../src/editorwatchdog.js';
+import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Comments } from '@ckeditor/ckeditor5-comments';
 import { TrackChanges } from '@ckeditor/ckeditor5-track-changes';
-import Suggestion from '@ckeditor/ckeditor5-track-changes/src/suggestion';
+import Suggestion from '@ckeditor/ckeditor5-track-changes/src/suggestion.js';
 
 class UsersInit {
 	static get requires() {

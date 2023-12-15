@@ -7,11 +7,11 @@
  * @module font/fontbackgroundcolor/fontbackgroundcolorediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { addBackgroundRules } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { addBackgroundRules } from 'ckeditor5/src/engine.js';
 
-import FontBackgroundColorCommand from './fontbackgroundcolorcommand';
-import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
+import FontBackgroundColorCommand from './fontbackgroundcolorcommand.js';
+import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils.js';
 
 /**
  * The font background color editing feature.

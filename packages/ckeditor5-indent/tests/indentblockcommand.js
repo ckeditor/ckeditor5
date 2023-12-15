@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import IndentBlockCommand from '../src/indentblockcommand';
-import IndentBlock from '../src/indentblock';
-import IndentEditing from '../src/indentediting';
-import IndentUsingClasses from '../src/indentcommandbehavior/indentusingclasses';
-import IndentUsingOffset from '../src/indentcommandbehavior/indentusingoffset';
+import IndentBlockCommand from '../src/indentblockcommand.js';
+import IndentBlock from '../src/indentblock.js';
+import IndentEditing from '../src/indentediting.js';
+import IndentUsingClasses from '../src/indentcommandbehavior/indentusingclasses.js';
+import IndentUsingOffset from '../src/indentcommandbehavior/indentusingoffset.js';
 
 describe( 'IndentBlockCommand', () => {
 	let editor, command, model;

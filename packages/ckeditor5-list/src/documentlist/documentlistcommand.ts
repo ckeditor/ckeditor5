@@ -7,8 +7,8 @@
  * @module list/documentlist/documentlistcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 import {
 	splitListItemBefore,
 	expandListBlocksToCompleteItems,
@@ -21,7 +21,7 @@ import {
 	getSelectedBlockObject,
 	isListItemBlock,
 	canBecomeSimpleListItem
-} from './utils/model';
+} from './utils/model.js';
 
 /**
  * The list command. It is used by the {@link module:list/documentlist~DocumentList document list feature}.

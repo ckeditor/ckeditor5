@@ -7,8 +7,8 @@
  * @module restricted-editing/restrictededitingmodenavigationcommand
  */
 
-import type { Model, Range } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Model, Range } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 /**
  * The command that allows navigation across the exceptions in the edited document.

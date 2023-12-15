@@ -7,7 +7,7 @@
  * @module list/documentlistproperties/documentlistpropertiesediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	Consumables,
@@ -16,28 +16,28 @@ import type {
 	Item,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 import DocumentListEditing, {
 	type DocumentListEditingCheckAttributesEvent,
 	type DocumentListEditingPostFixerEvent,
 	type ListItemAttributesMap
-} from '../documentlist/documentlistediting';
+} from '../documentlist/documentlistediting.js';
 
-import DocumentListStartCommand from './documentliststartcommand';
-import DocumentListStyleCommand from './documentliststylecommand';
-import DocumentListReversedCommand from './documentlistreversedcommand';
-import { listPropertiesUpcastConverter } from './converters';
+import DocumentListStartCommand from './documentliststartcommand.js';
+import DocumentListStyleCommand from './documentliststylecommand.js';
+import DocumentListReversedCommand from './documentlistreversedcommand.js';
+import { listPropertiesUpcastConverter } from './converters.js';
 import {
 	getAllSupportedStyleTypes,
 	getListTypeFromListStyleType,
 	getListStyleTypeFromTypeAttribute,
 	getTypeAttributeFromListStyleType
-} from './utils/style';
-import DocumentListPropertiesUtils from './documentlistpropertiesutils';
+} from './utils/style.js';
+import DocumentListPropertiesUtils from './documentlistpropertiesutils.js';
 
-import type { DocumentListIndentCommandAfterExecuteEvent } from '../documentlist/documentlistindentcommand';
-import type { ListPropertiesConfig } from '../listconfig';
+import type { DocumentListIndentCommandAfterExecuteEvent } from '../documentlist/documentlistindentcommand.js';
+import type { ListPropertiesConfig } from '../listconfig.js';
 
 const DEFAULT_LIST_TYPE = 'default';
 

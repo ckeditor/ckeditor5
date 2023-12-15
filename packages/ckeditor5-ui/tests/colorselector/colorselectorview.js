@@ -5,20 +5,20 @@
 
 /* globals document,Event */
 
-import ColorSelectorView from './../../src/colorselector/colorselectorview';
-import ColorTileView from '../../src/colorgrid/colortileview';
-import FocusCycler from '../../src/focuscycler';
-import ColorPickerView from '../../src/colorpicker/colorpickerview';
+import ColorSelectorView from './../../src/colorselector/colorselectorview.js';
+import ColorTileView from '../../src/colorgrid/colortileview.js';
+import FocusCycler from '../../src/focuscycler.js';
+import ColorPickerView from '../../src/colorpicker/colorpickerview.js';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';

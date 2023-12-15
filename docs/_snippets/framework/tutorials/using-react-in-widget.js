@@ -9,7 +9,7 @@ import Babel from 'babel-standalone';
 
 // Imports necessary to run a React application.
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot } from 'react-dom/client.js';
 
 // The official <CKEditor> component for React.
 import { CKEditor } from '@ckeditor/ckeditor5-react';

@@ -14,14 +14,14 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
-import { Plugin } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/engine.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 import {
 	updateViewAttributes,
 	type GHSViewAttributes
-} from '../utils';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
+} from '../utils.js';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:code-block/codeblock~CodeBlock Code Block} feature.

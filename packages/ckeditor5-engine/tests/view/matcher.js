@@ -5,14 +5,14 @@
 
 /* global console */
 
-import Matcher from '../../src/view/matcher';
-import Element from '../../src/view/element';
-import Document from '../../src/view/document';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { StylesProcessor } from '../../src/view/stylesmap';
-import { addMarginRules } from '../../src/view/styles/margin';
-import { addBorderRules } from '../../src/view/styles/border';
-import { addBackgroundRules } from '../../src/view/styles/background';
+import Matcher from '../../src/view/matcher.js';
+import Element from '../../src/view/element.js';
+import Document from '../../src/view/document.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { addMarginRules } from '../../src/view/styles/margin.js';
+import { addBorderRules } from '../../src/view/styles/border.js';
+import { addBackgroundRules } from '../../src/view/styles/background.js';
 
 describe( 'Matcher', () => {
 	let document;

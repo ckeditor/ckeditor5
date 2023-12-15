@@ -8,7 +8,7 @@
 import { Autosave } from '@ckeditor/ckeditor5-autosave';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import ClassicEditor from '../../build-classic';
+import ClassicEditor from '../../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Autosave );
 ClassicEditor.builtinPlugins.push( CKBox );

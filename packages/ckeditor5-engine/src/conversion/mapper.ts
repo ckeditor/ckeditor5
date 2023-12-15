@@ -7,20 +7,20 @@
  * @module engine/conversion/mapper
  */
 
-import ModelPosition from '../model/position';
-import ModelRange from '../model/range';
+import ModelPosition from '../model/position.js';
+import ModelRange from '../model/range.js';
 
-import ViewPosition from '../view/position';
-import ViewRange from '../view/range';
-import ViewText from '../view/text';
+import ViewPosition from '../view/position.js';
+import ViewRange from '../view/range.js';
+import ViewText from '../view/text.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type ViewDocumentFragment from '../view/documentfragment';
-import type ViewElement from '../view/element';
-import type ModelElement from '../model/element';
-import type ModelDocumentFragment from '../model/documentfragment';
-import type ViewNode from '../view/node';
+import type ViewDocumentFragment from '../view/documentfragment.js';
+import type ViewElement from '../view/element.js';
+import type ModelElement from '../model/element.js';
+import type ModelDocumentFragment from '../model/documentfragment.js';
+import type ViewNode from '../view/node.js';
 
 /**
  * Maps elements, positions and markers between the {@link module:engine/view/document~Document view} and

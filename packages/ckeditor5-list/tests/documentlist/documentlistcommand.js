@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DocumentListCommand from '../../src/documentlist/documentlistcommand';
-import stubUid from './_utils/uid';
-import { modelList } from './_utils/utils';
+import DocumentListCommand from '../../src/documentlist/documentlistcommand.js';
+import stubUid from './_utils/uid.js';
+import { modelList } from './_utils/utils.js';
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DocumentListCommand', () => {
 	let editor, command, model, doc, root, changedBlocks;

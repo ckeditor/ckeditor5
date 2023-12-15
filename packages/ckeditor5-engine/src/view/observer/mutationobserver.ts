@@ -9,16 +9,16 @@
 
 /* globals window */
 
-import Observer from './observer';
-import { startsWithFiller } from '../filler';
+import Observer from './observer.js';
+import { startsWithFiller } from '../filler.js';
 import { isEqualWith } from 'lodash-es';
 
-import type DomConverter from '../domconverter';
-import type Renderer from '../renderer';
-import type View from '../view';
-import type ViewElement from '../element';
-import type ViewNode from '../node';
-import type ViewText from '../text';
+import type DomConverter from '../domconverter.js';
+import type Renderer from '../renderer.js';
+import type View from '../view.js';
+import type ViewElement from '../element.js';
+import type ViewNode from '../node.js';
+import type ViewText from '../text.js';
 
 /**
  * Mutation observer's role is to watch for any DOM changes inside the editor that weren't

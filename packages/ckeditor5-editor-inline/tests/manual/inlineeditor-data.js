@@ -5,8 +5,8 @@
 
 /* globals console:false, document, window */
 
-import InlineEditor from '../../src/inlineeditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import InlineEditor from '../../src/inlineeditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 window.editors = [];
 const container = document.querySelector( '.container' );

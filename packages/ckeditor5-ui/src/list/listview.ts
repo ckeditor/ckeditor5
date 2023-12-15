@@ -7,14 +7,14 @@
  * @module ui/list/listview
  */
 
-import View from '../view';
-import FocusCycler from '../focuscycler';
+import View from '../view.js';
+import FocusCycler from '../focuscycler.js';
 
-import ListItemView from './listitemview';
-import ListItemGroupView from './listitemgroupview';
-import type ListSeparatorView from './listseparatorview';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable';
-import ViewCollection from '../viewcollection';
+import ListItemView from './listitemview.js';
+import ListItemGroupView from './listitemgroupview.js';
+import type ListSeparatorView from './listseparatorview.js';
+import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
+import ViewCollection from '../viewcollection.js';
 
 import {
 	FocusTracker,

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DropdownView from '../../src/dropdown/dropdownview';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import ButtonView from '../../src/button/buttonview';
-import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import DropdownView from '../../src/dropdown/dropdownview.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import ButtonView from '../../src/button/buttonview.js';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { FocusTracker } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DropdownView', () => {

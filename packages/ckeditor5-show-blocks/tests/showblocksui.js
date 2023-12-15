@@ -4,12 +4,12 @@
  */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
-import ShowBlocksEditing from '../src/showblocksediting';
-import ShowBlocksUI from '../src/showblocksui';
+import ShowBlocksEditing from '../src/showblocksediting.js';
+import ShowBlocksUI from '../src/showblocksui.js';
 
 describe( 'ShowBlocksUI', () => {
 	let editor, element, button;

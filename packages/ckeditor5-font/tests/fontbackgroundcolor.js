@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import FontBackgroundColor from './../src/fontbackgroundcolor';
-import FontBackgroundColorEditing from './../src/fontbackgroundcolor/fontbackgroundcolorediting';
-import FontBackgroundColorUI from '../src/fontbackgroundcolor/fontbackgroundcolorui';
+import FontBackgroundColor from './../src/fontbackgroundcolor.js';
+import FontBackgroundColorEditing from './../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
+import FontBackgroundColorUI from '../src/fontbackgroundcolor/fontbackgroundcolorui.js';
 
 describe( 'FontBackgroundColor', () => {
 	it( 'requires FontBackgroundColorEditing and FontBackgroundColorUI', () => {

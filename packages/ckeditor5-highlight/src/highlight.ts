@@ -7,10 +7,10 @@
  * @module highlight/highlight
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import HighlightEditing from './highlightediting';
-import HighlightUI from './highlightui';
+import HighlightEditing from './highlightediting.js';
+import HighlightUI from './highlightui.js';
 
 /**
  * The highlight plugin.

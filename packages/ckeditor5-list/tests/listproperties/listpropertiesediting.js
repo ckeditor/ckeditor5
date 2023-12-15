@@ -5,20 +5,20 @@
 
 /* global document */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting';
-import TodoListEditing from '../../src/todolist/todolistediting';
-import ListStyleCommand from '../../src/listproperties/liststylecommand';
-import ListReversedCommand from '../../src/listproperties/listreversedcommand';
-import ListStartCommand from '../../src/listproperties/liststartcommand';
+import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
+import TodoListEditing from '../../src/todolist/todolistediting.js';
+import ListStyleCommand from '../../src/listproperties/liststylecommand.js';
+import ListReversedCommand from '../../src/listproperties/listreversedcommand.js';
+import ListStartCommand from '../../src/listproperties/liststartcommand.js';
 
 describe( 'ListPropertiesEditing', () => {
 	let editor, model, view;

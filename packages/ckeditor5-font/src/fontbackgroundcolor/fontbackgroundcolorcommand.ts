@@ -7,9 +7,9 @@
  * @module font/fontbackgroundcolor/fontbackgroundcolorcommand
  */
 
-import type { Editor } from 'ckeditor5/src/core';
-import FontCommand from '../fontcommand';
-import { FONT_BACKGROUND_COLOR } from '../utils';
+import type { Editor } from 'ckeditor5/src/core.js';
+import FontCommand from '../fontcommand.js';
+import { FONT_BACKGROUND_COLOR } from '../utils.js';
 
 /**
  * The font background color command. It is used by

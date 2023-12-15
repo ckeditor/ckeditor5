@@ -18,8 +18,8 @@ import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 
-import DocumentList from '../../src/documentlist';
-import TodoDocumentList from '../../src/tododocumentlist';
+import DocumentList from '../../src/documentlist.js';
+import TodoDocumentList from '../../src/tododocumentlist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
