@@ -55,9 +55,9 @@ You can check if the view document is focused using its {@link framework/deep-di
 console.log( editor.editing.view.document.isFocused );
 ```
 
-If you run this snippet from the web browser's developer console, it should return `false` unless you managed to keep the editor focused (e.g. by running a debugger and freezing the DOM). This happens because the editor loses focus the moment you switch to developer tools to execute the snippet.
+If you run this snippet from the web browser's developer console, it should return `false` unless you managed to keep the editor focused (for example, by running a debugger and freezing the DOM). This happens because the editor loses focus the moment you switch to developer tools to execute the snippet.
 
-So how do I know `isFocused` actually works? Since it is observable you can see how it changes live:
+How do you know `isFocused` actually works? Since it is observable, you can see how it changes live:
 
 ```js
 editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) => {
@@ -73,13 +73,13 @@ To spice things up even more, you should also know `isFocused` will change when 
 
 The simplest way to focus the editor is to call the {@link module:core/editor/editor~Editor#focus `editor.focus()`} method.
 
-However, you may wish to explicitly focus the editable area of CKEditor&nbsp;5 when a certain action is executed (e.g. a button is clicked). To do that, use the {@link module:engine/view/view~View#focus `focus()`} method of the editing view:
+However, you may wish to explicitly focus the editable area of CKEditor&nbsp;5 when a certain action is executed (for example, a button is clicked). To do that, use the {@link module:engine/view/view~View#focus `focus()`} method of the editing view:
 
 ```js
 editor.editing.view.focus();
 ```
 
-This snippet focuses the editable that has the selection. If the editor has not been focused yet, this will focus the very first editable. If an editor has multiple editing roots and the user was editing content, focus will be brought back where the user left off.
+This snippet focuses the editable that has the selection. If the editor has not been focused yet, this will focus the first editable. If an editor has many editing roots and the user was editing content, focus will be brought back where the user left off.
 
 <info-box>
 	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the {@link framework/architecture/editing-engine#model model writer} to change the selection.
@@ -216,7 +216,7 @@ class MyListItemView extends View {
 }
 ```
 
-If a view has many focusable children (e.g. a list), the `focus()` method should focus the first child:
+If a view has many focusable children (like a list), the `focus()` method should focus the first child:
 
 ```js
 import { View } from '@ckeditor/ckeditor5-ui';
@@ -359,9 +359,9 @@ The `MyListView` can now track focused children, and it is time to help the user
 
 ### Using the `KeystrokeHandler` class
 
-The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows registering callbacks for the keystrokes. It is used in many views across the UI of the editor for many purposes. For instance, it is responsible for focusing the toolbar on the <kbd>Alt</kbd>+<kbd>F10</kbd> keypress or it opens the link popup form when you hit <kbd>Ctrl</kbd>+<kbd>L</kbd> on a selected text.
+The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows registering callbacks for the keystrokes. It is used in many views across the UI of the editor for many purposes. For instance, it is responsible for focusing the toolbar on the <kbd>Alt</kbd>+<kbd>F10</kbd> keypress or it opens the link pop-up form when you hit <kbd>Ctrl</kbd>+<kbd>L</kbd> on a selected text.
 
-But in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
+However, in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
 
 ```js
 import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
@@ -777,7 +777,7 @@ Let's see how they react to the user actions (states were recorded **after** eac
 ### Conclusions
 
 * The [global focus tracker](#a-note-about-the-global-focus-tracker) (the one you can access via `editor.ui.focusTracker`) is always aware of the focus state, even when the focus is in the farthest regions of the UI.
-	* It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (e.g. from the editable to the balloon panel).
+	* It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (for example, from the editable to the balloon panel).
 	* It lacks precise information about the focus in the link UI because this is the responsibility of the focus tracker of the link UI layer.
 	* All editor features **can always depend on the global focus tracker** when necessary. For instance, the main editor toolbar is displayed as long as the global focus tracker knows the focus is somewhere in the editor.
 * You can see that the focus management is modular: `LinkActionsView` and `LinkFormView` only know about the focus as long as one of their children has it.

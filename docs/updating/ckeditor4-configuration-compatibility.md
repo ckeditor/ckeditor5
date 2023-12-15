@@ -524,8 +524,8 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			<p><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-on">on</a></p></td>
 			<td>
 				<p>Using the configuration file or setting to define event listeners was a bad practice so support for it was dropped.</p>
-				<p>When creating an editor, a <code>Promise</code> is returned. Use <code>then/catch()</code> to define a callback when the editor is initialized or fails to start. The promise returns the created editor instance, e.g. {@link module:editor-classic/classiceditor~ClassicEditor <code>ClassicEditor</code>}, on which you can listen to its events.</p>
-				<p>Note: The editor instance is not the only object on which events are fired. You can also listen to e.g. {@link module:engine/model/document~Document `Document`} events.</p>
+				<p>When creating an editor, a <code>Promise</code> is returned. Use <code>then/catch()</code> to define a callback when the editor is initialized or fails to start. The promise returns the created editor instance, for example, {@link module:editor-classic/classiceditor~ClassicEditor <code>ClassicEditor</code>}, on which you can listen to its events.</p>
+				<p>Note: The editor instance is not the only object on which events are fired. You can also listen to, for example, {@link module:engine/model/document~Document `Document`} events.</p>
 			</td>
 		</tr>
 		<tr>

@@ -44,6 +44,8 @@ Gantt
 [Gg]etter
 Grammarly
 hardcode
+hotlink
+hotlinked
 Iframely
 Ivanov
 JSDoc

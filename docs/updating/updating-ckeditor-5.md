@@ -76,7 +76,7 @@ The example `package.json` file with the editor version 30.0.0 looks as below:
   }
   ```
 
-To perform the update, you can simply change the version from 30.0.0 to 31.0.0 or use some automated tool (e.g. [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
+To perform the update, you can change the version from 30.0.0 to 31.0.0 or use some automated tool (like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
 
 ```json
   "dependencies": {

@@ -8,7 +8,7 @@ modified_at: 2023-05-29
 
 # Autosave
 
-The autosave feature allows you to automatically save the data (e.g. send it to the server) when needed. This can happen, for example, when the user changed the content.
+The autosave feature allows you to automatically save the data (for example, send it to the server) when needed. This can happen, for example, when the user changes the content.
 
 ## Demo
 
@@ -21,9 +21,9 @@ How to understand this demo:
 * The status indicator shows if the editor has some unsaved content or pending actions.
 	* If you drop a big image into this editor, you will see that it is busy during the entire period when the image is being uploaded.
 	* The editor is also busy when saving the content is in progress (the `save()`'s promise was not resolved).
-* The autosave feature has a throttling mechanism that groups frequent changes (e.g. typing) into batches.
+* The autosave feature has a throttling mechanism that groups frequent changes (like typing) into batches.
 * The autosave itself does not check whether the data has actually changed. It bases on changes in the {@link framework/architecture/editing-engine#model model} that sometimes may not be "visible" in the data. You can add such a check yourself if you would like to avoid sending the same data to the server twice.
-* You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and typing something. These actions will make the editor busy for a longer time &ndash; try leaving the page then.
+* You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (for example, 9000ms) and typing something. These actions will make the editor busy for a longer time &ndash; try leaving the page then.
 
 <info-box info>
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
@@ -61,7 +61,7 @@ The autosave feature listens to the {@link module:engine/model/document~Document
 It also listens to the native [`window#beforeunload`](https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload) event and blocks it in the following cases:
 
 * The data has not been saved yet (the `save()` function did not resolve its promise or it has not been called yet due to throttling).
-* Or any of the editor features registered a {@link module:core/pendingactions~PendingActions "pending action"} (e.g. that an image is being uploaded).
+* Or any of the editor features registered a {@link module:core/pendingactions~PendingActions "pending action"} (for example, that an image is being uploaded).
 
 This automatically secures you from the user leaving the page before the content is saved or some ongoing actions like image upload did not finish.
 

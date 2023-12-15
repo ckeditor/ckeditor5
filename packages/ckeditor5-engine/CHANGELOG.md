@@ -67,7 +67,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* Changes irrelevant to the view (e.g. inside UIElements) will no longer force a view render nor will they trigger mutation event on the document. Closes [ckeditor/ckeditor5#5600](https://github.com/ckeditor/ckeditor5/issues/5600). ([b7e2bfe](https://github.com/ckeditor/ckeditor5-engine/commit/b7e2bfe))
+* Changes irrelevant to the view (for example, inside `UIElements`) will no longer force a view render nor will they trigger a mutation event on the document. Closes [ckeditor/ckeditor5#5600](https://github.com/ckeditor/ckeditor5/issues/5600). ([b7e2bfe](https://github.com/ckeditor/ckeditor5-engine/commit/b7e2bfe))
 * DOM selection change will not be converted if the selection was placed outside of the editable element. Closes [ckeditor/ckeditor5#4199](https://github.com/ckeditor/ckeditor5/issues/4199). ([1c3749e](https://github.com/ckeditor/ckeditor5-engine/commit/1c3749e))
 
 ### Other changes
@@ -121,7 +121,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* Fixed problem with handling very large text nodes. ([a7ae813](https://github.com/ckeditor/ckeditor5-engine/commit/a7ae813))
+* Fixed a problem with handling large text nodes. ([a7ae813](https://github.com/ckeditor/ckeditor5-engine/commit/a7ae813))
 * Prevented `Differ` crashing in some scenarios involving attribute changes on elements. Closes [#1764](https://github.com/ckeditor/ckeditor5-engine/issues/1764). ([482e55e](https://github.com/ckeditor/ckeditor5-engine/commit/482e55e))
 
 ### Other changes
@@ -129,7 +129,7 @@ Changes for the past releases are available below.
 * Add `unwrapElement()` method to UpcastWriter. ([9e97196](https://github.com/ckeditor/ckeditor5-engine/commit/9e97196))
 * Allowed for unbinding single elements from a marker name in `Mapper`. Closes [#1758](https://github.com/ckeditor/ckeditor5-engine/issues/1758). ([52e701d](https://github.com/ckeditor/ckeditor5-engine/commit/52e701d))
 * The issue tracker for this package was moved to https://github.com/ckeditor/ckeditor5/issues. See [ckeditor/ckeditor5#1988](https://github.com/ckeditor/ckeditor5/issues/1988). ([6ed94c6](https://github.com/ckeditor/ckeditor5-engine/commit/6ed94c6))
-* Introduced automatic marker re-rendering during conversion for markers which view element was unbound. Closes [#1780](https://github.com/ckeditor/ckeditor5-engine/issues/1780). ([5661fb6](https://github.com/ckeditor/ckeditor5-engine/commit/5661fb6))
+* Introduced automatic marker re-rendering during conversion for markers whose view element was unbound. Closes [#1780](https://github.com/ckeditor/ckeditor5-engine/issues/1780). ([5661fb6](https://github.com/ckeditor/ckeditor5-engine/commit/5661fb6))
 * Position getters (such as `#parent` or `#index`) will throw when position points at an incorrect place in its root. Closes [#1776](https://github.com/ckeditor/ckeditor5-engine/issues/1776). ([a359866](https://github.com/ckeditor/ckeditor5-engine/commit/a359866))
 
 ### BREAKING CHANGES
@@ -243,7 +243,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### BREAKING CHANGES
 
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
-* `DataController#get()` method now returns an empty string when the editor content is empty (instead of returning e.g. `<p>&nbsp;</p>`).
+* The `DataController#get()` method now returns an empty string when the editor content is empty (instead of returning, for example, `<p>&nbsp;</p>`).
 * The wrap() conversion helper was removed from public API.
 * The `attachPlaceholder()` has been renamed to `enablePlaceholder()`.
 * `enablePlaceholder()` accepts a configuration object instead of separate parameters.
@@ -306,8 +306,8 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Other changes
 
 * `ContainerElement#getFillerOffset()` can now be re-used in other places in the code (it is now exported by the module). See [ckeditor/ckeditor5-list#117](https://github.com/ckeditor/ckeditor5-list/issues/117). ([12f28bb](https://github.com/ckeditor/ckeditor5-engine/commit/12f28bb))
-* Moved `Position`, `Range` and `Selection` static factories from those classes to the model/view writers and `Model`/`View` instances. Previously, those factories were available as static methods of the `Position`, `Range` and `Selection` classes which meant that you needed to import those classes to your plugin's code to create new instances. That required your package to depend on `@ckeditor/ckeditor5-engine` and was not very useful in general. After this change, you can create instances of those classes without importing anything. See the "Breaking changes" section for more details. Closes [#1555](https://github.com/ckeditor/ckeditor5-engine/issues/1555). ([e7f8467](https://github.com/ckeditor/ckeditor5-engine/commit/e7f8467))
-* Various fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
+* Moved `Position`, `Range`, and `Selection` static factories from those classes to the model/view writers and `Model`/`View` instances. Previously, those factories were available as static methods of the `Position`, `Range`, and `Selection` classes which meant that you needed to import those classes to your plugin's code to create new instances. That required your package to depend on `@ckeditor/ckeditor5-engine` and was not useful in general. After this change, you can create instances of those classes without importing anything. See the "Breaking changes" section for more details. Closes [#1555](https://github.com/ckeditor/ckeditor5-engine/issues/1555). ([e7f8467](https://github.com/ckeditor/ckeditor5-engine/commit/e7f8467))
+* Various fixes in the API documentation. Thanks to [@denisname](https://github.com/denisname)!
 
 ### BREAKING CHANGES
 
@@ -608,7 +608,7 @@ Feature: `SchemaContext#concat` has been introduced.
 
 ### BREAKING CHANGES
 
-* View and model nodes are now automatically removed from their old parents when they are inserted into new elements. This is important e.g. if you iterate through element's children and they are moved during that iteration. In that case, it is safest to cache the element's children in an array.
+* View and model nodes are now automatically removed from their old parents when they are inserted into new elements. This is important, for example, if you iterate through element's children and they are moved during that iteration. In that case, it is safest to cache the element's children in an array.
 
 
 ## [0.11.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.10.0...v0.11.0) (September 3, 2017)
