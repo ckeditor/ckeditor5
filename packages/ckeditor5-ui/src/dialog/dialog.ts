@@ -63,23 +63,11 @@ export default class Dialog extends Plugin {
 		this.set( 'isOpen', false );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public afterInit(): void {
-		const editor = this.editor;
-
-		if ( editor.plugins.has( 'SourceEditing' ) ) {
-			const sourceEditing: SourceEditing = editor.plugins.get( 'SourceEditing' );
-
-			this.listenTo( sourceEditing, 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
-				if ( this.isOpen && isSourceEditingMode && !this.view!.isVisibleInSourceMode ) {
-					this.hide();
-				}
-				// Don't reposition the dialog while switching between source and WYSIWYG modes,
-				// no matter in which one it was opened.
-				else if ( this.isOpen ) {
-					this.view!.isStuck = true;
-				}
-			} );
-		}
+		this._initSourceEditingIntegration();
 	}
 
 	/**
@@ -146,6 +134,29 @@ export default class Dialog extends Plugin {
 				}
 			}
 		} );
+	}
+
+	/**
+	 * Provides an integration with the {@link module:source-editing/sourceediting~SourceEditing} plugin.
+	 * Depending on the dialog configuration, it will either be hidden or stuck in the current position.
+	 */
+	private _initSourceEditingIntegration() {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'SourceEditing' ) ) {
+			const sourceEditing: SourceEditing = editor.plugins.get( 'SourceEditing' );
+
+			this.listenTo( sourceEditing, 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
+				if ( this.isOpen && isSourceEditingMode && !this.view!.isVisibleInSourceMode ) {
+					this.hide();
+				}
+				// Don't reposition the dialog while switching between source and WYSIWYG modes,
+				// no matter in which one it was opened.
+				else if ( this.isOpen ) {
+					this.view!.isStuck = true;
+				}
+			} );
+		}
 	}
 
 	/**
