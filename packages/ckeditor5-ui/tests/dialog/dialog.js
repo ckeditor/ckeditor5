@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Dialog, DialogView, DialogViewPosition } from '../../src';
+import { Dialog, DialogView, DialogViewPosition } from '../../src/index.js';
 import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 /* global document */

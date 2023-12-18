@@ -5,28 +5,28 @@
 
 /* globals window, console, document, btoa */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import CKBoxEditing from '../src/ckboxediting';
-import CKBoxUploadAdapter from '../src/ckboxuploadadapter';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import CKBoxEditing from '../src/ckboxediting.js';
+import CKBoxUploadAdapter from '../src/ckboxuploadadapter.js';
 
-import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import { createNativeFileMock, NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 
-import CloudServicesCoreMock from './_utils/cloudservicescoremock';
+import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
 
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import CKBoxUtils from '../src/ckboxutils';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import CKBoxUtils from '../src/ckboxutils.js';
 
 const BASE64_SAMPLE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 const CKBOX_API_URL = 'https://upload.example.com';

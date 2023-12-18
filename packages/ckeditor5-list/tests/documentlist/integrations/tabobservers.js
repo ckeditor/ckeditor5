@@ -5,23 +5,23 @@
 
 /* global document */
 
-import DocumentListEditing from '../../../src/documentlist/documentlistediting';
-import stubUid from '../_utils/uid';
-import { modelList } from '../_utils/utils';
+import DocumentListEditing from '../../../src/documentlist/documentlistediting.js';
+import stubUid from '../_utils/uid.js';
+import { modelList } from '../_utils/utils.js';
 
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import { Paragraph } from 'ckeditor5/src/paragraph';
-import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
+import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { Paragraph } from 'ckeditor5/src/paragraph.js';
+import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 import {
 	getData as getModelData,
 	setData as setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'DocumentListEditing integrations: tab key', () => {

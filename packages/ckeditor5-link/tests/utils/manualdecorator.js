@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ManualDecorator from '../../src/utils/manualdecorator';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ManualDecorator from '../../src/utils/manualdecorator.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Manual Decorator', () => {
 	let manualDecorator;

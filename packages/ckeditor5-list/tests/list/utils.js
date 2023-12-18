@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
+import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import ListEditing from '../../src/list/listediting';
-import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting';
+import ListEditing from '../../src/list/listediting.js';
+import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
 
-import { createViewListItemElement, getListTypeFromListStyleType, getSiblingListItem, getSiblingNodes } from '../../src/list/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
+import { createViewListItemElement, getListTypeFromListStyleType, getSiblingListItem, getSiblingNodes } from '../../src/list/utils.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 
 describe( 'utils', () => {
 	let writer;

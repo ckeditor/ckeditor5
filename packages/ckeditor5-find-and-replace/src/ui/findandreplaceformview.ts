@@ -21,7 +21,7 @@ import {
 	type InputView,
 	SwitchButtonView,
 	CollapsibleView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import {
 	FocusTracker,
@@ -29,7 +29,7 @@ import {
 	Rect,
 	isVisible,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports

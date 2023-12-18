@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ListWalker from '../../../src/documentlist/utils/listwalker';
-import { modelList } from '../_utils/utils';
+import ListWalker from '../../../src/documentlist/utils/listwalker.js';
+import { modelList } from '../_utils/utils.js';
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DocumentList - utils - ListWalker', () => {
 	let model, schema;

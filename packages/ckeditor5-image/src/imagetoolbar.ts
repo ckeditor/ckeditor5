@@ -7,11 +7,11 @@
  * @module image/imagetoolbar
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
 
-import ImageUtils from './imageutils';
-import type { ImageStyleDropdownDefinition } from './imageconfig';
+import ImageUtils from './imageutils.js';
+import type { ImageStyleDropdownDefinition } from './imageconfig.js';
 
 import { isObject } from 'lodash-es';
 

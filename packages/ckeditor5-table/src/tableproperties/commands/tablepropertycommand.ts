@@ -7,9 +7,9 @@
  * @module table/tableproperties/commands/tablepropertycommand
  */
 
-import type { Batch, Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import { getSelectionAffectedTable } from '../../utils/common';
+import type { Batch, Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { getSelectionAffectedTable } from '../../utils/common.js';
 
 export interface TablePropertyCommandExecuteOptions {
 	batch?: Batch;

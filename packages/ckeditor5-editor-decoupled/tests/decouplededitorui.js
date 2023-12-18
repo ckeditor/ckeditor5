@@ -5,21 +5,21 @@
 
 /* globals document, Event */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
-import DecoupledEditor from '../src/decouplededitor';
-import DecoupledEditorUI from '../src/decouplededitorui';
-import DecoupledEditorUIView from '../src/decouplededitoruiview';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import DecoupledEditor from '../src/decouplededitor.js';
+import DecoupledEditorUI from '../src/decouplededitorui.js';
+import DecoupledEditorUIView from '../src/decouplededitoruiview.js';
+import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'lodash-es';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DecoupledEditorUI', () => {
 	let editor, view, ui, viewElement;

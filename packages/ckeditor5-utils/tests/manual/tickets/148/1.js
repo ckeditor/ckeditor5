@@ -5,7 +5,7 @@
 
 /* global document */
 
-import { getOptimalPosition } from '../../../../src/dom/position';
+import { getOptimalPosition } from '../../../../src/dom/position.js';
 
 const source = document.querySelector( '.source' );
 const target = document.querySelector( '.target' );

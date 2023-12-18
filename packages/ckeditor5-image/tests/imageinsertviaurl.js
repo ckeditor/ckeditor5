@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageInsertUI from '../src/imageinsert/imageinsertui';
-import ImageInsertViaUrl from '../src/imageinsertviaurl';
-import ImageInsertViaUrlUI from '../src/imageinsert/imageinsertviaurlui';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ImageInsertUI from '../src/imageinsert/imageinsertui.js';
+import ImageInsertViaUrl from '../src/imageinsertviaurl.js';
+import ImageInsertViaUrlUI from '../src/imageinsert/imageinsertviaurlui.js';
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 describe( 'ImageInsertViaUrl', () => {
 	let editorElement, editor;

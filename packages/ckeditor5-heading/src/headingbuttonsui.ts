@@ -7,12 +7,12 @@
  * @module heading/headingbuttonsui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
-import { getLocalizedOptions } from './utils';
-import type { HeadingOption } from './headingconfig';
-import type HeadingCommand from './headingcommand';
+import { getLocalizedOptions } from './utils.js';
+import type { HeadingOption } from './headingconfig.js';
+import type HeadingCommand from './headingcommand.js';
 
 import iconHeading1 from '../theme/icons/heading1.svg';
 import iconHeading2 from '../theme/icons/heading2.svg';

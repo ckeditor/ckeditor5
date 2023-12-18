@@ -7,8 +7,8 @@
  * @module table/tableconfig
  */
 
-import type { ToolbarConfigItem } from 'ckeditor5/src/core';
-import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui';
+import type { ToolbarConfigItem } from 'ckeditor5/src/core.js';
+import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
 
 /**
  * The configuration of the table feature. Used by the table feature in the `@ckeditor/ckeditor5-table` package.

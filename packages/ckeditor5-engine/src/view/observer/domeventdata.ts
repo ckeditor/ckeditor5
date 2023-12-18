@@ -9,9 +9,9 @@
 
 import { extend } from 'lodash-es';
 
-import type Document from '../document';
-import type Element from '../element';
-import type View from '../view';
+import type Document from '../document.js';
+import type Element from '../element.js';
+import type View from '../view.js';
 
 /**
  * Information about a DOM event in context of the {@link module:engine/view/document~Document}.

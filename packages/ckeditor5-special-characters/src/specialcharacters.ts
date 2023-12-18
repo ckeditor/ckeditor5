@@ -7,18 +7,18 @@
  * @module special-characters/specialcharacters
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing';
-import { createDropdown, type DropdownView } from 'ckeditor5/src/ui';
-import { CKEditorError, type Locale } from 'ckeditor5/src/utils';
-import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Typing, type InsertTextCommand } from 'ckeditor5/src/typing.js';
+import { createDropdown, type DropdownView } from 'ckeditor5/src/ui.js';
+import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
+import SpecialCharactersNavigationView from './ui/specialcharactersnavigationview.js';
 import CharacterGridView, {
 	type CharacterGridViewExecuteEvent,
 	type CharacterGridViewTileFocusEvent,
 	type CharacterGridViewTileHoverEvent
-} from './ui/charactergridview';
-import CharacterInfoView from './ui/characterinfoview';
-import SpecialCharactersView from './ui/specialcharactersview';
+} from './ui/charactergridview.js';
+import CharacterInfoView from './ui/characterinfoview.js';
+import SpecialCharactersView from './ui/specialcharactersview.js';
 
 import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 

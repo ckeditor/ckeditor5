@@ -7,9 +7,9 @@
  * @module utils/dom/position
  */
 
-import global from './global';
-import Rect, { type RectSource } from './rect';
-import getPositionedAncestor from './getpositionedancestor';
+import global from './global.js';
+import Rect, { type RectSource } from './rect.js';
+import getPositionedAncestor from './getpositionedancestor.js';
 import { isFunction } from 'lodash-es';
 
 // @if CK_DEBUG_POSITION // const {

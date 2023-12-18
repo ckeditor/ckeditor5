@@ -8,7 +8,7 @@
  */
 
 import { ObservableMixin, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import getLastTextLine from './utils/getlasttextline';
+import getLastTextLine from './utils/getlasttextline.js';
 
 import type {
 	Batch,

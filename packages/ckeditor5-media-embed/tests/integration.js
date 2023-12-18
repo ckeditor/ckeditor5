@@ -5,12 +5,12 @@
 
 /* global document */
 
-import MediaEmbed from '../src/mediaembed';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import MediaEmbed from '../src/mediaembed.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder.js';
 
 describe( 'MediaEmbed integration', () => {
 	let element, clock;

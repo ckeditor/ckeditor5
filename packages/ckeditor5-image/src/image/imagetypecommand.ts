@@ -7,9 +7,9 @@
  * @module image/image/imagetypecommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
-import type ImageUtils from '../imageutils';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.

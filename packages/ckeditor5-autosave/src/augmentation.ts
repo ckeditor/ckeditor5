@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { Autosave, AutosaveConfig } from './index';
+import type { Autosave, AutosaveConfig } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

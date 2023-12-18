@@ -7,9 +7,9 @@
  * @module ui/dropdown/button/dropdownbuttonview
  */
 
-import ButtonView from '../../button/buttonview';
-import type DropdownButton from './dropdownbutton';
-import IconView from '../../icon/iconview';
+import ButtonView from '../../button/buttonview.js';
+import type DropdownButton from './dropdownbutton.js';
+import IconView from '../../icon/iconview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

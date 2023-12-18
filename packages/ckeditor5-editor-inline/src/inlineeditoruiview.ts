@@ -12,17 +12,17 @@ import {
 	EditorUIView,
 	InlineEditableUIView,
 	ToolbarView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 import {
 	Rect,
 	ResizeObserver,
 	toUnit,
 	type PositioningFunction,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 import type {
 	View
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 const toPx = toUnit( 'px' );
 

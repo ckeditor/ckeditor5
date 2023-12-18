@@ -7,15 +7,15 @@
  * @module find-and-replace
  */
 
-export { default as FindAndReplace } from './findandreplace';
-export { default as FindAndReplaceEditing } from './findandreplaceediting';
-export { default as FindAndReplaceUI } from './findandreplaceui';
-export { default as FindAndReplaceUtils } from './findandreplaceutils';
-export { default as FindCommand } from './findcommand';
-export { default as FindNextCommand } from './findnextcommand';
-export { default as FindPreviousCommand } from './findpreviouscommand';
-export { default as ReplaceCommand } from './replacecommand';
-export { default as ReplaceAllCommand } from './replaceallcommand';
-export { FindAndReplaceConfig, type FindAndReplaceUIType } from './findandreplaceconfig';
+export { default as FindAndReplace } from './findandreplace.js';
+export { default as FindAndReplaceEditing } from './findandreplaceediting.js';
+export { default as FindAndReplaceUI } from './findandreplaceui.js';
+export { default as FindAndReplaceUtils } from './findandreplaceutils.js';
+export { default as FindCommand } from './findcommand.js';
+export { default as FindNextCommand } from './findnextcommand.js';
+export { default as FindPreviousCommand } from './findpreviouscommand.js';
+export { default as ReplaceCommand } from './replacecommand.js';
+export { default as ReplaceAllCommand } from './replaceallcommand.js';
+export { FindAndReplaceConfig, type FindAndReplaceUIType } from './findandreplaceconfig.js';
 
-import './augmentation';
+import './augmentation.js';

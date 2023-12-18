@@ -25,11 +25,11 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import { ButtonView, Dialog, DialogViewPosition, View } from '../../../src';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
+import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { ButtonView, Dialog, DialogViewPosition, View } from '../../../src/index.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { icons } from '@ckeditor/ckeditor5-ui';

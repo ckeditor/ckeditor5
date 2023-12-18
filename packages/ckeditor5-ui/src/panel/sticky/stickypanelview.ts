@@ -7,10 +7,10 @@
  * @module ui/panel/sticky/stickypanelview
  */
 
-import View from '../../view';
-import Template from '../../template';
+import View from '../../view.js';
+import Template from '../../template.js';
 
-import type ViewCollection from '../../viewcollection';
+import type ViewCollection from '../../viewcollection.js';
 
 import {
 	type Locale,

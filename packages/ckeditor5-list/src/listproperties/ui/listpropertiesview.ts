@@ -18,16 +18,16 @@ import {
 	CollapsibleView,
 	type ButtonView,
 	type InputNumberView
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
 import {
 	FocusTracker,
 	KeystrokeHandler,
 	global,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import type { ListPropertiesConfig } from '../../listconfig';
+import type { ListPropertiesConfig } from '../../listconfig.js';
 
 import '../../../theme/listproperties.css';
 

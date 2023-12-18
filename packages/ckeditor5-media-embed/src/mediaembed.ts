@@ -7,12 +7,12 @@
  * @module media-embed/mediaembed
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { Widget } from 'ckeditor5/src/widget';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Widget } from 'ckeditor5/src/widget.js';
 
-import MediaEmbedEditing from './mediaembedediting';
-import AutoMediaEmbed from './automediaembed';
-import MediaEmbedUI from './mediaembedui';
+import MediaEmbedEditing from './mediaembedediting.js';
+import AutoMediaEmbed from './automediaembed.js';
+import MediaEmbedUI from './mediaembedui.js';
 
 import '../theme/mediaembed.css';
 

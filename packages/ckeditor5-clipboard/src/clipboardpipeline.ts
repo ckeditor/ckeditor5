@@ -27,11 +27,11 @@ import ClipboardObserver, {
 	type ViewDocumentCopyEvent,
 	type ViewDocumentCutEvent,
 	type ViewDocumentClipboardInputEvent
-} from './clipboardobserver';
+} from './clipboardobserver.js';
 
-import plainTextToHtml from './utils/plaintexttohtml';
-import normalizeClipboardHtml from './utils/normalizeclipboarddata';
-import viewToPlainText from './utils/viewtoplaintext';
+import plainTextToHtml from './utils/plaintexttohtml.js';
+import normalizeClipboardHtml from './utils/normalizeclipboarddata.js';
+import viewToPlainText from './utils/viewtoplaintext.js';
 
 // Input pipeline events overview:
 //

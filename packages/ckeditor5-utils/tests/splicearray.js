@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import spliceArray from '../src/splicearray';
+import spliceArray from '../src/splicearray.js';
 
 describe( 'utils', () => {
 	describe( 'spliceArray', () => {

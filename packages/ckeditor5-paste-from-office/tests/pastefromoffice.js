@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import PasteFromOffice from '../src/pastefromoffice';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import { createDataTransfer } from './_utils/utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
-import CodeBlockUI from '@ckeditor/ckeditor5-code-block/src/codeblockui';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import PasteFromOffice from '../src/pastefromoffice.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { createDataTransfer } from './_utils/utils.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
+import CodeBlockUI from '@ckeditor/ckeditor5-code-block/src/codeblockui.js';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { priorities } from '@ckeditor/ckeditor5-utils';
 import { DomConverter } from '@ckeditor/ckeditor5-engine';
 

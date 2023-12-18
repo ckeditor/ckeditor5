@@ -8,7 +8,7 @@
  */
 
 import { logWarning } from '@ckeditor/ckeditor5-utils';
-import type Operation from './operation/operation';
+import type Operation from './operation/operation.js';
 
 /**
  * A batch instance groups model changes ({@link module:engine/model/operation/operation~Operation operations}). All operations

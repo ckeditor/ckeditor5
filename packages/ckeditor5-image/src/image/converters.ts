@@ -15,9 +15,9 @@ import type {
 	ViewElement,
 	ViewElementAttributes,
 	DowncastAttributeEvent
-} from 'ckeditor5/src/engine';
-import { first, type GetCallback } from 'ckeditor5/src/utils';
-import type ImageUtils from '../imageutils';
+} from 'ckeditor5/src/engine.js';
+import { first, type GetCallback } from 'ckeditor5/src/utils.js';
+import type ImageUtils from '../imageutils.js';
 
 /**
  * Returns a function that converts the image view representation:

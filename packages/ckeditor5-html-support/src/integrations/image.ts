@@ -7,19 +7,19 @@
  * @module html-support/integrations/image
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	Element,
 	Node,
 	UpcastDispatcher
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils';
-import { getDescendantElement } from './integrationutils';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils.js';
+import { getDescendantElement } from './integrationutils.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.

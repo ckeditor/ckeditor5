@@ -6,9 +6,9 @@
 /* global document, Event, KeyboardEvent, MouseEvent, console */
 
 import { FocusTracker, KeystrokeHandler, Locale, global, keyCodes } from '@ckeditor/ckeditor5-utils';
-import { ButtonView, FormHeaderView, View, ViewCollection } from '../../src';
-import DialogView, { DialogViewPosition } from '../../src/dialog/dialogview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { ButtonView, FormHeaderView, View, ViewCollection } from '../../src/index.js';
+import DialogView, { DialogViewPosition } from '../../src/dialog/dialogview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 describe( 'DialogView', () => {

@@ -9,9 +9,9 @@ import {
 	ListView,
 	AutocompleteView,
 	SearchTextView
-} from '../../src';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+} from '../../src/index.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'AutocompleteView', () => {

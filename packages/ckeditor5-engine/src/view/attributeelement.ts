@@ -7,12 +7,12 @@
  * @module engine/view/attributeelement
  */
 
-import Element, { type ElementAttributes } from './element';
+import Element, { type ElementAttributes } from './element.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type DocumentFragment from './documentfragment';
-import type Document from './document';
-import type Node from './node';
+import type DocumentFragment from './documentfragment.js';
+import type Document from './document.js';
+import type Node from './node.js';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;

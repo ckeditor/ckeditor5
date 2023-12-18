@@ -5,13 +5,13 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ColorSelectorView } from '@ckeditor/ckeditor5-ui';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import TestColorPlugin from '../_utils/testcolorplugin';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import TestColorPlugin from '../_utils/testcolorplugin.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ColorSelectorView', () => {
 	let locale, colorSelectorView;

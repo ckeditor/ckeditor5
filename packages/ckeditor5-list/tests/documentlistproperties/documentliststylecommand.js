@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import DocumentListCommand from '../../src/documentlist/documentlistcommand';
-import DocumentListStyleCommand from '../../src/documentlistproperties/documentliststylecommand';
-import stubUid from '../documentlist/_utils/uid';
-import { modelList } from '../documentlist/_utils/utils';
+import DocumentListCommand from '../../src/documentlist/documentlistcommand.js';
+import DocumentListStyleCommand from '../../src/documentlistproperties/documentliststylecommand.js';
+import stubUid from '../documentlist/_utils/uid.js';
+import { modelList } from '../documentlist/_utils/utils.js';
 
 describe( 'DocumentListStyleCommand', () => {
 	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;

@@ -5,10 +5,10 @@
 
 /* globals document, console, window */
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
-import EditorWatchdog from '../../src/editorwatchdog';
+import EditorWatchdog from '../../src/editorwatchdog.js';
 
 class TypingError {
 	constructor( editor ) {

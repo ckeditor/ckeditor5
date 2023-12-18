@@ -7,15 +7,15 @@
  * @module ui/colorpicker/colorpickerview
  */
 
-import { convertColor, convertToHex, type ColorPickerViewConfig } from './utils';
+import { convertColor, convertToHex, type ColorPickerViewConfig } from './utils.js';
 
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
-import View from '../view';
-import type InputTextView from '../inputtext/inputtextview';
-import type ViewCollection from '../viewcollection';
-import LabeledFieldView from '../labeledfield/labeledfieldview';
-import { createLabeledInputText } from '../labeledfield/utils';
+import View from '../view.js';
+import type InputTextView from '../inputtext/inputtextview.js';
+import type ViewCollection from '../viewcollection.js';
+import LabeledFieldView from '../labeledfield/labeledfieldview.js';
+import { createLabeledInputText } from '../labeledfield/utils.js';
 
 import 'vanilla-colorful/hex-color-picker.js';
 import '../../theme/components/colorpicker/colorpicker.css';

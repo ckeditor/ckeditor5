@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import MouseObserver from '../../../src/view/observer/mouseobserver';
-import View from '../../../src/view/view';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import MouseObserver from '../../../src/view/observer/mouseobserver.js';
+import View from '../../../src/view/view.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'MouseObserver', () => {
 	let view, viewDocument, observer;

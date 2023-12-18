@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { View } from '../../src';
-import DraggableViewMixin from '../../src/bindings/draggableviewmixin';
+import { View } from '../../src/index.js';
+import DraggableViewMixin from '../../src/bindings/draggableviewmixin.js';
 
 /* global document, MouseEvent, TouchEvent, Touch */
 

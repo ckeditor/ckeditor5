@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver.js';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import TodoCheckboxChangeObserver from '../../src/tododocumentlist/todocheckboxchangeobserver';
+import TodoCheckboxChangeObserver from '../../src/tododocumentlist/todocheckboxchangeobserver.js';
 
 describe( 'TodoCheckboxChangeObserver', () => {
 	let view, viewDocument, observer, domRoot;

@@ -7,10 +7,10 @@
  * @module easy-image/easyimage
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { logWarning } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { logWarning } from 'ckeditor5/src/utils.js';
 
-import CloudServicesUploadAdapter from './cloudservicesuploadadapter';
+import CloudServicesUploadAdapter from './cloudservicesuploadadapter.js';
 
 /**
  * The Easy Image feature, which makes the image upload in CKEditor 5 possible with virtually zero

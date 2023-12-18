@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from '../_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { range } from 'lodash-es';
 
 /* global document */

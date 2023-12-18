@@ -20,9 +20,9 @@ import type {
 	ViewDocumentKeyDownEvent,
 	AttributeOperation,
 	RenameOperation
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 import {
 	getCode,
@@ -30,11 +30,11 @@ import {
 	getLocalizedArrowKeyCodeDirection,
 	type Locale,
 	type GetCallback
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import ListCommand from '../list/listcommand';
-import ListEditing from '../list/listediting';
-import CheckTodoListCommand from './checktodolistcommand';
+import ListCommand from '../list/listcommand.js';
+import ListEditing from '../list/listediting.js';
+import CheckTodoListCommand from './checktodolistcommand.js';
 import {
 	dataModelViewInsertion,
 	dataViewModelCheckmarkInsertion,
@@ -42,7 +42,7 @@ import {
 	modelViewChangeChecked,
 	modelViewChangeType,
 	modelViewInsertion
-} from './todolistconverters';
+} from './todolistconverters.js';
 
 const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 

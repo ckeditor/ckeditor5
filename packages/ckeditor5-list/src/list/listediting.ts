@@ -7,14 +7,14 @@
  * @module list/list/listediting
  */
 
-import ListCommand from './listcommand';
-import IndentCommand from './indentcommand';
-import ListUtils from './listutils';
+import ListCommand from './listcommand.js';
+import IndentCommand from './indentcommand.js';
+import ListUtils from './listutils.js';
 
-import { Plugin, type MultiCommand } from 'ckeditor5/src/core';
+import { Plugin, type MultiCommand } from 'ckeditor5/src/core.js';
 
-import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
-import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing';
+import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
+import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
 
 import type {
 	DowncastAttributeEvent,
@@ -27,7 +27,7 @@ import type {
 	UpcastElementEvent,
 	ViewDocumentTabEvent,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 import {
 	cleanList,
@@ -44,7 +44,7 @@ import {
 	viewModelConverter,
 	modelToViewPosition,
 	viewToModelPosition
-} from './converters';
+} from './converters.js';
 
 import '../../theme/list.css';
 

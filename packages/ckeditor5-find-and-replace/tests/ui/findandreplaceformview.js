@@ -5,31 +5,27 @@
 
 /* globals window, document, Event */
 
-import {
-	View,
-	LabeledFieldView,
-	ButtonView,
-	ViewCollection,
-	FocusCycler,
-	CollapsibleView,
-	SwitchButtonView
-} from '@ckeditor/ckeditor5-ui';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import CollapsibleView from '@ckeditor/ckeditor5-ui/src/collapsible/collapsibleview.js';
+import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/switchbutton/switchbuttonview.js';
 
-import {
-	KeystrokeHandler,
-	FocusTracker,
-	keyCodes
-} from '@ckeditor/ckeditor5-utils';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import keyCodes from '@ckeditor/ckeditor5-utils/src/keyboard/keycodes.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 
-import FindAndReplace from '../../src/findandreplace';
-import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
+import FindAndReplace from '../../src/findandreplace.js';
+import FindAndReplaceFormView from '../../src/ui/findandreplaceformview.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
 
 describe( 'FindAndReplaceFormView', () => {

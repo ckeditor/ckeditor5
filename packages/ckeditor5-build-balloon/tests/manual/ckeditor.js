@@ -5,7 +5,7 @@
 
 /* globals window, document, console */
 
-import BalloonEditor from '../../build/ckeditor';
+import BalloonEditor from '../../build/ckeditor.js';
 
 BalloonEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {

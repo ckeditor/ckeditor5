@@ -7,8 +7,8 @@
  * @module ui/dialog/dialogcontentview
  */
 
-import View from '../view';
-import type ViewCollection from '../viewcollection';
+import View from '../view.js';
+import type ViewCollection from '../viewcollection.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

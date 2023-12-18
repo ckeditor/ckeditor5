@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import AutomaticDecorators from '../../src/utils/automaticdecorators';
+import AutomaticDecorators from '../../src/utils/automaticdecorators.js';
 
 describe( 'Automatic Decorators', () => {
 	let automaticDecorators;

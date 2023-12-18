@@ -5,19 +5,19 @@
 
 /* globals document */
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
+import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
 
-import ImageInsertUrlView from '../../../src/imageinsert/ui/imageinserturlview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ImageInsertUrlView from '../../../src/imageinsert/ui/imageinserturlview.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
 import { icons } from '@ckeditor/ckeditor5-core';
 
 describe( 'ImageInsertUrlView', () => {

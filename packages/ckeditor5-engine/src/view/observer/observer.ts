@@ -9,8 +9,8 @@
 
 import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type Document from '../document';
-import type View from '../view';
+import type Document from '../document.js';
+import type View from '../view.js';
 
 /**
  * Abstract base observer class. Observers are classes which listen to DOM events, do the preliminary

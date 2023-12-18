@@ -8,12 +8,12 @@
  */
 import type { HeadingCommand } from '@ckeditor/ckeditor5-heading';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { Range, Writer } from 'ckeditor5/src/engine';
-import { Delete } from 'ckeditor5/src/typing';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { Range, Writer } from 'ckeditor5/src/engine.js';
+import { Delete } from 'ckeditor5/src/typing.js';
 
-import blockAutoformatEditing from './blockautoformatediting';
-import inlineAutoformatEditing from './inlineautoformatediting';
+import blockAutoformatEditing from './blockautoformatediting.js';
+import inlineAutoformatEditing from './inlineautoformatediting.js';
 
 /**
  * Enables a set of predefined autoformatting actions.

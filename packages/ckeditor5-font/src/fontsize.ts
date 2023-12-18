@@ -7,11 +7,11 @@
  * @module font/fontsize
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import FontSizeEditing from './fontsize/fontsizeediting';
-import FontSizeUI from './fontsize/fontsizeui';
-import { normalizeOptions } from './fontsize/utils';
-import type { FontSizeOption } from './fontconfig';
+import { Plugin } from 'ckeditor5/src/core.js';
+import FontSizeEditing from './fontsize/fontsizeediting.js';
+import FontSizeUI from './fontsize/fontsizeui.js';
+import { normalizeOptions } from './fontsize/utils.js';
+import type { FontSizeOption } from './fontconfig.js';
 
 /**
  * The font size plugin.

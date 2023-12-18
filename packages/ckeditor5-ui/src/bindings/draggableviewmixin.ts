@@ -7,7 +7,7 @@
  * @module TODO
  */
 
-import type View from '../view';
+import type View from '../view.js';
 import { type Constructor, type Mixed, global, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 /**

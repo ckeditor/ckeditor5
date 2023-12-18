@@ -5,18 +5,18 @@
 
 /* globals document, window, setTimeout */
 
-import Editor from '../../src/editor/editor';
-import Context from '../../src/context';
-import Plugin from '../../src/plugin';
-import Config from '@ckeditor/ckeditor5-utils/src/config';
-import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
-import PluginCollection from '../../src/plugincollection';
-import CommandCollection from '../../src/commandcollection';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
-import Command from '../../src/command';
-import EditingKeystrokeHandler from '../../src/editingkeystrokehandler';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Editor from '../../src/editor/editor.js';
+import Context from '../../src/context.js';
+import Plugin from '../../src/plugin.js';
+import Config from '@ckeditor/ckeditor5-utils/src/config.js';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller.js';
+import PluginCollection from '../../src/plugincollection.js';
+import CommandCollection from '../../src/commandcollection.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import Command from '../../src/command.js';
+import EditingKeystrokeHandler from '../../src/editingkeystrokehandler.js';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 class TestEditor extends Editor {
 	static create( config ) {

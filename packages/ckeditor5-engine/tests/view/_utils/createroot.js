@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import RootEditableElement from '../../../src/view/rooteditableelement';
+import RootEditableElement from '../../../src/view/rooteditableelement.js';
 
 /**
  * Creates view root element and sets it to {@link module:engine/view/document~Document#roots roots collection}.

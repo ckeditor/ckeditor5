@@ -5,12 +5,12 @@
 
 /* globals MouseEvent, document */
 
-import DomEventObserver from '../../../src/view/observer/domeventobserver';
-import Observer from '../../../src/view/observer/observer';
-import View from '../../../src/view/view';
-import UIElement from '../../../src/view/uielement';
-import createViewRoot from '../_utils/createroot';
-import { StylesProcessor } from '../../../src/view/stylesmap';
+import DomEventObserver from '../../../src/view/observer/domeventobserver.js';
+import Observer from '../../../src/view/observer/observer.js';
+import View from '../../../src/view/view.js';
+import UIElement from '../../../src/view/uielement.js';
+import createViewRoot from '../_utils/createroot.js';
+import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 class ClickObserver extends DomEventObserver {
 	constructor( view ) {

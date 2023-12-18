@@ -7,10 +7,10 @@
  * @module remove-format/removeformatui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
-import type RemoveFormatCommand from './removeformatcommand';
+import type RemoveFormatCommand from './removeformatcommand.js';
 
 import removeFormatIcon from '../theme/icons/remove-format.svg';
 

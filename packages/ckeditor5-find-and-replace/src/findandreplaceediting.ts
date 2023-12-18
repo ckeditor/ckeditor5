@@ -7,23 +7,23 @@
  * @module find-and-replace/findandreplaceediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
-import type { DiffItem, DiffItemAttribute, Element, Item, Node } from 'ckeditor5/src/engine';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import type { DiffItem, DiffItemAttribute, Element, Item, Node } from 'ckeditor5/src/engine.js';
 import {
 	scrollViewportToShowTarget,
 	type Collection,
 	type GetCallback,
 	type ObservableChangeEvent
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import FindCommand from './findcommand';
-import ReplaceCommand from './replacecommand';
-import ReplaceAllCommand from './replaceallcommand';
-import FindNextCommand from './findnextcommand';
-import FindPreviousCommand from './findpreviouscommand';
-import FindAndReplaceState from './findandreplacestate';
-import FindAndReplaceUtils from './findandreplaceutils';
-import type { ResultType } from './findandreplace';
+import FindCommand from './findcommand.js';
+import ReplaceCommand from './replacecommand.js';
+import ReplaceAllCommand from './replaceallcommand.js';
+import FindNextCommand from './findnextcommand.js';
+import FindPreviousCommand from './findpreviouscommand.js';
+import FindAndReplaceState from './findandreplacestate.js';
+import FindAndReplaceUtils from './findandreplaceutils.js';
+import type { ResultType } from './findandreplace.js';
 
 import { debounce } from 'lodash-es';
 

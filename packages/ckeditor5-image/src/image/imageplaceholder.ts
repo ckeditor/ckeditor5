@@ -7,15 +7,15 @@
  * @module image/image/imageplaceholder
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
 	Element,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import ImageUtils from '../imageutils';
-import ImageLoadObserver, { type ImageLoadedEvent } from './imageloadobserver';
+import ImageUtils from '../imageutils.js';
+import ImageLoadObserver, { type ImageLoadedEvent } from './imageloadobserver.js';
 
 import '../../theme/imageplaceholder.css';
 

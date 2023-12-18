@@ -9,16 +9,16 @@
 
 import {
 	type Editor
-} from 'ckeditor5/src/core';
+} from 'ckeditor5/src/core.js';
 
 import {
 	EditorUI,
 	type EditorUIReadyEvent
-} from 'ckeditor5/src/ui';
+} from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine';
+import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type BalloonEditorUIView from './ballooneditoruiview';
+import type BalloonEditorUIView from './ballooneditoruiview.js';
 
 /**
  * The balloon editor UI class.

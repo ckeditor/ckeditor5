@@ -9,10 +9,10 @@
 
 import { first } from '@ckeditor/ckeditor5-utils';
 
-import type DocumentSelection from '../documentselection';
-import type Model from '../model';
-import type Range from '../range';
-import type Selection from '../selection';
+import type DocumentSelection from '../documentselection.js';
+import type Model from '../model.js';
+import type Range from '../range.js';
+import type Selection from '../selection.js';
 
 /**
  * Returns a model range which is optimal (in terms of UX) for inserting a widget block.

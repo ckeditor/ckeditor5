@@ -12,11 +12,11 @@ import {
 	KeystrokeHandler,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
-import type { default as Button, ButtonExecuteEvent } from '../button/button';
-import ButtonView from '../button/buttonview';
-import View from '../view';
-import ViewCollection from '../viewcollection';
-import FocusCycler from '../focuscycler';
+import type { default as Button, ButtonExecuteEvent } from '../button/button.js';
+import ButtonView from '../button/buttonview.js';
+import View from '../view.js';
+import ViewCollection from '../viewcollection.js';
+import FocusCycler from '../focuscycler.js';
 
 import '../../theme/components/dialog/dialogactions.css';
 

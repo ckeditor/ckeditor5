@@ -11,14 +11,14 @@ import {
 	getViewElementNameForListType,
 	isListItemView,
 	isListView
-} from '../../../src/documentlist/utils/view';
+} from '../../../src/documentlist/utils/view.js';
 
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
-import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import StylesProcessor from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
-import Document from '@ckeditor/ckeditor5-engine/src/view/document';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import StylesProcessor from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
+import Document from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'DocumentList - utils - view', () => {
 	let viewUpcastWriter, viewDowncastWriter;

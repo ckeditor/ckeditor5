@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { View, ViewCollection } from '../../src';
-import DialogContentView from '../../src/dialog/dialogcontentview';
+import { View, ViewCollection } from '../../src/index.js';
+import DialogContentView from '../../src/dialog/dialogcontentview.js';
 
 describe( 'DialogContentView', () => {
 	let view;

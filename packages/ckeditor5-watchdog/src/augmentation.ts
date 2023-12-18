@@ -4,7 +4,7 @@
  */
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import type { EditorData } from './editorwatchdog';
+import type { EditorData } from './editorwatchdog.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {

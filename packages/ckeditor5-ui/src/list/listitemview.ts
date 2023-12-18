@@ -7,10 +7,10 @@
  * @module ui/list/listitemview
  */
 
-import View from '../view';
+import View from '../view.js';
 
-import type { FocusableView } from '../focuscycler';
-import type ViewCollection from '../viewcollection';
+import type { FocusableView } from '../focuscycler.js';
+import type ViewCollection from '../viewcollection.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

@@ -5,9 +5,9 @@
 
 /* global document */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 
 import italic from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import underline from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
@@ -20,7 +20,7 @@ import browseFiles from '@ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.s
 
 import codeBlock from '@ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg';
 
-import { icons as coreIcons } from 'ckeditor5/src/core';
+import { icons as coreIcons } from 'ckeditor5/src/core.js';
 
 import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
 import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';

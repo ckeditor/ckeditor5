@@ -7,7 +7,7 @@
  * @module easy-image
  */
 
-export { default as EasyImage } from './easyimage';
-export { default as CloudServicesUploadAdapter } from './cloudservicesuploadadapter';
+export { default as EasyImage } from './easyimage.js';
+export { default as CloudServicesUploadAdapter } from './cloudservicesuploadadapter.js';
 
-import './augmentation';
+import './augmentation.js';

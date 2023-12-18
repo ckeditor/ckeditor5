@@ -5,27 +5,27 @@
 
 /* globals document, Event */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
-import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof.js';
+import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
 
-import LinkEditing from '../src/linkediting';
-import LinkUI from '../src/linkui';
-import LinkFormView from '../src/ui/linkformview';
-import LinkActionsView from '../src/ui/linkactionsview';
+import LinkEditing from '../src/linkediting.js';
+import LinkUI from '../src/linkui.js';
+import LinkFormView from '../src/ui/linkformview.js';
+import LinkActionsView from '../src/ui/linkactionsview.js';
 
 describe( 'LinkUI', () => {
 	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;

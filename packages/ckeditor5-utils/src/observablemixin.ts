@@ -9,9 +9,9 @@
  * @module utils/observablemixin
  */
 
-import EmitterMixin, { type Emitter } from './emittermixin';
-import CKEditorError from './ckeditorerror';
-import type { Constructor, Mixed } from './mix';
+import EmitterMixin, { type Emitter } from './emittermixin.js';
+import CKEditorError from './ckeditorerror.js';
+import type { Constructor, Mixed } from './mix.js';
 
 import { isObject } from 'lodash-es';
 

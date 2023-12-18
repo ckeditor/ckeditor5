@@ -7,9 +7,9 @@
  * @module find-and-replace/findandreplacestate
  */
 
-import type { Model } from 'ckeditor5/src/engine';
-import { ObservableMixin, Collection, type CollectionChangeEvent } from 'ckeditor5/src/utils';
-import type { ResultType } from './findandreplace';
+import type { Model } from 'ckeditor5/src/engine.js';
+import { ObservableMixin, Collection, type CollectionChangeEvent } from 'ckeditor5/src/utils.js';
+import type { ResultType } from './findandreplace.js';
 
 /**
  * The object storing find and replace plugin state for a given editor instance.

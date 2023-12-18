@@ -4,8 +4,8 @@
  */
 
 import { FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
-import { ButtonView, FocusCycler, View, ViewCollection } from '../../src';
-import DialogActionsView from '../../src/dialog/dialogactionsview';
+import { ButtonView, FocusCycler, View, ViewCollection } from '../../src/index.js';
+import DialogActionsView from '../../src/dialog/dialogactionsview.js';
 
 describe( 'DialogActionsView', () => {
 	let view;

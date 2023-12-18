@@ -7,8 +7,8 @@
  * @module engine/view/styles/border
  */
 
-import type { BoxSides, Extractor, Normalizer, Reducer, StylesProcessor, Styles, StyleValue, PropertyDescriptor } from '../stylesmap';
-import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLength, isLineStyle } from './utils';
+import type { BoxSides, Extractor, Normalizer, Reducer, StylesProcessor, Styles, StyleValue, PropertyDescriptor } from '../stylesmap.js';
+import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLength, isLineStyle } from './utils.js';
 
 /**
  * Adds a border CSS styles processing rules.

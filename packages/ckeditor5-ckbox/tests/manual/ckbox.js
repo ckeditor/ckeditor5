@@ -5,18 +5,18 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import AutoSave from '@ckeditor/ckeditor5-autosave/src/autosave';
-import { TOKEN_URL } from '../_utils/ckbox-config';
-import CKBox from '../../src/ckbox';
-import CKBoxImageEdit from '../../src/ckboximageedit';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import AutoSave from '@ckeditor/ckeditor5-autosave/src/autosave.js';
+import { TOKEN_URL } from '../_utils/ckbox-config.js';
+import CKBox from '../../src/ckbox.js';
+import CKBoxImageEdit from '../../src/ckboximageedit.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

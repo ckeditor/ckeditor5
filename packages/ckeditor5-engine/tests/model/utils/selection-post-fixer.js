@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '../../../src/model/model';
+import Model from '../../../src/model/model.js';
 
-import { stringify, getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
-import { injectSelectionPostFixer, mergeIntersectingRanges } from '../../../src/model/utils/selection-post-fixer';
+import { stringify, getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model.js';
+import { injectSelectionPostFixer, mergeIntersectingRanges } from '../../../src/model/utils/selection-post-fixer.js';
 
 describe( 'Selection post-fixer', () => {
 	describe( 'injectSelectionPostFixer()', () => {

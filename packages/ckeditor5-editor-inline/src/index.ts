@@ -7,4 +7,4 @@
  * @module editor-inline
  */
 
-export { default as InlineEditor } from './inlineeditor';
+export { default as InlineEditor } from './inlineeditor.js';

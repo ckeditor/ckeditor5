@@ -7,7 +7,7 @@
  * @module find-and-replace/findandreplaceui
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	Dialog,
 	ButtonView,
@@ -17,16 +17,15 @@ import {
 	type DropdownView,
 	type ViewWithCssTransitionDisabler,
 	FormHeaderView
-} from 'ckeditor5/src/ui';
-import FindAndReplaceFormView from './ui/findandreplaceformview';
-import { FindAndReplaceUIType } from './findandreplaceconfig';
-
+} from 'ckeditor5/src/ui.js';
+import { FindAndReplaceUIType } from './findandreplaceconfig.js';
+import FindAndReplaceFormView from './ui/findandreplaceformview.js';
 import loupeIcon from '../theme/icons/find-replace.svg';
-import type FindAndReplaceEditing from './findandreplaceediting';
-import type FindNextCommand from './findnextcommand';
-import type FindPreviousCommand from './findpreviouscommand';
-import type ReplaceCommand from './replacecommand';
-import type ReplaceAllCommand from './replaceallcommand';
+import type FindAndReplaceEditing from './findandreplaceediting.js';
+import type FindNextCommand from './findnextcommand.js';
+import type FindPreviousCommand from './findpreviouscommand.js';
+import type ReplaceCommand from './replacecommand.js';
+import type ReplaceAllCommand from './replaceallcommand.js';
 
 /**
  * The default find and replace UI.

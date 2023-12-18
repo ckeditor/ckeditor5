@@ -9,7 +9,7 @@ import type {
 	TextPartLanguageEditing,
 	TextPartLanguageUI,
 	TextPartLanguageCommand
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface LanguageConfig {

@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { ButtonView, DialogView } from '@ckeditor/ckeditor5-ui';
-
-import FindAndReplaceUI from '../src/findandreplaceui';
-import FindAndReplace from '../src/findandreplace';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import DialogView from '@ckeditor/ckeditor5-ui/src/dialog/dialogview.js';
+import FindAndReplaceUI from '../src/findandreplaceui.js';
+import FindAndReplace from '../src/findandreplace.js';
 import loupeIcon from '../theme/icons/find-replace.svg';
-import FindAndReplaceFormView from '../src/ui/findandreplaceformview';
+import FindAndReplaceFormView from '../src/ui/findandreplaceformview.js';
 
 /* global window */
 

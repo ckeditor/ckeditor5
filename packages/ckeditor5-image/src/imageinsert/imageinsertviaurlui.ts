@@ -7,13 +7,13 @@
  * @module image/imageinsert/imageinsertviaurlui
  */
 
-import { icons, Plugin } from 'ckeditor5/src/core';
-import { ButtonView, CollapsibleView, DropdownButtonView, type FocusableView } from 'ckeditor5/src/ui';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView, CollapsibleView, DropdownButtonView, type FocusableView } from 'ckeditor5/src/ui.js';
 
-import ImageInsertUI from './imageinsertui';
-import type InsertImageCommand from '../image/insertimagecommand';
-import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand';
-import ImageInsertUrlView, { type ImageInsertUrlViewCancelEvent, type ImageInsertUrlViewSubmitEvent } from './ui/imageinserturlview';
+import ImageInsertUI from './imageinsertui.js';
+import type InsertImageCommand from '../image/insertimagecommand.js';
+import type ReplaceImageSourceCommand from '../image/replaceimagesourcecommand.js';
+import ImageInsertUrlView, { type ImageInsertUrlViewCancelEvent, type ImageInsertUrlViewSubmitEvent } from './ui/imageinserturlview.js';
 
 /**
  * The image insert via URL plugin (UI part).

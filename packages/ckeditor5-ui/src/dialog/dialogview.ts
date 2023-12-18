@@ -17,16 +17,20 @@ import {
 	global,
 	toUnit
 } from '@ckeditor/ckeditor5-utils';
-import ViewCollection from '../viewcollection';
-import View from '../view';
-import FormHeaderView from '../formheader/formheaderview';
-import ButtonView from '../button/buttonview';
-import { type ButtonExecuteEvent } from '../button/button';
-import FocusCycler, { isViewWithFocusCycler, type FocusCyclerBackwardCycleEvent, type FocusCyclerForwardCycleEvent } from '../focuscycler';
-import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin';
-import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview';
-import DialogContentView from './dialogcontentview';
-import type EditorUI from '../editorui/editorui';
+import ViewCollection from '../viewcollection.js';
+import View from '../view.js';
+import FormHeaderView from '../formheader/formheaderview.js';
+import ButtonView from '../button/buttonview.js';
+import { type ButtonExecuteEvent } from '../button/button.js';
+import FocusCycler, { isViewWithFocusCycler,
+	type FocusCyclerBackwardCycleEvent,
+	type FocusCyclerForwardCycleEvent
+}
+	from '../focuscycler.js';
+import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
+import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview.js';
+import DialogContentView from './dialogcontentview.js';
+import type EditorUI from '../editorui/editorui.js';
 
 import '../../theme/components/dialog/dialog.css';
 // @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;

@@ -5,11 +5,11 @@
 
 /* global document, CustomEvent */
 
-import Font from '../src/font';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Table from '@ckeditor/ckeditor5-table/src/table';
+import Font from '../src/font.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
 describe( 'Integration test Font', () => {
 	let element, editor, model;

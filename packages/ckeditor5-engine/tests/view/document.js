@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import Document from '../../src/view/document';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import createViewRoot from './_utils/createroot';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import Document from '../../src/view/document.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import createViewRoot from './_utils/createroot.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Document', () => {
 	let domRoot, viewDocument;

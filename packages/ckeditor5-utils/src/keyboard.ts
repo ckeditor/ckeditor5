@@ -9,9 +9,9 @@
  * @module utils/keyboard
  */
 
-import type { LanguageDirection } from './language';
-import CKEditorError from './ckeditorerror';
-import env from './env';
+import type { LanguageDirection } from './language.js';
+import CKEditorError from './ckeditorerror.js';
+import env from './env.js';
 
 const modifiersToGlyphsMac = {
 	ctrl: '⌃',

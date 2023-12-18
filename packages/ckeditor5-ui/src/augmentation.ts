@@ -9,7 +9,7 @@ import type {
 	ContextualBalloon,
 	Notification,
 	Dialog
-} from './index';
+} from './index.js';
 
 import type {
 	ToolbarConfig

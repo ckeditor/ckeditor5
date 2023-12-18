@@ -9,6 +9,7 @@
     "ckeditor5-lib",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
     "lodash-es": "4.17.21"

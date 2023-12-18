@@ -5,11 +5,11 @@
 
 /* global document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 
-import BodyCollection from '../../src/editorui/bodycollection';
-import View from '../../src/view';
+import BodyCollection from '../../src/editorui/bodycollection.js';
+import View from '../../src/view.js';
 
 describe( 'BodyCollection', () => {
 	let locale;

@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import setDataInElement from '../../src/dom/setdatainelement';
-import getDataFromElement from '../../src/dom/getdatafromelement';
+import setDataInElement from '../../src/dom/setdatainelement.js';
+import getDataFromElement from '../../src/dom/getdatafromelement.js';
 
 describe( 'setDataInElement', () => {
 	[ 'textarea', 'template', 'div' ].forEach( elementName => {

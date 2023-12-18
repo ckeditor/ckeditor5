@@ -5,7 +5,7 @@
 
 /* globals document, DataTransfer */
 
-import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils';
+import { getPerformanceData, createPerformanceEditor, renderPerformanceDataButtons } from '../../_utils/utils.js';
 
 renderPerformanceDataButtons( document.querySelector( '#fixture-buttons' ) );
 
