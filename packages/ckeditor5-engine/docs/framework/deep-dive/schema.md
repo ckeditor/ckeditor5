@@ -505,10 +505,10 @@ schema.register( 'paragraph', {
 
 And this can be read as:
 
-* The `<paragraph>` element will be allowed in elements in which `<$block>` is allowed (e.g. in `<$root>`).
-* The `<paragraph>` element will allow all nodes that are allowed in `<$block>` (e.g. `$text`).
+* The `<paragraph>` element will be allowed in elements in which `<$block>` is allowed (like in `<$root>`).
+* The `<paragraph>` element will allow all nodes that are allowed in `<$block>` (like `$text`).
 * The `<paragraph>` element will allow all attributes allowed in `<$block>`.
-* The `<paragraph>` element will inherit all `is*` properties of `<$block>` (e.g. `isBlock`).
+* The `<paragraph>` element will inherit all `is*` properties of `<$block>` (like `isBlock`).
 
 Thanks to the fact that the `<paragraph>` definition is inherited from `<$block>` other features can use the `<$block>` type to indirectly extend the `<paragraph>` definition. For example, the {@link module:block-quote/blockquote~BlockQuote} feature does this:
 
@@ -669,7 +669,7 @@ What should happen instead? There are at least 4 possible solutions: the block q
 
 While this is a relatively simple scenario (unlike most real-time collaborative editing scenarios), it turns out that it is already hard to say what should happen and who should react to fix this content.
 
-Therefore, if your editor needs to implement such rules, you should do that through {@link module:engine/model/document~Document#registerPostFixer model's post-fixers} fixing incorrect content or actively prevent such situations (e.g. by disabling certain features). It means that these constraints will be defined specifically for your scenario by your code which makes their implementation much easier.
+Therefore, if your editor needs to implement such rules, you should do that through {@link module:engine/model/document~Document#registerPostFixer model's post-fixers} fixing incorrect content or actively prevent such situations (for example, by disabling certain features). It means that these constraints will be defined specifically for your scenario by your code which makes their implementation much easier.
 
 To sum up, the answer to who and how should implement additional constraints is: your features or your editor through the CKEditor&nbsp;5 API.
 
@@ -688,7 +688,7 @@ For instance, you need to move `<foo>` from `<$root>` to `<bar>` and (at the sam
 You can argue that the engine could handle this by checking the schema at the end of a {@link module:engine/model/model~Model#change `Model#change()` block} (it works like a transaction &ndash; the state needs to be correct at the end of it). This approach, however, was not adopted, as there are the following problems:
 
 * How to fix the content after a transaction is committed? It is impossible to implement a reasonable heuristic that would not break the content from the user's perspective.
-* The model can become invalid during real-time collaborative changes. Operational Transformation, while implemented by us in a very rich form (with 11 types of operations instead of the base 3), ensures conflict resolution and eventual consistency, but not the model's validity.
+* The model can become invalid during real-time collaborative changes. Operational Transformation, while implemented by us in a rich form (with 11 types of operations instead of the base 3), ensures conflict resolution and eventual consistency, but not the model's validity.
 
 Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~Document#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility of checking the schema to features. They can make a lot better decisions a priori, before making changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
 

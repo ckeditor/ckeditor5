@@ -25,7 +25,7 @@ These are only available to holders of a [CKEditor&nbsp;5 commercial license](ht
 
 	The {@link features/format-painter format painter feature} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
 
-* Paste from Office Enhanced
+* Paste from Office enhanced
 
 	The {@link features/paste-from-office-enhanced Paste from Office Enhanced feature} lets you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. It will retain the basic text styling, heading levels, links, lists, tables, and images.
 
@@ -39,7 +39,7 @@ These are only available to holders of a [CKEditor&nbsp;5 commercial license](ht
 
 * Templates
 
-	The {@link features/template templates feature} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (e.g. a formatted table) and base structures for entire documents (e.g. a formal letter template).
+	The {@link features/template templates feature} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (like a formatted table) and base structures for entire documents (like a formal letter template).
 
 ## Free trial
 
@@ -48,5 +48,5 @@ Before committing, you may try out the productivity pack, just like all CKEditor
 Please refer to the {@link @trial guides/standalone/productivity-pack productivity pack trial} guide for information on how to start using these features in your CKEditor&nbsp;5 WYSIWYG editor now.
 
 <info-box>
-	If you have any further comments or suggestions concerning these features, please [contact us](https://ckeditor.com/contact/) and share them. We will be happy to hear your feedback!
+	If you have any further comments or suggestions about these features, [contact us](https://ckeditor.com/contact/) and share them. We will be happy to hear your feedback!
 </info-box>

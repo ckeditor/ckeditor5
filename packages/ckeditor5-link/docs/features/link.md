@@ -93,7 +93,7 @@ Each decorator definition must have a unique name. In the case of [manual decora
 
 #### Adding `target` and `rel` attributes to external links
 
-A very common use case for (automatic) link decorators is adding `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in the document. A dedicated {@link module:link/linkconfig~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`} configuration has been created for that purpose. When this option is set to `true`, all links starting with `http://`, `https://` or `//` are "decorated" with `target` and `rel` attributes.
+A common use case for (automatic) link decorators is adding the `target="_blank"` and `rel="noopener noreferrer"` attributes to all external links in the document. A dedicated {@link module:link/linkconfig~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`} configuration has been created for that purpose. When you set this option to `true`, all links starting with `http://`, `https://`, or `//` are "decorated" with `target` and `rel` attributes.
 
 ```js
 ClassicEditor
@@ -101,7 +101,7 @@ ClassicEditor
 		link: {
 			addTargetToExternalLinks: true
 		}
-		// More of editor's config.
+		// More of the editor's configuration.
  		// ...
 	} )
 	.then( /* ... */ )
@@ -125,7 +125,7 @@ ClassicEditor
 				}
 			}
 		}
-		// More of editor's config.
+		// More of the editor's configuration.
  		// ...
 	} )
 	.then( /* ... */ )
@@ -149,7 +149,7 @@ ClassicEditor
 				}
 			}
 		}
-		// More of editor's config.
+		// More of the editor's configuration.
  		// ...
 	} )
 	.then( /* ... */ )
@@ -170,7 +170,7 @@ ClassicEditor
 		link: {
 			defaultProtocol: 'http://'
 		}
-		// More of editor's config.
+		// More of the editor's configuration.
  		// ...
 	} )
 	.then( /* ... */ )
@@ -203,7 +203,7 @@ ClassicEditor
 				}
 			}
 		}
-		// More of editor's config.
+		// More of the editor's configuration.
  		// ...
 	} )
 	.then( /* ... */ )
@@ -243,7 +243,7 @@ ClassicEditor
 				}
 			}
 		}
-		// More of editor's config.
+		// More of the editor's configuration.
  		// ...
 	} )
 	.then( /* ... */ )

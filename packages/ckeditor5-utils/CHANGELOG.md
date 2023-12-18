@@ -26,7 +26,7 @@ Changes for the past releases are available below.
 
 * Do not execute `ResizeObserver` callbacks when the resized element is invisible (but still in DOM) (see [ckeditor/ckeditor5#6570](https://github.com/ckeditor/ckeditor5/issues/6570)). ([fb13d9d](https://github.com/ckeditor/ckeditor5-utils/commit/fb13d9d))
 * Editor will now load correctly in environment with `Symbol` polyfill. Closes [ckeditor/ckeditor5#6489](https://github.com/ckeditor/ckeditor5/issues/6489). ([7cd1f48](https://github.com/ckeditor/ckeditor5-utils/commit/7cd1f48))
-* Fixed various cases with typing multi-byte unicode sequences (e.g. emojis). Closes [ckeditor/ckeditor5#3147](https://github.com/ckeditor/ckeditor5/issues/3147). Closes [ckeditor/ckeditor5#6495](https://github.com/ckeditor/ckeditor5/issues/6495). ([6dc1ba6](https://github.com/ckeditor/ckeditor5-utils/commit/6dc1ba6))
+* Fixed various cases with typing multi-byte Unicode sequences (like emojis). Closes [ckeditor/ckeditor5#3147](https://github.com/ckeditor/ckeditor5/issues/3147). Closes [ckeditor/ckeditor5#6495](https://github.com/ckeditor/ckeditor5/issues/6495). ([6dc1ba6](https://github.com/ckeditor/ckeditor5-utils/commit/6dc1ba6))
 * The `getOptimalPosition()` helper should prefer positions that fit inside the viewport even though there are some others that fit better into the limiter. Closes [ckeditor/ckeditor5#6181](https://github.com/ckeditor/ckeditor5/issues/6181). ([7cd1238](https://github.com/ckeditor/ckeditor5-utils/commit/7cd1238))
 
 ### Other changes

@@ -13,7 +13,7 @@ Changes for the past releases are available below.
 
 ### Other changes
 
-* Added a missing file for the `FormHeaderView` styles and removed duplicated styles for `SpecialCharactersNavigation` inherited from the the `FormHeaderView` component. Closes [ckeditor/ckeditor5#6586](https://github.com/ckeditor/ckeditor5/issues/6586). ([06f6ca5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/06f6ca5))
+* Added a missing file for the `FormHeaderView` styles and removed duplicated styles for `SpecialCharactersNavigation` inherited from the `FormHeaderView` component. Closes [ckeditor/ckeditor5#6586](https://github.com/ckeditor/ckeditor5/issues/6586). ([06f6ca5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/06f6ca5))
 * Align code to the changes in ckeditor5-ui API. See [ckeditor/ckeditor5#6110](https://github.com/ckeditor/ckeditor5/issues/6110). ([7df8dec](https://github.com/ckeditor/ckeditor5-theme-lark/commit/7df8dec))
 * Changed styles of SpecialCharacters and Dropdown to match FormHeaderView component styles. See [ckeditor/ckeditor5#6109](https://github.com/ckeditor/ckeditor5/issues/6109). ([ceeb767](https://github.com/ckeditor/ckeditor5-theme-lark/commit/ceeb767))
 * Introduced the table cell overlay to improve the rendering of multiple–cell selections and bring compatibility with styled table cells. Closes [ckeditor/ckeditor5#6446](https://github.com/ckeditor/ckeditor5/issues/6446). ([6a1c7b9](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6a1c7b9))
@@ -83,7 +83,7 @@ Changes for the past releases are available below.
 
 ### Bug fixes
 
-* To-do list styles should meet WCAG contrast standards and work with other editor features (e.g. font size). Closes [ckeditor/ckeditor5-list#146](https://github.com/ckeditor/ckeditor5-list/issues/146). Closes [ckeditor/ckeditor5-list#136](https://github.com/ckeditor/ckeditor5-list/issues/136). ([0d4a5e2](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0d4a5e2))
+* To-do list styles should meet WCAG contrast standards and work with other editor features (like font size). Closes [ckeditor/ckeditor5-list#146](https://github.com/ckeditor/ckeditor5-list/issues/146). Closes [ckeditor/ckeditor5-list#136](https://github.com/ckeditor/ckeditor5-list/issues/136). ([0d4a5e2](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0d4a5e2))
 
   Also moved some to-do list styles from `@ckeditor/ckeditor5-list` (code refactoring).
 
