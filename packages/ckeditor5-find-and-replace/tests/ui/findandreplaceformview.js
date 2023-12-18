@@ -11,11 +11,11 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
 import CollapsibleView from '@ckeditor/ckeditor5-ui/src/collapsible/collapsibleview.js';
-import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/switchbutton/switchbuttonview.js';
+import { SwitchButtonView } from '@ckeditor/ckeditor5-ui';
 
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import keyCodes from '@ckeditor/ckeditor5-utils/src/keyboard/keycodes.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';

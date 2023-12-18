@@ -84,7 +84,12 @@ export default class FindAndReplaceUI extends Plugin {
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
 				const componentButtonView = isUiUsingDropdown ? ( componentView as DropdownView ).buttonView : componentView;
 
-				if ( componentButtonView.isEnabled ) {
+				const dialog = editor.plugins.get( 'Dialog' );
+
+				if ( dialog.isOpen ) {
+					dialog.view!.focus();
+					cancelEvent();
+				} else if ( componentButtonView.isEnabled ) {
 					componentButtonView.fire( 'execute' );
 					cancelEvent();
 				}
