@@ -4,10 +4,11 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Dialog, DialogView, DialogViewPosition } from '../../src';
 import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
+
+import { Dialog, DialogView, DialogViewPosition } from '../../src';
 
 /* global document */
 
@@ -226,9 +227,78 @@ describe( 'Dialog', () => {
 					sinon.assert.notCalled( spy );
 				} );
 			} );
+		} );
 
-			it( 'should set #isOpen to false', () => {
-				expect( dialogPlugin.isOpen ).to.be.false;
+		it( 'should set #isOpen to false', () => {
+			expect( dialogPlugin.isOpen ).to.be.false;
+		} );
+	} );
+
+	describe( 'afterInit', () => {
+		describe( 'should initialize source editing integration', () => {
+			let sourceEditingEditor, sourceEditingEditorElement, sourceEditingDialogPlugin, dialogPluginInstance;
+
+			beforeEach( () => {
+				Dialog.visibleDialogPlugin = undefined;
+
+				sourceEditingEditorElement = document.createElement( 'div' );
+				document.body.appendChild( sourceEditingEditorElement );
+
+				return ClassicTestEditor
+					.create( sourceEditingEditorElement, {
+						plugins: [ Paragraph, Dialog, SourceEditing ]
+					} )
+					.then( newEditor => {
+						sourceEditingEditor = newEditor;
+						sourceEditingDialogPlugin = sourceEditingEditor.plugins.get( 'SourceEditing' );
+						dialogPluginInstance = sourceEditingEditor.plugins.get( 'Dialog' );
+					} );
+			} );
+
+			afterEach( () => {
+				sourceEditingEditor.destroy();
+				sourceEditingEditorElement.remove();
+				Dialog.visibleDialogPlugin = undefined;
+			} );
+
+			describe( 'listening to `isSourceEditingMode` flag change', () => {
+				describe( 'when changed to true', () => {
+					it( 'should hide the dialog if it should not be visible in source mode', () => {
+						const spy = sinon.spy( dialogPluginInstance, 'hide' );
+
+						dialogPluginInstance.show( {} );
+
+						sourceEditingDialogPlugin.isSourceEditingMode = true;
+
+						sinon.assert.calledOnce( spy );
+					} );
+
+					it( 'should stick the dialog if it should be visible in source mode', () => {
+						const spy = sinon.spy( dialogPluginInstance, 'hide' );
+
+						dialogPluginInstance.show( { isVisibleInSourceMode: true } );
+
+						sourceEditingDialogPlugin.isSourceEditingMode = true;
+
+						sinon.assert.notCalled( spy );
+						expect( dialogPluginInstance.view.isStuck ).to.be.true;
+					} );
+				} );
+				describe( 'when changed to false', () => {
+					it( 'should stick the dialog', () => {
+						const spy = sinon.spy( dialogPluginInstance, 'hide' );
+
+						sourceEditingDialogPlugin.isSourceEditingMode = true;
+
+						dialogPluginInstance.show( { isVisibleInSourceMode: true } );
+
+						sourceEditingDialogPlugin.isSourceEditingMode = false;
+
+						sinon.assert.notCalled( spy );
+
+						expect( dialogPluginInstance.view.isStuck ).to.be.true;
+					} );
+				} );
 			} );
 		} );
 	} );
