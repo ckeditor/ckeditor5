@@ -171,6 +171,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'outdent',
 				'indent',
 				'|',
+				'ownImagePlugin',
 				'insertTable',
 				'mediaEmbed',
 				'codeBlock',
@@ -192,7 +193,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'fullScreen',
 				'source',
 				'htmlInsert',
-				'ownImagePlugin',
 			],
 		},
 		image: {
