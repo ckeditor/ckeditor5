@@ -6,7 +6,7 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 :root {
-	--ck-form-header-height: 38px;
+	--ck-form-header-height: 44px;
 }
 
 .ck.ck-form__header {
@@ -26,6 +26,7 @@
 	}
 
 	& .ck-form__header__label {
+		--ck-font-size-base: 15px;
 		font-weight: bold;
 	}
 }
