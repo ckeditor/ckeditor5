@@ -336,7 +336,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	): Array<View> {
 		const config = normalizeToolbarConfig( itemsOrConfig );
 		const normalizedRemoveItems = removeItems || config.removeItems;
-		const itemsToAdd = this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
+
+		return this._cleanItemsConfiguration( config.items, factory, normalizedRemoveItems )
 			.map( item => {
 				if ( isObject( item ) ) {
 					return this._createNestedToolbarDropdown( item, factory, normalizedRemoveItems );
@@ -349,8 +350,6 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 				return factory.create( item );
 			} )
 			.filter( ( item ): item is View => !!item );
-
-		return itemsToAdd;
 	}
 
 	/**
@@ -1028,7 +1027,8 @@ class DynamicGrouping implements ToolbarBehavior {
 	}
 
 	/**
-	 * Removed the dropdown that hosts {@link #groupedItems} from the {@link #viewChildren} collection.
+	 * Removes the {@link #groupedItemsDropdown dropdown} that hosts {@link #groupedItems} from the
+	 * {@link #viewChildren} collection.
 	 */
 	private _removeGroupedItemsDropdown(): void {
 		if ( !this.viewChildren.has( this.groupedItemsDropdown ) ) {

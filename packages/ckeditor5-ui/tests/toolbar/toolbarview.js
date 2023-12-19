@@ -526,30 +526,88 @@ describe( 'ToolbarView', () => {
 			factory.add( 'baz', namedFactory( 'baz' ) );
 		} );
 
-		it( 'expands the config into collection', () => {
-			view.fillFromConfig( [ 'foo', '-', 'bar', '|', 'foo' ], factory );
+		it( 'should use #createItemsFromConfig() and pass the result to #items', () => {
+			const spy = sinon.spy( view, 'createItemsFromConfig' );
 
+			expect( view.items ).to.have.length( 0 );
+
+			const args = [
+				[
+					'foo',
+					'baz',
+					{
+						label: 'Some label',
+						items: [ 'bar', '|', 'foo', 'baz' ]
+					}
+				],
+				factory,
+				[ 'baz' ]
+			];
+
+			view.fillFromConfig( ...args );
+			sinon.assert.calledOnceWithExactly( spy, ...args );
+
+			const dropdownView = view.items.get( 1 );
+
+			// Make sure that toolbar view is not created before first dropdown open.
+			expect( dropdownView.toolbarView ).to.be.undefined;
+
+			// Trigger toolbar view creation (lazy init).
+			dropdownView.isOpen = true;
+
+			const toolbarView = dropdownView.toolbarView;
 			const items = view.items;
-			expect( items ).to.have.length( 5 );
+
+			expect( items ).to.have.length( 2 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
-			expect( items.get( 2 ).name ).to.equal( 'bar' );
-			expect( items.get( 3 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 4 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( DropdownView );
+
+			expect( dropdownView.buttonView.label, 'label' ).to.equal( 'Some label' );
+			expect( dropdownView.buttonView.withText, 'withText' ).to.be.false;
+			expect( dropdownView.buttonView.icon, 'icon' ).to.equal( icons.threeVerticalDots );
+			expect( dropdownView.buttonView.tooltip, 'tooltip' ).to.be.true;
+
+			const nestedToolbarItems = toolbarView.items;
+
+			expect( nestedToolbarItems.get( 0 ).name ).to.equal( 'bar' );
+			expect( nestedToolbarItems.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( nestedToolbarItems.get( 2 ).name ).to.equal( 'foo' );
+		} );
+	} );
+
+	describe( 'createItemsFromConfig()', () => {
+		let factory;
+
+		beforeEach( () => {
+			factory = new ComponentFactory( {} );
+
+			factory.add( 'foo', namedFactory( 'foo' ) );
+			factory.add( 'bar', namedFactory( 'bar' ) );
+			factory.add( 'baz', namedFactory( 'baz' ) );
+		} );
+
+		it( 'expands the config into collection', () => {
+			const items = view.createItemsFromConfig( [ 'foo', '-', 'bar', '|', 'foo' ], factory );
+
+			expect( items ).to.have.length( 5 );
+			expect( items[ 0 ].name ).to.equal( 'foo' );
+			expect( items[ 1 ] ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items[ 2 ].name ).to.equal( 'bar' );
+			expect( items[ 3 ] ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items[ 4 ].name ).to.equal( 'foo' );
 		} );
 
 		it( 'accepts configuration object', () => {
-			view.fillFromConfig( { items: [ 'foo', 'bar', 'foo' ] }, factory );
+			const items = view.createItemsFromConfig( { items: [ 'foo', 'bar', 'foo' ] }, factory );
 
-			const items = view.items;
 			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ).name ).to.equal( 'bar' );
-			expect( items.get( 2 ).name ).to.equal( 'foo' );
+			expect( items[ 0 ].name ).to.equal( 'foo' );
+			expect( items[ 1 ].name ).to.equal( 'bar' );
+			expect( items[ 2 ].name ).to.equal( 'foo' );
 		} );
 
 		it( 'removes items listed in `removeItems`', () => {
-			view.fillFromConfig(
+			const items = view.createItemsFromConfig(
 				{
 					items: [ 'foo', 'bar', 'foo' ],
 					removeItems: [ 'foo' ]
@@ -557,13 +615,12 @@ describe( 'ToolbarView', () => {
 				factory
 			);
 
-			const items = view.items;
 			expect( items ).to.have.length( 1 );
-			expect( items.get( 0 ).name ).to.equal( 'bar' );
+			expect( items[ 0 ].name ).to.equal( 'bar' );
 		} );
 
 		it( 'deduplicates consecutive separators after removing items listed in `removeItems` - the vertical separator case (`|`)', () => {
-			view.fillFromConfig(
+			const items = view.createItemsFromConfig(
 				{
 					items: [ '|', '|', 'foo', '|', 'bar', '|', 'foo' ],
 					removeItems: [ 'bar' ]
@@ -571,16 +628,14 @@ describe( 'ToolbarView', () => {
 				factory
 			);
 
-			const items = view.items;
-
 			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 2 ).name ).to.equal( 'foo' );
+			expect( items[ 0 ].name ).to.equal( 'foo' );
+			expect( items[ 1 ] ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items[ 2 ].name ).to.equal( 'foo' );
 		} );
 
 		it( 'deduplicates consecutive separators after removing items listed in `removeItems` - the line break case (`-`)', () => {
-			view.fillFromConfig(
+			const items = view.createItemsFromConfig(
 				{
 					items: [ '-', '-', 'foo', '-', 'bar', '-', 'foo' ],
 					removeItems: [ 'bar' ]
@@ -588,55 +643,47 @@ describe( 'ToolbarView', () => {
 				factory
 			);
 
-			const items = view.items;
-
 			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
-			expect( items.get( 2 ).name ).to.equal( 'foo' );
+			expect( items[ 0 ].name ).to.equal( 'foo' );
+			expect( items[ 1 ] ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items[ 2 ].name ).to.equal( 'foo' );
 		} );
 
 		it( 'removes trailing and leading separators from the item list - the vertical separator case (`|`)', () => {
-			view.fillFromConfig(
+			const items = view.createItemsFromConfig(
 				{
 					items: [ '|', '|', 'foo', '|', 'bar', '|' ]
 				},
 				factory
 			);
 
-			const items = view.items;
-
 			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 2 ).name ).to.equal( 'bar' );
+			expect( items[ 0 ].name ).to.equal( 'foo' );
+			expect( items[ 1 ] ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items[ 2 ].name ).to.equal( 'bar' );
 		} );
 
 		it( 'removes trailing and leading separators from the item list - the line break case (`-`)', () => {
-			view.fillFromConfig(
+			const items = view.createItemsFromConfig(
 				{
 					items: [ '-', '-', 'foo', '-', 'bar', '-' ]
 				},
 				factory
 			);
 
-			const items = view.items;
-
 			expect( items ).to.have.length( 3 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
-			expect( items.get( 2 ).name ).to.equal( 'bar' );
+			expect( items[ 0 ].name ).to.equal( 'foo' );
+			expect( items[ 1 ] ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items[ 2 ].name ).to.equal( 'bar' );
 		} );
 
 		it( 'warns if there is no such component in the factory', () => {
-			const items = view.items;
 			const consoleWarnStub = sinon.stub( console, 'warn' );
-
-			view.fillFromConfig( [ 'foo', 'bar', 'non-existing' ], factory );
+			const items = view.createItemsFromConfig( [ 'foo', 'bar', 'non-existing' ], factory );
 
 			expect( items ).to.have.length( 2 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ).name ).to.equal( 'bar' );
+			expect( items[ 0 ].name ).to.equal( 'foo' );
+			expect( items[ 1 ].name ).to.equal( 'bar' );
 
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
@@ -650,7 +697,7 @@ describe( 'ToolbarView', () => {
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 			view.options.shouldGroupWhenFull = true;
 
-			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
+			view.createItemsFromConfig( [ 'foo', '-', 'bar' ], factory );
 
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
@@ -667,20 +714,18 @@ describe( 'ToolbarView', () => {
 
 			view.options.shouldGroupWhenFull = true;
 
-			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
-
-			const items = view.items;
+			const items = view.createItemsFromConfig( [ 'foo', '-', 'bar' ], factory );
 
 			expect( items ).to.have.length( 2 );
-			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ).name ).to.equal( 'bar' );
+			expect( items[ 0 ].name ).to.equal( 'foo' );
+			expect( items[ 1 ].name ).to.equal( 'bar' );
 		} );
 
 		describe( 'nested drop-downs with toolbar', () => {
 			let dropdownView, toolbarView;
 
 			it( 'should create a drop-down with the default look and configured items', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
@@ -688,7 +733,7 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				dropdownView = view.items.get( 1 );
+				dropdownView = items[ 1 ];
 
 				// Make sure that toolbar view is not created before first dropdown open.
 				expect( dropdownView.toolbarView ).to.be.undefined;
@@ -698,11 +743,9 @@ describe( 'ToolbarView', () => {
 
 				toolbarView = dropdownView.toolbarView;
 
-				const items = view.items;
-
 				expect( items ).to.have.length( 2 );
-				expect( items.get( 0 ).name ).to.equal( 'foo' );
-				expect( items.get( 1 ) ).to.be.instanceOf( DropdownView );
+				expect( items[ 0 ].name ).to.equal( 'foo' );
+				expect( items[ 1 ] ).to.be.instanceOf( DropdownView );
 
 				expect( dropdownView.buttonView.label, 'label' ).to.equal( 'Some label' );
 				expect( dropdownView.buttonView.withText, 'withText' ).to.be.false;
@@ -717,7 +760,7 @@ describe( 'ToolbarView', () => {
 			} );
 
 			it( 'should set proper CSS class on the drop-down', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
@@ -726,13 +769,13 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				dropdownView = view.items.get( 1 );
+				dropdownView = items[ 1 ];
 
 				expect( dropdownView.class ).to.equal( 'ck-toolbar__nested-toolbar-dropdown' );
 			} );
 
 			it( 'should allow configuring the drop-down\'s label', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
@@ -741,13 +784,13 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				dropdownView = view.items.get( 1 );
+				dropdownView = items[ 1 ];
 
 				expect( dropdownView.buttonView.label ).to.equal( 'Some label' );
 			} );
 
 			it( 'should allow configuring the drop-down\'s label visibility', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
@@ -757,13 +800,13 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				dropdownView = view.items.get( 1 );
+				dropdownView = items[ 1 ];
 
 				expect( dropdownView.buttonView.withText ).to.be.true;
 			} );
 
 			it( 'should allow configuring the drop-down\'s icon by SVG string', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
@@ -772,13 +815,13 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				dropdownView = view.items.get( 1 );
+				dropdownView = items[ 1 ];
 
 				expect( dropdownView.buttonView.icon ).to.equal( '<svg viewBox="0 0 68 64" xmlns="http://www.w3.org/2000/svg"></svg>' );
 			} );
 
 			it( 'should allow disabling the drop-down\'s icon by passing false (text label shows up instead)', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
@@ -787,7 +830,7 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				dropdownView = view.items.get( 1 );
+				dropdownView = items[ 1 ];
 
 				expect( dropdownView.buttonView.icon ).to.be.undefined;
 				expect( dropdownView.buttonView.withText ).to.be.true;
@@ -806,7 +849,7 @@ describe( 'ToolbarView', () => {
 
 				for ( const name of iconNames ) {
 					it( `should provide the "${ name }" icon`, () => {
-						view.fillFromConfig( [
+						const items = view.createItemsFromConfig( [
 							{
 								label: 'Some label',
 								items: [ 'bar', '|', 'foo' ],
@@ -814,7 +857,7 @@ describe( 'ToolbarView', () => {
 							}
 						], factory );
 
-						dropdownView = view.items.get( 0 );
+						dropdownView = items[ 0 ];
 
 						expect( dropdownView.buttonView.icon ).to.equal( icons[ name ] );
 					} );
@@ -822,7 +865,7 @@ describe( 'ToolbarView', () => {
 			} );
 
 			it( 'should fall back to a default icon when none was provided', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
@@ -830,14 +873,14 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				dropdownView = view.items.get( 1 );
+				dropdownView = items[ 1 ];
 
 				expect( dropdownView.buttonView.icon ).to.equal( icons.threeVerticalDots );
 				expect( dropdownView.buttonView.withText ).to.be.false;
 			} );
 
 			it( 'should allow configuring the drop-down\'s tooltip', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Some label',
@@ -847,13 +890,13 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				dropdownView = view.items.get( 1 );
+				dropdownView = items[ 1 ];
 
 				expect( dropdownView.buttonView.tooltip ).to.equal( 'Foo bar' );
 			} );
 
 			it( 'should allow deep nested structures', () => {
-				view.fillFromConfig( [
+				const items = view.createItemsFromConfig( [
 					'foo',
 					{
 						label: 'Level 0',
@@ -871,7 +914,7 @@ describe( 'ToolbarView', () => {
 					}
 				], factory );
 
-				const level0DropdownView = view.items.get( 1 );
+				const level0DropdownView = items[ 1 ];
 
 				// Make sure that toolbar view is not created before first dropdown open.
 				expect( level0DropdownView.toolbarView ).to.be.undefined;
@@ -899,7 +942,7 @@ describe( 'ToolbarView', () => {
 					tooltip: 'Foo bar'
 				};
 
-				view.fillFromConfig( [ 'foo', brokenDefinition ], factory );
+				view.createItemsFromConfig( [ 'foo', brokenDefinition ], factory );
 
 				sinon.assert.calledOnce( warnStub );
 				sinon.assert.calledWithExactly( warnStub,
@@ -911,7 +954,7 @@ describe( 'ToolbarView', () => {
 
 			describe( 'toolbar.removeItems support', () => {
 				it( 'should allow removing items from the nested toolbar', () => {
-					view.fillFromConfig( {
+					const items = view.createItemsFromConfig( {
 						items: [
 							'foo',
 							{
@@ -922,7 +965,7 @@ describe( 'ToolbarView', () => {
 						removeItems: [ 'bar' ]
 					}, factory );
 
-					dropdownView = view.items.get( 1 );
+					dropdownView = items[ 1 ];
 
 					// Make sure that toolbar view is not created before first dropdown open.
 					expect( dropdownView.toolbarView ).to.be.undefined;
@@ -938,7 +981,7 @@ describe( 'ToolbarView', () => {
 				} );
 
 				it( 'should allow removing items from the nested toolbar deep in the structure', () => {
-					view.fillFromConfig( {
+					const items = view.createItemsFromConfig( {
 						items: [
 							'foo',
 							{
@@ -957,7 +1000,7 @@ describe( 'ToolbarView', () => {
 						removeItems: [ 'bar' ]
 					}, factory );
 
-					const level0DropdownView = view.items.get( 1 );
+					const level0DropdownView = items[ 1 ];
 
 					// Make sure that toolbar view is not created before first dropdown open.
 					expect( level0DropdownView.toolbarView ).to.be.undefined;
@@ -985,7 +1028,7 @@ describe( 'ToolbarView', () => {
 				} );
 
 				it( 'should remove the nested drop-down if all its toolbar items have also been removed', () => {
-					view.fillFromConfig( {
+					const items = view.createItemsFromConfig( {
 						items: [
 							'foo',
 							{
@@ -996,14 +1039,12 @@ describe( 'ToolbarView', () => {
 						removeItems: [ 'bar', 'baz' ]
 					}, factory );
 
-					const items = view.items;
-
 					expect( items.length ).to.equal( 1 );
-					expect( items.get( 0 ).name ).to.equal( 'foo' );
+					expect( items[ 0 ].name ).to.equal( 'foo' );
 				} );
 
 				it( 'should remove the nested drop-down if all its toolbar items (but separators) have also been removed', () => {
-					view.fillFromConfig( {
+					const items = view.createItemsFromConfig( {
 						items: [
 							'foo',
 							{
@@ -1014,10 +1055,8 @@ describe( 'ToolbarView', () => {
 						removeItems: [ 'bar', 'baz' ]
 					}, factory );
 
-					const items = view.items;
-
 					expect( items.length ).to.equal( 1 );
-					expect( items.get( 0 ).name ).to.equal( 'foo' );
+					expect( items[ 0 ].name ).to.equal( 'foo' );
 				} );
 			} );
 		} );
