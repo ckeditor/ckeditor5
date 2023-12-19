@@ -239,42 +239,6 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 * The children of the model's `<table>` element will be inserted into the `<tbody>` element.
 	 * If the `elementToElement()` helper was used, the children would be inserted into the `<figure>`.
 	 *
-	 * An example converter that converts the following model structure:
-	 *
-	 * ```xml
-	 * <wrappedParagraph>Some text.</wrappedParagraph>
-	 * ```
-	 *
-	 * into this structure in the view:
-	 *
-	 * ```html
-	 * <div class="wrapper">
-	 * 	<p>Some text.</p>
-	 * </div>
-	 * ```
-	 *
-	 * would look like this:
-	 *
-	 * ```ts
-	 * editor.conversion.for( 'downcast' ).elementToStructure( {
-	 * 	model: 'wrappedParagraph',
-	 * 	view: ( modelElement, conversionApi ) => {
-	 * 		const { writer } = conversionApi;
-	 *
-	 * 		const wrapperViewElement = writer.createContainerElement( 'div', { class: 'wrapper' } );
-	 * 		const paragraphViewElement = writer.createContainerElement( 'p' );
-	 *
-	 * 		writer.insert( writer.createPositionAt( wrapperViewElement, 0 ), paragraphViewElement );
-	 * 		writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), writer.createSlot() );
-	 *
-	 * 		return wrapperViewElement;
-	 * 	}
-	 * } );
-	 * ```
-	 *
-	 * The `createSlot()` function can also take a callback that allows filtering which children of the model element
-	 * should be converted into this slot.
-	 *
 	 * Imagine a table feature where for this model structure:
 	 *
 	 * ```xml
