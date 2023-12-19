@@ -98,6 +98,9 @@ ClassicEditor
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

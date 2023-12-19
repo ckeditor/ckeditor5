@@ -6,6 +6,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ImageInsertUI from '../src/imageinsert/imageinsertui';
 import ImageInsertViaUrl from '../src/imageinsertviaurl';
+import ImageInsertViaUrlUI from '../src/imageinsert/imageinsertviaurlui';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -23,7 +24,6 @@ describe( 'ImageInsertViaUrl', () => {
 
 	afterEach( async () => {
 		editorElement.remove();
-
 		await editor.destroy();
 	} );
 
@@ -33,6 +33,10 @@ describe( 'ImageInsertViaUrl', () => {
 
 	it( 'should load ImageInsertUI plugin', () => {
 		expect( editor.plugins.get( 'ImageInsertUI' ) ).to.instanceOf( ImageInsertUI );
+	} );
+
+	it( 'should load ImageInsertViaUrlUI plugin', () => {
+		expect( editor.plugins.get( 'ImageInsertViaUrlUI' ) ).to.instanceOf( ImageInsertViaUrlUI );
 	} );
 
 	it( 'should not load ImageUpload plugin', () => {

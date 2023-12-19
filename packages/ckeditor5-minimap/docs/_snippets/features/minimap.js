@@ -90,10 +90,8 @@ const config = {
 		extraClasses: 'live-snippet formatted'
 	},
 	cloudServices: CS_CONFIG,
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
-		]
+	ckbox: {
+		forceDemoLabel: true
 	},
 	ui: {
 		viewportOffset: {

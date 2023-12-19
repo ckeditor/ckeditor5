@@ -14,7 +14,7 @@ import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { ImageUpload, ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { ImageUpload, ImageInsert, PictureEditing, AutoImage } from '@ckeditor/ckeditor5-image';
 import { TodoList } from '@ckeditor/ckeditor5-list';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
@@ -23,8 +23,8 @@ import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
-			ArticlePluginSet, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, CloudServices, Markdown,
-			Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
+			ArticlePluginSet, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, AutoImage,
+			CloudServices, Markdown, Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
 		],
 		toolbar: {
 			items: [
@@ -56,6 +56,9 @@ ClassicEditor
 			]
 		},
 		cloudServices: CS_CONFIG,
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()

@@ -17,7 +17,7 @@ import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize } from '@ckeditor/ckeditor5-image';
+import { Image, ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -124,6 +124,7 @@ DecoupledEditor
 			Heading,
 			HorizontalLine,
 			Image,
+			ImageInsert,
 			ImageCaption,
 			ImageResize,
 			ImageStyle,
@@ -153,7 +154,7 @@ DecoupledEditor
 			'|',
 			'link',
 			'blockQuote',
-			'uploadImage',
+			'insertImage',
 			'insertTable',
 			'mediaEmbed',
 			'horizontalLine',

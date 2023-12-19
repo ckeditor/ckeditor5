@@ -15,15 +15,15 @@ CKEditor&nbsp;5 is an ultra-modern JavaScript rich-text editor with MVC architec
 
 ## Table of contents
 
-- [CKEditor&nbsp;5 ](#ckeditor-5-)
+- [CKEditor 5 ](#ckeditor5-)
 	- [Table of contents](#table-of-contents)
 	- [Quick start](#quick-start)
-		- [CKEditor&nbsp;5 online builder](#ckeditor-5-online-builder)
-		- [CKEditor&nbsp;5 predefined builds](#ckeditor-5-predefined-builds)
+		- [CKEditor 5 online builder](#ckeditor5-online-builder)
+		- [CKEditor 5 predefined builds](#ckeditor5-predefined-builds)
 			- [Example installation](#example-installation)
 		- [TypeScript support](#typescript-support)
-		- [CKEditor&nbsp;5 advanced installation](#ckeditor-5-advanced-installation)
-			- [CKEditor&nbsp;5 Framework](#ckeditor-5-framework)
+		- [CKEditor 5 advanced installation](#ckeditor5-advanced-installation)
+			- [CKEditor 5 Framework](#ckeditor5-framework)
 	- [Documentation and FAQ](#documentation-and-faq)
 	- [Releases](#releases)
 	- [Editing and collaboration features](#editing-and-collaboration-features)
@@ -53,7 +53,7 @@ The following CKEditor&nbsp;5 predefined builds are currently available:
 
 #### Example installation
 
-Creating an editor using a CKEditor&nbsp;5 build is very simple and can be described in two steps:
+Creating an editor using a CKEditor&nbsp;5 build is simple and can be described in two steps:
 
 1. Load the desired editor via the `<script>` tag.
 2. Call the static `create()` method to create the editor.
@@ -67,7 +67,7 @@ In your HTML page, add an element that CKEditor should replace:
 Load the classic editor build (you can choose between the [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#npm), and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/predefined-builds.html#zip-download)):
 
 ```html
-<script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
 ```
 
 Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html#static-function-create) method:

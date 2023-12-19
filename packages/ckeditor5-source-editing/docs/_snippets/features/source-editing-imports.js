@@ -59,10 +59,8 @@ ClassicEditor.defaultConfig = {
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
 	},
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
-		]
+	ckbox: {
+		forceDemoLabel: true
 	},
 	ui: {
 		viewportOffset: {

@@ -259,11 +259,11 @@ export default class FormView extends View {
 }
 ```
 
-Our new functionality should work now, check it out yourself! It does not recognize whether the selected text is an abbreviation already, so if you select "WYSIWYG", the full title does not yet appear in the title input field. We will change it in the next steps.
+Our new functionality should work now, check it out yourself! It does not recognize whether the selected text is an abbreviation already, so if you select "WYSIWYG," the full title does not yet appear in the title input field. We will change it in the next steps.
 
 ## Adding a command
 
-Our plugin does what we want it to do, so why complicate things by adding a command? Well, a command not only executes an action, but also automatically reacts when any changes are applied to the model.
+Our plugin does what we want it to do, so why complicate things by adding a command? Well, a command not only executes an action but also automatically reacts when any changes are applied to the model.
 
 <info-box>
 	A command in CKEditor&nbsp;5 is a combination of an action and a state. The state of the command gets refreshed whenever anything changes in the model. We highly recommend {@link framework/architecture/core-editor-architecture#commands reading about commands} before we move on.
@@ -358,7 +358,7 @@ export default class AbbreviationUI extends Plugin {
 
 The command should now work, and pressing the `submit` button should have the same effect as it did before. We can now explore some additional functionalities. You can check it out now in the CKEditor&nbsp;5 Inspector.
 
-{@img assets/img/abbreviation-part3-1.png Screenshot of the CKEditor&nbsp;5 inspector showing the 'addAbbreviation' command.}
+{@img assets/img/abbreviation-part3-1.png Screenshot of the CKEditor&nbsp;5 inspector showing the `addAbbreviation` command.}
 
 ### Refreshing the state
 
@@ -442,7 +442,7 @@ export default class AbbreviationCommand extends Command {
 
 If the selection is not collapsed, we check if it has the `abbreviation` model attribute. If so, we will again grab the full range of the abbreviation and compare it with the user selection.
 
-When the user selects a bit of text with the abbreviation attribute, along with a bit without it, we do not want to change the command's value. So, we will use the `containsRange()` method to see if the selected range is within the abbreviation range. The second parameter makes it a `loose` check, meaning the selected range can start, end, or be equal to the abbreviation range.
+When the user selects a bit of text with the abbreviation attribute, along with a bit without it, we do not want to change the command's value. We will thus use the `containsRange()` method to see if the selected range is within the abbreviation range. The second parameter makes it a `loose` check, meaning the selected range can start, end, or be equal to the abbreviation range.
 
 ```js
 // abbreviation/abbreviationcommand.js
@@ -500,7 +500,7 @@ export default class AbbreviationCommand extends Command {
 
 You can check the command and its current value in the inspector.
 
-{@img assets/img/abbreviation-part3-2.png Screenshot of the CKEditor&nbsp;5 inspector showing the value of the 'addAbbreviation' command.}
+{@img assets/img/abbreviation-part3-2.png Screenshot of the CKEditor&nbsp;5 inspector showing the value of the `addAbbreviation` command.}
 
 We can now check the command value when the user presses the toolbar abbreviation button, and insert both abbreviation text and title values into the form's input fields.
 
@@ -557,7 +557,7 @@ export default class AbbreviationUI extends Plugin {
 
 We should now introduce more cases into our `execute()` method. For starters, if the user's selection is not collapsed, we just need to add the abbreviation attribute to their selection instead of inserting the abbreviation text into the model.
 
-So if the selection is not collapsed, we will gather all the ranges, that are allowed to use the `abbreviation` model attribute, using the schema's `getValidRanges()` method. Then we will use the `setAttribute()`, to add the title value to each of the ranges.
+If the selection is not collapsed, we will gather all the ranges that are allowed to use the `abbreviation` model attribute, using the schema's `getValidRanges()` method. Then we will use the `setAttribute()`, to add the title value to each of the ranges.
 
 If the selection is collapsed, we will keep our `insertContent()` model method from before. Then, we need to use `removeSelectionAttribute` method, to stop adding new content into the abbreviation if the user starts to type.
 
@@ -654,7 +654,7 @@ export default class AbbreviationCommand extends Command {
 
 If the collapsed selection is not inside an existing abbreviation, we will insert a text node with the "abbreviation" attribute in place of the caret.
 
-The user might place the abbreviation inside a text, which already has some other model attributes, like "bold" or "italic". We should first collect them along with our abbreviation attribute, and use the whole list when inserting the abbreviation into the document. We will use our {@link module:utils/tomap~toMap `toMap`} helper function to collect all attributes.
+The user might place the abbreviation inside a text, which already has some other model attributes, like "bold" or "italic." We should first collect them along with our abbreviation attribute, and use the whole list when inserting the abbreviation into the document. We will use our {@link module:utils/tomap~toMap `toMap`} helper function to collect all attributes.
 
 ```js
 // abbreviation/abbreviationcommand.js

@@ -338,6 +338,33 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				sinon.assert.calledOnce( focusSpy );
 			} );
+
+			it( 'should refresh the command after closing the CKBox Image Editor dialog', async () => {
+				const ckboxImageId = 'example-id';
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					ckboxImageId,
+					controller: new AbortController()
+				} );
+
+				const refreshSpy = testUtils.sinon.spy( command, 'refresh' );
+
+				expect( command.value ).to.be.false;
+
+				command.execute();
+				expect( command.value ).to.be.true;
+
+				options.onClose();
+				expect( command.value ).to.be.false;
+				sinon.assert.calledOnce( refreshSpy );
+			} );
 		} );
 
 		describe( 'saving edited asset', () => {
@@ -755,6 +782,26 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
 						'alt="alt text" ' +
+						'ckboxImageId="image-id1" ' +
+						'height="100" ' +
+						'sources="[object Object]" ' +
+						'src="https://example.com/workspace1/assets/image-id1/images/100.png" ' +
+						'width="100">' +
+					'</imageBlock>]'
+				);
+			} );
+
+			it( 'should not be alt attribute if there is no one in the original image', () => {
+				setModelData( model, '[<imageBlock ' +
+						'ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
+					'</imageBlock>]' );
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				command._replaceImage( imageElement, dataMock );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<imageBlock ' +
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
 						'sources="[object Object]" ' +

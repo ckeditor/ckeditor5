@@ -23,6 +23,9 @@ ClassicEditor
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
@@ -38,7 +41,10 @@ ClassicEditor
 				'imageStyle:breakText',
 				'|',
 				'ckboxImageEdit'
-			]
+			],
+			insert: {
+				integrations: [ 'url' ]
+			}
 		},
 		cloudServices: CS_CONFIG
 	} )

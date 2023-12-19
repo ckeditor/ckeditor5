@@ -16,12 +16,18 @@ import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import { icons } from 'ckeditor5/src/core';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageUploadUI', () => {
 	let editor, model, editorElement, fileRepository;
+
+	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -83,11 +89,11 @@ describe( 'ImageUploadUI', () => {
 
 		command.isEnabled = true;
 
-		expect( button.buttonView.isEnabled ).to.true;
+		expect( button.isEnabled ).to.true;
 
 		command.isEnabled = false;
 
-		expect( button.buttonView.isEnabled ).to.false;
+		expect( button.isEnabled ).to.false;
 	} );
 
 	// ckeditor5-upload/#77
@@ -98,11 +104,11 @@ describe( 'ImageUploadUI', () => {
 
 		button.render();
 
-		button.buttonView.on( 'execute', spy );
+		button.on( 'execute', spy );
 
 		command.isEnabled = false;
 
-		button.buttonView.element.dispatchEvent( new Event( 'click' ) );
+		button.element.dispatchEvent( new Event( 'click' ) );
 
 		sinon.assert.notCalled( spy );
 	} );
@@ -201,4 +207,106 @@ describe( 'ImageUploadUI', () => {
 
 		expect( spy ).to.be.calledOnce;
 	} );
+
+	describe( 'InsertImageUI integration', () => {
+		it( 'should create FileDialogButtonView in split button dropdown button', () => {
+			mockAssetManagerIntegration();
+
+			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+			const dropdownButton = dropdown.buttonView.actionView;
+
+			expect( dropdownButton ).to.be.instanceOf( FileDialogButtonView );
+			expect( dropdownButton.withText ).to.be.false;
+			expect( dropdownButton.icon ).to.equal( icons.imageUpload );
+
+			expect( spy.calledTwice ).to.be.true;
+			expect( spy.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
+			expect( spy.secondCall.args[ 0 ] ).to.equal( 'uploadImage' );
+			expect( spy.firstCall.returnValue ).to.equal( dropdown.buttonView.actionView );
+		} );
+
+		it( 'should create FileDialogButtonView in dropdown panel', () => {
+			mockAssetManagerIntegration();
+
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
+
+			dropdown.isOpen = true;
+
+			const formView = dropdown.panelView.children.get( 0 );
+			const buttonView = formView.children.get( 0 );
+
+			expect( buttonView ).to.be.instanceOf( FileDialogButtonView );
+			expect( buttonView.withText ).to.be.true;
+			expect( buttonView.icon ).to.equal( icons.imageUpload );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
+			expect( spy.firstCall.returnValue ).to.equal( buttonView );
+		} );
+
+		it( 'should bind to #isImageSelected', () => {
+			const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
+
+			mockAssetManagerIntegration();
+
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+
+			dropdown.isOpen = true;
+
+			const dropdownButton = dropdown.buttonView.actionView;
+			const formView = dropdown.panelView.children.get( 0 );
+			const buttonView = formView.children.get( 0 );
+
+			insertImageUI.isImageSelected = false;
+			expect( dropdownButton.label ).to.equal( 'Upload image from computer' );
+			expect( buttonView.label ).to.equal( 'Upload from computer' );
+
+			insertImageUI.isImageSelected = true;
+			expect( dropdownButton.label ).to.equal( 'Replace image from computer' );
+			expect( buttonView.label ).to.equal( 'Replace from computer' );
+		} );
+
+		it( 'should close dropdown on execute', () => {
+			mockAssetManagerIntegration();
+
+			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
+
+			dropdown.isOpen = true;
+
+			const formView = dropdown.panelView.children.get( 0 );
+			const buttonView = formView.children.get( 0 );
+
+			sinon.stub( editor, 'execute' );
+
+			buttonView.fire( 'execute' );
+
+			expect( dropdown.isOpen ).to.be.false;
+		} );
+	} );
+
+	function mockAssetManagerIntegration() {
+		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
+		const observable = new Model( { isEnabled: true } );
+
+		insertImageUI.registerIntegration( {
+			name: 'assetManager',
+			observable,
+			buttonViewCreator() {
+				const button = new ButtonView( editor.locale );
+
+				button.label = 'foo';
+
+				return button;
+			},
+			formViewCreator() {
+				const button = new ButtonView( editor.locale );
+
+				button.label = 'bar';
+
+				return button;
+			}
+		} );
+	}
 } );

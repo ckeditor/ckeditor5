@@ -10,7 +10,7 @@ The standard UI library of CKEditor&nbsp;5 is [`@ckeditor/ckeditor5-ui`](https:/
 
 ## Views
 
-Views use [templates](#templates) to build the UI. They also provide observable interfaces that other features (e.g. {@link framework/architecture/core-editor-architecture#plugins plugins}, {@link framework/architecture/core-editor-architecture#commands commands}, etc.) can use to change the DOM without any actual interaction with the native API.
+Views use [templates](#templates) to build the UI. They also provide observable interfaces that other features (like {@link framework/architecture/core-editor-architecture#plugins plugins}, {@link framework/architecture/core-editor-architecture#commands commands}, etc.) can use to change the DOM without any actual interaction with the native API.
 
 <info-box>
 	All views can be localized using the `locale` instance with which they were created. Check the {@link framework/deep-dive/localization localization guide} to see how to use the `t()` function available in the `locale` instance.
@@ -159,7 +159,7 @@ view.element.placeholder = 'A new placeholder';
 	Check out the {@link module:ui/template~TemplateDefinition} to learn more about the template syntax and other advanced concepts.
 </info-box>
 
-Templates support {@link framework/architecture/core-editor-architecture#event-system-and-observables observable properties} bindings and handle native DOM events. A very simple template can look like this:
+Templates support {@link framework/architecture/core-editor-architecture#event-system-and-observables observable properties} bindings and handle native DOM events. A simple template can look like this:
 
 ```js
 new Template( {
@@ -196,7 +196,7 @@ Similarly, when rendered, the template also takes care of DOM events. A binding 
 
 Views are organized into {@link module:ui/viewcollection~ViewCollection collections} which manage their elements and propagate DOM events even further. Adding or removing a view in a collection moves the {@link module:ui/view~View#element view's element} in the DOM to reflect the position.
 
-Each editor UI has a "root view" (e.g. {@link e.g. {@link module:editor-classic/classiceditorui~ClassicEditorUI#view `ClassicEditor#view`}), which can be found under `editor.ui.view`. Such view usually defines the container element of the editor and undermost view collections that other features can populate.
+Each editor UI has a "root view" (like {@link module:editor-classic/classiceditorui~ClassicEditorUI#view `ClassicEditor#view`}), which can be found under `editor.ui.view`. Such view usually defines the container element of the editor and undermost view collections that other features can populate.
 
 For instance, the `BoxedEditorUiView` class defines two collections:
 * {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#top} &ndash; A collection that hosts the toolbar.
@@ -204,7 +204,7 @@ For instance, the `BoxedEditorUiView` class defines two collections:
 
 It also inherits the {@link module:ui/editorui/editoruiview~EditorUIView#body} collection which resides directly in the `<body>` of the web page and stores floating elements like {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon panels}.
 
-Plugins can populate the root view collections with their children. Such child views become a part of the UI tree and will be managed by the editor, e.g. they will be initialized and destroyed along with the editor.
+Plugins can populate the root view collections with their children. Such child views become a part of the UI tree and will be managed by the editor. This means that, for example, they will be initialized and destroyed along with the editor.
 
 ```js
 class MyPlugin extends Plugin {
@@ -244,7 +244,7 @@ EditorUIView
 
 ## Using the existing components
 
-The framework provides a number of common {@link api/ui components} like {@link module:ui/button/buttonview~ButtonView `ButtonView`} or {@link module:ui/toolbar/toolbarview~ToolbarView `ToolbarView`} that can be helpful when developing a new user interface.
+The framework provides some common {@link api/ui components} like {@link module:ui/button/buttonview~ButtonView `ButtonView`} or {@link module:ui/toolbar/toolbarview~ToolbarView `ToolbarView`} that can be helpful when developing a new user interface.
 
 For example, to create a toolbar with a few buttons inside, `ToolbarView` and `ButtonView` classes need to be imported first:
 
@@ -319,16 +319,16 @@ const dropdownView = createDropdown( locale, SplitButtonView );
 ```
 
 This kind of (default) dropdown comes with a set of behaviors:
-* It closes the panel when it loses the focus, e.g. the user moved the focus elsewhere.
+* It closes the panel when it loses the focus, for example, the user moved the focus elsewhere.
 * It closes the panel upon the {@link module:ui/dropdown/dropdownview~DropdownView#event:execute `execute`} event.
-* It focuses the view hosted in the panel, e.g. when navigating the toolbar using the keyboard.
+* It focuses the view hosted in the panel, for example, when navigating the toolbar using the keyboard.
 
 #### Setting label, icon, and tooltip
 
 To customize the button of the dropdown, use the {@link module:ui/dropdown/dropdownview~DropdownView#buttonView `buttonView`} property. It gives a direct access to the {@link module:ui/button/buttonview~ButtonView `ButtonView` instance} used by your dropdown.
 
 <info-box>
-	If your dropdown has been created using the {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}, use the {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView#actionView} to access its main region, e.g. `dropdownView.buttonView.actionView.set( /* ... */ )`.
+	If your dropdown has been created using the {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}, use the {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView#actionView} to access its main region, for example, `dropdownView.buttonView.actionView.set( /* ... */ )`.
 </info-box>
 
 To control the label of the dropdown, first make it visible using the {@link module:ui/button/buttonview~ButtonView#withText} property and then set the text of the {@link module:ui/button/buttonview~ButtonView#label}:
@@ -441,7 +441,7 @@ dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled',
 
 ### Best practices
 
-It is advised that for the best user experience the editing view gets {@link module:engine/view/view~View#focus focused} upon any user action (e.g. executing a command) to make sure the editor retains focus:
+It is advised that for the best user experience the editing view gets {@link module:engine/view/view~View#focus focused} upon any user action (like executing a command) to make sure the editor retains focus:
 
 ```js
 // Execute some action on dropdown#execute event.
@@ -461,7 +461,7 @@ The framework offers built–in classes that help manage keystrokes and focus in
 
 ### Focus tracker
 
-The {@link module:utils/focustracker~FocusTracker `FocusTracker`} class can observe a number of HTML elements and determine if one of them is focused either by the user (clicking, typing) or using the `HTMLElement.focus()` DOM method.
+The {@link module:utils/focustracker~FocusTracker `FocusTracker`} class can observe some HTML elements and determine if one of them is focused either by the user (clicking, typing) or using the `HTMLElement.focus()` DOM method.
 
 ```js
 import { FocusTracker } from '@ckeditor/ckeditor5-utils';

@@ -8,13 +8,11 @@
 import { BalloonEditor as BalloonEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading, Title } from '@ckeditor/ckeditor5-heading';
 import { Image, ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
@@ -33,7 +31,6 @@ class BalloonEditor extends BalloonEditorBase {}
 
 BalloonEditor.builtinPlugins = [
 	Essentials,
-	UploadAdapter,
 	Autoformat,
 	BlockToolbar,
 	Bold,
@@ -41,7 +38,6 @@ BalloonEditor.builtinPlugins = [
 	BlockQuote,
 	CKBox,
 	CKBoxImageEdit,
-	CKFinder,
 	CloudServices,
 	EasyImage,
 	Heading,
@@ -105,11 +101,6 @@ BalloonEditor.defaultConfig = {
 			'tableColumn',
 			'tableRow',
 			'mergeTableCells'
-		]
-	},
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.

@@ -348,4 +348,4 @@ const editorWatchdog = new EditorWatchdog( ClassicEditor, {
 
 ## Limitations
 
-The watchdogs do not handle errors thrown during the editor or context initialization (e.g. in `Editor.create()`) and editor destruction (e.g. in `Editor#destroy()`). Errors thrown at these stages mean that there is a problem in the code integrating the editor with your application and such a problem cannot be fixed by restarting the editor.
+The watchdog does not handle errors thrown during the editor or context initialization (for example, in `Editor.create()`) and editor destruction (for example, in `Editor#destroy()`). Errors thrown at these stages mean that there is a problem in the code integrating the editor with your application and such a problem cannot be fixed by restarting the editor.

@@ -90,10 +90,10 @@ Unfortunately, to show previews of media such as tweets, Instagram photos or Fac
 
  Also, the media embed feature [does not support asynchronous preview providers](https://github.com/ckeditor/ckeditor5-media-embed/issues/16) yet. Therefore, to still allow embedding tweets or Instagram photos, we chose to:
 
-1. Show a placeholder of the embedded media in the editor (see e.g. how a tweet is presented in the [demo](#demo) above).
+1. Show a placeholder of the embedded media in the editor (see how a tweet is presented in the [demo](#demo) above).
 2. Produce a [semantic `<oembed url="...">` tag](#semantic-data-output-default) in the data output from the editor. This output makes it possible to later use proxy services to [display the content of these media on your website](#displaying-embedded-media-on-your-website).
 
-The above limitations can be overcome with the help of proxy services like Iframely or Embedly, which is explained in the [configuration guide below](#using-external-services-for-preview).
+You can overcome these limitations with the help of proxy services like Iframely or Embedly, which is explained in the [configuration guide below](#using-external-services-for-preview).
 
 ## Configuration
 
@@ -127,7 +127,7 @@ If `elementName` is overridden to something other than the default value, the ex
 
 #### Including previews in data
 
-Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor. So if the media element is "previewable", the media preview (HTML) is saved to the database:
+Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor. If the media element is "previewable", the media preview (HTML) is saved to the database:
 
 ```html
 <figure class="media">
@@ -137,7 +137,7 @@ Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure t
 </figure>
 ```
 
-Currently, the preview is only available for content providers for which CKEditor&nbsp;5 can predict the `<iframe>` code: YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allow retrieving this code from an external oEmbed service. Therefore, for non-previewable media it produces the default semantic output:
+Currently, the preview is only available for content providers for which CKEditor&nbsp;5 can predict the `<iframe>` code: YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram, the editor cannot produce an `<iframe>` code and it does not, so far, allow retrieving this code from an external oEmbed service. Therefore, for non-previewable media it produces the default semantic output:
 
 ```html
 <figure class="media">
@@ -375,13 +375,13 @@ In this case, the code is almost the same as with the semantic data but you shou
 
 By default, the {@link module:media-embed/mediaembed~MediaEmbed} plugin loads the {@link module:media-embed/automediaembed~AutoMediaEmbed} as a dependency.
 
-The {@link module:media-embed/automediaembed~AutoMediaEmbed} plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. by using the toolbar button), automatic embedding works for all media providers specified in the [configuration](#media-providers).
+The {@link module:media-embed/automediaembed~AutoMediaEmbed} plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (using the toolbar button), automatic embedding works for all media providers specified in the [configuration](#media-providers).
 
 <info-box>
 	The media URL must be the only content pasted to be properly embedded. Multiple links (`"http://media.url http://another.media.url"`) as well as bigger chunks of content (`"This link http://media.url will not be auto–embedded when pasted."`) are ignored.
 </info-box>
 
-If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd> keystrokes).
+If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd> keystrokes).
 
 ## Styling media in the editor content
 
@@ -457,7 +457,7 @@ mediaEmbed: {
 }
 ```
 
-Having your styles defined and the media provider configured, insert the new media into your editor, e.g. the following URL `https://ckeditor.com/path/to/media`. You should see something like this:
+Having your styles defined and the media provider configured, insert the new media into your editor, for example, the following URL: `https://ckeditor.com/path/to/media`. You should see something like this:
 
 {@img assets/img/features-media-embed-ckeditor.png 791 The example media style of the media}
 

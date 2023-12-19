@@ -12,6 +12,7 @@ Automattic
 [Aa]utosaving
 (?i)backport
 [Bb]lockquote
+blurhash
 (?i)bookmarklet
 breakpoint
 (?i)bundler
@@ -41,7 +42,10 @@ ESLint
 formatter
 Gantt
 [Gg]etter
+Grammarly
 hardcode
+hotlink
+hotlinked
 Iframely
 Ivanov
 JSDoc
@@ -60,14 +64,17 @@ matcher
 mindmap
 [Mm]inimap
 [Mm]ixin
+mockup
 modified_at
 monorepo
 (?i)multiline
 [Nn]amespace
 npm
+Nuxt
 nvm
 oEmbed
 outdent
+parallelization
 pilcrow
 (?i)polyfill
 previewable
@@ -88,6 +95,7 @@ Sinon
 Socket.IO
 Spotify
 [Ss]trikethrough
+stringify
 Stylelint
 [Ss]ubfeature
 [Ss]ubfolder
@@ -96,6 +104,7 @@ Stylelint
 [Ss]uperbuild
 SVG
 Toan
+toggleable
 Techlab
 textarea
 toolset

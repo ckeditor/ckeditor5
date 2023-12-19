@@ -10,7 +10,15 @@ swap:
   all caps: uppercase
   android: Android
   Api|api: API
-  back-end|back end: backend
+  auto correct|auto-correct: autocorrect
+  auto format|auto-format: autoformat
+  auto formatting|auto-formatting: autoformatting
+  auto link|auto-link: autolink
+  auto save|auto-save: autosave
+  auto saving|auto-saving: autosaving
+  back-end|back end|back–end: backend
+  backwards compatibility: backward compatibility
+  backwards compatible: backward compatible
   boolean: Boolean
   bugfix: bug fix
   bugfixes: bug fixes
@@ -22,6 +30,7 @@ swap:
   Cksource|CKsource|CK Source: CKSource
   clean-up: cleanup
   click on: click|click in
+  clicking on: clicking|clicking in
   config: configuration
   data are: data is
   deselect: clear
@@ -35,10 +44,12 @@ swap:
   "(?:e-mail|Email|E-mail)": email
   Fckeditor|FCkeditor|FCKEditor: FCKeditor
   fewer data: less data
-  front-end|front end: frontend
+  front-end|front end|front–end: frontend
   git: Git
   Github: GitHub
   grayed-out|greyed-out: unavailable
+  hard code|hardcode: hard-code
+  hard coding|hardcoding: hard-coding
   in order to: to
   Javascript: JavaScript
   (?<!.)JS: JavaScript
@@ -46,10 +57,14 @@ swap:
   Lo-Dash|lodash: Lodash
   MacOS: macOS
   "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
+  "(?:MSExcel|MS Excel)": Microsoft Excel
   "(?:MSOffice|MS Office)": Microsoft Office
   "(?:MSWord|MS Word)": Microsoft Word
   "(?:[nN]odejs|[nN]ode.JS|node.js)": Node.js
   non-real-time|non real-time|non real time|non-RTC: asynchronous
+  on Chrome: in Chrome
+  on Edge: in Edge
+  on Firefox: in Firefox
   on-premise|on-prem: on-premises
   plaintext|plain-text: plain text
   plug-in: plugin
@@ -65,6 +80,8 @@ swap:
   SAAS: SaaS
   sanity (?:check|test): check for completeness
   semver: SemVer
+  stand alone|stand-alone: standalone
+  strike-through|strike through: strikethrough
   stylesheet: style sheet
   (?i)todo list: to-do list
   (?<!.)TS: TypeScript

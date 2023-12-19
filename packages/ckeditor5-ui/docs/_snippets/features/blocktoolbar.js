@@ -13,7 +13,6 @@ import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { Heading, HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import {
@@ -50,7 +49,6 @@ BalloonEditor.builtinPlugins = [
 	BlockQuote,
 	CKBox,
 	CKBoxImageEdit,
-	CKFinder,
 	CloudServices,
 	EasyImage,
 	Heading,
@@ -127,6 +125,9 @@ BalloonEditor
 		toolbar: {
 			items: [ 'bold', 'italic', '|', 'link' ]
 		},
+		ckbox: {
+			forceDemoLabel: true
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
@@ -140,7 +141,7 @@ BalloonEditor
 			'|',
 			'paragraph', 'heading1', 'heading2', 'heading3',
 			'|',
-			'uploadImage', 'blockQuote',
+			'insertImage', 'blockQuote',
 			'|',
 			'bulletedList', 'numberedList',
 			'|',

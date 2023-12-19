@@ -14,7 +14,6 @@ import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
@@ -40,7 +39,6 @@ const builtinPlugins = [
 	BlockQuote,
 	CKBox,
 	CKBoxImageEdit,
-	CKFinder,
 	CloudServices,
 	Heading,
 	Image,
@@ -84,11 +82,6 @@ BalloonEditor.defaultConfig = {
 			'mediaEmbed',
 			'undo',
 			'redo'
-		]
-	},
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
 		]
 	},
 	image: {
@@ -137,11 +130,6 @@ ClassicEditor.defaultConfig = {
 			'mediaEmbed',
 			'undo',
 			'redo'
-		]
-	},
-	insert: {
-		integrations: [
-			'insertImageViaUrl'
 		]
 	},
 	image: {
