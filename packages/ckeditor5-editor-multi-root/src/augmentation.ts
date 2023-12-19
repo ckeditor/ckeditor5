@@ -4,6 +4,7 @@
  */
 
 import { type RootAttributes } from './multirooteditor.js';
+import { type ToolbarConfigItem } from 'ckeditor5/src/core.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -79,6 +80,47 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * ```
 		 */
 		rootsAttributes?: Record<string, RootAttributes>;
+
+		/**
+		 * UI toolbar configurations for the document roots.
+		 *
+		 * **Note: This configuration option is supported only by the
+		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
+		 *
+		 * **Note: This configuration does not limit what kind of content the user is allowed to create
+		 * (write, paste, etc.) in a specific root. It affects only the presentation of the toolbar.**
+		 *
+		 * When specified, the main editor toolbar will change its items dynamically depending on in which the user
+		 * selection is anchored. This allows for targeted editing experience, e.g. to declutter the toolbars for
+		 * roots that contain only a specific kind of content.
+		 *
+		 * Please keep in mind that behaviors such as {@link module:core/editor/editorconfig~EditorConfig#toolbar `shouldGroupWhenFull`}
+		 * are inherited by individual root toolbars from the main editor toolbar configuration.
+		 *
+		 * ```ts
+		 * MultiRootEditor.create(
+		 * 	// Roots for the editor:
+		 * 	{
+		 * 		uid1: document.querySelector( '#uid1' ),
+		 * 		uid2: document.querySelector( '#uid2' ),
+		 * 		uid3: document.querySelector( '#uid3' ),
+		 * 		uid4: document.querySelector( '#uid4' )
+		 * 	},
+		 * 	// Config:
+		 * 	{
+		 * 		// Specific toolbar configurations for individual roots.
+		 * 		rootsToolbars: {
+		 * 			uid1: [ 'bold', 'italic', '|', 'undo', 'redo' ].
+		 * 			uid3: [ 'bold', 'italic', 'underline', '|', 'undo', 'redo' ].
+		 * 		},
+		 * 		// Roots not specified in rootsToolbars use this global toolbar configuration.
+		 * 		toolbar: [ 'bold', 'italic' ]
+		 * 	}
+		 * )
+		 * .then( ... )
+		 * .catch( ... );
+		 */
+		rootsToolbars?: Record<string, Array<ToolbarConfigItem>>;
 
 		/**
 		 * A list of names of all the roots that exist in the document but are not initially loaded by the editor.

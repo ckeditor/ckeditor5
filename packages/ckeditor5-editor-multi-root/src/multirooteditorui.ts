@@ -40,6 +40,12 @@ export default class MultiRootEditorUI extends EditorUI {
 	 */
 	private _lastFocusedEditableElement: HTMLElement | null;
 
+	/**
+	 * A cached map of toolbar items for each individual root. It saves time on recreating the
+	 * toolbar items every time the user moves their selection between roots.
+	 *
+	 * See {@link #_loadToolbarItemsForRoot}.
+	 */
 	private _rootToolbarItems = new Map<string, Array<View>>();
 
 	/**
@@ -206,28 +212,29 @@ export default class MultiRootEditorUI extends EditorUI {
 	}
 
 	/**
-	 * TODO
+	 * Loads {@link module:editor-multi-root/multirooteditoruiview~MultiRootEditorUIView#toolbar} items
+	 * according to the toolbar configuration of a root.
+	 *
+	 * The configuration is either read from {@link module:core/editor/editorconfig~EditorConfig#rootsAttributes} or
+	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
 	 */
 	private _loadToolbarItemsForRoot( rootName: string ) {
 		const editor = this.editor;
 		const toolbarView = this.view.toolbar;
 		const globalToolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-		const multiRootToolbarConfig = editor.config.get( 'multiRoot' ) || {};
-		let items: Array<View>;
+		const rootsToolbarsConfig = editor.config.get( 'rootsToolbars' ) || {};
+		let itemsToLoad: Array<View>;
 
 		if ( !this._rootToolbarItems.has( rootName ) ) {
-			items = toolbarView.createItemsFromConfig(
-				multiRootToolbarConfig[ rootName ] || globalToolbarConfig,
-				this.componentFactory
-			);
-
-			this._rootToolbarItems.set( rootName, items );
+			const rootToolbarConfig = rootsToolbarsConfig[ rootName ] || globalToolbarConfig;
+			itemsToLoad = toolbarView.createItemsFromConfig( rootToolbarConfig, this.componentFactory );
+			this._rootToolbarItems.set( rootName, itemsToLoad );
 		} else {
-			items = this._rootToolbarItems.get( rootName )!;
+			itemsToLoad = this._rootToolbarItems.get( rootName )!;
 		}
 
 		toolbarView.items.clear();
-		toolbarView.items.addMany( items );
+		toolbarView.items.addMany( itemsToLoad );
 	}
 
 	/**

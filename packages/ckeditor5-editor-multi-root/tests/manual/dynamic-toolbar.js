@@ -25,7 +25,7 @@ function initEditor() {
 		.create( editorData, {
 			plugins: [ Essentials, Paragraph, Heading, Bold, Italic ],
 			toolbar: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ],
-			multiRoot: {
+			rootsToolbars: {
 				'intro': [ 'undo', 'redo', '|', 'bold', 'italic' ],
 				'content': [ 'undo', 'redo', '|', ...new Array( 40 ).fill( 'bold' ) ]
 			}
