@@ -1289,6 +1289,29 @@ describe( 'ToolbarView', () => {
 			expect( view.children.get( 0 ) ).to.equal( view.itemsView );
 		} );
 
+		it( 'removes the dropdown with grouped items if visible but items#clear() was called that emptied the toolbar', () => {
+			const itemA = focusable();
+			const itemB = focusable();
+			const itemC = focusable();
+			const itemD = focusable();
+
+			view.items.add( itemA );
+			view.items.add( itemB );
+			view.items.add( itemC );
+			view.items.add( itemD );
+
+			expect( ungroupedItems.map( i => i ) ).to.have.ordered.members( [ itemA ] );
+			expect( groupedItems.map( i => i ) ).to.have.ordered.members( [ itemB, itemC, itemD ] );
+
+			expect( view.children.has( groupedItemsDropdown ) ).to.be.true;
+
+			view.items.clear();
+
+			expect( view.children.has( groupedItemsDropdown ) ).to.be.false;
+			expect( ungroupedItems ).to.have.length( 0 );
+			expect( groupedItems ).to.have.length( 0 );
+		} );
+
 		describe( 'render()', () => {
 			let view, groupedItems, ungroupedItems;
 
