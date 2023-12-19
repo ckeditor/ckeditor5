@@ -45,6 +45,7 @@ swap:
   "(?:e-mail|Email|E-mail)": email
   Fckeditor|FCkeditor|FCKEditor: FCKeditor
   fewer data: less data
+  filename: file name
   front-end|front end|front–end: frontend
   git: Git
   Github: GitHub
@@ -84,6 +85,7 @@ swap:
   stand alone|stand-alone: standalone
   strike-through|strike through: strikethrough
   stylesheet: style sheet
+  stylesheets: style sheets
   (?i)todo list: to-do list
   (?<!.)TS: TypeScript
   Typescript: TypeScript
