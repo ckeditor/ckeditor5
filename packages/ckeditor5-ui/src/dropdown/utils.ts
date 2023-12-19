@@ -262,7 +262,7 @@ function addToolbarToOpenDropdown(
  * Adds an instance of {@link module:ui/list/listview~ListView} to a dropdown.
  *
  * ```ts
- * const items = new Collection();
+ * const items = new Collection<ListDropdownItemDefinition>();
  *
  * items.add( {
  * 	type: 'button',
