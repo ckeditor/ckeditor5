@@ -4,9 +4,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "moduleDetection": "force",
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
     "sourceMap": false,
     "declaration": true
   }
