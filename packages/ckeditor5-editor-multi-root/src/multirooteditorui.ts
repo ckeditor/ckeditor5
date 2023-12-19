@@ -13,11 +13,16 @@ import {
 
 import {
 	EditorUI,
+	normalizeToolbarConfig,
 	type EditorUIReadyEvent,
-	type InlineEditableUIView
+	type InlineEditableUIView,
+	type View
 } from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine.js';
+import {
+	enablePlaceholder,
+	type DocumentSelectionChangeEvent
+} from 'ckeditor5/src/engine.js';
 
 import type MultiRootEditorUIView from './multirooteditoruiview.js';
 
@@ -34,6 +39,8 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * The editable element that was focused the last time when any of the editables had focus.
 	 */
 	private _lastFocusedEditableElement: HTMLElement | null;
+
+	private _rootToolbarItems = new Map<string, Array<View>>();
 
 	/**
 	 * Creates an instance of the multi-root editor UI class.
@@ -180,12 +187,47 @@ export default class MultiRootEditorUI extends EditorUI {
 	private _initToolbar(): void {
 		const editor = this.editor;
 		const view = this.view;
-		const toolbar = view.toolbar;
-
-		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
+		const modelSelection = editor.model.document.selection;
+		let previousSelectedRootName = modelSelection.anchor!.root.rootName!;
 
 		// Register the toolbar, so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
+
+		modelSelection.on<DocumentSelectionChangeEvent>( 'change:range', () => {
+			const currentSelectedRootName = modelSelection.anchor!.root.rootName!;
+
+			if ( currentSelectedRootName !== previousSelectedRootName ) {
+				this._loadToolbarItemsForRoot( currentSelectedRootName );
+				previousSelectedRootName = currentSelectedRootName;
+			}
+		} );
+
+		this._loadToolbarItemsForRoot( previousSelectedRootName );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _loadToolbarItemsForRoot( rootName: string ) {
+		const editor = this.editor;
+		const toolbarView = this.view.toolbar;
+		const globalToolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+		const multiRootToolbarConfig = editor.config.get( 'multiRoot' ) || {};
+		let items: Array<View>;
+
+		if ( !this._rootToolbarItems.has( rootName ) ) {
+			items = toolbarView.createItemsFromConfig(
+				multiRootToolbarConfig[ rootName ] || globalToolbarConfig,
+				this.componentFactory
+			);
+
+			this._rootToolbarItems.set( rootName, items );
+		} else {
+			items = this._rootToolbarItems.get( rootName )!;
+		}
+
+		toolbarView.items.clear();
+		toolbarView.items.addMany( items );
 	}
 
 	/**
