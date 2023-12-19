@@ -28,6 +28,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
+import { CustomTitle } from './utils/customtitleplugin';
+
 describe( 'Drag and Drop', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter;
 
@@ -77,7 +79,8 @@ describe( 'Drag and Drop', () => {
 					BlockQuote,
 					Bold,
 					Image,
-					ImageCaption
+					ImageCaption,
+					CustomTitle
 				]
 			} );
 
@@ -1293,6 +1296,72 @@ describe( 'Drag and Drop', () => {
 						<caption></caption>
 					</imageBlock>
 					<paragraph>HelloWorld[]</paragraph>
+				` );
+			} );
+
+			it( 'should start dragging text from title to paragraph', () => {
+				setModelData( model, trim`
+					<title><title-content>[Foo] Bar</title-content></title>
+					<paragraph>Bar</paragraph>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const viewElement = viewDocument.getRoot().getChild( 1 );
+				const position = model.createPositionAt( root.getChild( 1 ), 'after' );
+
+				viewDocument.fire( 'dragstart', {
+					domTarget: domConverter.mapViewToDom( viewElement ),
+					target: viewElement,
+					domEvent: {},
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'Foo' );
+
+				fireDragging( dataTransferMock, position );
+				expectDraggingMarker( position );
+
+				fireDrop(
+					dataTransferMock,
+					model.createPositionAt( root.getChild( 1 ), 3 )
+				);
+
+				expect( getModelData( model ) ).to.equal( trim`
+					<title><title-content> Bar</title-content></title>
+					<paragraph>BarFoo[]</paragraph>
+				` );
+			} );
+
+			it( 'should start dragging text from paragraph to title', () => {
+				setModelData( model, trim`
+					<title><title-content>Foo Bar</title-content></title>
+					<paragraph>[Baz]</paragraph>
+				` );
+
+				const dataTransferMock = createDataTransfer();
+				const viewElement = viewDocument.getRoot().getChild( 0 );
+
+				viewDocument.fire( 'dragstart', {
+					domTarget: domConverter.mapViewToDom( viewElement ),
+					target: viewElement,
+					domEvent: {},
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal( '<p>Baz</p>' );
+
+				fireDragging( dataTransferMock, model.createPositionAt( root.getChild( 0 ).getChild( 0 ), 3 ) );
+
+				fireDrop(
+					dataTransferMock,
+					model.createPositionAt( root.getChild( 0 ).getChild( 0 ), 3 )
+				);
+
+				expect( getModelData( model ) ).to.equal( trim`
+					<paragraph>Baz[]</paragraph>
+					<title><title-content>Foo Bar</title-content></title>
 				` );
 			} );
 
