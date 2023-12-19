@@ -17,6 +17,10 @@ These are only available to holders of a [CKEditor&nbsp;5 commercial license](ht
 
 ## Features included in the productivity pack
 
+* Case change
+
+	The {@link features/case-change case change feature} {@icon @ckeditor/ckeditor5-case-change/theme/icons/case-change.svg Case change} lets you quickly change the letter case of selected content to format part of the text like a title, or change it to all-caps and back. You can change the case to the desired pattern by using a dedicated toolbar dropdown or cycling them with a keyboard shortcut.
+
 * Document outline
 
 	The {@link features/document-outline document outline feature} lists the sections (headings) of the document next to the editor. The outline updates automatically as the user works on the document. It offers quick navigation to a specific section upon clicking.
