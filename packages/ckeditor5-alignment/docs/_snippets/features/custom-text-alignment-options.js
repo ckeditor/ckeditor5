@@ -31,13 +31,11 @@ ClassicEditor
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		alignment: {
 			options: [ 'left', 'right' ]
-		},
-		ckbox: {
-			forceDemoLabel: true
 		},
 		cloudServices: CS_CONFIG
 	} )

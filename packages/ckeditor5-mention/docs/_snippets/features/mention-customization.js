@@ -25,16 +25,14 @@ ClassicEditor
 				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 			]
 		},
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		mention: {
 			dropdownLimit: 4,

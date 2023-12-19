@@ -31,16 +31,14 @@ BalloonEditor
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		placeholder: 'Text of the post',
 		image: {

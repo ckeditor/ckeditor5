@@ -60,16 +60,14 @@ ClassicEditor
 				{ name: 'script' }
 			]
 		},
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		}
 	} )
 	.then( editor => {

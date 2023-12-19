@@ -124,16 +124,14 @@ const defaultConfig = {
 	table: {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 	},
-	ckbox: {
-		forceDemoLabel: true
-	},
 	ui: {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
 		}
 	},
 	ckbox: {
-		allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		allowExternalImagesEditing: [ /^data:/, 'origin' ],
+		forceDemoLabel: true
 	},
 	fontFamily: {
 		supportAllValues: true

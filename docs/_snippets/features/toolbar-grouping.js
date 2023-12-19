@@ -19,15 +19,13 @@ ClassicEditor
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
+			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		},
 		image: {

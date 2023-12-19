@@ -90,16 +90,14 @@ const config = {
 		extraClasses: 'live-snippet formatted'
 	},
 	cloudServices: CS_CONFIG,
-	ckbox: {
-		forceDemoLabel: true
-	},
 	ui: {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
 		}
 	},
 	ckbox: {
-		allowExternalImagesEditing: [ /^data:/, 'origin' ]
+		allowExternalImagesEditing: [ /^data:/, 'origin' ],
+		forceDemoLabel: true
 	}
 };
 

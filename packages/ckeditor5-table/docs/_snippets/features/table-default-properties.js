@@ -41,16 +41,14 @@ ClassicEditor
 				'ckboxImageEdit'
 			]
 		},
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
-			allowExternalImagesEditing: [ /^data:/, 'origin' ]
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		placeholder: 'Insert the new table with the default styles applied.'
 	} )

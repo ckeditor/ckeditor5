@@ -34,6 +34,7 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	ckbox: {
+		allowExternalImagesEditing: [ /^data:/, 'origin' ],
 		forceDemoLabel: true
 	},
 	ui: {
