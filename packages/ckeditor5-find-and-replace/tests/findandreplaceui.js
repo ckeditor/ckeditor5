@@ -647,6 +647,8 @@ describe( 'FindAndReplaceUI', () => {
 					} );
 
 					it( 'should not change the focus if dropdown was open and CTRL+F was pressed', () => {
+						dropdown.isOpen = true;
+
 						form._focusTracker.focusedElement = form._findButtonView;
 
 						const keyEventData = ( {
@@ -661,7 +663,6 @@ describe( 'FindAndReplaceUI', () => {
 
 						expect( wasHandled ).to.be.true;
 						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
-
 						expect( form._focusTracker.focusedElement ).to.equal( form._findButtonView );
 					} );
 				} );

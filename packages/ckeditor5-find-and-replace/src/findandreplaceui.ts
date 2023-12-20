@@ -92,10 +92,9 @@ export default class FindAndReplaceUI extends Plugin {
 					// 	this.formView!.focus();
 					// because it would always move focus to the first input field, which we don't want.
 					if ( componentView instanceof ButtonView ) {
-						const dialog = editor.plugins.get( 'Dialog' );
-
-						dialog.view!.focus();
+						editor.plugins.get( 'Dialog' ).view!.focus();
 					}
+
 					cancelEvent();
 				} else if ( componentButtonView.isEnabled ) {
 					componentButtonView.fire( 'execute' );
