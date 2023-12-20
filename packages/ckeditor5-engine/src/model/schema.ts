@@ -1043,7 +1043,7 @@ export default class Schema extends ObservableMixin() {
 	): Range {
 		const selectedElement = selection.getSelectedElement();
 
-		if ( selectedElement && model.schema.isObject( selectedElement ) && !model.schema.isInline( selectedElement ) ) {
+		if ( selectedElement && this.isObject( selectedElement ) && !this.isInline( selectedElement ) ) {
 			if ( place == 'before' || place == 'after' ) {
 				return model.createRange( model.createPositionAt( selectedElement, place ) );
 			}
