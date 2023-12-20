@@ -77,7 +77,8 @@ export default function insertObject(
 
 	if ( options.findOptimalPosition && model.schema.isBlock( object ) ) {
 		insertionSelection = model.createSelection(
-			model.schema.findOptimalInsertionRange( originalSelection, model, options.findOptimalPosition ) );
+			model.schema.findOptimalInsertionRange( originalSelection, model, options.findOptimalPosition )
+		);
 	}
 
 	// Collect attributes to be copied on the inserted object.
