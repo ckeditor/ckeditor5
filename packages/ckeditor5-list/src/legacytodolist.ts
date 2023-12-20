@@ -4,33 +4,32 @@
  */
 
 /**
- * @module list/tododocumentlist
+ * @module list/legacytodolist
  */
 
-import TodoDocumentListEditing from './tododocumentlist/tododocumentlistediting.js';
+import LegacyTodoListEditing from './legacytodolist/legacytodolistediting.js';
 import TodoListUI from './todolist/todolistui.js';
 import { Plugin } from 'ckeditor5/src/core.js';
-
 import '../theme/todolist.css';
 
 /**
- * The to-do list feature.
+ * The legacy to-do list feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/tododocumentlist/tododocumentlistediting~TodoDocumentListEditing to-do list
+ * This is a "glue" plugin that loads the {@link module:list/legacytodolist/legacytodolistediting~LegacyTodoListEditing legacy to-do list
  * editing feature} and the {@link module:list/todolist/todolistui~TodoListUI to-do list UI feature}.
  */
-export default class TodoDocumentList extends Plugin {
+export default class LegacyTodoList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ TodoDocumentListEditing, TodoListUI ] as const;
+		return [ LegacyTodoListEditing, TodoListUI ] as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'TodoDocumentList' as const;
+		return 'LegacyTodoList' as const;
 	}
 }

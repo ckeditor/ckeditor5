@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/todolist/todolistediting
+ * @module list/legacytodolist/legacytodolistediting
  */
 
 import type {
@@ -32,9 +32,9 @@ import {
 	type GetCallback
 } from 'ckeditor5/src/utils.js';
 
-import ListCommand from '../list/listcommand.js';
-import ListEditing from '../list/listediting.js';
-import CheckTodoListCommand from './checktodolistcommand.js';
+import LegacyListCommand from '../legacylist/legacylistcommand.js';
+import LegacyListEditing from '../legacylist/legacylistediting.js';
+import LegacyCheckTodoListCommand from './legacychecktodolistcommand.js';
 import {
 	dataModelViewInsertion,
 	dataViewModelCheckmarkInsertion,
@@ -42,33 +42,33 @@ import {
 	modelViewChangeChecked,
 	modelViewChangeType,
 	modelViewInsertion
-} from './todolistconverters.js';
+} from './legacytodolistconverters.js';
 
 const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
  *
- * It registers the entire functionality of the {@link module:list/list/listediting~ListEditing list editing plugin} and extends
- * it with the commands:
+ * It registers the entire functionality of the {@link module:list/legacylist/legacylistediting~LegacyListEditing legacy list editing
+ * plugin} and extends it with the commands:
  *
  * - `'todoList'`,
  * - `'checkTodoList'`,
  * - `'todoListCheck'` as an alias for `checkTodoList` command.
  */
-export default class TodoListEditing extends Plugin {
+export default class LegacyTodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'TodoListEditing' as const;
+		return 'LegacyTodoListEditing' as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ListEditing ] as const;
+		return [ LegacyListEditing ] as const;
 	}
 
 	/**
@@ -93,9 +93,9 @@ export default class TodoListEditing extends Plugin {
 		} );
 
 		// Register `todoList` command.
-		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );
+		editor.commands.add( 'todoList', new LegacyListCommand( editor, 'todo' ) );
 
-		const checkTodoListCommand = new CheckTodoListCommand( editor );
+		const checkTodoListCommand = new LegacyCheckTodoListCommand( editor );
 
 		// Register `checkTodoList` command and add `todoListCheck` command as an alias for backward compatibility.
 		editor.commands.add( 'checkTodoList', checkTodoListCommand );

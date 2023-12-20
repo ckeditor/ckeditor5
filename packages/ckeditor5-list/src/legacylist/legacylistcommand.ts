@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/list/listcommand
+ * @module list/legacylist/legacylistcommand
  */
 
 import type { Element, Node, Schema } from 'ckeditor5/src/engine.js';
@@ -13,9 +13,9 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
 /**
- * The list command. It is used by the {@link module:list/list~List list feature}.
+ * The list command. It is used by the {@link module:list/legacylist~LegacyList legacy list feature}.
  */
-export default class ListCommand extends Command {
+export default class LegacyListCommand extends Command {
 	/**
 	 * The type of the list created by the command.
 	 */

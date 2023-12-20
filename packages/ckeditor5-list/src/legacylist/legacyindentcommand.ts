@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/list/indentcommand
+ * @module list/legacylist/legacyindentcommand
  */
 
 import type { Element } from 'ckeditor5/src/engine.js';
@@ -12,9 +12,9 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
 /**
- * The list indent command. It is used by the {@link module:list/list~List list feature}.
+ * The list indent command. It is used by the {@link module:list/legacylist~LegacyList legacy list feature}.
  */
-export default class IndentCommand extends Command {
+export default class LegacyIndentCommand extends Command {
 	/**
 	 * Determines by how much the command will change the list item's indent attribute.
 	 */

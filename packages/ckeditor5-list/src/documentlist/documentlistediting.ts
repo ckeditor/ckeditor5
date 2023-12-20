@@ -128,14 +128,14 @@ export default class DocumentListEditing extends Plugin {
 		const model = editor.model;
 		const multiBlock = editor.config.get( 'list.multiBlock' );
 
-		if ( editor.plugins.has( 'ListEditing' ) ) {
+		if ( editor.plugins.has( 'LegacyListEditing' ) ) {
 			/**
-			 * The `DocumentList` feature can not be loaded together with the `List` plugin.
+			 * The `DocumentList` feature can not be loaded together with the `LegacyList` plugin.
 			 *
 			 * @error document-list-feature-conflict
 			 * @param conflictPlugin Name of the plugin.
 			 */
-			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'ListEditing' } );
+			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'LegacyListEditing' } );
 		}
 
 		model.schema.register( '$listItem', { allowAttributes: LIST_BASE_ATTRIBUTES } );

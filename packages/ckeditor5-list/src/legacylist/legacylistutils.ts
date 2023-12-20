@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/list/listutils
+ * @module list/legacylist/legacylistutils
  */
 
 import type { Element, Model, Position } from 'ckeditor5/src/engine.js';
@@ -14,17 +14,17 @@ import {
 	getListTypeFromListStyleType,
 	getSelectedListItems,
 	getSiblingNodes
-} from './utils.js';
+} from './legacyutils.js';
 
 /**
- * A set of helpers related to document lists.
+ * A set of helpers related to legacy lists.
  */
-export default class ListUtils extends Plugin {
+export default class LegacyListUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ListUtils' as const;
+		return 'LegacyListUtils' as const;
 	}
 
 	/**

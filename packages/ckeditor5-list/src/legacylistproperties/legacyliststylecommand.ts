@@ -4,20 +4,20 @@
  */
 
 /**
- * @module list/listproperties/liststylecommand
+ * @module list/legacylistproperties/legacyliststylecommand
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils.js';
+import { getListTypeFromListStyleType, getSelectedListItems } from '../legacylist/legacyutils.js';
 
 /**
  * The list style command. It changes the `listStyle` attribute of the selected list items.
  *
  * If the list type (numbered or bulleted) can be inferred from the passed style type,
  * the command tries to convert selected items to a list of that type.
- * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
+ * It is used by the {@link module:list/legacylistproperties~LegacyListProperties legacy list properties feature}.
  */
-export default class ListStyleCommand extends Command {
+export default class LegacyListStyleCommand extends Command {
 	declare public isStyleTypeSupported: undefined;
 
 	/**

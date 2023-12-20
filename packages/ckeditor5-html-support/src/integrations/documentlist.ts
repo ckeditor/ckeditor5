@@ -14,7 +14,7 @@ import type { GetCallback } from 'ckeditor5/src/utils.js';
 import type {
 	DocumentListEditing,
 	DocumentListEditingPostFixerEvent,
-	IndentCommand,
+	LegacyIndentCommand,
 	DocumentListIndentCommand
 } from '@ckeditor/ckeditor5-list';
 
@@ -168,7 +168,8 @@ export default class DocumentListElementSupport extends Plugin {
 		}
 
 		// Reset list attributes after indenting list items.
-		const indentList: IndentCommand | DocumentListIndentCommand = editor.commands.get( 'indentList' )!;
+		const indentList: LegacyIndentCommand | DocumentListIndentCommand = editor.commands.get( 'indentList' )!;
+
 		this.listenTo( indentList, 'afterExecute', ( evt, changedBlocks ) => {
 			editor.model.change( writer => {
 				for ( const node of changedBlocks ) {

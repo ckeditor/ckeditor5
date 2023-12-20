@@ -21,11 +21,11 @@ import type { Locale } from 'ckeditor5/src/utils.js';
 
 import ListPropertiesView from './ui/listpropertiesview.js';
 
-import type ListStyleCommand from './liststylecommand.js';
+import type ListStyleCommand from '../legacylistproperties/legacyliststylecommand.js';
 import type DocumentListStyleCommand from '../documentlistproperties/documentliststylecommand.js';
-import type ListStartCommand from './liststartcommand.js';
+import type ListStartCommand from '../legacylistproperties/legacyliststartcommand.js';
 import type DocumentListStartCommand from '../documentlistproperties/documentliststartcommand.js';
-import type ListReversedCommand from './listreversedcommand.js';
+import type ListReversedCommand from '../legacylistproperties/legacylistreversedcommand.js';
 import type DocumentListReversedCommand from '../documentlistproperties/documentlistreversedcommand.js';
 
 import bulletedListIcon from '../../theme/icons/bulletedlist.svg';

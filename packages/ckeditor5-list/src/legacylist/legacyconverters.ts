@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/list/converters
+ * @module list/legacylist/legacyconverters
  */
 
 import {
@@ -39,7 +39,7 @@ import {
 	mergeViewLists,
 	getSiblingListItem,
 	positionAfterUiElements
-} from './utils.js';
+} from './legacyutils.js';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.
@@ -127,11 +127,11 @@ export function modelViewRemove( model: Model ): GetCallback<DowncastRemoveEvent
  * A model-to-view converter for the `type` attribute change on the `listItem` model element.
  *
  * This change means that the `<li>` element parent changes from `<ul>` to `<ol>` (or vice versa). This is accomplished
- * by breaking view elements and changing their name. The next {@link module:list/list/converters~modelViewMergeAfterChangeType}
+ * by breaking view elements and changing their name. The next {@link module:list/legacylist/legacyconverters~modelViewMergeAfterChangeType}
  * converter will attempt to merge split nodes.
  *
  * Splitting this conversion into 2 steps makes it possible to add an additional conversion in the middle.
- * Check {@link module:list/todolist/todolistconverters~modelViewChangeType} to see an example of it.
+ * Check {@link module:list/legacytodolist/legacytodolistconverters~modelViewChangeType} to see an example of it.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  */
@@ -157,7 +157,7 @@ export const modelViewChangeType: GetCallback<DowncastAttributeEvent<Element>> =
 };
 
 /**
- * A model-to-view converter that attempts to merge nodes split by {@link module:list/list/converters~modelViewChangeType}.
+ * A model-to-view converter that attempts to merge nodes split by {@link module:list/legacylist/legacyconverters~modelViewChangeType}.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  */
@@ -225,7 +225,7 @@ export function modelViewChangeIndent( model: Model ): GetCallback<DowncastAttri
 }
 
 /**
- * A special model-to-view converter introduced by the {@link module:list/list~List list feature}. This converter is fired for
+ * A special model-to-view converter introduced by the {@link module:list/legacylist~LegacyList list feature}. This converter is fired for
  * insert change of every model item, and should be fired before the actual converter. The converter checks whether the inserted
  * model item is a non-`listItem` element. If it is, and it is inserted inside a view list, the converter breaks the
  * list so the model element is inserted to the view parent element corresponding to its model parent element.
@@ -351,7 +351,7 @@ export const modelViewSplitOnInsert: GetCallback<DowncastInsertEvent<Element>> =
 };
 
 /**
- * A special model-to-view converter introduced by the {@link module:list/list~List list feature}. This converter takes care of
+ * A special model-to-view converter introduced by the {@link module:list/legacylist~LegacyList list feature}. This converter takes care of
  * merging view lists after something is removed or moved from near them.
  *
  * Example:

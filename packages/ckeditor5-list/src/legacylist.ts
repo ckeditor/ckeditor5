@@ -4,32 +4,32 @@
  */
 
 /**
- * @module list/list
+ * @module list/legacylist
  */
 
-import ListEditing from './list/listediting.js';
+import LegacyListEditing from './legacylist/legacylistediting.js';
 import ListUI from './list/listui.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
 /**
- * The list feature.
+ * The legacy list feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/list/listediting~ListEditing list editing feature}
+ * This is a "glue" plugin that loads the {@link module:list/legacylist/legacylistediting~LegacyListEditing legacy list editing feature}
  * and {@link module:list/list/listui~ListUI list UI feature}.
  */
-export default class List extends Plugin {
+export default class LegacyList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ListEditing, ListUI ] as const;
+		return [ LegacyListEditing, ListUI ] as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'List' as const;
+		return 'LegacyList' as const;
 	}
 }

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/todolist/todolistconverters
+ * @module list/legacytodolist/legacytodolistconverters
  */
 
 /* global document */
@@ -23,7 +23,7 @@ import type {
 
 import { createElement, type GetCallback } from 'ckeditor5/src/utils.js';
 
-import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../list/utils.js';
+import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../legacylist/legacyutils.js';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.
@@ -183,8 +183,9 @@ export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = 
  * {@link module:engine/view/uielement~UIElement checkbox UI element} is added at the beginning
  * of the list item element (or vice versa).
  *
- * This converter is preceded by {@link module:list/list/converters~modelViewChangeType} and followed by
- * {@link module:list/list/converters~modelViewMergeAfterChangeType} to handle splitting and merging surrounding lists of the same type.
+ * This converter is preceded by {@link module:list/legacylist/legacyconverters~modelViewChangeType} and followed by
+ * {@link module:list/legacylist/legacyconverters~modelViewMergeAfterChangeType} to handle splitting and merging surrounding lists
+ * of the same type.
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *

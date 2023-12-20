@@ -4,12 +4,12 @@
  */
 
 /**
- * @module list/list/listediting
+ * @module list/legacylist/legacylistediting
  */
 
-import ListCommand from './listcommand.js';
-import IndentCommand from './indentcommand.js';
-import ListUtils from './listutils.js';
+import LegacyListCommand from './legacylistcommand.js';
+import LegacyIndentCommand from './legacyindentcommand.js';
+import LegacyListUtils from './legacylistutils.js';
 
 import { Plugin, type MultiCommand } from 'ckeditor5/src/core.js';
 
@@ -44,7 +44,7 @@ import {
 	viewModelConverter,
 	modelToViewPosition,
 	viewToModelPosition
-} from './converters.js';
+} from './legacyconverters.js';
 
 import '../../theme/list.css';
 
@@ -53,19 +53,19 @@ import '../../theme/list.css';
  *
  * It registers the `'numberedList'`, `'bulletedList'`, `'indentList'` and `'outdentList'` commands.
  */
-export default class ListEditing extends Plugin {
+export default class LegacyListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ListEditing' as const;
+		return 'LegacyListEditing' as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Enter, Delete, ListUtils ] as const;
+		return [ Enter, Delete, LegacyListUtils ] as const;
 	}
 
 	/**
@@ -126,12 +126,12 @@ export default class ListEditing extends Plugin {
 		editor.model.on<ModelInsertContentEvent>( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
 
 		// Register commands for numbered and bulleted list.
-		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
-		editor.commands.add( 'bulletedList', new ListCommand( editor, 'bulleted' ) );
+		editor.commands.add( 'numberedList', new LegacyListCommand( editor, 'numbered' ) );
+		editor.commands.add( 'bulletedList', new LegacyListCommand( editor, 'bulleted' ) );
 
 		// Register commands for indenting.
-		editor.commands.add( 'indentList', new IndentCommand( editor, 'forward' ) );
-		editor.commands.add( 'outdentList', new IndentCommand( editor, 'backward' ) );
+		editor.commands.add( 'indentList', new LegacyIndentCommand( editor, 'forward' ) );
+		editor.commands.add( 'outdentList', new LegacyIndentCommand( editor, 'backward' ) );
 
 		const viewDocument = editing.view.document;
 

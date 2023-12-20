@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/listproperties/listpropertiesediting
+ * @module list/legacylistproperties/legacylistpropertiesediting
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
@@ -23,11 +23,11 @@ import type {
 	Writer
 } from 'ckeditor5/src/engine.js';
 
-import ListEditing from '../list/listediting.js';
-import ListStyleCommand from './liststylecommand.js';
-import ListReversedCommand from './listreversedcommand.js';
-import ListStartCommand from './liststartcommand.js';
-import { getSiblingListItem, getSiblingNodes } from '../list/utils.js';
+import LegacyListEditing from '../legacylist/legacylistediting.js';
+import LegacyListStyleCommand from './legacyliststylecommand.js';
+import LegacyListReversedCommand from './legacylistreversedcommand.js';
+import LegacyListStartCommand from './legacyliststartcommand.js';
+import { getSiblingListItem, getSiblingNodes } from '../legacylist/legacyutils.js';
 import type { ListPropertiesConfig } from '../listconfig.js';
 
 const DEFAULT_LIST_TYPE = 'default';
@@ -35,25 +35,25 @@ const DEFAULT_LIST_TYPE = 'default';
 /**
  * The engine of the list properties feature.
  *
- * It sets the value for the `listItem` attribute of the {@link module:list/list~List `<listItem>`} element that
+ * It sets the value for the `listItem` attribute of the {@link module:list/legacylist~LegacyList `<listItem>`} element that
  * allows modifying the list style type.
  *
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
  * Read more in {@link module:list/listconfig~ListPropertiesConfig}.
  */
-export default class ListPropertiesEditing extends Plugin {
+export default class LegacyListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ListEditing ] as const;
+		return [ LegacyListEditing ] as const;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ListPropertiesEditing' as const;
+		return 'LegacyListPropertiesEditing' as const;
 	}
 
 	/**
@@ -284,7 +284,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 			defaultValue: DEFAULT_LIST_TYPE,
 
 			addCommand( editor ) {
-				editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
+				editor.commands.add( 'listStyle', new LegacyListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 			},
 
 			appliesToListItem() {
@@ -311,7 +311,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 			defaultValue: false,
 
 			addCommand( editor ) {
-				editor.commands.add( 'listReversed', new ListReversedCommand( editor ) );
+				editor.commands.add( 'listReversed', new LegacyListReversedCommand( editor ) );
 			},
 
 			appliesToListItem( item ) {
@@ -338,7 +338,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 			defaultValue: 1,
 
 			addCommand( editor ) {
-				editor.commands.add( 'listStart', new ListStartCommand( editor ) );
+				editor.commands.add( 'listStart', new LegacyListStartCommand( editor ) );
 			},
 
 			appliesToListItem( item ) {

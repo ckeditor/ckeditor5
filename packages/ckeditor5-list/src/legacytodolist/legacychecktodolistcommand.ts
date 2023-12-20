@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/todolist/checktodolistcommand
+ * @module list/legacytodolist/legacychecktodolistcommand
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
@@ -15,10 +15,10 @@ const attributeKey = 'todoListChecked';
 /**
  * The check to-do command.
  *
- * The command is registered by the {@link module:list/todolist/todolistediting~TodoListEditing} as
+ * The command is registered by the {@link module:list/legacytodolist/legacytodolistediting~LegacyTodoListEditing} as
  * the `checkTodoList` editor command and it is also available via aliased `todoListCheck` name.
  */
-export default class CheckTodoListCommand extends Command {
+export default class LegacyCheckTodoListCommand extends Command {
 	/**
 	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
 	 *
