@@ -6,5 +6,5 @@
 :root {
 	--ck-z-default: 1;
 	--ck-z-panel: calc( var(--ck-z-default) + 999 );
-	--ck-z-dialog: 999999;
+	--ck-z-dialog: 9999;
 }
