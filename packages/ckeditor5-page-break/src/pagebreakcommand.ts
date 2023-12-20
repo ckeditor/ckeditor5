@@ -8,6 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
+import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
 import type { DocumentSelection, Element, Model, Schema } from 'ckeditor5/src/engine.js';
 
 /**
@@ -62,7 +63,7 @@ function isPageBreakAllowedInParent( selection: DocumentSelection, schema: Schem
  * Returns a node that will be used to insert a page break with `model.insertContent` to check if the page break can be placed there.
  */
 function getInsertPageBreakParent( selection: DocumentSelection, model: Model ): Element {
-	const insertionRange = model.schema.findOptimalInsertionRange( selection, model );
+	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 
 	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {

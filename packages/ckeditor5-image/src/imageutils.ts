@@ -23,7 +23,7 @@ import type {
 	ViewContainerElement
 } from 'ckeditor5/src/engine.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { isWidget, toWidget } from 'ckeditor5/src/widget.js';
+import { findOptimalInsertionRange, isWidget, toWidget } from 'ckeditor5/src/widget.js';
 import { determineImageTypeForInsertionAtSelection } from './image/utils.js';
 import { DomEmitterMixin, type DomEmitter, global } from 'ckeditor5/src/utils.js';
 
@@ -71,8 +71,7 @@ export default class ImageUtils extends Plugin {
 	}
 
 	/**
-	 * Handles inserting single file. This method unifies image insertion
-	 * using {@link module:engine/model/schema~Schema#findOptimalInsertionRange}
+	 * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionRange}
 	 * method.
 	 *
 	 * ```ts
@@ -84,7 +83,7 @@ export default class ImageUtils extends Plugin {
 	 * @param attributes Attributes of the inserted image.
 	 * This method filters out the attributes which are disallowed by the {@link module:engine/model/schema~Schema}.
 	 * @param selectable Place to insert the image. If not specified,
-	 * the {@link module:engine/model/schema~Schema#findOptimalInsertionRange} logic will be applied for the block images
+	 * the {@link module:widget/utils~findOptimalInsertionRange} logic will be applied for the block images
 	 * and `model.document.selection` for the inline images.
 	 *
 	 * **Note**: If `selectable` is passed, this helper will not be able to set selection attributes (such as `linkHref`)
@@ -342,7 +341,7 @@ function isNotInsideImage( selection: DocumentSelection ): boolean {
  * Returns a node that will be used to insert image with `model.insertContent`.
  */
 function getInsertImageParent( selection: Selection | DocumentSelection, model: Model ): Element | DocumentFragment {
-	const insertionRange = model.schema.findOptimalInsertionRange( selection, model );
+	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 
 	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
