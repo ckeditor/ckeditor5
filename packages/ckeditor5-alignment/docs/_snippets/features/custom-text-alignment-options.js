@@ -30,11 +30,12 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
+		},
 		alignment: {
 			options: [ 'left', 'right' ]
-		},
-		ckbox: {
-			forceDemoLabel: true
 		},
 		cloudServices: CS_CONFIG
 	} )
