@@ -51,6 +51,18 @@ MultiRootEditor
 					'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 				]
+			},
+			rootsToolbars: {
+				leftSide: [
+					'undo', 'redo',
+					'|', 'heading',
+					'|', 'link'
+				],
+				rightSide: [
+					'undo', 'redo',
+					'|', 'heading',
+					'|', 'link'
+				]
 			}
 		}
 	)
@@ -88,10 +100,10 @@ MultiRootEditor
 	contenteditable="true" + contenteditable="false" elements
 	is required to provide proper caret handling when
 	using arrow keys at the start and end of an editable area.
-	
+
 	You can skip them if you don't want to move the
 	caret between editable areas using arrow keys.
-!--> 
+!-->
 <div contenteditable="true">
 	<div contenteditable="false">
 		<div id="header">

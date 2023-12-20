@@ -26,8 +26,8 @@ function initEditor() {
 			plugins: [ Essentials, Paragraph, Heading, Bold, Italic ],
 			toolbar: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic' ],
 			rootsToolbars: {
-				'intro': [ 'undo', 'redo', '|', 'bold', 'italic' ],
-				'content': [ 'undo', 'redo', '|', ...new Array( 40 ).fill( 'bold' ) ]
+				intro: [ 'undo', 'redo', '|', 'bold', 'italic' ],
+				content: [ 'undo', 'redo', '|', ...new Array( 40 ).fill( 'bold' ) ]
 			}
 		} )
 		.then( newEditor => {
