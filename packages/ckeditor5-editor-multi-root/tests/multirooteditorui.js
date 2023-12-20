@@ -126,6 +126,146 @@ describe( 'MultiRootEditorUI', () => {
 							return editor.destroy();
 						} );
 				} );
+
+				describe( 'dynamic swapping upon selection change', () => {
+					it( 'should follow config.rootsToolbars when the user moves model selection', async () => {
+						const editor = await MultiRootEditor
+							.create( { foo: '', bar: '' }, {
+								extraPlugins: [ ToolbarItems ],
+								toolbar: [ 'foo', 'bar' ],
+								rootsToolbars: {
+									foo: [ 'foo', 'foo', 'bar', 'bar' ],
+									bar: [ 'bar' ]
+								}
+							} );
+
+						expect( editor.model.document.selection.anchor.root.rootName ).to.equal( 'foo' );
+
+						const items = editor.ui.view.toolbar.items;
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'foo', 'bar', 'bar'
+						] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'bar' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'bar'
+						] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'foo' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'foo', 'bar', 'bar'
+						] );
+
+						await editor.destroy();
+					} );
+
+					it( 'should fall back to the global toolbar configuration for roots not included in config.rootsToolbars', async () => {
+						const editor = await MultiRootEditor
+							.create( { foo: '', bar: '', baz: '' }, {
+								extraPlugins: [ ToolbarItems ],
+								toolbar: [ 'foo', 'bar' ],
+								rootsToolbars: {
+									foo: [ 'foo', 'foo', 'bar', 'bar' ],
+									bar: [ 'bar' ]
+								}
+							} );
+
+						expect( editor.model.document.selection.anchor.root.rootName ).to.equal( 'foo' );
+
+						const items = editor.ui.view.toolbar.items;
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'foo', 'bar', 'bar'
+						] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'baz' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'bar'
+						] );
+
+						await editor.destroy();
+					} );
+
+					it( 'should respect the global config.toolbar.removeItems configuration', async () => {
+						const editor = await MultiRootEditor
+							.create( { foo: '', bar: '' }, {
+								extraPlugins: [ ToolbarItems ],
+								toolbar: {
+									items: [ 'foo', 'bar' ],
+									removeItems: [ 'bar' ]
+								},
+								rootsToolbars: {
+									foo: [ 'foo', 'foo', 'bar', 'bar' ],
+									bar: [ 'bar' ]
+								}
+							} );
+
+						expect( editor.model.document.selection.anchor.root.rootName ).to.equal( 'foo' );
+
+						const items = editor.ui.view.toolbar.items;
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'foo'
+						] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'bar' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'foo' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'foo'
+						] );
+
+						await editor.destroy();
+					} );
+
+					it( 'should re-use components instead of creating them from scratch', async () => {
+						const editor = await MultiRootEditor
+							.create( { foo: '', bar: '' }, {
+								extraPlugins: [ ToolbarItems ],
+								toolbar: [ 'foo', 'bar' ],
+								rootsToolbars: {
+									foo: [ 'foo', 'foo', 'bar', 'bar' ],
+									bar: [ 'bar' ]
+								}
+							} );
+
+						expect( editor.model.document.selection.anchor.root.rootName ).to.equal( 'foo' );
+
+						const items = editor.ui.view.toolbar.items;
+						const fooRootItemsReferencesA = items.map( item => item );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'bar' ), 0 ) );
+						} );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'foo' ), 0 ) );
+						} );
+
+						const fooRootItemsReferencesB = items.map( item => item );
+
+						expect( fooRootItemsReferencesA ).to.have.same.members( fooRootItemsReferencesB );
+
+						await editor.destroy();
+					} );
+				} );
 			} );
 		} );
 	} );

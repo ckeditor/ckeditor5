@@ -24,6 +24,8 @@ import {
 	type DocumentSelectionChangeEvent
 } from 'ckeditor5/src/engine.js';
 
+import { omit } from 'lodash-es';
+
 import type MultiRootEditorUIView from './multirooteditoruiview.js';
 
 /**
@@ -199,6 +201,7 @@ export default class MultiRootEditorUI extends EditorUI {
 		// Register the toolbar, so it becomes available for Alt+F10 and Esc navigation.
 		this.addToolbar( view.toolbar );
 
+		// Change the editor toolbar dynamically when the user moves their selection between roots.
 		modelSelection.on<DocumentSelectionChangeEvent>( 'change:range', () => {
 			const currentSelectedRootName = modelSelection.anchor!.root.rootName!;
 
@@ -208,6 +211,7 @@ export default class MultiRootEditorUI extends EditorUI {
 			}
 		} );
 
+		// Load the toolbar items for the root that gets selected upon initialization.
 		this._loadToolbarItemsForRoot( previousSelectedRootName );
 	}
 
@@ -226,7 +230,17 @@ export default class MultiRootEditorUI extends EditorUI {
 		let itemsToLoad: Array<View>;
 
 		if ( !this._rootToolbarItems.has( rootName ) ) {
-			const rootToolbarConfig = rootsToolbarsConfig[ rootName ] || globalToolbarConfig;
+			let rootToolbarConfig;
+
+			if ( rootsToolbarsConfig[ rootName ] ) {
+				rootToolbarConfig = {
+					...normalizeToolbarConfig( rootsToolbarsConfig[ rootName ] ),
+					...omit( globalToolbarConfig, 'items' )
+				};
+			} else {
+				rootToolbarConfig = globalToolbarConfig;
+			}
+
 			itemsToLoad = toolbarView.createItemsFromConfig( rootToolbarConfig, this.componentFactory );
 			this._rootToolbarItems.set( rootName, itemsToLoad );
 		} else {
