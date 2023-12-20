@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ListEditing from '../../src/list/listediting.js';
-import ListCommand from '../../src/list/listcommand.js';
-import IndentCommand from '../../src/list/indentcommand.js';
+import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
+import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
+import LegacyIndentCommand from '../../src/legacylist/legacyindentcommand.js';
 
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range.js';
 
@@ -27,7 +27,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 
-describe( 'ListEditing', () => {
+describe( 'LegacyListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
 	testUtils.createSinonSandbox();
@@ -35,7 +35,7 @@ describe( 'ListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing,
+				plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, LegacyListEditing, UndoEditing, BlockQuoteEditing,
 					TableEditing, TableKeyboard ]
 			} )
 			.then( newEditor => {
@@ -66,11 +66,11 @@ describe( 'ListEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListEditing.pluginName ).to.equal( 'ListEditing' );
+		expect( LegacyListEditing.pluginName ).to.equal( 'LegacyListEditing' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
+		expect( editor.plugins.get( LegacyListEditing ) ).to.be.instanceOf( LegacyListEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -90,33 +90,33 @@ describe( 'ListEditing', () => {
 		it( 'should register bulleted list command', () => {
 			const command = editor.commands.get( 'bulletedList' );
 
-			expect( command ).to.be.instanceOf( ListCommand );
+			expect( command ).to.be.instanceOf( LegacyListCommand );
 			expect( command ).to.have.property( 'type', 'bulleted' );
 		} );
 
 		it( 'should register numbered list command', () => {
 			const command = editor.commands.get( 'numberedList' );
 
-			expect( command ).to.be.instanceOf( ListCommand );
+			expect( command ).to.be.instanceOf( LegacyListCommand );
 			expect( command ).to.have.property( 'type', 'numbered' );
 		} );
 
 		it( 'should register indent list command', () => {
 			const command = editor.commands.get( 'indentList' );
 
-			expect( command ).to.be.instanceOf( IndentCommand );
+			expect( command ).to.be.instanceOf( LegacyIndentCommand );
 		} );
 
 		it( 'should register outdent list command', () => {
 			const command = editor.commands.get( 'outdentList' );
 
-			expect( command ).to.be.instanceOf( IndentCommand );
+			expect( command ).to.be.instanceOf( LegacyIndentCommand );
 		} );
 
 		it( 'should add indent list command to indent command', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, IndentEditing, ListEditing, IndentEditing ]
+					plugins: [ Paragraph, IndentEditing, LegacyListEditing, IndentEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -137,7 +137,7 @@ describe( 'ListEditing', () => {
 		it( 'should add outdent list command to outdent command', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, IndentEditing, ListEditing, IndentEditing ]
+					plugins: [ Paragraph, IndentEditing, LegacyListEditing, IndentEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -4791,7 +4791,7 @@ describe( 'ListEditing', () => {
 			// test file because other tests assume that headings are not available.
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ListEditing, HeadingEditing ]
+					plugins: [ LegacyListEditing, HeadingEditing ]
 				} )
 				.then( editor => {
 					editor.setData( '<ul><li><div><h2>Foo</h2></div></li></ul>' );

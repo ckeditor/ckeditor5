@@ -14,24 +14,24 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
-import TodoListEditing from '../../src/todolist/todolistediting.js';
-import ListStyleCommand from '../../src/listproperties/liststylecommand.js';
-import ListReversedCommand from '../../src/listproperties/listreversedcommand.js';
-import ListStartCommand from '../../src/listproperties/liststartcommand.js';
+import LegacyListPropertiesEditing from '../../src/legacylistproperties/legacylistpropertiesediting.js';
+import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
+import LegacyListStyleCommand from '../../src/legacylistproperties/legacyliststylecommand.js';
+import LegacyListReversedCommand from '../../src/legacylistproperties/legacylistreversedcommand.js';
+import LegacyListStartCommand from '../../src/legacylistproperties/legacyliststartcommand.js';
 
-describe( 'ListPropertiesEditing', () => {
+describe( 'LegacyListPropertiesEditing', () => {
 	let editor, model, view;
 
 	it( 'should have pluginName', () => {
-		expect( ListPropertiesEditing.pluginName ).to.equal( 'ListPropertiesEditing' );
+		expect( LegacyListPropertiesEditing.pluginName ).to.equal( 'LegacyListPropertiesEditing' );
 	} );
 
 	describe( 'config', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ListPropertiesEditing ]
+					plugins: [ LegacyListPropertiesEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -53,7 +53,7 @@ describe( 'ListPropertiesEditing', () => {
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( ListPropertiesEditing ) ).to.be.instanceOf( ListPropertiesEditing );
+			expect( editor.plugins.get( LegacyListPropertiesEditing ) ).to.be.instanceOf( LegacyListPropertiesEditing );
 		} );
 	} );
 
@@ -61,7 +61,7 @@ describe( 'ListPropertiesEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
+					plugins: [ Paragraph, LegacyListPropertiesEditing, UndoEditing ],
 					list: {
 						properties: { styles: true, startIndex: false, reversed: false }
 					}
@@ -95,7 +95,7 @@ describe( 'ListPropertiesEditing', () => {
 			it( 'should register `listStyle` command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command ).to.be.instanceOf( ListStyleCommand );
+				expect( command ).to.be.instanceOf( LegacyListStyleCommand );
 			} );
 
 			it( 'should not register `listReversed` command', () => {
@@ -383,7 +383,7 @@ describe( 'ListPropertiesEditing', () => {
 					beforeEach( () => {
 						return VirtualTestEditor
 							.create( {
-								plugins: [ Paragraph, ListPropertiesEditing ],
+								plugins: [ Paragraph, LegacyListPropertiesEditing ],
 								list: {
 									properties: { styles: true, startIndex: false, reversed: false }
 								}
@@ -1071,7 +1071,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, Typing, UndoEditing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, Typing, UndoEditing ],
 							list: {
 								properties: { styles: true, startIndex: false, reversed: false }
 							}
@@ -1166,7 +1166,7 @@ describe( 'ListPropertiesEditing', () => {
 					return VirtualTestEditor
 						.create( {
 						// TodoListEditing is at the end by design. Check `ListPropertiesEditing.afterInit()` call.
-							plugins: [ Paragraph, ListPropertiesEditing, TodoListEditing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, LegacyTodoListEditing ],
 							list: {
 								properties: { styles: true, startIndex: false, reversed: false }
 							}
@@ -1242,7 +1242,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, Typing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, Typing ],
 							list: {
 								properties: { styles: true, startIndex: false, reversed: false }
 							}
@@ -1568,7 +1568,7 @@ describe( 'ListPropertiesEditing', () => {
 
 					return ClassicTestEditor
 						.create( element, {
-							plugins: [ Paragraph, Clipboard, ListPropertiesEditing, UndoEditing ],
+							plugins: [ Paragraph, Clipboard, LegacyListPropertiesEditing, UndoEditing ],
 							list: {
 								properties: { styles: true, startIndex: false, reversed: false }
 							}
@@ -1749,7 +1749,7 @@ describe( 'ListPropertiesEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
+					plugins: [ Paragraph, LegacyListPropertiesEditing, UndoEditing ],
 					list: {
 						properties: { styles: false, startIndex: false, reversed: true }
 					}
@@ -1783,7 +1783,7 @@ describe( 'ListPropertiesEditing', () => {
 			it( 'should register `listReversed` command', () => {
 				const command = editor.commands.get( 'listReversed' );
 
-				expect( command ).to.be.instanceOf( ListReversedCommand );
+				expect( command ).to.be.instanceOf( LegacyListReversedCommand );
 			} );
 
 			it( 'should not register `listStyle` command', () => {
@@ -2015,7 +2015,7 @@ describe( 'ListPropertiesEditing', () => {
 					beforeEach( () => {
 						return VirtualTestEditor
 							.create( {
-								plugins: [ Paragraph, ListPropertiesEditing ],
+								plugins: [ Paragraph, LegacyListPropertiesEditing ],
 								list: {
 									properties: { styles: false, startIndex: false, reversed: true }
 								}
@@ -2750,7 +2750,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, Typing, UndoEditing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, Typing, UndoEditing ],
 							list: {
 								properties: { styles: false, startIndex: false, reversed: true }
 							}
@@ -2844,7 +2844,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, TodoListEditing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, LegacyTodoListEditing ],
 							list: {
 								properties: { styles: false, startIndex: false, reversed: true }
 							}
@@ -2920,7 +2920,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, Typing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, Typing ],
 							list: {
 								properties: { styles: false, startIndex: false, reversed: true }
 							}
@@ -3249,7 +3249,7 @@ describe( 'ListPropertiesEditing', () => {
 
 					return ClassicTestEditor
 						.create( element, {
-							plugins: [ Paragraph, Clipboard, ListPropertiesEditing, UndoEditing ],
+							plugins: [ Paragraph, Clipboard, LegacyListPropertiesEditing, UndoEditing ],
 							list: {
 								properties: { styles: false, startIndex: false, reversed: true }
 							}
@@ -3430,7 +3430,7 @@ describe( 'ListPropertiesEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
+					plugins: [ Paragraph, LegacyListPropertiesEditing, UndoEditing ],
 					list: {
 						properties: { styles: false, startIndex: true, reversed: false }
 					}
@@ -3476,7 +3476,7 @@ describe( 'ListPropertiesEditing', () => {
 			it( 'should register `listStart` command', () => {
 				const command = editor.commands.get( 'listStart' );
 
-				expect( command ).to.be.instanceOf( ListStartCommand );
+				expect( command ).to.be.instanceOf( LegacyListStartCommand );
 			} );
 		} );
 
@@ -3723,7 +3723,7 @@ describe( 'ListPropertiesEditing', () => {
 					beforeEach( () => {
 						return VirtualTestEditor
 							.create( {
-								plugins: [ Paragraph, ListPropertiesEditing ],
+								plugins: [ Paragraph, LegacyListPropertiesEditing ],
 								list: {
 									properties: { styles: false, startIndex: true, reversed: false }
 								}
@@ -4458,7 +4458,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, Typing, UndoEditing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, Typing, UndoEditing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
@@ -4552,7 +4552,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, TodoListEditing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, LegacyTodoListEditing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
@@ -4628,7 +4628,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, Typing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, Typing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
@@ -4957,7 +4957,7 @@ describe( 'ListPropertiesEditing', () => {
 
 					return ClassicTestEditor
 						.create( element, {
-							plugins: [ Paragraph, Clipboard, ListPropertiesEditing, UndoEditing ],
+							plugins: [ Paragraph, Clipboard, LegacyListPropertiesEditing, UndoEditing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
@@ -5138,7 +5138,7 @@ describe( 'ListPropertiesEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
+					plugins: [ Paragraph, LegacyListPropertiesEditing, UndoEditing ],
 					list: {
 						properties: { styles: true, startIndex: true, reversed: true }
 					}
@@ -5172,19 +5172,19 @@ describe( 'ListPropertiesEditing', () => {
 			it( 'should register `listReversed` command', () => {
 				const command = editor.commands.get( 'listReversed' );
 
-				expect( command ).to.be.instanceOf( ListReversedCommand );
+				expect( command ).to.be.instanceOf( LegacyListReversedCommand );
 			} );
 
 			it( 'should register `listStyle` command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command ).to.be.instanceOf( ListStyleCommand );
+				expect( command ).to.be.instanceOf( LegacyListStyleCommand );
 			} );
 
 			it( 'should register `listStart` command', () => {
 				const command = editor.commands.get( 'listStart' );
 
-				expect( command ).to.be.instanceOf( ListStartCommand );
+				expect( command ).to.be.instanceOf( LegacyListStartCommand );
 			} );
 		} );
 
@@ -5672,7 +5672,7 @@ describe( 'ListPropertiesEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListPropertiesEditing, TodoListEditing ],
+							plugins: [ Paragraph, LegacyListPropertiesEditing, LegacyTodoListEditing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}

@@ -8,14 +8,20 @@ import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwrit
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import ListEditing from '../../src/list/listediting.js';
-import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
+import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
+import LegacyListPropertiesEditing from '../../src/legacylistproperties/legacylistpropertiesediting.js';
 
-import { createViewListItemElement, getListTypeFromListStyleType, getSiblingListItem, getSiblingNodes } from '../../src/list/utils.js';
+import {
+	createViewListItemElement,
+	getListTypeFromListStyleType,
+	getSiblingListItem,
+	getSiblingNodes
+} from '../../src/legacylist/legacyutils.js';
+
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 
-describe( 'utils', () => {
+describe( 'legacy utils', () => {
 	let writer;
 
 	beforeEach( () => {
@@ -146,7 +152,7 @@ describe( 'utils', () => {
 		let editor, model, document;
 
 		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ ListEditing ] } )
+			return VirtualTestEditor.create( { plugins: [ LegacyListEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
@@ -272,7 +278,7 @@ describe( 'utils', () => {
 		let editor, model, document;
 
 		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Paragraph, BlockQuoteEditing, ListPropertiesEditing ] } )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, BlockQuoteEditing, LegacyListPropertiesEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;

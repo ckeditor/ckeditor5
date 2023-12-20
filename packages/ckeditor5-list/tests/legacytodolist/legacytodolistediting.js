@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TodoListEditing from '../../src/todolist/todolistediting.js';
-import ListEditing from '../../src/list/listediting.js';
+import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
+import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import ListCommand from '../../src/list/listcommand.js';
-import CheckTodoListCommand from '../../src/todolist/checktodolistcommand.js';
+import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
+import LegacyCheckTodoListCommand from '../../src/legacytodolist/legacychecktodolistcommand.js';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
@@ -27,7 +27,7 @@ import { env } from '@ckeditor/ckeditor5-utils';
 
 /* global Event, document */
 
-describe( 'TodoListEditing', () => {
+describe( 'LegacyTodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc;
 
 	testUtils.createSinonSandbox();
@@ -35,7 +35,7 @@ describe( 'TodoListEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
+				plugins: [ Paragraph, LegacyTodoListEditing, Typing, BoldEditing, BlockQuoteEditing, LinkEditing, Enter, ShiftEnter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -61,7 +61,7 @@ describe( 'TodoListEditing', () => {
 	} );
 
 	it( 'should load ListEditing', () => {
-		expect( TodoListEditing.requires ).to.have.members( [ ListEditing ] );
+		expect( LegacyTodoListEditing.requires ).to.have.members( [ LegacyListEditing ] );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -80,7 +80,7 @@ describe( 'TodoListEditing', () => {
 		it( 'should register todoList list command', () => {
 			const command = editor.commands.get( 'todoList' );
 
-			expect( command ).to.be.instanceOf( ListCommand );
+			expect( command ).to.be.instanceOf( LegacyListCommand );
 			expect( command ).to.have.property( 'type', 'todo' );
 		} );
 
@@ -128,7 +128,7 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should register checkTodoList command', () => {
-			expect( editor.commands.get( 'checkTodoList' ) ).to.be.instanceOf( CheckTodoListCommand );
+			expect( editor.commands.get( 'checkTodoList' ) ).to.be.instanceOf( LegacyCheckTodoListCommand );
 		} );
 
 		it( 'should register todoListCheck command as an alias for checkTodoList command', () => {
@@ -1030,7 +1030,7 @@ describe( 'TodoListEditing', () => {
 				return VirtualTestEditor
 					.create( {
 						language: 'en',
-						plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+						plugins: [ Paragraph, LegacyTodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
 					} )
 					.then( newEditor => {
 						editor = newEditor;
@@ -1073,7 +1073,7 @@ describe( 'TodoListEditing', () => {
 				return VirtualTestEditor
 					.create( {
 						language: 'ar',
-						plugins: [ Paragraph, TodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
+						plugins: [ Paragraph, LegacyTodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
 					} )
 					.then( newEditor => {
 						editor = newEditor;
@@ -1233,7 +1233,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, TodoListEditing ]
+				plugins: [ Paragraph, LegacyTodoListEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

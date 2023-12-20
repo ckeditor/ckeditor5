@@ -21,7 +21,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import ListEditing from '../../src/list/listediting.js';
+import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand.js';
 import DocumentListSplitCommand from '../../src/documentlist/documentlistsplitcommand.js';
 import { isFirstBlockOfListItem } from '../../src/documentlist/utils/model.js';
@@ -86,7 +86,7 @@ describe( 'DocumentListEditing', () => {
 		let caughtError;
 
 		try {
-			await VirtualTestEditor.create( { plugins: [ DocumentListEditing, ListEditing ] } );
+			await VirtualTestEditor.create( { plugins: [ DocumentListEditing, LegacyListEditing ] } );
 		} catch ( error ) {
 			caughtError = error;
 		}

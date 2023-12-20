@@ -5,10 +5,10 @@
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import IndentCommand from '../../src/list/indentcommand.js';
+import LegacyIndentCommand from '../../src/legacylist/legacyindentcommand.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-describe( 'IndentCommand', () => {
+describe( 'LegacyIndentCommand', () => {
 	let editor, model, doc, root;
 
 	beforeEach( () => {
@@ -41,7 +41,7 @@ describe( 'IndentCommand', () => {
 		let command;
 
 		beforeEach( () => {
-			command = new IndentCommand( editor, 'forward' );
+			command = new LegacyIndentCommand( editor, 'forward' );
 		} );
 
 		afterEach( () => {
@@ -220,7 +220,7 @@ describe( 'IndentCommand', () => {
 		let command;
 
 		beforeEach( () => {
-			command = new IndentCommand( editor, 'backward' );
+			command = new LegacyIndentCommand( editor, 'backward' );
 		} );
 
 		afterEach( () => {

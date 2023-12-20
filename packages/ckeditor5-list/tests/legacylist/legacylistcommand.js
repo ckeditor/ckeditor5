@@ -5,10 +5,10 @@
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import ListCommand from '../../src/list/listcommand.js';
+import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-describe( 'ListCommand', () => {
+describe( 'LegacyListCommand', () => {
 	let editor, command, model, doc, root;
 
 	beforeEach( () => {
@@ -19,7 +19,7 @@ describe( 'ListCommand', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		command = new ListCommand( editor, 'bulleted' );
+		command = new LegacyListCommand( editor, 'bulleted' );
 
 		model.schema.register( 'listItem', {
 			inheritAllFrom: '$block',
@@ -63,7 +63,7 @@ describe( 'ListCommand', () => {
 				expect( command.type ).to.equal( 'bulleted' );
 				expect( command.value ).to.be.false;
 
-				const numberedList = new ListCommand( editor, 'numbered' );
+				const numberedList = new LegacyListCommand( editor, 'numbered' );
 				expect( numberedList.type ).to.equal( 'numbered' );
 			} );
 		} );

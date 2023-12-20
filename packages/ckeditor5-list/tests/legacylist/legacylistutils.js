@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ListUtils from '../../src/list/listutils.js';
+import LegacyListUtils from '../../src/legacylist/legacylistutils.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-describe( 'ListUtils', () => {
+describe( 'LegacyListUtils', () => {
 	let editor, plugin;
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ ListUtils ]
+			plugins: [ LegacyListUtils ]
 		} );
-		plugin = editor.plugins.get( 'ListUtils' );
+		plugin = editor.plugins.get( 'LegacyListUtils' );
 	} );
 
 	it( 'should be named', () => {
-		expect( ListUtils.pluginName ).to.equal( 'ListUtils' );
+		expect( LegacyListUtils.pluginName ).to.equal( 'LegacyListUtils' );
 	} );
 
 	describe( 'coverage checks', () => {
