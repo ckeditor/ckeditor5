@@ -14,6 +14,11 @@
 		[contenteditable="true"] :not([data-validation-allow]):not(.html-object-embed) {
 			border: 1px solid red !important;
 		}
+		/* Border on colgroup and col elements must be 2px or it would obscured by the 1px black border on the th/td */
+		[contenteditable="true"] colgroup:not([data-validation-allow]),
+		[contenteditable="true"] col:not([data-validation-allow]) {
+			border-width: 2px;
+		}
 	</style>
 		<!--
             For a totally unknown reason, Travis cannot fetch an image from the `via.placeholder.com` service.
@@ -29,49 +34,49 @@
 			<p><acronym>Acronym inline element</acronym></p>
 
 			<p><tt>Tt inline element</tt></p>
-			 
+
 			<p><font>Font inline element</font></p>
-			 
+
 			<p><var>Var inline element</var></p>
-			 
+
 			<p><big>Big inline element</big></p>
 
 			<p><small>Small inline element</small></p>
-			 
+
 			<p><samp>Samp inline element</samp></p>
 
 			<p><q>Q inline element</q></p>
-			 
+
 			<p><output>Output inline element</output></p>
 
 			<p><kbd>Kbd inline element</kbd></p>
-			 
+
 			<p><bdi>Bdi inline element</bdi></p>
-			 
+
 			<p><bdo>Bdo inline element</bdo></p>
-			 
+
 			<p><abbr>Abbr inline element</abbr></p>
 
 			<p><a href="#">A inline element</a></p>
-			 
+
 			<p><strong>Strong inline element</strong></p>
 
 			<p><b>B inline element</b></p>
-			 
+
 			<p><i>I inline element</i></p>
 
 			<p><em>Em inline element</em></p>
-			 
+
 			<p><s>S inline element</s></p>
 
 			<p><del>Del inline element</del></p>
-			 
+
 			<p><ins>Ins inline element</ins></p>
 
 			<p><u>U inline element</u></p>
 
 			<p><sub>Sub inline element</sub></p>
-			 
+
 			<p><sup>Sup inline element</sup></p>
 
 			<p><code>Code inline element</code></p>
@@ -155,6 +160,11 @@
 
 			<table>
 				<caption>Caption</caption>
+				<colgroup>
+					<col>
+					<col>
+					<col>
+				</colgroup>
 				<thead>
 					<th><p>TH</p></th>
 					<th><p>TH</p></th>
