@@ -43,6 +43,8 @@ import history from './../theme/icons/history.svg';
 import lowVision from './../theme/icons/low-vision.svg';
 import textAlternative from './../theme/icons/text-alternative.svg';
 import loupe from './../theme/icons/loupe.svg';
+import previousArrow from './../theme/icons/previous-arrow.svg';
+import nextArrow from './../theme/icons/next-arrow.svg';
 import image from './../theme/icons/image.svg';
 import imageUpload from './../theme/icons/image-upload.svg';
 import imageAssetManager from './../theme/icons/image-asset-manager.svg';
@@ -97,6 +99,8 @@ export const icons = {
 	lowVision,
 	textAlternative,
 	loupe,
+	previousArrow,
+	nextArrow,
 	importExport,
 	paragraph,
 	plus,
