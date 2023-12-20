@@ -58,6 +58,7 @@ swap:
   LINUX|linux: Linux
   Lo-Dash|lodash: Lodash
   MacOS: macOS
+  mark-up: markup
   "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
   "(?:MSExcel|MS Excel)": Microsoft Excel
   "(?:MSOffice|MS Office)": Microsoft Office
@@ -94,6 +95,7 @@ swap:
   url(?!-parse): URL
   utils: utilities
   walk-through: walkthrough
+  Webpack: webpack
   webpage: web page|page|website
   web site: website
   yarn: Yarn

@@ -48,6 +48,7 @@ hardcode
 hotlink
 hotlinked
 Iframely
+ipsum
 Ivanov
 JSDoc
 Junon
@@ -60,6 +61,7 @@ Lesha
 Libre
 localizable
 Lodash
+lorem
 Luxon
 matcher
 mindmap
