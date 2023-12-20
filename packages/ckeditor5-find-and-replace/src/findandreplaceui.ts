@@ -13,8 +13,7 @@ import {
 	ButtonView,
 	CssTransitionDisablerMixin,
 	DialogViewPosition,
-	createDropdown,
-	type DropdownView,
+	createDropdown, DropdownView,
 	type ViewWithCssTransitionDisabler,
 	FormHeaderView
 } from 'ckeditor5/src/ui.js';
@@ -70,42 +69,52 @@ export default class FindAndReplaceUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const isUiUsingDropdown = editor.config.get( 'findAndReplace.uiType' ) === FindAndReplaceUIType.DROPDOWN;
+		const findCommand = editor.commands.get( 'find' )!;
 
 		// Register the toolbar component: dropdown or button (that opens a dialog).
 		editor.ui.componentFactory.add( 'findAndReplace', () => {
-			let componentView: DropdownView | ButtonView;
+			let view: DropdownView | ButtonView;
 
 			if ( isUiUsingDropdown ) {
-				componentView = this._createDropdown();
+				view = this._createDropdown();
+
+				// Button should be disabled when in source editing mode. See #10001.
+				view.bind( 'isEnabled' ).to( findCommand );
 			} else {
-				componentView = this._createDialogButton();
+				view = this._createDialogButton();
+
+				// Button should be disabled when in source editing mode. See #10001.
+				view.bind( 'isEnabled' ).to( findCommand );
 			}
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-				const componentButtonView =
-					isUiUsingDropdown ? ( componentView as DropdownView ).buttonView as ButtonView : componentView as ButtonView;
-
-				if ( componentButtonView.isOn ) {
-					// If the dropdown is open, it has to have focus already (would be closed otherwise).
-					// If dialog is open, focus can be anywhere, so move it explicitly.
-					// Unfortunately we can't simply use:
-					// 	this.formView!.focus();
-					// because it would always move focus to the first input field, which we don't want.
-					if ( componentView instanceof ButtonView ) {
-						editor.plugins.get( 'Dialog' ).view!.focus();
-					}
-
-					cancelEvent();
-				} else if ( componentButtonView.isEnabled ) {
-					componentButtonView.fire( 'execute' );
-					cancelEvent();
+				if ( !findCommand.isEnabled ) {
+					return;
 				}
+
+				if ( view instanceof DropdownView ) {
+					const dropdownButtonView = view.buttonView;
+
+					if ( !dropdownButtonView.isOn ) {
+						dropdownButtonView.fire( 'execute' );
+					}
+				} else {
+					if ( view.isOn ) {
+						// If the dropdown is open, it has to have focus already (would be closed otherwise).
+						// If the dialog is open, focus can be anywhere, so move it explicitly.
+						// Unfortunately we can't simply use:
+						// 	this.formView!.focus();
+						// because it would always move focus to the first input field, which we don't want.
+						editor.plugins.get( 'Dialog' ).view!.focus();
+					} else {
+						view.fire( 'execute' );
+					}
+				}
+
+				cancelEvent();
 			} );
 
-			// Button should be disabled when in source editing mode. See #10001.
-			( componentView as any ).bind( 'isEnabled' ).to( editor.commands.get( 'find' )! );
-
-			return componentView;
+			return view;
 		} );
 	}
 
