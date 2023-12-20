@@ -25,7 +25,7 @@
     "@ckeditor/ckeditor5-paragraph": "40.2.0",
     "@ckeditor/ckeditor5-theme-lark": "40.2.0",
     "@ckeditor/ckeditor5-ui": "40.2.0",
-    "typescript": "^4.8.4",
+    "typescript": "^5.2.2",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },

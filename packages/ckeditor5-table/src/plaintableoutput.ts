@@ -71,7 +71,7 @@ export default class PlainTableOutput extends Plugin {
  * @returns Created element.
  */
 function downcastTableElement( table: Element, { writer }: { writer: DowncastWriter } ) {
-	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	// Table head rows slot.
 	const headRowsSlot = writer.createSlot( ( element: Node ) =>
