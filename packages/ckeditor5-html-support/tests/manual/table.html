@@ -11,11 +11,27 @@
 [contenteditable="true"] [data-validation-disallow]{
 	border: 1px solid red !important;
 }
+
+/* col and colgroup borders must be thicker that their child elements to be visible. */
+[contenteditable="true"] col[data-validation-allow],
+[contenteditable="true"] col[data-validation-disallow] {
+	border-width: 2px !important;
+}
+
+[contenteditable="true"] colgroup[data-validation-allow],
+[contenteditable="true"] colgroup[data-validation-disallow] {
+	border-width: 3px !important;
+}
 </style>
 
 <div id="editor">
 	<figure class="table">
 		<table>
+			<colgroup>
+				<col>
+				<col>
+				<col>
+			</colgroup>
 			<caption>caption</caption>
 			<thead>
 				<tr>
@@ -46,6 +62,11 @@
 
 	<figure class="table">
 		<table>
+			<colgroup>
+				<col>
+				<col>
+				<col>
+			</colgroup>
 			<thead>
 				<tr>
 					<th>1</th>
@@ -75,7 +96,7 @@
 	</figure>
 </div>
 <script>
-	document.getElementById( 'editor' ).querySelectorAll( 'figure, table, caption, figcaption, tbody, thead, tr, th, td' ).forEach( node => {
+	document.getElementById( 'editor' ).querySelectorAll( 'figure, table, caption, figcaption, tbody, thead, tr, th, td, colgroup, col' ).forEach( node => {
 		node.setAttribute( 'data-validation-allow', true );
 		node.setAttribute( 'data-validation-disallow', true );
 	} );

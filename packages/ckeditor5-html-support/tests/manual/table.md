@@ -11,6 +11,8 @@ Verify if every table structure element:
 * `tr`
 * `th`
 * `td`
+* `colgroup`
+* `col`
 
 **Case 1:** Has its own `data-validation-allow` attribute and blue border.
 

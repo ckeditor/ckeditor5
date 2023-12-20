@@ -13,6 +13,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
@@ -28,19 +29,20 @@ ClassicEditor
 			SourceEditing,
 			Strikethrough,
 			Table,
-			TableCaption
+			TableCaption,
+			TableColumnResize
 		],
 		toolbar: [ 'insertTable', '|', 'bold', 'italic', 'strikethrough', '|', 'sourceEditing' ],
 		htmlSupport: {
 			allow: [
 				{
-					name: /^(figure|table|tbody|thead|tr|th|td|caption|figcaption)$/,
+					name: /^(figure|table|tbody|thead|tr|th|td|caption|figcaption|colgroup|col)$/,
 					attributes: [ 'data-validation-allow', 'data-validation-disallow' ]
 				}
 			],
 			disallow: [
 				{
-					name: /^(figure|table|tbody|thead|tr|th|td|caption|figcaption)$/,
+					name: /^(figure|table|tbody|thead|tr|th|td|caption|figcaption|colgroup|col)$/,
 					attributes: 'data-validation-disallow'
 				}
 			]
