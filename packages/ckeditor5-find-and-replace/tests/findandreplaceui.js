@@ -193,7 +193,7 @@ describe( 'FindAndReplaceUI', () => {
 						expect( toolbarButtonView.keystroke ).to.equal( 'CTRL+F' );
 					} );
 
-					it( 'should not open the dropdown when command is disabled and CTRL+F was pressed', () => {
+					it( 'should not open the dialog when command is disabled and CTRL+F was pressed', () => {
 						// Close the dialog.
 						toolbarButtonView.fire( 'execute' );
 
@@ -218,7 +218,7 @@ describe( 'FindAndReplaceUI', () => {
 						expect( dialogPlugin.isOpen ).to.be.false;
 					} );
 
-					it( 'should open the dropdown when CTRL+F was pressed', () => {
+					it( 'should open the dialog if dialog was closed and CTRL+F was pressed', () => {
 						// Close the dialog.
 						toolbarButtonView.fire( 'execute' );
 
@@ -241,6 +241,50 @@ describe( 'FindAndReplaceUI', () => {
 
 						expect( dialogPlugin.isOpen ).to.be.true;
 						sinon.assert.calledOnce( spy );
+					} );
+
+					it( 'should focus the dialog if dialog was open but blurred and CTRL+F was pressed', () => {
+						const spy = sinon.spy( dialogPlugin.view, 'focus' );
+
+						editor.editing.view.focus();
+
+						expect( dialogPlugin.isOpen ).to.be.true;
+
+						const keyEventData = ( {
+							keyCode: keyCodes.f,
+							ctrlKey: !env.isMac,
+							metaKey: env.isMac,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						const wasHandled = editor.keystrokes.press( keyEventData );
+
+						expect( wasHandled ).to.be.true;
+						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+
+						expect( dialogPlugin.isOpen ).to.be.true;
+						sinon.assert.calledOnce( spy );
+					} );
+
+					it( 'should not change the focus if dialog was open and focused and CTRL+F was pressed', () => {
+						form._focusTracker.focusedElement = form._findButtonView;
+
+						const keyEventData = ( {
+							keyCode: keyCodes.f,
+							ctrlKey: !env.isMac,
+							metaKey: env.isMac,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						const wasHandled = editor.keystrokes.press( keyEventData );
+
+						expect( wasHandled ).to.be.true;
+						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+
+						expect( dialogPlugin.isOpen ).to.be.true;
+						expect( form._focusTracker.focusedElement ).to.equal( form._findButtonView );
 					} );
 				} );
 			} );
@@ -581,6 +625,45 @@ describe( 'FindAndReplaceUI', () => {
 
 						expect( dropdown.isOpen ).to.be.true;
 						sinon.assert.calledOnce( spy );
+					} );
+
+					it( 'should not close the dropdown if it was open when CTRL+F was pressed', () => {
+						dropdown.isOpen = true;
+
+						const keyEventData = ( {
+							keyCode: keyCodes.f,
+							ctrlKey: !env.isMac,
+							metaKey: env.isMac,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						const wasHandled = editor.keystrokes.press( keyEventData );
+
+						expect( wasHandled ).to.be.true;
+						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+
+						expect( dropdown.isOpen ).to.be.true;
+					} );
+
+					it( 'should not change the focus if dropdown was open and CTRL+F was pressed', () => {
+						dropdown.isOpen = true;
+
+						form._focusTracker.focusedElement = form._findButtonView;
+
+						const keyEventData = ( {
+							keyCode: keyCodes.f,
+							ctrlKey: !env.isMac,
+							metaKey: env.isMac,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						const wasHandled = editor.keystrokes.press( keyEventData );
+
+						expect( wasHandled ).to.be.true;
+						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+						expect( form._focusTracker.focusedElement ).to.equal( form._findButtonView );
 					} );
 				} );
 			} );
