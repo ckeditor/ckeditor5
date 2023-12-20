@@ -82,12 +82,20 @@ export default class FindAndReplaceUI extends Plugin {
 			}
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-				const componentButtonView = isUiUsingDropdown ? ( componentView as DropdownView ).buttonView : componentView;
+				const componentButtonView =
+					isUiUsingDropdown ? ( componentView as DropdownView ).buttonView as ButtonView : componentView as ButtonView;
 
-				const dialog = editor.plugins.get( 'Dialog' );
+				if ( componentButtonView.isOn ) {
+					// If the dropdown is open, it has to have focus already (would be closed otherwise).
+					// If dialog is open, focus can be anywhere, so move it explicitly.
+					// Unfortunately we can't simply use:
+					// 	this.formView!.focus();
+					// because it would always move focus to the first input field, which we don't want.
+					if ( componentView instanceof ButtonView ) {
+						const dialog = editor.plugins.get( 'Dialog' );
 
-				if ( dialog.isOpen ) {
-					dialog.view!.focus();
+						dialog.view!.focus();
+					}
 					cancelEvent();
 				} else if ( componentButtonView.isEnabled ) {
 					componentButtonView.fire( 'execute' );

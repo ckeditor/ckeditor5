@@ -626,6 +626,44 @@ describe( 'FindAndReplaceUI', () => {
 						expect( dropdown.isOpen ).to.be.true;
 						sinon.assert.calledOnce( spy );
 					} );
+
+					it( 'should not close the dropdown if it was open when CTRL+F was pressed', () => {
+						dropdown.isOpen = true;
+
+						const keyEventData = ( {
+							keyCode: keyCodes.f,
+							ctrlKey: !env.isMac,
+							metaKey: env.isMac,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						const wasHandled = editor.keystrokes.press( keyEventData );
+
+						expect( wasHandled ).to.be.true;
+						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+
+						expect( dropdown.isOpen ).to.be.true;
+					} );
+
+					it( 'should not change the focus if dropdown was open and CTRL+F was pressed', () => {
+						form._focusTracker.focusedElement = form._findButtonView;
+
+						const keyEventData = ( {
+							keyCode: keyCodes.f,
+							ctrlKey: !env.isMac,
+							metaKey: env.isMac,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						const wasHandled = editor.keystrokes.press( keyEventData );
+
+						expect( wasHandled ).to.be.true;
+						expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+
+						expect( form._focusTracker.focusedElement ).to.equal( form._findButtonView );
+					} );
 				} );
 			} );
 
