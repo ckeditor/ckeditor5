@@ -25,13 +25,14 @@ ClassicEditor
 				'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit'
 			]
 		},
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		},
 		exportPdf: {
 			stylesheets: [

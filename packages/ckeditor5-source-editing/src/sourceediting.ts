@@ -134,6 +134,7 @@ export default class SourceEditing extends Plugin {
 		if ( this._isAllowedToHandleSourceEditingMode() ) {
 			this.on( 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
 				if ( isSourceEditingMode ) {
+					this._hideVisibleDialog();
 					this._showSourceEditing();
 					this._disableCommands();
 				} else {
@@ -368,6 +369,15 @@ export default class SourceEditing extends Plugin {
 
 		// Checks, if the editor's editable belongs to the editor's DOM tree.
 		return editable && !editable.hasExternalElement;
+	}
+
+	/**
+	 * If any {@link module:ui/dialog/dialogview~DialogView editor dialog} is currently visible, hide it.
+	 */
+	private _hideVisibleDialog(): void {
+		if ( this.editor.plugins.has( 'Dialog' ) && this.editor.plugins.get( 'Dialog' ).isOpen ) {
+			this.editor.plugins.get( 'Dialog' ).hide();
+		}
 	}
 }
 
