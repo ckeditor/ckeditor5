@@ -35,13 +35,14 @@ ClassicEditor
 				'|', 'toggleImageCaption', 'imageTextAlternative', '|', 'ckboxImageEdit' ]
 		},
 		cloudServices: CS_CONFIG,
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		}
 	} )
 	.then( editor => {
