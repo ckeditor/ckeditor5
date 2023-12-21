@@ -6,8 +6,9 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Dialog, DialogView, DialogViewPosition } from '../../src/index.js';
+import { Dialog, DialogView, DialogViewPosition, IconView } from '../../src/index.js';
 import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
+import loupeIcon from '@ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg';
 
 /* global document */
 
@@ -372,6 +373,18 @@ describe( 'Dialog', () => {
 			expect( dialogPlugin.view.headerView, 'headerView should be created' ).to.not.be.undefined;
 			expect( dialogPlugin.view.contentView, 'contentView should be created' ).to.not.be.undefined;
 			expect( dialogPlugin.view.actionsView, 'actionsView should be created' ).to.not.be.undefined;
+		} );
+
+		it( 'should properly setup the header view with the passed arguments', () => {
+			dialogPlugin._show( {
+				icon: loupeIcon,
+				title: 'foo',
+				hasCloseButton: false
+			} );
+
+			expect( dialogPlugin.view.headerView, 'headerView should be created' ).to.not.be.undefined;
+			expect( dialogPlugin.view.headerView.children.get( 0 ), 'iconView should be created' ).to.be.instanceOf( IconView );
+			expect( dialogPlugin.view.headerView.children.length ).to.equal( 2 );
 		} );
 
 		it( 'should set the plugin properties', () => {
