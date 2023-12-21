@@ -37,13 +37,14 @@ ClassicEditor
 				'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit'
 			]
 		},
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		htmlSupport: {
 			allow: [
