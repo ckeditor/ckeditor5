@@ -31,6 +31,7 @@ Cordova
 cycler
 Dailymotion
 declutter
+deduplicate
 DLL
 Dmitry
 DOM
