@@ -1,23 +1,49 @@
-<p>
-	<button id="destroyEditor">Destroy editor</button>
-	<button id="initEditor">Init editor</button>
-</p>
+<div id="playground">
+	<div id="editor-known-roots">
+		<h2>Editor with known roots</h2>
 
-<h2>The toolbar</h2>
-<div class="toolbar-container"></div>
+		<div class="toolbar-container"></div>
+		<div class="editable-container">
+			<div class="short-toolbar"><p>This root has a short toolbar.</p></div>
+			<div class="long-toolbar"><p>This root has a very long toolbar.</p></div>
+			<div class="generic-toolbar"><p>This root uses generic config.toolbar</p></div>
+		</div>
+	</div>
+	<div id="known-and-dynamic">
+		<h2>Editor with known roots & dynamic roots</h2>
 
-<h2>The editable</h2>
-<div class="editable-container">
-	<div id="editor-intro"><p><strong>Exciting</strong> intro text to an article.</p></div>
-	<div id="editor-content"><h2>Exciting news!</h2><p>Lorem ipsum dolor sit amet.</p></div>
-	<div id="editor-outro"><p>Closing text.</p></div>
+		<div class="toolbar-container"></div>
+		<div class="editable-container">
+			<div class="short-toolbar"><p>This root has a short toolbar.</p></div>
+			<div class="long-toolbar"><p>This root has a very long toolbar.</p></div>
+			<div class="generic-toolbar"><p>This root uses generic config.toolbar</p></div>
+		</div>
+	</div>
 </div>
 
+
 <style>
+	#playground {
+		display: grid;
+		grid-template-columns: 50% 50%;
+		grid-template-rows: 1fr;
+		grid-column-gap: 0px;
+		grid-row-gap: 0px;
+		grid-gap: 1em;
+	}
+
+	#playground > div:first-child { grid-area: 1 / 1 / 2 / 2; }
+	#playground > div:last-child { grid-area: 1 / 2 / 2 / 3; }
+
+	#playground > div > button {
+		margin-right: 10px;
+	}
+
 	.editable-container,
 	.toolbar-container {
 		position: relative;
 		border: 1px solid red;
+		margin-bottom: 20px;
 	}
 
 	.editable-container::after,
@@ -32,22 +58,20 @@
 		padding: .1em .3em;
 	}
 
-	.toolbar-container{
+	.toolbar-container {
 		padding: 1em;
 	}
 
 	.editable-container {
-		padding: 3em;
-		overflow-y: scroll;
-		max-height: 300px;
+		padding: 1em;
 	}
 
 	.editable-container .ck-editor__editable {
-		padding: 2em;
+		padding: 1em;
 		border: 1px #D3D3D3 solid;
 		border-radius: var(--ck-border-radius);
 		background: white;
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-		margin-bottom: 20px;
+		margin-bottom: 1em;
 	}
 </style>

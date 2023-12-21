@@ -265,6 +265,106 @@ describe( 'MultiRootEditorUI', () => {
 
 						await editor.destroy();
 					} );
+
+					it( 'should allow for config.rootsToolbars to be specified as a callback to support dynamic roots', async () => {
+						const editor = await MultiRootEditor
+							.create( { foo: '', bar: '', baz: '' }, {
+								extraPlugins: [ ToolbarItems ],
+								toolbar: [ 'foo', 'bar' ],
+								rootsToolbars: rootName => {
+									if ( rootName == 'foo' ) {
+										return [ 'foo' ];
+									} else if ( rootName == 'bar' ) {
+										return [ 'bar' ];
+									} else if ( rootName.startsWith( 'dynamic' ) ) {
+										return [ 'foo', 'foo', 'bar', 'bar' ];
+									}
+								}
+							} );
+
+						expect( editor.model.document.selection.anchor.root.rootName ).to.equal( 'foo' );
+
+						const items = editor.ui.view.toolbar.items;
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo'
+						] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'bar' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'bar'
+						] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'baz' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'bar'
+						] );
+
+						editor.addRoot( 'dynamic1', {
+							isUndoable: true
+						} );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'dynamic1' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'foo', 'bar', 'bar'
+						] );
+
+						await editor.destroy();
+					} );
+
+					it( 'should allow for config.rootsToolbars to work as a generic configuration if specified as callback ' +
+						'(with priority over config.toolbar)',
+					async () => {
+						const editor = await MultiRootEditor
+							.create( { foo: '', bar: '', baz: '' }, {
+								extraPlugins: [ ToolbarItems ],
+								toolbar: [ 'foo', 'foo', 'foo', 'foo', 'foo' ],
+								rootsToolbars: rootName => {
+									if ( rootName == 'foo' ) {
+										return [ 'foo' ];
+									} else if ( rootName == 'bar' ) {
+										return [ 'bar' ];
+									} else {
+										return [ 'foo', 'bar' ];
+									}
+								}
+							} );
+
+						expect( editor.model.document.selection.anchor.root.rootName ).to.equal( 'foo' );
+
+						const items = editor.ui.view.toolbar.items;
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo'
+						] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'bar' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'bar'
+						] );
+
+						editor.model.change( writer => {
+							writer.setSelection( writer.createPositionAt( editor.model.document.getRoot( 'baz' ), 0 ) );
+						} );
+
+						expect( items.map( item => item.name ) ).to.have.ordered.members( [
+							'foo', 'bar'
+						] );
+
+						await editor.destroy();
+					} );
 				} );
 			} );
 		} );

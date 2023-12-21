@@ -8,6 +8,8 @@
  */
 
 import {
+	type EditorConfig,
+	type ToolbarConfigItem,
 	type Editor
 } from 'ckeditor5/src/core.js';
 
@@ -223,18 +225,18 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
 	 */
 	private _loadToolbarItemsForRoot( rootName: string ) {
-		const editor = this.editor;
 		const toolbarView = this.view.toolbar;
-		const globalToolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-		const rootsToolbarsConfig = editor.config.get( 'rootsToolbars' ) || {};
 		let itemsToLoad: Array<View>;
 
 		if ( !this._rootToolbarItems.has( rootName ) ) {
+			const editor = this.editor;
+			const globalToolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+			const getRootToolbarConfig = normalizeRootsToolbarsConfig( editor.config.get( 'rootsToolbars' ) );
 			let rootToolbarConfig;
 
-			if ( rootsToolbarsConfig[ rootName ] ) {
+			if ( getRootToolbarConfig( rootName ) ) {
 				rootToolbarConfig = {
-					...normalizeToolbarConfig( rootsToolbarsConfig[ rootName ] ),
+					...normalizeToolbarConfig( getRootToolbarConfig( rootName ) ),
 					...omit( globalToolbarConfig, 'items' )
 				};
 			} else {
@@ -281,4 +283,21 @@ export default class MultiRootEditorUI extends EditorUI {
 			keepOnFocus: true
 		} );
 	}
+}
+
+/**
+ * Converts `config.rootsToolbars` into a function form if not one already.
+ */
+function normalizeRootsToolbarsConfig(
+	rootsToolbarsConfig: EditorConfig[ 'rootsToolbars' ] | undefined
+): ( ( rootName: string ) => Array<ToolbarConfigItem> | undefined ) {
+	if ( typeof rootsToolbarsConfig === 'function' ) {
+		return rootsToolbarsConfig;
+	}
+
+	return ( rootName: string ) => {
+		if ( rootsToolbarsConfig ) {
+			return rootsToolbarsConfig[ rootName ];
+		}
+	};
 }

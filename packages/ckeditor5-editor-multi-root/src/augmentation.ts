@@ -88,14 +88,15 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor multi-root} editor type.**
 		 *
 		 * **Note: This configuration does not limit what kind of content the user is allowed to create
-		 * (write, paste, etc.) in a specific root. It affects only the presentation of the toolbar.**
+		 * (write, paste, etc.) in a specific editor root. It affects only the presentation of the toolbar.**
 		 *
-		 * When specified, the main editor toolbar will change its items dynamically depending on in which the user
+		 * When specified, the main editor toolbar will change its items dynamically depending on in which root the user
 		 * selection is anchored. This allows for targeted editing experience, e.g. to declutter the toolbars for
 		 * roots that contain only a specific kind of content.
 		 *
-		 * Please keep in mind that behaviors such as {@link module:core/editor/editorconfig~EditorConfig#toolbar `shouldGroupWhenFull`}
-		 * are inherited by individual root toolbars from the main editor toolbar configuration.
+		 * Please keep in mind that properties such as {@link module:core/editor/editorconfig~EditorConfig#toolbar `shouldGroupWhenFull`}
+		 * or {@link module:core/editor/editorconfig~EditorConfig#toolbar `removeItems`} are inherited by individual root toolbars
+		 * from the main {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
 		 *
 		 * ```ts
 		 * MultiRootEditor.create(
@@ -110,17 +111,55 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * 	{
 		 * 		// Specific toolbar configurations for individual roots.
 		 * 		rootsToolbars: {
-		 * 			uid1: [ 'bold', 'italic', '|', 'undo', 'redo' ].
-		 * 			uid3: [ 'bold', 'italic', 'underline', '|', 'undo', 'redo' ].
+		 * 			uid1: [ 'bold', 'italic', '|', 'undo', 'redo' ],
+		 * 			uid3: [ 'bold', 'italic', 'underline', '|', 'undo', 'redo' ]
 		 * 		},
-		 * 		// Roots not specified in rootsToolbars use this global toolbar configuration.
+		 * 		// Toolbars for roots not specified in config.rootsToolbars use the global toolbar configuration.
 		 * 		toolbar: [ 'bold', 'italic' ]
 		 * 	}
 		 * )
 		 * .then( ... )
 		 * .catch( ... );
+		 * ```
+		 *
+		 * Alternatively, you can specify this configuration as a function that returns toolbar items for a given root name.
+		 * This approach comes in handy when the roots are
+		 * {@link module:editor-multi-root/multirooteditor~MultiRootEditor#addRoot added or re-added} on the fly and you want their toolbar
+		 * items to be customizable.
+		 *
+		 * ```ts
+		 * MultiRootEditor.create(
+		 * 	// Roots for the editor:
+		 * 	{
+		 * 		uid1: document.querySelector( '#uid1' ),
+		 * 		uid2: document.querySelector( '#uid2' ),
+		 * 		uid3: document.querySelector( '#uid3' ),
+		 * 		uid4: document.querySelector( '#uid4' )
+		 * 	},
+		 * 	// Config:
+		 * 	{
+		 * 		rootsToolbars: rootName => {
+		 * 			// A specific toolbar configuration for initial roots.
+		 * 			if ( rootName === 'uid1' ) {
+		 * 				return [ 'bold', 'italic', '|', 'undo', 'redo' ];
+		 * 			} else if ( rootName === 'uid3' ) {
+		 * 				return [ 'bold', 'italic', 'underline', '|', 'undo', 'redo' ];
+		 * 			}
+		 * 			// A specific group of new roots will use this unique toolbar configuration.
+		 * 			else if ( rootName.startsWith( 'dynamicUid' ) ) {
+		 * 				return [ 'undo', 'redo' ];
+		 * 			}
+		 * 		},
+		 *
+		 * 		// Roots omitted in config.rootsToolbars use the global toolbar configuration.
+		 * 		toolbar: [ 'bold', 'italic' ]
+		 * 	}
+		 * )
+		 * .then( ... )
+		 * .catch( ... );
+		 * ```
 		 */
-		rootsToolbars?: Record<string, Array<ToolbarConfigItem>>;
+		rootsToolbars?: Record<string, Array<ToolbarConfigItem>> | ( ( rootName: string ) => Array<ToolbarConfigItem> | undefined );
 
 		/**
 		 * A list of names of all the roots that exist in the document but are not initially loaded by the editor.
