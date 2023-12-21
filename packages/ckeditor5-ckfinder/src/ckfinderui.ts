@@ -13,8 +13,6 @@ import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
 import type CKFinderCommand from './ckfindercommand.js';
 
-import browseFilesIcon from '../theme/icons/browse-files.svg';
-
 /**
  * The CKFinder UI plugin. It introduces the `'ckfinder'` toolbar button.
  */
@@ -41,7 +39,7 @@ export default class CKFinderUI extends Plugin {
 
 			button.set( {
 				label: t( 'Insert image or file' ),
-				icon: browseFilesIcon,
+				icon: icons.browseFiles,
 				tooltip: true
 			} );
 

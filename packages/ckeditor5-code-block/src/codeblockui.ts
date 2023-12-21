@@ -7,7 +7,7 @@
  * @module code-block/codeblockui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 import { Model, SplitButtonView, createDropdown, addListToDropdown, type ListDropdownItemDefinition } from 'ckeditor5/src/ui.js';
 
@@ -16,7 +16,6 @@ import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import type CodeBlockCommand from './codeblockcommand.js';
 
-import codeBlockIcon from '../theme/icons/codeblock.svg';
 import '../theme/codeblock.css';
 
 /**
@@ -50,7 +49,7 @@ export default class CodeBlockUI extends Plugin {
 			splitButtonView.set( {
 				label: accessibleLabel,
 				tooltip: true,
-				icon: codeBlockIcon,
+				icon: icons.codeBlock,
 				isToggleable: true
 			} );
 

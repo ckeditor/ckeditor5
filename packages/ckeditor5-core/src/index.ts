@@ -83,6 +83,33 @@ import plus from './../theme/icons/plus.svg';
 import text from './../theme/icons/text.svg';
 import importExport from './../theme/icons/importexport.svg';
 
+import redo from './../theme/icons/redo.svg';
+import undo from './../theme/icons/undo.svg';
+
+import bulletedList from './../theme/icons/bulletedlist.svg';
+import numberedList from './../theme/icons/numberedlist.svg';
+import todoList from './../theme/icons/todolist.svg';
+
+import codeBlock from './../theme/icons/codeblock.svg';
+
+import browseFiles from './../theme/icons/browse-files.svg';
+
+import heading1 from './../theme/icons/heading1.svg';
+import heading2 from './../theme/icons/heading2.svg';
+import heading3 from './../theme/icons/heading3.svg';
+import heading4 from './../theme/icons/heading4.svg';
+import heading5 from './../theme/icons/heading5.svg';
+import heading6 from './../theme/icons/heading6.svg';
+
+import horizontalLine from './../theme/icons/horizontalline.svg';
+
+import html from './../theme/icons/html.svg';
+
+import indent from './../theme/icons/indent.svg';
+import outdent from './../theme/icons/outdent.svg';
+
+import table from './../theme/icons/table.svg';
+
 export const icons = {
 	bold,
 	cancel,
@@ -131,7 +158,34 @@ export const icons = {
 	pilcrow,
 	quote,
 	threeVerticalDots,
-	dragIndicator
+	dragIndicator,
+
+	redo,
+	undo,
+
+	bulletedList,
+	numberedList,
+	todoList,
+
+	codeBlock,
+
+	browseFiles,
+
+	heading1,
+	heading2,
+	heading3,
+	heading4,
+	heading5,
+	heading6,
+
+	horizontalLine,
+
+	html,
+
+	indent,
+	outdent,
+
+	table
 };
 
 import './augmentation.js';
