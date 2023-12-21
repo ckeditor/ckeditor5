@@ -81,6 +81,7 @@ import { FullScreen } from './plugins/fullScreen/index';
 import { Source } from './plugins/source/index';
 import { RemoveBlockStyle } from './plugins/removeBlockStyle/index';
 import { HtmlInsert } from './plugins/htmlInsert/index';
+import { Image as OwnImagePlugin } from './plugins/image/index';
 
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
@@ -142,6 +143,7 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		UploadAdapter,
 		RemoveBlockStyle,
 		HtmlInsert,
+		OwnImagePlugin,
 	];
 
 	public static override defaultConfig = {
@@ -169,8 +171,8 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				'outdent',
 				'indent',
 				'|',
-				'insertImage',
 				'insertTable',
+				'ownImagePlugin',
 				'mediaEmbed',
 				'codeBlock',
 				'|',
