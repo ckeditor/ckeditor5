@@ -617,7 +617,7 @@ describe( 'findOptimalInsertionRange()', () => {
 		setData( model, '[<blockWidget></blockWidget>]' );
 
 		const selection = model.document.selection;
-		const optimalRange = schema.findOptimalInsertionRange( selection, model, 'before' );
+		const optimalRange = schema.findOptimalInsertionRange( selection, 'before' );
 
 		expect( optimalRange.isCollapsed ).to.be.true;
 		expect( optimalRange.start.path ).to.deep.equal( [ 0 ] );
@@ -627,7 +627,7 @@ describe( 'findOptimalInsertionRange()', () => {
 		setData( model, '[<blockWidget></blockWidget>]' );
 
 		const selection = model.document.selection;
-		const optimalRange = schema.findOptimalInsertionRange( selection, model, 'after' );
+		const optimalRange = schema.findOptimalInsertionRange( selection, 'after' );
 
 		expect( optimalRange.isCollapsed ).to.be.true;
 		expect( optimalRange.start.path ).to.deep.equal( [ 1 ] );
@@ -637,7 +637,7 @@ describe( 'findOptimalInsertionRange()', () => {
 		setData( model, '[<blockWidget></blockWidget>]' );
 
 		const selection = model.document.selection;
-		const optimalRange = schema.findOptimalInsertionRange( selection, model, 'auto' );
+		const optimalRange = schema.findOptimalInsertionRange( selection, 'auto' );
 
 		expect( optimalRange.isCollapsed ).to.be.false;
 		expect( optimalRange.start.path ).to.deep.equal( [ 0 ] );
@@ -648,7 +648,7 @@ describe( 'findOptimalInsertionRange()', () => {
 		setData( model, '[<blockWidget></blockWidget>]' );
 
 		const selection = model.document.selection;
-		const optimalRange = schema.findOptimalInsertionRange( selection, model );
+		const optimalRange = schema.findOptimalInsertionRange( selection );
 
 		expect( optimalRange.isCollapsed ).to.be.false;
 		expect( optimalRange.start.path ).to.deep.equal( [ 0 ] );
@@ -663,7 +663,7 @@ describe( 'findOptimalInsertionRange()', () => {
 		setData( model, '<container>fo[o</container><container>bar]</container>' );
 
 		const selection = model.document.selection;
-		const optimalRange = schema.findOptimalInsertionRange( selection, model, 'auto' );
+		const optimalRange = schema.findOptimalInsertionRange( selection, 'auto' );
 
 		expect( optimalRange.isCollapsed ).to.be.true;
 		expect( optimalRange.start.path ).to.deep.equal( [ 1, 3 ] );
@@ -673,7 +673,7 @@ describe( 'findOptimalInsertionRange()', () => {
 		setData( model, '[<paragraph></paragraph>]' );
 
 		const selection = model.document.selection;
-		const optimalRange = schema.findOptimalInsertionRange( selection, model, 'auto' );
+		const optimalRange = schema.findOptimalInsertionRange( selection, 'auto' );
 
 		expect( optimalRange.isCollapsed ).to.be.true;
 		expect( optimalRange.start.path ).to.deep.equal( [ 0, 0 ] );
@@ -687,7 +687,7 @@ describe( 'findOptimalInsertionRange()', () => {
 		);
 
 		const selection = model.document.selection;
-		const optimalRange = schema.findOptimalInsertionRange( selection, model, 'auto' );
+		const optimalRange = schema.findOptimalInsertionRange( selection, 'auto' );
 
 		expect( optimalRange.isCollapsed ).to.be.true;
 		expect( optimalRange.start.path ).to.deep.equal( [ 0, 0 ] );
@@ -696,7 +696,7 @@ describe( 'findOptimalInsertionRange()', () => {
 	it( 'returns a collapsed range after selected element', () => {
 		setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 1 ] );
 		expect( range.end.path ).to.deep.equal( [ 2 ] );
@@ -711,7 +711,7 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		setData( model, '<paragraph>x</paragraph><paragraph>f[<placeholder></placeholder>]oo</paragraph><paragraph>y</paragraph>' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 1 ] );
 		expect( range.end.path ).to.deep.equal( [ 1 ] );
@@ -720,7 +720,7 @@ describe( 'findOptimalInsertionRange()', () => {
 	it( 'should return a collapsed range inside empty block', () => {
 		setData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 1, 0 ] );
 		expect( range.end.path ).to.deep.equal( [ 1, 0 ] );
@@ -729,7 +729,7 @@ describe( 'findOptimalInsertionRange()', () => {
 	it( 'should return a collapsed range before block if at the beginning of that block', () => {
 		setData( model, '<paragraph>x</paragraph><paragraph>[]foo</paragraph><paragraph>y</paragraph>' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 1 ] );
 		expect( range.end.path ).to.deep.equal( [ 1 ] );
@@ -738,7 +738,7 @@ describe( 'findOptimalInsertionRange()', () => {
 	it( 'should return a collapsed range before block if in the middle of that block (collapsed selection)', () => {
 		setData( model, '<paragraph>x</paragraph><paragraph>f[]oo</paragraph><paragraph>y</paragraph>' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 1 ] );
 		expect( range.end.path ).to.deep.equal( [ 1 ] );
@@ -747,7 +747,7 @@ describe( 'findOptimalInsertionRange()', () => {
 	it( 'should return a collapsed range before block if in the middle of that block (non-collapsed selection)', () => {
 		setData( model, '<paragraph>x</paragraph><paragraph>f[o]o</paragraph><paragraph>y</paragraph>' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 1 ] );
 		expect( range.end.path ).to.deep.equal( [ 1 ] );
@@ -756,7 +756,7 @@ describe( 'findOptimalInsertionRange()', () => {
 	it( 'should return a collapsed range after block if at the end of that block', () => {
 		setData( model, '<paragraph>x</paragraph><paragraph>foo[]</paragraph><paragraph>y</paragraph>' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 2 ] );
 		expect( range.end.path ).to.deep.equal( [ 2 ] );
@@ -766,7 +766,7 @@ describe( 'findOptimalInsertionRange()', () => {
 	it( 'should return a collapsed range after block if at the end of that block (deeply nested)', () => {
 		setData( model, '<paragraph>x</paragraph><paragraph>foo<span>bar[]</span></paragraph><paragraph>y</paragraph>' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 2 ] );
 		expect( range.end.path ).to.deep.equal( [ 2 ] );
@@ -776,7 +776,7 @@ describe( 'findOptimalInsertionRange()', () => {
 		model.schema.extend( '$text', { allowIn: '$root' } );
 		setData( model, 'foo[]bar' );
 
-		const range = schema.findOptimalInsertionRange( doc.selection, model );
+		const range = schema.findOptimalInsertionRange( doc.selection );
 
 		expect( range.start.path ).to.deep.equal( [ 3 ] );
 		expect( range.end.path ).to.deep.equal( [ 3 ] );
