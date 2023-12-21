@@ -202,7 +202,7 @@ function initEditor( editorName, editorClass, direction = 'ltr', customCallback?
 		],
 		toolbar: {
 			items: [
-				'heading', 'bold', 'italic', 'link',
+				'heading', 'bold', 'italic', 'link', 'sourceediting',
 				'-',
 				'findAndReplace', 'modalWithText', ...POSSIBLE_DIALOG_POSITIONS
 			],

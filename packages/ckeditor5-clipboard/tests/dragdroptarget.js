@@ -23,6 +23,8 @@ import { LiveRange } from '@ckeditor/ckeditor5-engine';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
+import { CustomTitle } from './utils/customtitleplugin.js';
+
 describe( 'Drag and Drop target', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter, dragDropTarget;
 
@@ -43,7 +45,8 @@ describe( 'Drag and Drop target', () => {
 				BlockQuote,
 				Bold,
 				Image,
-				ImageCaption
+				ImageCaption,
+				CustomTitle
 			]
 		} );
 

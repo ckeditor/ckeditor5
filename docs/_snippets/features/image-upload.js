@@ -59,7 +59,8 @@ ClassicEditor
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
-			forceDemoLabel: true
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		}
 	} )
 	.then( editor => {

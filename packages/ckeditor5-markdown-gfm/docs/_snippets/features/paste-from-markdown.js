@@ -70,6 +70,7 @@ ClassicEditor
 			]
 		},
 		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
 			forceDemoLabel: true
 		},
 		ui: {
