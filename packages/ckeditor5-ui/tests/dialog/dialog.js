@@ -300,7 +300,7 @@ describe( 'Dialog', () => {
 			expect( dialogPlugin.view ).to.be.instanceOf( DialogView );
 		} );
 
-		it( 'should attach the `close` event listener to the dialog view', () => {
+		it( 'should attach the `close` event listener to the dialog view by default', () => {
 			const spy = sinon.spy( dialogPlugin, 'hide' );
 
 			dialogPlugin._show( {} );
@@ -308,6 +308,20 @@ describe( 'Dialog', () => {
 			dialogPlugin.view.fire( 'close' );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'the `close` event listener should be overridable', () => {
+			const spy = sinon.spy( dialogPlugin, 'hide' );
+
+			dialogPlugin._show( {} );
+
+			dialogPlugin.view.on( 'close', evt => {
+				evt.stop();
+			}, { priority: 'high' } );
+
+			dialogPlugin.view.fire( 'close' );
+
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should add the dialog view to the body collection', () => {

@@ -145,6 +145,7 @@ export default class Dialog extends Plugin {
 		id,
 		icon,
 		title,
+		hasCloseButton = true,
 		content,
 		actionButtons,
 		className,
@@ -189,6 +190,7 @@ export default class Dialog extends Plugin {
 		view.setupParts( {
 			icon,
 			title,
+			hasCloseButton,
 			content,
 			actionButtons
 		} );
@@ -249,10 +251,11 @@ export default class Dialog extends Plugin {
  */
 export type DialogDefinition = {
 	id?: string;
+	icon?: string;
+	title?: string;
+	hasCloseButton?: boolean;
 	content?: View | Array<View>;
 	actionButtons?: Array<DialogActionButtonDefinition>;
-	title?: string;
-	icon?: string;
 	className?: string;
 	isModal?: boolean;
 	position?: DialogViewPosition;

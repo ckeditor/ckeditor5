@@ -313,7 +313,7 @@ describe( 'DialogView', () => {
 			view.render();
 		} );
 
-		it( 'should emit the event upon pressing Esc', () => {
+		it( 'should emit the event with data upon pressing Esc', () => {
 			const spy = sinon.spy();
 
 			view.on( 'close', spy );
@@ -321,7 +321,7 @@ describe( 'DialogView', () => {
 			view.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.a } ) );
 			sinon.assert.notCalled( spy );
 			view.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.esc } ) );
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, sinon.match.any, { source: 'escKeyPress' } );
 		} );
 
 		it( 'should move the dialog upon the #drag event', () => {
@@ -516,6 +516,17 @@ describe( 'DialogView', () => {
 			} );
 
 			describe( 'close button', () => {
+				it( 'should be possible to disable', () => {
+					view.setupParts( {
+						title: 'foo',
+						hasCloseButton: false
+					} );
+
+					const lastChild = view.headerView.children.last;
+
+					expect( lastChild ).to.not.be.instanceOf( ButtonView );
+				} );
+
 				it( 'should have all properties set', () => {
 					view.setupParts( {
 						title: 'foo'
@@ -529,7 +540,7 @@ describe( 'DialogView', () => {
 					expect( closeButtonView.icon ).to.equal( cancelIcon );
 				} );
 
-				it( 'should fire an even upon clicking', () => {
+				it( 'should fire an event with data upon clicking', () => {
 					view.setupParts( {
 						title: 'foo'
 					} );
@@ -539,7 +550,7 @@ describe( 'DialogView', () => {
 					view.on( 'close', spy );
 
 					closeButtonView.fire( 'execute' );
-					sinon.assert.calledOnce( spy );
+					sinon.assert.calledWithExactly( spy, sinon.match.any, { source: 'closeButton' } );
 				} );
 			} );
 		} );

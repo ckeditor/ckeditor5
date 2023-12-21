@@ -260,7 +260,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 		super.render();
 
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.fire<DialogViewCloseEvent>( 'close' );
+			this.fire<DialogViewCloseEvent>( 'close', { source: 'escKeyPress' } );
 			cancel();
 		} );
 
@@ -325,16 +325,21 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 *
 	 * @internal
 	 */
-	public setupParts( { icon, title, content, actionButtons }: {
+	public setupParts( { icon, title, hasCloseButton = true, content, actionButtons }: {
 		icon?: string;
 		title?: string;
+		hasCloseButton?: boolean;
 		content?: View | Array<View>;
 		actionButtons?: Array<DialogActionButtonDefinition>;
 	} ): void {
 		if ( title ) {
 			this.headerView = new FormHeaderView( this.locale, { icon } );
-			this.closeButtonView = this._createCloseButton();
-			this.headerView.children.add( this.closeButtonView );
+
+			if ( hasCloseButton ) {
+				this.closeButtonView = this._createCloseButton();
+				this.headerView.children.add( this.closeButtonView );
+			}
+
 			this.headerView.label = title;
 			this.ariaLabel = title;
 			this.parts.add( this.headerView, 0 );
@@ -652,7 +657,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			icon: cancelIcon
 		} );
 
-		buttonView.on<ButtonExecuteEvent>( 'execute', () => this.fire<DialogViewCloseEvent>( 'close' ) );
+		buttonView.on<ButtonExecuteEvent>( 'execute', () => this.fire<DialogViewCloseEvent>( 'close', { source: 'closeButton' } ) );
 
 		return buttonView;
 	}
@@ -665,7 +670,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
  */
 export type DialogViewCloseEvent = {
 	name: 'close';
-	args: [];
+	args: [ { source: 'closeButton' | 'escKeyPress' } ];
 };
 
 /**
