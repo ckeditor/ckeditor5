@@ -164,7 +164,7 @@ CKEditor 4 and CKEditor&nbsp;5 are two different products. Here are the most imp
 ### Migrating existing data
 
 <info-box warning>
-	Because of the differences in features, the **data produced with CKEditor 4 may not be compatible with CKEditor&nbsp;5 which may lead to data loss**. Any data that is not supported by features enabled in CKEditor&nbsp;5 will be removed when loaded into the editor.
+	Please note, that engine and architecture differences between CKEditor&nbsp;4 and CKEditor&nbsp;5 affect how content is processed and represented in HTML. CKEditor&nbsp;5 will adapt and transform the data to align it with its supported features, hence changes in data representation may happen during migration. Content not compatible with the enabled features in CKEditor 5 may be lost, so make sure you read this migration guide fully.
 </info-box>
 
 Extensive analysis, data verification, and tests should be performed on existing data. If necessary, you will need to develop conversion procedures to avoid data loss. You can use the {@link features/general-html-support General HTML Support} feature to introduce HTML markup that is present in the legacy content but is not yet fully covered by CKEditor&nbsp;5 features.
