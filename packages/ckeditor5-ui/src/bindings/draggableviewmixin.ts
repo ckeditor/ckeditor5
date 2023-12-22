@@ -86,8 +86,17 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 
 			this._attachDragListeners();
 
-			const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-			const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
+			let x = 0;
+			let y = 0;
+
+			// Fix for desktop Safari.
+			if ( global.window.TouchEvent ) {
+				x = ( domEvt instanceof global.window.TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
+				y = ( domEvt instanceof global.window.TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
+			} else if ( domEvt instanceof MouseEvent ) {
+				x = domEvt.clientX;
+				y = domEvt.clientY;
+			}
 
 			this._lastDraggingCoordinates = { x, y };
 
@@ -105,8 +114,20 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 				return;
 			}
 
-			const newX = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-			const newY = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
+			let newX = 0;
+			let newY = 0;
+
+			// Desktop Safari doesn't support TouchEvent.
+			if ( global.window.TouchEvent ) {
+				newX = ( domEvt instanceof global.window.TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
+				newY = ( domEvt instanceof global.window.TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
+			} else if ( domEvt instanceof MouseEvent ) {
+				newX = domEvt.clientX;
+				newY = domEvt.clientY;
+			}
+
+			// Prevents selection of text while dragging on Safari.
+			domEvt.preventDefault();
 
 			this.fire<DraggableViewDragEvent>( 'drag', {
 				deltaX: Math.round( newX - this._lastDraggingCoordinates.x ),
