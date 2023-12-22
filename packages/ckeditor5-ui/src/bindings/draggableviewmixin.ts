@@ -89,13 +89,12 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 			let x = 0;
 			let y = 0;
 
-			// Fix for desktop Safari.
-			if ( global.window.TouchEvent ) {
-				x = ( domEvt instanceof global.window.TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-				y = ( domEvt instanceof global.window.TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
-			} else if ( domEvt instanceof MouseEvent ) {
+			if ( domEvt instanceof MouseEvent ) {
 				x = domEvt.clientX;
 				y = domEvt.clientY;
+			} else {
+				x = domEvt.touches[ 0 ].clientX;
+				y = domEvt.touches[ 0 ].clientY;
 			}
 
 			this._lastDraggingCoordinates = { x, y };
@@ -117,13 +116,12 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 			let newX = 0;
 			let newY = 0;
 
-			// Desktop Safari doesn't support TouchEvent.
-			if ( global.window.TouchEvent ) {
-				newX = ( domEvt instanceof global.window.TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-				newY = ( domEvt instanceof global.window.TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
-			} else if ( domEvt instanceof MouseEvent ) {
+			if ( domEvt instanceof MouseEvent ) {
 				newX = domEvt.clientX;
 				newY = domEvt.clientY;
+			} else {
+				newX = domEvt.touches[ 0 ].clientX;
+				newY = domEvt.touches[ 0 ].clientY;
 			}
 
 			// Prevents selection of text while dragging on Safari.
