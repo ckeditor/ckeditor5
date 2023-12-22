@@ -8,7 +8,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
 
 import IndentEditing from '../src/indentediting.js';
 import IndentBlock from '../src/indentblock.js';
@@ -164,7 +164,7 @@ describe( 'IndentBlock', () => {
 					beforeEach( () => {
 						return VirtualTestEditor
 							.create( {
-								plugins: [ Paragraph, DocumentListEditing, IndentEditing, IndentBlock ]
+								plugins: [ Paragraph, ListEditing, IndentEditing, IndentBlock ]
 							} )
 							.then( newEditor => {
 								editor = newEditor;
