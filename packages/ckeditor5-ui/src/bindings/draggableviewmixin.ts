@@ -4,39 +4,39 @@
  */
 
 /**
- * @module TODO
+ * @module ui/bindings/draggableviewmixin
  */
 
 import type View from '../view.js';
 import { type Constructor, type Mixed, global, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
- * TODO
+ * A mixin that brings the possibility to observe dragging of the view element.
  */
 export default function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, DraggableView> {
 	abstract class DraggableMixin extends view {
 		/**
-		 * TODO
+		 * A flag indicating whether the view is currently being dragged.
 		 */
 		declare public isDragging: boolean;
 
 		/**
-		 * TODO
+		 * A bound version of {@link #_onDrag}.
 		 */
 		private _onDragBound = this._onDrag.bind( this );
 
 		/**
-		 * TODO
+		 * A bound version of {@link #_onDragEnd}.
 		 */
 		private _onDragEndBound = this._onDragEnd.bind( this );
 
 		/**
-		 * TODO
+		 * The last coordinates of the view. It's updated on every mouse move.
 		 */
 		private _lastDraggingCoordinates: { x: number; y: number } = { x: 0, y: 0 };
 
 		/**
-		 * TODO
+		 * @inheritdoc
 		 */
 		constructor( ...args: Array<any> ) {
 			super( ...args );
@@ -49,7 +49,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		}
 
 		/**
-		 * TODO
+		 * Attaches the listeners for the drag start.
 		 */
 		private _attachListeners() {
 			this.listenTo( this.element!, 'mousedown', this._onDragStart.bind( this ) );
@@ -57,7 +57,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		}
 
 		/**
-		 * TODO
+		 * Attaches the listeners for the dragging and drag end.
 		 */
 		private _attachDragListeners() {
 			this.listenTo( global.document, 'mouseup', this._onDragEndBound );
@@ -67,7 +67,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		}
 
 		/**
-		 * TODO
+		 * Detaches the listeners after the drag end.
 		 */
 		private _detachDragListeners() {
 			this.stopListening( global.document, 'mouseup', this._onDragEndBound );
@@ -77,7 +77,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		}
 
 		/**
-		 * TODO
+		 * Starts the dragging listeners and sets the initial view coordinates.
 		 */
 		private _onDragStart( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) {
 			if ( !this._isHandleElementPressed( domEvt ) ) {
@@ -86,8 +86,16 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 
 			this._attachDragListeners();
 
-			const x = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-			const y = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
+			let x = 0;
+			let y = 0;
+
+			if ( domEvt instanceof MouseEvent ) {
+				x = domEvt.clientX;
+				y = domEvt.clientY;
+			} else {
+				x = domEvt.touches[ 0 ].clientX;
+				y = domEvt.touches[ 0 ].clientY;
+			}
 
 			this._lastDraggingCoordinates = { x, y };
 
@@ -95,7 +103,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		}
 
 		/**
-		 * TODO
+		 * Updates the view coordinates and fires the `drag` event.
 		 */
 		private _onDrag( evt: EventInfo, domEvt: MouseEvent | TouchEvent ) {
 			// If dragging was stopped by some external intervention, stop listening.
@@ -105,8 +113,19 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 				return;
 			}
 
-			const newX = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientX;
-			const newY = ( domEvt instanceof TouchEvent ? domEvt.touches[ 0 ] : domEvt ).clientY;
+			let newX = 0;
+			let newY = 0;
+
+			if ( domEvt instanceof MouseEvent ) {
+				newX = domEvt.clientX;
+				newY = domEvt.clientY;
+			} else {
+				newX = domEvt.touches[ 0 ].clientX;
+				newY = domEvt.touches[ 0 ].clientY;
+			}
+
+			// Prevents selection of text while dragging on Safari.
+			domEvt.preventDefault();
 
 			this.fire<DraggableViewDragEvent>( 'drag', {
 				deltaX: Math.round( newX - this._lastDraggingCoordinates.x ),
@@ -117,7 +136,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		}
 
 		/**
-		 * TODO
+		 * Stops the dragging and detaches the listeners.
 		 */
 		private _onDragEnd() {
 			this._detachDragListeners();
@@ -126,7 +145,7 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 		}
 
 		/**
-		 * TODO
+		 * Checks if the drag handle element was pressed.
 		 */
 		private _isHandleElementPressed( domEvt: MouseEvent | TouchEvent ) {
 			if ( !this.dragHandleElement ) {
@@ -144,15 +163,14 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 }
 
 /**
- * TODO
+ * An interface that should be implemented by views that want to be draggable.
  */
 export interface DraggableView extends View {
 	get dragHandleElement(): HTMLElement | null;
-	resetDrag(): void;
 }
 
 /**
- * TODO
+ * An event data object for the {@link DraggableView#event:drag} event. Fired when the view is dragged.
  */
 export type DraggableViewDragEvent = {
 	name: 'drag';
