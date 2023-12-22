@@ -151,7 +151,7 @@ function getMissingIcons( packageData, options ) {
 				return `${ name } (\`${ uiComponentName }\`) has an empty \`iconPath\` value. Either define or remove it.`;
 			}
 
-			if ( iconPath.startsWith( '@ckeditor/' ) ) {
+			if ( iconPath.startsWith( 'ckeditor' ) || iconPath.startsWith( '@ckeditor/' ) ) {
 				return iconPath;
 			}
 
