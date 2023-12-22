@@ -12,12 +12,12 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock.js';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist.js';
+import List from '@ckeditor/ckeditor5-list/src/list.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import Style from '../../src/style.js';
 
-describe( 'DocumentListStyleSupport', () => {
+describe( 'ListStyleSupport', () => {
 	let editor, editorElement, command, model, doc, root;
 
 	testUtils.createSinonSandbox();
@@ -611,7 +611,7 @@ describe( 'DocumentListStyleSupport', () => {
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
-				Paragraph, ImageBlock, ImageCaption, Heading, BlockQuote, DocumentList, GeneralHtmlSupport, Style
+				Paragraph, ImageBlock, ImageCaption, Heading, BlockQuote, List, GeneralHtmlSupport, Style
 			],
 			style: {
 				definitions: styleDefinitions

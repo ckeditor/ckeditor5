@@ -7,17 +7,17 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import stubUid from '@ckeditor/ckeditor5-list/tests/documentlist/_utils/uid.js';
+import stubUid from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 /* global document */
 
-describe( 'DocumentListElementSupport', () => {
+describe( 'ListElementSupport', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
 
 	testUtils.createSinonSandbox();
@@ -28,7 +28,7 @@ describe( 'DocumentListElementSupport', () => {
 
 		editor = await ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, GeneralHtmlSupport, DocumentListEditing ]
+				plugins: [ Paragraph, GeneralHtmlSupport, ListEditing ]
 			} );
 		model = editor.model;
 		dataFilter = editor.plugins.get( 'DataFilter' );
@@ -44,7 +44,7 @@ describe( 'DocumentListElementSupport', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( editor.plugins.has( 'DocumentListElementSupport' ) ).to.be.true;
+		expect( editor.plugins.has( 'ListElementSupport' ) ).to.be.true;
 	} );
 
 	it( 'should preserve attributes on lists on conversion', () => {
@@ -920,7 +920,7 @@ describe( 'DocumentListElementSupport', () => {
 					plugins: [
 						Paragraph,
 						GeneralHtmlSupport,
-						DocumentListEditing,
+						ListEditing,
 						function disallowUlAndLiElementsOnH2Elements( editor ) {
 							editor.model.schema.addAttributeCheck( ( context, attributeName ) => {
 								if ( attributeName === 'htmlUlAttributes' && context.endsWith( 'htmlH2' ) ) {

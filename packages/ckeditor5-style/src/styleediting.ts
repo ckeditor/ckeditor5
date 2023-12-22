@@ -14,7 +14,7 @@ import StyleCommand from './stylecommand.js';
 import StyleUtils from './styleutils.js';
 import type { StyleConfig } from './styleconfig.js';
 
-import DocumentListStyleSupport from './integrations/documentlist.js';
+import ListStyleSupport from './integrations/list.js';
 import TableStyleSupport from './integrations/table.js';
 import LinkStyleSupport from './integrations/link.js';
 
@@ -37,7 +37,7 @@ export default class StyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ 'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport, TableStyleSupport, LinkStyleSupport ] as const;
+		return [ 'GeneralHtmlSupport', StyleUtils, ListStyleSupport, TableStyleSupport, LinkStyleSupport ] as const;
 	}
 
 	/**

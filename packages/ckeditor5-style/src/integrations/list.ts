@@ -4,7 +4,7 @@
  */
 
 /**
- * @module style/integrations/documentlist
+ * @module style/integrations/list
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -24,7 +24,7 @@ import StyleUtils, {
 
 import type { StyleDefinition } from '../styleconfig.js';
 
-export default class DocumentListStyleSupport extends Plugin {
+export default class ListStyleSupport extends Plugin {
 	private _listUtils!: ListUtils;
 	private _styleUtils!: StyleUtils;
 	private _htmlSupport!: GeneralHtmlSupport;
@@ -33,7 +33,7 @@ export default class DocumentListStyleSupport extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'DocumentListStyleSupport' as const;
+		return 'ListStyleSupport' as const;
 	}
 
 	/**
@@ -49,7 +49,7 @@ export default class DocumentListStyleSupport extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		if ( !editor.plugins.has( 'DocumentListEditing' ) ) {
+		if ( !editor.plugins.has( 'ListEditing' ) ) {
 			return;
 		}
 
