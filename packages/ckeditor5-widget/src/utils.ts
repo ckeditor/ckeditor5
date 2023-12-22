@@ -344,7 +344,7 @@ export function findOptimalInsertionRange(
 		}
 	}
 
-	return model.schema.findOptimalInsertionRange( selection, model );
+	return model.schema.findOptimalInsertionRange( selection );
 }
 
 /**

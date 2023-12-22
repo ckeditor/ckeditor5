@@ -16,7 +16,6 @@ import TreeWalker from './treewalker.js';
 import type DocumentFragment from './documentfragment.js';
 import type DocumentSelection from './documentselection.js';
 import type Item from './item.js';
-import type Model from './model.js';
 import type Node from './node.js';
 import type Selection from './selection.js';
 import type Writer from './writer.js';
@@ -1027,52 +1026,50 @@ export default class Schema extends ObservableMixin() {
 	 * is then passed to {@link module:engine/model/model~Model#insertContent}, the block will be fully replaced
 	 * by the inserted widget block.
 	 *
+	 * @internal
 	 * @param selection The selection based on which the insertion position should be calculated.
-	 * @param model Model instance.
 	 * @param place The place where to look for optimal insertion range.
 	 * The `auto` value will determine itself the best position for insertion.
 	 * The `before` value will try to find a position before selection.
 	 * The `after` value will try to find a position after selection.
 	 * @returns The optimal range.
-	 * @internal
 	 */
 	public findOptimalInsertionRange(
 		selection: Selection | DocumentSelection,
-		model: Model,
 		place?: 'auto' | 'before' | 'after'
 	): Range {
 		const selectedElement = selection.getSelectedElement();
 
 		if ( selectedElement && this.isObject( selectedElement ) && !this.isInline( selectedElement ) ) {
 			if ( place == 'before' || place == 'after' ) {
-				return model.createRange( model.createPositionAt( selectedElement, place ) );
+				return new Range( Position._createAt( selectedElement, place ) );
 			}
 
-			return model.createRangeOn( selectedElement );
+			return Range._createOn( selectedElement );
 		}
 
 		const firstBlock = first( selection.getSelectedBlocks() );
 
 		// There are no block elements within ancestors (in the current limit element).
 		if ( !firstBlock ) {
-			return model.createRange( selection.focus! );
+			return new Range( selection.focus! );
 		}
 
 		// If inserting into an empty block – return position in that block. It will get
 		// replaced with the image by insertContent(). #42.
 		if ( firstBlock.isEmpty ) {
-			return model.createRange( model.createPositionAt( firstBlock, 0 ) );
+			return new Range( Position._createAt( firstBlock, 0 ) );
 		}
 
-		const positionAfter = model.createPositionAfter( firstBlock );
+		const positionAfter = Position._createAfter( firstBlock );
 
 		// If selection is at the end of the block - return position after the block.
 		if ( selection.focus!.isTouching( positionAfter ) ) {
-			return model.createRange( positionAfter );
+			return new Range( positionAfter );
 		}
 
 		// Otherwise, return position before the block.
-		return model.createRange( model.createPositionBefore( firstBlock ) );
+		return new Range( Position._createBefore( firstBlock ) );
 	}
 }
 
