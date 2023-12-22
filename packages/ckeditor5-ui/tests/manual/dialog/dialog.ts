@@ -84,7 +84,8 @@ class ModalWithText extends Plugin {
 
 				dialog.show( {
 					isModal: true,
-					title: t( 'Modal with text' ),
+					title: t( 'Modal with text and without close button' ),
+					hasCloseButton: false,
 					content: textView,
 					actionButtons: [
 						{
