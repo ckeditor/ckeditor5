@@ -4,15 +4,14 @@
  */
 
 import DocumentList from '../src/documentlist.js';
-import ListUI from '../src/list/listui.js';
-import DocumentListEditing from '../src/documentlist/documentlistediting.js';
+import List from '../src/list.js';
 
 describe( 'DocumentList', () => {
 	it( 'should be named', () => {
 		expect( DocumentList.pluginName ).to.equal( 'DocumentList' );
 	} );
 
-	it( 'should require DocumentListEditing and ListUI', () => {
-		expect( DocumentList.requires ).to.deep.equal( [ DocumentListEditing, ListUI ] );
+	it( 'should require List', () => {
+		expect( DocumentList.requires ).to.deep.equal( [ List ] );
 	} );
 } );

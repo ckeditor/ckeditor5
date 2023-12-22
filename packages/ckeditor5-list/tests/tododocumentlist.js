@@ -4,15 +4,14 @@
  */
 
 import TodoDocumentList from '../src/tododocumentlist.js';
-import TodoDocumentListEditing from '../src/tododocumentlist/tododocumentlistediting.js';
-import TodoListUI from '../src/todolist/todolistui.js';
+import TodoList from '../src/todolist.js';
 
 describe( 'TodoDocumentList', () => {
 	it( 'should be named', () => {
 		expect( TodoDocumentList.pluginName ).to.equal( 'TodoDocumentList' );
 	} );
 
-	it( 'should require TodoDocumentListEditing and TodoListUI', () => {
-		expect( TodoDocumentList.requires ).to.deep.equal( [ TodoDocumentListEditing, TodoListUI ] );
+	it( 'should require TodoList', () => {
+		expect( TodoDocumentList.requires ).to.deep.equal( [ TodoList ] );
 	} );
 } );

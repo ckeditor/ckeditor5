@@ -8,22 +8,20 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import DocumentListPropertiesEditing from './documentlistproperties/documentlistpropertiesediting.js';
-import ListPropertiesUI from './listproperties/listpropertiesui.js';
+import ListProperties from './listproperties.js';
 
 /**
  * The document list properties feature.
  *
- * This is a "glue" plugin that loads the
- * {@link module:list/documentlistproperties/documentlistpropertiesediting~DocumentListPropertiesEditing document list properties
- * editing feature} and the {@link module:list/listproperties/listpropertiesui~ListPropertiesUI list properties UI feature}.
+ * @deprecated
+ * TODO describe
  */
 export default class DocumentListProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ DocumentListPropertiesEditing, ListPropertiesUI ] as const;
+		return [ ListProperties ] as const;
 	}
 
 	/**
@@ -32,4 +30,6 @@ export default class DocumentListProperties extends Plugin {
 	public static get pluginName() {
 		return 'DocumentListProperties' as const;
 	}
+
+	// TODO warning
 }

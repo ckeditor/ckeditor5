@@ -4,48 +4,56 @@
  */
 
 import type {
-	DocumentList,
-	DocumentListEditing,
-	DocumentListProperties,
-	DocumentListPropertiesEditing,
-	DocumentListPropertiesUtils,
-	AdjacentListsSupport,
-	DocumentListUtils,
-	ListConfig,
+	List,
+	ListEditing,
+	ListUtils,
+	ListUI,
+	ListCommand,
+	ListIndentCommand,
+	ListMergeCommand,
+	ListSplitCommand,
+
+	ListProperties,
+	ListPropertiesUtils,
+	ListPropertiesEditing,
+	ListPropertiesUI,
+	ListStyleCommand,
+	ListStartCommand,
+	ListReversedCommand,
+
+	TodoList,
+	TodoListEditing,
+	TodoListUI,
+	CheckTodoListCommand,
+
 	LegacyList,
 	LegacyListEditing,
+	LegacyListUtils,
+	LegacyListCommand,
+	LegacyIndentCommand,
+
 	LegacyListProperties,
 	LegacyListPropertiesEditing,
-	ListPropertiesUI,
-	ListUI,
-	LegacyListUtils,
+	LegacyListStyleCommand,
+	LegacyListStartCommand,
+	LegacyListReversedCommand,
+
 	LegacyTodoList,
 	LegacyTodoListEditing,
-	TodoListUI,
-	TodoDocumentList,
-	TodoDocumentListEditing,
-
-	LegacyListCommand,
-	DocumentListCommand,
-	LegacyIndentCommand,
-	DocumentListIndentCommand,
-	DocumentListMergeCommand,
-	DocumentListSplitCommand,
-	LegacyListStyleCommand,
-	DocumentListStyleCommand,
-	LegacyListStartCommand,
-	DocumentListStartCommand,
-	LegacyListReversedCommand,
-	DocumentListReversedCommand,
 	LegacyCheckTodoListCommand,
-	CheckTodoDocumentListCommand
+
+	ListConfig,
+
+	DocumentList,
+	DocumentListProperties,
+	TodoDocumentList
 } from '.';
 
 declare module '@ckeditor/ckeditor5-core' {
   interface EditorConfig {
 
 		/**
-		 * The configuration of the {@link module:list/list~List} feature and the {@link module:list/documentlist~DocumentList} feature.
+		 * The configuration of the {@link module:list/list~List} feature and the {@link module:list/legacylist~LegacyList} feature.
 		 *
 		 * Read more in {@link module:list/listconfig~ListConfig}.
 		 */
@@ -53,40 +61,44 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface PluginsMap {
-		[ DocumentList.pluginName ]: DocumentList;
-		[ DocumentListEditing.pluginName ]: DocumentListEditing;
-		[ DocumentListProperties.pluginName ]: DocumentListProperties;
-		[ DocumentListPropertiesEditing.pluginName ]: DocumentListPropertiesEditing;
-		[ DocumentListPropertiesUtils.pluginName ]: DocumentListPropertiesUtils;
-		[ DocumentListUtils.pluginName ]: DocumentListUtils;
-		[ AdjacentListsSupport.pluginName ]: AdjacentListsSupport;
+		[ List.pluginName ]: List;
+		[ ListEditing.pluginName ]: ListEditing;
+		[ ListUtils.pluginName ]: ListUtils;
+		[ ListUI.pluginName ]: ListUI;
+		[ ListProperties.pluginName ]: ListProperties;
+		[ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
+		[ ListPropertiesUtils.pluginName ]: ListPropertiesUtils;
+		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
+		[ TodoList.pluginName ]: TodoDocumentList;
+		[ TodoListEditing.pluginName ]: TodoListEditing;
+		[ TodoListUI.pluginName ]: TodoListUI;
+
 		[ LegacyList.pluginName ]: LegacyList;
 		[ LegacyListEditing.pluginName ]: LegacyListEditing;
+		[ LegacyListUtils.pluginName ]: LegacyListUtils;
 		[ LegacyListProperties.pluginName ]: LegacyListProperties;
 		[ LegacyListPropertiesEditing.pluginName ]: LegacyListPropertiesEditing;
-		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
-		[ ListUI.pluginName ]: ListUI;
-		[ LegacyListUtils.pluginName ]: LegacyListUtils;
 		[ LegacyTodoList.pluginName ]: LegacyTodoList;
 		[ LegacyTodoListEditing.pluginName ]: LegacyTodoListEditing;
-		[ TodoListUI.pluginName ]: TodoListUI;
+
+		[ DocumentList.pluginName ]: DocumentList;
+		[ DocumentListProperties.pluginName ]: DocumentListProperties;
 		[ TodoDocumentList.pluginName ]: TodoDocumentList;
-		[ TodoDocumentListEditing.pluginName ]: TodoDocumentListEditing;
 	}
 
   interface CommandsMap {
-		numberedList: LegacyListCommand | DocumentListCommand;
-		bulletedList: LegacyListCommand | DocumentListCommand;
-		indentList: LegacyIndentCommand | DocumentListIndentCommand;
-		outdentList: LegacyIndentCommand | DocumentListIndentCommand;
-		mergeListItemBackward: DocumentListMergeCommand;
-		mergeListItemForward: DocumentListMergeCommand;
-		splitListItemBefore: DocumentListSplitCommand;
-		splitListItemAfter: DocumentListSplitCommand;
-		listStyle: LegacyListStyleCommand | DocumentListStyleCommand;
-		listStart: LegacyListStartCommand | DocumentListStartCommand;
-		listReversed: LegacyListReversedCommand | DocumentListReversedCommand;
-		todoList: LegacyListCommand | DocumentListCommand;
-		checkTodoList: LegacyCheckTodoListCommand | CheckTodoDocumentListCommand;
+		numberedList: LegacyListCommand | ListCommand;
+		bulletedList: LegacyListCommand | ListCommand;
+		indentList: LegacyIndentCommand | ListIndentCommand;
+		outdentList: LegacyIndentCommand | ListIndentCommand;
+		mergeListItemBackward: ListMergeCommand;
+		mergeListItemForward: ListMergeCommand;
+		splitListItemBefore: ListSplitCommand;
+		splitListItemAfter: ListSplitCommand;
+		listStyle: LegacyListStyleCommand | ListStyleCommand;
+		listStart: LegacyListStartCommand | ListStartCommand;
+		listReversed: LegacyListReversedCommand | ListReversedCommand;
+		todoList: LegacyListCommand | ListCommand;
+		checkTodoList: LegacyCheckTodoListCommand | CheckTodoListCommand;
 	}
 }

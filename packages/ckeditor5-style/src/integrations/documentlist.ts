@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { Element } from 'ckeditor5/src/engine.js';
-import type { DocumentListUtils } from '@ckeditor/ckeditor5-list';
+import type { ListUtils } from '@ckeditor/ckeditor5-list';
 import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -25,7 +25,7 @@ import StyleUtils, {
 import type { StyleDefinition } from '../styleconfig.js';
 
 export default class DocumentListStyleSupport extends Plugin {
-	private _documentListUtils!: DocumentListUtils;
+	private _listUtils!: ListUtils;
 	private _styleUtils!: StyleUtils;
 	private _htmlSupport!: GeneralHtmlSupport;
 
@@ -54,7 +54,7 @@ export default class DocumentListStyleSupport extends Plugin {
 		}
 
 		this._styleUtils = editor.plugins.get( StyleUtils );
-		this._documentListUtils = this.editor.plugins.get( 'DocumentListUtils' );
+		this._listUtils = this.editor.plugins.get( 'ListUtils' );
 		this._htmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
 		this.listenTo<StyleUtilsIsEnabledForBlockEvent>( this._styleUtils, 'isStyleEnabledForBlock', ( evt, [ definition, block ] ) => {
@@ -100,7 +100,7 @@ export default class DocumentListStyleSupport extends Plugin {
 			return false;
 		}
 
-		if ( !this._documentListUtils.isListItemBlock( block ) ) {
+		if ( !this._listUtils.isListItemBlock( block ) ) {
 			return false;
 		}
 
@@ -138,9 +138,9 @@ export default class DocumentListStyleSupport extends Plugin {
 		}
 
 		if ( definition.element == 'li' ) {
-			return this._documentListUtils.expandListBlocksToCompleteItems( block, { withNested: false } );
+			return this._listUtils.expandListBlocksToCompleteItems( block, { withNested: false } );
 		} else {
-			return this._documentListUtils.expandListBlocksToCompleteList( block );
+			return this._listUtils.expandListBlocksToCompleteList( block );
 		}
 	}
 

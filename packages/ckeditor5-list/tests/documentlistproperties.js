@@ -4,8 +4,7 @@
  */
 
 import DocumentListProperties from '../src/documentlistproperties.js';
-import DocumentListPropertiesEditing from '../src/documentlistproperties/documentlistpropertiesediting.js';
-import ListPropertiesUI from '../src/listproperties/listpropertiesui.js';
+import ListProperties from '../src/listproperties.js';
 
 describe( 'DocumentListProperties', () => {
 	it( 'should be named', () => {
@@ -13,6 +12,6 @@ describe( 'DocumentListProperties', () => {
 	} );
 
 	it( 'should require ListPropertiesEditing and ListPropertiesUI', () => {
-		expect( DocumentListProperties.requires ).to.deep.equal( [ DocumentListPropertiesEditing, ListPropertiesUI ] );
+		expect( DocumentListProperties.requires ).to.deep.equal( [ ListProperties ] );
 	} );
 } );

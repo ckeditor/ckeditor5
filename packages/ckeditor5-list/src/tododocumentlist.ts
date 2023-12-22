@@ -7,24 +7,23 @@
  * @module list/tododocumentlist
  */
 
-import TodoDocumentListEditing from './tododocumentlist/tododocumentlistediting.js';
-import TodoListUI from './todolist/todolistui.js';
 import { Plugin } from 'ckeditor5/src/core.js';
+import TodoList from './todolist.js';
 
 import '../theme/todolist.css';
 
 /**
  * The to-do list feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/tododocumentlist/tododocumentlistediting~TodoDocumentListEditing to-do list
- * editing feature} and the {@link module:list/todolist/todolistui~TodoListUI to-do list UI feature}.
+ * @deprecated
+ * TODO describe
  */
 export default class TodoDocumentList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ TodoDocumentListEditing, TodoListUI ] as const;
+		return [ TodoList ] as const;
 	}
 
 	/**
@@ -33,4 +32,6 @@ export default class TodoDocumentList extends Plugin {
 	public static get pluginName() {
 		return 'TodoDocumentList' as const;
 	}
+
+	// TODO warning
 }
