@@ -99,6 +99,7 @@ export { default as ToolbarSeparatorView } from './toolbar/toolbarseparatorview.
 export { default as normalizeToolbarConfig } from './toolbar/normalizetoolbarconfig.js';
 export { default as BalloonToolbar, type BalloonToolbarShowEvent } from './toolbar/balloon/balloontoolbar.js';
 export { default as BlockToolbar } from './toolbar/block/blocktoolbar.js';
+export { default as InlineToolbar } from './toolbar/inline/inlinetoolbar.js';
 
 export { default as View, type UIViewRenderEvent } from './view.js';
 export { default as ViewCollection } from './viewcollection.js';

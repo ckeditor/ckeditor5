@@ -18,6 +18,7 @@ import {
 	type EditorReadyEvent
 } from 'ckeditor5/src/core.js';
 import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
+import { InlineToolbar } from 'ckeditor5/src/ui.js';
 
 import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
@@ -80,6 +81,13 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
 		}
 
+		// Inject the InlineToolbar plugin.
+		const plugins = this.config.get( 'plugins' )!;
+		plugins.push( InlineToolbar );
+		this.config.set( 'plugins', plugins );
+
+		this.config.define( 'inlineToolbar', this.config.get( 'toolbar' ) );
+
 		this.model.document.createRoot();
 
 		if ( isElement( sourceElementOrData ) ) {
@@ -87,11 +95,7 @@ export default class InlineEditor extends DataApiMixin( ElementApiMixin( Editor 
 			secureSourceElement( this, sourceElementOrData );
 		}
 
-		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
-
-		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
-			shouldToolbarGroupWhenFull
-		} );
+		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement );
 		this.ui = new InlineEditorUI( this, view );
 
 		attachToForm( this );

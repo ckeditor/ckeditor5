@@ -1,0 +1,69 @@
+<div id="playground">
+	<div id="editor-known-roots">
+		<h2>Editor with known roots</h2>
+
+		<div class="editable-container">
+			<div class="short-toolbar"><p>This root has a short toolbar.</p></div>
+			<div class="long-toolbar"><p>This root has a very long toolbar.</p></div>
+			<div class="generic-toolbar"><p>This root uses generic config.toolbar</p></div>
+		</div>
+	</div>
+	<div id="known-and-dynamic">
+		<h2>Editor with known roots & dynamic roots</h2>
+
+		<div class="editable-container">
+			<div class="short-toolbar"><p>This root has a short toolbar.</p></div>
+			<div class="long-toolbar"><p>This root has a very long toolbar.</p></div>
+			<div class="generic-toolbar"><p>This root uses generic config.toolbar</p></div>
+		</div>
+	</div>
+</div>
+
+
+<style>
+	#playground {
+		display: grid;
+		grid-template-columns: 50% 50%;
+		grid-template-rows: 1fr;
+		grid-column-gap: 0px;
+		grid-row-gap: 0px;
+		grid-gap: 1em;
+	}
+
+	#playground > div:first-child { grid-area: 1 / 1 / 2 / 2; }
+	#playground > div:last-child { grid-area: 1 / 2 / 2 / 3; }
+
+	#playground > div > button {
+		margin-right: 10px;
+	}
+
+	.editable-container {
+		position: relative;
+		border: 1px solid red;
+		margin-bottom: 20px;
+	}
+
+	.editable-container::after {
+		content: attr(class);
+		position: absolute;
+		background: red;
+		color: #fff;
+		top: 0;
+		right: 0;
+		font: 10px/2 monospace;
+		padding: .1em .3em;
+	}
+
+	.editable-container {
+		padding: 1em;
+	}
+
+	.editable-container .ck-editor__editable {
+		padding: 1em;
+		border: 1px #D3D3D3 solid;
+		border-radius: var(--ck-border-radius);
+		background: white;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+		margin-bottom: 1em;
+	}
+</style>

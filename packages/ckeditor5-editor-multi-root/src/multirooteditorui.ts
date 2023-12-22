@@ -18,7 +18,8 @@ import {
 	normalizeToolbarConfig,
 	type EditorUIReadyEvent,
 	type InlineEditableUIView,
-	type View
+	type View,
+	type ToolbarView
 } from 'ckeditor5/src/ui.js';
 
 import {
@@ -50,7 +51,7 @@ export default class MultiRootEditorUI extends EditorUI {
 	 *
 	 * See {@link #_loadToolbarItemsForRoot}.
 	 */
-	private _rootToolbarItems = new Map<string, Array<View>>();
+	private _rootToolbarItems = new Map<string, Record<string, Array<View>>>();
 
 	/**
 	 * Creates an instance of the multi-root editor UI class.
@@ -225,32 +226,50 @@ export default class MultiRootEditorUI extends EditorUI {
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
 	 */
 	private _loadToolbarItemsForRoot( rootName: string ) {
-		const toolbarView = this.view.toolbar;
-		let itemsToLoad: Array<View>;
+		const dynamicToolbars: Record<string, ToolbarView> = {
+			default: this.view.toolbar
+		};
 
-		if ( !this._rootToolbarItems.has( rootName ) ) {
-			const editor = this.editor;
-			const globalToolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-			const getRootToolbarConfig = normalizeRootsToolbarsConfig( editor.config.get( 'rootsToolbars' ) );
-			let rootToolbarConfig;
-
-			if ( getRootToolbarConfig( rootName ) ) {
-				rootToolbarConfig = {
-					...normalizeToolbarConfig( getRootToolbarConfig( rootName ) ),
-					...omit( globalToolbarConfig, 'items' )
-				};
-			} else {
-				rootToolbarConfig = globalToolbarConfig;
-			}
-
-			itemsToLoad = toolbarView.createItemsFromConfig( rootToolbarConfig, this.componentFactory );
-			this._rootToolbarItems.set( rootName, itemsToLoad );
-		} else {
-			itemsToLoad = this._rootToolbarItems.get( rootName )!;
+		// Integration with the inline toolbar plugin.
+		if ( this.editor.plugins.has( 'InlineToolbar' ) ) {
+			dynamicToolbars.inline = this.editor.plugins.get( 'InlineToolbar' ).toolbarView;
 		}
 
-		toolbarView.items.clear();
-		toolbarView.items.addMany( itemsToLoad );
+		for ( const toolbarName in dynamicToolbars ) {
+			const toolbarView = dynamicToolbars[ toolbarName ];
+			let itemsToAdd: Array<View>;
+
+			if ( !this._rootToolbarItems.has( rootName ) || !this._rootToolbarItems.get( rootName )![ toolbarName ] ) {
+				const rootToolbarConfig = this._getRootToolbarConfig( rootName );
+				const rootToolbarItems = this._rootToolbarItems.get( rootName ) || {};
+
+				itemsToAdd = toolbarView.createItemsFromConfig( rootToolbarConfig, this.componentFactory );
+				rootToolbarItems[ toolbarName ] = itemsToAdd;
+			} else {
+				itemsToAdd = this._rootToolbarItems.get( rootName )![ toolbarName ];
+			}
+
+			toolbarView.items.clear();
+			toolbarView.items.addMany( itemsToAdd );
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getRootToolbarConfig( rootName: string ) {
+		const editor = this.editor;
+		const globalToolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+		const getRootToolbarConfig = normalizeRootsToolbarsConfig( editor.config.get( 'rootsToolbars' ) );
+
+		if ( getRootToolbarConfig( rootName ) ) {
+			return {
+				...normalizeToolbarConfig( getRootToolbarConfig( rootName ) ),
+				...omit( globalToolbarConfig, 'items' )
+			};
+		} else {
+			return globalToolbarConfig;
+		}
 	}
 
 	/**
