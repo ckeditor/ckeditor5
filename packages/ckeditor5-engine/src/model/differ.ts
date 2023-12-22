@@ -53,8 +53,7 @@ export default class Differ {
 	 * the first change was applied on that element. Snapshot items are objects with two properties: `name`,
 	 * containing the element name (or `'$text'` for a text node) and `attributes` which is a map of the node's attributes.
 	 */
-	private readonly _elementSnapshots: Map<Element | DocumentFragment, Array<{ name: string; attributes: Map<string, unknown> }>>
-		= new Map();
+	private readonly _elementSnapshots: Map<Element | DocumentFragment, Array<DifferItemSnapshot>> = new Map();
 
 	/**
 	 * A map that stores all changed markers.
@@ -101,6 +100,12 @@ export default class Differ {
 	 * Set of model items that were marked to get refreshed in {@link #_refreshItem}.
 	 */
 	private _refreshedItems: Set<Item> = new Set();
+
+	/**
+	 * TODO
+	 * @private
+	 */
+	// private _renamedItems: Set<Item> = new Set();
 
 	/**
 	 * Creates a `Differ` instance.
@@ -194,6 +199,8 @@ export default class Differ {
 				if ( this._isInInsertedElement( operation.position.parent ) ) {
 					return;
 				}
+
+				// this._renamedItems.add( operation.position.nodeAfter! );
 
 				this._markRemove( operation.position.parent, operation.position.offset, 1 );
 				this._markInsert( operation.position.parent, operation.position.offset, 1 );
@@ -637,6 +644,7 @@ export default class Differ {
 		this._changedMarkers.clear();
 		this._changedRoots.clear();
 		this._refreshedItems = new Set();
+		// this._renamedItems = new Set();
 		this._cachedChanges = null;
 	}
 
@@ -1096,15 +1104,28 @@ export default class Differ {
 	 * @param parent The element in which the change happened.
 	 * @param offset The offset at which change happened.
 	 * @param elementSnapshot The snapshot of the removed element a character.
+	 * TODO
 	 * @returns The diff item.
 	 */
 	private _getInsertDiff(
 		parent: Element | DocumentFragment,
 		offset: number,
-		elementSnapshot: { name: string; attributes: Map<string, unknown> }
+		elementSnapshot: DifferItemSnapshot
 	): DiffItemInsert & DiffItemInternal {
+		// let origin: 'insert' | 'rename' | 'refresh' = 'insert';
+		//
+		// if ( elementSnapshot.element ) {
+		// 	if ( this._renamedItems.has( elementSnapshot.element ) ) {
+		// 		origin = 'rename';
+		// 	} else if ( this._refreshedItems.has( elementSnapshot.element ) ) {
+		// 		origin = 'refresh';
+		// 	}
+		// }
+
 		return {
 			type: 'insert',
+			element: elementSnapshot.element,
+			// origin,
 			position: Position._createAt( parent, offset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
@@ -1124,10 +1145,11 @@ export default class Differ {
 	private _getRemoveDiff(
 		parent: Element | DocumentFragment,
 		offset: number,
-		elementSnapshot: { name: string; attributes: Map<string, unknown> }
+		elementSnapshot: DifferItemSnapshot
 	): DiffItemRemove & DiffItemInternal {
 		return {
 			type: 'remove',
+			element: elementSnapshot.element,
 			position: Position._createAt( parent, offset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
@@ -1265,7 +1287,8 @@ function _getChildrenSnapshot( children: Iterable<Node> ) {
 		} else {
 			snapshot.push( {
 				name: ( child as Element ).name,
-				attributes: new Map( child.getAttributes() )
+				attributes: new Map( child.getAttributes() ),
+				element: ( child as Element )
 			} );
 		}
 	}
@@ -1406,6 +1429,19 @@ export interface DiffItemInsert {
 	 */
 	type: 'insert';
 
+	// /**
+	//  * Insert change may have one of three origins:
+	//  *
+	//  * * `insert` - it was a regular insertion (a new node) was inserted,
+	//  * * `rename` - the element was renamed (there will be a related remove change as well),
+	//  * * `refresh` - the element was refreshed (re-converted, there will be a related remove change as well).
+	//  *
+	//  * Text insertions can only have `insert` origin.
+	//  */
+	// origin: 'insert' | 'rename' | 'refresh';
+
+	element?: Element;
+
 	/**
 	 * The name of the inserted elements or `'$text'` for a text node.
 	 */
@@ -1428,6 +1464,15 @@ export interface DiffItemInsert {
 }
 
 /**
+ * TODO
+ */
+export interface DifferItemSnapshot {
+	name: string;
+	attributes: Map<string, unknown>;
+	element?: Element;
+}
+
+/**
  * A single diff item for removed nodes.
  */
 export interface DiffItemRemove {
@@ -1441,6 +1486,8 @@ export interface DiffItemRemove {
 	 * The name of the removed element or `'$text'` for a text node.
 	 */
 	name: string;
+
+	element?: Element;
 
 	/**
 	 * Map of attributes that were set on the item while it was removed.
