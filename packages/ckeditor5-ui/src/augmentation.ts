@@ -7,6 +7,7 @@ import type {
 	BalloonToolbar,
 	BlockToolbar,
 	ContextualBalloon,
+	InlineToolbar,
 	Notification
 } from './index.js';
 
@@ -88,11 +89,17 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * Read more about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
 		 */
 		blockToolbar?: ToolbarConfig;
+
+		/**
+		 * TODO: docs
+		 */
+		inlineToolbar?: ToolbarConfig;
 	}
 
 	interface PluginsMap {
 		[ BalloonToolbar.pluginName ]: BalloonToolbar;
 		[ BlockToolbar.pluginName ]: BlockToolbar;
+		[ InlineToolbar.pluginName ]: InlineToolbar;
 		[ ContextualBalloon.pluginName ]: ContextualBalloon;
 		[ Notification.pluginName ]: Notification;
 	}

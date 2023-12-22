@@ -13,9 +13,7 @@ import {
 
 import {
 	EditorUI,
-	normalizeToolbarConfig,
-	type EditorUIReadyEvent,
-	type EditorUIUpdateEvent
+	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
@@ -34,11 +32,6 @@ export default class InlineEditorUI extends EditorUI {
 	public readonly view: InlineEditorUIView;
 
 	/**
-	 * A normalized `config.toolbar` object.
-	 */
-	private readonly _toolbarConfig: ReturnType<typeof normalizeToolbarConfig>;
-
-	/**
 	 * Creates an instance of the inline editor UI class.
 	 *
 	 * @param editor The editor instance.
@@ -48,7 +41,6 @@ export default class InlineEditorUI extends EditorUI {
 		super( editor );
 
 		this.view = view;
-		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 	}
 
 	/**
@@ -96,7 +88,6 @@ export default class InlineEditorUI extends EditorUI {
 		editingView.attachDomRoot( editableElement );
 
 		this._initPlaceholder();
-		this._initToolbar();
 		this.fire<EditorUIReadyEvent>( 'ready' );
 	}
 
@@ -111,38 +102,6 @@ export default class InlineEditorUI extends EditorUI {
 
 		editingView.detachDomRoot( view.editable.name! );
 		view.destroy();
-	}
-
-	/**
-	 * Initializes the inline editor toolbar and its panel.
-	 */
-	private _initToolbar(): void {
-		const editor = this.editor;
-		const view = this.view;
-		const editableElement = view.editable.element!;
-		const toolbar = view.toolbar;
-
-		// Set–up the view#panel.
-		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
-
-		view.bind( 'viewportTopOffset' ).to( this, 'viewportOffset', ( { top } ) => top || 0 );
-
-		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
-		view.listenTo<EditorUIUpdateEvent>( editor.ui, 'update', () => {
-			// Don't pin if the panel is not already visible. It prevents the panel
-			// showing up when there's no focus in the UI.
-			if ( view.panel.isVisible ) {
-				view.panel.pin( {
-					target: editableElement,
-					positions: view.panelPositions
-				} );
-			}
-		} );
-
-		toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
-
-		// Register the toolbar so it becomes available for Alt+F10 and Esc navigation.
-		this.addToolbar( toolbar );
 	}
 
 	/**
