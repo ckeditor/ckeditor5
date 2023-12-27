@@ -6,7 +6,7 @@
 /* globals window */
 
 import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
-import { UploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { PictureEditing, AutoImage, ImageResize, ImageInsert } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
@@ -16,7 +16,7 @@ import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push(
 	CKFinder,
-	UploadAdapter,
+	CKFinderUploadAdapter,
 	PictureEditing,
 	ImageResize,
 	ImageInsert,

@@ -7,7 +7,7 @@
  * @module list/listproperties/listpropertiesui
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { icons, Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	ButtonView,
@@ -27,9 +27,6 @@ import type ListStartCommand from './liststartcommand.js';
 import type DocumentListStartCommand from '../documentlistproperties/documentliststartcommand.js';
 import type ListReversedCommand from './listreversedcommand.js';
 import type DocumentListReversedCommand from '../documentlistproperties/documentlistreversedcommand.js';
-
-import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
-import numberedListIcon from '../../theme/icons/numberedlist.svg';
 
 import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
 import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
@@ -71,7 +68,7 @@ export default class ListPropertiesUI extends Plugin {
 				editor,
 				parentCommandName: 'bulletedList',
 				buttonLabel: t( 'Bulleted List' ),
-				buttonIcon: bulletedListIcon,
+				buttonIcon: icons.bulletedList,
 				styleGridAriaLabel: t( 'Bulleted list styles toolbar' ),
 				styleDefinitions: [
 					{
@@ -104,7 +101,7 @@ export default class ListPropertiesUI extends Plugin {
 				editor,
 				parentCommandName: 'numberedList',
 				buttonLabel: t( 'Numbered List' ),
-				buttonIcon: numberedListIcon,
+				buttonIcon: icons.numberedList,
 				styleGridAriaLabel: t( 'Numbered list styles toolbar' ),
 				styleDefinitions: [
 					{

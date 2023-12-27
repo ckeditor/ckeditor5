@@ -103,10 +103,4 @@ export { default as BlockToolbar } from './toolbar/block/blocktoolbar.js';
 export { default as View, type UIViewRenderEvent } from './view.js';
 export { default as ViewCollection } from './viewcollection.js';
 
-import { default as colorPaletteIcon } from '../theme/icons/color-palette.svg';
-
-export const icons = {
-	colorPaletteIcon
-};
-
 import './augmentation.js';

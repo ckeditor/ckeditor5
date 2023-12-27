@@ -10,7 +10,7 @@ The font feature lets you change font family, size, and color (including backgro
 
 ## Demo
 
-Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-ui/theme/icons/color-palette.svg Color picker}.
+Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-core/theme/icons/color-palette.svg Color picker}.
 
 {@snippet features/font}
 

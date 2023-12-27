@@ -10,12 +10,12 @@
 				{
 					"type": "Button",
 					"name": "indent",
-					"iconPath": "theme/icons/indent.svg"
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/indent.svg"
 				},
 				{
 					"type": "Button",
 					"name": "outdent",
-					"iconPath": "theme/icons/outdent.svg"
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/outdent.svg"
 				}
 			]
 		},

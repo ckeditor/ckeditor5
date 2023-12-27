@@ -17,7 +17,7 @@
 				{
 					"name": "ckbox",
 					"type": "Button",
-					"iconPath": "theme/icons/browse-files.svg"
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/browse-files.svg"
 				}
 			],
 			"htmlOutput": [

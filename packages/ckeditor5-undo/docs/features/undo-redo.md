@@ -10,7 +10,7 @@ The undo feature lets you withdraw recent changes to your content as well as bri
 
 ## Demo
 
-Use the demo below to try out the undo and redo mechanism. Play around with the content. Try introducing some changes and then use the toolbar buttons to undo {@icon @ckeditor/ckeditor5-undo/theme/icons/undo.svg Undo} or redo {@icon @ckeditor/ckeditor5-undo/theme/icons/redo.svg Redo} them.
+Use the demo below to try out the undo and redo mechanism. Play around with the content. Try introducing some changes and then use the toolbar buttons to undo {@icon @ckeditor/ckeditor5-core/theme/icons/undo.svg Undo} or redo {@icon @ckeditor/ckeditor5-core/theme/icons/redo.svg Redo} them.
 
 Alternatively, use the well-known keyboard shortcut <kbd>Ctrl</kbd> + <kbd>Z</kbd> (this would be <kbd>Cmd</kbd> + <kbd>Z</kbd> on Mac) for undo. For redo, you can use either <kbd>Ctrl</kbd> + <kbd>Y</kbd> or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> (respectively with <kbd>Cmd</kbd> on Mac).
 
