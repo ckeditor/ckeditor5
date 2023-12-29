@@ -19,7 +19,7 @@ These are only available to holders of a [CKEditor&nbsp;5 commercial license](ht
 
 * Case change
 
-	The {@link features/case-change case change feature} {@icon @ckeditor/ckeditor5-case-change/theme/icons/case-change.svg Case change} lets you quickly change the letter case of selected content to format part of the text like a title, or change it to all-caps and back. You can change the case to the desired pattern by using a dedicated toolbar dropdown or cycling them with a keyboard shortcut.
+	The {@link features/case-change case change feature} {@icon ckeditor5-collaboration/theme/icons/case-change.svg Case change} lets you quickly change the letter case of selected content to format part of the text like a title, or change it to all-caps and back. You can change the case to the desired pattern by using a dedicated toolbar dropdown or cycling them with a keyboard shortcut.
 
 * Document outline
 
