@@ -13,7 +13,7 @@ import {
 	DomEventData,
 	Observer,
 	FocusObserver,
-	type View,
+	type EditingView,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentInputEvent,
 	type ViewDocumentSelection,
@@ -48,7 +48,7 @@ export default class InsertTextObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this.focusObserver = view.getObserver( FocusObserver );

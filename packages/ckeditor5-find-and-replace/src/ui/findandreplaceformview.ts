@@ -39,9 +39,6 @@ import {
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/findandreplaceform.css';
-
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
 import { icons } from 'ckeditor5/src/core.js';
 
 /**
@@ -254,7 +251,7 @@ export default class FindAndReplaceFormView extends View {
 		this._findPrevButtonView = this._createButton( {
 			label: t( 'Previous result' ),
 			class: 'ck-button-prev',
-			icon: previousArrow,
+			icon: icons.previousArrow,
 			keystroke: 'Shift+F3',
 			tooltip: true
 		} );
@@ -262,7 +259,7 @@ export default class FindAndReplaceFormView extends View {
 		this._findNextButtonView = this._createButton( {
 			label: t( 'Next result' ),
 			class: 'ck-button-next',
-			icon: previousArrow,
+			icon: icons.previousArrow,
 			keystroke: 'F3',
 			tooltip: true
 		} );

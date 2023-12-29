@@ -23,7 +23,7 @@ import {
 	type UpcastConversionApi,
 	type UpcastConversionData,
 	type UpcastElementEvent,
-	type View,
+	type EditingView,
 	type ViewElement,
 	type Writer,
 	type PlaceholderableElement
@@ -499,7 +499,7 @@ function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<View
  * <title>^<title-content>Foo</title-content></title> -> <h1>^Foo</h1>
  * ```
  */
-function mapModelPositionToView( editingView: View ): GetCallback<MapperModelToViewPositionEvent> {
+function mapModelPositionToView( editingView: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		const positionParent = data.modelPosition.parent;
 

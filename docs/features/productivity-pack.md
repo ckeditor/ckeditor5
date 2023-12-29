@@ -27,7 +27,7 @@ These are only available to holders of a [CKEditor&nbsp;5 commercial license](ht
 
 * Format painter
 
-	The {@link features/format-painter format painter feature} {@icon @ckeditor/ckeditor5-format-painter/theme/icons/paint-roller.svg} lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
+	The {@link features/format-painter format painter feature} {@icon ckeditor5-collaboration/theme/icons/paint-roller.svg} lets you copy text formatting (such as bold, italic, font size, color, etc.) and apply it in a different place in the edited document. It helps keep the formatting consistent and speeds up the creation of rich content.
 
 * Paste from Office enhanced
 
@@ -39,11 +39,11 @@ These are only available to holders of a [CKEditor&nbsp;5 commercial license](ht
 
 * Table of contents
 
-	The {@link features/table-of-contents table of contents feature} {@icon @ckeditor/ckeditor5-document-outline/theme/icons/table-of-contents.svg} lets you insert a widget with a list of headings (section titles) that reflects the structure of the document and will be retained in the editor output data. The list stays up–to–date automatically as the user works on the document. Clicking a list item navigates the user to the corresponding document section.
+	The {@link features/table-of-contents table of contents feature} {@icon ckeditor5-collaboration/theme/icons/table-of-contents.svg} lets you insert a widget with a list of headings (section titles) that reflects the structure of the document and will be retained in the editor output data. The list stays up–to–date automatically as the user works on the document. Clicking a list item navigates the user to the corresponding document section.
 
 * Templates
 
-	The {@link features/template templates feature} {@icon @ckeditor/ckeditor5-template/theme/icons/template.svg} allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (like a formatted table) and base structures for entire documents (like a formal letter template).
+	The {@link features/template templates feature} {@icon ckeditor5-collaboration/theme/icons/template.svg} allows you to insert predefined content structures into the document. Templates can provide both smaller portions of content (like a formatted table) and base structures for entire documents (like a formal letter template).
 
 ## Free trial
 
