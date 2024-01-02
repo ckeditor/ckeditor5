@@ -19,11 +19,11 @@ The simple list configuration option is a great solution for users who do not ne
 Turning off the block list capabilities as shown below will make editing easier with limited capabilities and also affect some fields like keyboard shortcuts.
 
 ```js
-import { DocumentList } from '@ckeditor/ckeditor5-list';
+import { List } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ DocumentList, /* ... */ ],
+		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
 		    multiBlock: false // Turn off the multi block support (enabled by default).

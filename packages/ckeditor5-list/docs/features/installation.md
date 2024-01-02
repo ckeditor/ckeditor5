@@ -20,14 +20,14 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](htt
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `DocumentList` plugin to your plugin list and the toolbar configuration:
+Then add the `List` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import { DocumentList } from '@ckeditor/ckeditor5-list';
+import { List } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ DocumentList, /* ... */ ],
+		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
 	} )
 	.then( /* ... */ )
@@ -42,14 +42,14 @@ To enable the list properties feature for document lists, install the [`@ckedito
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `DocumentListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
+Then add the `ListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
 
 ```js
-import { DocumentListProperties } from '@ckeditor/ckeditor5-list';
+import { ListProperties } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ DocumentListProperties, /* ... */ ],
+		plugins: [ ListProperties, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
 			properties: {
@@ -68,7 +68,7 @@ ClassicEditor
 </info-box>
 
 <info-box warning>
-	The {@link module:list/documentlistproperties~DocumentListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
+	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
 ## To-do lists installation
@@ -100,7 +100,3 @@ ClassicEditor
 <info-box info>
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
-
-## Simple lists
-
-Add info.
