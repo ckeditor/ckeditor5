@@ -288,7 +288,8 @@ In this example, we remove the premium collaboration features as well as several
 					'DocumentOutline',
 					'FormatPainter',
 					'TableOfContents',
-					'PasteFromOfficeEnhanced'
+					'PasteFromOfficeEnhanced',
+					'CaseChange'
 				]
 			});
 		</script>

@@ -19,7 +19,7 @@ The document list feature lets you create ordered and unordered lists. The uniqu
 
 ## Demo
 
-Use the demo below to add block elements like tables, images, or nested lists. Notice that the document retains the ordering and list styles. Use the toolbar buttons to insert new ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list}, unordered {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list} and to-do {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg To-do list} lists.
+Use the demo below to add block elements like tables, images, or nested lists. Notice that the document retains the ordering and list styles. Use the toolbar buttons to insert new ordered {@icon @ckeditor/ckeditor5-core/theme/icons/numberedlist.svg Insert ordered list}, unordered {@icon @ckeditor/ckeditor5-core/theme/icons/bulletedlist.svg Insert unordered list} and to-do {@icon @ckeditor/ckeditor5-core/theme/icons/todolist.svg To-do list} lists.
 
 {@snippet features/lists-document}
 
