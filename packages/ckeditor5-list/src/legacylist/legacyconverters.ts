@@ -22,7 +22,7 @@ import {
 	type Position,
 	type UpcastConversionApi,
 	type UpcastElementEvent,
-	type View,
+	type EditingView,
 	type ViewContainerElement,
 	type ViewElement,
 	type ViewNode,
@@ -475,7 +475,7 @@ export const cleanListItem: GetCallback<UpcastElementEvent> = ( evt, data, conve
  * positions between the `listItem` elements that would be incorrectly mapped because of how list items are represented in the model
  * and in the view.
  */
-export function modelToViewPosition( view: View ): GetCallback<MapperModelToViewPositionEvent> {
+export function modelToViewPosition( view: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		if ( data.isPhantom ) {
 			return;
