@@ -3,7 +3,7 @@ menu-title: Lists editing bahavior
 meta-title: Lists editing bahavior | CKEditor 5 Documentation
 category: features-lists
 order: 30
-modified_at: 2023-11-15
+modified_at: 2024-01-02
 ---
 
 # Lists editing behavior
