@@ -22,12 +22,93 @@ Listed below are the most important changes that require your attention when upg
 
 ### Breaking changes to the list plugin
 
-As of the latest release, the current list plugin (often referred to as list v1.0) has been replaced with the {@link features/lists newer and more advanced list plugin}, formerly known as Document lists (v2.0).
+As of the latest release, the current list plugin (often referred to as list v1.0) has been replaced with the {@link features/document-lists newer and more advanced list plugin}, formerly known as Document lists (v2.0).
 
-We introduced the new plugin in a manner that aims to be transparent for our users, namely by physically replacing the old plugin with the new one, but retaining all namespace intact. It means, starting with release v.40.2.0 all imports of various listst-relateg plugins will use the new version.
+We introduced the new plugin in a manner that aims to be transparent for our users, namely by physically replacing the old plugin with the new one, but retaining all namespace intact. It means, starting with release v.41.0.0 all imports of various lists-related plugins will use the new version.
 
-The old plugin has been renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyTodoList`, `LegacyListEditing`, and `LegacyTodoListEditing`.
+The old plugin has been renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
 
 Unless you need to specifically use the old v1.0 plugin in your integration, there is no need to make changes in the configuration.
 
-If you want to use the new extended plugin, but want to utilize block elements in list, you can turn off this functionality and use the {@link features/lists-editing#simple-lists simple list setting} instead of sticking to the old plugins.
+If you want to use the new extended plugin, but do not want to utilize block elements in list, you can turn off this functionality and use the {@link features/document-lists#simple-lists simple list setting} instead of sticking to the old plugins.
+
+#### Details of plugin renames 
+
+<table>
+    <thead>
+        <tr>
+            <th>Previous version</th>
+            <th>This version</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th colspan="3">Official plugins</th>
+        </tr>
+        <tr>
+            <td><code>DocumentList</code></td>
+            <td>{@link module:list/list~List `List`}</td>
+            <td>Plugin renamed</td>
+        </tr>
+        <tr>
+            <td><code>DocumentListProperties</code></td>
+            <td>{@link module:list/listproperties~ListProperties `ListProperties`}</td>
+            <td>Plugin renamed</td>
+        </tr>
+        <tr>
+            <td><code>TodoDocumentList</code></td>
+            <td>{@link module:list/todolist~TodoList `TodoList`}</td>
+            <td>Plugin renamed</td>
+        </tr>
+        <tr>
+            <td><code>AdjacentListsSupport</code></td>
+            <td>{@link module:list/list/adjacentlistssupport~AdjacentListsSupport `AdjacentListsSupport`}</td>
+            <td>Changed import path</td>
+        </tr>
+        <tr>
+            <th colspan="3">Backward compatibility plugins</th>
+        </tr>
+        <tr>
+            <td>-</td>
+            <td>{@link module:list/documentlist~DocumentList `DocumentList`}</td>
+            <td>Alias for the {@link module:list/list~List `List`} plugin</td>
+        </tr>
+        <tr>
+            <td>-</td>
+            <td>{@link module:list/documentlistproperties~DocumentListProperties `DocumentListProperties`}</td>
+            <td>Alias for the {@link module:list/listproperties~ListProperties `ListProperties`} plugin</td>
+        </tr>
+        <tr>
+            <td>-</td>
+            <td>{@link module:list/tododocumentlist~TodoDocumentList `TodoDocumentList`}</td>
+            <td>Alias for the {@link module:list/todolist~TodoList `TodoList`} plugin</td>
+        </tr>
+        <tr>
+            <th colspan="3">Legacy plugins</th>
+        </tr>
+        <tr>
+            <td><code>List</code></td>
+            <td>{@link module:list/legacylist~LegacyList `LegacyList`}</td>
+            <td>Plugin renamed</td>
+        </tr>
+        <tr>
+            <td><code>ListProperties</code></td>
+            <td>{@link module:list/legacylistproperties~LegacyListProperties `LegacyListProperties`}</td>
+            <td>Plugin renamed</td>
+        </tr>
+        <tr>
+            <td><code>TodoList</code></td>
+            <td>{@link module:list/legacytodolist~LegacyTodoList `LegacyTodoList`}</td>
+            <td>Plugin renamed</td>
+        </tr>
+        <tr>
+            <th colspan="3">Removed deprecated plugin</th>
+        </tr>
+        <tr>
+            <td><code>ListStyle</code></td>
+            <td>-</td>
+            <td>Use the {@link module:list/listproperties~ListProperties `ListProperties`} plugin instead.</td>
+        </tr>
+    </tbody>
+</table>
