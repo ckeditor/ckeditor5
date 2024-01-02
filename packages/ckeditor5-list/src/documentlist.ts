@@ -7,14 +7,17 @@
  * @module list/documentlist
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { logWarning } from 'ckeditor5/src/utils.js';
 import List from './list.js';
 
 /**
  * The document list feature.
  *
+ * This is an obsolete plugin that exists for backward compatibility only.
+ * Use the {@link module:list/list~List `List`} instead.
+ *
  * @deprecated
- * TODO describe
  */
 export default class DocumentList extends Plugin {
 	/**
@@ -31,5 +34,9 @@ export default class DocumentList extends Plugin {
 		return 'DocumentList' as const;
 	}
 
-	// TODO warning
+	constructor( editor: Editor ) {
+		super( editor );
+
+		logWarning( 'The `DocumentList` plugin is obsolete. Use `List` instead.' );
+	}
 }

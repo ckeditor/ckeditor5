@@ -7,16 +7,17 @@
  * @module list/tododocumentlist
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { logWarning } from 'ckeditor5/src/utils.js';
 import TodoList from './todolist.js';
-
-import '../theme/todolist.css';
 
 /**
  * The to-do list feature.
  *
+ * This is an obsolete plugin that exists for backward compatibility only.
+ * Use the {@link module:list/todolist~TodoList `TodoList`} instead.
+ *
  * @deprecated
- * TODO describe
  */
 export default class TodoDocumentList extends Plugin {
 	/**
@@ -33,5 +34,9 @@ export default class TodoDocumentList extends Plugin {
 		return 'TodoDocumentList' as const;
 	}
 
-	// TODO warning
+	constructor( editor: Editor ) {
+		super( editor );
+
+		logWarning( 'The `TodoDocumentList` plugin is obsolete. Use `TodoList` instead.' );
+	}
 }
