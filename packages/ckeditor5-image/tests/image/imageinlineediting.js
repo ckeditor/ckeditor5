@@ -11,7 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
@@ -632,7 +632,7 @@ describe( 'ImageInlineEditing', () => {
 					Clipboard,
 					LinkImage,
 					Paragraph,
-					ListEditing
+					LegacyListEditing
 				]
 			} );
 
@@ -894,7 +894,7 @@ describe( 'ImageInlineEditing', () => {
 					Clipboard,
 					LinkImage,
 					Paragraph,
-					ListEditing
+					LegacyListEditing
 				]
 			} );
 
