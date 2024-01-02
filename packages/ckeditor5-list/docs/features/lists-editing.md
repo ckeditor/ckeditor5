@@ -14,7 +14,7 @@ The current list feature lets any part of the content be part of a list. Content
 
 ## Simple lists
 
-The simple list config option is a great solution for users who do not need to turn block elements into list items. When this setting is active, users can only insert text into list items and will not be able to nest content blocks &ndash; like paragraphs,  or tables &ndash; inside a list item. This would be handy for small editing areas and for content creation solutions that mostly need to work with less advanced documents.
+The simple list configuration option is a great solution for users who do not need to turn block elements into list items. When this setting is active, users can only insert text into list items and will not be able to nest content blocks &ndash; like paragraphs,  or tables &ndash; inside a list item. This would be handy for small editing areas and for content creation solutions that mostly need to work with less advanced documents.
 
 Turning off the block list capabilities as shown below will make editing easier with limited capabilities and also affect some fields like keyboard shortcuts.
 
@@ -57,7 +57,7 @@ ClassicEditor
 
 ## Indenting lists
 
-Besides controlling {@link features/indent text block indentation}, the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} buttons allow for indenting list items (nesting them).
+Besides controlling {@link features/indent text block indentation}, the indent {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} and outdent {@icon @ckeditor/ckeditor5-core/theme/icons/outdent.svg Outdent} buttons allow for indenting list items (nesting them).
 
 This mechanism is completely transparent to the user. From the code perspective, the buttons are implemented by the {@link module:indent/indent~Indent} plugin, but neither these buttons nor the respective commands implement any functionality by default.
 
