@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { ButtonLabelView } from '../../src';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ButtonLabelView } from '../../src/index.js';
 
 describe( 'ButtonLabelView', () => {
 	let view;

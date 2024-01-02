@@ -5,33 +5,33 @@
 
 /* global document, window, Event */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
 
-import EditorUI from '../../../src/editorui/editorui';
-import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
-import ToolbarView from '../../../src/toolbar/toolbarview';
-import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
-import BlockButtonView from '../../../src/toolbar/block/blockbuttonview';
+import EditorUI from '../../../src/editorui/editorui.js';
+import BlockToolbar from '../../../src/toolbar/block/blocktoolbar.js';
+import ToolbarView from '../../../src/toolbar/toolbarview.js';
+import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview.js';
+import BlockButtonView from '../../../src/toolbar/block/blockbuttonview.js';
 
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui.js';
 import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
-import DragDropBlockToolbar from '@ckeditor/ckeditor5-clipboard/src/dragdropblocktoolbar';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
+import DragDropBlockToolbar from '@ckeditor/ckeditor5-clipboard/src/dragdropblocktoolbar.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { icons } from '@ckeditor/ckeditor5-core';
 
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 const { dragIndicator, pilcrow } = icons;
 

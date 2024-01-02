@@ -34,9 +34,9 @@ import {
 	type KeystrokeInfo
 } from '@ckeditor/ckeditor5-utils';
 
-import WidgetTypeAround from './widgettypearound/widgettypearound';
-import verticalNavigationHandler from './verticalnavigation';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
+import WidgetTypeAround from './widgettypearound/widgettypearound.js';
+import verticalNavigationHandler from './verticalnavigation.js';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
 import '../theme/widget.css';
 

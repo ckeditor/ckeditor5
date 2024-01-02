@@ -7,9 +7,9 @@
  * @module html-support/fullpage
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine';
-import HtmlPageDataProcessor from './htmlpagedataprocessor';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { UpcastWriter, type DataControllerToModelEvent, type DataControllerToViewEvent } from 'ckeditor5/src/engine.js';
+import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
 
 /**
  * The full page editing feature. It preserves the whole HTML page in the editor data.

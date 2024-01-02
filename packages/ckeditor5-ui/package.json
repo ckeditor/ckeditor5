@@ -9,6 +9,7 @@
     "ckeditor5-lib",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "40.2.0",

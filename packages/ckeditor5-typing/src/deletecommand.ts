@@ -11,7 +11,7 @@ import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { count } from '@ckeditor/ckeditor5-utils';
 import type { DocumentSelection, Element, Selection, Writer } from '@ckeditor/ckeditor5-engine';
 
-import ChangeBuffer from './utils/changebuffer';
+import ChangeBuffer from './utils/changebuffer.js';
 
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and

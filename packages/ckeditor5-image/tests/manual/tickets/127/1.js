@@ -5,17 +5,17 @@
 
 /* global document, console, window */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Image from '../../../../src/image';
-import ImageCaption from '../../../../src/imagecaption';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
-import ImageToolbar from '../../../../src/imagetoolbar';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import Image from '../../../../src/image.js';
+import ImageCaption from '../../../../src/imagecaption.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
+import ImageToolbar from '../../../../src/imagetoolbar.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

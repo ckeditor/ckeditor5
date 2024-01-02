@@ -5,7 +5,7 @@
 
 /* global document, setTimeout */
 
-import { scrollViewportToShowTarget } from '../../../src/dom/scroll';
+import { scrollViewportToShowTarget } from '../../../src/dom/scroll.js';
 
 document.getElementById( 'navigation' ).addEventListener( 'click', evt => {
 	if ( evt.target.nodeName == 'BUTTON' ) {

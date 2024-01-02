@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { UploadAdapter } from './index';
+import type { CKFinderUploadAdapter } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
-		[ UploadAdapter.pluginName ]: UploadAdapter;
+		[ CKFinderUploadAdapter.pluginName ]: CKFinderUploadAdapter;
 	}
 }

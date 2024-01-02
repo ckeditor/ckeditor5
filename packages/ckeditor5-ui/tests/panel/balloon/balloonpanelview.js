@@ -5,10 +5,10 @@
 
 /* global window, document, Event */
 
-import ViewCollection from '../../../src/viewcollection';
-import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview';
-import ButtonView from '../../../src/button/buttonview';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ViewCollection from '../../../src/viewcollection.js';
+import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview.js';
+import ButtonView from '../../../src/button/buttonview.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect } from '@ckeditor/ckeditor5-utils';
 
 describe( 'BalloonPanelView', () => {

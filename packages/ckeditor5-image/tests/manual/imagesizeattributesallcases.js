@@ -5,16 +5,16 @@
 
 /* global document, console, window, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
-import ImageResize from '../../src/imageresize';
-import ImageSizeAttributes from '../../src/imagesizeattributes';
-import PictureEditing from '../../src/pictureediting';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import ImageResize from '../../src/imageresize.js';
+import ImageSizeAttributes from '../../src/imagesizeattributes.js';
+import PictureEditing from '../../src/pictureediting.js';
+import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 const commonConfig = getConfig();
 const configPx = getConfig( true );

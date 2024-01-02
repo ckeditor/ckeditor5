@@ -7,8 +7,8 @@
  * @module ui/panel/balloon/balloonpanelview
  */
 
-import View from '../../view';
-import type ViewCollection from '../../viewcollection';
+import View from '../../view.js';
+import type ViewCollection from '../../viewcollection.js';
 
 import {
 	getOptimalPosition,
@@ -17,7 +17,7 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
-	type Position,
+	type DomPoint,
 	type PositionOptions,
 	type PositioningFunction,
 	type Rect
@@ -37,7 +37,7 @@ const defaultLimiterElement = global.document.body;
 // It prevents the balloon from being attached to the void and possible degradation of the UX.
 // At the same time, it keeps the balloon physically visible in the DOM so the focus remains
 // uninterrupted.
-const POSITION_OFF_SCREEN: Position = {
+const POSITION_OFF_SCREEN: DomPoint = {
 	top: -99999,
 	left: -99999,
 	name: 'arrowless',
@@ -841,7 +841,7 @@ export default class BalloonPanelView extends View {
 	 *
 	 * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
 	 *
-	 * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
+	 * Positioning functions must be compatible with {@link module:utils/dom/position~DomPoint}.
 	 *
 	 * Default positioning functions with customized offsets can be generated using
 	 * {@link module:ui/panel/balloon/balloonpanelview~generatePositions}.

@@ -5,9 +5,9 @@
 
 /* globals window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
 const byClassName = className => element => element.hasClass( className );
 

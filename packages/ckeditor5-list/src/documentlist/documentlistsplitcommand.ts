@@ -7,15 +7,15 @@
  * @module list/documentlist/documentlistsplitcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine';
-import { Command, type Editor } from 'ckeditor5/src/core';
+import type { Element } from 'ckeditor5/src/engine.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	isFirstBlockOfListItem,
 	isListItemBlock,
 	sortBlocks,
 	splitListItemBefore
-} from './utils/model';
+} from './utils/model.js';
 
 /**
  * The document list split command that splits the list item at the selection.

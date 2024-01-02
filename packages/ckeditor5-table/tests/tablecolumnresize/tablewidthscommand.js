@@ -5,13 +5,13 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableColumnResize from '../../src/tablecolumnresize';
-import Table from '../../src/table';
-import { modelTable } from '../_utils/utils';
+import TableColumnResize from '../../src/tablecolumnresize.js';
+import Table from '../../src/table.js';
+import { modelTable } from '../_utils/utils.js';
 
 describe( 'TableWidthsCommand', () => {
 	let model, editor, editorElement, command;

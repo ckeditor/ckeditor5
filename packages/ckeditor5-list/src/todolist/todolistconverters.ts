@@ -17,13 +17,13 @@ import type {
 	MapperModelToViewPositionEvent,
 	Model,
 	UpcastElementEvent,
-	View,
+	EditingView,
 	ViewElement
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { createElement, type GetCallback } from 'ckeditor5/src/utils';
+import { createElement, type GetCallback } from 'ckeditor5/src/utils.js';
 
-import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../list/utils';
+import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../list/utils.js';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.
@@ -195,7 +195,7 @@ export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = 
  */
 export function modelViewChangeType(
 	onCheckedChange: ( element: Element ) => void,
-	view: View
+	view: EditingView
 ): GetCallback<DowncastAttributeEvent<Element>> {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
@@ -281,7 +281,7 @@ export function modelViewChangeChecked(
  *
  * It only handles the position at the beginning of a list item as other positions are properly mapped be the default mapper.
  */
-export function mapModelToViewPosition( view: View ): GetCallback<MapperModelToViewPositionEvent> {
+export function mapModelToViewPosition( view: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		const modelPosition = data.modelPosition;
 		const parent = modelPosition.parent;
@@ -335,7 +335,7 @@ function createCheckmarkElement(
 }
 
 // Helper method to find label element inside li.
-function findLabel( viewItem: ViewElement, view: View ) {
+function findLabel( viewItem: ViewElement, view: EditingView ) {
 	const range = view.createRangeIn( viewItem );
 
 	for ( const value of range ) {
@@ -345,7 +345,7 @@ function findLabel( viewItem: ViewElement, view: View ) {
 	}
 }
 
-function findDescription( viewItem: ViewElement, view: View ) {
+function findDescription( viewItem: ViewElement, view: EditingView ) {
 	const range = view.createRangeIn( viewItem );
 
 	for ( const value of range ) {

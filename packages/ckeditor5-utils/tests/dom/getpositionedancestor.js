@@ -5,7 +5,7 @@
 
 /* global document */
 
-import getPositionedAncestor from '../../src/dom/getpositionedancestor';
+import getPositionedAncestor from '../../src/dom/getpositionedancestor.js';
 
 describe( 'getPositionedAncestor', () => {
 	let element;

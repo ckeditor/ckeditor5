@@ -9,9 +9,9 @@
  * @module engine/model/operation/operation
  */
 
-import type Batch from '../batch';
-import type Document from '../document';
-import type { Selectable } from '../selection';
+import type Batch from '../batch.js';
+import type Document from '../document.js';
+import type { Selectable } from '../selection.js';
 
 /**
  * Abstract base operation class.

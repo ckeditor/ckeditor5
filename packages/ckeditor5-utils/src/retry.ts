@@ -7,7 +7,7 @@
  * @module utils/retry
  */
 
-import wait from './wait';
+import wait from './wait.js';
 
 /**
  * Tries calling the given callback until it sucessfully resolves.

@@ -5,10 +5,10 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SelectAllEditing from '../src/selectallediting';
-import SelectAllUI from '../src/selectallui';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import SelectAllEditing from '../src/selectallediting.js';
+import SelectAllUI from '../src/selectallui.js';
 
 describe( 'SelectAllUI', () => {
 	let editor, editorElement, button;

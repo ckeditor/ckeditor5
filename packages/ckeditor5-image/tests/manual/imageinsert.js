@@ -5,13 +5,13 @@
 
 /* globals window, document, console, CKEditorInspector */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import ImageInsert from '../../src/imageinsert';
-import AutoImage from '../../src/autoimage';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
+import ImageInsert from '../../src/imageinsert.js';
+import AutoImage from '../../src/autoimage.js';
 
 async function createEditor( elementId, imageType ) {
 	const editor = await ClassicEditor.create( document.querySelector( '#' + elementId ), {

@@ -7,10 +7,10 @@
  * @module block-quote/blockquote
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import BlockQuoteEditing from './blockquoteediting';
-import BlockQuoteUI from './blockquoteui';
+import BlockQuoteEditing from './blockquoteediting.js';
+import BlockQuoteUI from './blockquoteui.js';
 
 /**
  * The block quote plugin.

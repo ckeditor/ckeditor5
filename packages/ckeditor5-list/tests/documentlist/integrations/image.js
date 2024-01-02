@@ -5,18 +5,18 @@
 
 /* global document */
 
-import DocumentListEditing from '../../../src/documentlist/documentlistediting';
-import stubUid from '../_utils/uid';
-import { modelList } from '../_utils/utils';
+import DocumentListEditing from '../../../src/documentlist/documentlistediting.js';
+import stubUid from '../_utils/uid.js';
+import { modelList } from '../_utils/utils.js';
 
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { Paragraph } from 'ckeditor5/src/paragraph';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import {
 	getData as getModelData,
 	setData as setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'image plugin integration', () => {
 	let element;

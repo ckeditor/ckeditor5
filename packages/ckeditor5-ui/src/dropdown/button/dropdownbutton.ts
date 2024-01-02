@@ -7,8 +7,8 @@
  * @module ui/dropdown/button/dropdownbutton
  */
 
-import type Button from '../../button/button';
-import type ViewCollection from '../../viewcollection';
+import type Button from '../../button/button.js';
+import type ViewCollection from '../../viewcollection.js';
 
 /**
  * The dropdown button interface.

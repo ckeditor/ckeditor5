@@ -11,7 +11,7 @@ import { toWidget, toWidgetEditable, findOptimalInsertionRange } from '@ckeditor
 import { createElement } from '@ckeditor/ckeditor5-utils';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
 window.ClassicEditor = ClassicEditor;
 window.Plugin = Plugin;

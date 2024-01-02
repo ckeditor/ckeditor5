@@ -7,9 +7,9 @@
  * @module restricted-editing/standardeditingmodeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';
+import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand.js';
 
 /**
  * The standard editing mode editing feature.

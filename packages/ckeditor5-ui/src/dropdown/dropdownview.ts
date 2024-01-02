@@ -7,13 +7,13 @@
  * @module ui/dropdown/dropdownview
  */
 
-import View from '../view';
+import View from '../view.js';
 
-import type { default as DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton';
-import type { default as DropdownPanelView, PanelPosition } from './dropdownpanelview';
-import type { FocusableView } from '../focuscycler';
-import type ListView from '../list/listview';
-import type ToolbarView from '../toolbar/toolbarview';
+import type { default as DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton.js';
+import type { default as DropdownPanelView, PanelPosition } from './dropdownpanelview.js';
+import type { FocusableView } from '../focuscycler.js';
+import type ListView from '../list/listview.js';
+import type ToolbarView from '../toolbar/toolbarview.js';
 
 import {
 	KeystrokeHandler,
@@ -451,7 +451,7 @@ export default class DropdownView extends View<HTMLDivElement> {
 	 *		       [ Button ]
 	 * ```
 	 *
-	 * Positioning functions are compatible with {@link module:utils/dom/position~Position}.
+	 * Positioning functions are compatible with {@link module:utils/dom/position~DomPoint}.
 	 *
 	 * The name that position function returns will be reflected in dropdown panel's class that
 	 * controls its placement. See {@link module:ui/dropdown/dropdownview~DropdownView#panelPosition}

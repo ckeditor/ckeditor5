@@ -5,7 +5,7 @@
 
 /* global window, document, console */
 
-import Rect from '../../src/dom/rect';
+import Rect from '../../src/dom/rect.js';
 
 describe( 'Rect', () => {
 	let geometry;

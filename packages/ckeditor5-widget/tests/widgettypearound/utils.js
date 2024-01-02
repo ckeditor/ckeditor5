@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import Selection from '@ckeditor/ckeditor5-engine/src/model/selection.js';
 import {
 	TYPE_AROUND_SELECTION_ATTRIBUTE,
 	getTypeAroundFakeCaretPosition
-} from '../../src/widgettypearound/utils';
+} from '../../src/widgettypearound/utils.js';
 
 describe( 'widget type around utils', () => {
 	let selection;

@@ -7,19 +7,19 @@
  * @module engine/model/range
  */
 
-import TypeCheckable from './typecheckable';
-import Position from './position';
-import TreeWalker, { type TreeWalkerOptions, type TreeWalkerValue } from './treewalker';
+import TypeCheckable from './typecheckable.js';
+import Position from './position.js';
+import TreeWalker, { type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
 
-import type Document from './document';
-import type DocumentFragment from './documentfragment';
-import type Element from './element';
-import type InsertOperation from './operation/insertoperation';
-import type Item from './item';
-import type MergeOperation from './operation/mergeoperation';
-import type MoveOperation from './operation/moveoperation';
-import type Operation from './operation/operation';
-import type SplitOperation from './operation/splitoperation';
+import type Document from './document.js';
+import type DocumentFragment from './documentfragment.js';
+import type Element from './element.js';
+import type InsertOperation from './operation/insertoperation.js';
+import type Item from './item.js';
+import type MergeOperation from './operation/mergeoperation.js';
+import type MoveOperation from './operation/moveoperation.js';
+import type Operation from './operation/operation.js';
+import type SplitOperation from './operation/splitoperation.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 

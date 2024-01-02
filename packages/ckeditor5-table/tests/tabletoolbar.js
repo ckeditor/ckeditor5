@@ -5,20 +5,20 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import TableToolbar from '../src/tabletoolbar';
-import Table from '../src/table';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ClassicTestEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import TableToolbar from '../src/tabletoolbar.js';
+import Table from '../src/table.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle.js';
 
 describe( 'TableToolbar', () => {
 	testUtils.createSinonSandbox();

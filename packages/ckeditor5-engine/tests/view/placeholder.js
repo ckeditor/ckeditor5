@@ -11,12 +11,12 @@ import {
 	showPlaceholder,
 	hidePlaceholder,
 	needsPlaceholder
-} from '../../src/view/placeholder';
-import createViewRoot from './_utils/createroot';
-import View from '../../src/view/view';
-import ViewRange from '../../src/view/range';
-import { setData } from '../../src/dev-utils/view';
-import { StylesProcessor } from '../../src/view/stylesmap';
+} from '../../src/view/placeholder.js';
+import createViewRoot from './_utils/createroot.js';
+import View from '../../src/view/view.js';
+import ViewRange from '../../src/view/range.js';
+import { setData } from '../../src/dev-utils/view.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'placeholder', () => {
 	let view, viewDocument, viewRoot;

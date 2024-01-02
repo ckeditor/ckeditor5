@@ -7,18 +7,18 @@
  * @module engine/model/document
  */
 
-import Differ from './differ';
-import DocumentSelection from './documentselection';
-import History from './history';
-import RootElement from './rootelement';
+import Differ from './differ.js';
+import DocumentSelection from './documentselection.js';
+import History from './history.js';
+import RootElement from './rootelement.js';
 
-import type { SelectionChangeEvent } from './selection';
-import type { default as Model, ModelApplyOperationEvent } from './model';
-import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection';
-import type Batch from './batch';
-import type Position from './position';
-import type Range from './range';
-import type Writer from './writer';
+import type { SelectionChangeEvent } from './selection.js';
+import type { default as Model, ModelApplyOperationEvent } from './model.js';
+import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection.js';
+import type Batch from './batch.js';
+import type Position from './position.js';
+import type Range from './range.js';
+import type Writer from './writer.js';
 
 import {
 	CKEditorError,

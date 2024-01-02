@@ -5,7 +5,7 @@
 
 /* globals window, document, console, ClassicEditor, DocumentList, DocumentListProperties, TodoDocumentList, ImageResize */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 /* import { DocumentList, TodoDocumentList } from '@ckeditor/ckeditor5-list'; */
 
@@ -21,13 +21,14 @@ ClassicEditor
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
-		ckbox: {
-			forceDemoLabel: true
-		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		image: {
 			toolbar: [

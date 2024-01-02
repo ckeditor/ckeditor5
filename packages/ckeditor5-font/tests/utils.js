@@ -8,9 +8,9 @@ import {
 	FONT_BACKGROUND_COLOR,
 	addColorSelectorToDropdown,
 	renderDowncastElement
-} from './../src/utils';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+} from './../src/utils.js';
+import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { ColorSelectorView } from '@ckeditor/ckeditor5-ui';
 

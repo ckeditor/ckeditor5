@@ -7,7 +7,7 @@
  * @module ui/highlightedtext/highlightedtextview
  */
 
-import View from '../view';
+import View from '../view.js';
 import { escape } from 'lodash-es';
 
 import '../../theme/components/highlightedtext/highlightedtext.css';

@@ -7,24 +7,24 @@
  * @module engine/conversion/downcastdispatcher
  */
 
-import Consumable from './modelconsumable';
-import Range from '../model/range';
+import Consumable from './modelconsumable.js';
+import Range from '../model/range.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Differ, DiffItem } from '../model/differ';
-import type { default as MarkerCollection, Marker } from '../model/markercollection';
-import type { TreeWalkerValue } from '../model/treewalker';
-import type DocumentSelection from '../model/documentselection';
-import type DowncastWriter from '../view/downcastwriter';
-import type RootElement from '../model/rootelement';
-import type Element from '../model/element';
-import type Item from '../model/item';
-import type Mapper from './mapper';
-import type Position from '../model/position';
-import type Schema from '../model/schema';
-import type Selection from '../model/selection';
-import type ViewElement from '../view/element';
+import type { default as Differ, DiffItem } from '../model/differ.js';
+import type { default as MarkerCollection, Marker } from '../model/markercollection.js';
+import type { TreeWalkerValue } from '../model/treewalker.js';
+import type DocumentSelection from '../model/documentselection.js';
+import type DowncastWriter from '../view/downcastwriter.js';
+import type RootElement from '../model/rootelement.js';
+import type Element from '../model/element.js';
+import type Item from '../model/item.js';
+import type Mapper from './mapper.js';
+import type Position from '../model/position.js';
+import type Schema from '../model/schema.js';
+import type Selection from '../model/selection.js';
+import type ViewElement from '../view/element.js';
 
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting

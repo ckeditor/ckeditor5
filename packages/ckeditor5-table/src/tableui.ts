@@ -7,7 +7,7 @@
  * @module table/tableui
  */
 
-import { Plugin, type Command, type Editor } from 'ckeditor5/src/core';
+import { icons, Plugin, type Command, type Editor } from 'ckeditor5/src/core.js';
 import {
 	addListToDropdown,
 	createDropdown,
@@ -16,17 +16,16 @@ import {
 	SwitchButtonView,
 	type DropdownView,
 	type ListDropdownItemDefinition
-} from 'ckeditor5/src/ui';
-import { Collection, type Locale } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/ui.js';
+import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 
-import InsertTableView from './ui/inserttableview';
+import InsertTableView from './ui/inserttableview.js';
 
-import tableIcon from './../theme/icons/table.svg';
 import tableColumnIcon from './../theme/icons/table-column.svg';
 import tableRowIcon from './../theme/icons/table-row.svg';
 import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
-import type InsertTableCommand from './commands/inserttablecommand';
-import type MergeCellsCommand from './commands/mergecellscommand';
+import type InsertTableCommand from './commands/inserttablecommand.js';
+import type MergeCellsCommand from './commands/mergecellscommand.js';
 
 /**
  * The table UI plugin. It introduces:
@@ -63,7 +62,7 @@ export default class TableUI extends Plugin {
 
 			// Decorate dropdown's button.
 			dropdownView.buttonView.set( {
-				icon: tableIcon,
+				icon: icons.table,
 				label: t( 'Insert table' ),
 				tooltip: true
 			} );

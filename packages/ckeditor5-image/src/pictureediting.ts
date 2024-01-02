@@ -7,12 +7,12 @@
  * @module image/pictureediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import ImageEditing from './image/imageediting';
-import ImageUtils from './imageutils';
-import { downcastSourcesAttribute, upcastPicture } from './image/converters';
-import type { default as ImageUploadEditing, ImageUploadCompleteEvent } from './imageupload/imageuploadediting';
+import ImageEditing from './image/imageediting.js';
+import ImageUtils from './imageutils.js';
+import { downcastSourcesAttribute, upcastPicture } from './image/converters.js';
+import type { default as ImageUploadEditing, ImageUploadCompleteEvent } from './imageupload/imageuploadediting.js';
 
 /**
  * This plugin enables the [`<picture>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture) element support in the editor.

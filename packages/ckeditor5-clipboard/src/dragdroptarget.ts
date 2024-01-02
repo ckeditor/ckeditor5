@@ -32,7 +32,7 @@ import {
 	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
-import LineView from './lineview';
+import LineView from './lineview.js';
 
 import { throttle } from 'lodash-es';
 
@@ -293,6 +293,11 @@ export default class DragDropTarget extends Plugin {
 		const domElementAfter = viewElementAfter ? editing.view.domConverter.mapViewToDom( viewElementAfter ) : null;
 
 		const viewElementParent = editing.mapper.toViewElement( nodeParent )!;
+
+		if ( !viewElementParent ) {
+			return;
+		}
+
 		const domElementParent = editing.view.domConverter.mapViewToDom( viewElementParent )!;
 
 		const domScrollableRect = this._getScrollableRect( viewElementParent );
@@ -408,7 +413,7 @@ function findDropTargetRange(
 		}
 		else if ( model.schema.checkChild( modelElement, '$block' ) ) {
 			const childNodes = Array.from( modelElement.getChildren() )
-				.filter( ( node ): node is Element => node.is( 'element' ) && !isFloatingElement( editor, node ) );
+				.filter( ( node ): node is Element => node.is( 'element' ) && !shouldIgnoreElement( editor, node ) );
 
 			let startIndex = 0;
 			let endIndex = childNodes.length;
@@ -438,13 +443,18 @@ function findDropTargetRange(
 }
 
 /**
- * Returns true for elements with floating style set.
+ * Returns true for elements which should be ignored.
  */
-function isFloatingElement( editor: Editor, modelElement: Element ): boolean {
+function shouldIgnoreElement( editor: Editor, modelElement: Element ): boolean {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 
 	const viewElement = mapper.toViewElement( modelElement )!;
+
+	if ( !viewElement ) {
+		return true;
+	}
+
 	const domElement = domConverter.mapViewToDom( viewElement )!;
 
 	return global.window.getComputedStyle( domElement ).float != 'none';

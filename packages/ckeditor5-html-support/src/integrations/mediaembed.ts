@@ -7,20 +7,20 @@
  * @module html-support/integrations/mediaembed
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter';
-import DataSchema from '../dataschema';
-import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } from '../utils';
+import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import DataSchema from '../dataschema.js';
+import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } from '../utils.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	Element,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement } from 'ckeditor5/src/engine';
-import type { GetCallback } from 'ckeditor5/src/utils';
-import { getDescendantElement } from './integrationutils';
+	ViewElement } from 'ckeditor5/src/engine.js';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
+import { getDescendantElement } from './integrationutils.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:media-embed/mediaembed~MediaEmbed Media Embed} feature.

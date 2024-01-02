@@ -7,7 +7,7 @@
  * @module table/converters/tableproperties
  */
 
-import type { Conversion, ViewElement } from 'ckeditor5/src/engine';
+import type { Conversion, ViewElement } from 'ckeditor5/src/engine.js';
 
 /**
  * Conversion helper for upcasting attributes using normalized styles.

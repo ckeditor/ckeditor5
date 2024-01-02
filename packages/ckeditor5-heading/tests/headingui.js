@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Heading from '../src/heading';
-import HeadingEditing from '../src/headingediting';
-import HeadingUI from '../src/headingui';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Heading from '../src/heading.js';
+import HeadingEditing from '../src/headingediting.js';
+import HeadingUI from '../src/headingui.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'HeadingUI', () => {
 	let editor, editorElement, dropdown;

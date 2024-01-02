@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import TodoDocumentListEditing from '../../src/tododocumentlist/tododocumentlistediting';
-import { setupTestHelpers } from '../documentlist/_utils/utils';
+import TodoDocumentListEditing from '../../src/tododocumentlist/tododocumentlistediting.js';
+import { setupTestHelpers } from '../documentlist/_utils/utils.js';
 
-import stubUid from '../documentlist/_utils/uid';
+import stubUid from '../documentlist/_utils/uid.js';
 
 describe( 'TodoDocumentListEditing - conversion - changes', () => {
 	let editor, model, test, modelRoot;

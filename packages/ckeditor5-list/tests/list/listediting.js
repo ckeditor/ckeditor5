@@ -3,29 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ListEditing from '../../src/list/listediting';
-import ListCommand from '../../src/list/listcommand';
-import IndentCommand from '../../src/list/indentcommand';
+import ListEditing from '../../src/list/listediting.js';
+import ListCommand from '../../src/list/listcommand.js';
+import IndentCommand from '../../src/list/indentcommand.js';
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range.js';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
 
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import TableKeyboard from '@ckeditor/ckeditor5-table/src/tablekeyboard';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import TableKeyboard from '@ckeditor/ckeditor5-table/src/tablekeyboard.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 
 describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;

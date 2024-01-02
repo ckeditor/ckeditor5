@@ -5,11 +5,11 @@
 
 /* globals CustomEvent, document */
 
-import ColorPickerView from './../../src/colorpicker/colorpickerview';
+import ColorPickerView from './../../src/colorpicker/colorpickerview.js';
 import 'vanilla-colorful/hex-color-picker.js';
-import env from '@ckeditor/ckeditor5-utils/src/env';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ColorPickerView', () => {

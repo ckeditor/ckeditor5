@@ -10,7 +10,7 @@ import {
 	isInsideSurrogatePair,
 	isInsideCombinedSymbol,
 	isInsideEmojiSequence
-} from '../src/unicode';
+} from '../src/unicode.js';
 
 describe( 'utils', () => {
 	describe( 'unicode', () => {

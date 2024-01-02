@@ -7,24 +7,24 @@
  * @module engine/model/documentselection
  */
 
-import TypeCheckable from './typecheckable';
-import LiveRange from './liverange';
+import TypeCheckable from './typecheckable.js';
+import LiveRange from './liverange.js';
 import Selection, {
 	type SelectionChangeAttributeEvent,
 	type SelectionChangeRangeEvent
-} from './selection';
-import Text from './text';
-import TextProxy from './textproxy';
+} from './selection.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 
-import type { default as Document, DocumentChangeEvent } from './document';
-import type { default as Model, ModelApplyOperationEvent } from './model';
-import type { Marker, MarkerCollectionUpdateEvent } from './markercollection';
-import type Batch from './batch';
-import type Element from './element';
-import type Item from './item';
-import type { default as Position, PositionOffset } from './position';
-import type Range from './range';
-import type Schema from './schema';
+import type { default as Document, DocumentChangeEvent } from './document.js';
+import type { default as Model, ModelApplyOperationEvent } from './model.js';
+import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js';
+import type Batch from './batch.js';
+import type Element from './element.js';
+import type Item from './item.js';
+import type { default as Position, PositionOffset } from './position.js';
+import type Range from './range.js';
+import type Schema from './schema.js';
 
 import {
 	CKEditorError,

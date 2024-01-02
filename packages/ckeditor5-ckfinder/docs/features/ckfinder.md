@@ -37,7 +37,7 @@ This demo shows the integration where the file manager's server connector handle
 This demo shows the [full integration](#configuring-the-full-integration) with the CKFinder file uploader:
 
 * Paste an image directly into the editor, and it will be automatically uploaded using the server-side connector.
-* Use the insert image or file button {@icon @ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.svg Browse files} in the toolbar to open the CKFinder file manager and insert an image or a link to any other file.
+* Use the insert image or file button {@icon @ckeditor/ckeditor5-core/theme/icons/browse-files.svg Browse files} in the toolbar to open the CKFinder file manager and insert an image or a link to any other file.
 
 {@snippet features/ckfinder}
 

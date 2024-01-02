@@ -26,23 +26,23 @@ import {
 	type ColorPickerConfig,
 	type FocusCyclerForwardCycleEvent,
 	type FocusCyclerBackwardCycleEvent
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 import {
 	fillToolbar,
 	getBorderStyleDefinitions,
 	getBorderStyleLabels,
 	getLabeledColorInputCreator
-} from '../../utils/ui/table-properties';
-import FormRowView from '../../ui/formrowview';
+} from '../../utils/ui/table-properties.js';
+import FormRowView from '../../ui/formrowview.js';
 
 import '../../../theme/form.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
-import type ColorInputView from '../../ui/colorinputview';
-import type { TablePropertiesOptions } from '../../tableconfig';
+import type ColorInputView from '../../ui/colorinputview.js';
+import type { TablePropertiesOptions } from '../../tableconfig.js';
 
 const ALIGNMENT_ICONS = {
 	left: icons.objectLeft,

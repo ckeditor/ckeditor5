@@ -7,7 +7,7 @@
  * @module html-support/converters
  */
 
-import type { Editor } from 'ckeditor5/src/core';
+import type { Editor } from 'ckeditor5/src/core.js';
 import type {
 	AttributeElement,
 	DowncastAttributeEvent,
@@ -21,17 +21,17 @@ import type {
 	UpcastElementEvent,
 	ViewElement,
 	Item
-} from 'ckeditor5/src/engine';
-import { toWidget } from 'ckeditor5/src/widget';
+} from 'ckeditor5/src/engine.js';
+import { toWidget } from 'ckeditor5/src/widget.js';
 import {
 	setViewAttributes,
 	mergeViewElementAttributes,
 	updateViewAttributes,
 	getHtmlAttributeName,
 	type GHSViewAttributes
-} from './utils';
-import type DataFilter from './datafilter';
-import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema';
+} from './utils.js';
+import type DataFilter from './datafilter.js';
+import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema.js';
 
 /**
  * View-to-model conversion helper for object elements.

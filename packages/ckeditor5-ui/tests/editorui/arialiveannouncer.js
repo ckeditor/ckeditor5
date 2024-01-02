@@ -5,9 +5,9 @@
 
 /* global document  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { AriaLiveAnnouncerRegionView, AriaLiveAnnouncerView } from '../../src/arialiveannouncer';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { AriaLiveAnnouncerRegionView, AriaLiveAnnouncerView } from '../../src/arialiveannouncer.js';
 
 describe( 'AriaLiveAnnouncer', () => {
 	let editor, sourceElement, announcer;

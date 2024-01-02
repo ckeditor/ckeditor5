@@ -7,7 +7,7 @@
  * @module ui/inputnumber/inputnumberview
  */
 
-import InputView from '../input/inputview';
+import InputView from '../input/inputview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

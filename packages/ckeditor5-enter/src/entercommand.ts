@@ -8,7 +8,7 @@
  */
 
 import { Command } from '@ckeditor/ckeditor5-core';
-import { getCopyOnEnterAttributes } from './utils';
+import { getCopyOnEnterAttributes } from './utils.js';
 
 import type {
 	Element,

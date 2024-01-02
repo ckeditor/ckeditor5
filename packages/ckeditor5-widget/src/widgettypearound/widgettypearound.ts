@@ -62,10 +62,10 @@ import {
 	getClosestWidgetViewElement,
 	getTypeAroundFakeCaretPosition,
 	TYPE_AROUND_SELECTION_ATTRIBUTE
-} from './utils';
+} from './utils.js';
 
-import { isWidget } from '../utils';
-import type Widget from '../widget';
+import { isWidget } from '../utils.js';
+import type Widget from '../widget.js';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 

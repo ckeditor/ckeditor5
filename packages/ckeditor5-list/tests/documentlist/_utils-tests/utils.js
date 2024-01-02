@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { modelList, stringifyList } from '../_utils/utils';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { modelList, stringifyList } from '../_utils/utils.js';
 
 describe( 'mockList()', () => {
 	it( 'Single bulleted list item', () => {

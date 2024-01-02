@@ -7,8 +7,8 @@
  * @module list/listproperties/liststartcommand
  */
 
-import { Command } from 'ckeditor5/src/core';
-import { getSelectedListItems } from '../list/utils';
+import { Command } from 'ckeditor5/src/core.js';
+import { getSelectedListItems } from '../list/utils.js';
 
 /**
  * The list start index command. It changes the `listStart` attribute of the selected list items.

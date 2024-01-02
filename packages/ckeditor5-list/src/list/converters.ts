@@ -22,16 +22,16 @@ import {
 	type Position,
 	type UpcastConversionApi,
 	type UpcastElementEvent,
-	type View,
+	type EditingView,
 	type ViewContainerElement,
 	type ViewElement,
 	type ViewNode,
 	type ViewPosition,
 	type ViewTypeCheckable,
 	type Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import type { GetCallback } from 'ckeditor5/src/utils';
+import type { GetCallback } from 'ckeditor5/src/utils.js';
 
 import {
 	generateLiInUl,
@@ -39,7 +39,7 @@ import {
 	mergeViewLists,
 	getSiblingListItem,
 	positionAfterUiElements
-} from './utils';
+} from './utils.js';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.
@@ -475,7 +475,7 @@ export const cleanListItem: GetCallback<UpcastElementEvent> = ( evt, data, conve
  * positions between the `listItem` elements that would be incorrectly mapped because of how list items are represented in the model
  * and in the view.
  */
-export function modelToViewPosition( view: View ): GetCallback<MapperModelToViewPositionEvent> {
+export function modelToViewPosition( view: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		if ( data.isPhantom ) {
 			return;

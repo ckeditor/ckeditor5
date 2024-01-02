@@ -11,8 +11,8 @@ import { isFunction } from 'lodash-es';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Editor, EditorDestroyEvent } from '../editor';
-import type { ElementApi } from './elementapimixin';
+import type { default as Editor, EditorDestroyEvent } from '../editor.js';
+import type { ElementApi } from './elementapimixin.js';
 
 /**
  * Checks if the editor is initialized on a `<textarea>` element that belongs to a form. If yes, it updates the editor's element

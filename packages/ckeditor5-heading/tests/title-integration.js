@@ -5,16 +5,16 @@
 
 /* global document */
 
-import Title from '../src/title';
-import Heading from '../src/heading';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Title from '../src/title.js';
+import Heading from '../src/heading.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor';
+import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
 
 describe( 'Title integration with feature', () => {
 	let editor, model, doc, element;

@@ -5,24 +5,23 @@
 
 /* globals document, window */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import CloudServicesCoreMock from './_utils/cloudservicescoremock';
-import ImageInsertUI from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { icons } from 'ckeditor5/src/core';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
+import ImageInsertUI from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui.js';
+import Model from '@ckeditor/ckeditor5-ui/src/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
-import CKBoxUI from '../src/ckboxui';
-import CKBoxEditing from '../src/ckboxediting';
-import browseFilesIcon from '../theme/icons/browse-files.svg';
+import CKBoxUI from '../src/ckboxui.js';
+import CKBoxEditing from '../src/ckboxediting.js';
 
 describe( 'CKBoxUI', () => {
 	let editorElement, editor, button, command, originalCKBox;
@@ -130,7 +129,7 @@ describe( 'CKBoxUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( browseFilesIcon );
+			expect( button.icon ).to.equal( icons.browseFiles );
 		} );
 
 		it( 'should enable tooltips for the #buttonView', () => {

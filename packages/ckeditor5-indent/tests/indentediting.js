@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import MultiCommand from '@ckeditor/ckeditor5-core/src/multicommand';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import MultiCommand from '@ckeditor/ckeditor5-core/src/multicommand.js';
 
-import IndentEditing from '../src/indentediting';
+import IndentEditing from '../src/indentediting.js';
 
 describe( 'IndentEditing', () => {
 	let editor;

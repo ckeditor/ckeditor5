@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
-import CKBoxImageEdit from '../src/ckboximageedit';
-import CKBoxImageEditEditing from '../src/ckboximageedit/ckboximageeditediting';
+import CKBoxImageEdit from '../src/ckboximageedit.js';
+import CKBoxImageEditEditing from '../src/ckboximageedit/ckboximageeditediting.js';
 import CKBoxImageEditUI from '../src/ckboximageedit/ckboximageeditui.ts';
 
 describe( 'CKBoxImageEdit', () => {

@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ResizeImageCommand from '../../src/imageresize/resizeimagecommand';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import ResizeImageCommand from '../../src/imageresize/resizeimagecommand.js';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
 
 /* eslint-disable no-undef */
 

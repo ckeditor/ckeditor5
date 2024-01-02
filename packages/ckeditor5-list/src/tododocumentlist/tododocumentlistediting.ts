@@ -18,7 +18,7 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type MapperViewToModelPositionEvent,
 	type ViewDocumentFragment
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 import {
 	getCode,
@@ -26,18 +26,18 @@ import {
 	getLocalizedArrowKeyCodeDirection,
 	type GetCallback,
 	type Locale
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import { isFirstBlockOfListItem, isListItemBlock } from '../documentlist/utils/model';
+import { isFirstBlockOfListItem, isListItemBlock } from '../documentlist/utils/model.js';
 import DocumentListEditing, {
 	type DocumentListEditingCheckElementEvent,
 	type DocumentListEditingPostFixerEvent
-} from '../documentlist/documentlistediting';
-import DocumentListCommand from '../documentlist/documentlistcommand';
-import CheckTodoDocumentListCommand from './checktododocumentlistcommand';
-import TodoCheckboxChangeObserver, { type ViewDocumentTodoCheckboxChangeEvent } from './todocheckboxchangeobserver';
+} from '../documentlist/documentlistediting.js';
+import DocumentListCommand from '../documentlist/documentlistcommand.js';
+import CheckTodoDocumentListCommand from './checktododocumentlistcommand.js';
+import TodoCheckboxChangeObserver, { type ViewDocumentTodoCheckboxChangeEvent } from './todocheckboxchangeobserver.js';
 
 const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 

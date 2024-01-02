@@ -12,8 +12,8 @@ import type {
 	ViewDocumentClipboardOutputEvent,
 	ViewDocumentCopyEvent,
 	ViewDocumentCutEvent
-} from 'ckeditor5/src/clipboard';
-import { Plugin } from 'ckeditor5/src/core';
+} from 'ckeditor5/src/clipboard.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 
 import type {
 	DocumentFragment,
@@ -26,13 +26,13 @@ import type {
 	Position,
 	Selection,
 	Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import type { EventInfo } from 'ckeditor5/src/utils';
+import type { EventInfo } from 'ckeditor5/src/utils.js';
 
-import TableSelection from './tableselection';
-import TableWalker, { type TableSlot } from './tablewalker';
-import TableUtils from './tableutils';
+import TableSelection from './tableselection.js';
+import TableWalker, { type TableSlot } from './tablewalker.js';
+import TableUtils from './tableutils.js';
 import {
 	cropTableToDimensions,
 	getHorizontallyOverlappingCells,
@@ -43,7 +43,7 @@ import {
 	trimTableCellIfNeeded,
 	adjustLastRowIndex,
 	adjustLastColumnIndex
-} from './utils/structure';
+} from './utils/structure.js';
 
 /**
  * This plugin adds support for copying/cutting/pasting fragments of tables.

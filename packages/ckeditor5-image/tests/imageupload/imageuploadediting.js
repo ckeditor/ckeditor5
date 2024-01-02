@@ -5,29 +5,29 @@
 
 /* globals window, setTimeout, atob, URL, Blob, HTMLCanvasElement, console */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import ImageBlockEditing from '../../src/image/imageblockediting';
-import ImageInlineEditing from '../../src/image/imageinlineediting';
-import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
-import UploadImageCommand from '../../src/imageupload/uploadimagecommand';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import ImageInlineEditing from '../../src/image/imageinlineediting.js';
+import ImageUploadEditing from '../../src/imageupload/imageuploadediting.js';
+import UploadImageCommand from '../../src/imageupload/uploadimagecommand.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import { downcastImageAttribute } from '../../src/image/converters';
-import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
+import { downcastImageAttribute } from '../../src/image/converters.js';
+import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len

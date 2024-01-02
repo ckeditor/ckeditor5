@@ -7,9 +7,9 @@
  * @module image/imagestyle/utils
  */
 
-import { type Editor, icons, type PluginCollection } from 'ckeditor5/src/core';
-import { logWarning } from 'ckeditor5/src/utils';
-import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig';
+import { type Editor, icons, type PluginCollection } from 'ckeditor5/src/core.js';
+import { logWarning } from 'ckeditor5/src/utils.js';
+import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
 
 const {
 	objectFullWidth,

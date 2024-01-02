@@ -7,8 +7,8 @@
  * @module ui/button/buttonlabelview
  */
 
-import View from '../view';
-import type ButtonLabel from './buttonlabel';
+import View from '../view.js';
+import type ButtonLabel from './buttonlabel.js';
 
 /**
  * A default implementation of the button view's label. It comes with a dynamic text support

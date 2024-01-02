@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import DocumentFragment from '../../src/view/documentfragment';
-import Element from '../../src/view/element';
-import Node from '../../src/view/node';
-import Text from '../../src/view/text';
-import TextProxy from '../../src/view/textproxy';
-import Document from '../../src/view/document';
-import { StylesProcessor } from '../../src/view/stylesmap';
+import DocumentFragment from '../../src/view/documentfragment.js';
+import Element from '../../src/view/element.js';
+import Node from '../../src/view/node.js';
+import Text from '../../src/view/text.js';
+import TextProxy from '../../src/view/textproxy.js';
+import Document from '../../src/view/document.js';
+import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'DocumentFragment', () => {
 	let document;

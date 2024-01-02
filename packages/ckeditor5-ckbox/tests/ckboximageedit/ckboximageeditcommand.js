@@ -6,29 +6,29 @@
 /* global window, console, btoa, setTimeout, AbortController */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import { Command } from 'ckeditor5/src/core';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { Command } from 'ckeditor5/src/core.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Image } from '@ckeditor/ckeditor5-image';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { Notification } from 'ckeditor5/src/ui';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { Notification } from 'ckeditor5/src/ui.js';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 import _ from 'lodash-es';
-import CloudServicesCoreMock from '../_utils/cloudservicescoremock';
-import CKBoxEditing from '../../src/ckboxediting';
-import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting';
+import CloudServicesCoreMock from '../_utils/cloudservicescoremock.js';
+import CKBoxEditing from '../../src/ckboxediting.js';
+import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting.js';
 
-import { blurHashToDataUrl } from '../../src/utils';
+import { blurHashToDataUrl } from '../../src/utils.js';
 
 const CKBOX_API_URL = 'https://upload.example.com';
 
@@ -259,6 +259,33 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( options ).to.not.have.property( 'assetId' );
 				expect( options ).to.have.property( 'imageUrl', imageUrl );
+				expect( options ).to.have.property( 'uploadCategoryId', categoryId );
+				expect( options ).to.have.property( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).to.be.false;
+				expect( options.onSave ).to.be.a( 'function' );
+				expect( options.onClose ).to.be.a( 'function' );
+			} );
+
+			it( 'should prepare options for the CKBox Image Editing dialog instance (external image with relative URL)', async () => {
+				const imageUrl = 'sample.png';
+				const categoryId = 'id-category-1';
+				const origin = window.location.origin;
+
+				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).resolves( categoryId );
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" src="${ imageUrl }"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					controller: new AbortController()
+				} );
+
+				expect( options ).to.not.have.property( 'assetId' );
+				expect( options ).to.have.property( 'imageUrl', `${ origin }/${ imageUrl }` );
 				expect( options ).to.have.property( 'uploadCategoryId', categoryId );
 				expect( options ).to.have.property( 'tokenUrl', 'foo' );
 				expect( options.imageEditing.allowOverwrite ).to.be.false;

@@ -7,10 +7,10 @@
  * @module ckbox/ckboximageedit/utils
  */
 
-import { global } from 'ckeditor5/src/utils';
+import { global } from 'ckeditor5/src/utils.js';
 
-import type { Element } from 'ckeditor5/src/engine';
-import type { CKBoxConfig } from '../ckboxconfig';
+import type { Element } from 'ckeditor5/src/engine.js';
+import type { CKBoxConfig } from '../ckboxconfig.js';
 
 /**
  * @internal
