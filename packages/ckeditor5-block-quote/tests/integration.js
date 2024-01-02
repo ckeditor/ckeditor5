@@ -9,7 +9,7 @@ import BlockQuote from '../src/blockquote.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
+import LegacyList from '@ckeditor/ckeditor5-list/src/legacylist.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
@@ -32,7 +32,7 @@ describe( 'BlockQuote integration', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ BlockQuote, Paragraph, Bold, Image, ImageCaption, List, Enter, Delete, Heading, Table ]
+				plugins: [ BlockQuote, Paragraph, Bold, Image, ImageCaption, LegacyList, Enter, Delete, Heading, Table ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
