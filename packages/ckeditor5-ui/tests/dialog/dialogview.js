@@ -266,6 +266,51 @@ describe( 'DialogView', () => {
 
 					sinon.assert.calledOnce( focusSpies.childA );
 				} );
+
+				it( 'should cycle forward correctly if there are only action buttons', async () => {
+					const newView = new DialogView( locale, {
+						getCurrentDomRoot: getCurrentDomRootStub,
+						getViewportOffset: getViewportOffsetStub
+					} );
+
+					newView.render();
+					newView.isVisible = true;
+
+					document.body.appendChild( newView.element );
+
+					newView.setupParts( {
+						actionButtons: [
+							{ label: 'foo' },
+							{ label: 'bar' }
+						]
+					} );
+
+					// The view gets focused when #isVisible is set to true. Let's wait for the focus to move and
+					// then start the spies
+					await wait( 10 );
+
+					focusSpies = {
+						actionFoo: testUtils.sinon.spy( newView.actionsView.children.first, 'focus' ),
+						actionBar: testUtils.sinon.spy( newView.actionsView.children.last, 'focus' )
+					};
+
+					newView.actionsView.keystrokes.press( keyEvtData );
+					await wait( 10 );
+
+					sinon.assert.calledOnce( focusSpies.actionBar );
+
+					newView.actionsView.keystrokes.press( keyEvtData );
+					await wait( 10 );
+
+					sinon.assert.calledOnce( focusSpies.actionFoo );
+
+					newView.actionsView.keystrokes.press( keyEvtData );
+					await wait( 10 );
+
+					sinon.assert.calledTwice( focusSpies.actionBar );
+
+					newView.element.remove();
+				} );
 			} );
 
 			describe( 'upon pressing Shift+Tab', () => {
@@ -303,6 +348,51 @@ describe( 'DialogView', () => {
 					await wait( 10 );
 
 					sinon.assert.calledOnce( focusSpies.childA );
+				} );
+
+				it( 'should cycle backwards correctly if there are only action buttons', async () => {
+					const newView = new DialogView( locale, {
+						getCurrentDomRoot: getCurrentDomRootStub,
+						getViewportOffset: getViewportOffsetStub
+					} );
+
+					newView.render();
+					newView.isVisible = true;
+
+					document.body.appendChild( newView.element );
+
+					newView.setupParts( {
+						actionButtons: [
+							{ label: 'foo' },
+							{ label: 'bar' }
+						]
+					} );
+
+					// The view gets focused when #isVisible is set to true. Let's wait for the focus to move and
+					// then start the spies
+					await wait( 10 );
+
+					focusSpies = {
+						actionFoo: testUtils.sinon.spy( newView.actionsView.children.first, 'focus' ),
+						actionBar: testUtils.sinon.spy( newView.actionsView.children.last, 'focus' )
+					};
+
+					newView.actionsView.keystrokes.press( keyEvtData );
+					await wait( 10 );
+
+					sinon.assert.calledOnce( focusSpies.actionBar );
+
+					newView.actionsView.keystrokes.press( keyEvtData );
+					await wait( 10 );
+
+					sinon.assert.calledOnce( focusSpies.actionFoo );
+
+					newView.actionsView.keystrokes.press( keyEvtData );
+					await wait( 10 );
+
+					sinon.assert.calledTwice( focusSpies.actionBar );
+
+					newView.element.remove();
 				} );
 			} );
 		} );

@@ -633,12 +633,20 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			if ( isViewWithFocusCycler( focusable ) ) {
 				this.listenTo<FocusCyclerForwardCycleEvent>( focusable.focusCycler, 'forwardCycle', evt => {
 					this._focusCycler.focusNext();
-					evt.stop();
+
+					// Stop the event propagation only if there are more focusables.
+					if ( this._focusCycler.next !== this._focusCycler.focusables.get( this._focusCycler.current! ) ) {
+						evt.stop();
+					}
 				} );
 
 				this.listenTo<FocusCyclerBackwardCycleEvent>( focusable.focusCycler, 'backwardCycle', evt => {
 					this._focusCycler.focusPrevious();
-					evt.stop();
+
+					// Stop the event propagation only if there are more focusables.
+					if ( this._focusCycler.previous !== this._focusCycler.focusables.get( this._focusCycler.current! ) ) {
+						evt.stop();
+					}
 				} );
 			}
 		} );

@@ -84,8 +84,7 @@ class ModalWithText extends Plugin {
 
 				dialog.show( {
 					isModal: true,
-					title: t( 'Modal with text and without close button' ),
-					hasCloseButton: false,
+					title: t( 'Modal with text' ),
 					content: textView,
 					actionButtons: [
 						{
@@ -115,6 +114,51 @@ class ModalWithText extends Plugin {
 						},
 						{
 							label: t( 'Cancel' ),
+							withText: true,
+							onExecute: () => dialog.hide()
+						}
+					]
+				} );
+			} );
+
+			return buttonView;
+		} );
+	}
+}
+
+class YesNoModal extends Plugin {
+	public static get requires() {
+		return [ Dialog ] as const;
+	}
+
+	public init(): void {
+		const t = this.editor.locale.t;
+
+		this.editor.ui.componentFactory.add( 'yesNoModal', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Yes/no modal' ),
+				tooltip: true,
+				withText: true
+			} );
+
+			buttonView.on( 'execute', () => {
+				const dialog = this.editor.plugins.get( 'Dialog' );
+
+				dialog.show( {
+					isModal: true,
+					title: 'Are you sure you want to do this?',
+					hasCloseButton: false,
+					actionButtons: [
+						{
+							label: t( 'Yes' ),
+							class: 'ck-button-action',
+							withText: true,
+							onExecute: () => dialog.hide()
+						},
+						{
+							label: t( 'No' ),
 							withText: true,
 							onExecute: () => dialog.hide()
 						}
@@ -198,13 +242,14 @@ function initEditor( editorName, editorClass, direction = 'ltr', customCallback?
 			SpecialCharactersEmoji,
 			SourceEditing,
 			ModalWithText,
-			MinimalisticDialogs
+			MinimalisticDialogs,
+			YesNoModal
 		],
 		toolbar: {
 			items: [
 				'heading', 'bold', 'italic', 'link', 'sourceediting',
 				'-',
-				'findAndReplace', 'modalWithText', ...POSSIBLE_DIALOG_POSITIONS
+				'findAndReplace', 'modalWithText', 'yesNoModal', ...POSSIBLE_DIALOG_POSITIONS
 			],
 			shouldNotGroupWhenFull: true
 		},
@@ -451,13 +496,14 @@ MultiRootEditor
 			SourceEditing,
 			ModalWithText,
 			MinimalisticDialogs,
+			YesNoModal,
 			MultiRootEditorIntegration
 		],
 		toolbar: {
 			items: [
 				'heading', 'bold', 'italic', 'link',
 				'-',
-				'findAndReplace', 'modalWithText', ...POSSIBLE_DIALOG_POSITIONS,
+				'findAndReplace', 'modalWithText', 'yesNoModal', ...POSSIBLE_DIALOG_POSITIONS,
 				{
 					label: 'Multi-root',
 					withText: true,
