@@ -26,7 +26,7 @@ for ( const directoryName of readdirSync( releaseDirectory ) ) {
 	const path = join( releaseDirectory, directoryName );
 
 	try {
-		execSync( `yarn run publint ${ path } --level=warning --strict`, {
+		execSync( `yarn publint ${ path } --level=warning --strict`, {
 			cwd: process.cwd(),
 			encoding: 'utf-8',
 			stdio: 'pipe'
