@@ -33,6 +33,14 @@ These features provide similar functionality:
 * {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered lists with configurable markers.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
+## Common API
+
+The {@link module:list/tododocumentlist~TodoDocumentList} plugin registers:
+
+* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand 'todoList'} command.
+* The {@link module:list/tododocumentlist/checktododocumentlistcommand~CheckTodoDocumentListCommand 'checkTodoList'} command.
+* The 'todoList' UI button.
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list).
