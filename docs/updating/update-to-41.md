@@ -24,7 +24,7 @@ Listed below are the most important changes that require your attention when upg
 
 As of the latest release, the current list plugin (often referred to as list v1) has been replaced with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list (v2).
 
-The list v2 (document list) feature was implemented in 2022 to add support for block content in list items. It supported extending list markup via GHS. It did not, however, support to-do lists back then. We concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality and the {@link features/document-lists#simple-lists simple list} configuration setting.
+The list v2 (document list) feature was implemented in 2022 to add support for block content in list items. It supported extending list markup via GHS. It did not, however, support to-do lists back then. We concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality and the {@link features/lists-editing#simple-lists simple list} configuration setting.
 
 We introduced the new plugin in a manner that aims to be transparent for our users, namely by physically replacing the old plugin with the new one, but retaining all namespace intact. It means, starting with release v.41.0.0 all imports of various lists-related plugins will use the new version.
 
@@ -32,7 +32,7 @@ The old plugin has been renamed to `LegacyList` instead. The same applies to all
 
 Unless you need to specifically use the old v1.0 plugin in your integration, there is no need to make changes in the configuration.
 
-If you want to use the new extended plugin, but do not want to utilize block elements in your lists, you can turn off this functionality and use the {@link features/document-lists#simple-lists simple list setting} instead of sticking to the old plugins.
+If you want to use the new extended plugin, but do not want to utilize block elements in your lists, you can turn off this functionality and use the {@link features/lists-editing#simple-lists simple list setting} instead of sticking to the old plugins.
 
 #### Details of plugin renames 
 
