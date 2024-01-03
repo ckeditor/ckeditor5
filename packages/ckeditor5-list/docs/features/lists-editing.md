@@ -1,6 +1,6 @@
 ---
-menu-title: Lists editing bahavior
-meta-title: Lists editing bahavior | CKEditor 5 Documentation
+menu-title: Lists editing behavior
+meta-title: Lists editing behavior | CKEditor 5 Documentation
 category: features-lists
 order: 30
 modified_at: 2024-01-02
@@ -10,7 +10,7 @@ modified_at: 2024-01-02
 
 ## Block lists
 
-The current list feature lets any part of the content be part of a list. Content blocks and elements – such as blockquotes, tables, paragraphs, headings, and others – can be put inside a list item, ensuring the continuity of numbering and retaining indentation.
+The current list feature lets any part of the content be part of a list. Content blocks and elements – such as images, tables, paragraphs, headings, and others – can be put inside a list item, ensuring the continuity of numbering and retaining indentation.
 
 ## Simple lists
 
