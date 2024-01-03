@@ -24,7 +24,7 @@ Listed below are the most important changes that require your attention when upg
 
 The below information affects all editor integrations that use the AI Assistant feature.
 
-We added support for the AWS Bedrock service and for providing custom adapters that may extend our solutions or allow to connect to a custom model. To enable this, it was necessary to perform refactoring in the feature's plugins architecture and configuration structure. However, we hope it makes us ready for providing new AI-related features in the future without introducing more breaking changes.
+We added support for the AWS Bedrock service and for providing custom adapters that may extend our solutions or allow to connect to a custom model. To enable this, we needed to refactor the feature's plugins architecture and configuration structure. However, we hope it makes CKEditor ready for providing new AI-related features in the future without introducing more breaking changes.
 
 Before, the OpenAI adapter was automatically required by the `AIAssistant` plugin. Now, the integrator must explicitly add the chosen adapter to the list of plugins:
 
@@ -44,7 +44,7 @@ ClassicEditor.create( element, {
 } );
 ```
 
-Another change is connected to {@link module:ai/aiassistant~AIAssistantConfig configuration structure}. The new `config.ai` namespace was introduced. The `config.aiAssistant` option was moved into `config.ai.aiAssistant`. Adapter-related properties were extracted to `config.ai.openAI`. Also, some of the properties were renamed.
+Another change is related to the {@link module:ai/aiassistant~AIAssistantConfig configuration structure}. We introduced a new `config.ai` namespace. The `config.aiAssistant` option was moved into `config.ai.aiAssistant`. Adapter-related properties were extracted to `config.ai.openAI`. Also, some of the properties were renamed.
 
 ```js
 // Before:
@@ -74,13 +74,13 @@ ClassicEditor.create( element, {
 
 ### CKBox image editing
 
-The new release includes the {@link features/ckbox CKBox} image editing feature, now quickly accessible either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform image quick image edits such as cropping, resizing, flipping and rotating the image. As it is called from withing the editor and the process takes place right in the asset manager, it greatly speeds up and simplifies the content editing process.
+The new release includes the {@link features/ckbox CKBox} image editing feature. You can access this feature either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform quick image edits such as cropping, resizing, flipping, and rotating the image. Image editing is called from within the editor and the process takes place right in the asset manager. This speeds up and simplifies the content editing process.
 
 {@img assets/img/ckbox-editing-area.png 1062 CKBox image editing panel.}
 
-#### Adding CKBox image editing to CKEditor 5
+#### Adding CKBox image editing to CKEditor&nbsp;5
 
-To use the CKBox image editing feature, you need to import it first into you editor. Please note, that it requires the `PictureEditing` plugin to work correctly.
+To use the CKBox image editing feature, you need to import it into you editor. It requires the `PictureEditing` plugin to work.
 
 Then, add it to the plugin list and the toolbar as shown below.
 
@@ -187,7 +187,7 @@ The toolbar dropdown will use the {@icon @ckeditor/ckeditor5-core/theme/icons/im
 
 ### Removal of the `insertImageViaUrl` option
 
-The `insertImageViaUrl` configuration option was not used and has been removed. If you have it somewhere in your editor configuration, please remove it to avoid getting an error. 
+The `insertImageViaUrl` configuration option was not used and was removed. If you have it somewhere in your editor configuration, remove it to avoid getting an error.
 
 ## Update to CKEditor&nbsp;5 v40.1.0
 
@@ -225,7 +225,7 @@ If the `type` setting is omitted from the configuration, the behavior defaults t
 
 ### Updated image text alternative icon
 
-The {@link features/images-text-alternative image text alternative} (the alt attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
+The {@link features/images-text-alternative image text alternative} (the `alt` attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
 
 ## Update to CKEditor&nbsp;5 v40.0.0
 
@@ -321,7 +321,7 @@ The `srcset` model attribute which provides parameters for responsive images, ha
 
 #### Changes to content styles
 
-Last but not least, content styles have been updated with this release, which means you need to update them in your editor implementation to avoid any discrepancies. Please refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
+Content styles have been updated with this release. This means you need to update them in your editor implementation to avoid any discrepancies. Refer to the {@link installation/advanced/content-styles Content styles} guide to learn how to generate the style sheet.
 
 ### Changes to the comments feature
 
