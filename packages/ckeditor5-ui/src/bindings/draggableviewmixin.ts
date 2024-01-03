@@ -170,7 +170,7 @@ export interface DraggableView extends View {
 }
 
 /**
- * An event data object for the {@link DraggableView#event:drag} event. Fired when the view is dragged.
+ * An event data object for the {@link ~DraggableView} `drag` event. Fired when the view is dragged.
  */
 export type DraggableViewDragEvent = {
 	name: 'drag';

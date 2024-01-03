@@ -217,7 +217,7 @@ export default class ClassicEditorUI extends EditorUI {
 	}
 
 	/**
-	 * Provides an integration between the sticky toolbar and {@link module:ui/dialog the Dialog plugin}.
+	 * Provides an integration between the sticky toolbar and {@link module:ui/dialog/dialog the Dialog plugin}.
 	 *
 	 * It ensures that the {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#stickyPanel sticky panel}
 	 * used by the editor UI will not get obscured by the dialog when the dialog uses one of its automatic positions.

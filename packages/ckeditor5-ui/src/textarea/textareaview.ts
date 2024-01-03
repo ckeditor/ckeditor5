@@ -71,7 +71,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 
 	/**
 	 * A flag that indicates whether the {@link #_updateAutoGrowHeight} method should be called when the view becomes
-	 * visible again. See {@link #_intersectionObserver}.
+	 * visible again. See {@link #_resizeObserver}.
 	 */
 	private _isUpdateAutoGrowHeightPending: boolean = false;
 
