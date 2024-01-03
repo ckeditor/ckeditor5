@@ -9,7 +9,7 @@ modified_at: 2024-01-02
 # Update to CKEditor&nbsp;5 v41.x
 
 <info-box>
-	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installations, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
@@ -22,7 +22,9 @@ Listed below are the most important changes that require your attention when upg
 
 ### Breaking changes to the list plugin
 
-As of the latest release, the current list plugin (often referred to as list v1.0) has been replaced with the {@link features/document-lists newer and more advanced list plugin}, formerly known as Document lists (v2.0).
+As of the latest release, the current list plugin (often referred to as list v1) has been replaced with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list (v2).
+
+The list v2 (document list) feature was implemented in 2022 to add support for block content in list items. It supported extending list markup via GHS. It did not, however, support to-do lists back then. We concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality and the {@link features/document-lists#simple-lists simple list} configuration setting.
 
 We introduced the new plugin in a manner that aims to be transparent for our users, namely by physically replacing the old plugin with the new one, but retaining all namespace intact. It means, starting with release v.41.0.0 all imports of various lists-related plugins will use the new version.
 
@@ -30,7 +32,7 @@ The old plugin has been renamed to `LegacyList` instead. The same applies to all
 
 Unless you need to specifically use the old v1.0 plugin in your integration, there is no need to make changes in the configuration.
 
-If you want to use the new extended plugin, but do not want to utilize block elements in list, you can turn off this functionality and use the {@link features/document-lists#simple-lists simple list setting} instead of sticking to the old plugins.
+If you want to use the new extended plugin, but do not want to utilize block elements in your lists, you can turn off this functionality and use the {@link features/document-lists#simple-lists simple list setting} instead of sticking to the old plugins.
 
 #### Details of plugin renames 
 
@@ -38,8 +40,8 @@ If you want to use the new extended plugin, but do not want to utilize block ele
     <thead>
         <tr>
             <th>Previous version</th>
-            <th>This version</th>
-            <th>Comment</th>
+            <th>Current version</th>
+            <th>Comments</th>
         </tr>
     </thead>
     <tbody>
