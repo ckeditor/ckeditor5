@@ -53,7 +53,7 @@ export default class LinkImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public afterInit(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
