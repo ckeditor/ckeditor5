@@ -327,7 +327,7 @@ export default class FocusCycler extends EmitterMixin() {
 			index = ( index + collectionLength + step ) % collectionLength;
 		} while ( index !== current );
 
-		return null;
+		return this.focusables.get( this.current! ) as FocusableView;
 	}
 }
 
