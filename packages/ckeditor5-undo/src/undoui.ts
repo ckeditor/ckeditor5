@@ -37,6 +37,27 @@ export default class UndoUI extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( editor.plugins.has( 'AccessibilityHelp' ) ) {
+			const t = editor.t;
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+				label: t( 'Undo' ),
+				keystroke: 'CTRL+Z'
+			} );
+
+			editor.plugins.get( 'AccessibilityHelp' ).registerKeystroke( {
+				label: t( 'Redo' ),
+				keystroke: [ 'CTRL+Y', 'CTRL+SHIFT+Z' ]
+			} );
+		}
+	}
+
+	/**
 	 * Creates a button for the specified command.
 	 *
 	 * @param name Command name.

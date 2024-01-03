@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+div.ck.ck-accessibility-help-content {
+	padding: var(--ck-spacing-large);
+	max-width: 600px;
+	max-height: 400px;
+	overflow: auto;
+	user-select: text;
+
+	& h3 {
+		font-weight: bold;
+	}
+
+	& p,
+	& h3,
+	& table {
+		margin: var(--ck-spacing-large) 0;
+	}
+
+	& p {
+		white-space: normal;
+	}
+
+	& textarea {
+		width: 100%;
+		font-family: monospace;
+		height: 300px;
+		white-space: pre;
+	}
+
+	& table {
+		border-collapse: collapse;
+		border-spacing: 0;
+		width: 100%;
+
+		& td, & th {
+			border: 1px solid var(--ck-color-base-border);
+			padding: var(--ck-spacing-small);
+			white-space: normal;
+		}
+
+		& th {
+			text-align: center;
+			font-weight: bold;
+		}
+
+		& td:first-of-type, & th:first-of-type {
+			width: 50%;
+		}
+
+	}
+
+	& kbd {
+		display: inline-block;
+		border: 1px solid var(--ck-color-base-border);
+		background: var(--ck-color-base-foreground);
+		font-family: monospace;
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-small);
+		vertical-align: middle;
+		font-size: .9em;
+		line-height: 1;
+		border-radius: 3px;
+	}
+}
+
