@@ -22,7 +22,7 @@ export default class DialogContentView extends View {
 	public readonly children: ViewCollection;
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	constructor(
 		locale: Locale | undefined

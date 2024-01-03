@@ -382,7 +382,7 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
-	 * Returns the bounding rect of the {@link #contentPanel}.
+	 * Returns the bounding rect of the {@link #contentPanelElement}.
 	 *
 	 * @private
 	 */
