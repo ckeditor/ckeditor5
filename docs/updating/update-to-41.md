@@ -30,9 +30,9 @@ We introduced the new plugin in a manner that aims to be transparent for our use
 
 The old plugin has been renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
 
-Unless you need to specifically use the old v1.0 plugin in your integration, there is no need to make changes in the configuration.
+Unless you need to specifically use the old plugin in your integration, there is no need to make changes in the configuration.
 
-If you want to use the new extended plugin, but do not want to utilize block elements in your lists, you can turn off this functionality and use the {@link features/lists-editing#simple-lists simple list setting} instead of sticking to the old plugins.
+If you do not want to utilize block elements in your lists, you can simply turn off this functionality with the {@link features/lists-editing#simple-lists simple list setting} instead of sticking to the old plugins.
 
 #### Details of plugin renames 
 
