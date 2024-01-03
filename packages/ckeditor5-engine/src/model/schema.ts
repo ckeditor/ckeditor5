@@ -1844,7 +1844,7 @@ export interface AttributeProperties {
 
 export type SchemaAttributeCheckCallback = ( context: SchemaContext, attributeName: string ) => boolean | undefined;
 
-export type SchemaChildCheckCallback = ( ctx: SchemaContext, def: SchemaCompiledItemDefinition ) => boolean | undefined;
+export type SchemaChildCheckCallback = ( context: SchemaContext, definition: SchemaCompiledItemDefinition ) => boolean | undefined;
 
 function compileBaseItemRule( sourceItemRules: Array<SchemaItemDefinition>, itemName: string ): SchemaCompiledItemDefinitionInternal {
 	const itemRule = {
