@@ -37,8 +37,6 @@ In addition to the basic functionality of creating the ordered and unordered lis
 <info-box info>
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
 
-	The {@link module:list/documentlistproperties~DocumentListProperties document list properties feature} is not available in any builds by default.
-
 	See the {@link features/installation#list-properties list properties} installation section to learn how to enable these in your editor.
 </info-box>
 
@@ -89,35 +87,35 @@ These features provide similar functionality:
 
 ## Common API
 
-The {@link module:list/documentlist~DocumentList} plugin registers:
+The {@link module:list/list~List} plugin registers:
 
-* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'numberedList'`} command.
-* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'bulletedList'`} command.
-* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'indentList'`} command.
-* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'outdentList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'numberedList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'bulletedList'`} command.
+* The {@link module:list/list/listlistindentcommand~ListIndentCommand `'indentList'`} command.
+* The {@link module:list/list/listlistindentcommand~ListIndentCommand `'outdentList'`} command.
 * The `'numberedList'` UI button.
 * The `'bulletedList'` UI button.
 
-The {@link module:list/documentlistproperties~DocumentListProperties} plugin registers:
+The {@link module:list/listproperties~ListProperties} plugin registers:
 
-* The {@link module:list/documentlistproperties/documentliststylecommand~DocumentListStyleCommand `documentListStyle`} command that accepts the `type` of the list style to set. If not set, it uses the default marker (usually decimal).
+* The {@link module:list/listproperties/liststylecommand~ListStyleCommand `listStyle`} command that accepts the `type` of the list style to set. If not set, it uses the default marker (usually decimal).
     ```js
-    editor.execute( 'documentListStyle', { type: 'lower-roman' } );
+    editor.execute( 'listStyle', { type: 'lower-roman' } );
     ```
     The available types are:
 
     * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
-* The {@link module:list/documentlistproperties/documentliststartcommand~DocumentListStartCommand `documentListStart`} command that is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+* The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command that is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
-    editor.execute( 'documentListStart', { startIndex: 3 } );
+    editor.execute( 'listStart', { startIndex: 3 } );
     ```
 
-* The {@link module:list/documentlistproperties/documentlistreversedcommand~DocumentListReversedCommand `documentListReversed`} command that is a Boolean and defaults to `false` (meaning the list order is ascending).
+* The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command that is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
-    editor.execute( 'documentListReversed', { reversed: true } );
+    editor.execute( 'listReversed', { reversed: true } );
     ```
 
 * The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.

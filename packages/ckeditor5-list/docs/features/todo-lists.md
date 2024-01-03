@@ -25,7 +25,7 @@ You can add to-do lists using a dedicated toolbar button. Thanks to the integrat
 
 ## Keyboard support
 
-You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
+You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
 
 ## Related features
 
@@ -35,10 +35,10 @@ These features provide similar functionality:
 
 ## Common API
 
-The {@link module:list/tododocumentlist~TodoDocumentList} plugin registers:
+The {@link module:list/todolist~TodoList} plugin registers:
 
-* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand 'todoList'} command.
-* The {@link module:list/tododocumentlist/checktododocumentlistcommand~CheckTodoDocumentListCommand 'checkTodoList'} command.
+* The {@link module:list/list/listcommand~ListCommand 'todoList'} command.
+* The {@link module:list/todolist/checktodolistcommand~CheckTodoListCommand 'checkTodoList'} command.
 * The 'todoList' UI button.
 
 ## Contribute
