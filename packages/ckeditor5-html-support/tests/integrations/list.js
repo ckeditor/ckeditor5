@@ -8,6 +8,7 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import stubUid from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
@@ -28,7 +29,7 @@ describe( 'ListElementSupport', () => {
 
 		editor = await ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, GeneralHtmlSupport, ListEditing ]
+				plugins: [ Paragraph, GeneralHtmlSupport, ListEditing, TableEditing ]
 			} );
 		model = editor.model;
 		dataFilter = editor.plugins.get( 'DataFilter' );
@@ -1013,9 +1014,9 @@ describe( 'ListElementSupport', () => {
 		} );
 	} );
 
-	// See https://github.com/ckeditor/ckeditor5/issues/15527.
-	describe( '#15527', () => {
-		it( 'should not remove attribute from other elements', () => {
+	describe( '#15527 and #15565', () => {
+		// See https://github.com/ckeditor/ckeditor5/issues/15527.
+		it( 'should not remove attribute from other elements (inside GHS div)', () => {
 			const dataFilter = editor.plugins.get( 'DataFilter' );
 
 			// Allow everything
@@ -1084,6 +1085,71 @@ describe( 'ListElementSupport', () => {
 					4: {}
 				}
 			} );
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/15565.
+		it( 'should not remove attribute from other elements (inside table cell)', () => {
+			const dataFilter = editor.plugins.get( 'DataFilter' );
+
+			// Allow everything
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			editor.setData(
+				'<ul>' +
+					'<li>' +
+						'<p><br>&nbsp;</p>' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>' +
+											'<ul><li>&nbsp;</li></ul>' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			model.change( writer => {
+				writer.setSelection( model.document.getRoot().getNodeByPath( [ 1, 0, 0, 0 ] ), 0 );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'<htmlCustomElement htmlContent="" htmlElementName="br"></htmlCustomElement> ' +
+				'</paragraph>' +
+				'<table htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a00" listType="bulleted">' +
+								'[]' +
+							'</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.editing.view.document.fire( 'enter', { preventDefault() {} } );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'<htmlCustomElement htmlContent="" htmlElementName="br"></htmlCustomElement> ' +
+				'</paragraph>' +
+				'<table htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a01" listType="bulleted">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>' +
+								'[]' +
+							'</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
 		} );
 	} );
 
