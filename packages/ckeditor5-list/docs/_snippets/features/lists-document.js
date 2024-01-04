@@ -3,16 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, document, console, ClassicEditor, DocumentList, DocumentListProperties, TodoDocumentList, ImageResize */
+/* globals window, document, console, ClassicEditor, ListProperties, TodoList, ImageResize */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-/* import { DocumentList, TodoDocumentList } from '@ckeditor/ckeditor5-list'; */
-
 ClassicEditor
 	.create( document.querySelector( '#snippet-lists-document' ), {
-		removePlugins: [ 'List' ],
-		extraPlugins: [ DocumentList, DocumentListProperties, TodoDocumentList, ImageResize ],
+		extraPlugins: [ ListProperties, TodoList, ImageResize ],
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

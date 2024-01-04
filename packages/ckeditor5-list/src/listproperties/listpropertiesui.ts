@@ -21,12 +21,12 @@ import type { Locale } from 'ckeditor5/src/utils.js';
 
 import ListPropertiesView from './ui/listpropertiesview.js';
 
-import type ListStyleCommand from './liststylecommand.js';
-import type DocumentListStyleCommand from '../documentlistproperties/documentliststylecommand.js';
-import type ListStartCommand from './liststartcommand.js';
-import type DocumentListStartCommand from '../documentlistproperties/documentliststartcommand.js';
-import type ListReversedCommand from './listreversedcommand.js';
-import type DocumentListReversedCommand from '../documentlistproperties/documentlistreversedcommand.js';
+import type LegacyListStyleCommand from '../legacylistproperties/legacyliststylecommand.js';
+import type ListStyleCommand from '../listproperties/liststylecommand.js';
+import type LegacyListStartCommand from '../legacylistproperties/legacyliststartcommand.js';
+import type ListStartCommand from '../listproperties/liststartcommand.js';
+import type LegacyListReversedCommand from '../legacylistproperties/legacylistreversedcommand.js';
+import type ListReversedCommand from '../listproperties/listreversedcommand.js';
 
 import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
 import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
@@ -236,7 +236,7 @@ function getStyleButtonCreator( {
 	parentCommandName
 }: {
 	editor: Editor;
-	listStyleCommand: ListStyleCommand | DocumentListStyleCommand;
+	listStyleCommand: LegacyListStyleCommand | ListStyleCommand;
 	parentCommandName: string;
 } ) {
 	const locale = editor.locale;
@@ -309,7 +309,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.styles ) {
-		const listStyleCommand: ListStyleCommand | DocumentListStyleCommand = editor.commands.get( 'listStyle' )!;
+		const listStyleCommand: LegacyListStyleCommand | ListStyleCommand = editor.commands.get( 'listStyle' )!;
 
 		const styleButtonCreator = getStyleButtonCreator( {
 			editor,
@@ -339,7 +339,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.startIndex ) {
-		const listStartCommand: ListStartCommand | DocumentListStartCommand = editor.commands.get( 'listStart' )!;
+		const listStartCommand: LegacyListStartCommand | ListStartCommand = editor.commands.get( 'listStart' )!;
 
 		listPropertiesView.startIndexFieldView!.bind( 'isEnabled' ).to( listStartCommand );
 		listPropertiesView.startIndexFieldView!.fieldView.bind( 'value' ).to( listStartCommand as any );
@@ -347,7 +347,7 @@ function createListPropertiesView( {
 	}
 
 	if ( enabledProperties.reversed ) {
-		const listReversedCommand: ListReversedCommand | DocumentListReversedCommand = editor.commands.get( 'listReversed' )!;
+		const listReversedCommand: LegacyListReversedCommand | ListReversedCommand = editor.commands.get( 'listReversed' )!;
 
 		listPropertiesView.reversedSwitchButtonView!.bind( 'isEnabled' ).to( listReversedCommand );
 		listPropertiesView.reversedSwitchButtonView!.bind( 'isOn' ).to( listReversedCommand, 'value', value => !!value );

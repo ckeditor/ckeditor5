@@ -12,11 +12,11 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import List from '../../src/list.js';
+import LegacyList from '../../src/legacylist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, List, Clipboard ],
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, LegacyList, Clipboard ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {

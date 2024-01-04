@@ -51,14 +51,14 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](htt
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `DocumentList` plugin to your plugin list and the toolbar configuration:
+Then add the `List` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import { DocumentList } from '@ckeditor/ckeditor5-list';
+import { List } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ DocumentList, /* ... */ ],
+		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ]
 	} )
 	.then( /* ... */ )
@@ -73,14 +73,14 @@ To enable the list properties feature for document lists, install the [`@ckedito
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `DocumentListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
+Then add the `ListProperties` plugin to your plugin list and configure the toolbar. To enable selected sub-features of the list properties, you need to add their configuration to your editor (set `true` for each feature you want to enable):
 
 ```js
-import { DocumentListProperties } from '@ckeditor/ckeditor5-list';
+import { ListProperties } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ DocumentListProperties, /* ... */ ],
+		plugins: [ ListProperties, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
 			properties: {
@@ -102,14 +102,14 @@ To add the to-do lists feature to your editor, install the [`@ckeditor/ckeditor5
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `TodoDocumentList` plugin to your plugin list and the toolbar configuration:
+Then add the `TodoList` plugin to your plugin list and the toolbar configuration:
 
 ```js
-import { TodoDocumentList } from '@ckeditor/ckeditor5-list';
+import { TodoList } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ TodoDocumentList, /* ... */ ],
+		plugins: [ TodoList, /* ... */ ],
 		toolbar: [ 'todoList', /* ... */ ],
 	} )
 	.then( /* ... */ )
@@ -121,7 +121,7 @@ ClassicEditor
 </info-box>
 
 <info-box warning>
-	The {@link module:list/documentlistproperties~DocumentListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
+	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
 ## List merging
@@ -133,7 +133,7 @@ Unfortunately, in some cases, this can be undesirable behavior. For example, two
 To prevent this behavior, enable the `AdjacentListsSupport` plugin.
 
 ```js
-import AdjacentListsSupport from '@ckeditor/ckeditor5-list/src/documentlist/adjacentlistssupport.js';
+import AdjacentListsSupport from '@ckeditor/ckeditor5-list/src/list/adjacentlistssupport.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -153,11 +153,11 @@ The simple list config option is a great solution for users who do not need to t
 Turn the block list support off in the config:
 
 ```js
-import { DocumentList } from '@ckeditor/ckeditor5-list';
+import { List } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ DocumentList, /* ... */ ],
+		plugins: [ List, /* ... */ ],
 		toolbar: [ 'bulletedList', 'numberedList', /* ... */ ],
 		list: {
 		    multiBlock: false // Turn off the multi block support (enabled by default).
@@ -169,44 +169,44 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:list/documentlist~DocumentList} plugin registers:
+The {@link module:list/list~List} plugin registers:
 
-* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'numberedList'`} command.
-* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'bulletedList'`} command.
-* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'indentList'`} command.
-* The {@link module:list/documentlist/documentlistindentcommand~DocumentListIndentCommand `'outdentList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'numberedList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'bulletedList'`} command.
+* The {@link module:list/list/listindentcommand~ListIndentCommand `'indentList'`} command.
+* The {@link module:list/list/listindentcommand~ListIndentCommand `'outdentList'`} command.
 * The `'numberedList'` UI button.
 * The `'bulletedList'` UI button.
 
-The {@link module:list/documentlistproperties~DocumentListProperties} plugin registers:
+The {@link module:list/listproperties~ListProperties} plugin registers:
 
-* The {@link module:list/documentlistproperties/documentliststylecommand~DocumentListStyleCommand `documentListStyle`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
+* The {@link module:list/listproperties/liststylecommand~ListStyleCommand `listStyle`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
     ```js
-    editor.execute( 'documentListStyle', { type: 'lower-roman' } );
+    editor.execute( 'listStyle', { type: 'lower-roman' } );
     ```
     The available types are:
 
     * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
-* The {@link module:list/documentlistproperties/documentliststartcommand~DocumentListStartCommand `documentListStart`} command which is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+* The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command which is a Number and defaults to `1` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
-    editor.execute( 'documentListStart', { startIndex: 3 } );
+    editor.execute( 'listStart', { startIndex: 3 } );
     ```
 
-* The {@link module:list/documentlistproperties/documentlistreversedcommand~DocumentListReversedCommand `documentListReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
+* The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
-    editor.execute( 'documentListReversed', { reversed: true } );
+    editor.execute( 'listReversed', { reversed: true } );
     ```
 
 * The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
 * The `bulletedList` UI split button that overrides the UI button registered by the `List` plugin.
 
-The {@link module:list/tododocumentlist~TodoDocumentList} plugin registers:
+The {@link module:list/todolist~TodoList} plugin registers:
 
-* The {@link module:list/documentlist/documentlistcommand~DocumentListCommand `'todoList'`} command.
-* The {@link module:list/tododocumentlist/checktododocumentlistcommand~CheckTodoDocumentListCommand `'checkTodoList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'todoList'`} command.
+* The {@link module:list/todolist/checktodolistcommand~CheckTodoListCommand `'checkTodoList'`} command.
 * The `'todoList'` UI button.
 
 ## Contribute

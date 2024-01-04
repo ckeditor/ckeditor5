@@ -5,7 +5,8 @@
 
 /* globals document */
 
-import ListProperties from '../../src/listproperties.js';
+// TODO change to new plugin
+import ListProperties from '../../src/legacylistproperties.js';
 import ListPropertiesUI from '../../src/listproperties/listpropertiesui.js';
 
 import { icons } from 'ckeditor5/src/core.js';

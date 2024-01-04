@@ -13,7 +13,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
@@ -39,7 +39,9 @@ describe( 'utils', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ Enter, ShiftEnter, Paragraph, BoldEditing, LinkEditing, BlockQuoteEditing, ListEditing, TableEditing ]
+						plugins: [
+							Enter, ShiftEnter, Paragraph, BoldEditing, LinkEditing, BlockQuoteEditing, LegacyListEditing, TableEditing
+						]
 					} )
 					.then( newEditor => {
 						editor = newEditor;
