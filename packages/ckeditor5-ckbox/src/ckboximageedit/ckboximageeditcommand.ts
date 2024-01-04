@@ -161,7 +161,7 @@ export default class CKBoxImageEditCommand extends Command {
 				assetId: ckboxImageId
 			};
 		} else {
-			const imageUrl = element.getAttribute( 'src' ) as string;
+			const imageUrl = new URL( element.getAttribute( 'src' ) as string, document.baseURI ).href;
 			const uploadCategoryId = await ckboxUtils.getCategoryIdForFile( imageUrl, { signal } );
 
 			imageMountOptions = {
@@ -176,6 +176,7 @@ export default class CKBoxImageEditCommand extends Command {
 				allowOverwrite: false
 			},
 			tokenUrl: ckboxConfig.tokenUrl,
+			...( ckboxConfig.serviceOrigin && { serviceOrigin: ckboxConfig.serviceOrigin } ),
 			onClose: () => this._handleImageEditorClose(),
 			onSave: ( asset: CKBoxRawAssetDefinition ) => this._handleImageEditorSave( state, asset )
 		};

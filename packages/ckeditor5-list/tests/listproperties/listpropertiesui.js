@@ -5,17 +5,17 @@
 
 /* globals document */
 
-import ListProperties from '../../src/listproperties.js';
+// TODO change to new plugin
+import ListProperties from '../../src/legacylistproperties.js';
 import ListPropertiesUI from '../../src/listproperties/listpropertiesui.js';
 
+import { icons } from 'ckeditor5/src/core.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { View, ButtonView, LabeledFieldView, SwitchButtonView } from '@ckeditor/ckeditor5-ui';
 
-import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
-import numberedListIcon from '../../theme/icons/numberedlist.svg';
 import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
 import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
 import listStyleSquareIcon from '../../theme/icons/liststylesquare.svg';
@@ -187,7 +187,7 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should have an #icon', () => {
-					expect( mainButtonView.icon ).to.equal( bulletedListIcon );
+					expect( mainButtonView.icon ).to.equal( icons.bulletedList );
 				} );
 
 				it( 'should have a #tooltip based on a label', () => {
@@ -533,7 +533,7 @@ describe( 'ListPropertiesUI', () => {
 				} );
 
 				it( 'should have an #icon', () => {
-					expect( mainButtonView.icon ).to.equal( numberedListIcon );
+					expect( mainButtonView.icon ).to.equal( icons.numberedList );
 				} );
 
 				it( 'should have a #tooltip based on a label', () => {

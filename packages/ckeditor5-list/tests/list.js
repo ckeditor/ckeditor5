@@ -4,8 +4,8 @@
  */
 
 import List from '../src/list.js';
-import ListEditing from '../src/list/listediting.js';
 import ListUI from '../src/list/listui.js';
+import ListEditing from '../src/list/listediting.js';
 
 describe( 'List', () => {
 	it( 'should be named', () => {

@@ -21,3 +21,4 @@ swap:
   overhead: 'Do not use "overhead". Use terminology that is more specific. For example, write "running large queries can increase processor usage".'
   please: 'Do not use "please" in technical documentation.'
   respective|respectively: 'Do not use "respective" or "respectively". Rewrite to avoid using these words.'
+  ", that": 'Do not place a comma before "that".'

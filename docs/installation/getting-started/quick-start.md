@@ -157,7 +157,7 @@ In this example, we remove the premium collaboration features as well as several
 						'-',
 						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
 						'alignment', '|',
-						'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+						'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
 						'specialCharacters', 'horizontalLine', 'pageBreak', '|',
 						'textPartLanguage', '|',
 						'sourceEditing'
@@ -288,7 +288,8 @@ In this example, we remove the premium collaboration features as well as several
 					'DocumentOutline',
 					'FormatPainter',
 					'TableOfContents',
-					'PasteFromOfficeEnhanced'
+					'PasteFromOfficeEnhanced',
+					'CaseChange'
 				]
 			});
 		</script>

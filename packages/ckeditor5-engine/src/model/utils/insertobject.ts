@@ -7,7 +7,6 @@
  * @module engine/model/utils/insertobject
  */
 
-import { findOptimalInsertionRange } from './findoptimalinsertionrange.js';
 import type DocumentSelection from '../documentselection.js';
 import type Selection from '../selection.js';
 
@@ -77,7 +76,9 @@ export default function insertObject(
 	let insertionSelection = originalSelection;
 
 	if ( options.findOptimalPosition && model.schema.isBlock( object ) ) {
-		insertionSelection = model.createSelection( findOptimalInsertionRange( originalSelection, model, options.findOptimalPosition ) );
+		insertionSelection = model.createSelection(
+			model.schema.findOptimalInsertionRange( originalSelection, options.findOptimalPosition )
+		);
 	}
 
 	// Collect attributes to be copied on the inserted object.
