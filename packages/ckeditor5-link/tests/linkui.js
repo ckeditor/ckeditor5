@@ -238,6 +238,8 @@ describe( 'LinkUI', () => {
 			formView = linkUIFeature.formView;
 			actionsView = linkUIFeature.actionsView;
 
+			formView.urlInputView.fieldView.value = 'ckeditor.com';
+
 			editor.commands.get( 'link' ).isEnabled = true;
 			editor.commands.get( 'unlink' ).isEnabled = true;
 
@@ -1403,6 +1405,30 @@ describe( 'LinkUI', () => {
 				} );
 		};
 
+		const createEditorWithEmptyLinks = allowCreatingEmptyLinks => {
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ LinkEditing, LinkUI, Paragraph, BlockQuote ],
+					link: { allowCreatingEmptyLinks }
+				} )
+				.then( editor => {
+					const linkUIFeature = editor.plugins.get( LinkUI );
+
+					linkUIFeature._createViews();
+
+					const formView = linkUIFeature.formView;
+
+					formView.render();
+
+					editor.model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: 'linkHref'
+					} );
+
+					return { editor, formView };
+				} );
+		};
+
 		beforeEach( () => {
 			// Make sure that forms are lazy initiated.
 			expect( linkUIFeature.formView ).to.be.null;
@@ -1425,6 +1451,40 @@ describe( 'LinkUI', () => {
 			formView.element.dispatchEvent( new Event( 'focus' ) );
 
 			expect( editor.ui.focusTracker.isFocused ).to.be.true;
+		} );
+
+		describe( 'empty links', () => {
+			it( 'should not allow empty links by default', () => {
+				const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
+
+				expect( allowCreatingEmptyLinks ).to.equal( false );
+			} );
+
+			it( 'should allow enabling empty links', () => {
+				return createEditorWithEmptyLinks( true ).then( ( { editor } ) => {
+					const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
+
+					expect( allowCreatingEmptyLinks ).to.equal( true );
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should not allow submitting empty form when link is required', () => {
+				return createEditorWithEmptyLinks( false ).then( ( { editor, formView } ) => {
+					expect( formView.saveButtonView.isEnabled ).to.be.false;
+
+					return editor.destroy();
+				} );
+			} );
+
+			it( 'should allow submitting empty form when link is not required', () => {
+				return createEditorWithEmptyLinks( true ).then( ( { editor, formView } ) => {
+					expect( formView.saveButtonView.isEnabled ).to.be.true;
+
+					return editor.destroy();
+				} );
+			} );
 		} );
 
 		describe( 'link protocol', () => {

@@ -14,9 +14,9 @@ import {
 	SwitchButtonView,
 	View,
 	ViewCollection,
-	createLabeledInputText,
+	createLabeledInputUrl,
 	submitHandler,
-	type InputTextView
+	type InputUrlView
 } from 'ckeditor5/src/ui.js';
 import {
 	FocusTracker,
@@ -53,7 +53,7 @@ export default class LinkFormView extends View {
 	/**
 	 * The URL input view.
 	 */
-	public urlInputView: LabeledFieldView<InputTextView>;
+	public urlInputView: LabeledFieldView<InputUrlView>;
 
 	/**
 	 * The Save button view.
@@ -207,9 +207,9 @@ export default class LinkFormView extends View {
 	 *
 	 * @returns Labeled field view instance.
 	 */
-	private _createUrlInput(): LabeledFieldView<InputTextView> {
+	private _createUrlInput(): LabeledFieldView<InputUrlView> {
 		const t = this.locale!.t;
-		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputUrl );
 
 		labeledInput.label = t( 'Link URL' );
 
