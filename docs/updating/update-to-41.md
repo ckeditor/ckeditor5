@@ -133,3 +133,13 @@ If you happen to encounter this error, please remove all imports of `DocumentLis
 Among other changes, some icons have been moved around the project. Observe these changes if you use custom UI elements that call these icons.
 
 The following icons were moved to the `@ckeditor/ckeditor5-core` package: `browse-files`, `bulletedlist`, `codeblock`, `color-palette`, `heading1`, `heading2`, `heading3`, `heading4`, `heading5`, `heading6`, `horizontalline`, `html`, `indent`, `next-arrow`, `numberedlist`, `outdent`, `previous-arrow`, `redo`, `table`,`todolist`, `undo`.
+
+
+### Exports renaming
+
+Some exports names were changed due to possibility of name conflicts:
+
+* The default export of `View` from `@ckeditor/ckeditor5-engine` package have been renamed to `EditingView`,
+* The default export of `UploadAdapter` from `@ckeditor/ckeditor5-adapter-ckfinder` package have been renamed to `CKFinderUploadAdapter`,
+* The interface export of `Position` from `@ckeditor/ckeditor5-utils` package have been renamed to `DomPoint`,
+* Moved function `findOptimalInsertionRange` to the class `Schema` as a method within the `@ckeditor/ckeditor5-engine` package.
