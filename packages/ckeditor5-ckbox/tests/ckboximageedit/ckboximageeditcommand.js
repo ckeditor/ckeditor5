@@ -234,6 +234,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				} );
 
 				expect( options ).to.have.property( 'assetId', ckboxImageId );
+				expect( options ).to.have.property( 'serviceOrigin', CKBOX_API_URL );
 				expect( options ).to.have.property( 'tokenUrl', 'foo' );
 				expect( options.imageEditing.allowOverwrite ).to.be.false;
 				expect( options.onSave ).to.be.a( 'function' );
@@ -259,6 +260,33 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				expect( options ).to.not.have.property( 'assetId' );
 				expect( options ).to.have.property( 'imageUrl', imageUrl );
+				expect( options ).to.have.property( 'uploadCategoryId', categoryId );
+				expect( options ).to.have.property( 'tokenUrl', 'foo' );
+				expect( options.imageEditing.allowOverwrite ).to.be.false;
+				expect( options.onSave ).to.be.a( 'function' );
+				expect( options.onClose ).to.be.a( 'function' );
+			} );
+
+			it( 'should prepare options for the CKBox Image Editing dialog instance (external image with relative URL)', async () => {
+				const imageUrl = 'sample.png';
+				const categoryId = 'id-category-1';
+				const origin = window.location.origin;
+
+				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).resolves( categoryId );
+
+				setModelData( model,
+					`[<imageBlock alt="alt text" src="${ imageUrl }"></imageBlock>]`
+				);
+
+				const imageElement = editor.model.document.selection.getSelectedElement();
+
+				const options = await command._prepareOptions( {
+					element: imageElement,
+					controller: new AbortController()
+				} );
+
+				expect( options ).to.not.have.property( 'assetId' );
+				expect( options ).to.have.property( 'imageUrl', `${ origin }/${ imageUrl }` );
 				expect( options ).to.have.property( 'uploadCategoryId', categoryId );
 				expect( options ).to.have.property( 'tokenUrl', 'foo' );
 				expect( options.imageEditing.allowOverwrite ).to.be.false;

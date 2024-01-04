@@ -19,8 +19,7 @@ import type { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5
 import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
 import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview.js';
 
-import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import { icons } from '@ckeditor/ckeditor5-core';
 
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
@@ -282,7 +281,7 @@ export default class ColorPickerFragmentView extends View {
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
-			icon: checkButtonIcon,
+			icon: icons.check,
 			class: 'ck-button-save',
 			type: 'button',
 			withText: false,
@@ -290,7 +289,7 @@ export default class ColorPickerFragmentView extends View {
 		} );
 
 		cancelButtonView.set( {
-			icon: cancelButtonIcon,
+			icon: icons.cancel,
 			class: 'ck-button-cancel',
 			type: 'button',
 			withText: false,

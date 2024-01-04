@@ -66,7 +66,7 @@ export { default as isNode } from './dom/isnode.js';
 export { default as isRange } from './dom/isrange.js';
 export { default as isValidAttributeName } from './dom/isvalidattributename.js';
 export { default as isVisible } from './dom/isvisible.js';
-export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction, type Position } from './dom/position.js';
+export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction, type DomPoint } from './dom/position.js';
 export { default as remove } from './dom/remove.js';
 export * from './dom/scroll.js';
 

@@ -23,7 +23,7 @@ Listed below are the most important changes that require your attention when upg
 
 Starting with CKEditor&nbsp;5 v39.0.0, the {@link features/tables-styling table styling tools} will display a color picker in their user interfaces for color-related tools.
 
-Just like with the {@link updating/update-to-38#introduction-of-color-pickers-to-font-color-and-font-background-color-features introduction of color pickers to font color and font background color features}, we allow you to decide whether this new functionality works for your integration and to opt–out of it.
+Just like with the {@link updating/update-to-38#introduction-of-color-pickers-to-font-color-and-font-background-color-features introduction of color pickers to font color and font background color features}, you can decide whether this new functionality works for your integration and to opt out of it.
 
 You can set the {@link module:table/tableconfig~TablePropertiesConfig#colorPicker} and {@link module:table/tableconfig~TableCellPropertiesConfig#colorPicker} configuration options to `false` to get rid of color pickers in all table styling tools:
 
@@ -61,11 +61,11 @@ The [`@ckeditor/ckeditor5-cbox`](https://www.npmjs.com/package/@ckeditor/ckedito
 <script src="https://cdn.ckbox.io/CKBox/2.0.0/ckbox.js"></script>
 ```
 
-#### On-Premise CKBox backend adjustments
+#### On-premises CKBox backend adjustments
 
-The CKBox backend has been released in version 2.0.0. For users operating the on-premise version of the CKBox backend, it is essential to update to this version to ensure compatibility.
+The CKBox backend was released in version 2.0.0. Users operating the on-premises version of the CKBox backend need to update to this version to ensure compatibility.
 
-Moreover, the editor configuration parameter `ckbox.assetsOrigin`, commonly used with the on-premise version, is no longer necessary. This is because the plugin no longer constructs asset URLs on its own but instead uses those provided directly by the backend. Therefore, you should remove the `ckbox.assetsOrigin` parameter from your editor configuration.
+Moreover, the editor configuration parameter `ckbox.assetsOrigin`, commonly used with the on-premises version, is no longer necessary. This is because the plugin no longer constructs asset URLs on its own but instead uses those provided directly by the backend. You should remove the `ckbox.assetsOrigin` parameter from your editor configuration.
 
 ```js
 ClassicEditor
@@ -84,7 +84,7 @@ ClassicEditor
 
 ### View element placeholder
 
-Function {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} no longer gets placeholder content as a `text` property of the `options` argument. To define a value of placeholder you need to specify it as a {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `placeholder` property} of the `element` which is passed into the `options` object.
+The {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} function no longer gets placeholder content as a `text` property of the `options` argument. To define a value of the placeholder, you need to specify it as a {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `placeholder` property} of the `element` which is passed into the `options` object.
 
 ```js
 element.placeholder = 'Type something…';

@@ -9,7 +9,7 @@
 
 import { BoxedEditorUIView, InlineEditableUIView, StickyPanelView, ToolbarView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
-import type { View } from 'ckeditor5/src/engine.js';
+import type { EditingView } from 'ckeditor5/src/engine.js';
 
 import '../theme/classiceditor.css';
 
@@ -46,7 +46,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 */
 	constructor(
 		locale: Locale,
-		editingView: View,
+		editingView: EditingView,
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
 		} = {}

@@ -110,8 +110,6 @@ export type { default as Selection, Selectable } from './model/selection.js';
 export type { default as TypeCheckable } from './model/typecheckable.js';
 export type { default as Writer } from './model/writer.js';
 
-export { findOptimalInsertionRange } from './model/utils/findoptimalinsertionrange.js';
-
 // Model Events.
 export type { DocumentChangeEvent } from './model/document.js';
 export type { DocumentSelectionChangeEvent } from './model/documentselection.js';
@@ -130,7 +128,7 @@ export type { SelectionChangeRangeEvent } from './model/selection.js';
 export { default as DataTransfer } from './view/datatransfer.js';
 export { default as DomConverter } from './view/domconverter.js';
 export { default as Renderer } from './view/renderer.js';
-export { default as View } from './view/view.js';
+export { default as EditingView } from './view/view.js';
 export { default as ViewDocument } from './view/document.js';
 export { default as ViewText } from './view/text.js';
 export { default as ViewElement, type ElementAttributes as ViewElementAttributes } from './view/element.js';

@@ -38,9 +38,9 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import DocumentList from '../../src/documentlist.js';
-import DocumentListProperties from '../../src/documentlistproperties.js';
-import AdjacentListsSupport from '../../src/documentlist/adjacentlistssupport.js';
+import List from '../../src/documentlist.js';
+import ListProperties from '../../src/documentlistproperties.js';
+import AdjacentListsSupport from '../../src/list/adjacentlistssupport.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -50,9 +50,9 @@ ClassicEditor
 				MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
 				AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
 				CloudServices, SourceEditing,
-				DocumentList,
+				List,
 				AdjacentListsSupport,
-				DocumentListProperties
+				ListProperties
 			],
 			toolbar: [
 				'sourceEditing', '|',

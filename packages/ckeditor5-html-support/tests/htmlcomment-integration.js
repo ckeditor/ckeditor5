@@ -29,9 +29,9 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
 
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import LegacyListPropertiesEditing from '@ckeditor/ckeditor5-list/src/legacylistproperties/legacylistpropertiesediting.js';
+import LegacyTodoListEditing from '@ckeditor/ckeditor5-list/src/legacytodolist/legacytodolistediting.js';
 
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
 
@@ -612,7 +612,7 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, ListEditing, ListPropertiesEditing, TodoListEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, LegacyListEditing, LegacyListPropertiesEditing, LegacyTodoListEditing ]
 				} );
 		}
 
