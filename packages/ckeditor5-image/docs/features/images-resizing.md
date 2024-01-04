@@ -304,7 +304,7 @@ import { Image, ImageResize } from '@ckeditor/ckeditor5-image';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageResize, /* ... */ ],
-		// More of editor's config.
+		// More of editor's configuration.
 		// ...
 	} )
 	.then( /* ... */ )

@@ -196,7 +196,7 @@ The editor presented above uses custom image styles, custom image toolbar config
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// More of editor's config.
+		// More of editor's configuration.
 		// ...
 		image: {
 			styles: {

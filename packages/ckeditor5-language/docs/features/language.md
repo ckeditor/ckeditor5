@@ -34,7 +34,7 @@ The example below shows the configuration used for the [demo](#demo) above:
 ```js
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
-		// More of editor's config.
+		// More of editor's configuration.
 		// ...
 		language: {
 			textPartLanguage: [

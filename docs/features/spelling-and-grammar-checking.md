@@ -129,7 +129,7 @@ The first configuration option is simpler:
 		]
 	}
 ```
-However, this approach can affect `.svg` and `.css` files included from outside of CKEdtor&nbsp;5-related packages.
+However, this approach can affect `.svg` and `.css` files included from outside of CKEditor&nbsp;5-related packages.
 
 Therefore, the best option is to use another configuration solution. This one will only load `.svg` and `.css` files imported from CKEditor&nbsp;5-related packages:
 
