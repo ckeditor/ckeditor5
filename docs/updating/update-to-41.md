@@ -47,7 +47,7 @@ This is because it was injecting `DocumentList` and `DocumentListProperties` plu
 
 If you happen to encounter this error, please remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option and replace these with `List` and related plugins.
 
-#### Details of plugin renames 
+#### Details of plugin renames
 
 <table>
     <thead>
@@ -127,3 +127,9 @@ If you happen to encounter this error, please remove all imports of `DocumentLis
         </tr>
     </tbody>
 </table>
+
+### Icons paths changed
+
+Among other changes, some icons have been moved around the project. Observe these changes if you use custom UI elements that call these icons.
+
+The following icons were moved to the `@ckeditor/ckeditor5-core` package: `browse-files`, `bulletedlist`, `codeblock`, `color-palette`, `heading1`, `heading2`, `heading3`, `heading4`, `heading5`, `heading6`, `horizontalline`, `html`, `indent`, `next-arrow`, `numberedlist`, `outdent`, `previous-arrow`, `redo`, `table`,`todolist`, `undo`.
