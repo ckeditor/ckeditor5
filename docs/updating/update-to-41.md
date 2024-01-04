@@ -146,6 +146,6 @@ Some exports names were changed due to possibility of name conflicts:
 
 ### Making CKEditor npm packages valid ES Modules
 
-The code we distribute in our npm packages uses [ES Module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (e.g. `import X from 'y'`), but until now it wasn't fully compliant with the standard and the package itself wasn't properly marked as an ES module. In some cases this resulted in bundlers (e.g. Vite) and other tools (e.g. Vitest) failing to build or run the projects containing CKEditor and requiring workarounds in their configuration.
+The code we distribute in our npm packages uses the [ES Module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES module. In some cases this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor 5.  It required workarounds in their configuration.
 
 In this release we fix these issues, meaning that our packages are now fully ESM compliant and these workarounds are no longer needed.
