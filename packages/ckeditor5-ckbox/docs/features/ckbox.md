@@ -49,7 +49,7 @@ Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/i
 	This demo only presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDFs) are inserted as links.
+Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
 
 You can also upload images by dragging them into your content. After you drag an image into the editor, it gets uploaded into the CKBox cloud storage and inserted into the content.
 
@@ -85,7 +85,7 @@ Please also remember, that the CKBox plugin requires the following dependency pl
 
 You must include the `CKBoxImageEdit` plugin if you want to use CKBox image editing capabilities from within CKEditor&nbsp;5.
 
-Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list, toolbar and [configure](#configuration) the feature as needed. An example configuration may look like this:
+Finally, add {@link module:ckbox/ckbox~CKBox} to your plugin list and toolbar, and [configure](#configuration) the feature as needed. An example configuration may look like this:
 
 ```js
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -166,7 +166,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Please keep in mind that if you define your own upload category mappings for a particular image type, only your first found category will be taken into account while finding the appropriate category for the uploaded image. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and hence inserted into the editor) in the following cases:
+If you define your own upload category mappings for a particular image type, only your first found category will be taken into account while finding the appropriate category for the uploaded image. Category mappings configured on the server will not be searched in that case. The image will not be uploaded (and hence inserted into the editor) in the following cases:
 
 * If you have defined your own category mapping in `defaultUploadCategories` for the uploaded image type:
    * The category does not exist on the server.
@@ -197,7 +197,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-The list of available workspaces can be obtained using the [Workspaces REST API](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html#managing-workspaces-with-the-rest-api).
+You can obtain the list of available workspaces using the [Workspaces REST API](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html#managing-workspaces-with-the-rest-api).
 
 ### Adding the ID for inserted assets
 
@@ -265,7 +265,7 @@ ClassicEditor
 
 ### Configuring the API service
 
-If the cloud service is hosted in your own environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
+If you host the cloud service in your environment, you should configure the base URL of the API service via the {@link module:ckbox/ckboxconfig~CKBoxConfig#serviceOrigin `config.ckbox.serviceOrigin`} option:
 
 ```js
 import { CKBox } from '@ckeditor/ckeditor5-ckbox';
@@ -286,8 +286,8 @@ ClassicEditor
 
 The {@link module:ckbox/ckbox~CKBox} plugin registers:
 
-* The `'ckbox'` UI button component for CKBox asset manager
-* The `'ckbox'` command implemented by the {@link module:ckbox/ckboxcommand~CKBoxCommand}
+* The `'ckbox'` UI button component for CKBox asset manager.
+* The `'ckbox'` command implemented by the {@link module:ckbox/ckboxcommand~CKBoxCommand}.
 
 You can open CKBox by executing the following code:
 
@@ -297,8 +297,8 @@ editor.execute( 'ckbox' );
 
 If you want to use the CKBox editing capabilities straight from the editor, the plugin will also register the following:
 
-* The `'ckboxImageEdit'` UI button component for CKBox image editor
-* The `'ckboxImageEdit'` command implemented by the {@link module:ckbox/ckboximageedit~CKBoxImageEdit}
+* The `'ckboxImageEdit'` UI button component for the CKBox image editor.
+* The `'ckboxImageEdit'` command implemented by the {@link module:ckbox/ckboximageedit~CKBoxImageEdit}.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
