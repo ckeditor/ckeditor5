@@ -33,7 +33,4 @@ export interface FindAndReplaceConfig {
 	uiType?: FindAndReplaceUIType;
 }
 
-export enum FindAndReplaceUIType {
-	DIALOG = 'dialog',
-	DROPDOWN = 'dropdown'
-}
+export type FindAndReplaceUIType = 'dialog' | 'dropdown';

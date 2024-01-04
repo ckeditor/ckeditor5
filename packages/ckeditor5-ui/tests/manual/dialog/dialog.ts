@@ -30,9 +30,7 @@ import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specia
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import { ButtonView, Dialog, DialogViewPosition, View } from '../../../src/index.js';
-import { Plugin } from '@ckeditor/ckeditor5-core';
-
-import { icons } from '@ckeditor/ckeditor5-ui';
+import { Plugin, icons } from '@ckeditor/ckeditor5-core';
 
 // Necessary to insert into config all of the generated buttons.
 const POSSIBLE_DIALOG_POSITIONS: Array<string> = [];
@@ -95,7 +93,7 @@ class ModalWithText extends Plugin {
 						},
 						{
 							label: t( 'Set custom title' ),
-							icon: icons.colorPaletteIcon,
+							icon: icons.colorPalette,
 							withText: true,
 							onExecute: () => {
 								dialog.view!.headerView!.label = 'New title';

@@ -8,15 +8,17 @@
  */
 
 import type View from '../view.js';
-import { type Constructor, type Mixed, global, type EventInfo } from '@ckeditor/ckeditor5-utils';
+import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
  * A mixin that brings the possibility to observe dragging of the view element.
  */
 export default function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, DraggableView> {
-	abstract class DraggableMixin extends view {
+	abstract class DraggableMixin extends view implements DraggableView {
 		/**
 		 * A flag indicating whether the view is currently being dragged.
+		 *
+		 * @observable
 		 */
 		declare public isDragging: boolean;
 

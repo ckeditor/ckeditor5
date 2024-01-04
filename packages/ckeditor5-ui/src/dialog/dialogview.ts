@@ -8,14 +8,14 @@
  */
 
 import {
-	type EventInfo,
-	type Locale,
-	type DecoratedMethodEvent,
 	KeystrokeHandler,
 	FocusTracker,
 	Rect,
 	global,
-	toUnit
+	toUnit,
+	type EventInfo,
+	type Locale,
+	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 import ViewCollection from '../viewcollection.js';
 import View from '../view.js';
@@ -99,39 +99,59 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * after its position is calculated. Until then, the dialog is transparent and not visible.
 	 *
 	 * See {@link #isTransparent} property.
+	 *
+	 * @observable
 	 */
 	declare public isVisible: boolean;
 
 	/**
 	 * A flag indicating if dialog is transparent. It is used to prevent the dialog from being visible
 	 * before its position is calculated.
+	 *
+	 * @observable
 	 */
 	declare public isTransparent: boolean;
 
 	/**
 	 * A flag indicating if this DialogView is a modal.
+	 *
+	 * @observable
 	 */
 	declare public isModal: boolean;
 
 	/**
 	 * A label for the view dialog element.
+	 *
+	 * @observable
 	 */
 	declare public ariaLabel: string;
 
 	/**
 	 * A flag indicating if the dialog was moved manually. If so, its position
 	 * won't be updated automatically upon window resize or document scroll.
+	 *
+	 * @observable
 	 */
 	declare public wasMoved: boolean;
 
 	/**
 	 * A custom class name to be added to the dialog element.
+	 *
+	 * @observable
 	 */
 	declare public className: string | undefined;
 
 	/**
+	 * The position of the dialog view.
+	 *
+	 * @observable
+	 */
+	declare public position: DialogViewPosition;
+
+	/**
 	 * The calculated `top` CSS dialog property used for positioning.
 	 *
+	 * @observable
 	 * @internal
 	 */
 	declare public _top: number;
@@ -139,6 +159,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * The calculated `left` CSS dialog property used for positioning.
 	 *
+	 * @observable
 	 * @internal
 	 */
 	declare public _left: number;
@@ -152,11 +173,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * Callback returning the configured editor viewport offset.
 	 */
 	private _getViewportOffset: () => EditorUI[ 'viewportOffset' ];
-
-	/**
-	 * The position of the dialog view.
-	 */
-	declare public position: DialogViewPosition;
 
 	/**
 	 * The list of the focusable elements inside the dialog view.

@@ -262,7 +262,6 @@ export default class FocusCycler extends EmitterMixin() {
 		const previous = this.previous;
 
 		if ( previous && this.focusables.getIndex( previous ) === this.current ) {
-			// TBD
 			this.fire<FocusCyclerBackwardCycleEvent>( 'backwardCycle' );
 
 			return;

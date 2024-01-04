@@ -11,9 +11,10 @@ import type { Editor, ElementApi } from 'ckeditor5/src/core.js';
 import {
 	EditorUI,
 	normalizeToolbarConfig,
+	DialogView,
 	type EditorUIReadyEvent,
 	type DialogViewMoveToEvent,
-	DialogView
+	type Dialog
 } from 'ckeditor5/src/ui.js';
 import {
 	enablePlaceholder,
@@ -228,9 +229,10 @@ export default class ClassicEditorUI extends EditorUI {
 		}
 
 		const stickyPanel = this.view.stickyPanel;
+		const dialogPlugin: Dialog = this.editor.plugins.get( 'Dialog' );
 
-		this.editor.plugins.get( 'Dialog' ).on( 'show', () => {
-			const dialogView = this.editor.plugins.get( 'Dialog' ).view!;
+		dialogPlugin.on( 'show', () => {
+			const dialogView = dialogPlugin.view!;
 
 			dialogView.on<DialogViewMoveToEvent>( 'moveTo', ( evt, data ) => {
 				// Engage only when the panel is sticky, and the dialog is using one of default positions.

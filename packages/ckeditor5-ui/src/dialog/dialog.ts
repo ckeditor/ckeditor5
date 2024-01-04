@@ -34,6 +34,8 @@ export default class Dialog extends Plugin {
 
 	/**
 	 * A flag indicating whether the dialog is currently visible.
+	 *
+	 * @observable
 	 */
 	declare public isOpen: boolean;
 
