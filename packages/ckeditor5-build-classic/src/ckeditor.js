@@ -217,7 +217,6 @@ ClassicEditor.defaultConfig = {
 				defaultValue: true,
 				attributes: {
 					target: '_blank',
-					rel: 'noopener noreferrer',
 					class: 'customlink'
 				}
 			}
