@@ -12,8 +12,8 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import Link from '@ckeditor/ckeditor5-link/src/link.js';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties.js';
+import LegacyList from '@ckeditor/ckeditor5-list/src/legacylist.js';
+import LegacyListProperties from '@ckeditor/ckeditor5-list/src/legacylistproperties.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
@@ -65,7 +65,7 @@ describe( 'PasteFromOffice - integration', () => {
 	generateIntegrationTests( {
 		input: 'list',
 		editorConfig: {
-			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, ListProperties, PasteFromOffice ]
+			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, LegacyList, LegacyListProperties, PasteFromOffice ]
 		},
 		skip: {
 			safari: [ 'heading3Styled' ] // Skip due to spacing issue (#13).
@@ -89,14 +89,14 @@ describe( 'PasteFromOffice - integration', () => {
 	generateIntegrationTests( {
 		input: 'google-docs-list',
 		editorConfig: {
-			plugins: [ Clipboard, Paragraph, List, PasteFromOffice ]
+			plugins: [ Clipboard, Paragraph, LegacyList, PasteFromOffice ]
 		}
 	} );
 
 	generateIntegrationTests( {
 		input: 'generic-list-in-table',
 		editorConfig: {
-			plugins: [ Clipboard, Paragraph, List, Table, Bold, PasteFromOffice ]
+			plugins: [ Clipboard, Paragraph, LegacyList, Table, Bold, PasteFromOffice ]
 		}
 	} );
 

@@ -16,7 +16,7 @@ export { default as HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
 export type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
 export type { default as CodeBlockElementSupport } from './integrations/codeblock.js';
 export type { default as CustomElementSupport } from './integrations/customelement.js';
-export type { default as DocumentListElementSupport } from './integrations/documentlist.js';
+export type { default as ListElementSupport } from './integrations/list.js';
 export type { default as DualContentModelElementSupport } from './integrations/dualcontent.js';
 export type { default as HeadingElementSupport } from './integrations/heading.js';
 export type { default as ImageElementSupport } from './integrations/image.js';

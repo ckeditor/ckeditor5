@@ -6,8 +6,8 @@
 import Autoformat from '../src/autoformat.js';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import LegacyTodoListEditing from '@ckeditor/ckeditor5-list/src/legacytodolist/legacytodolistediting.js';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
@@ -38,8 +38,8 @@ describe( 'Autoformat', () => {
 					Enter,
 					Paragraph,
 					Autoformat,
-					ListEditing,
-					TodoListEditing,
+					LegacyListEditing,
+					LegacyTodoListEditing,
 					HeadingEditing,
 					BoldEditing,
 					ItalicEditing,
@@ -1006,7 +1006,7 @@ describe( 'Autoformat', () => {
 		it( 'should use only configured headings', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Enter, Paragraph, Autoformat, ListEditing, HeadingEditing ],
+					plugins: [ Enter, Paragraph, Autoformat, LegacyListEditing, HeadingEditing ],
 					heading: {
 						options: [
 							{ model: 'paragraph' },

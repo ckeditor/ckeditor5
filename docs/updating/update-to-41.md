@@ -28,11 +28,24 @@ The list v2 (document list) feature was implemented in 2022 to add support for b
 
 We introduced the new plugin in a manner that aims to be transparent for our users, namely by physically replacing the old plugin with the new one, but retaining all namespace intact. It means, starting with release v.41.0.0 all imports of various lists-related plugins will use the new version.
 
-The old plugin has been renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
+Unless you need to specifically use the old plugin in your integration, there is no need to make changes in the configuration.
 
-Unless you need to specifically use the old v1.0 plugin in your integration, there is no need to make changes in the configuration.
+If you do not want to utilize block elements in your lists, you can simply turn off this functionality with the {@link features/lists-editing#simple-lists simple list setting} instead of sticking to the old plugins.
 
-If you want to use the new extended plugin but do not want to utilize block elements in your lists, you can turn off this functionality and use the {@link features/lists-editing#simple-lists simple list setting} instead of sticking to the old plugins.
+#### Renaming of the plugins
+
+With the new version becoming default, the `DocumentList` plugin (and all related plugins, [observe the table below](#details-of-plugin-renames)) has been renamed to simply `List`. The old plugin has been renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
+
+If you previously included document lists in your integration and used the `removePlugins` option to exclude the old list plugin, it could lead to errors, such as these:
+
+```
+  ❌ CKEditorError: plugincollection-required {"plugin":"List","requiredBy":"DocumentList"}
+    Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required
+```
+
+This is because it was injecting `DocumentList` and `DocumentListProperties` plugins and passing the `removePlugins: [ List, ListProperties, TodoList ]` configuration option. After the change and renaming of the plugins, these two are the same.
+
+If you happen to encounter this error, please remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option and replace these with `List` and related plugins.
 
 #### Details of plugin renames 
 

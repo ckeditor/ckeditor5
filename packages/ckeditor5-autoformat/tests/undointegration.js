@@ -6,7 +6,7 @@
 import Autoformat from '../src/autoformat.js';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting.js';
@@ -197,7 +197,7 @@ describe( 'Autoformat undo integration', () => {
 						Autoformat,
 						Paragraph,
 						BoldEditing,
-						ListEditing,
+						LegacyListEditing,
 						Delete,
 						Undo
 					]
@@ -268,7 +268,7 @@ describe( 'Autoformat undo integration', () => {
 					Undo,
 					Paragraph,
 					Autoformat,
-					ListEditing,
+					LegacyListEditing,
 					HeadingEditing,
 					BoldEditing,
 					ItalicEditing,

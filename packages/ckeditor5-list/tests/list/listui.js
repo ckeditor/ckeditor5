@@ -5,7 +5,8 @@
 
 /* globals document */
 
-import ListEditing from '../../src/list/listediting.js';
+// TODO change to new ListEditing
+import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import ListUI from '../../src/list/listui.js';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -21,7 +22,7 @@ describe( 'ListUI', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListEditing, ListUI ] } )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, LegacyListEditing, ListUI ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;

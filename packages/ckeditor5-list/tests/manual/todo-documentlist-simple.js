@@ -27,8 +27,8 @@ import { Image, ImageResize, ImageInsert } from '@ckeditor/ckeditor5-image';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import Documentlist from '../../src/documentlist.js';
-import TodoDocumentlist from '../../src/tododocumentlist.js';
+import List from '../../src/documentlist.js';
+import TodoList from '../../src/tododocumentlist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -46,8 +46,8 @@ ClassicEditor
 			TableToolbar,
 			FontSize,
 			Indent,
-			Documentlist,
-			TodoDocumentlist,
+			List,
+			TodoList,
 			SourceEditing,
 			GeneralHtmlSupport,
 			Alignment,

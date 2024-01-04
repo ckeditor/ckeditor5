@@ -234,6 +234,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				} );
 
 				expect( options ).to.have.property( 'assetId', ckboxImageId );
+				expect( options ).to.have.property( 'serviceOrigin', CKBOX_API_URL );
 				expect( options ).to.have.property( 'tokenUrl', 'foo' );
 				expect( options.imageEditing.allowOverwrite ).to.be.false;
 				expect( options.onSave ).to.be.a( 'function' );

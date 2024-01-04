@@ -7,11 +7,8 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-/* import { DocumentList, TodoDocumentList } from '@ckeditor/ckeditor5-list'; */
-
 ClassicEditor
 	.create( document.querySelector( '#snippet-lists-document' ), {
-		removePlugins: [ 'List' ],
 		extraPlugins: [ ListProperties, TodoList, ImageResize ],
 		toolbar: {
 			items: [
