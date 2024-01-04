@@ -4,18 +4,23 @@
  */
 
 import {
+	InputTextView,
+	InputNumberView,
+	InputUrlView,
+	TextareaView,
+	DropdownView,
+	LabeledFieldView
+} from '@ckeditor/ckeditor5-ui';
+
+import {
 	createLabeledInputText,
 	createLabeledInputNumber,
 	createLabeledDropdown,
-	createLabeledTextarea
+	createLabeledTextarea,
+	createLabeledInputUrl
 } from '../../src/labeledfield/utils.js';
 
-import LabeledFieldView from '../../src/labeledfield/labeledfieldview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import InputTextView from '../../src/inputtext/inputtextview.js';
-import InputNumberView from '../../src/inputnumber/inputnumberview.js';
-import DropdownView from '../../src/dropdown/dropdownview.js';
-import { TextareaView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'LabeledFieldView utils', () => {
 	let locale;
@@ -247,6 +252,79 @@ describe( 'LabeledFieldView utils', () => {
 			labeledTextarea.errorText = 'some error';
 			labeledTextarea.fieldView.fire( 'input' );
 			expect( labeledTextarea.errorText ).to.be.null;
+		} );
+	} );
+
+	describe( 'createLabeledInputUrl()', () => {
+		let labeledInput;
+
+		beforeEach( () => {
+			labeledInput = new LabeledFieldView( locale, createLabeledInputUrl );
+		} );
+
+		afterEach( () => {
+			labeledInput.destroy();
+		} );
+
+		it( 'should create an InputUrlView instance', () => {
+			expect( labeledInput.fieldView ).to.be.instanceOf( InputUrlView );
+		} );
+
+		it( 'should pass the Locale to the input', () => {
+			expect( labeledInput.fieldView.locale ).to.equal( locale );
+		} );
+
+		it( 'should set input #id and #ariaDescribedById', () => {
+			labeledInput.render();
+
+			expect( labeledInput.fieldView.id ).to.equal( labeledInput.labelView.for );
+			expect( labeledInput.fieldView.ariaDescribedById ).to.equal( labeledInput.statusView.element.id );
+		} );
+
+		it( 'should bind input\'s #isReadOnly to labeledInput#isEnabled', () => {
+			labeledInput.isEnabled = true;
+			expect( labeledInput.fieldView.isReadOnly ).to.be.false;
+
+			labeledInput.isEnabled = false;
+			expect( labeledInput.fieldView.isReadOnly ).to.be.true;
+		} );
+
+		it( 'should bind input\'s #hasError to labeledInput#errorText', () => {
+			labeledInput.errorText = 'some error';
+			expect( labeledInput.fieldView.hasError ).to.be.true;
+
+			labeledInput.errorText = null;
+			expect( labeledInput.fieldView.hasError ).to.be.false;
+		} );
+
+		it( 'should bind labeledInput#isEmpty to input\'s #isEmpty', () => {
+			labeledInput.fieldView.isEmpty = true;
+			expect( labeledInput.isEmpty ).to.be.true;
+
+			labeledInput.fieldView.isEmpty = false;
+			expect( labeledInput.isEmpty ).to.be.false;
+		} );
+
+		it( 'should bind labeledInput#isFocused to input\'s #isFocused', () => {
+			labeledInput.fieldView.isFocused = true;
+			expect( labeledInput.isFocused ).to.be.true;
+
+			labeledInput.fieldView.isFocused = false;
+			expect( labeledInput.isFocused ).to.be.false;
+		} );
+
+		it( 'should bind labeledInput#placeholder to input\'s #placeholder', () => {
+			labeledInput.fieldView.placeholder = null;
+			expect( labeledInput.placeholder ).to.be.null;
+
+			labeledInput.fieldView.placeholder = 'foo';
+			expect( labeledInput.placeholder ).to.equal( 'foo' );
+		} );
+
+		it( 'should clean labeledInput#errorText upon input\'s DOM "update" event', () => {
+			labeledInput.errorText = 'some error';
+			labeledInput.fieldView.fire( 'input' );
+			expect( labeledInput.errorText ).to.be.null;
 		} );
 	} );
 
