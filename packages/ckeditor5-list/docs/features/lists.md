@@ -168,8 +168,8 @@ The {@link module:list/list~List} plugin registers:
 
 * The {@link module:list/list/listcommand~ListCommand `'numberedList'`} command.
 * The {@link module:list/list/listcommand~ListCommand `'bulletedList'`} command.
-* The {@link module:list/list/indentcommand~IndentCommand `'indentList'`} command.
-* The {@link module:list/list/indentcommand~IndentCommand `'outdentList'`} command.
+* The {@link module:list/list/listindentcommand~ListIndentCommand `'indentList'`} command.
+* The {@link module:list/list/listindentcommand~ListIndentCommand `'outdentList'`} command.
 * The `'numberedList'` UI button.
 * The `'bulletedList'` UI button.
 

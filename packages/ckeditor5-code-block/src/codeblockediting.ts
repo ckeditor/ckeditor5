@@ -22,7 +22,7 @@ import {
 	type Element
 } from 'ckeditor5/src/engine.js';
 
-import type { DocumentListEditing } from '@ckeditor/ckeditor5-list';
+import type { ListEditing } from '@ckeditor/ckeditor5-list';
 
 import CodeBlockCommand from './codeblockcommand.js';
 import IndentCodeBlockCommand from './indentcodeblockcommand.js';
@@ -99,8 +99,8 @@ export default class CodeBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 		const model = editor.model;
 		const view = editor.editing.view;
-		const documentListEditing: DocumentListEditing | null = editor.plugins.has( 'DocumentListEditing' ) ?
-			editor.plugins.get( 'DocumentListEditing' ) : null;
+		const listEditing: ListEditing | null = editor.plugins.has( 'ListEditing' ) ?
+			editor.plugins.get( 'ListEditing' ) : null;
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -138,7 +138,7 @@ export default class CodeBlockEditing extends Plugin {
 		schema.addAttributeCheck( ( context, attributeName ) => {
 			if (
 				context.endsWith( 'codeBlock' ) &&
-				documentListEditing && documentListEditing.getListAttributeNames().includes( attributeName )
+				listEditing && listEditing.getListAttributeNames().includes( attributeName )
 			) {
 				return true;
 			}

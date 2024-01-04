@@ -8,7 +8,7 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -27,7 +27,7 @@ describe( 'Table feature – integration', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor
-				.create( '', { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
+				.create( '', { plugins: [ Paragraph, TableEditing, LegacyListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -163,7 +163,7 @@ describe( 'Table feature – integration', () => {
 
 		beforeEach( () => {
 			return ClassicTestEditor
-				.create( '', { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Typing ] } )
+				.create( '', { plugins: [ Paragraph, TableEditing, LegacyListEditing, BlockQuoteEditing, Widget, Typing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 				} );

@@ -176,6 +176,7 @@ export default class CKBoxImageEditCommand extends Command {
 				allowOverwrite: false
 			},
 			tokenUrl: ckboxConfig.tokenUrl,
+			...( ckboxConfig.serviceOrigin && { serviceOrigin: ckboxConfig.serviceOrigin } ),
 			onClose: () => this._handleImageEditorClose(),
 			onSave: ( asset: CKBoxRawAssetDefinition ) => this._handleImageEditorSave( state, asset )
 		};

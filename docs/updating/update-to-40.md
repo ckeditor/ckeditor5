@@ -3,7 +3,6 @@ category: update-guides
 meta-title: Update to version 40.x | CKEditor 5 Documentation
 menu-title: Update to v40.x
 order: 84
-modified_at: 2023-12-06
 ---
 
 # Update to CKEditor&nbsp;5 v40.x

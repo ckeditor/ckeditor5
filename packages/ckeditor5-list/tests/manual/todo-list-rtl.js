@@ -15,12 +15,12 @@ import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import List from '../../src/list.js';
-import TodoList from '../../src/todolist.js';
+import LegacyList from '../../src/legacylist.js';
+import LegacyTodoList from '../../src/legacytodolist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo, List, TodoList, Clipboard ],
+		plugins: [ Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo, LegacyList, LegacyTodoList, Clipboard ],
 		language: 'ar',
 		toolbar: [
 			'heading', '|', 'bulletedList', 'numberedList', 'todoList', '|', 'bold', 'highlight', 'insertTable', '|', 'undo', 'redo'
