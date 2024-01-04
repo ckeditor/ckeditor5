@@ -143,3 +143,9 @@ Some exports names were changed due to possibility of name conflicts:
 * We renamed the default export of `UploadAdapter` from the `@ckeditor/ckeditor5-adapter-ckfinder` package to `CKFinderUploadAdapter`,
 * We renamed the interface export of `Position` from the `@ckeditor/ckeditor5-utils` package to `DomPoint`,
 * We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package.
+
+### Making CKEditor npm packages valid ES Modules
+
+The code we distribute in our npm packages uses [ES Module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (e.g. `import X from 'y'`), but until now it wasn't fully compliant with the standard and the package itself wasn't properly marked as an ES module. In some cases this resulted in bundlers (e.g. Vite) and other tools (e.g. Vitest) failing to build or run the projects containing CKEditor and requiring workarounds in their configuration.
+
+In this release we fix these issues, meaning that our packages are now fully ESM compliant and these workarounds are no longer needed.
