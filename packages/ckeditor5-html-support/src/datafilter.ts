@@ -461,7 +461,7 @@ export default class DataFilter extends Plugin {
 				}
 
 				// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
-				for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
+				for ( const { item } of change.range.getWalker() ) {
 					for ( const attributeKey of attributeKeys ) {
 						if ( item.hasAttribute( attributeKey ) ) {
 							writer.removeAttribute( attributeKey, item );

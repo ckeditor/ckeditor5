@@ -1013,6 +1013,80 @@ describe( 'ListElementSupport', () => {
 		} );
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/15527.
+	describe( '#15527', () => {
+		it( 'should not remove attribute from other elements', () => {
+			const dataFilter = editor.plugins.get( 'DataFilter' );
+
+			// Allow everything
+			dataFilter.allowElement( /^.*$/ );
+			dataFilter.allowAttributes( { name: /^.*$/, attributes: true } );
+			dataFilter.allowAttributes( { name: /^.*$/, classes: true } );
+
+			editor.setData(
+				'<div>' +
+					'<ol>' +
+						'<li>foo</li>' +
+						'<li>' +
+							'<div>' +
+								'<ol>' +
+									'<li>bar</li>' +
+								'</ol>' +
+							'</div>' +
+						'</li>' +
+					'</ol>' +
+				'</div>'
+			);
+
+			model.change( writer => {
+				writer.setSelection( model.document.getRoot().getNodeByPath( [ 0, 1, 0 ] ), 0 );
+			} );
+
+			expect( getModelDataWithAttributes( model ) ).to.deep.equal( {
+				data:
+					'<htmlDiv>' +
+						'<paragraph htmlLiAttributes="(1)" htmlOlAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
+							'foo' +
+						'</paragraph>' +
+						'<htmlDiv htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="0" listItemId="a02" listType="numbered">' +
+							'<paragraph' +
+								' htmlLiAttributes="(5)" htmlOlAttributes="(6)" listIndent="0" listItemId="a01" listType="numbered">' +
+								'[]bar' +
+							'</paragraph>' +
+						'</htmlDiv>' +
+					'</htmlDiv>',
+				attributes: {
+					1: {},
+					2: {},
+					3: {},
+					4: {},
+					5: {},
+					6: {}
+				}
+			} );
+
+			editor.editing.view.document.fire( 'delete', { direction: 'backward', preventDefault() {} } );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<htmlDiv>' +
+						'<paragraph htmlLiAttributes="(1)" htmlOlAttributes="(2)" listIndent="0" listItemId="a00" listType="numbered">' +
+							'foo' +
+						'</paragraph>' +
+						'<htmlDiv htmlLiAttributes="(3)" htmlOlAttributes="(4)" listIndent="0" listItemId="a02" listType="numbered">' +
+							'<paragraph>bar</paragraph>' +
+						'</htmlDiv>' +
+					'</htmlDiv>',
+				attributes: {
+					1: {},
+					2: {},
+					3: {},
+					4: {}
+				}
+			} );
+		} );
+	} );
+
 	function paragraph( text, id, indent, type, listAttributes ) {
 		const attributeName = type === 'bulleted' ?
 			'htmlUlAttributes' :
