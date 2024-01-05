@@ -10,7 +10,12 @@ modified_at: 2024-01-02
 
 ## Block lists
 
-The current list feature lets any part of the content be part of a list. Content blocks and elements – such as images, tables, paragraphs, headings, and others – can be put inside a list item, ensuring the continuity of numbering and retaining indentation.
+The current list feature lets any part of the content be part of a list. Content blocks and elements &ndash; such as images, tables, paragraphs, headings, and others &ndash; can be put inside a list item, ensuring the continuity of numbering and retaining indentation.
+
+To edit a block inside a list item, press <kbd>Enter</kbd> to create a new line and then <kbd>Backspace</kbd> to remove the new list item marker. Keep on entering content. Observe this behavior in the screencast below.
+
+{@img assets/img/adding-list-items.gif 860 Editing a block list item.}
+
 
 ## Simple lists
 
