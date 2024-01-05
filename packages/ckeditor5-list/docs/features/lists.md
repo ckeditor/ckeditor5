@@ -37,7 +37,7 @@ In addition to the basic functionality of creating the ordered and unordered lis
 <info-box info>
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} only.
 
-	See the {@link features/installation#list-properties list properties} installation section to learn how to enable these in your editor.
+	See the {@link features/lists-installation#list-properties list properties} installation section to learn how to enable these in your editor.
 </info-box>
 
 #### List styles

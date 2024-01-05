@@ -175,7 +175,7 @@
 		"features/lists.html": "features/lists/lists.html",
 		"features/todo-lists.html": "features/lists/todo-lists.html",
 		"features/lists/document-lists.html": "features/lists/lists.html",
-		"features/lists/lists.html#installation": "features/lists/installation.html",
+		"features/lists/lists.html#installation": "features/lists/lists-installation.html",
 		"features/lists/document-lists.html#list-merging": "features/lists/lists-editing.html#adjacent-lists-merging",
 		"features/lists/lists.html#list-indentation": "features/lists/lists-editing.html#indenting-lists",
 		"features/mathtype.html": "features/math-equations.html",
