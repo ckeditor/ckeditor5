@@ -51,7 +51,7 @@ Guides for developing some of the files:
 * [.editorconfig](https://editorconfig.org/)
 * [.gitattributes](https://git-scm.com/docs/gitattributes)
 * [.gitignore](https://git-scm.com/docs/gitignore)
-* {@link maintenance/contributing/package-metadata ckeditor5-metadata.json}
+* {@link framework/contributing/package-metadata ckeditor5-metadata.json}
 * [package.json](https://docs.npmjs.com/cli/v7/configuring-npm/package-json)
 
 ## Npm scripts
@@ -215,7 +215,7 @@ To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/c
 
 ### Why are the predefined ESLint rules recommended?
 
-To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link getting-started/advanced/dll-builds DLL guide} and {@link maintenance/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see a detailed explanation} about the limitations.
+To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce certain limitations when importing files from packages. To learn more, visit the {@link getting-started/advanced/dll-builds DLL guide} and {@link framework/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see a detailed explanation} about the limitations.
 
 ## Translations
 

@@ -1,5 +1,5 @@
 ---
-category: contributing
+category: framework-contributing
 meta-title: Code style | CKEditor 5 Framework Documentation
 order: 40
 modified_at: 2022-11-03
@@ -7,7 +7,7 @@ modified_at: 2022-11-03
 
 # Code style
 
-{@link maintenance/contributing/development-environment CKEditor&nbsp;5 development environment} has ESLint enabled both as a pre-commit hook and on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDEs settings (if it is configured to read them).
+{@link framework/contributing/development-environment CKEditor&nbsp;5 development environment} has ESLint enabled both as a pre-commit hook and on CI. This means that code style issues are detected automatically. Additionally, `.editorconfig` files are present in every repository to automatically adjust your IDEs settings (if it is configured to read them).
 
 Here comes a quick summary of these rules.
 
@@ -834,7 +834,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 ### Description of an error: `ckeditor5-rules/ckeditor-error-message`
 
-Each time a new error is created, it needs a description to be displayed on the {@link maintenance/support/error-codes error codes} page, like this:
+Each time a new error is created, it needs a description to be displayed on the {@link support/error-codes error codes} page, like this:
 
 👎&nbsp; Examples of incorrect code for this rule:
 
@@ -978,7 +978,7 @@ You may need an additional loader to handle the result of these loaders.
 
 Modules need to be imported with a `require()` function.
 
-To create a code executed only in the debug mode, follow the description of the `--debug` flag in the {@link maintenance/contributing/testing-environment#running-manual-tests testing environment} guide.
+To create a code executed only in the debug mode, follow the description of the `--debug` flag in the {@link framework/contributing/testing-environment#running-manual-tests testing environment} guide.
 
 👎&nbsp; Examples of incorrect code for this rule:
 

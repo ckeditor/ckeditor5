@@ -23,7 +23,7 @@ Listed below are the most important changes that require your attention when upg
 
 Starting with CKEditor&nbsp;5 v39.0.0, the {@link features/tables-styling table styling tools} will display a color picker in their user interfaces for color-related tools.
 
-Just like with the {@link maintenance/updating/update-to-38#introduction-of-color-pickers-to-font-color-and-font-background-color-features introduction of color pickers to font color and font background color features}, we allow you to decide whether this new functionality works for your integration and to opt–out of it.
+Just like with the {@link updating/update-to-38#introduction-of-color-pickers-to-font-color-and-font-background-color-features introduction of color pickers to font color and font background color features}, we allow you to decide whether this new functionality works for your integration and to opt–out of it.
 
 You can set the {@link module:table/tableconfig~TablePropertiesConfig#colorPicker} and {@link module:table/tableconfig~TableCellPropertiesConfig#colorPicker} configuration options to `false` to get rid of color pickers in all table styling tools:
 

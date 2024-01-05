@@ -19,11 +19,11 @@ CKEditor&nbsp;5 provides every type of WYSIWYG editing solution imaginable. From
 <!-- the wrapper class should be transformed into an additional infobox class if we will want to use it on other pages-->
 <!-- <div class="info-cta"> -->
 <info-box>
-	**Migrating from CKEditor 4?** {@link maintenance/updating/migration-from-ckeditor-4 Check the migration section}
+	**Migrating from CKEditor 4?** {@link updating/migration-from-ckeditor-4 Check the migration section}
 </info-box>
 
 <info-box>
-	**Want to remove the "Powered by CKEditor" logo?** {@link maintenance/support/managing-ckeditor-logo Check the dedicated guide}
+	**Want to remove the "Powered by CKEditor" logo?** {@link support/managing-ckeditor-logo Check the dedicated guide}
 </info-box>
 <!-- </div> -->
 

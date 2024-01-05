@@ -152,8 +152,8 @@ Here are the key differences between the two editor versions:
 Digital content editing paradigms have changed a lot between the times of CKEditor 4 and now. We designed and built CKEditor&nbsp;5 from scratch, taking into account the possibilities of modern web apps, current web standards, and the needs of today's users.
 
 This new approach affects the {@link features/index available feature set}, how features were implemented, and what configuration options are available for them. To make it easier to compare both editor versions, we have created the following compatibility tables:
-* {@link maintenance/updating/ckeditor4-plugin-compatibility CKEditor 4 plugin equivalents}
-* {@link maintenance/updating/ckeditor4-configuration-compatibility CKEditor 4 configuration options compatibility}
+* {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin equivalents}
+* {@link updating/ckeditor4-configuration-compatibility CKEditor 4 configuration options compatibility}
 
 You can use them to check the CKEditor&nbsp;5 equivalents of some features or configuration options from CKEditor 4. If there is no direct equivalent, the tables will point you to a solution recommended in CKEditor&nbsp;5. We strongly advise you to treat the migration to CKEditor&nbsp;5 as an opportunity to modernize your app and rethink your editing solutions.
 
@@ -221,8 +221,8 @@ CKEditor&nbsp;5 is a great, modern editing framework so migrating is a fantastic
 
 ## Support
 
-If you are missing any particular features or settings, feel free to {@link maintenance/support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
 
-The {@link maintenance/updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4} article answers some frequently asked questions about the migration.
+The {@link updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4} article answers some frequently asked questions about the migration.
 
 [Contact the support team](https://ckeditor.com/contact/) if you want to learn more about licensing or the [Extended Support Model](https://ckeditor.com/ckeditor-4-support/).

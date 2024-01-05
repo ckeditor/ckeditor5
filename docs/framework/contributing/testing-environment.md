@@ -1,5 +1,5 @@
 ---
-category: contributing
+category: framework-contributing
 meta-title: Testing environment | CKEditor 5 Framework Documentation
 order: 30
 modified_at: 2022-09-07
@@ -7,7 +7,7 @@ modified_at: 2022-09-07
 
 # Testing environment
 
-Before reading this article we recommend getting familiar with the CKEditor&nbsp;5 {@link maintenance/contributing/development-environment development environment}.
+Before reading this article we recommend getting familiar with the CKEditor&nbsp;5 {@link framework/contributing/development-environment development environment}.
 
 ## Introduction
 
@@ -206,7 +206,7 @@ To check manual tests, start the server (`yarn manual --files=XYZ`), and then ru
 yarn run manual:verify
 ```
 
-Read more about the crawler in the {@link maintenance/contributing/development-environment#verifying-documentation Verifying documentation} guide.
+Read more about the crawler in the {@link framework/contributing/development-environment#verifying-documentation Verifying documentation} guide.
 
 ## Rules for using the `--files` option
 

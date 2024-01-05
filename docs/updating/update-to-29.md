@@ -54,7 +54,7 @@ new Matcher( {
 
 ### Link decorators API change
 
-{@link maintenance/updating/update-to-29#matcher-pattern-api-change Matcher pattern API change} also improves how the {@link module:link/linkconfig~LinkDecoratorDefinition link decorators} should be defined (both {@link module:link/linkconfig~LinkDecoratorManualDefinition manual decorator} and {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorator}). Similar to the {@link module:engine/view/matcher~Matcher} feature API, `style` and `class` HTML attributes should be defined using respectively `classes` and `styles` properties.
+{@link updating/update-to-29#matcher-pattern-api-change Matcher pattern API change} also improves how the {@link module:link/linkconfig~LinkDecoratorDefinition link decorators} should be defined (both {@link module:link/linkconfig~LinkDecoratorManualDefinition manual decorator} and {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorator}). Similar to the {@link module:engine/view/matcher~Matcher} feature API, `style` and `class` HTML attributes should be defined using respectively `classes` and `styles` properties.
 
 Here is an example of changes you may need for proper integration with the {@link module:link/linkconfig~LinkDecoratorDefinition link decorators} API change:
 

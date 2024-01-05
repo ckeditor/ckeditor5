@@ -1,5 +1,5 @@
 ---
-category: contributing
+category: framework-contributing
 meta-title: Development environment | CKEditor 5 Framework Documentation
 order: 20
 modified_at: 2022-09-29
@@ -81,7 +81,7 @@ yarn run manual
 
 To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios you do not need to change it. The latter brings more languages to manual tests, which is helpful e.g. when working with {@link features/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
 
-You can read more about the {@link maintenance/contributing/testing-environment Testing environment}.
+You can read more about the {@link framework/contributing/testing-environment Testing environment}.
 
 ## Building DLLs
 

@@ -609,47 +609,36 @@
 			"type": "typedoc"
 		},
 		{
-			"name": "Maintenance",
-			"id": "maintenance",
+			"name": "Updating",
+			"id": "updating",
 			"navigationIncludeIndex": true,
-			"slug": "maintenance",
+			"slug": "updating",
 			"categories": [
 				{
-					"name": "Updating",
-					"id": "updating",
-					"slug": "updating",
-					"categories": [
-						{
-							"name": "CKEditor 4 migration",
-							"id": "ckeditor4-migration",
-							"slug": "ckeditor4",
-							"order": 10
-						},
-						{
-							"name": "Update guides",
-							"id": "update-guides",
-							"slug": "guides",
-							"order": 30
-						}
-					]
+					"name": "CKEditor 4 migration",
+					"id": "ckeditor4-migration",
+					"slug": "ckeditor4",
+					"order": 10
 				},
 				{
-					"name": "Support",
-					"id": "support",
-					"slug": "support",
-					"categories": [
-						{
-							"name": "Licensing and activation",
-							"id": "licensing",
-							"slug": "licensing",
-							"order": 20
-						}
-					]
-				},
+					"name": "Update guides",
+					"id": "update-guides",
+					"slug": "guides",
+					"order": 30
+				}
+			]
+		},
+		{
+			"name": "Support",
+			"id": "support",
+			"navigationIncludeIndex": true,
+			"slug": "support",
+			"categories": [
 				{
-					"name": "Contributing",
-					"id": "contributing",
-					"slug": "contributing"
+					"name": "Licensing and activation",
+					"id": "licensing",
+					"slug": "licensing",
+					"order": 20
 				}
 			]
 		}

@@ -8,7 +8,7 @@ meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at a
 # Updating CKEditor&nbsp;5
 
 <info-box>
-  This guide covers the topic of keeping your CKEditor&nbsp;5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor&nbsp;5, please see the {@link maintenance/updating/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
+  This guide covers the topic of keeping your CKEditor&nbsp;5 copy up-to-date. If you would like to upgrade from CKEditor 4 to CKEditor&nbsp;5, please see the {@link updating/migration-from-ckeditor-4 Migrating from CKEditor 4} guide instead.
 </info-box>
 
 
@@ -16,7 +16,7 @@ meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at a
 
 CKEditor&nbsp;5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
 
-Before proceeding with an update, it is highly recommended to [read the changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for the latest version to learn about all changes introduced in the release. You should especially pay attention to any possible {@link maintenance/updating/versioning-policy#major-and-minor-breaking-changes breaking changes}. This step is crucial if you develop your own custom features and modify the editor, as sometimes, changes in our code might affect these custom solutions.
+Before proceeding with an update, it is highly recommended to [read the changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for the latest version to learn about all changes introduced in the release. You should especially pay attention to any possible {@link updating/versioning-policy#major-and-minor-breaking-changes breaking changes}. This step is crucial if you develop your own custom features and modify the editor, as sometimes, changes in our code might affect these custom solutions.
 
 To help you with a smooth update, we have prepared migration guides that describe adjustments that need to be done before moving to the production environment. You can find them in the sidebar located on the left side of the page.
 
@@ -42,7 +42,7 @@ The first step is to identify changes introduced with the 31.0.0 version, so you
 
 {@img assets/img/updating-changelog.png 778 Breaking change in the changelog.}
 
-The change affects the {@link features/html-embed HTML embed feature}, so if you used this feature's API in your project, it should be reviewed. Fortunately, the {@link maintenance/updating/update-to-31#update-to-ckeditor-5-v3100 migration guide for version 31.0.0} explains what should be updated in your code!
+The change affects the {@link features/html-embed HTML embed feature}, so if you used this feature's API in your project, it should be reviewed. Fortunately, the {@link updating/update-to-31#update-to-ckeditor-5-v3100 migration guide for version 31.0.0} explains what should be updated in your code!
 
 <info-box>
 	It is recommended to update regularly. Sometimes, however, it could happen that you skip a few releases and need to update to a non-adjacent version. In such a case, remember to verify the changelog and migration guides for **all** missing versions, not only the one you are updating to.

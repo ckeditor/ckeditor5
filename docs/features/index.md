@@ -103,7 +103,7 @@ Do not get stopped by technology differences - CKEditor&nbsp;5 offers cross-plat
 
 ## Backward feature compatibility
 
-If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, please check the {@link maintenance/updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
+If you want to migrate from CKEditor 4 to CKEditor&nbsp;5, please check the {@link updating/migration-from-ckeditor-4 migration guide} for all the features that are already covered by the modern version.
 
 ## Feature availability
 

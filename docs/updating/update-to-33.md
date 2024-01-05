@@ -138,7 +138,7 @@ From now on, additional plugins will be required when the following CKEditor&nbs
 
 ### Mandatory consumption of all model items in the downcast conversion pipeline
 
-Starting with v33.0.0, all {@link module:engine/model/item~Item items} in the {@link framework/architecture/editing-engine#model model} must be consumed in the {@link framework/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and about possible solutions, please refer to the {@link maintenance/support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
+Starting with v33.0.0, all {@link module:engine/model/item~Item items} in the {@link framework/architecture/editing-engine#model model} must be consumed in the {@link framework/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and about possible solutions, please refer to the {@link support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
 
 ### The `triggerBy` option in the downcast pipeline is now obsolete
 

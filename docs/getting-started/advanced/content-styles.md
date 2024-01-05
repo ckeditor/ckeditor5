@@ -27,7 +27,7 @@ By default, content styles are loaded by the editor JavaScript which makes them 
 To avoid unnecessary dependencies in your front–end, use a stylesheet with a complete list of CKEditor&nbsp;5 content styles used by all editor features. There are two ways to obtain it:
 
 * By taking it directly from [this guide](#the-full-list-of-content-styles) and saving it as a static resource in your application (e.g. `content-styles.css`) (**recommended**).
-* By generating it using a dedicated script. Learn more in the {@link maintenance/contributing/development-environment#generating-content-styles Development environment} guide.
+* By generating it using a dedicated script. Learn more in the {@link framework/contributing/development-environment#generating-content-styles Development environment} guide.
 
 Load the `content-styles.css` file in your application by adding the following code to the template:
 

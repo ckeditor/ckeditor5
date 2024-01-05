@@ -16,7 +16,7 @@ The classes, styles or attributes applied to an HTML element are all **possible*
 
 If a given plugin does not generate any output, the "HTML output" is described as "None."  Wildcard character `*` means any value is possible.
 
-The data used to generate the following tables comes from the package metadata. You can read more about it in the {@link maintenance/contributing/package-metadata package metadata} guide.
+The data used to generate the following tables comes from the package metadata. You can read more about it in the {@link framework/contributing/package-metadata package metadata} guide.
 
 <style>
 	table.features-html-output p {

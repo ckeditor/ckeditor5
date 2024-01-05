@@ -25,7 +25,7 @@ Before, each plugin had its direct requirements that would be automatically load
 
 Starting from v26.0.0 not all plugins can be directly imported by other plugins. However, a plugin can define that it requires another plugin (called for example `'Foo'`) by returning a string from `static get() {}`. This tells the editor that such a plugin must be provided by the integrator (you) either prior to building (via {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}) or when creating a new instance of the editor (e.g. via {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`}).
 
-Therefore, when upgrading to version 26.0.0, you may stumble upon the {@link maintenance/support/error-codes#error-plugincollection-soft-required `plugincollection-soft-required`} error. This tells you that some dependencies are now missing and you need to provide them.
+Therefore, when upgrading to version 26.0.0, you may stumble upon the {@link support/error-codes#error-plugincollection-soft-required `plugincollection-soft-required`} error. This tells you that some dependencies are now missing and you need to provide them.
 
 ### List of known soft requirements
 

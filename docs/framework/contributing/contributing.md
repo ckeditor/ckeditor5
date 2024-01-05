@@ -1,5 +1,5 @@
 ---
-category: contributing
+category: framework-contributing
 meta-title: Contributing | CKEditor 5 Framework Documentation
 order: 10
 ---
@@ -20,11 +20,11 @@ Before you start, here are some things to keep in mind:
 
 ### Setting up the development environment
 
-To learn how to set up the project and run tests see the {@link maintenance/contributing/development-environment development environment} guide.
+To learn how to set up the project and run tests see the {@link framework/contributing/development-environment development environment} guide.
 
 ### Code style
 
-Read more in the {@link maintenance/contributing/code-style code style} guide, where you can also check the {@link maintenance/contributing/code-style#naming naming} and {@link maintenance/contributing/code-style#file-names file name} guidelines.
+Read more in the {@link framework/contributing/code-style code style} guide, where you can also check the {@link framework/contributing/code-style#naming naming} and {@link framework/contributing/code-style#file-names file name} guidelines.
 
 Every package repository installs Git hooks that automatically lint and check the code for code style on commit. However, not every code style issue can be discovered this way, so please do not rely on tools too much.
 
@@ -34,7 +34,7 @@ We maintain a **100% code coverage** (including code branches) and pull requests
 
 Besides automated tests, you may be asked to create a manual test for the issue. Such manual tests let us quickly validate that the issue was really fixed and are later used during the testing phase (before a release) to make sure no regressions were created.
 
-Read more about our {@link maintenance/contributing/testing-environment testing environment}.
+Read more about our {@link framework/contributing/testing-environment testing environment}.
 
 ### Creating a pull request
 
@@ -49,7 +49,7 @@ Read more about our {@link maintenance/contributing/testing-environment testing 
 Assuming that you would like to propose some changes, these are the steps you should take to create a pull request:
 
 1. Make sure to open a ticket in [https://github.com/ckeditor/ckeditor5](https://github.com/ckeditor/ckeditor5) describing the issue, feature or problem that you want to solve in your pull request. This can be skipped in case of obvious and trivial changes (typos, documentation, etc.).
-1. Make sure your {@link maintenance/contributing/development-environment development environment} is ready.
+1. Make sure your {@link framework/contributing/development-environment development environment} is ready.
 1. Go to GitHub and [fork the repository](https://help.github.com/articles/fork-a-repo). The forked repository will appear in your GitHub account as `https://github.com/YOUR-USERNAME/ckeditor5`.
 1. Open your terminal, then go to the package ("repository") folder in your development environment:
 
@@ -82,7 +82,7 @@ Assuming that you would like to propose some changes, these are the steps you sh
 	$ git push my-fork i/GITHUB-ISSUE-NUMBER
 	```
 
-1. Go to your forked repository on GitHub. Use the [pull request button](https://help.github.com/articles/about-pull-requests/) and follow the instructions. Make sure to include a merge commit message text matches the {@link maintenance/contributing/git-commit-message-convention convention}
+1. Go to your forked repository on GitHub. Use the [pull request button](https://help.github.com/articles/about-pull-requests/) and follow the instructions. Make sure to include a merge commit message text matches the {@link framework/contributing/git-commit-message-convention convention}
 1. **Let us know about your pull request!** The best way is to comment under the original issue.
 
 Some additional things you should keep in mind:
@@ -101,7 +101,7 @@ Here as well, having a CLA in place is a requirement to become an official trans
 
 ## Reporting issues and requesting features
 
-Read the {@link maintenance/support/reporting-issues reporting issues} guide to learn more.
+Read the {@link support/reporting-issues reporting issues} guide to learn more.
 
 ## Contributor License Agreement (CLA)
 

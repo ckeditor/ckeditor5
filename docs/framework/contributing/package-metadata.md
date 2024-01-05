@@ -1,5 +1,5 @@
 ---
-category: contributing
+category: framework-contributing
 meta-title: Package metadata | CKEditor 5 Framework Documentation
 order: 50
 modified_at: 2021-06-07

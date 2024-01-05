@@ -22,9 +22,9 @@ Find out how to start your adventure with the {@link getting-started/quick-start
 
 ## Migrating from CKEditor&nbsp;4?
 
-Check the {@link maintenance/updating/migration-from-ckeditor-4 migration} section.
+Check the {@link updating/migration-from-ckeditor-4 migration} section.
 </info-box>
 
 ## Want to remove the "Powered by CKEditor" logo?
 
-Check the dedicated {@link maintenance/support/managing-ckeditor-logo branding} guide.
+Check the dedicated {@link support/managing-ckeditor-logo branding} guide.

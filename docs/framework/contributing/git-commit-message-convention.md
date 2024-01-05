@@ -1,5 +1,5 @@
 ---
-category: contributing
+category: framework-contributing
 meta-title: Git commit message convention | CKEditor 5 Framework Documentation
 order: 60
 modified_at: 2021-09-07
@@ -50,7 +50,7 @@ Each commit can contain additional notes that will be inserted into the changelo
 
 If any change contains the `MAJOR BREAKING CHANGE` note, the next release will automatically be marked as `major`.
 
-For reference on how to identify minor or major breaking change see the {@link maintenance/updating/versioning-policy versioning policy guide}.
+For reference on how to identify minor or major breaking change see the {@link updating/versioning-policy versioning policy guide}.
 
 Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
 
