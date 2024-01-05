@@ -26,7 +26,8 @@ import {
 	addToolbarToDropdown,
 	createDropdown,
 	createLabeledInputNumber,
-	createLabeledInputText
+	createLabeledInputText,
+	createLabeledInputUrl
 } from '@ckeditor/ckeditor5-ui';
 import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -58,6 +59,7 @@ window.addToolbarToDropdown = addToolbarToDropdown;
 window.createDropdown = createDropdown;
 window.createLabeledInputNumber = createLabeledInputNumber;
 window.createLabeledInputText = createLabeledInputText;
+window.createLabeledInputUrl = createLabeledInputUrl;
 window.Collection = Collection;
 window.Locale = Locale;
 
