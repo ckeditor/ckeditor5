@@ -153,7 +153,7 @@ The table styles feature allows for configuring the default look of the tables i
 
 The **“Table properties”** and **“Table cell properties”** buttons in the toolbar will show the table and table cell properties applied to the table or table cells.
 
-The stylesheet for the editor displayed below looks as follows:
+The style sheet for the editor displayed below looks as follows:
 
 ```css
 .ck-content .table {

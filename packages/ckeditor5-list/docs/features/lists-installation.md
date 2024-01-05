@@ -9,7 +9,7 @@ modified_at: 2024-01-02
 # Installation
 
 <info-box info>
-	The lists feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
+	The lists feature is enabled by default in all {@link getting-started/legacy-getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 
 ## Ordered and unordered lists installation
@@ -66,7 +66,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+	Read more about {@link framework/plugins/installing-plugins installing plugins}.
 </info-box>
 
 <info-box warning>
@@ -76,7 +76,7 @@ ClassicEditor
 ## To-do lists installation
 
 <info-box info>
-	The to-do list feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	The to-do list feature is enabled by default in the {@link getting-started/legacy-getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
@@ -100,5 +100,5 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
+	Read more about {@link framework/plugins/installing-plugins installing plugins}.
 </info-box>

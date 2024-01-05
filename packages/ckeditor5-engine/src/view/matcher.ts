@@ -879,7 +879,7 @@ export type ClassPatterns = PropertyPatterns<never>;
  * }
  * ```
  *
- * Refer to the {@glink maintenance/updating/guides/update-to-29##update-to-ckeditor-5-v2910 Migration to v29.1.0} guide
+ * Refer to the {@glink updating/guides/update-to-29##update-to-ckeditor-5-v2910 Migration to v29.1.0} guide
  * and {@link module:engine/view/matcher~MatcherPattern} documentation.
  *
  * @param pattern Pattern with missing properties.
@@ -911,7 +911,7 @@ export type ClassPatterns = PropertyPatterns<never>;
  * }
  * ```
  *
- * Refer to the {@glink maintenance/updating/guides/update-to-29##update-to-ckeditor-5-v2910 Migration to v29.1.0} guide
+ * Refer to the {@glink updating/guides/update-to-29##update-to-ckeditor-5-v2910 Migration to v29.1.0} guide
  * and the {@link module:engine/view/matcher~MatcherPattern} documentation.
  *
  * @param pattern Pattern with missing properties.

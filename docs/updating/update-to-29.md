@@ -117,7 +117,7 @@ Starting from v29.0.0, the existing {@link module:image/image~Image} plugin load
 <<<<<<< HEAD
 An image caption is no longer automatically shown when selecting the image widget. Its visibility can now be toggled with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all of the {@link getting-started/legacy-getting-started/predefined-builds#available-builds predefined editor builds}.
 =======
-An image caption is no longer automatically shown when selecting the image widget. You can now toggle its visibility with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all the {@link installation/getting-started/predefined-builds#available-builds predefined editor builds}.
+An image caption is no longer automatically shown when selecting the image widget. You can now toggle its visibility with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all the {@link getting-started/legacy-getting-started/predefined-builds#available-builds predefined editor builds}.
 >>>>>>> master
 
 <info-box>
@@ -137,7 +137,7 @@ Since the appearance of the image in the document depends on the image type (blo
 <<<<<<< HEAD
 * The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link getting-started/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
 =======
-* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`). The default {@link installation/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customize the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
+* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`). The default {@link getting-started/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customize the default appearance of the block images, you can change the button label by {@link module:image/imageconfig~ImageConfig#styles modifying the existing image style}.
 >>>>>>> master
 
 * The format of the `config.image.styles` has changed. You must wrap the list of the styles with the `options` array. Read more about the {@link module:image/imageconfig~ImageConfig#styles `image.styles` configuration}.
@@ -220,7 +220,7 @@ We recommend one of the following configurations as the minimum setup for the im
 <<<<<<< HEAD
 * For the purposes of the structured content editing (implemented by default in the classic, balloon, balloon-block, and inline {@link getting-started/legacy-getting-started/predefined-builds editor builds}):
 =======
-* For structured content editing (implemented by default in the classic, balloon, balloon block, and inline {@link installation/getting-started/predefined-builds editor builds}):
+* For structured content editing (implemented by default in the classic, balloon, balloon block, and inline {@link getting-started/legacy-getting-started/predefined-builds editor builds}):
 >>>>>>> master
 
 	```js
@@ -242,7 +242,7 @@ We recommend one of the following configurations as the minimum setup for the im
 <<<<<<< HEAD
 * For the purposes of the document-like editing (implemented by default in the {@link getting-started/legacy-getting-started/predefined-builds#document-editor decoupled document build}).
 =======
-* For document-like editing (implemented by default in the {@link installation/getting-started/predefined-builds#document-editor decoupled document build}).
+* For document-like editing (implemented by default in the {@link getting-started/legacy-getting-started/predefined-builds#document-editor decoupled document build}).
 >>>>>>> master
 
 	```js
@@ -336,7 +336,7 @@ This decoupling does not have an impact on integrations based on {@link getting-
 <<<<<<< HEAD
 However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 =======
-However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
+However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 >>>>>>> master
 
 ```js
@@ -364,7 +364,7 @@ This decoupling does not have an impact on integrations based on {@link getting-
 <<<<<<< HEAD
 However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that in order to get CKFinder working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 =======
-However, for integrations that {@link installation/advanced/integrating-from-source-webpack build the editor from source}, this means that to get CKFinder working properly, you must import the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) separately:
+However, for integrations that {@link getting-started/advanced/integrating-from-source-webpack build the editor from source}, this means that to get CKFinder working properly, you must import the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) separately:
 >>>>>>> master
 
 ```js

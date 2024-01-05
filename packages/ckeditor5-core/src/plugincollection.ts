@@ -340,7 +340,7 @@ export default class PluginCollection<TContext extends object> extends EmitterMi
 				 *
 				 * Soft requirements were introduced in version 26.0.0. If you happen to stumble upon this error
 				 * when upgrading to version 26.0.0, read also the
-				 * {@glink maintenance/updating/guides/update-to-26 Migration to 26.0.0} guide.
+				 * {@glink updating/guides/update-to-26 Migration to 26.0.0} guide.
 				 *
 				 * @error plugincollection-soft-required
 				 * @param missingPlugin The name of the required plugin.

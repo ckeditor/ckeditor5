@@ -343,7 +343,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraPlugins"><code>extraPlugins</code></a></td>
-			<td>Learn how to {@link installation/plugins/installing-plugins install plugins in CKEditor&nbsp;5}.</td>
+			<td>Learn how to {@link framework/plugins/installing-plugins install plugins in CKEditor&nbsp;5}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_defaultFileName"><code>fileTools_defaultFileName</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fileTools_requestHeaders"><code>fileTools_requestHeaders</code></a></td>
@@ -537,7 +537,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-plugins"><code>plugins</code></a></td>
-			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor&nbsp;5 has changed in general. Check the articles about {@link installation/plugins/plugins plugins} and {@link installation/getting-started/quick-start-other custom builds} for more information.</td>
+			<td>See the {@link module:core/editor/editorconfig~EditorConfig#plugins <code>plugins</code>} configuration option. The way how plugins are enabled in CKEditor&nbsp;5 has changed in general. Check the articles about {@link framework/plugins/plugins plugins} and {@link getting-started/legacy-getting-started/quick-start-other custom builds} for more information.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-protectedSource"><code>protectedSource</code></a></td>
@@ -677,7 +677,7 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroupCycling"><code>toolbarGroupCycling</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarGroups"><code>toolbarGroups</code></a></td>
-			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into lines by using <code>'-'</code>. Refer to the {@link features/toolbar toolbar} guide to learn more about managing toolbar items behavior in CKEditor&nbsp;5.</td>
+			<td>N/A. {@link module:core/editor/editorconfig~EditorConfig#toolbar The toolbar buttons can be grouped} by using <code>'|'</code> as a separator or divided into lines by using <code>'-'</code>. Refer to the {@link getting-started/setup/toolbar toolbar} guide to learn more about managing toolbar items behavior in CKEditor&nbsp;5.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-toolbarLocation"><code>toolbarLocation</code></a></td>

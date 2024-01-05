@@ -319,7 +319,7 @@ function showPlaceholderTextDeprecationWarning() {
 		 * The "text" option in the {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
 		 * function is deprecated and will be removed soon.
 		 *
-		 * See the {@glink maintenance/updating/guides/update-to-39#view-element-placeholder Migration to v39} guide for
+		 * See the {@glink updating/guides/update-to-39#view-element-placeholder Migration to v39} guide for
 		 * more information on how to apply this change.
 		 *
 		 * @error enableplaceholder-deprecated-text-option
