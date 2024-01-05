@@ -7,10 +7,10 @@
  * @module image/imageupload
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import ImageUploadUI from './imageupload/imageuploadui';
-import ImageUploadProgress from './imageupload/imageuploadprogress';
-import ImageUploadEditing from './imageupload/imageuploadediting';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ImageUploadUI from './imageupload/imageuploadui.js';
+import ImageUploadProgress from './imageupload/imageuploadprogress.js';
+import ImageUploadEditing from './imageupload/imageuploadediting.js';
 
 /**
  * The image upload plugin.

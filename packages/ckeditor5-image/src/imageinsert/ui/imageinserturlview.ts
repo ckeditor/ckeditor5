@@ -7,7 +7,7 @@
  * @module image/imageinsert/ui/imageinserturlview
  */
 
-import { icons } from 'ckeditor5/src/core';
+import { icons } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	View,
@@ -16,8 +16,8 @@ import {
 	LabeledFieldView,
 	createLabeledInputText,
 	type InputTextView
-} from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/ui.js';
+import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
 /**
  * The insert an image via URL view.

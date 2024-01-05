@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { ButtonView, TextareaView } from '../../../src';
+import { ButtonView, TextareaView } from '../../../src/index.js';
 
 function createPlainTextarea() {
 	const textareaView = new TextareaView();

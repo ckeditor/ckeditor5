@@ -7,7 +7,7 @@
  * @module image/imageupload/imageuploadediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	UpcastWriter,
@@ -17,17 +17,17 @@ import {
 	type DataTransfer,
 	type ViewElement,
 	type NodeAttributes
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { Notification } from 'ckeditor5/src/ui';
-import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard';
-import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload';
-import { env } from 'ckeditor5/src/utils';
+import { Notification } from 'ckeditor5/src/ui.js';
+import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckeditor5/src/clipboard.js';
+import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload.js';
+import { env } from 'ckeditor5/src/utils.js';
 
-import ImageUtils from '../imageutils';
-import UploadImageCommand from './uploadimagecommand';
-import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils';
-import { createImageTypeRegExp } from './utils';
+import ImageUtils from '../imageutils.js';
+import UploadImageCommand from './uploadimagecommand.js';
+import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils.js';
+import { createImageTypeRegExp } from './utils.js';
 
 /**
  * The editing part of the image upload feature. It registers the `'uploadImage'` command

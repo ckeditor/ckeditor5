@@ -25,7 +25,7 @@ In this guide, you will find the quickest and easiest way to run ready-to-use CK
 
 ## Running a simple editor
 
-Creating an editor using a CKEditor&nbsp;5 build is very simple and can be described in two steps:
+Creating an editor using a CKEditor&nbsp;5 build is simple and can be described in two steps:
 
 1. Load the desired editor via the `<script>` tag.
 2. Call the static `create()` method to create the editor.
@@ -161,7 +161,7 @@ In this example, we remove the premium collaboration features as well as several
 						'-',
 						'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
 						'alignment', '|',
-						'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+						'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
 						'specialCharacters', 'horizontalLine', 'pageBreak', '|',
 						'textPartLanguage', '|',
 						'sourceEditing'
@@ -292,7 +292,8 @@ In this example, we remove the premium collaboration features as well as several
 					'DocumentOutline',
 					'FormatPainter',
 					'TableOfContents',
-					'PasteFromOfficeEnhanced'
+					'PasteFromOfficeEnhanced',
+					'CaseChange'
 				]
 			});
 		</script>

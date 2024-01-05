@@ -37,7 +37,7 @@ This demo shows the integration where the file manager's server connector handle
 This demo shows the [full integration](#configuring-the-full-integration) with the CKFinder file uploader:
 
 * Paste an image directly into the editor, and it will be automatically uploaded using the server-side connector.
-* Use the insert image or file button {@icon @ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.svg Browse files} in the toolbar to open the CKFinder file manager and insert an image or a link to any other file.
+* Use the insert image or file button {@icon @ckeditor/ckeditor5-core/theme/icons/browse-files.svg Browse files} in the toolbar to open the CKFinder file manager and insert an image or a link to any other file.
 
 {@snippet features/ckfinder}
 
@@ -54,7 +54,7 @@ This feature can be used in the rich-text editor in two different ways:
 * [**As a server-side connector only**](#configuring-the-image-upload-only) ([demo](#image-upload-only)). In this scenario, images dropped or pasted into the editor are uploaded to the CKFinder server-side connector running on your server.
 * [**As a server and client-side file manager integration**](#configuring-the-full-integration) ([demo](#full-integration)). Images dropped or pasted directly into the editor are uploaded to the server (just like in the first option).
 
-	But there are more cool features available, for instance:
+	There are more cool features available, for instance:
 
 	* **Uploading** using the full user interface
 	* Uploading **multiple files** at once
@@ -70,7 +70,7 @@ The feature is configurable by using the {@link module:ckfinder/ckfinderconfig~C
 
 ### Configuring the image upload only
 
-This feature can upload images automatically to the server (e.g. when the image is dropped into the content) thanks to the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}. All it requires is the correct {@link module:ckfinder/ckfinderconfig~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
+This feature can upload images automatically to the server (for example, when the user drops an image into the content) thanks to the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}. All it requires is the correct {@link module:ckfinder/ckfinderconfig~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
 
 Assuming that the [CKFinder PHP server-side connector is installed](https://ckeditor.com/docs/ckfinder/ckfinder3-php/quickstart.html#quickstart_installation_folders) (available) under `https://example.com/ckfinder/`, use the following [quick upload](https://ckeditor.com/docs/ckfinder/ckfinder3-php/commands.html#command_quick_upload) command URL to enable the image upload:
 

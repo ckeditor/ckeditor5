@@ -11,15 +11,15 @@ import type {
 	Element,
 	Node,
 	Writer
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { Command, type Editor } from 'ckeditor5/src/core';
-import TableWalker from '../tablewalker';
-import { isHeadingColumnCell } from '../utils/common';
-import { removeEmptyRowsColumns } from '../utils/structure';
-import type { ArrowKeyCodeDirection } from 'ckeditor5/src/utils';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
+import TableWalker from '../tablewalker.js';
+import { isHeadingColumnCell } from '../utils/common.js';
+import { removeEmptyRowsColumns } from '../utils/structure.js';
+import type { ArrowKeyCodeDirection } from 'ckeditor5/src/utils.js';
 
-import type TableUtils from '../tableutils';
+import type TableUtils from '../tableutils.js';
 
 /**
  * The merge cell command.

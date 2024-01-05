@@ -7,7 +7,7 @@
  * @module html-support/datafilter
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	Matcher,
@@ -18,15 +18,15 @@ import {
 	type ViewConsumable,
 	type MatcherObjectPattern,
 	type DocumentSelectionChangeAttributeEvent
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
 import {
 	CKEditorError,
 	priorities,
 	isValidAttributeName
-} from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/utils.js';
 
-import { Widget } from 'ckeditor5/src/widget';
+import { Widget } from 'ckeditor5/src/widget.js';
 
 import {
 	viewToModelObjectConverter,
@@ -39,19 +39,19 @@ import {
 
 	viewToModelBlockAttributeConverter,
 	modelToViewBlockAttributeConverter
-} from './converters';
+} from './converters.js';
 
 import {
 	default as DataSchema,
 	type DataSchemaBlockElementDefinition,
 	type DataSchemaDefinition,
 	type DataSchemaInlineElementDefinition
-} from './dataschema';
+} from './dataschema.js';
 
 import {
 	getHtmlAttributeName,
 	type GHSViewAttributes
-} from './utils';
+} from './utils.js';
 
 import { isPlainObject, pull as removeItemFromArray } from 'lodash-es';
 
@@ -461,7 +461,7 @@ export default class DataFilter extends Plugin {
 				}
 
 				// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
-				for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
+				for ( const { item } of change.range.getWalker() ) {
 					for ( const attributeKey of attributeKeys ) {
 						if ( item.hasAttribute( attributeKey ) ) {
 							writer.removeAttribute( attributeKey, item );

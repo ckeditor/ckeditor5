@@ -5,23 +5,23 @@
 
 /* global document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import Widget from '../src/widget';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import Widget from '../src/widget.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
-import { toWidget } from '../src/utils';
+import { toWidget } from '../src/utils.js';
 import {
 	setData as setModelData,
 	getData as getModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import env from '@ckeditor/ckeditor5-utils/src/env';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Widget - integration', () => {
 	let editor, model, view, viewDocument, editorElement;

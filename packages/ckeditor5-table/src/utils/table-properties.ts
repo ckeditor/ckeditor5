@@ -7,7 +7,7 @@
  * @module table/utils/table-properties
  */
 
-import type { BoxSides } from 'ckeditor5/src/engine';
+import type { BoxSides } from 'ckeditor5/src/engine.js';
 import { isObject } from 'lodash-es';
 
 /**

@@ -129,7 +129,7 @@ this.on( 'foo:bar:baz', () => { /* ... */ } );
 
 This way you can have more general events, listening to a broader event (`'foo'` in this case), or more detailed callbacks listening to specified events (`'foo:bar'` or `'foo:bar:baz'`).
 
-This mechanism is used for instance in the conversion, where thanks to events named as `'insert:<elementName>'` you can listen to the insertion of a specific element (e.g. `'insert:p'`) or all elements insertion (`'insert'`).
+This mechanism is used for instance in the conversion, where thanks to events named `'insert:<elementName>'` you can listen to the insertion of a specific element (like `'insert:p'`) or all elements insertion (`'insert'`).
 
 **Note**: Listeners registered on the same priority will be fired in the order of the registration (no matter if listening to a whole namespace or to a specific event).
 

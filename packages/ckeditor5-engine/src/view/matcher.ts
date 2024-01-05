@@ -7,7 +7,7 @@
  * @module engine/view/matcher
  */
 
-import type Element from './element';
+import type Element from './element.js';
 
 import { isPlainObject } from 'lodash-es';
 

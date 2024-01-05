@@ -3,28 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import LinkEditing from '../src/linkediting';
-import LinkCommand from '../src/linkcommand';
-import UnlinkCommand from '../src/unlinkcommand';
+import LinkEditing from '../src/linkediting.js';
+import LinkCommand from '../src/linkcommand.js';
+import UnlinkCommand from '../src/unlinkcommand.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Input from '@ckeditor/ckeditor5-typing/src/input';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { isLinkElement } from '../src/utils';
-import { env } from 'ckeditor5/src/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Input from '@ckeditor/ckeditor5-typing/src/input.js';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
+import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { isLinkElement } from '../src/utils.js';
+import { env } from 'ckeditor5/src/utils.js';
 
 /* global document, window */
 

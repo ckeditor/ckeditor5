@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import getDataFromElement from '../../src/dom/getdatafromelement';
+import getDataFromElement from '../../src/dom/getdatafromelement.js';
 
 describe( 'getDataFromElement', () => {
 	let divEl;

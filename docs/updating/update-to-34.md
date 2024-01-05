@@ -22,7 +22,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### Collaboration Server On-Premises version must be at least 4.5.0
 
- The latest version of CKEditor contains some fixes and improvements for the WebSockets communication with the CKEditor Cloud Services servers. If you use the On-premises version of CKEditor Cloud Services (i.e. Collaboration Server On-Premises), CKEditor v34.0.0 will only work with the server in version 4.5.0 or higher.
+ The latest version of CKEditor contains some fixes and improvements for the WebSockets communication with the CKEditor Cloud Services servers. If you use the on-premises version of CKEditor Cloud Services (that is, Collaboration Server On-Premises), CKEditor v34.0.0 will only work with the server in version 4.5.0 or higher.
 
  Before updating your CKEditor instance to v34.0.0 please make sure you have the updated version of Collaboration Server On-Premises, too.
 

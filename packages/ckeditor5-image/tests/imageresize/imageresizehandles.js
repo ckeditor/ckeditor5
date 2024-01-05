@@ -6,31 +6,31 @@
 /* global document */
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import LegacyTodoList from '@ckeditor/ckeditor5-list/src/legacytodolist.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import {
 	focusEditor,
 	resizerMouseSimulator,
 	getWidgetDomParts,
 	getHandleCenterPoint
-} from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils';
-import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils';
+} from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
+import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils.js';
 
-import Image from '../../src/image';
-import ImageToolbar from '../../src/imagetoolbar';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
-import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
-import ImageTextAlternative from '../../src/imagetextalternative';
-import ImageStyle from '../../src/imagestyle';
-import PictureEditing from '../../src/pictureediting';
+import Image from '../../src/image.js';
+import ImageToolbar from '../../src/imagetoolbar.js';
+import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
+import ImageResizeHandles from '../../src/imageresize/imageresizehandles.js';
+import ImageTextAlternative from '../../src/imagetextalternative.js';
+import ImageStyle from '../../src/imagestyle.js';
+import PictureEditing from '../../src/pictureediting.js';
 
 describe( 'ImageResizeHandles', () => {
 	let widget, editor, view, viewDocument, editorElement;
@@ -1041,7 +1041,7 @@ describe( 'ImageResizeHandles', () => {
 		describe( 'to-do list integration', () => {
 			it( 'should set the list item as the resize host if an image is inside a to-do list', async () => {
 				editor = await createEditor( {
-					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, TodoList, Paragraph ]
+					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LegacyTodoList, Paragraph ]
 				} );
 
 				await setModelAndWaitForImages( editor,

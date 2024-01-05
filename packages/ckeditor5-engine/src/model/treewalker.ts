@@ -7,19 +7,19 @@
  * @module engine/model/treewalker
  */
 
-import Element from './element';
+import Element from './element.js';
 import {
 	default as Position,
 	getTextNodeAtPosition,
 	getNodeAfterPosition,
 	getNodeBeforePosition
-} from './position';
-import Text from './text';
-import TextProxy from './textproxy';
+} from './position.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 
-import type DocumentFragment from './documentfragment';
-import type Item from './item';
-import type Range from './range';
+import type DocumentFragment from './documentfragment.js';
+import type Item from './item.js';
+import type Range from './range.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 

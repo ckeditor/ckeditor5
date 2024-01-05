@@ -7,12 +7,10 @@
  * @module html-embed/htmlembedui
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
-import type { RawHtmlApi } from './htmlembedediting';
-import type HtmlEmbedCommand from './htmlembedcommand';
-
-import htmlEmbedIcon from '../theme/icons/html.svg';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
+import type { RawHtmlApi } from './htmlembedediting.js';
+import type HtmlEmbedCommand from './htmlembedcommand.js';
 
 /**
  * The HTML embed UI plugin.
@@ -39,7 +37,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 			view.set( {
 				label: t( 'Insert HTML' ),
-				icon: htmlEmbedIcon,
+				icon: icons.html,
 				tooltip: true
 			} );
 

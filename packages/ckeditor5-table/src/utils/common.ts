@@ -15,10 +15,10 @@ import type {
 	Schema,
 	Writer,
 	DocumentSelection
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties';
-import type TableUtils from '../tableutils';
+import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties.js';
+import type TableUtils from '../tableutils.js';
 
 /**
  * A common method to update the numeric value. If a value is the default one, it will be unset.

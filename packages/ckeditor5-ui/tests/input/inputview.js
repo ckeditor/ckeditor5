@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import InputView from '../../src/input/inputview';
+import InputView from '../../src/input/inputview.js';
 
 describe( 'InputView', () => {
 	let view;

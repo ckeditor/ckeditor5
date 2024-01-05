@@ -7,25 +7,25 @@
  * @module html-support/generalhtmlsupport
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import DataFilter from './datafilter';
-import CodeBlockElementSupport from './integrations/codeblock';
-import DualContentModelElementSupport from './integrations/dualcontent';
-import HeadingElementSupport from './integrations/heading';
-import ImageElementSupport from './integrations/image';
-import MediaEmbedElementSupport from './integrations/mediaembed';
-import ScriptElementSupport from './integrations/script';
-import TableElementSupport from './integrations/table';
-import StyleElementSupport from './integrations/style';
-import DocumentListElementSupport from './integrations/documentlist';
-import CustomElementSupport from './integrations/customelement';
-import type { DataSchemaInlineElementDefinition } from './dataschema';
-import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine';
-import { getHtmlAttributeName, modifyGhsAttribute } from './utils';
+import DataFilter from './datafilter.js';
+import CodeBlockElementSupport from './integrations/codeblock.js';
+import DualContentModelElementSupport from './integrations/dualcontent.js';
+import HeadingElementSupport from './integrations/heading.js';
+import ImageElementSupport from './integrations/image.js';
+import MediaEmbedElementSupport from './integrations/mediaembed.js';
+import ScriptElementSupport from './integrations/script.js';
+import TableElementSupport from './integrations/table.js';
+import StyleElementSupport from './integrations/style.js';
+import ListElementSupport from './integrations/list.js';
+import CustomElementSupport from './integrations/customelement.js';
+import type { DataSchemaInlineElementDefinition } from './dataschema.js';
+import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
+import { getHtmlAttributeName, modifyGhsAttribute } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig';
+import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
 
 /**
  * The General HTML Support feature.
@@ -55,7 +55,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			ScriptElementSupport,
 			TableElementSupport,
 			StyleElementSupport,
-			DocumentListElementSupport,
+			ListElementSupport,
 			CustomElementSupport
 		] as const;
 	}

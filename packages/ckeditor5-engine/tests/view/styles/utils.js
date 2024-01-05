@@ -10,7 +10,7 @@ import {
 	isColor,
 	isLength,
 	isLineStyle, isPercentage
-} from '../../../src/view/styles/utils';
+} from '../../../src/view/styles/utils.js';
 
 describe( 'Styles utils', () => {
 	describe( 'isColor()', () => {

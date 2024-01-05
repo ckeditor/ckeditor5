@@ -7,13 +7,12 @@
  * @module ckbox/ckboxui
  */
 
-import { icons, Plugin } from 'ckeditor5/src/core';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { ButtonView } from 'ckeditor5/src/ui.js';
 
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
-import browseFilesIcon from '../theme/icons/browse-files.svg';
-import type CKBoxCommand from './ckboxcommand';
+import type CKBoxCommand from './ckboxcommand.js';
 
 /**
  * The CKBoxUI plugin. It introduces the `'ckbox'` toolbar button.
@@ -47,7 +46,7 @@ export default class CKBoxUI extends Plugin {
 
 			button.set( {
 				label: t( 'Open file manager' ),
-				icon: browseFilesIcon,
+				icon: icons.browseFiles,
 				tooltip: true
 			} );
 

@@ -5,7 +5,7 @@
 
 /* globals window, document, console, ClassicEditor, SpecialCharactersCurrency, SpecialCharactersMathematical */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-special-characters-limited-categories' ), {
@@ -22,6 +22,10 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			allowExternalImagesEditing: [ /^data:/, 'origin' ],
+			forceDemoLabel: true
 		},
 		image: {
 			toolbar: [

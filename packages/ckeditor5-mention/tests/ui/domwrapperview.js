@@ -6,7 +6,7 @@
 /* global document, Event */
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
-import DomWrapperView from '../../src/ui/domwrapperview';
+import DomWrapperView from '../../src/ui/domwrapperview.js';
 
 describe( 'DomWrapperView', () => {
 	let domElement, view;

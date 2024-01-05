@@ -16,14 +16,14 @@ import type {
 	ViewAttributeElement,
 	ViewNode,
 	ViewDocumentFragment
-} from 'ckeditor5/src/engine';
-import type { LocaleTranslate } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/engine.js';
+import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 
 import type {
 	LinkDecoratorAutomaticDefinition,
 	LinkDecoratorDefinition,
 	LinkDecoratorManualDefinition
-} from './linkconfig';
+} from './linkconfig.js';
 
 import { upperFirst } from 'lodash-es';
 

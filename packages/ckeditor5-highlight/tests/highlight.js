@@ -5,11 +5,11 @@
 
 /* global document */
 
-import Highlight from './../src/highlight';
-import HighlightEditing from './../src/highlightediting';
-import HighlightUI from './../src/highlightui';
+import Highlight from './../src/highlight.js';
+import HighlightEditing from './../src/highlightediting.js';
+import HighlightUI from './../src/highlightui.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'Highlight', () => {
 	let editor, element;

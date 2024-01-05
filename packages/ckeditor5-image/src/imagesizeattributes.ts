@@ -7,10 +7,10 @@
  * @module image/imagesizeattributes
  */
 
-import { Plugin } from 'ckeditor5/src/core';
-import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine';
-import ImageUtils from './imageutils';
-import { widthAndHeightStylesAreBothSet, getSizeValueIfInPx } from './image/utils';
+import { Plugin } from 'ckeditor5/src/core.js';
+import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine.js';
+import ImageUtils from './imageutils.js';
+import { widthAndHeightStylesAreBothSet, getSizeValueIfInPx } from './image/utils.js';
 
 /**
  * This plugin enables `width` and `height` attributes in inline and block image elements.

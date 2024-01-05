@@ -29,7 +29,7 @@ module.exports = results => {
 		}
 
 		return item.messages.some( message => {
-			return message.ruleId.startsWith( 'ckeditor5-rules' );
+			return message.ruleId?.startsWith( 'ckeditor5-rules' );
 		} );
 	} );
 

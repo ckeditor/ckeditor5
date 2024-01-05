@@ -9,7 +9,7 @@ import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
@@ -94,6 +94,10 @@ const config = {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
 		}
+	},
+	ckbox: {
+		allowExternalImagesEditing: [ /^data:/, 'origin' ],
+		forceDemoLabel: true
 	}
 };
 

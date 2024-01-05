@@ -7,8 +7,8 @@
  * @module minimap
  */
 
-export { default as Minimap } from './minimap';
+export { default as Minimap } from './minimap.js';
 
-export type { MinimapConfig } from './minimapconfig';
+export type { MinimapConfig } from './minimapconfig.js';
 
-import './augmentation';
+import './augmentation.js';

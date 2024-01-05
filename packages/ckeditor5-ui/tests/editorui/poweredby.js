@@ -6,17 +6,17 @@
 /* global document, Event, window, HTMLElement, getComputedStyle  */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EditorUI from '../../src/editorui/editorui';
-import { BalloonPanelView } from '../../src';
-import View from '../../src/view';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import EditorUI from '../../src/editorui/editorui.js';
+import { BalloonPanelView } from '../../src/index.js';
+import View from '../../src/view.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'PoweredBy', () => {
 	let editor, element;

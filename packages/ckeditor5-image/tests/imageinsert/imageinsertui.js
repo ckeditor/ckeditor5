@@ -5,20 +5,20 @@
 
 /* globals document, console */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import Model from '@ckeditor/ckeditor5-ui/src/model.js';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Image from '../../src/image';
-import ImageInsertUI from '../../src/imageinsert/imageinsertui';
-import ImageInsertFormView from '../../src/imageinsert/ui/imageinsertformview';
+import Image from '../../src/image.js';
+import ImageInsertUI from '../../src/imageinsert/imageinsertui.js';
+import ImageInsertFormView from '../../src/imageinsert/ui/imageinsertformview.js';
 
 describe( 'ImageInsertUI', () => {
 	let editor, editorElement, insertImageUI;

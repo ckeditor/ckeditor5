@@ -13,7 +13,7 @@ import type {
 	SpecialCharactersText,
 
 	SpecialCharactersConfig
-} from './index';
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {

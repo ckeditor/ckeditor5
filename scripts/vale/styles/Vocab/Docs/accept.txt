@@ -30,6 +30,8 @@ codebase
 Cordova
 cycler
 Dailymotion
+declutter
+deduplicate
 DLL
 Dmitry
 DOM
@@ -44,7 +46,10 @@ Gantt
 [Gg]etter
 Grammarly
 hardcode
+hotlink
+hotlinked
 Iframely
+ipsum
 Ivanov
 JSDoc
 Junon
@@ -57,6 +62,7 @@ Lesha
 Libre
 localizable
 Lodash
+lorem
 Luxon
 matcher
 mindmap
@@ -120,6 +126,7 @@ upvoting
 (?i)viewport
 Vite
 Vue
+walkthrough
 webpack
 Wirtz
 Wolt

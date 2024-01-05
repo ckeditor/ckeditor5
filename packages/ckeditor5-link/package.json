@@ -10,6 +10,7 @@
     "ckeditor5-plugin",
     "ckeditor5-dll"
   ],
+  "type": "module",
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "40.2.0",

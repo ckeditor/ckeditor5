@@ -14,10 +14,10 @@ import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( FontFamily, FontSize, FontColor, Alignment, IndentBlock, PictureEditing,
 	ImageResize, ImageInsert, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
@@ -32,6 +32,10 @@ ClassicEditor.defaultConfig = {
 			'|', 'alignment',
 			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 		]
+	},
+	ckbox: {
+		allowExternalImagesEditing: [ /^data:/, 'origin' ],
+		forceDemoLabel: true
 	},
 	ui: {
 		viewportOffset: {

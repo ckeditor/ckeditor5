@@ -7,7 +7,7 @@
  * @module utils/version
  */
 
-import CKEditorError from './ckeditorerror';
+import CKEditorError from './ckeditorerror.js';
 
 const version = '40.2.0';
 

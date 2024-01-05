@@ -5,7 +5,7 @@
 
 /* globals AbortSignal, DOMException */
 
-import abortableDebounce from '../src/abortabledebounce';
+import abortableDebounce from '../src/abortabledebounce.js';
 
 describe( 'abortableDebounce()', () => {
 	it( 'should forward arguments and return type', () => {

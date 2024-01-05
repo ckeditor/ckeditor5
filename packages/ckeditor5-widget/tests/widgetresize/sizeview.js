@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import SizeView from '../../src/widgetresize/sizeview';
-import ResizerState from '../../src/widgetresize/resizerstate';
+import SizeView from '../../src/widgetresize/sizeview.js';
+import ResizerState from '../../src/widgetresize/resizerstate.js';
 
 describe( 'SizeView', () => {
 	let sizeView, state;

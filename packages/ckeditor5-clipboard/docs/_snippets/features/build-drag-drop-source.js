@@ -49,7 +49,7 @@ import {
 	DragDropBlockToolbar
 } from '@ckeditor/ckeditor5-clipboard';
 import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
-import { HCardEditing } from './hcard';
+import { HCardEditing } from './hcard.js';
 
 const defaultPlugins = [
 	Essentials,
@@ -128,6 +128,10 @@ const defaultConfig = {
 		viewportOffset: {
 			top: window.getViewportTopOffsetConfig()
 		}
+	},
+	ckbox: {
+		allowExternalImagesEditing: [ /^data:/, 'origin' ],
+		forceDemoLabel: true
 	},
 	fontFamily: {
 		supportAllValues: true

@@ -7,7 +7,7 @@
  * @module engine/view/node
  */
 
-import TypeCheckable from './typecheckable';
+import TypeCheckable from './typecheckable.js';
 
 import {
 	CKEditorError,
@@ -18,11 +18,11 @@ import {
 import { clone } from 'lodash-es';
 
 // To check if component is loaded more than once.
-import '@ckeditor/ckeditor5-utils/src/version';
+import '@ckeditor/ckeditor5-utils/src/version.js';
 
-import type { default as Document, ChangeType } from './document';
-import type DocumentFragment from './documentfragment';
-import type Element from './element';
+import type { default as Document, ChangeType } from './document.js';
+import type DocumentFragment from './documentfragment.js';
+import type Element from './element.js';
 
 /**
  * Abstract view node class.

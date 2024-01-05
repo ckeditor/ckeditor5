@@ -7,7 +7,7 @@
  * @module ui/iframe/iframeview
  */
 
-import View from '../view';
+import View from '../view.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

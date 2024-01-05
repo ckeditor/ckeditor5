@@ -9,7 +9,7 @@ Changes for the past releases are available below.
 
 ### Features
 
-* Added auto format integration with the strike through using `~~` string. Closes [ckeditor/ckeditor5#6412](https://github.com/ckeditor/ckeditor5/issues/6412). ([9c3fd3e](https://github.com/ckeditor/ckeditor5-autoformat/commit/9c3fd3e))
+* Added autoformat integration with the strikethrough using `~~` string. Closes [ckeditor/ckeditor5#6412](https://github.com/ckeditor/ckeditor5/issues/6412). ([9c3fd3e](https://github.com/ckeditor/ckeditor5-autoformat/commit/9c3fd3e))
 
 
 ## [18.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v17.0.0...v18.0.0) (March 19, 2020)
@@ -30,7 +30,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Bug fixes
 
-* `BlockAutoformat` should not react to text typed after inline element. Closes [ckeditor/ckeditor5#5671](https://github.com/ckeditor/ckeditor5/issues/5671). ([241c294](https://github.com/ckeditor/ckeditor5-autoformat/commit/241c294))
+* `BlockAutoformat` should not react to text typed after an inline element. Closes [ckeditor/ckeditor5#5671](https://github.com/ckeditor/ckeditor5/issues/5671). ([241c294](https://github.com/ckeditor/ckeditor5-autoformat/commit/241c294))
 
 
 ## [15.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v11.0.5...v15.0.0) (October 23, 2019)
@@ -133,7 +133,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Bug fixes
 
 * Fixed integration with undo. Closes [#53](https://github.com/ckeditor/ckeditor5-autoformat/issues/53). ([f5d68f4](https://github.com/ckeditor/ckeditor5-autoformat/commit/f5d68f4))
-* Ordered list will now be triggered by a numer and `.` or `)`. Closes [#42](https://github.com/ckeditor/ckeditor5-autoformat/issues/42). ([bcc4e3b](https://github.com/ckeditor/ckeditor5-autoformat/commit/bcc4e3b))
+* An ordered list will now be triggered by a number and `.` or `)`. Closes [#42](https://github.com/ckeditor/ckeditor5-autoformat/issues/42). ([bcc4e3b](https://github.com/ckeditor/ckeditor5-autoformat/commit/bcc4e3b))
 
   Thanks to [@vladikoff](https://github.com/vladikoff)!
 
@@ -166,7 +166,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ### Bug fixes
 
 * The `Autoformat` plugin should not require other features. Closes [#5](https://github.com/ckeditor/ckeditor5-autoformat/issues/5) and [#17](https://github.com/ckeditor/ckeditor5-autoformat/issues/17). ([d22c5b6](https://github.com/ckeditor/ckeditor5-autoformat/commit/d22c5b6))
-* Autoformatting will not be triggered if the batch with changes is `transparent` (e.g. it represents other user's changes). ([f1131bc](https://github.com/ckeditor/ckeditor5-autoformat/commit/f1131bc))
+* Autoformatting will not be triggered if the batch with changes is `transparent` (for example, it represents other user's changes). ([f1131bc](https://github.com/ckeditor/ckeditor5-autoformat/commit/f1131bc))
 
 ### Features
 
@@ -181,9 +181,9 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 * The command API has been changed.
 
-### NOTE
+### Note
 
-* The Autoformat feature does not require Bold, Italic, Heading, etc. any longer. In order to make the most of the plugin, please make sure that relevant features are loaded in your editor.
+* The Autoformat feature does not require Bold, Italic, Heading, etc. any longer. To make the most of the plugin, make sure that relevant features are loaded in your editor.
 
 
 ## [0.5.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.5.0...v0.5.1) (May 7, 2017)

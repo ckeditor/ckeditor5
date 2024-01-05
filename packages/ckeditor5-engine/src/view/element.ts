@@ -7,15 +7,15 @@
  * @module engine/view/element
  */
 
-import Node from './node';
-import Text from './text';
-import TextProxy from './textproxy';
+import Node from './node.js';
+import Text from './text.js';
+import TextProxy from './textproxy.js';
 import { isIterable, toArray, toMap, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-import { default as Matcher, type MatcherPattern } from './matcher';
-import { default as StylesMap, type StyleValue } from './stylesmap';
+import { default as Matcher, type MatcherPattern } from './matcher.js';
+import { default as StylesMap, type StyleValue } from './stylesmap.js';
 
-import type Document from './document';
-import type Item from './item';
+import type Document from './document.js';
+import type Item from './item.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 

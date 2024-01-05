@@ -5,9 +5,9 @@
 
 /* globals window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import FontSize from '../../src/fontsize';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import FontSize from '../../src/fontsize.js';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted-values' );
 const standardModeButton = document.getElementById( 'mode-disable-value-matching' );

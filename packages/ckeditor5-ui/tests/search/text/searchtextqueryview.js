@@ -5,10 +5,10 @@
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, createLabeledInputText, IconView } from '@ckeditor/ckeditor5-ui';
-import SearchTextQueryView from '../../../src/search/text/searchtextqueryview';
+import SearchTextQueryView from '../../../src/search/text/searchtextqueryview.js';
 import { icons } from '@ckeditor/ckeditor5-core';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SearchTextQueryView', () => {
 	let locale, view;

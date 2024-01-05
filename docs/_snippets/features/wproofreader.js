@@ -7,12 +7,12 @@
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageUpload } from '@ckeditor/ckeditor5-image';
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader';
+import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-wproofreader' ), {
@@ -37,6 +37,10 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		},
 		image: {
 			toolbar: [

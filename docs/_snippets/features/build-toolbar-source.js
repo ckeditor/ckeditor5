@@ -14,7 +14,7 @@ import { FontBackgroundColor, FontSize, FontColor, FontFamily } from '@ckeditor/
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Alignment );
 ClassicEditor.builtinPlugins.push( Strikethrough );

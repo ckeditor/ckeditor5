@@ -10,8 +10,8 @@
 import { Plugin, icons } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
-import Paragraph from './paragraph';
-import type ParagraphCommand from './paragraphcommand';
+import Paragraph from './paragraph.js';
+import type ParagraphCommand from './paragraphcommand.js';
 
 const icon = icons.paragraph;
 

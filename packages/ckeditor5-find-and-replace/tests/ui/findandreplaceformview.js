@@ -16,7 +16,7 @@ import {
 } from '@ckeditor/ckeditor5-ui';
 
 // Non-DLL.
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 
 import {
 	KeystrokeHandler,
@@ -24,17 +24,16 @@ import {
 	keyCodes
 } from '@ckeditor/ckeditor5-utils';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 
-import FindAndReplace from '../../src/findandreplace';
-import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
+import FindAndReplace from '../../src/findandreplace.js';
+import FindAndReplaceFormView from '../../src/ui/findandreplaceformview.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
-import { icons } from 'ckeditor5/src/core';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { icons } from 'ckeditor5/src/core.js';
 
 describe( 'FindAndReplaceFormView', () => {
 	let view;
@@ -161,7 +160,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have an icon', () => {
-						expect( view._findPrevButtonView.icon ).to.equal( previousArrow );
+						expect( view._findPrevButtonView.icon ).to.equal( icons.previousArrow );
 					} );
 
 					it( 'should have a tooltip', () => {
@@ -183,7 +182,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have an icon', () => {
-						expect( view._findNextButtonView.icon ).to.equal( previousArrow );
+						expect( view._findNextButtonView.icon ).to.equal( icons.previousArrow );
 					} );
 
 					it( 'should have a tooltip', () => {

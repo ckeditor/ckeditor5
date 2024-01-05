@@ -7,9 +7,9 @@
  * @module core/editor/editorconfig
  */
 
-import type Context from '../context';
-import type { PluginConstructor } from '../plugin';
-import type Editor from './editor';
+import type Context from '../context.js';
+import type { PluginConstructor } from '../plugin.js';
+import type Editor from './editor.js';
 
 /**
  * CKEditor configuration options.

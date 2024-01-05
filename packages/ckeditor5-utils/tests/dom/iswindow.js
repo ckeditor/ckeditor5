@@ -5,7 +5,7 @@
 
 /* global window */
 
-import isWindow from '../../src/dom/iswindow';
+import isWindow from '../../src/dom/iswindow.js';
 
 describe( 'isWindow()', () => {
 	it( 'detects DOM Window in browsers', () => {

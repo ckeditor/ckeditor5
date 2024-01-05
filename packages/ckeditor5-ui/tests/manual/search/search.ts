@@ -15,7 +15,7 @@ import {
 	ToolbarView,
 	type FilteredView,
 	createLabeledTextarea
-} from '../../../src';
+} from '../../../src/index.js';
 
 const locale = new Locale();
 

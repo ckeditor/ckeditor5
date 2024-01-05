@@ -7,9 +7,8 @@
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ImageInsert, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import MathType from '@wiris/mathtype-ckeditor5';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
@@ -21,7 +20,6 @@ ClassicEditor
 			CKBox,
 			CKBoxImageEdit,
 			PictureEditing,
-			EasyImage,
 			ImageUpload,
 			ImageInsert,
 			CloudServices,
@@ -39,6 +37,10 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		ckbox: {
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		},
 		image: {
 			toolbar: [

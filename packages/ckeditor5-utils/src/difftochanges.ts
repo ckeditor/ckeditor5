@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import type { DiffResult } from './diff';
+import type { DiffResult } from './diff.js';
 
 /**
  * @module utils/difftochanges

@@ -18,7 +18,7 @@ Inserting {@link features/images-overview images} into content created with CKEd
 
 ## Demo
 
-This demo is configured to use {@link features/ckbox CKBox} for image upload and management. Use the image upload button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} to upload images or the CKBox button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/browse-files.svg Open file manager} to browse and select existing images from the file manager. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
+This demo is configured to use {@link features/ckbox CKBox} for image upload and management. Use the image upload button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} to upload images or the CKBox button {@icon @ckeditor/ckeditor5-core/theme/icons/browse-files.svg Open file manager} to browse and select existing images from the file manager. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
 
 {@snippet features/image-upload}
 
@@ -80,6 +80,6 @@ The {@link features/base64-upload-adapter Base64 upload feature} converts images
 
 ## Implementing your own upload adapter
 
-CKEditor&nbsp;5 provides an open API that allows you to develop your upload adapters. Tailored to your project, a custom adapter will allow you to take full control over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.
+CKEditor&nbsp;5 provides an open API that allows you to develop your upload adapters. Tailored to your project, a custom adapter will allow you to take full control over the upload process. This includes both sending the files to the server and passing the response from the server (for example, the URL to the saved file) back to the WYSIWYG editor.
 
 {@link framework/deep-dive/upload-adapter **Learn how to develop a custom upload adapter for CKEditor&nbsp;5**}.

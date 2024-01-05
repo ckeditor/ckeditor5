@@ -5,11 +5,11 @@
 
 /* globals document, window, console */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Autosave from '../../src/autosave';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import Autosave from '../../src/autosave.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

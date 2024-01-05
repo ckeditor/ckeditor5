@@ -499,9 +499,9 @@ import strikethrough from '@ckeditor/ckeditor5-basic-styles/theme/icons/striketh
 import subscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/subscript.svg';
 import superscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/superscript.svg';
 
-import browseFiles from '@ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.svg';
+import browseFiles from '@ckeditor/ckeditor5-core/theme/icons/browse-files.svg';
 
-import codeBlock from '@ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg';
+import codeBlock from '@ckeditor/ckeditor5-core/theme/icons/codeblock.svg';
 
 import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import caption from '@ckeditor/ckeditor5-core/theme/icons/caption.svg';
@@ -539,27 +539,27 @@ import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
 import fontColor from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 import fontBackground from '@ckeditor/ckeditor5-font/theme/icons/font-background.svg';
 
-import heading1 from '@ckeditor/ckeditor5-heading/theme/icons/heading1.svg';
-import heading2 from '@ckeditor/ckeditor5-heading/theme/icons/heading2.svg';
-import heading3 from '@ckeditor/ckeditor5-heading/theme/icons/heading3.svg';
-import heading4 from '@ckeditor/ckeditor5-heading/theme/icons/heading4.svg';
-import heading5 from '@ckeditor/ckeditor5-heading/theme/icons/heading5.svg';
-import heading6 from '@ckeditor/ckeditor5-heading/theme/icons/heading6.svg';
+import heading1 from '@ckeditor/ckeditor5-core/theme/icons/heading1.svg';
+import heading2 from '@ckeditor/ckeditor5-core/theme/icons/heading2.svg';
+import heading3 from '@ckeditor/ckeditor5-core/theme/icons/heading3.svg';
+import heading4 from '@ckeditor/ckeditor5-core/theme/icons/heading4.svg';
+import heading5 from '@ckeditor/ckeditor5-core/theme/icons/heading5.svg';
+import heading6 from '@ckeditor/ckeditor5-core/theme/icons/heading6.svg';
 
-import indent from '@ckeditor/ckeditor5-indent/theme/icons/indent.svg';
-import outdent from '@ckeditor/ckeditor5-indent/theme/icons/outdent.svg';
+import indent from '@ckeditor/ckeditor5-core/theme/icons/indent.svg';
+import outdent from '@ckeditor/ckeditor5-core/theme/icons/outdent.svg';
 
 import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
 
-import html from '@ckeditor/ckeditor5-html-embed/theme/icons/html.svg';
+import html from '@ckeditor/ckeditor5-core/theme/icons/html.svg';
 
 import link from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
 import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
-import bulletedList from '@ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg';
-import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg';
-import todoList from '@ckeditor/ckeditor5-list/theme/icons/todolist.svg';
+import bulletedList from '@ckeditor/ckeditor5-core/theme/icons/bulletedlist.svg';
+import numberedList from '@ckeditor/ckeditor5-core/theme/icons/numberedlist.svg';
+import todoList from '@ckeditor/ckeditor5-core/theme/icons/todolist.svg';
 
 import media from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
 
@@ -578,7 +578,7 @@ import sourceEditing from '@ckeditor/ckeditor5-source-editing/theme/icons/source
 
 import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
 
-import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
+import table from '@ckeditor/ckeditor5-core/theme/icons/table.svg';
 import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
 import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
 import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg';
@@ -588,8 +588,8 @@ import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-propert
 import nextArrow from '@ckeditor/ckeditor5-ui/theme/icons/next-arrow.svg';
 import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
 
-import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
-import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
+import undo from '@ckeditor/ckeditor5-core/theme/icons/undo.svg';
+import redo from '@ckeditor/ckeditor5-core/theme/icons/redo.svg';
 
 import history from '@ckeditor/ckeditor5-core/theme/icons/history.svg';
 import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';

@@ -16,13 +16,13 @@ import {
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
-} from 'ckeditor5/src/core';
-import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils';
+} from 'ckeditor5/src/core.js';
+import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog';
+import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
 
-import InlineEditorUI from './inlineeditorui';
-import InlineEditorUIView from './inlineeditoruiview';
+import InlineEditorUI from './inlineeditorui.js';
+import InlineEditorUIView from './inlineeditoruiview.js';
 
 import { isElement as _isElement } from 'lodash-es';
 

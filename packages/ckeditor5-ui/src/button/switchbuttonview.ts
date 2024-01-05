@@ -7,8 +7,8 @@
  * @module ui/button/switchbuttonview
  */
 
-import View from '../view';
-import ButtonView from './buttonview';
+import View from '../view.js';
+import ButtonView from './buttonview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

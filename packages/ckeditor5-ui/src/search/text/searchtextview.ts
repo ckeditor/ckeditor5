@@ -8,17 +8,17 @@
 */
 
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
-import View from '../../view';
-import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtextqueryview';
-import SearchInfoView from '../searchinfoview';
-import SearchResultsView from '../searchresultsview';
-import FocusCycler from '../../focuscycler';
+import View from '../../view.js';
+import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtextqueryview.js';
+import SearchInfoView from '../searchinfoview.js';
+import SearchResultsView from '../searchresultsview.js';
+import FocusCycler from '../../focuscycler.js';
 import { escapeRegExp } from 'lodash-es';
 
-import type FilteredView from '../filteredview';
-import type ViewCollection from '../../viewcollection';
-import type InputBase from '../../input/inputbase';
-import type InputTextView from '../../inputtext/inputtextview';
+import type FilteredView from '../filteredview.js';
+import type ViewCollection from '../../viewcollection.js';
+import type InputBase from '../../input/inputbase.js';
+import type InputTextView from '../../inputtext/inputtextview.js';
 
 import '../../../theme/components/search/search.css';
 

@@ -363,7 +363,7 @@ Additional rules apply to private properties:
 
 * The names of private and protected properties that are exposed in a class prototype (or in any other way) should be prefixed with an underscore.
 * When documenting a private variable that is not added to a class prototype (or exposed in any other way), `//` comments should be used and using `@private` is not necessary.
-* A symbol property (e.g. `this[ Symbol( 'symbolName' ) ]`) should be documented as `@property {Type} _symbolName`.
+* A symbol property (like `this[ Symbol( 'symbolName' ) ]`) should be documented as `@property {Type} _symbolName`.
 
 Example:
 
@@ -512,11 +512,11 @@ There are some special rules and tips for tests.
 	```
 
 	Using titles like *"utils"* is not fine as there are multiple utils in the entire project. *"Table utils"* would be better.
-* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), e.g. *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
+* Test descriptions (`it()`) should be written like documentation (what you do and what should happen), for example, *"the foo dialog closes when the X button is clicked"*. Also, *"...case 1"*, *"...case 2"* in test descriptions are not helpful.
 * Avoid test descriptions like *"does not crash when two ranges get merged."* Instead, explain what is actually expected to happen. For instance: *"leaves 1 range when two ranges get merged."*
 * Most often, using words like "correctly," "works fine" is a code smell. Think about the requirements &ndash; when writing them you do not say that feature X should "work fine." You document how it should work.
 * Ideally, it should be possible to recreate an algorithm just by reading the test descriptions.
-* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test e.g. how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
+* Avoid covering multiple cases under one `it()`. It is OK to have multiple assertions in one test, but not to test, for example, how method `foo()` works when it is called with 1, then with 2, then 3, etc. There should be a separate test for each case.
 * Every test should clean after itself, including destroying all editors and removing all elements that have been added.
 
 ### Test implementation
@@ -704,7 +704,7 @@ Acronyms and, partially, proper names are naturally written in uppercase. This m
 	* Original case if at the beginning of the class name: `class CKEditorError`.
 	* Original case inside the variable or class name: `function getCKEditorError()`.
 
-However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. So e.g. `getUI` (not `getUi`).
+However, two-letter acronyms and proper names (if originally written uppercase) should be uppercase. For example: `getUI`, not `getUi`.
 
 <info-box>
 	Two most frequently used acronyms which cause problems:
@@ -1107,7 +1107,7 @@ import { Table } from '@ckeditor/ckeditor5-table';
 
 In TypeScript, the types inferred from some values are simplified. For example, the type of `const test = [1, 2, 3];` is `number[]`, but in some cases a more specific type may be needed. Using `as const` can help with this. For example, the type of `const test1 = [1, 2, 3] as const;` is `readonly [1, 2, 3]`.
 
-The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (e.g. `delete'` literal string instead of generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
+The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
 
 👎&nbsp; Examples of an incorrect code for this rule:
 
@@ -1160,3 +1160,14 @@ import AlignmentEditing from './alignmentediting';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/14329)
+
+### Mandatory file extensions in imports: `ckeditor5-rules/require-file-extensions-in-imports`
+
+As required by the [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports must include a file extension. If the import doesn't include it, this rule will try to automatically detect the correct file extension, but in two cases this is not possible:
+
+* the imported file has an extension other than `.ts`, `.js` or `.json`,
+* the imported file doesn't exist in the file system.
+
+The second case is common in documentation, because its pieces are in different directories and repositories. These pieces are merged during the build step, but before that the imports are technically invalid.
+
+In such cases, the file extension must be added manually. Imports with file extensions are not validated.

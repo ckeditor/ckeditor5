@@ -52,7 +52,7 @@ Block type images, on the other hand, can be inserted only between other blocks 
 
 **Switching between these two types of images can be executed by applying/removing a style from the image**: Each of the defined style options provides a list of the image types which it can be applied to. Applying a style may change the type of the image, depending on the configuration of the style.
 
-When a new image is inserted, the editor will, by default, choose the optimal image type based on the context of the insertion (e.g. the current selection/position and {@link features/images-installation#inline-and-block-images availability of plugins}). The default type of the newly inserted image can be controlled using the {@link module:image/imageconfig~ImageInsertConfig#type `image.insert.type` configuration}.
+When a new image is inserted, the editor will, by default, choose the optimal image type based on the context of the insertion (for example, the current selection/position and {@link features/images-installation#inline-and-block-images availability of plugins}). The default type of the newly inserted image can be controlled using the {@link module:image/imageconfig~ImageInsertConfig#type `image.insert.type` configuration}.
 
 <info-box hint>
 	All of the default editor builds support both block and inline images, but it is also possible to {@link features/images-installation#inline-and-block-images disable one of these types}.
@@ -84,7 +84,7 @@ CKEditor5 offers two basic approaches to styling the images:
 A semantical style lets the user choose from predefined appearances of the images. The user is not able to set the image border, alignment, margins, width, etc. separately. Instead, they can pick one of the styles defined by the developer who prepared the WYSIWYG editor integration. Check the list of the available semantical styles in the [table](#ready-to-use-styles) below. Semantical styles give the integrator the ability to put a wide range of predefined image appearances at the user's disposal. This gives the developer control over how the users style their images and makes the user's life easier by setting multiple properties at once.
 
 <info-box hint>
-	Try to understand what use cases you system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. The "side image" in the example below is displayed as a floated image on wide screens and as a normal image on low resolution screens (e.g. mobile browsers).
+	Try to understand what use cases your system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps toward a good user experience and clear, portable output. The "side image" in the example below is displayed as a floated image on wide screens and as a normal image on low resolution screens (for example, mobile browsers).
 </info-box>
 
 <info-box warning>
@@ -170,7 +170,7 @@ DecoupledEditor.
 ```
 
 <info-box warning>
-At the moment it is not possible to apply multiple styles (classes) to the image at the same time. To apply multiple CSS rules to the image (e.g. a red border AND a left alignment), you should probably consider using the [semantical styles](#semantical-styles).
+At the moment it is not possible to apply multiple styles (classes) to the image at the same time. To apply multiple CSS rules to the image (like a red border and a left alignment), you should probably consider using the [semantical styles](#semantical-styles).
 </info-box>
 
 ## Configuring the styles

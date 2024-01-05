@@ -5,31 +5,31 @@
 
 /* globals document, Event, console */
 
-import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Model from '../../src/model';
+import Model from '../../src/model.js';
 
-import ButtonView from '../../src/button/buttonview';
-import SwitchButtonView from '../../src/button/switchbuttonview';
-import DropdownView from '../../src/dropdown/dropdownview';
-import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
-import SplitButtonView from '../../src/dropdown/button/splitbuttonview';
-import View from '../../src/view';
-import ToolbarView from '../../src/toolbar/toolbarview';
+import ButtonView from '../../src/button/buttonview.js';
+import SwitchButtonView from '../../src/button/switchbuttonview.js';
+import DropdownView from '../../src/dropdown/dropdownview.js';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview.js';
+import SplitButtonView from '../../src/dropdown/button/splitbuttonview.js';
+import View from '../../src/view.js';
+import ToolbarView from '../../src/toolbar/toolbarview.js';
 import {
 	createDropdown,
 	addToolbarToDropdown,
 	addListToDropdown,
 	focusChildOnDropdownOpen
-} from '../../src/dropdown/utils';
-import ListItemView from '../../src/list/listitemview';
-import ListSeparatorView from '../../src/list/listseparatorview';
-import ListView from '../../src/list/listview';
-import ViewCollection from '../../src/viewcollection';
-import { ListItemGroupView } from '../../src';
+} from '../../src/dropdown/utils.js';
+import ListItemView from '../../src/list/listitemview.js';
+import ListSeparatorView from '../../src/list/listseparatorview.js';
+import ListView from '../../src/list/listview.js';
+import ViewCollection from '../../src/viewcollection.js';
+import { ListItemGroupView } from '../../src/index.js';
 
 describe( 'utils', () => {
 	let locale, dropdownView;

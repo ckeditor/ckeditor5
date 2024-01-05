@@ -230,7 +230,7 @@ export default class AbbreviationEditing extends Plugin {
 
 ### Defining converters
 
-Converters tell the editor how to transform the view to the model (e.g. when loading the data to the editor or handling pasted content) and how to render the model to the view (for editing purposes, or when retrieving the editor data).
+Converters tell the editor how to transform the view to the model (for example, when loading the data to the editor or handling pasted content) and how to render the model to the view (for editing purposes, or when retrieving the editor data).
 
 <info-box>
 	Conversion is one of the more complex topics in our editing engine architecture. It is definitely worth reading more about {@link framework/deep-dive/conversion/intro the conversion in the editor} before you move on.

@@ -7,15 +7,15 @@
  * @module engine/model/utils/selection-post-fixer
  */
 
-import Position from '../position';
-import Range from '../range';
+import Position from '../position.js';
+import Range from '../range.js';
 
-import type DocumentFragment from '../documentfragment';
-import type Model from '../model';
-import type Node from '../node';
-import type Schema from '../schema';
-import type Writer from '../writer';
-import type Element from '../element';
+import type DocumentFragment from '../documentfragment.js';
+import type Model from '../model.js';
+import type Node from '../node.js';
+import type Schema from '../schema.js';
+import type Writer from '../writer.js';
+import type Element from '../element.js';
 
 /**
  * Injects selection post-fixer to the model.

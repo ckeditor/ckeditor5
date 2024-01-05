@@ -20,7 +20,7 @@ In the demo below, select a text fragment. Next, use the language toolbar dropdo
 
 ## Additional feature information
 
-The text part language feature is especially useful when your content includes text sections written in different text directions, e.g. when the whole content is written in English but includes some citations in Arabic.
+The text part language feature is especially useful when your content includes text sections written in different text directions, for example, when the whole content is in English but includes some citations in Arabic.
 
 The text part language feature implements the [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
 

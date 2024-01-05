@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-upload' ), {
@@ -59,7 +59,8 @@ ClassicEditor
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
-			forceDemoLabel: true
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		}
 	} )
 	.then( editor => {

@@ -9,19 +9,19 @@
  * @module ckbox/ckboximageedit/ckboximageeditcommand
  */
 
-import { Command, PendingActions, type Editor } from 'ckeditor5/src/core';
-import { CKEditorError, abortableDebounce, createElement, retry, type AbortableFunc } from 'ckeditor5/src/utils';
-import type { Element as ModelElement } from 'ckeditor5/src/engine';
-import { Notification } from 'ckeditor5/src/ui';
+import { Command, PendingActions, type Editor } from 'ckeditor5/src/core.js';
+import { CKEditorError, abortableDebounce, createElement, retry, type AbortableFunc } from 'ckeditor5/src/utils.js';
+import type { Element as ModelElement } from 'ckeditor5/src/engine.js';
+import { Notification } from 'ckeditor5/src/ui.js';
 import { isEqual } from 'lodash-es';
 
-import { sendHttpRequest } from '../utils';
-import { prepareImageAssetAttributes } from '../ckboxcommand';
-import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig';
+import { sendHttpRequest } from '../utils.js';
+import { prepareImageAssetAttributes } from '../ckboxcommand.js';
+import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig.js';
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
-import { createEditabilityChecker } from './utils';
-import CKBoxUtils from '../ckboxutils';
+import { createEditabilityChecker } from './utils.js';
+import CKBoxUtils from '../ckboxutils.js';
 
 /**
  * The CKBox edit image command.
@@ -161,7 +161,7 @@ export default class CKBoxImageEditCommand extends Command {
 				assetId: ckboxImageId
 			};
 		} else {
-			const imageUrl = element.getAttribute( 'src' ) as string;
+			const imageUrl = new URL( element.getAttribute( 'src' ) as string, document.baseURI ).href;
 			const uploadCategoryId = await ckboxUtils.getCategoryIdForFile( imageUrl, { signal } );
 
 			imageMountOptions = {
@@ -176,6 +176,7 @@ export default class CKBoxImageEditCommand extends Command {
 				allowOverwrite: false
 			},
 			tokenUrl: ckboxConfig.tokenUrl,
+			...( ckboxConfig.serviceOrigin && { serviceOrigin: ckboxConfig.serviceOrigin } ),
 			onClose: () => this._handleImageEditorClose(),
 			onSave: ( asset: CKBoxRawAssetDefinition ) => this._handleImageEditorSave( state, asset )
 		};

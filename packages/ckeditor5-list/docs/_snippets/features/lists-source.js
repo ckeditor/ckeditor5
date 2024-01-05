@@ -5,19 +5,17 @@
 
 /* globals window */
 
-import { ListProperties, DocumentList, DocumentListProperties, TodoDocumentList } from '@ckeditor/ckeditor5-list';
+import { ListProperties, TodoList } from '@ckeditor/ckeditor5-list';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic';
+import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( PictureEditing, ImageResize, ImageInsert, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
 
 window.ClassicEditor = ClassicEditor;
 window.ListProperties = ListProperties;
-window.DocumentList = DocumentList;
-window.DocumentListProperties = DocumentListProperties;
-window.TodoDocumentList = TodoDocumentList;
+window.TodoList = TodoList;
 window.ImageResize = ImageResize;

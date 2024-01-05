@@ -65,7 +65,8 @@ ClassicEditor
 			]
 		},
 		ckbox: {
-			forceDemoLabel: true
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin' ]
 		},
 		cloudServices: CS_CONFIG
 	} )

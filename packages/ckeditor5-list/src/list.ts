@@ -7,16 +7,15 @@
  * @module list/list
  */
 
-import ListEditing from './list/listediting';
-import ListUI from './list/listui';
-
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
+import ListEditing from './list/listediting.js';
+import ListUI from './list/listui.js';
 
 /**
  * The list feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/list/listediting~ListEditing list editing feature}
- * and {@link module:list/list/listui~ListUI list UI feature}.
+ * This is a "glue" plugin that loads the {@link module:list/list/listediting~ListEditing  list
+ * editing feature} and {@link module:list/list/listui~ListUI list UI feature}.
  */
 export default class List extends Plugin {
 	/**

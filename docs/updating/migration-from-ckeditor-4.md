@@ -16,12 +16,12 @@ This section of the documentation explains how to migrate to CKEditor&nbsp;5.
 <info-box hint>
 	**CKEditor 4 reached its End of Life (EOL) in June 2023**, with no future updates, bug fixes, and security patches. Learn how to migrate to CKEditor&nbsp;5 [here](https://ckeditor.com/docs/ckeditor5/latest/updating/ckeditor4/migration-from-ckeditor-4.html).
 
-	If you are not ready to migrate yet, we offer an **[Extended Support Model Package](https://ckeditor.com/ckeditor-4-support/)** that provides protection against security vulnerabilities and third-party API changes.
+	If you are not ready to migrate yet, we offer an **[Extended Support Model Package](https://ckeditor.com/ckeditor-4-support/)** that protects against security vulnerabilities and third-party API changes.
 
 	Contact our Sales team for [more details](https://ckeditor.com/contact/).
 </info-box>
 
-When compared to its predecessor, CKEditor&nbsp;5 should be considered **a totally new editor**. Every single aspect of it was redesigned &ndash; from installation, to integration, to features, to its data model, and finally to its API.
+When compared to its predecessor, you should treat CKEditor&nbsp;5 as **a totally new editor**. We have redesigned every single aspect of it &ndash; from installation, to integration, to features, to its data model, and finally to its API.
 
 There is no automatic solution for migrating. This section summarizes the most important aspects you need to consider before you proceed with moving to CKEditor&nbsp;5.
 ## Differences between CKEditor 4 and CKEditor&nbsp;5
@@ -115,10 +115,10 @@ Here are the key differences between the two editor versions:
                     <strong>UI</strong>
                 </td>
                 <td>
-                    Toolbar, dialogs, features manipulated through right-click context menu
+                    Toolbar, dialogs, and features manipulated through right-click context menu
                 </td>
                 <td>
-                    Toolbar, dropdowns, balloons, features manipulated through on-click feature toolbars
+                    Toolbar, dropdowns, balloons, and features manipulated through on-click feature toolbars
                 </td>
             </tr>
             <tr>
@@ -155,7 +155,7 @@ This new approach affects the {@link features/index available feature set}, how 
 * {@link updating/ckeditor4-plugin-compatibility CKEditor 4 plugin equivalents}
 * {@link updating/ckeditor4-configuration-compatibility CKEditor 4 configuration options compatibility}
 
-You can use them to check the CKEditor&nbsp;5 equivalents of some features or configuration options from CKEditor 4. If there is no direct equivalent, the tables will point you to a solution recommended in CKEditor&nbsp;5. We strongly advise you to treat the migration to CKEditor&nbsp;5 as an opportunity to modernize your app and rethink your editing solutions.
+You can use them to check the CKEditor&nbsp;5 equivalents of some features or configuration options from CKEditor 4. If there is no direct equivalent, the tables will point you to a solution recommended in CKEditor&nbsp;5. We strongly advise you to treat the migration to CKEditor&nbsp;5 as an opportunity to modernize your application and rethink your editing solutions.
 
 ## Before you migrate
 
@@ -164,36 +164,36 @@ CKEditor 4 and CKEditor&nbsp;5 are two different products. Here are the most imp
 ### Migrating existing data
 
 <info-box warning>
-	Because of the differences in features, the **data produced with CKEditor 4 may not be compatible with CKEditor&nbsp;5 which may lead to data loss**. Any data that is not supported by features enabled in CKEditor&nbsp;5 will be removed when loaded into the editor.
+	Engine and architecture differences between CKEditor&nbsp;4 and CKEditor&nbsp;5 affect how content is processed and represented in HTML. CKEditor&nbsp;5 will adapt and transform the data to align it with its supported features, so changes in data representation may happen during the migration. Content not compatible with the enabled features in CKEditor&nbsp;5 may be lost, so make sure you read this migration guide fully.
 </info-box>
 
-Extensive analysis, data verification, and tests should be performed on existing data. If necessary, you will need to develop conversion procedures to avoid data loss. You can use the {@link features/general-html-support General HTML Support} feature to introduce HTML markup that is present in the legacy content but is not yet fully covered by CKEditor&nbsp;5 features.
+Perform extensive analysis, data verification, and tests on existing data. If necessary, you will need to develop conversion procedures to avoid data loss. You can use the {@link features/general-html-support General HTML Support} feature to introduce HTML markup that is present in the legacy content but is not yet fully covered by CKEditor&nbsp;5 features.
 
 The {@link framework/plugins/features-html-output-overview Plugins and HTML output} article lists all official CKEditor&nbsp;5 plugins and the HTML output they produce. You can use it to check the compatibility of legacy data with what is supported in CKEditor&nbsp;5.
 
-A relatively simple yet efficient strategy of adopting CKEditor&nbsp;5 into existing systems might be using CKEditor&nbsp;5 for creating new content and the old editor for editing legacy content.
+A simple yet efficient strategy for adopting CKEditor&nbsp;5 into existing systems might be using CKEditor&nbsp;5 for creating new content and the old editor for editing legacy content.
 
 ### Installation and integration
 
-The very first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link getting-started/index Getting started} section to explore all available installation and integration options.
+The first aspect that changed with CKEditor&nbsp;5 is its installation procedure. It became much more modern with the introduction of modular patterns, UMD, npm, etc. Refer to the {@link installation/index Getting started} section to explore all available installation and integration options.
 
-The API for integrating CKEditor with your pages changed, too. It is worth checking the {@link getting-started/legacy-getting-started/editor-lifecycle Editor lifecycle} and {@link getting-started/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
+The API for integrating CKEditor with your pages changed, too. Check the {@link installation/getting-started/editor-lifecycle Editor lifecycle} and {@link installation/getting-started/getting-and-setting-data Getting and setting data} articles for an introduction to this topic.
 
 ### Custom plugins
 
-Any custom plugins you have developed for CKEditor 4 will not be compatible with CKEditor&nbsp;5. Although their concept may stay the same, their implementation will certainly be different and will require rewriting them from scratch.
+Any custom plugins you have developed for CKEditor 4 will not be compatible with CKEditor&nbsp;5. Although their idea may stay the same, their implementation will certainly be different and will require rewriting them from scratch.
 
-The same may apply to third-party plugins which may not have been ported to CKEditor&nbsp;5 yet.
+The same may apply to third-party plugins. They may not have been ported to CKEditor&nbsp;5 yet.
 
 Check the {@link framework/plugins/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
 
 ### Custom themes (skins)
 
-In CKEditor&nbsp;5, the previous concept of "skins" was reviewed and is now called "themes."
+In CKEditor&nbsp;5, the earlier concept of "skins" was reviewed and is now called "themes."
 
-If you have custom skins for CKEditor 4, they need to be recreated for CKEditor&nbsp;5. Fortunately, custom theming in CKEditor&nbsp;5 is much more powerful and simpler than before.
+If you have custom skins for CKEditor 4, you need to re-create them for CKEditor&nbsp;5. Fortunately, custom theming in CKEditor&nbsp;5 is much more powerful and simpler than before.
 
-What's new: CKEditor&nbsp;5 can also be used as a {@link framework/external-ui headless editor integrated with an external UI}, for example, built in React. Many projects use the powerful editing engine of CKEditor&nbsp;5 coupled with their own UI for seamless integration with their application.
+What's new: you can use CKEditor&nbsp;5 as a {@link framework/external-ui headless editor integrated with an external UI}, for example, created in React. Many projects use the powerful editing engine of CKEditor&nbsp;5 coupled with a custom UI for seamless integration with their application.
 
 For more information, check how to {@link framework/theme-customization customize the themes} in the CKEditor&nbsp;5 Framework documentation.
 
@@ -205,7 +205,7 @@ CKEditor&nbsp;5 supports several different image upload strategies. Check out th
 
 CKEditor 4 was licensed under GPL, LGPL, and MPL Open Source licenses.
 
-CKEditor&nbsp;5 is licensed under GPL2+ Open Source license only. If you are running an Open Source project under an OSI-approved license incompatible with GPL, we will be happy to [support you with a no-cost license](https://ckeditor.com/contact/). If your project is a commercial one, you will need to [obtain a commercial license](https://ckeditor.com/contact/).
+CKEditor&nbsp;5 is licensed under GPL2+ Open Source license only. If you are running an Open Source project under an OSI-approved license incompatible with GPL, we will be happy to [support you with a no-cost license](https://ckeditor.com/contact/). If your project is a commercial one, you will need to [get a commercial license](https://ckeditor.com/contact/).
 
 ## Recommended migration strategy
 
@@ -221,7 +221,7 @@ CKEditor&nbsp;5 is a great, modern editing framework so migrating is a fantastic
 
 ## Support
 
-If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first, as the feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link support/reporting-issues#reporting-issues-2 report an issue}. Search the [issues section in the repository](https://github.com/ckeditor/ckeditor5/issues) first. The feature you are after may have already been reported &ndash; you can support it by upvoting the issue with &nbsp;👍. Be as precise as possible, explaining the exact use case, the context where you use the editor, and the expected behavior.
 
 The {@link updating/ckeditor4-troubleshooting Troubleshooting migration from CKEditor 4} article answers some frequently asked questions about the migration.
 

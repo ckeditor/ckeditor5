@@ -5,19 +5,19 @@
 
 /* global document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
-import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting';
-import DocumentListPropertiesEditing from '@ckeditor/ckeditor5-list/src/documentlistproperties/documentlistpropertiesediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import CodeBlockUI from '../src/codeblockui';
-import CodeBlockEditing from '../src/codeblockediting';
+import CodeBlockUI from '../src/codeblockui.js';
+import CodeBlockEditing from '../src/codeblockediting.js';
 
 describe( 'CodeBlock - integration', () => {
 	describe( 'with Markdown GFM', () => {
@@ -181,7 +181,7 @@ describe( 'CodeBlock - integration', () => {
 				editor = await ClassicTestEditor
 					.create( '', {
 						plugins: [
-							CodeBlockEditing, DocumentListEditing, DocumentListPropertiesEditing, Enter, Paragraph, GeneralHtmlSupport
+							CodeBlockEditing, ListEditing, ListPropertiesEditing, Enter, Paragraph, GeneralHtmlSupport
 						],
 						htmlSupport: {
 							allow: [

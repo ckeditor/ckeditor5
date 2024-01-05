@@ -10,7 +10,7 @@
 				{
 					"type": "Button",
 					"name": "htmlEmbed",
-					"iconPath": "theme/icons/html.svg"
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/html.svg"
 				}
 			],
 			"htmlOutput": [

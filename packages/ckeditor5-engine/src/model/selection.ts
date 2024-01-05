@@ -7,15 +7,15 @@
  * @module engine/model/selection
  */
 
-import TypeCheckable from './typecheckable';
-import Node from './node';
-import Position, { type PositionOffset } from './position';
-import Range from './range';
+import TypeCheckable from './typecheckable.js';
+import Node from './node.js';
+import Position, { type PositionOffset } from './position.js';
+import Range from './range.js';
 
-import type DocumentFragment from './documentfragment';
-import type DocumentSelection from './documentselection';
-import type Element from './element';
-import type Item from './item';
+import type DocumentFragment from './documentfragment.js';
+import type DocumentSelection from './documentselection.js';
+import type Element from './element.js';
+import type Item from './item.js';
 
 import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 

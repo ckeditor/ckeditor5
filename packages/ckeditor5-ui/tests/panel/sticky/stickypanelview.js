@@ -6,11 +6,11 @@
 /* globals document, Event */
 
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
-import StickyPanelView from '../../../src/panel/sticky/stickypanelview';
-import View from '../../../src/view';
-import LabelView from '../../../src/label/labelview';
-import ViewCollection from '../../../src/viewcollection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import StickyPanelView from '../../../src/panel/sticky/stickypanelview.js';
+import View from '../../../src/view.js';
+import LabelView from '../../../src/label/labelview.js';
+import ViewCollection from '../../../src/viewcollection.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'StickyPanelView', () => {
 	let view, element, contentElement, placeholderElement, limiterElement, locale;

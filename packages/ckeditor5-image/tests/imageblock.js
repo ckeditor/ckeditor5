@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ImageBlock from '../src/imageblock';
-import ImageBlockEditing from '../src/image/imageblockediting';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import ImageTextAlternative from '../src/imagetextalternative';
-import ImageInsertUI from '../src/imageinsert/imageinsertui';
+import ImageBlock from '../src/imageblock.js';
+import ImageBlockEditing from '../src/image/imageblockediting.js';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import ImageTextAlternative from '../src/imagetextalternative.js';
+import ImageInsertUI from '../src/imageinsert/imageinsertui.js';
 
 describe( 'ImageBlock', () => {
 	let editorElement, editor;

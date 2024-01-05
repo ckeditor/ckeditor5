@@ -126,8 +126,8 @@ It starts the server available at [http://localhost:8125](http://localhost:8125)
 A manual test consists of 3 files:
 
 * A `<name>.md` file with the test description.
-* A `<name>.js` or `<name>.ts` file with the JavaScript/TypeScript part of the test (e.g. the code initializing an editor).
-* A `<name>.html` file with the HTML part of the test. It does not need to be an entire HTML page (with the doctype, etc.). It can include just the HTML elements that you want to define.
+* A `<name>.js` or `<name>.ts` file with the JavaScript or TypeScript part of the test (for example, the code initializing an editor).
+* A `<name>.html` file with the HTML part of the test. It does not need to be an entire HTML page (with the DOCTYPE, etc.). It can include just the HTML elements that you want to define.
 
 All 3 files are combined together and create a single manual test.
 

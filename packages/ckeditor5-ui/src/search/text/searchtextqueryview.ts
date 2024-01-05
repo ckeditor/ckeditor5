@@ -7,11 +7,11 @@
  * @module ui/search/text/searchtextqueryview
  */
 
-import ButtonView from '../../button/buttonview';
-import IconView from '../../icon/iconview';
-import LabeledFieldView, { type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview';
-import { createLabeledInputText } from '../../labeledfield/utils';
-import type InputBase from '../../input/inputbase';
+import ButtonView from '../../button/buttonview.js';
+import IconView from '../../icon/iconview.js';
+import LabeledFieldView, { type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview.js';
+import { createLabeledInputText } from '../../labeledfield/utils.js';
+import type InputBase from '../../input/inputbase.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import { icons } from '@ckeditor/ckeditor5-core';

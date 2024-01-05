@@ -9,7 +9,7 @@
 
 import { KeystrokeHandler, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor';
+import type Editor from './editor/editor.js';
 
 /**
  * A keystroke handler for editor editing. Its instance is available

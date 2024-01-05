@@ -9,14 +9,14 @@
  * @module engine/conversion/downcasthelpers
  */
 
-import ModelRange from '../model/range';
-import ModelSelection from '../model/selection';
-import ModelDocumentSelection from '../model/documentselection';
-import ModelElement from '../model/element';
-import ModelPosition from '../model/position';
+import ModelRange from '../model/range.js';
+import ModelSelection from '../model/selection.js';
+import ModelDocumentSelection from '../model/documentselection.js';
+import ModelElement from '../model/element.js';
+import ModelPosition from '../model/position.js';
 
-import ViewAttributeElement from '../view/attributeelement';
-import ConversionHelpers from './conversionhelpers';
+import ViewAttributeElement from '../view/attributeelement.js';
+import ConversionHelpers from './conversionhelpers.js';
 
 import type {
 	default as DowncastDispatcher,
@@ -27,26 +27,26 @@ import type {
 	DowncastAttributeEvent,
 	DowncastReduceChangesEvent,
 	DowncastRemoveMarkerEvent
-} from './downcastdispatcher';
-import type ModelConsumable from './modelconsumable';
-import type { DiffItem } from '../model/differ';
-import type ModelNode from '../model/node';
-import type ModelItem from '../model/item';
-import type ModelTextProxy from '../model/textproxy';
-import type ModelText from '../model/text';
+} from './downcastdispatcher.js';
+import type ModelConsumable from './modelconsumable.js';
+import type { DiffItem } from '../model/differ.js';
+import type ModelNode from '../model/node.js';
+import type ModelItem from '../model/item.js';
+import type ModelTextProxy from '../model/textproxy.js';
+import type ModelText from '../model/text.js';
 
-import type DowncastWriter from '../view/downcastwriter';
-import type ElementDefinition from '../view/elementdefinition';
-import type ViewDocumentFragment from '../view/documentfragment';
-import type UIElement from '../view/uielement';
-import type ViewElement from '../view/element';
-import type ViewNode from '../view/node';
-import type ViewPosition from '../view/position';
-import type ViewRange from '../view/range';
+import type DowncastWriter from '../view/downcastwriter.js';
+import type ElementDefinition from '../view/elementdefinition.js';
+import type ViewDocumentFragment from '../view/documentfragment.js';
+import type UIElement from '../view/uielement.js';
+import type ViewElement from '../view/element.js';
+import type ViewNode from '../view/node.js';
+import type ViewPosition from '../view/position.js';
+import type ViewRange from '../view/range.js';
 import type {
 	default as Mapper,
 	MapperModelToViewPositionEvent
-} from './mapper';
+} from './mapper.js';
 
 import {
 	CKEditorError,
@@ -238,42 +238,6 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 *
 	 * The children of the model's `<table>` element will be inserted into the `<tbody>` element.
 	 * If the `elementToElement()` helper was used, the children would be inserted into the `<figure>`.
-	 *
-	 * An example converter that converts the following model structure:
-	 *
-	 * ```xml
-	 * <wrappedParagraph>Some text.</wrappedParagraph>
-	 * ```
-	 *
-	 * into this structure in the view:
-	 *
-	 * ```html
-	 * <div class="wrapper">
-	 * 	<p>Some text.</p>
-	 * </div>
-	 * ```
-	 *
-	 * would look like this:
-	 *
-	 * ```ts
-	 * editor.conversion.for( 'downcast' ).elementToStructure( {
-	 * 	model: 'wrappedParagraph',
-	 * 	view: ( modelElement, conversionApi ) => {
-	 * 		const { writer } = conversionApi;
-	 *
-	 * 		const wrapperViewElement = writer.createContainerElement( 'div', { class: 'wrapper' } );
-	 * 		const paragraphViewElement = writer.createContainerElement( 'p' );
-	 *
-	 * 		writer.insert( writer.createPositionAt( wrapperViewElement, 0 ), paragraphViewElement );
-	 * 		writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), writer.createSlot() );
-	 *
-	 * 		return wrapperViewElement;
-	 * 	}
-	 * } );
-	 * ```
-	 *
-	 * The `createSlot()` function can also take a callback that allows filtering which children of the model element
-	 * should be converted into this slot.
 	 *
 	 * Imagine a table feature where for this model structure:
 	 *

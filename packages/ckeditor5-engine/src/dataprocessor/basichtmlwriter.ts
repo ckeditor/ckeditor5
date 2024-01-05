@@ -7,7 +7,7 @@
  * @module engine/dataprocessor/basichtmlwriter
  */
 
-import type HtmlWriter from './htmlwriter';
+import type HtmlWriter from './htmlwriter.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
 /**

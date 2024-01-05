@@ -7,7 +7,7 @@
  * @module ui/bindings/submithandler
  */
 
-import type View from '../view';
+import type View from '../view.js';
 
 /**
  * A handler useful for {@link module:ui/view~View views} working as HTML forms. It intercepts a native DOM

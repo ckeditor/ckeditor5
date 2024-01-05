@@ -7,8 +7,8 @@
  * @module ui/search/searchinfoview
 */
 
-import type { FocusableView } from '../focuscycler';
-import View from '../view';
+import type { FocusableView } from '../focuscycler.js';
+import View from '../view.js';
 
 /**
  * A view displaying an information text related to different states of {@link module:ui/search/text/searchtextview~SearchTextView}.

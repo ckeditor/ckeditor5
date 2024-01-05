@@ -7,8 +7,8 @@
  * @module code-block/codeblockediting
  */
 
-import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core';
-import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter';
+import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
+import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
 import {
 	UpcastWriter,
@@ -20,25 +20,25 @@ import {
 	type UpcastElementEvent,
 	type UpcastTextEvent,
 	type Element
-} from 'ckeditor5/src/engine';
+} from 'ckeditor5/src/engine.js';
 
-import type { DocumentListEditing } from '@ckeditor/ckeditor5-list';
+import type { ListEditing } from '@ckeditor/ckeditor5-list';
 
-import CodeBlockCommand from './codeblockcommand';
-import IndentCodeBlockCommand from './indentcodeblockcommand';
-import OutdentCodeBlockCommand from './outdentcodeblockcommand';
+import CodeBlockCommand from './codeblockcommand.js';
+import IndentCodeBlockCommand from './indentcodeblockcommand.js';
+import OutdentCodeBlockCommand from './outdentcodeblockcommand.js';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
 	rawSnippetTextToViewDocumentFragment
-} from './utils';
+} from './utils.js';
 import {
 	modelToViewCodeBlockInsertion,
 	modelToDataViewSoftBreakInsertion,
 	dataViewToModelCodeBlockInsertion,
 	dataViewToModelTextNewlinesInsertion,
 	dataViewToModelOrphanNodeConsumer
-} from './converters';
+} from './converters.js';
 
 const DEFAULT_ELEMENT = 'paragraph';
 
@@ -99,8 +99,8 @@ export default class CodeBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 		const model = editor.model;
 		const view = editor.editing.view;
-		const documentListEditing: DocumentListEditing | null = editor.plugins.has( 'DocumentListEditing' ) ?
-			editor.plugins.get( 'DocumentListEditing' ) : null;
+		const listEditing: ListEditing | null = editor.plugins.has( 'ListEditing' ) ?
+			editor.plugins.get( 'ListEditing' ) : null;
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -138,7 +138,7 @@ export default class CodeBlockEditing extends Plugin {
 		schema.addAttributeCheck( ( context, attributeName ) => {
 			if (
 				context.endsWith( 'codeBlock' ) &&
-				documentListEditing && documentListEditing.getListAttributeNames().includes( attributeName )
+				listEditing && listEditing.getListAttributeNames().includes( attributeName )
 			) {
 				return true;
 			}

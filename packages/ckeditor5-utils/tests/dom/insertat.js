@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import insertAt from '../../src/dom/insertat';
+import insertAt from '../../src/dom/insertat.js';
 
 describe( 'insertAt', () => {
 	it( 'should insert at given position', () => {

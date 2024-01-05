@@ -7,13 +7,13 @@
  * @module essentials/essentials
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin } from 'ckeditor5/src/core.js';
 
-import { Clipboard } from 'ckeditor5/src/clipboard';
-import { Enter, ShiftEnter } from 'ckeditor5/src/enter';
-import { SelectAll } from 'ckeditor5/src/select-all';
-import { Typing } from 'ckeditor5/src/typing';
-import { Undo } from 'ckeditor5/src/undo';
+import { Clipboard } from 'ckeditor5/src/clipboard.js';
+import { Enter, ShiftEnter } from 'ckeditor5/src/enter.js';
+import { SelectAll } from 'ckeditor5/src/select-all.js';
+import { Typing } from 'ckeditor5/src/typing.js';
+import { Undo } from 'ckeditor5/src/undo.js';
 
 /**
  * A plugin including all essential editing features. It represents a set of features that enables similar functionalities

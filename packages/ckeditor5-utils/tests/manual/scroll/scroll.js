@@ -5,7 +5,7 @@
 
 /* global document */
 
-import { scrollViewportToShowTarget } from '../../../src/dom/scroll';
+import { scrollViewportToShowTarget } from '../../../src/dom/scroll.js';
 
 document.getElementById( 'scrollToBlue' ).addEventListener( 'click', () => {
 	const target = document.querySelector( '#target-blue .target' );
