@@ -33,9 +33,9 @@ These features provide similar functionality:
 
 The {@link module:list/todolist~TodoList} plugin registers:
 
-* The {@link module:list/list/listcommand~ListCommand 'todoList'} command.
-* The {@link module:list/todolist/checktodolistcommand~CheckTodoListCommand 'checkTodoList'} command.
-* The 'todoList' UI button.
+* The {@link module:list/list/listcommand~ListCommand `'todoList'`} command.
+* The {@link module:list/todolist/checktodolistcommand~CheckTodoListCommand `'checkTodoList'`} command.
+* The `'todoList'` UI button.
 
 ## Contribute
 
