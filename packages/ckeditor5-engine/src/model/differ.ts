@@ -53,8 +53,7 @@ export default class Differ {
 	 * the first change was applied on that element. Snapshot items are objects with two properties: `name`,
 	 * containing the element name (or `'$text'` for a text node) and `attributes` which is a map of the node's attributes.
 	 */
-	private readonly _elementSnapshots: Map<Element | DocumentFragment, Array<{ name: string; attributes: Map<string, unknown> }>>
-		= new Map();
+	private readonly _elementSnapshots: Map<Element | DocumentFragment, Array<DifferSnapshot>> = new Map();
 
 	/**
 	 * A map that stores all changed markers.
@@ -1101,10 +1100,11 @@ export default class Differ {
 	private _getInsertDiff(
 		parent: Element | DocumentFragment,
 		offset: number,
-		elementSnapshot: { name: string; attributes: Map<string, unknown> }
+		elementSnapshot: DifferSnapshot
 	): DiffItemInsert & DiffItemInternal {
 		return {
 			type: 'insert',
+			element: elementSnapshot.element,
 			position: Position._createAt( parent, offset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
@@ -1124,10 +1124,11 @@ export default class Differ {
 	private _getRemoveDiff(
 		parent: Element | DocumentFragment,
 		offset: number,
-		elementSnapshot: { name: string; attributes: Map<string, unknown> }
+		elementSnapshot: DifferSnapshot
 	): DiffItemRemove & DiffItemInternal {
 		return {
 			type: 'remove',
+			element: elementSnapshot.element,
 			position: Position._createAt( parent, offset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
@@ -1251,8 +1252,8 @@ interface ChangeItem {
  * Returns an array that is a copy of passed child list with the exception that text nodes are split to one or more
  * objects, each representing one character and attributes set on that character.
  */
-function _getChildrenSnapshot( children: Iterable<Node> ) {
-	const snapshot = [];
+function _getChildrenSnapshot( children: Iterable<Node> ): Array<DifferSnapshot> {
+	const snapshot: Array<DifferSnapshot> = [];
 
 	for ( const child of children ) {
 		if ( child.is( '$text' ) ) {
@@ -1265,7 +1266,8 @@ function _getChildrenSnapshot( children: Iterable<Node> ) {
 		} else {
 			snapshot.push( {
 				name: ( child as Element ).name,
-				attributes: new Map( child.getAttributes() )
+				attributes: new Map( child.getAttributes() ),
+				element: child as Element
 			} );
 		}
 	}
@@ -1385,6 +1387,12 @@ function _changesInGraveyardFilter( entry: DiffItem ) {
 	return !posInGy && !rangeInGy;
 }
 
+interface DifferSnapshot {
+	element?: Element;
+	name: string;
+	attributes: Map<string, unknown>;
+}
+
 /**
  * The single diff item.
  *
@@ -1405,6 +1413,13 @@ export interface DiffItemInsert {
 	 * The type of diff item.
 	 */
 	type: 'insert';
+
+	/**
+	 * Reference to the model element that was inserted.
+	 *
+	 * Undefined if the diff item is related to text node insertion.
+	 */
+	element?: Element;
 
 	/**
 	 * The name of the inserted elements or `'$text'` for a text node.
@@ -1436,6 +1451,24 @@ export interface DiffItemRemove {
 	 * The type of diff item.
 	 */
 	type: 'remove';
+
+	/**
+	 * Reference to the model element that was removed.
+	 *
+	 * Undefined if the diff item is related to text node deletion.
+	 *
+	 * Note that this element will have the state after all changes has been performed on the model, not before. For example, if a paragraph
+	 * was first renamed to `heading1`, and then removed, `element.name` will be `heading1`. Similarly, with attributes. Also, you should
+	 * not read the element's position, as it will no longer point to the original element position.
+	 *
+	 * Instead, you should use {@link ~DiffItemRemove#name `DiffItemRemove#name`},
+	 * {@link ~DiffItemRemove#attributes `DiffItemRemove#attributes`}, and {@link ~DiffItemRemove#position `DiffItemRemove#position`}.
+	 *
+	 * This property should be only used to check instance reference equality. For example, if you want to detect that some particular
+	 * element was removed, you can check `element` property. You can also check {@link ~DiffItemRemove#element `DiffItemRemove#element`}.
+	 * property with {@link ~DiffItemInsert#element `DiffItemInsert#element`} to detect move, or rename changes.
+	 */
+	element?: Element;
 
 	/**
 	 * The name of the removed element or `'$text'` for a text node.
