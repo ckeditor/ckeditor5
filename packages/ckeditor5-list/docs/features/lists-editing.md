@@ -42,7 +42,7 @@ Unfortunately, in some cases, this can be undesirable behavior. For example, two
 To prevent this behavior, enable the `AdjacentListsSupport` plugin.
 
 ```js
-import AdjacentListsSupport from '@ckeditor/ckeditor5-list/src/documentlist/adjacentlistssupport.js';
+import { AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
