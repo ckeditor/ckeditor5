@@ -37,15 +37,26 @@ import '../../theme/components/dialog/dialog.css';
 
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
-export enum DialogViewPosition {
-	SCREEN_CENTER = 'screen-center',
-	EDITOR_CENTER = 'editor-center',
-	EDITOR_TOP_SIDE = 'editor-top-side',
-	EDITOR_TOP_CENTER = 'editor-top-center',
-	EDITOR_BOTTOM_CENTER = 'editor-bottom-center',
-	EDITOR_ABOVE_CENTER = 'editor-above-center',
-	EDITOR_BELOW_CENTER = 'editor-below-center'
-}
+/**
+ * Available dialog view positions:
+ *
+ * * `DialogViewPosition.SCREEN_CENTER`,
+ * * `DialogViewPosition.EDITOR_CENTER`,
+ * * `DialogViewPosition.EDITOR_TOP_SIDE`,
+ * * `DialogViewPosition.EDITOR_TOP_CENTER`,
+ * * `DialogViewPosition.EDITOR_BOTTOM_CENTER`,
+ * * `DialogViewPosition.EDITOR_ABOVE_CENTER`,
+ * * `DialogViewPosition.EDITOR_BELOW_CENTER`
+ */
+export const DialogViewPosition = {
+	SCREEN_CENTER: 'screen-center',
+	EDITOR_CENTER: 'editor-center',
+	EDITOR_TOP_SIDE: 'editor-top-side',
+	EDITOR_TOP_CENTER: 'editor-top-center',
+	EDITOR_BOTTOM_CENTER: 'editor-bottom-center',
+	EDITOR_ABOVE_CENTER: 'editor-above-center',
+	EDITOR_BELOW_CENTER: 'editor-below-center'
+} as const;
 
 const toPx = toUnit( 'px' );
 
@@ -146,7 +157,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 *
 	 * @observable
 	 */
-	declare public position: DialogViewPosition;
+	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ];
 
 	/**
 	 * The calculated `top` CSS dialog property used for positioning.

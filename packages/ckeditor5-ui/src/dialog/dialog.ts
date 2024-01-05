@@ -257,19 +257,76 @@ export default class Dialog extends Plugin {
 /**
  * The definition needed to create a {@link module:ui/dialog/dialogview~DialogView}.
  */
-export type DialogDefinition = {
+export interface DialogDefinition {
+
+	/**
+	 * A unique identifier of the dialog. When specified, it allows for distinguishing between different dialogs.
+	 * For instance, when open, the id of currently visible dialog is stored in {@link module:ui/dialog/dialog~Dialog#id}.
+	 *
+	 * The `id` is also passed along the {@link module:ui/dialog/dialog~DialogShowEvent} and {@link module:ui/dialog/dialog~DialogHideEvent}
+	 * events.
+	 */
 	id?: string;
+
+	/**
+	 * The SVG string of an icon displayed in dialogs's header. Used only when {@link #title} is also set
+	 * and the header is displayed.
+	 *
+	 * See more in {@link module:ui/icon/iconview~IconView#content}.
+	 */
 	icon?: string;
+
+	/**
+	 * A title displayed in dialogs's header. Also works as an accessible name of the dialog used by assistive technologies.
+	 *
+	 * When not set, the header is not displayed. Affects {@link #icon} and {@link #hasCloseButton}.
+	 */
 	title?: string;
+
+	/**
+	 * A flag indicating whether the dialog should have a close button in the header.
+	 * `true` by default. Works when {@link #title} is also set and the header is displayed.
+	 */
 	hasCloseButton?: boolean;
+
+	/**
+	 * The content of the dialog. It can be a single {@link module:ui/view~View} or an array of views.
+	 */
 	content?: View | Array<View>;
+
+	/**
+	 * The action buttons displayed in the dialog's footer.
+	 */
 	actionButtons?: Array<DialogActionButtonDefinition>;
+
+	/**
+	 * An additional CSS class set on the outermost (`.ck.ck-dialog`) container element allowing for visual customization.
+	 */
 	className?: string;
+
+	/**
+	 * When set `true`, the dialog will become a modal, i.e. it will block the UI until it is closed.
+	 */
 	isModal?: boolean;
-	position?: DialogViewPosition;
+
+	/**
+	 * Available dialog positions. By default `DialogViewPosition.EDITOR_CENTER` is used for {@link #isModal non-modals}
+	 * and `DialogViewPosition.SCREEN_CENTER` for modals.
+	 *
+	 * {@link module:ui/dialog/dialogview~DialogViewPosition Learn more}.
+	 */
+	position?: typeof DialogViewPosition[ keyof typeof DialogViewPosition ];
+
+	/**
+	 * A callback called when the dialog shows up. It allows for setting up the dialog's {@link #content}.
+	 */
 	onShow?: ( dialog: Dialog ) => void;
+
+	/**
+	 * A callback called when the dialog hides. It allows for cleaning up (e.g. resetting) the dialog's {@link #content}.
+	 */
 	onHide?: ( dialog: Dialog ) => void;
-};
+}
 
 /**
  * An event fired after {@link module:ui/dialog/dialog~Dialog#show} is called.
