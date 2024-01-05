@@ -47,7 +47,7 @@ This is because it was injecting `DocumentList` and `DocumentListProperties` plu
 
 If you happen to encounter this error, please remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option and replace these with `List` and related plugins.
 
-#### Details of plugin renames 
+#### Details of plugin renames
 
 <table>
     <thead>
@@ -127,3 +127,25 @@ If you happen to encounter this error, please remove all imports of `DocumentLis
         </tr>
     </tbody>
 </table>
+
+### Icons paths changed
+
+Among other changes, some icons have been moved around the project. Observe these changes if you use custom UI elements that call these icons.
+
+The following icons were moved to the `@ckeditor/ckeditor5-core` package: `browse-files`, `bulletedlist`, `codeblock`, `color-palette`, `heading1`, `heading2`, `heading3`, `heading4`, `heading5`, `heading6`, `horizontalline`, `html`, `indent`, `next-arrow`, `numberedlist`, `outdent`, `previous-arrow`, `redo`, `table`,`todolist`, `undo`.
+
+
+### Exports renaming
+
+Some exports names were changed due to possibility of name conflicts:
+
+* We renamed the default export of `View` from the `@ckeditor/ckeditor5-engine` package to `EditingView`,
+* We renamed the default export of `UploadAdapter` from the `@ckeditor/ckeditor5-adapter-ckfinder` package to `CKFinderUploadAdapter`,
+* We renamed the interface export of `Position` from the `@ckeditor/ckeditor5-utils` package to `DomPoint`,
+* We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package.
+
+### Making CKEditor npm packages valid ES Modules
+
+The code we distribute in our npm packages uses the [ES Module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES module. In some cases this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor 5.  It required workarounds in their configuration.
+
+In this release we fix these issues, meaning that our packages are now fully ESM compliant and these workarounds are no longer needed.
