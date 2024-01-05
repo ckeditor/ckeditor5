@@ -17,7 +17,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
@@ -34,7 +34,7 @@ describe( 'WordCount', () => {
 		return VirtualTestEditor
 			.create( {
 				plugins: [
-					WordCount, Paragraph, ShiftEnter, TableEditing, ListEditing, LinkEditing, ImageBlockEditing, ImageCaptionEditing
+					WordCount, Paragraph, ShiftEnter, TableEditing, LegacyListEditing, LinkEditing, ImageBlockEditing, ImageCaptionEditing
 				]
 			} )
 			.then( _editor => {

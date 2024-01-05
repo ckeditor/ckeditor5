@@ -11,7 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
+import LegacyList from '@ckeditor/ckeditor5-list/src/legacylist.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
 
@@ -27,7 +27,7 @@ describe( 'Alignment integration', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ Alignment, BlockQuote, Paragraph, Heading, Image, ImageCaption, List, Enter, Delete ]
+				plugins: [ Alignment, BlockQuote, Paragraph, Heading, Image, ImageCaption, LegacyList, Enter, Delete ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

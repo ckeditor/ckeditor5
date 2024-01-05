@@ -38,15 +38,15 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import DocumentList from '../../src/documentlist.js';
-import DocumentListProperties from '../../src/documentlistproperties.js';
+import List from '../../src/documentlist.js';
+import ListProperties from '../../src/documentlistproperties.js';
 
 const config = {
 	plugins: [
 		Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
 		MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
 		AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
-		CloudServices, SourceEditing, DocumentList, DocumentListProperties
+		CloudServices, SourceEditing, List, ListProperties
 	],
 	toolbar: [
 		'sourceEditing', '|',

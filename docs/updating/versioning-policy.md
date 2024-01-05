@@ -37,6 +37,6 @@ The ecosystem of CKEditor&nbsp;5 consists of multiple layers. Our approach to br
 
 ## Why not semantic versioning?
 
-Prior to version 15.0.0 each package was versioned independently and followed the [semantic versioning (semver)](https://semver.org/). Following semver as close as possible was useful as it allowed us to quickly identify what changed in each release of a certain package. However, it led to [problems with building old versions of the editor](https://github.com/ckeditor/ckeditor5/issues/1746).
+Prior to version 15.0.0 each package was versioned independently and followed the [semantic versioning (SemVer)](https://semver.org/). Following SemVer as close as possible was useful as it allowed us to quickly identify what changed in each release of a certain package. However, it led to [problems with building old versions of the editor](https://github.com/ckeditor/ckeditor5/issues/1746).
 
 Therefore, we switched to a more commonly used practice for an ecosystem of packages, which is to treat a single breaking change as a major release of all packages. It automatically fixed the aforementioned problem in all projects that use caret ranges in their `package.json` files. Later on, we decided that it will be even more convenient for integrators if all packages are in the exact same version, which is also not uncommon (for example, [Angular](https://github.com/angular/angular) follows this practice).

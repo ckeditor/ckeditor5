@@ -2474,10 +2474,10 @@ describe( 'ImageElementSupport', () => {
 						'alt',
 						'src',
 						'srcset',
-						'linkHref',
 						'width',
 						'height',
 						'placeholder',
+						'linkHref',
 						'htmlImgAttributes',
 						'htmlFigureAttributes',
 						'htmlLinkAttributes'
