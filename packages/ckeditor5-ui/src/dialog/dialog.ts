@@ -74,7 +74,9 @@ export default class Dialog extends Plugin {
 
 		// 'low' priority allows to add custom callback between `_show()` and `onShow()`.
 		this.on<DialogShowEvent>( 'show', ( evt, args ) => {
-			args.onShow?.( this );
+			if ( args.onShow ) {
+				args.onShow( this );
+			}
 		}, { priority: 'low' } );
 
 		this.on<DialogHideEvent>( 'hide', () => {
@@ -83,8 +85,10 @@ export default class Dialog extends Plugin {
 
 		// 'low' priority allows to add custom callback between `_hide()` and `onHide()`.
 		this.on<DialogHideEvent>( 'hide', () => {
-			this._onHide?.( this );
-			this._onHide = undefined;
+			if ( this._onHide ) {
+				this._onHide( this );
+				this._onHide = undefined;
+			}
 		}, { priority: 'low' } );
 	}
 
@@ -135,7 +139,9 @@ export default class Dialog extends Plugin {
 	 * This method is decorated to enable interacting on the `show` event.
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		Dialog.visibleDialogPlugin?.hide();
+		if ( Dialog.visibleDialogPlugin ) {
+			Dialog.visibleDialogPlugin.hide();
+		}
 
 		this.fire<DialogShowEvent>( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
 	}
