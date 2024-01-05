@@ -163,7 +163,7 @@ With this modification to the `webpack.config.js`, it is possible to build CKEdi
 	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
-At this step, you need to provide a proper configuration. You can use WProofreader either as a [cloud solution](#wproofreader-cloud) or [hosted on your server](#wproofreader-on-premise) (on-premises or in a private cloud).
+At this step, you need to provide a proper configuration. You can use WProofreader either as a [cloud solution](#wproofreader-cloud) or [hosted on your server](#wproofreader-on-premises) (on-premises or in a private cloud).
 
 ### WProofreader Cloud
 
