@@ -31,7 +31,7 @@ balloon.render();
 balloon.content.add( balloonButton );
 
 const positions = BalloonPanelView.defaultPositions;
-balloon.pin( { 
+balloon.pin( {
 	target: document.getElementById( 'balloon' ),
 	positions: [ positions.southArrowNorth ]
 } );
@@ -315,7 +315,7 @@ A dropdown consists of two elements: a button and a panel. The button expands th
 Inside a dropdown, you can put a list. To do so, you can use the {@link module:ui/dropdown/utils#addListToDropdown `addListToDropdown()`} helper function. Also, you must add items to a collection before putting them inside the dropdown.
 
 ```js
-import { 
+import {
 	addListToDropdown,
 	createDropdown,
 	Model
@@ -585,8 +585,8 @@ import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-ce
 import tableCellProperties from '@ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg';
 import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-properties.svg';
 
-import nextArrow from '@ckeditor/ckeditor5-ui/theme/icons/next-arrow.svg';
-import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
+import nextArrow from '@ckeditor/ckeditor5-core/theme/icons/next-arrow.svg';
+import previousArrow from '@ckeditor/ckeditor5-core/theme/icons/previous-arrow.svg';
 
 import undo from '@ckeditor/ckeditor5-core/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-core/theme/icons/redo.svg';
