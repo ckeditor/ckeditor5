@@ -38,9 +38,9 @@ import type { LabeledFieldViewCreator } from './labeledfieldview.js';
  * ```
  *
  * @param labeledFieldView The instance of the labeled field view.
- * @param viewUid An UID string that allows DOM logical connection between the
+ * @param viewUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
- * @param statusUid An UID string that allows DOM logical connection between the
+ * @param statusUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
  * @returns The input text view instance.
  */
@@ -87,9 +87,9 @@ const createLabeledInputText: LabeledFieldViewCreator<InputTextView> = ( labeled
  * ```
  *
  * @param labeledFieldView The instance of the labeled field view.
- * @param viewUid An UID string that allows DOM logical connection between the
+ * @param viewUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
- * @param statusUid An UID string that allows DOM logical connection between the
+ * @param statusUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
  * @returns The input number view instance.
  */
@@ -137,9 +137,9 @@ const createLabeledInputNumber: LabeledFieldViewCreator<InputNumberView> = ( lab
  * ```
  *
  * @param labeledFieldView The instance of the labeled field view.
- * @param viewUid An UID string that allows DOM logical connection between the
+ * @param viewUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the textarea.
- * @param statusUid An UID string that allows DOM logical connection between the
+ * @param statusUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the textarea.
  * @returns The textarea view instance.
  */
@@ -186,9 +186,9 @@ const createLabeledTextarea: LabeledFieldViewCreator<TextareaView> = ( labeledFi
  * ```
  *
  * @param labeledFieldView The instance of the labeled field view.
- * @param viewUid An UID string that allows DOM logical connection between the
+ * @param viewUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
- * @param statusUid An UID string that allows DOM logical connection between the
+ * @param statusUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
  * @returns The input url view instance.
  */
@@ -233,9 +233,9 @@ const createLabeledInputUrl: LabeledFieldViewCreator<InputUrlView> = ( labeledFi
  * ```
  *
  * @param labeledFieldView The instance of the labeled field view.
- * @param viewUid An UID string that allows DOM logical connection between the
+ * @param viewUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view label} and the dropdown.
- * @param statusUid An UID string that allows DOM logical connection between the
+ * @param statusUid A UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view status} and the dropdown.
  * @returns The dropdown view instance.
  */

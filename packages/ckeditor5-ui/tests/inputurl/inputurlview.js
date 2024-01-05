@@ -23,7 +23,7 @@ describe( 'InputUrlView', () => {
 			expect( view ).to.be.instanceOf( InputView );
 		} );
 
-		it( 'should creates element from template', () => {
+		it( 'should create element from template', () => {
 			expect( view.element.getAttribute( 'type' ) ).to.equal( 'url' );
 			expect( view.element.type ).to.equal( 'url' );
 			expect( view.element.classList.contains( 'ck-input-url' ) ).to.be.true;
