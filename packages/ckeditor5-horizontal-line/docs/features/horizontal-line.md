@@ -63,7 +63,7 @@ The {@link module:horizontal-line/horizontalline~HorizontalLine} plugin register
 * the UI button component (`'horizontalLine'`),
 * the `'horizontalLine'` command implemented by {@link module:horizontal-line/horizontallinecommand~HorizontalLineCommand}.
 
-The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 // Inserts a horizontal line into the selected content.
