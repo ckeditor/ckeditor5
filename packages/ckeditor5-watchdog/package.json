@@ -23,7 +23,7 @@
     "@ckeditor/ckeditor5-utils": "40.2.0",
     "@ckeditor/ckeditor5-track-changes": "40.2.0",
     "ckeditor5": "40.2.0",
-    "typescript": "^4.8.4"
+    "typescript": "5.0.4"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
