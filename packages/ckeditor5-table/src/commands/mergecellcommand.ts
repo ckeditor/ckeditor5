@@ -164,7 +164,7 @@ function getHorizontalCell( tableCell: Element, direction: ArrowKeyCodeDirection
 	const tableRow = tableCell.parent!;
 	const table = tableRow.parent as Element;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
-	const hasHeadingColumns = ( table.getAttribute( 'headingColumns' ) || 0 ) > 0;
+	const hasHeadingColumns = ( table.getAttribute( 'headingColumns' ) as number || 0 ) > 0;
 
 	if ( !horizontalCell ) {
 		return;
