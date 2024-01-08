@@ -18,6 +18,7 @@ swap:
   disabled: 'Do not use "disabled". As a state, replace "disabled" with descriptors such as "inactive", "unavailable", or "off".'
   he|she: 'Do not user gender pronouns like "he" or "she". Use "they" instead or rewrite, for example to "you".'
   his|her: 'Do not use gender pronouns like "his" or "her". Use "their" instead or rewrite, for example to "your".'
+  it is possible: 'Do not use "it is possible". Use "You can" instead.'
   overhead: 'Do not use "overhead". Use terminology that is more specific. For example, write "running large queries can increase processor usage".'
   please: 'Do not use "please" in technical documentation.'
   respective|respectively: 'Do not use "respective" or "respectively". Rewrite to avoid using these words.'

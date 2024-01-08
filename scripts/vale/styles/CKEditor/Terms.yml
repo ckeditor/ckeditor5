@@ -41,6 +41,7 @@ swap:
   doctype: DOCTYPE
   double click: double-click
   drop-down: dropdown
+  drop-downs: dropdowns
   dummy: placeholder|sample|fake
   "(?:e-mail|Email|E-mail)": email
   Fckeditor|FCkeditor|FCKEditor: FCKeditor
