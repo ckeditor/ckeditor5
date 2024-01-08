@@ -397,7 +397,7 @@ export default class LinkUI extends Plugin {
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
 			this.formView!.saveButtonView.focus();
 
-			// Reset the URL field to update the state of the submit button
+			// Reset the URL field to update the state of the submit button.
 			this.formView!.urlInputView.fieldView.reset();
 
 			this._balloon.remove( this.formView! );
