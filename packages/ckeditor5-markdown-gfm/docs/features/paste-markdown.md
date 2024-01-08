@@ -59,7 +59,7 @@ ClassicEditor
 			// More plugins.
 			// ...
 		],
-		// More of editor's config.
+		// More of editor's configuration.
 		// ...
 	} )
 	.then( /* ... */ )

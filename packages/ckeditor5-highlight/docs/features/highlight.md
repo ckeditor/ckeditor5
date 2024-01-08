@@ -25,14 +25,13 @@ The highlight feature comes with flexible configuration options.
 
 However, the plugin has a predefined and limited number of available colors. It also focuses more on functionality than aesthetics. To change the text and background colors, use the {@link features/font#configuring-the-font-color-and-font-background-color-features font color and background color} plugin.
 
-Note that the highlight feature uses inline `<mark>` elements in the view.
+The highlight feature uses inline `<mark>` elements in the view.
 
 ### Dropdown
 
-It is possible to configure which highlight options are supported by the editor.
-You can use the {@link module:highlight/highlightconfig~HighlightConfig#options `highlight.options`} configuration and define your own highlight styles.
+You can configure which highlight options are supported by the editor. Use the {@link module:highlight/highlightconfig~HighlightConfig#options `highlight.options`} configuration and define your highlight styles.
 
-For example, the following editor supports only two styles (a green marker and a red pen):
+For example, the following editor supports two styles (a green marker and a red pen):
 
 ```js
 ClassicEditor
@@ -97,7 +96,7 @@ ClassicEditor
 
 #### Using CSS variables
 
-The highlight feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions which can be easily customized:
+The highlight feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) defined in the [style sheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions that you can customize:
 
 ```css
 :root {
@@ -116,7 +115,7 @@ The highlight feature is using the power of [CSS variables](https://developer.mo
 
 #### Inline color definitions
 
-It is possible to use inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]`, or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlightconfig~HighlightConfig#options options} and define the `color` property for each option:
+You can use inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]`, or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlightconfig~HighlightConfig#options options} and define the `color` property for each option:
 
 ```js
 ClassicEditor
@@ -154,7 +153,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Then, update the classes in the stylesheet so the content corresponds to the UI of the editor. It is recommended that the UI buttons and the actual highlights in the text are the same color.
+Then, update the classes in the style sheet so the content corresponds to the UI of the editor. The UI buttons and the actual highlights in the text should be the same color.
 
 ```css
 .marker-green {
@@ -176,7 +175,7 @@ Then, update the classes in the stylesheet so the content corresponds to the UI 
 	The highlight feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
 </info-box>
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-highlight`](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight) package:
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-highlight`](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-highlight
@@ -205,7 +204,7 @@ ClassicEditor
 CKEditor&nbsp;5 has more features that can help you style your content:
 * {@link features/style Styles} &ndash; Apply pre-configured styles like highlight or spoiler to existing content elements.
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
-* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/font Font styles} &ndash; Control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
@@ -214,7 +213,7 @@ CKEditor&nbsp;5 has more features that can help you style your content:
 
 The {@link module:highlight/highlight~Highlight} plugin registers:
 
-* The `'highlight'` dropdown,
+* The `'highlight'` dropdown.
 * The {@link module:highlight/highlightcommand~HighlightCommand `'highlight'`} command.
 
 	The number of options and their names correspond to the {@link module:highlight/highlightconfig~HighlightConfig#options `highlight.options`} configuration option.
