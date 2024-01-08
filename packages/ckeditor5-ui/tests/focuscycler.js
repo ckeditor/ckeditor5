@@ -183,7 +183,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
 			expect( cycler.first ).to.equal( focusables.get( 1 ) );
-			expect( cycler.next ).to.be.null;
+			expect( cycler.next ).to.equal( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
@@ -270,7 +270,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
 			expect( cycler.first ).to.equal( focusables.get( 1 ) );
-			expect( cycler.previous ).to.be.null;
+			expect( cycler.previous ).to.equal( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
