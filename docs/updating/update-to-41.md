@@ -149,7 +149,7 @@ The code we distribute in our npm packages uses the [ES Module syntax](https://d
 
 In this release we fix these issues, meaning that our packages are now fully ESM compliant and these workarounds are no longer needed.
 
-### Add validation to the URL field in the Link form
+### Added validation to the URL field in the Link form
 
 Until now, the form for adding a URL to the selected text accepted an empty value, leaving the `href` empty. We believe this is undesirable in most cases, so we've added a validation to prevent adding a link if the field is empty.
 
