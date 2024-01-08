@@ -197,7 +197,6 @@ export default class LinkUI extends Plugin {
 			const { value } = formView.urlInputView.fieldView.element!;
 			const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
 			editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
-			formView.urlInputView.fieldView.reset();
 			this._closeFormView();
 		} );
 
@@ -397,6 +396,9 @@ export default class LinkUI extends Plugin {
 			// Blur the input element before removing it from DOM to prevent issues in some browsers.
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
 			this.formView!.saveButtonView.focus();
+
+			// Reset the URL field to update the state of the submit button
+			this.formView!.urlInputView.fieldView.reset();
 
 			this._balloon.remove( this.formView! );
 
