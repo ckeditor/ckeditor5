@@ -134,7 +134,6 @@ Among other changes, some icons have been moved around the project. Observe thes
 
 The following icons were moved to the `@ckeditor/ckeditor5-core` package: `browse-files`, `bulletedlist`, `codeblock`, `color-palette`, `heading1`, `heading2`, `heading3`, `heading4`, `heading5`, `heading6`, `horizontalline`, `html`, `indent`, `next-arrow`, `numberedlist`, `outdent`, `previous-arrow`, `redo`, `table`,`todolist`, `undo`.
 
-
 ### Exports renaming
 
 Some exports names were changed due to possibility of name conflicts:
@@ -149,3 +148,20 @@ Some exports names were changed due to possibility of name conflicts:
 The code we distribute in our npm packages uses the [ES Module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES module. In some cases this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor 5.  It required workarounds in their configuration.
 
 In this release we fix these issues, meaning that our packages are now fully ESM compliant and these workarounds are no longer needed.
+
+### Added validation to the URL field in the Link form
+
+Until now, the form for adding a URL to the selected text accepted an empty value, leaving the `href` empty. We believe this is undesirable in most cases, so we've added a validation to prevent adding a link if the field is empty.
+
+However, if for some reason you want to allow empty links, you can do so using the new `allowCreatingEmptyLinks` configuration option we've added to the `link` plugin.
+
+```diff
+ClassicEditor
+  .create( editorElement, {
+    link: {
++      allowCreatingEmptyLinks: true
+    }
+  } )
+  .then( ... )
+  .catch( ... );
+```
