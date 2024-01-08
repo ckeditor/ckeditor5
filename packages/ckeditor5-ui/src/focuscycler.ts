@@ -299,12 +299,13 @@ export default class FocusCycler extends EmitterMixin() {
 	 */
 	private _getFocusableItem( step: 1 | -1 ): FocusableView | null {
 		// Cache for speed.
-		const current = this.current;
 		const collectionLength = this.focusables.length;
 
 		if ( !collectionLength ) {
 			return null;
 		}
+
+		const current = this.current;
 
 		// Start from the beginning if no view is focused.
 		// https://github.com/ckeditor/ckeditor5-ui/issues/206
@@ -312,21 +313,25 @@ export default class FocusCycler extends EmitterMixin() {
 			return this[ step === 1 ? 'first' : 'last' ];
 		}
 
+		let focusableItem = this.focusables.get( current )!;
+
 		// Cycle in both directions.
 		let index = ( current + collectionLength + step ) % collectionLength;
 
+		// Note: If current is the only focusable view, it will also be returned for the given step.
 		do {
-			const view = this.focusables.get( index )!;
+			const focusableItemCandidate = this.focusables.get( index )!;
 
-			if ( isFocusable( view ) ) {
-				return view;
+			if ( isFocusable( focusableItemCandidate ) ) {
+				focusableItem = focusableItemCandidate;
+				break;
 			}
 
 			// Cycle in both directions.
 			index = ( index + collectionLength + step ) % collectionLength;
 		} while ( index !== current );
 
-		return this.focusables.get( this.current! ) as FocusableView;
+		return focusableItem as FocusableView;
 	}
 }
 
