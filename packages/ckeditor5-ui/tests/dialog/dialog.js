@@ -227,10 +227,6 @@ describe( 'Dialog', () => {
 					sinon.assert.notCalled( spy );
 				} );
 			} );
-
-			it( 'should set #isOpen to false', () => {
-				expect( dialogPlugin.isOpen ).to.be.false;
-			} );
 		} );
 	} );
 
@@ -394,7 +390,6 @@ describe( 'Dialog', () => {
 			} );
 
 			expect( dialogPlugin.id, 'id should be set' ).to.equal( 'foo' );
-			expect( dialogPlugin.isOpen, '`isOpen` should be true' ).to.be.true;
 			expect( dialogPlugin._onHide, '`_onHide` should be set' ).to.be.a( 'function' );
 			expect( Dialog.visibleDialogPlugin, '`visibleDialogPlugin` instance should be set' ).to.equal( dialogPlugin );
 		} );
@@ -472,8 +467,7 @@ describe( 'Dialog', () => {
 
 			dialogPlugin._hide();
 
-			expect( dialogPlugin.id, 'id should be reset' ).to.equal( '' );
-			expect( dialogPlugin.isOpen, '`isOpen` should be false' ).to.be.false;
+			expect( dialogPlugin.id, 'id should be reset' ).to.be.null;
 			expect( dialogPlugin._onHide, '`_onHide` should be reset' ).to.be.undefined;
 			expect( Dialog.visibleDialogPlugin, '`visibleDialogPlugin` instance should be reset' ).to.be.null;
 		} );

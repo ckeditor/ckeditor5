@@ -19,8 +19,10 @@ import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 export default class Dialog extends Plugin {
 	/**
 	 * The name of the currently visible dialog view instance.
+	 *
+	 * @observable
 	 */
-	public id: string = '';
+	declare public id: string | null;
 
 	/**
 	 * The currently visible dialog view instance.
@@ -66,7 +68,7 @@ export default class Dialog extends Plugin {
 		this._initFocusToggler();
 		this._initMultiRootIntegration();
 
-		this.set( 'isOpen', false );
+		this.set( 'id', null );
 	}
 
 	/**
@@ -148,7 +150,7 @@ export default class Dialog extends Plugin {
 			Dialog.visibleDialogPlugin.hide();
 		}
 
-		this.fire<DialogShowEvent>( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
+		this.fire<DialogShowEvent>( `show:${ dialogDefinition.id }`, dialogDefinition );
 	}
 
 	/**
@@ -208,9 +210,7 @@ export default class Dialog extends Plugin {
 			actionButtons
 		} );
 
-		if ( id ) {
-			this.id = id;
-		}
+		this.id = id;
 
 		if ( onHide ) {
 			this._onHide = onHide;
@@ -224,7 +224,7 @@ export default class Dialog extends Plugin {
 	 * Hides the dialog. This method is decorated to enable interacting on the `hide` event.
 	 */
 	public hide(): void {
-		this.fire<DialogHideEvent>( this.id ? `hide:${ this.id }` : 'hide' );
+		this.fire<DialogHideEvent>( `hide:${ this.id }` );
 	}
 
 	/**
@@ -253,7 +253,7 @@ export default class Dialog extends Plugin {
 		view.destroy();
 		editor.editing.view.focus();
 
-		this.id = '';
+		this.id = null;
 		this.isOpen = false;
 		Dialog.visibleDialogPlugin = null;
 	}
@@ -265,13 +265,13 @@ export default class Dialog extends Plugin {
 export interface DialogDefinition {
 
 	/**
-	 * A unique identifier of the dialog. When specified, it allows for distinguishing between different dialogs.
+	 * A unique identifier of the dialog. Allows for distinguishing between different dialogs and their visibility.
 	 * For instance, when open, the id of currently visible dialog is stored in {@link module:ui/dialog/dialog~Dialog#id}.
 	 *
 	 * The `id` is also passed along the {@link module:ui/dialog/dialog~DialogShowEvent} and {@link module:ui/dialog/dialog~DialogHideEvent}
 	 * events.
 	 */
-	id?: string;
+	id: string;
 
 	/**
 	 * The SVG string of an icon displayed in dialogs's header. Used only when {@link #title} is also set

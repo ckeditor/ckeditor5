@@ -180,7 +180,7 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 
 		// Button should be on when the find and replace dialog is opened.
-		buttonView.bind( 'isOn' ).to( dialog, 'isOpen', isOpen => isOpen && dialog.id === 'findAndReplace' );
+		buttonView.bind( 'isOn' ).to( dialog, 'id', id => id === 'findAndReplace' );
 
 		// Every time a dialog is opened, the search text field should get focused and selected for better UX.
 		// Each time a dialog is closed, move the focus back to the find and replace toolbar button
