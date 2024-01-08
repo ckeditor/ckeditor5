@@ -62,7 +62,7 @@ export interface LinkConfig {
 	 * 	.catch( ... );
 	 * ```
 	 *
-	 * **NOTE:** This option only adds form validation. If link with empty `href` is loaded into the editor, it will be left as-is.
+	 * **NOTE:** This option only adds form validation. If a link with an empty `href` is loaded into the editor, it will be left as-is.
 	 *
 	 * @default false
 	 */
