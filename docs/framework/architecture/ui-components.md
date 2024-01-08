@@ -601,14 +601,14 @@ import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
 
 The CKEditor&nbsp;5 UI library contains a few input elements. Usually, they are used in dropdowns and balloon panels, but you can also use them in a main toolbar.
 
-To create them, use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class, which takes two parameters:
+To create them, use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class, which takes two parameters:
 
 * an instance of the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} class,
 * a helper function, depending on the type of field you want to create.
 
 ### Text
 
-To create a text field, pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class.
+To create a text field, pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
 import { createLabeledInputText, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
@@ -625,7 +625,7 @@ document.getElementById( 'input-text' ).append( textInput.element );
 
 ### Number
 
-To create a number field, pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class.
+To create a number field, pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
 import { createLabeledInputNumber, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
