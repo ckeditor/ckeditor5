@@ -37,6 +37,11 @@ export default class DocumentListProperties extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		logWarning( 'The `DocumentListProperties` plugin is obsolete. Use `ListProperties` instead.' );
+		/**
+		 * The `DocumentListProperties` plugin is obsolete. Use `ListProperties` instead.
+		 *
+		 * @error plugin-obsolete-documentlistproperties
+		 */
+		logWarning( 'plugin-obsolete-documentlistproperties', { pluginName: 'DocumentListProperties' } );
 	}
 }

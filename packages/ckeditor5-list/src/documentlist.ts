@@ -37,6 +37,11 @@ export default class DocumentList extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		logWarning( 'The `DocumentList` plugin is obsolete. Use `List` instead.' );
+		/**
+		 * The `DocumentList` plugin is obsolete. Use `List` instead.
+		 *
+		 * @error plugin-obsolete-documentlist
+		 */
+		logWarning( 'plugin-obsolete-documentlist', { pluginName: 'DocumentList' } );
 	}
 }

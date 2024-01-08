@@ -21,14 +21,16 @@ describe( 'DocumentList', () => {
 	} );
 
 	it( 'should emit warning when instantiated', () => {
-		const expectedMessage = '`DocumentList` plugin is obsolete. Use `List` instead.';
-
 		sinon.stub( console, 'warn' );
 
 		// eslint-disable-next-line no-new
 		new DocumentList();
 
 		sinon.assert.calledOnce( console.warn );
-		sinon.assert.calledWith( console.warn, sinon.match( expectedMessage ) );
+		sinon.assert.calledWithExactly( console.warn,
+			sinon.match( /^plugin-obsolete-documentlist/ ),
+			{ pluginName: 'DocumentList' },
+			sinon.match.string // Link to the documentation
+		);
 	} );
 } );

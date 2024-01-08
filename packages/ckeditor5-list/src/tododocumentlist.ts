@@ -37,6 +37,11 @@ export default class TodoDocumentList extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		logWarning( 'The `TodoDocumentList` plugin is obsolete. Use `TodoList` instead.' );
+		/**
+		 * The `TodoDocumentList` plugin is obsolete. Use `TodoList` instead.
+		 *
+		 * @error plugin-obsolete-tododocumentlist
+		 */
+		logWarning( 'plugin-obsolete-tododocumentlist', { pluginName: 'TodoDocumentList' } );
 	}
 }
