@@ -30,7 +30,5 @@ export interface FindAndReplaceConfig {
 	 *
 	 * The default value is `'dialog'`.
 	 */
-	uiType?: FindAndReplaceUIType;
+	uiType?: 'dialog' | 'dropdown';
 }
-
-export type FindAndReplaceUIType = 'dialog' | 'dropdown';

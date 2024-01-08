@@ -144,7 +144,7 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 			if ( !wasVisible && isVisible && this._isUpdateAutoGrowHeightPending ) {
 				// We're wrapping the auto-grow logic in RAF because otherwise there is an error thrown
 				// by the browser about recursive calls to the ResizeObserver. It used to happen in unit
-				// tests only, though. Since there is no risk of infinite loop here, it can stay here
+				// tests only, though. Since there is no risk of infinite loop here, it can stay here.
 				global.window.requestAnimationFrame( () => {
 					this._updateAutoGrowHeight();
 					this.fire<TextareaViewUpdateEvent>( 'update' );

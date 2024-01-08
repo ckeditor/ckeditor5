@@ -19,8 +19,10 @@ import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 export default class Dialog extends Plugin {
 	/**
 	 * The name of the currently visible dialog view instance.
+	 *
+	 * @observable
 	 */
-	public id: string = '';
+	declare public id: string | null;
 
 	/**
 	 * The currently visible dialog view instance.
@@ -28,9 +30,14 @@ export default class Dialog extends Plugin {
 	public view?: DialogView;
 
 	/**
-	 * The currently dialog plugin instance controlling the currently visible dialog view.
+	 * The dialog plugin instance controlling the currently visible dialog view.
+	 *
+	 * Only one dialog can be visible at once, even if there are many editor instances on the page.
+	 * If one editor wants to show a dialog, it should first check if there is no other visible dialog already.
+	 * But only the plugin that showed the dialog should be able to hide it
+	 * as it stores the {@link #_onHide()} callback and the proper editor reference.
 	 */
-	public static visibleDialogPlugin?: Dialog;
+	public static visibleDialogPlugin: Dialog | null;
 
 	/**
 	 * A flag indicating whether the dialog is currently visible.
@@ -61,7 +68,7 @@ export default class Dialog extends Plugin {
 		this._initFocusToggler();
 		this._initMultiRootIntegration();
 
-		this.set( 'isOpen', false );
+		this.set( 'id', null );
 	}
 
 	/**
@@ -143,7 +150,7 @@ export default class Dialog extends Plugin {
 			Dialog.visibleDialogPlugin.hide();
 		}
 
-		this.fire<DialogShowEvent>( dialogDefinition.id ? `show:${ dialogDefinition.id }` : 'show', dialogDefinition );
+		this.fire<DialogShowEvent>( `show:${ dialogDefinition.id }`, dialogDefinition );
 	}
 
 	/**
@@ -203,9 +210,7 @@ export default class Dialog extends Plugin {
 			actionButtons
 		} );
 
-		if ( id ) {
-			this.id = id;
-		}
+		this.id = id;
 
 		if ( onHide ) {
 			this._onHide = onHide;
@@ -219,7 +224,7 @@ export default class Dialog extends Plugin {
 	 * Hides the dialog. This method is decorated to enable interacting on the `hide` event.
 	 */
 	public hide(): void {
-		this.fire<DialogHideEvent>( this.id ? `hide:${ this.id }` : 'hide' );
+		this.fire<DialogHideEvent>( `hide:${ this.id }` );
 	}
 
 	/**
@@ -248,28 +253,85 @@ export default class Dialog extends Plugin {
 		view.destroy();
 		editor.editing.view.focus();
 
-		this.id = '';
+		this.id = null;
 		this.isOpen = false;
-		Dialog.visibleDialogPlugin = undefined;
+		Dialog.visibleDialogPlugin = null;
 	}
 }
 
 /**
  * The definition needed to create a {@link module:ui/dialog/dialogview~DialogView}.
  */
-export type DialogDefinition = {
-	id?: string;
+export interface DialogDefinition {
+
+	/**
+	 * A unique identifier of the dialog. Allows for distinguishing between different dialogs and their visibility.
+	 * For instance, when open, the id of currently visible dialog is stored in {@link module:ui/dialog/dialog~Dialog#id}.
+	 *
+	 * The `id` is also passed along the {@link module:ui/dialog/dialog~DialogShowEvent} and {@link module:ui/dialog/dialog~DialogHideEvent}
+	 * events.
+	 */
+	id: string;
+
+	/**
+	 * The SVG string of an icon displayed in dialogs's header. Used only when {@link #title} is also set
+	 * and the header is displayed.
+	 *
+	 * See more in {@link module:ui/icon/iconview~IconView#content}.
+	 */
 	icon?: string;
+
+	/**
+	 * A title displayed in dialogs's header. Also works as an accessible name of the dialog used by assistive technologies.
+	 *
+	 * When not set, the header is not displayed. Affects {@link #icon} and {@link #hasCloseButton}.
+	 */
 	title?: string;
+
+	/**
+	 * A flag indicating whether the dialog should have a close button in the header.
+	 * `true` by default. Works when {@link #title} is also set and the header is displayed.
+	 */
 	hasCloseButton?: boolean;
+
+	/**
+	 * The content of the dialog. It can be a single {@link module:ui/view~View} or an array of views.
+	 */
 	content?: View | Array<View>;
+
+	/**
+	 * The action buttons displayed in the dialog's footer.
+	 */
 	actionButtons?: Array<DialogActionButtonDefinition>;
+
+	/**
+	 * An additional CSS class set on the outermost (`.ck.ck-dialog`) container element allowing for visual customization.
+	 */
 	className?: string;
+
+	/**
+	 * When set `true`, the dialog will become a modal, i.e. it will block the UI until it is closed.
+	 */
 	isModal?: boolean;
-	position?: DialogViewPosition;
+
+	/**
+	 * Available dialog positions. By default `DialogViewPosition.EDITOR_CENTER` is used for {@link #isModal non-modals}
+	 * and `DialogViewPosition.SCREEN_CENTER` for modals.
+	 *
+	 * {@link module:ui/dialog/dialogview~DialogViewPosition Learn more}.
+	 */
+	position?: typeof DialogViewPosition[ keyof typeof DialogViewPosition ];
+
+	/**
+	 * A callback called when the dialog shows up. It allows for setting up the dialog's {@link #content}.
+	 */
 	onShow?: ( dialog: Dialog ) => void;
+
+	/**
+	 * A callback called when the dialog hides. It allows for cleaning up (e.g. resetting) the dialog's {@link #content}.
+	 */
 	onHide?: ( dialog: Dialog ) => void;
-};
+}
 
 /**
  * An event fired after {@link module:ui/dialog/dialog~Dialog#show} is called.

@@ -8,7 +8,7 @@
  */
 
 import View from '../view.js';
-import FocusCycler from '../focuscycler.js';
+import FocusCycler, { isFocusable, type FocusableView } from '../focuscycler.js';
 import ToolbarSeparatorView from './toolbarseparatorview.js';
 import ToolbarLineBreakView from './toolbarlinebreakview.js';
 import preventDefault from '../bindings/preventdefault.js';
@@ -111,7 +111,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * some optional UI elements that also belong to the toolbar and should be focusable
 	 * by the user.
 	 */
-	public readonly focusables: ViewCollection;
+	public readonly focusables: ViewCollection<FocusableView>;
 
 	declare public locale: Locale;
 
@@ -626,7 +626,7 @@ class StaticLayout implements ToolbarBehavior {
 		view.itemsView.children.bindTo( view.items ).using( item => item );
 
 		// 1:1 pass–through binding, all ToolbarView#items are focusable.
-		view.focusables.bindTo( view.items ).using( item => item );
+		view.focusables.bindTo( view.items ).using( item => isFocusable( item ) ? item : null );
 
 		view.extendTemplate( {
 			attributes: {
@@ -681,7 +681,7 @@ class DynamicGrouping implements ToolbarBehavior {
 	/**
 	 * A collection of focusable toolbar elements.
 	 */
-	public readonly viewFocusables: ViewCollection;
+	public readonly viewFocusables: ViewCollection<FocusableView>;
 
 	/**
 	 * A view containing toolbar items.
@@ -1066,7 +1066,9 @@ class DynamicGrouping implements ToolbarBehavior {
 		this.viewFocusables.clear();
 
 		this.ungroupedItems.map( item => {
-			this.viewFocusables.add( item );
+			if ( isFocusable( item ) ) {
+				this.viewFocusables.add( item );
+			}
 		} );
 
 		if ( this.groupedItems.length ) {

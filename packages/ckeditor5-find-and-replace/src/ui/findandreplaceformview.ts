@@ -19,6 +19,7 @@ import {
 
 	type Template,
 	type InputView,
+	type FocusableView,
 	SwitchButtonView,
 	CollapsibleView
 } from 'ckeditor5/src/ui.js';
@@ -208,7 +209,7 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * A collection of views that can be focused in the form.
 	 */
-	private readonly _focusables: ViewCollection;
+	private readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.

@@ -91,6 +91,8 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 			let x = 0;
 			let y = 0;
 
+			// If dragging is performed with a mouse, there is only one set of coordinates available.
+			// But when using a touch device, there may be many of them, so use the coordinates from the first touch.
 			if ( domEvt instanceof MouseEvent ) {
 				x = domEvt.clientX;
 				y = domEvt.clientY;
@@ -118,6 +120,8 @@ export default function DraggableViewMixin<Base extends Constructor<View>>( view
 			let newX = 0;
 			let newY = 0;
 
+			// If dragging is performed with a mouse, there is only one set of coordinates available.
+			// But when using a touch device, there may be many of them, so use the coordinates from the first touch.
 			if ( domEvt instanceof MouseEvent ) {
 				newX = domEvt.clientX;
 				newY = domEvt.clientY;

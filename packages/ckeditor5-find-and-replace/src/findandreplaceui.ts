@@ -100,8 +100,7 @@ export default class FindAndReplaceUI extends Plugin {
 					}
 				} else {
 					if ( view.isOn ) {
-						// If the dropdown is open, it has to have focus already (would be closed otherwise).
-						// If the dialog is open, focus can be anywhere, so move it explicitly.
+						// If the dialog is open, do not close it. Instead focus it.
 						// Unfortunately we can't simply use:
 						// 	this.formView!.focus();
 						// because it would always move focus to the first input field, which we don't want.
@@ -119,7 +118,7 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a dropdown containing the find and replace form.
 	 */
 	private _createDropdown(): DropdownView {
 		const editor = this.editor;
@@ -148,12 +147,7 @@ export default class FindAndReplaceUI extends Plugin {
 		// and no longer should be marked in the content.
 		dropdownView.on( 'change:isOpen', ( event, name, isOpen ) => {
 			if ( isOpen ) {
-				this.formView!.disableCssTransitions();
-
-				this.formView!.reset();
-				this.formView!._findInputView.fieldView.select();
-
-				this.formView!.enableCssTransitions();
+				this._setupFormView();
 			} else {
 				this.fire( 'searchReseted' );
 			}
@@ -170,7 +164,7 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Creates a button that opens a dialog with the find and replace form.
 	 */
 	private _createDialogButton(): ButtonView {
 		const editor = this.editor;
@@ -186,7 +180,7 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 
 		// Button should be on when the find and replace dialog is opened.
-		buttonView.bind( 'isOn' ).to( dialog, 'isOpen', isOpen => isOpen && dialog.id === 'findAndReplace' );
+		buttonView.bind( 'isOn' ).to( dialog, 'id', id => id === 'findAndReplace' );
 
 		// Every time a dialog is opened, the search text field should get focused and selected for better UX.
 		// Each time a dialog is closed, move the focus back to the find and replace toolbar button
@@ -206,10 +200,7 @@ export default class FindAndReplaceUI extends Plugin {
 					content: this.formView,
 					position: DialogViewPosition.EDITOR_TOP_SIDE,
 					onShow: () => {
-						this.formView!.disableCssTransitions();
-						this.formView!.reset();
-						this.formView!._findInputView.fieldView.select();
-						this.formView!.enableCssTransitions();
+						this._setupFormView();
 					},
 
 					onHide: () => {
@@ -278,6 +269,16 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 
 		return formView;
+	}
+
+	/**
+	 * Clears the find and replace form and focuses the search text field.
+	 */
+	private _setupFormView(): void {
+		this.formView!.disableCssTransitions();
+		this.formView!.reset();
+		this.formView!._findInputView.fieldView.select();
+		this.formView!.enableCssTransitions();
 	}
 }
 

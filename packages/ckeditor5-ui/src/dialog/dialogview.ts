@@ -24,7 +24,9 @@ import ButtonView from '../button/buttonview.js';
 import { type ButtonExecuteEvent } from '../button/button.js';
 import FocusCycler, { isViewWithFocusCycler,
 	type FocusCyclerBackwardCycleEvent,
-	type FocusCyclerForwardCycleEvent
+	type FocusCyclerForwardCycleEvent,
+	type FocusableView,
+	isFocusable
 }
 	from '../focuscycler.js';
 import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
@@ -37,15 +39,26 @@ import '../../theme/components/dialog/dialog.css';
 
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
-export enum DialogViewPosition {
-	SCREEN_CENTER = 'screen-center',
-	EDITOR_CENTER = 'editor-center',
-	EDITOR_TOP_SIDE = 'editor-top-side',
-	EDITOR_TOP_CENTER = 'editor-top-center',
-	EDITOR_BOTTOM_CENTER = 'editor-bottom-center',
-	EDITOR_ABOVE_CENTER = 'editor-above-center',
-	EDITOR_BELOW_CENTER = 'editor-below-center'
-}
+/**
+ * Available dialog view positions:
+ *
+ * * `DialogViewPosition.SCREEN_CENTER`,
+ * * `DialogViewPosition.EDITOR_CENTER`,
+ * * `DialogViewPosition.EDITOR_TOP_SIDE`,
+ * * `DialogViewPosition.EDITOR_TOP_CENTER`,
+ * * `DialogViewPosition.EDITOR_BOTTOM_CENTER`,
+ * * `DialogViewPosition.EDITOR_ABOVE_CENTER`,
+ * * `DialogViewPosition.EDITOR_BELOW_CENTER`
+ */
+export const DialogViewPosition = {
+	SCREEN_CENTER: 'screen-center',
+	EDITOR_CENTER: 'editor-center',
+	EDITOR_TOP_SIDE: 'editor-top-side',
+	EDITOR_TOP_CENTER: 'editor-top-center',
+	EDITOR_BOTTOM_CENTER: 'editor-bottom-center',
+	EDITOR_ABOVE_CENTER: 'editor-above-center',
+	EDITOR_BELOW_CENTER: 'editor-below-center'
+} as const;
 
 const toPx = toUnit( 'px' );
 
@@ -120,7 +133,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	declare public isModal: boolean;
 
 	/**
-	 * A label for the view dialog element.
+	 * A label for the view dialog element to be used by the assistive technologies.
 	 *
 	 * @observable
 	 */
@@ -146,7 +159,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 *
 	 * @observable
 	 */
-	declare public position: DialogViewPosition;
+	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ];
 
 	/**
 	 * The calculated `top` CSS dialog property used for positioning.
@@ -177,7 +190,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * The list of the focusable elements inside the dialog view.
 	 */
-	private readonly _focusables: ViewCollection;
+	private readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * The focus cycler instance.
@@ -453,23 +466,26 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			return;
 		}
 
+		const viewportRect = this._getViewportRect();
+
+		// Actual position may be different from the configured one if there's no DOM root.
 		let configuredPosition = this.position;
+		let domRootRect;
 
 		if ( !this._getCurrentDomRoot() ) {
 			configuredPosition = DialogViewPosition.SCREEN_CENTER;
+		} else {
+			domRootRect = this._getVisibleDomRootRect( viewportRect );
 		}
 
-		const viewportRect = this._getViewportRect();
 		const defaultOffset = DialogView.defaultOffset;
+		const dialogRect = this._getDialogRect();
 
 		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
 
 		switch ( configuredPosition ) {
 			case DialogViewPosition.EDITOR_TOP_SIDE: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -487,9 +503,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				if ( domRootRect ) {
 					this.moveTo(
 						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
@@ -502,8 +515,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.SCREEN_CENTER: {
-				const dialogRect = this._getDialogRect();
-
 				this.moveTo(
 					Math.round( ( viewportRect.width - dialogRect.width ) / 2 ),
 					Math.round( ( viewportRect.height - dialogRect.height ) / 2 )
@@ -512,9 +523,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_TOP_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -531,9 +539,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_BOTTOM_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -550,9 +555,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_ABOVE_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -569,9 +571,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_BELOW_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -628,10 +627,14 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * and adds them to the focus tracker and focus cycler.
 	 */
 	private _updateFocusCyclableItems() {
-		const focusables = [];
+		const focusables: Array<FocusableView> = [];
 
 		if ( this.contentView ) {
-			focusables.push( ...this.contentView.children );
+			for ( const child of this.contentView.children ) {
+				if ( isFocusable( child ) ) {
+					focusables.push( child );
+				}
+			}
 		}
 
 		if ( this.actionsView ) {

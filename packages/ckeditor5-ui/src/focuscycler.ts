@@ -72,9 +72,9 @@ import type ViewCollection from './viewcollection.js';
  */
 export default class FocusCycler extends EmitterMixin() {
 	/**
-	 * A {@link module:ui/view~View view} collection that the cycler operates on.
+	 * A {@link module:ui/focuscycler~FocusableView focusable views} collection that the cycler operates on.
 	 */
-	public readonly focusables: ViewCollection;
+	public readonly focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * A focus tracker instance that the cycler uses to determine the current focus
@@ -112,7 +112,7 @@ export default class FocusCycler extends EmitterMixin() {
 	 * @param options Configuration options.
 	 */
 	constructor( options: {
-		focusables: ViewCollection;
+		focusables: ViewCollection<FocusableView>;
 		focusTracker: FocusTracker;
 		keystrokeHandler?: KeystrokeHandler;
 		actions?: FocusCyclerActions;
@@ -152,7 +152,7 @@ export default class FocusCycler extends EmitterMixin() {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public get first(): FocusableView | null {
-		return ( this.focusables.find( isFocusable ) || null ) as FocusableView | null;
+		return ( this.focusables.find( isDomFocusable ) || null ) as FocusableView | null;
 	}
 
 	/**
@@ -162,7 +162,7 @@ export default class FocusCycler extends EmitterMixin() {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public get last(): FocusableView | null {
-		return ( this.focusables.filter( isFocusable ).slice( -1 )[ 0 ] || null ) as FocusableView | null;
+		return ( this.focusables.filter( isDomFocusable ).slice( -1 )[ 0 ] || null ) as FocusableView | null;
 	}
 
 	/**
@@ -172,7 +172,7 @@ export default class FocusCycler extends EmitterMixin() {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public get next(): FocusableView | null {
-		return this._getFocusableItem( 1 );
+		return this._getDomFocusableItem( 1 );
 	}
 
 	/**
@@ -182,7 +182,7 @@ export default class FocusCycler extends EmitterMixin() {
 	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	public get previous(): FocusableView | null {
-		return this._getFocusableItem( -1 );
+		return this._getDomFocusableItem( -1 );
 	}
 
 	/**
@@ -297,7 +297,7 @@ export default class FocusCycler extends EmitterMixin() {
 	 *
 	 * @param step Either `1` for checking forward from {@link #current} or `-1` for checking backwards.
 	 */
-	private _getFocusableItem( step: 1 | -1 ): FocusableView | null {
+	private _getDomFocusableItem( step: 1 | -1 ): FocusableView | null {
 		// Cache for speed.
 		const collectionLength = this.focusables.length;
 
@@ -322,7 +322,7 @@ export default class FocusCycler extends EmitterMixin() {
 		do {
 			const focusableItemCandidate = this.focusables.get( index )!;
 
-			if ( isFocusable( focusableItemCandidate ) ) {
+			if ( isDomFocusable( focusableItemCandidate ) ) {
 				focusableItem = focusableItemCandidate;
 				break;
 			}
@@ -331,12 +331,12 @@ export default class FocusCycler extends EmitterMixin() {
 			index = ( index + collectionLength + step ) % collectionLength;
 		} while ( index !== current );
 
-		return focusableItem as FocusableView;
+		return focusableItem;
 	}
 }
 
 /**
- * A view that can be focused.
+ * A {@link module:ui/view~View} that can be focused (e.g. has `focus()` method).
  */
 export type FocusableView = View & {
 
@@ -355,7 +355,8 @@ export type FocusableView = View & {
 };
 
 /**
- * A view that hosts one or more of focusable children being managed by a focus cycler instance.
+ * A {@link module:ui/view~View} that hosts one or more of focusable children being managed by a {@link module:ui/focuscycler~FocusCycler}
+ * instance exposed under `focusCycler` property.
  */
 export type ViewWithFocusCycler = FocusableView & {
 	focusCycler: FocusCycler;
@@ -391,12 +392,21 @@ export type FocusCyclerBackwardCycleEvent = {
 };
 
 /**
- * Checks whether a view is focusable.
+ * Checks whether a view can be focused (has `focus()` method and is visible).
  *
  * @param view A view to be checked.
  */
-function isFocusable( view: View ): view is FocusableView {
-	return !!( 'focus' in view && isVisible( view.element ) );
+function isDomFocusable( view: View ) {
+	return isFocusable( view ) && isVisible( view.element );
+}
+
+/**
+ * Checks whether a view is {@link ~FocusableView}.
+ *
+ * @param view A view to be checked.
+ */
+export function isFocusable( view: View ): view is FocusableView {
+	return !!( 'focus' in view && typeof view.focus == 'function' );
 }
 
 /**
@@ -405,5 +415,5 @@ function isFocusable( view: View ): view is FocusableView {
  * @param view A view to be checked.
  */
 export function isViewWithFocusCycler( view: View ): view is ViewWithFocusCycler {
-	return 'focusCycler' in view && view.focusCycler instanceof FocusCycler;
+	return isFocusable( view ) && 'focusCycler' in view && view.focusCycler instanceof FocusCycler;
 }

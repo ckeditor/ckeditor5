@@ -629,6 +629,7 @@ describe( 'FocusCycler', () => {
 			}
 		} );
 
+		view.focus = sinon.spy();
 		view.focusCycler = focusCycler;
 
 		return view;
