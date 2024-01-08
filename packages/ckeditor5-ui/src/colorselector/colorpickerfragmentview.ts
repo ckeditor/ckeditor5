@@ -234,7 +234,7 @@ export default class ColorPickerFragmentView extends View {
 			this._focusables.add( slider );
 		}
 
-		const input = this.colorPickerView!.hexInputRow.children.get( 1 )! as LabeledFieldView<InputTextView>;
+		const input = this.colorPickerView!.hexInputRow.children.get( 1 ) as LabeledFieldView<InputTextView>;
 
 		if ( input.element! ) {
 			this.focusTracker.add( input.element );
