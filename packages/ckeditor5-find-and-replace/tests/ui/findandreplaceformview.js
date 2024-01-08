@@ -26,7 +26,7 @@ import FindAndReplace from '../../src/findandreplace.js';
 import FindAndReplaceFormView from '../../src/ui/findandreplaceformview.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
+import { icons } from 'ckeditor5/src/core.js';
 
 describe( 'FindAndReplaceFormView', () => {
 	let view;
@@ -135,7 +135,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have an icon', () => {
-						expect( view._findPrevButtonView.icon ).to.equal( previousArrow );
+						expect( view._findPrevButtonView.icon ).to.equal( icons.previousArrow );
 					} );
 
 					it( 'should have a tooltip', () => {
@@ -157,7 +157,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have an icon', () => {
-						expect( view._findNextButtonView.icon ).to.equal( previousArrow );
+						expect( view._findNextButtonView.icon ).to.equal( icons.previousArrow );
 					} );
 
 					it( 'should have a tooltip', () => {

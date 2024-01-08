@@ -10,7 +10,7 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
@@ -375,8 +375,12 @@ export default class SourceEditing extends Plugin {
 	 * If any {@link module:ui/dialog/dialogview~DialogView editor dialog} is currently visible, hide it.
 	 */
 	private _hideVisibleDialog(): void {
-		if ( this.editor.plugins.has( 'Dialog' ) && this.editor.plugins.get( 'Dialog' ).isOpen ) {
-			this.editor.plugins.get( 'Dialog' ).hide();
+		if ( this.editor.plugins.has( 'Dialog' ) ) {
+			const dialogPlugin: Dialog = this.editor.plugins.get( 'Dialog' );
+
+			if ( dialogPlugin.isOpen ) {
+				dialogPlugin.hide();
+			}
 		}
 	}
 }

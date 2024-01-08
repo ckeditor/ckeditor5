@@ -10,7 +10,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Input from '@ckeditor/ckeditor5-typing/src/input.js';
@@ -3881,7 +3881,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'handles mixed nested content in table cell', async () => {
-			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
+			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, LegacyListEditing ] );
 
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],

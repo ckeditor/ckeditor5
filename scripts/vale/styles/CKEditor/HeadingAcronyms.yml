@@ -8,3 +8,8 @@ tokens:
 # Duplicated Microsoft's rule to add exceptions to it.
 exceptions:
   - AI
+  - CSS
+  - HTML
+  - URL
+  - UX
+  - UI

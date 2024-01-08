@@ -5,7 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
@@ -40,7 +40,8 @@ export class Client {
 			// Block plugins are needed for proper data serializing.
 			// BoldEditing is needed for bold command.
 			plugins: [
-				Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing, ImageBlockEditing
+				Typing, Paragraph, LegacyListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing, TableEditing,
+				ImageBlockEditing
 			]
 		} ).then( editor => {
 			this.editor = editor;

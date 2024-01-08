@@ -10,7 +10,7 @@ The font feature lets you change font family, size, and color (including backgro
 
 ## Demo
 
-Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-ui/theme/icons/color-palette.svg Color picker}.
+Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-core/theme/icons/color-palette.svg Color picker}.
 
 {@snippet features/font}
 
@@ -435,6 +435,7 @@ Here are some more CKEditor&nbsp;5 features that can help you format your conten
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
 * {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
+* {@link features/case-change Case change} &ndash; Quickly turn a word or a passage into uppercase, lower case or title case.
 * {@link features/headings Headings} &ndash; Divide your content into sections.
 * {@link features/highlight Highlight} &ndash; Mark important words and passages, aiding a review or drawing attention to specific parts of the content.
 * {@link features/format-painter Format painter} &ndash; Easily copy text formatting and apply it in a different place in the edited document.

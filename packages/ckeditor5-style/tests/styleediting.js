@@ -11,7 +11,7 @@ import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtml
 import StyleEditing from '../src/styleediting.js';
 import StyleCommand from '../src/stylecommand.js';
 import StyleUtils from '../src/styleutils.js';
-import DocumentListStyleSupport from '../src/integrations/documentlist.js';
+import ListStyleSupport from '../src/integrations/list.js';
 import TableStyleSupport from '../src/integrations/table.js';
 import LinkStyleSupport from '../src/integrations/link.js';
 
@@ -73,7 +73,7 @@ describe( 'StyleEditing', () => {
 
 	it( 'should soft-require the GHS plugin, and require utils, and integrations', () => {
 		expect( StyleEditing.requires ).to.deep.equal( [
-			'GeneralHtmlSupport', StyleUtils, DocumentListStyleSupport, TableStyleSupport, LinkStyleSupport
+			'GeneralHtmlSupport', StyleUtils, ListStyleSupport, TableStyleSupport, LinkStyleSupport
 		] );
 	} );
 

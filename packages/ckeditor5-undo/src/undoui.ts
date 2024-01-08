@@ -7,11 +7,8 @@
  * @module undo/undoui
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { icons, Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-
-import undoIcon from '../theme/icons/undo.svg';
-import redoIcon from '../theme/icons/redo.svg';
 
 /**
  * The undo UI feature. It introduces the `'undo'` and `'redo'` buttons to the editor.
@@ -32,8 +29,8 @@ export default class UndoUI extends Plugin {
 		const locale = editor.locale;
 		const t = editor.t;
 
-		const localizedUndoIcon = locale.uiLanguageDirection == 'ltr' ? undoIcon : redoIcon;
-		const localizedRedoIcon = locale.uiLanguageDirection == 'ltr' ? redoIcon : undoIcon;
+		const localizedUndoIcon = locale.uiLanguageDirection == 'ltr' ? icons.undo : icons.redo;
+		const localizedRedoIcon = locale.uiLanguageDirection == 'ltr' ? icons.redo : icons.undo;
 
 		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z', localizedUndoIcon );
 		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y', localizedRedoIcon );

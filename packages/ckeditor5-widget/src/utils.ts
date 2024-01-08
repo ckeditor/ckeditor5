@@ -15,7 +15,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import {
-	findOptimalInsertionRange as engineFindOptimalInsertionRange,
 	type AddHighlightCallback,
 	type HighlightDescriptor,
 	type RemoveHighlightCallback,
@@ -345,7 +344,7 @@ export function findOptimalInsertionRange(
 		}
 	}
 
-	return engineFindOptimalInsertionRange( selection, model );
+	return model.schema.findOptimalInsertionRange( selection );
 }
 
 /**

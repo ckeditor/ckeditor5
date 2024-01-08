@@ -9,15 +9,15 @@
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
-	Dialog,
 	ButtonView,
-	CssTransitionDisablerMixin,
+	Dialog,
 	DialogViewPosition,
-	createDropdown, DropdownView,
-	type ViewWithCssTransitionDisabler,
-	FormHeaderView
+	createDropdown,
+	DropdownView,
+	FormHeaderView,
+	CssTransitionDisablerMixin,
+	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
-import { FindAndReplaceUIType } from './findandreplaceconfig.js';
 import FindAndReplaceFormView from './ui/findandreplaceformview.js';
 import loupeIcon from '../theme/icons/find-replace.svg';
 import type FindAndReplaceEditing from './findandreplaceediting.js';
@@ -58,7 +58,7 @@ export default class FindAndReplaceUI extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		editor.config.define( 'findAndReplace.uiType', FindAndReplaceUIType.DIALOG );
+		editor.config.define( 'findAndReplace.uiType', 'dialog' );
 
 		this.formView = null;
 	}
@@ -68,7 +68,7 @@ export default class FindAndReplaceUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const isUiUsingDropdown = editor.config.get( 'findAndReplace.uiType' ) === FindAndReplaceUIType.DROPDOWN;
+		const isUiUsingDropdown = editor.config.get( 'findAndReplace.uiType' ) === 'dropdown';
 		const findCommand = editor.commands.get( 'find' )!;
 
 		// Register the toolbar component: dropdown or button (that opens a dialog).
