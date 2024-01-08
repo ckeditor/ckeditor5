@@ -599,7 +599,7 @@ import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
 
 {@snippet framework/ui/ui-input}
 
-The CKEditor&nbsp;5 UI library contains a few input elements. Usually they are used in dropdowns and balloon panels, but you can also use them in a main toolbar.
+The CKEditor&nbsp;5 UI library contains a few input elements. Usually, they are used in dropdowns and balloon panels, but you can also use them in a main toolbar.
 
 To create them, use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class, which takes two parameters:
 
@@ -638,23 +638,6 @@ numberInput.set( { label: 'Number input', value: 'Value of the input' } );
 numberInput.render();
 
 document.getElementById( 'input-number' ).append( numberInput.element );
-```
-
-### URL
-
-To create an URL field, pass the {@link module:ui/labeledfield/utils#createLabeledInputUrl `createLabeledInputUrl()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class.
-
-```js
-import { createLabeledInputUrl, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
-import { Locale } from '@ckeditor/ckeditor5-utils';
-
-const locale = new Locale();
-
-const urlInput = new LabeledFieldView( locale, createLabeledInputUrl );
-urlInput.set( { label: 'URL input', value: 'https://ckeditor.com/' } );
-urlInput.render();
-
-document.getElementById( 'input-url' ).append( urlInput.element );
 ```
 
 ### States

@@ -58,7 +58,6 @@ export {
 
 export { default as IconView } from './icon/iconview.js';
 export { default as InputView } from './input/inputview.js';
-export { default as InputUrlView } from './inputurl/inputurlview.js';
 export { default as InputTextView } from './inputtext/inputtextview.js';
 export { default as InputNumberView } from './inputnumber/inputnumberview.js';
 
