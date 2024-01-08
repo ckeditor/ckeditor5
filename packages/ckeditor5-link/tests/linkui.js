@@ -1505,10 +1505,14 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should not add a protocol without the configuration', () => {
+				const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+
 				formView.urlInputView.fieldView.value = 'ckeditor.com';
 				formView.fire( 'submit' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'ckeditor.com' );
+				sinon.assert.calledWith( linkCommandSpy, 'ckeditor.com', sinon.match.any );
+
+				return editor.destroy();
 			} );
 
 			it( 'should not add a protocol to the local links even when `config.link.defaultProtocol` configured', () => {
@@ -1541,7 +1545,6 @@ describe( 'LinkUI', () => {
 					formView.urlInputView.fieldView.value = 'http://example.com';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( 'http://example.com' );
 					sinon.assert.calledWith( linkCommandSpy, 'http://example.com', sinon.match.any );
 
 					return editor.destroy();
@@ -1596,7 +1599,6 @@ describe( 'LinkUI', () => {
 					formView.urlInputView.fieldView.value = 'email@example.com';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
 					expect( getModelData( editor.model ) ).to.equal(
 						'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
 					);
@@ -1612,19 +1614,20 @@ describe( 'LinkUI', () => {
 				formView.urlInputView.fieldView.value = 'email@example.com';
 				formView.fire( 'submit' );
 
-				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
 				expect( getModelData( editor.model ) ).to.equal(
 					'<paragraph>[<$text linkHref="mailto:email@example.com">email@example.com</$text>]</paragraph>'
 				);
 			} );
 
-			it( 'should not add an email protocol when given provided within the value' +
+			it( 'should not add an email protocol when given provided within the value ' +
 				'even when `config.link.defaultProtocol` configured', () => {
 				return createEditorWithDefaultProtocol( 'mailto:' ).then( ( { editor, formView } ) => {
+					const linkCommandSpy = sinon.spy( editor.commands.get( 'link' ), 'execute' );
+
 					formView.urlInputView.fieldView.value = 'mailto:test@example.com';
 					formView.fire( 'submit' );
 
-					expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:test@example.com' );
+					sinon.assert.calledWith( linkCommandSpy, 'mailto:test@example.com', sinon.match.any );
 
 					return editor.destroy();
 				} );

@@ -197,6 +197,7 @@ export default class LinkUI extends Plugin {
 			const { value } = formView.urlInputView.fieldView.element!;
 			const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
 			editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
+			formView.urlInputView.fieldView.reset();
 			this._closeFormView();
 		} );
 
