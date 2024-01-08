@@ -21,13 +21,13 @@ Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/to
 
 ## Additional feature information
 
-You can add to-do lists using a dedicated toolbar button. Thanks to the integration with the {@link features/autoformat autoformatting feature}, they can also be added with Markdown code. Simply start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item, respectively.
+You can add to-do lists using a dedicated toolbar button. Thanks to the integration with the {@link features/autoformat autoformatting feature}, you can also add them with Markdown code. Start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item.
 
-After reading this guide, you may find additional interesting details and examples in the [Lists in CKEditor&nbsp;5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post.
+After reading this guide, you may find interesting details and examples in the [Lists in CKEditor&nbsp;5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post.
 
 ## Keyboard support
 
-You can check and uncheck a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
+You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</kbd> (<kbd>Cmd</kbd> + <kbd>Enter</kbd> on Mac) shortcut when the selection is in that item.
 
 ## Installation
 
@@ -110,7 +110,8 @@ From the technical point of view, to-do lists are built on top of the {@link mod
 ## Related features
 
 These features provide similar functionality:
-* {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered list with configurable markers.
+
+* {@link features/lists Ordered and unordered lists} &ndash; Create ordered and unordered lists with configurable markers.
 * {@link features/autoformat Autoformatting} &ndash; Format the text on the go with Markdown code.
 
 ## Contribute
