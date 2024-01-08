@@ -16,7 +16,7 @@ import type { default as Button, ButtonExecuteEvent } from '../button/button.js'
 import ButtonView from '../button/buttonview.js';
 import View from '../view.js';
 import ViewCollection from '../viewcollection.js';
-import FocusCycler from '../focuscycler.js';
+import FocusCycler, { type FocusableView } from '../focuscycler.js';
 
 import '../../theme/components/dialog/dialogactions.css';
 
@@ -27,7 +27,7 @@ export default class DialogActionsView extends View {
 	/**
 	 * A collection of button views.
 	 */
-	public readonly children: ViewCollection;
+	public readonly children: ViewCollection<FocusableView>;
 
 	/**
 	 * A keystroke handler instance.
@@ -47,7 +47,7 @@ export default class DialogActionsView extends View {
 	/**
 	 * A collection of focusable views.
 	 */
-	private readonly _focusables: ViewCollection;
+	private readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * @inheritDoc

@@ -96,7 +96,7 @@ export default class ColorInputView extends View implements FocusableView {
 	/**
 	 * A collection of views that can be focused in the view.
 	 */
-	protected readonly _focusables: ViewCollection;
+	protected readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * An instance of the dropdown allowing to select a color from a grid.

@@ -28,7 +28,7 @@ export default class SearchResultsView extends View implements FocusableView {
 	 *
 	 * @readonly
 	 */
-	public children: ViewCollection;
+	public children: ViewCollection<FocusableView>;
 
 	/**
 	 * Provides the focus management (keyboard navigation) in the view.

@@ -24,7 +24,9 @@ import ButtonView from '../button/buttonview.js';
 import { type ButtonExecuteEvent } from '../button/button.js';
 import FocusCycler, { isViewWithFocusCycler,
 	type FocusCyclerBackwardCycleEvent,
-	type FocusCyclerForwardCycleEvent
+	type FocusCyclerForwardCycleEvent,
+	type FocusableView,
+	isFocusable
 }
 	from '../focuscycler.js';
 import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
@@ -188,7 +190,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	/**
 	 * The list of the focusable elements inside the dialog view.
 	 */
-	private readonly _focusables: ViewCollection;
+	private readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * The focus cycler instance.
@@ -625,10 +627,14 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	 * and adds them to the focus tracker and focus cycler.
 	 */
 	private _updateFocusCyclableItems() {
-		const focusables = [];
+		const focusables: Array<FocusableView> = [];
 
 		if ( this.contentView ) {
-			focusables.push( ...this.contentView.children );
+			for ( const child of this.contentView.children ) {
+				if ( isFocusable( child ) ) {
+					focusables.push( child );
+				}
+			}
 		}
 
 		if ( this.actionsView ) {

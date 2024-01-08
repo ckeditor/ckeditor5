@@ -15,7 +15,8 @@ import {
 	ViewCollection,
 	createLabeledInputText,
 	submitHandler,
-	type InputView
+	type InputView,
+	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
@@ -58,7 +59,7 @@ export default class TextAlternativeFormView extends View {
 	/**
 	 * A collection of views which can be focused in the form.
 	 */
-	protected readonly _focusables: ViewCollection;
+	protected readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.

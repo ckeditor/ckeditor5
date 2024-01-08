@@ -60,7 +60,8 @@ export {
 	type ViewWithFocusCycler,
 	type FocusCyclerForwardCycleEvent,
 	type FocusCyclerBackwardCycleEvent,
-	isViewWithFocusCycler
+	isViewWithFocusCycler,
+	isFocusable
 } from './focuscycler.js';
 
 export { default as IconView } from './icon/iconview.js';
