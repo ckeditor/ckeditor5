@@ -35,7 +35,7 @@ export default class Dialog extends Plugin {
 	 * But only the plugin that showed the dialog should be able to hide it
 	 * as it stores the {@link #_onHide()} callback and the proper editor reference.
 	 */
-	public static visibleDialogPlugin?: Dialog;
+	public static visibleDialogPlugin: Dialog | null;
 
 	/**
 	 * A flag indicating whether the dialog is currently visible.
@@ -255,7 +255,7 @@ export default class Dialog extends Plugin {
 
 		this.id = '';
 		this.isOpen = false;
-		Dialog.visibleDialogPlugin = undefined;
+		Dialog.visibleDialogPlugin = null;
 	}
 }
 

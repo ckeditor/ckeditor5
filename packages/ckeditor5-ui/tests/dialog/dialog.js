@@ -475,7 +475,7 @@ describe( 'Dialog', () => {
 			expect( dialogPlugin.id, 'id should be reset' ).to.equal( '' );
 			expect( dialogPlugin.isOpen, '`isOpen` should be false' ).to.be.false;
 			expect( dialogPlugin._onHide, '`_onHide` should be reset' ).to.be.undefined;
-			expect( Dialog.visibleDialogPlugin, '`visibleDialogPlugin` instance should be reset' ).to.be.undefined;
+			expect( Dialog.visibleDialogPlugin, '`visibleDialogPlugin` instance should be reset' ).to.be.null;
 		} );
 	} );
 } );

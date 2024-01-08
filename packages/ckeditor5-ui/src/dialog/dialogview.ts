@@ -131,7 +131,7 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 	declare public isModal: boolean;
 
 	/**
-	 * A label for the view dialog element.
+	 * A label for the view dialog element to be used by the assistive technologies.
 	 *
 	 * @observable
 	 */
@@ -464,23 +464,26 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 			return;
 		}
 
+		const viewportRect = this._getViewportRect();
+
+		// Actual position may be different from the configured one if there's no DOM root.
 		let configuredPosition = this.position;
+		let domRootRect;
 
 		if ( !this._getCurrentDomRoot() ) {
 			configuredPosition = DialogViewPosition.SCREEN_CENTER;
+		} else {
+			domRootRect = this._getVisibleDomRootRect( viewportRect );
 		}
 
-		const viewportRect = this._getViewportRect();
 		const defaultOffset = DialogView.defaultOffset;
+		const dialogRect = this._getDialogRect();
 
 		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
 
 		switch ( configuredPosition ) {
 			case DialogViewPosition.EDITOR_TOP_SIDE: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -498,9 +501,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				if ( domRootRect ) {
 					this.moveTo(
 						Math.round( domRootRect.left + domRootRect.width / 2 - dialogRect.width / 2 ),
@@ -513,8 +513,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.SCREEN_CENTER: {
-				const dialogRect = this._getDialogRect();
-
 				this.moveTo(
 					Math.round( ( viewportRect.width - dialogRect.width ) / 2 ),
 					Math.round( ( viewportRect.height - dialogRect.height ) / 2 )
@@ -523,9 +521,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_TOP_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -542,9 +537,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_BOTTOM_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -561,9 +553,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_ABOVE_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
@@ -580,9 +569,6 @@ export default class DialogView extends DraggableViewMixin( View ) implements Dr
 				break;
 			}
 			case DialogViewPosition.EDITOR_BELOW_CENTER: {
-				const domRootRect = this._getVisibleDomRootRect( viewportRect );
-				const dialogRect = this._getDialogRect();
-
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
 				// @if CK_DEBUG_DIALOG // 	RectDrawer.draw( domRootRect, { outlineColor: 'red', zIndex: 9999999 }, 'DOM ROOT' );
 				// @if CK_DEBUG_DIALOG // }
