@@ -28,7 +28,12 @@ export default class Dialog extends Plugin {
 	public view?: DialogView;
 
 	/**
-	 * The currently dialog plugin instance controlling the currently visible dialog view.
+	 * The dialog plugin instance controlling the currently visible dialog view.
+	 *
+	 * Only one dialog can be visible at once, even if there are many editor instances on the page.
+	 * If one editor wants to show a dialog, it should first check if there is no other visible dialog already.
+	 * But only the plugin that showed the dialog should be able to hide it
+	 * as it stores the {@link #_onHide()} callback and the proper editor reference.
 	 */
 	public static visibleDialogPlugin?: Dialog;
 
