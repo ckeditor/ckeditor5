@@ -9,7 +9,6 @@
 
 import InputTextView from '../inputtext/inputtextview.js';
 import InputNumberView from '../inputnumber/inputnumberview.js';
-import InputUrlView from '../inputurl/inputurlview.js';
 import TextareaView from '../textarea/textareaview.js';
 import { createDropdown } from '../dropdown/utils.js';
 
