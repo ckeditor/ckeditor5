@@ -313,12 +313,12 @@ export default class FocusCycler extends EmitterMixin() {
 			return this[ step === 1 ? 'first' : 'last' ];
 		}
 
+		// Note: If current is the only focusable view, it will also be returned for the given step.
 		let focusableItem = this.focusables.get( current )!;
 
 		// Cycle in both directions.
 		let index = ( current + collectionLength + step ) % collectionLength;
 
-		// Note: If current is the only focusable view, it will also be returned for the given step.
 		do {
 			const focusableItemCandidate = this.focusables.get( index )!;
 
