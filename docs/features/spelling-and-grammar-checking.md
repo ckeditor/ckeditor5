@@ -32,7 +32,7 @@ You can access the WProofreader settings from the toolbar, too. Set the primary 
 
 ## Additional feature information
 
-You can fine-tune WProofreader via the dedicated settings menu. Choose a primary language from a set of available ones. Create and manage additional custom dictionaries. You can add words to the user dictionary directly from the suggestion card, too. If needed, you can turn off the spell checker and enable it again with one click.
+You can fine-tune WProofreader via the dedicated settings menu. Choose a primary language from a set of available ones. Create and manage additional custom dictionaries. You can add words to the user dictionary directly from the suggestion card, too. If needed, you can turn off the spell checker and enable it again with a single click.
 
 ## Multi-language support
 
