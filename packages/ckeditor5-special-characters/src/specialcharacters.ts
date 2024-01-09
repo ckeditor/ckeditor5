@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -243,7 +243,7 @@ export default class SpecialCharacters extends Plugin {
 	 * @returns An object with `navigationView`, `gridView` and `infoView` properties, containing UI parts.
 	 */
 	private _createDropdownPanelContent( locale: Locale, dropdownView: DropdownView ): DropdownPanelContent {
-		const groupEntries: Array<[string, string]> = Array
+		const groupEntries: Array<[ string, string ]> = Array
 			.from( this.getGroups() )
 			.map( name => ( [ name, this._groups.get( name )!.label ] ) );
 

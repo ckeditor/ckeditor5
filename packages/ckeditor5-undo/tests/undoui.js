@@ -1,18 +1,17 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
+
+import { icons } from '@ckeditor/ckeditor5-core';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import UndoEditing from '../src/undoediting.js';
 import UndoUI from '../src/undoui.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
-import undoIcon from '../theme/icons/undo.svg';
-import redoIcon from '../theme/icons/redo.svg';
 
 describe( 'UndoUI', () => {
 	let editor, editorElement;
@@ -43,13 +42,13 @@ describe( 'UndoUI', () => {
 			it( 'should display the right icon for undo', () => {
 				const undoButton = editor.ui.componentFactory.create( 'undo' );
 
-				expect( undoButton.icon ).to.equal( undoIcon );
+				expect( undoButton.icon ).to.equal( icons.undo );
 			} );
 
 			it( 'should display the right icon for redo', () => {
 				const redoButton = editor.ui.componentFactory.create( 'redo' );
 
-				expect( redoButton.icon ).to.equal( redoIcon );
+				expect( redoButton.icon ).to.equal( icons.redo );
 			} );
 		} );
 
@@ -66,7 +65,7 @@ describe( 'UndoUI', () => {
 					.then( newEditor => {
 						const undoButton = newEditor.ui.componentFactory.create( 'undo' );
 
-						expect( undoButton.icon ).to.equal( redoIcon );
+						expect( undoButton.icon ).to.equal( icons.redo );
 
 						return newEditor.destroy();
 					} )
@@ -87,7 +86,7 @@ describe( 'UndoUI', () => {
 					.then( newEditor => {
 						const redoButton = newEditor.ui.componentFactory.create( 'redo' );
 
-						expect( redoButton.icon ).to.equal( undoIcon );
+						expect( redoButton.icon ).to.equal( icons.undo );
 
 						return newEditor.destroy();
 					} )

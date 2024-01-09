@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,11 +13,11 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import TablePropertiesEditing from '@ckeditor/ckeditor5-table/src/tableproperties/tablepropertiesediting.js';
 import TableCellPropertiesEditing from '@ckeditor/ckeditor5-table/src/tablecellproperties/tablecellpropertiesediting.js';
-import List from '../../src/list.js';
-import ListProperties from '../../src/listproperties.js';
+import LegacyList from '../../src/legacylist.js';
+import LegacyListProperties from '../../src/legacylistproperties.js';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import TodoList from '../../src/todolist.js';
+import LegacyTodoList from '../../src/legacytodolist.js';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
@@ -43,10 +43,10 @@ const config = {
 		Italic,
 		Code,
 		Heading,
-		List,
-		TodoList,
+		LegacyList,
+		LegacyTodoList,
 		Paragraph,
-		ListProperties,
+		LegacyListProperties,
 		Table,
 		TablePropertiesEditing,
 		TableCellPropertiesEditing,

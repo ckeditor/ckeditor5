@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,6 @@ import { ButtonView } from 'ckeditor5/src/ui.js';
 
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
-import browseFilesIcon from '../theme/icons/browse-files.svg';
 import type CKBoxCommand from './ckboxcommand.js';
 
 /**
@@ -47,7 +46,7 @@ export default class CKBoxUI extends Plugin {
 
 			button.set( {
 				label: t( 'Open file manager' ),
-				icon: browseFilesIcon,
+				icon: icons.browseFiles,
 				tooltip: true
 			} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import {
 	DataTransfer,
 	DomEventObserver,
 	type DomEventData,
-	type View,
+	type EditingView,
 	type ViewDocumentFragment,
 	type ViewElement,
 	type ViewRange
@@ -49,7 +49,7 @@ export default class ClipboardObserver extends DomEventObserver<
 		'paste', 'copy', 'cut', 'drop', 'dragover', 'dragstart', 'dragend', 'dragenter', 'dragleave'
 	] as const;
 
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		const viewDocument = this.document;
@@ -115,7 +115,7 @@ export interface ClipboardEventData {
 	dropRange?: ViewRange | null;
 }
 
-function getDropViewRange( view: View, domEvent: DragEvent & { rangeParent?: Node; rangeOffset?: number } ) {
+function getDropViewRange( view: EditingView, domEvent: DragEvent & { rangeParent?: Node; rangeOffset?: number } ) {
 	const domDoc = ( domEvent.target as Node ).ownerDocument!;
 	const x = domEvent.clientX;
 	const y = domEvent.clientY;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,7 @@
  */
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
-import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, View } from 'ckeditor5/src/engine.js';
+import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, EditingView } from 'ckeditor5/src/engine.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import { getPropertyAssociation } from './utils.js';
 
@@ -147,7 +147,7 @@ export function modelToDataViewSoftBreakInsertion( model: Model ): GetCallback<D
  * @returns Returns a conversion callback.
  */
 export function dataViewToModelCodeBlockInsertion(
-	editingView: View,
+	editingView: EditingView,
 	languageDefs: Array<CodeBlockLanguageDefinition>
 ): GetCallback<UpcastElementEvent> {
 	// Language names associated with CSS classes:

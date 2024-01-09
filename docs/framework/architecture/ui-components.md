@@ -31,7 +31,7 @@ balloon.render();
 balloon.content.add( balloonButton );
 
 const positions = BalloonPanelView.defaultPositions;
-balloon.pin( { 
+balloon.pin( {
 	target: document.getElementById( 'balloon' ),
 	positions: [ positions.southArrowNorth ]
 } );
@@ -315,7 +315,7 @@ A dropdown consists of two elements: a button and a panel. The button expands th
 Inside a dropdown, you can put a list. To do so, you can use the {@link module:ui/dropdown/utils#addListToDropdown `addListToDropdown()`} helper function. Also, you must add items to a collection before putting them inside the dropdown.
 
 ```js
-import { 
+import {
 	addListToDropdown,
 	createDropdown,
 	Model
@@ -499,9 +499,9 @@ import strikethrough from '@ckeditor/ckeditor5-basic-styles/theme/icons/striketh
 import subscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/subscript.svg';
 import superscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/superscript.svg';
 
-import browseFiles from '@ckeditor/ckeditor5-ckfinder/theme/icons/browse-files.svg';
+import browseFiles from '@ckeditor/ckeditor5-core/theme/icons/browse-files.svg';
 
-import codeBlock from '@ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg';
+import codeBlock from '@ckeditor/ckeditor5-core/theme/icons/codeblock.svg';
 
 import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import caption from '@ckeditor/ckeditor5-core/theme/icons/caption.svg';
@@ -539,27 +539,27 @@ import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
 import fontColor from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 import fontBackground from '@ckeditor/ckeditor5-font/theme/icons/font-background.svg';
 
-import heading1 from '@ckeditor/ckeditor5-heading/theme/icons/heading1.svg';
-import heading2 from '@ckeditor/ckeditor5-heading/theme/icons/heading2.svg';
-import heading3 from '@ckeditor/ckeditor5-heading/theme/icons/heading3.svg';
-import heading4 from '@ckeditor/ckeditor5-heading/theme/icons/heading4.svg';
-import heading5 from '@ckeditor/ckeditor5-heading/theme/icons/heading5.svg';
-import heading6 from '@ckeditor/ckeditor5-heading/theme/icons/heading6.svg';
+import heading1 from '@ckeditor/ckeditor5-core/theme/icons/heading1.svg';
+import heading2 from '@ckeditor/ckeditor5-core/theme/icons/heading2.svg';
+import heading3 from '@ckeditor/ckeditor5-core/theme/icons/heading3.svg';
+import heading4 from '@ckeditor/ckeditor5-core/theme/icons/heading4.svg';
+import heading5 from '@ckeditor/ckeditor5-core/theme/icons/heading5.svg';
+import heading6 from '@ckeditor/ckeditor5-core/theme/icons/heading6.svg';
 
-import indent from '@ckeditor/ckeditor5-indent/theme/icons/indent.svg';
-import outdent from '@ckeditor/ckeditor5-indent/theme/icons/outdent.svg';
+import indent from '@ckeditor/ckeditor5-core/theme/icons/indent.svg';
+import outdent from '@ckeditor/ckeditor5-core/theme/icons/outdent.svg';
 
 import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
 
-import html from '@ckeditor/ckeditor5-html-embed/theme/icons/html.svg';
+import html from '@ckeditor/ckeditor5-core/theme/icons/html.svg';
 
 import link from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
 import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
-import bulletedList from '@ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg';
-import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg';
-import todoList from '@ckeditor/ckeditor5-list/theme/icons/todolist.svg';
+import bulletedList from '@ckeditor/ckeditor5-core/theme/icons/bulletedlist.svg';
+import numberedList from '@ckeditor/ckeditor5-core/theme/icons/numberedlist.svg';
+import todoList from '@ckeditor/ckeditor5-core/theme/icons/todolist.svg';
 
 import media from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
 
@@ -578,18 +578,18 @@ import sourceEditing from '@ckeditor/ckeditor5-source-editing/theme/icons/source
 
 import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
 
-import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
+import table from '@ckeditor/ckeditor5-core/theme/icons/table.svg';
 import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
 import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
 import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg';
 import tableCellProperties from '@ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg';
 import tableProperties from '@ckeditor/ckeditor5-table/theme/icons/table-properties.svg';
 
-import nextArrow from '@ckeditor/ckeditor5-ui/theme/icons/next-arrow.svg';
-import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
+import nextArrow from '@ckeditor/ckeditor5-core/theme/icons/next-arrow.svg';
+import previousArrow from '@ckeditor/ckeditor5-core/theme/icons/previous-arrow.svg';
 
-import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
-import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
+import undo from '@ckeditor/ckeditor5-core/theme/icons/undo.svg';
+import redo from '@ckeditor/ckeditor5-core/theme/icons/redo.svg';
 
 import history from '@ckeditor/ckeditor5-core/theme/icons/history.svg';
 import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
@@ -599,11 +599,16 @@ import loupe from '@ckeditor/ckeditor5-core/theme/icons/loupe.svg';
 
 {@snippet framework/ui/ui-input}
 
-There are also inputs in the CKEditor&nbsp;5 UI library. There are a few use cases to put inputs inside a main toolbar, but you also can add them to balloon panels.
+The CKEditor&nbsp;5 UI library contains a few input elements. Usually, they are used in dropdowns and balloon panels, but you can also use them in a main toolbar.
+
+To create them, use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class, which takes two parameters:
+
+* an instance of the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} class,
+* a helper function, depending on the type of field you want to create.
 
 ### Text
 
-You can use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class to instantiate an input. It takes two parameters: {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} and a helper function. Pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function to create a text input.
+To create a text field, pass the {@link module:ui/labeledfield/utils#createLabeledInputText `createLabeledInputText()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
 import { createLabeledInputText, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
@@ -620,7 +625,7 @@ document.getElementById( 'input-text' ).append( textInput.element );
 
 ### Number
 
-You can use the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabaledFieldView`} class to instantiate an input. It takes two parameters: {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#locale `locale`} and a helper function. Pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function to create a number input.
+To create a number field, pass the {@link module:ui/labeledfield/utils#createLabeledInputNumber `createLabeledInputNumber()`} helper function as the second parameter to the {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `LabeledFieldView`} class.
 
 ```js
 import { createLabeledInputNumber, LabeledFieldView } from '@ckeditor/ckeditor5-ui';

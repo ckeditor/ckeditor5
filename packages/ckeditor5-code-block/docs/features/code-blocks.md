@@ -11,7 +11,7 @@ The code block feature lets you insert and edit blocks of pre-formatted code. It
 
 ## Demo
 
-Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start a line with `` ``` ``, and the {@link features/autoformat autoformatting feature} will format it as a code block. To add a paragraph under a code block, simply press <kbd>Enter</kbd> three times.
+Use the code block toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start a line with `` ``` ``, and the {@link features/autoformat autoformatting feature} will format it as a code block. To add a paragraph under a code block, simply press <kbd>Enter</kbd> three times.
 
 {@snippet features/code-block}
 
@@ -74,14 +74,14 @@ ClassicEditor
 ```
 
 <info-box>
-	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from the data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default it is "Plain text" (the `language-plaintext` CSS class).
+	The first language defined in the configuration is considered the default one. This means it will be applied to code blocks loaded from the data that have no CSS `class` specified (or no `class` matching the {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration}). It will also be used when creating new code blocks using the toolbar button. By default, it is "Plain text" (the `language-plaintext` CSS class).
 </info-box>
 
 ### Integration with code highlighters
 
 Although live code block highlighting ***is impossible when editing*** in CKEditor&nbsp;5 ([learn more](https://github.com/ckeditor/ckeditor5/issues/436#issuecomment-548399675)), the content can be highlighted when displayed in the frontend (for example, in blog posts or website content).
 
-The code language {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (for example, [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax auto–detection feature of the highlighter.
+The code language {@link module:code-block/codeblockconfig~CodeBlockConfig#languages configuration} helps to integrate with external code highlighters (for example, [highlight.js](https://highlightjs.org/) or [Prism](https://prismjs.com/)). Refer to the documentation of the highlighter of your choice and make sure the CSS classes configured in `codeBlock.languages` correspond with the code syntax autodetection feature of the highlighter.
 
 ## Tips and tweaks
 
@@ -111,7 +111,7 @@ You can change the indentation of the code using keyboard shortcuts and toolbar 
 </info-box>
 
 <info-box>
-	You can disable the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
+	You can turn off the indentation tools and their associated keystrokes altogether by setting the {@link module:code-block/codeblockconfig~CodeBlockConfig#indentSequence `codeBlock.indentSequence`}  configuration to `false`.
 </info-box>
 
 ### Preserving line indentation
@@ -152,7 +152,7 @@ ClassicEditor
 
 ## Related features
 
-Here are some CKEditor&nbsp;5 features that you may find helpfully similar:
+Here are some similar CKEditor&nbsp;5 features that you may find helpful:
 * {@link features/basic-styles Basic text styles} &ndash; Use the `code` formatting for short inline code chunks.
 * {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
 * {@link features/indent Block indentation} &ndash; Set indentation for text blocks such as paragraphs or lists.

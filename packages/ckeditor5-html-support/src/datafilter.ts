@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -461,7 +461,7 @@ export default class DataFilter extends Plugin {
 				}
 
 				// Remove the coupled GHS attributes on the same range as the feature attribute was removed.
-				for ( const { item } of change.range.getWalker( { shallow: true } ) ) {
+				for ( const { item } of change.range.getWalker() ) {
 					for ( const attributeKey of attributeKeys ) {
 						if ( item.hasAttribute( attributeKey ) ) {
 							writer.removeAttribute( attributeKey, item );

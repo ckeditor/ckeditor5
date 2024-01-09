@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,8 @@ import ListPropertiesUI from './listproperties/listpropertiesui.js';
 /**
  * The list properties feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/listproperties/listpropertiesediting~ListPropertiesEditing list properties
+ * This is a "glue" plugin that loads the
+ * {@link module:list/listproperties/listpropertiesediting~ListPropertiesEditing list properties
  * editing feature} and the {@link module:list/listproperties/listpropertiesui~ListPropertiesUI list properties UI feature}.
  */
 export default class ListProperties extends Plugin {

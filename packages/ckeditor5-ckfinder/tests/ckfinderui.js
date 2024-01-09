@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,7 +16,6 @@ import { icons } from 'ckeditor5/src/core.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
 import CKFinder from '../src/ckfinder.js';
-import browseFilesIcon from '../theme/icons/browse-files.svg';
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';
 
 describe( 'CKFinderUI', () => {
@@ -65,7 +64,7 @@ describe( 'CKFinderUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( browseFilesIcon );
+			expect( button.icon ).to.equal( icons.browseFiles );
 		} );
 
 		it( 'should enable tooltips for the #buttonView', () => {

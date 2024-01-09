@@ -8,6 +8,7 @@ swap:
   admin: administrator
   a\.k\.a|aka: or|also known as
   all caps: uppercase
+  alt: alternative
   android: Android
   Api|api: API
   auto correct|auto-correct: autocorrect
@@ -40,10 +41,12 @@ swap:
   doctype: DOCTYPE
   double click: double-click
   drop-down: dropdown
+  drop-downs: dropdowns
   dummy: placeholder|sample|fake
   "(?:e-mail|Email|E-mail)": email
   Fckeditor|FCkeditor|FCKEditor: FCKeditor
   fewer data: less data
+  filename: file name
   front-end|front end|front–end: frontend
   git: Git
   Github: GitHub
@@ -56,6 +59,7 @@ swap:
   LINUX|linux: Linux
   Lo-Dash|lodash: Lodash
   MacOS: macOS
+  mark-up: markup
   "(?:mongoDB|Mongodb|Mongo-db|Mongo DB)": MongoDB
   "(?:MSExcel|MS Excel)": Microsoft Excel
   "(?:MSOffice|MS Office)": Microsoft Office
@@ -83,6 +87,7 @@ swap:
   stand alone|stand-alone: standalone
   strike-through|strike through: strikethrough
   stylesheet: style sheet
+  stylesheets: style sheets
   (?i)todo list: to-do list
   (?<!.)TS: TypeScript
   Typescript: TypeScript
@@ -90,6 +95,8 @@ swap:
   "un(?:check|select)": clear
   url(?!-parse): URL
   utils: utilities
+  walk-through: walkthrough
+  Webpack: webpack
   webpage: web page|page|website
   web site: website
   yarn: Yarn

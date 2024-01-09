@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -40,7 +40,7 @@ import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import DocumentList from '../../src/documentlist.js';
+import List from '../../src/documentlist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -48,7 +48,7 @@ ClassicEditor
 			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, IndentBlock, Italic, Link,
 			MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
 			AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
-			CloudServices, SourceEditing, DocumentList, Autoformat
+			CloudServices, SourceEditing, List, Autoformat
 		],
 		toolbar: [
 			'sourceEditing', '|',

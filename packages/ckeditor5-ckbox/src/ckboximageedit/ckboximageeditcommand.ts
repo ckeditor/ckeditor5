@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -161,7 +161,7 @@ export default class CKBoxImageEditCommand extends Command {
 				assetId: ckboxImageId
 			};
 		} else {
-			const imageUrl = element.getAttribute( 'src' ) as string;
+			const imageUrl = new URL( element.getAttribute( 'src' ) as string, document.baseURI ).href;
 			const uploadCategoryId = await ckboxUtils.getCategoryIdForFile( imageUrl, { signal } );
 
 			imageMountOptions = {
@@ -176,6 +176,7 @@ export default class CKBoxImageEditCommand extends Command {
 				allowOverwrite: false
 			},
 			tokenUrl: ckboxConfig.tokenUrl,
+			...( ckboxConfig.serviceOrigin && { serviceOrigin: ckboxConfig.serviceOrigin } ),
 			onClose: () => this._handleImageEditorClose(),
 			onSave: ( asset: CKBoxRawAssetDefinition ) => this._handleImageEditorSave( state, asset )
 		};

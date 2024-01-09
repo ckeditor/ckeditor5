@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,10 @@
  * @module html-embed/htmlembedui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { icons, Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import type { RawHtmlApi } from './htmlembedediting.js';
 import type HtmlEmbedCommand from './htmlembedcommand.js';
-
-import htmlEmbedIcon from '../theme/icons/html.svg';
 
 /**
  * The HTML embed UI plugin.
@@ -39,7 +37,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 			view.set( {
 				label: t( 'Insert HTML' ),
-				icon: htmlEmbedIcon,
+				icon: icons.html,
 				tooltip: true
 			} );
 

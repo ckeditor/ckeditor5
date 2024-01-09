@@ -17,11 +17,11 @@ For the entire list of changes introduced in version 30.0.0, see the [release no
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v30.0.0.
 
-## Viewport (toolbar) offset config change
+## Viewport (toolbar) offset configuration change
 
-Starting from v30.0.0, the {@link module:core/editor/editorconfig~EditorConfig#toolbar `EditorConfig#toolbar.viewportTopOffset`} config is deprecated.
+Starting from v30.0.0, the {@link module:core/editor/editorconfig~EditorConfig#toolbar `EditorConfig#toolbar.viewportTopOffset`} configuration is deprecated.
 
-The new {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} editor config allows to set `viewportOffset` from every direction.
+The new {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} option allows to set `viewportOffset` from every direction.
 
 ```js
 const config = {
@@ -31,10 +31,10 @@ const config = {
 }
 ```
 
-Here is the exact change you would need to introduce for proper integration with the new {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} config change:
+Here is the exact change you need to introduce for proper integration with the new {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} configuration change:
 
 ```js
-// Before v30.0.0
+// Before v30.0.0.
 ClassicEditor
     .create( ..., {
         // ...
@@ -44,7 +44,7 @@ ClassicEditor
         }
     } )
 
-// Since v30.0.0
+// Since v30.0.0.
 ClassicEditor
     .create( ..., {
         // ...

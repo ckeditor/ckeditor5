@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,7 +23,7 @@ import {
 	type UpcastConversionApi,
 	type UpcastConversionData,
 	type UpcastElementEvent,
-	type View,
+	type EditingView,
 	type ViewElement,
 	type Writer,
 	type PlaceholderableElement
@@ -499,7 +499,7 @@ function dataViewModelH1Insertion( evt: unknown, data: UpcastConversionData<View
  * <title>^<title-content>Foo</title-content></title> -> <h1>^Foo</h1>
  * ```
  */
-function mapModelPositionToView( editingView: View ): GetCallback<MapperModelToViewPositionEvent> {
+function mapModelPositionToView( editingView: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
 		const positionParent = data.modelPosition.parent;
 

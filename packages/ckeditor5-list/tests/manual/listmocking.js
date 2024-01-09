@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -23,12 +23,12 @@ import {
 	getData as getModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import { modelList, stringifyList } from '../documentlist/_utils/utils.js';
-import DocumentList from '../../src/documentlist.js';
+import { modelList, stringifyList } from '../list/_utils/utils.js';
+import List from '../../src/list.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, DocumentList, Indent, Widget, Table, TableToolbar ],
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, List, Indent, Widget, Table, TableToolbar ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'insertTable', '|', 'undo', 'redo' ],
 		table: {
 			contentToolbar: [
@@ -214,4 +214,3 @@ document.getElementById( 'btn-process-editor-model' ).addEventListener( 'click',
 document.getElementById( 'btn-copy-output' ).addEventListener( 'click', copyOutput );
 document.getElementById( 'data-input' ).addEventListener( 'paste', onPaste );
 document.getElementById( 'chbx-highlight-lists' ).addEventListener( 'change', onHighlightChange );
-

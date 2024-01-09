@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import {
-	findOptimalInsertionRange as engineFindOptimalInsertionRange,
 	type AddHighlightCallback,
 	type HighlightDescriptor,
 	type RemoveHighlightCallback,
@@ -345,7 +344,7 @@ export function findOptimalInsertionRange(
 		}
 	}
 
-	return engineFindOptimalInsertionRange( selection, model );
+	return model.schema.findOptimalInsertionRange( selection );
 }
 
 /**

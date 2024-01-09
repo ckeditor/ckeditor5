@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import AlignmentEditing from '../src/alignmentediting.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -51,7 +51,7 @@ describe( 'AlignmentEditing', () => {
 		beforeEach( async () => {
 			const editor = await VirtualTestEditor
 				.create( {
-					plugins: [ AlignmentEditing, ImageCaptionEditing, Paragraph, ListEditing, HeadingEditing ]
+					plugins: [ AlignmentEditing, ImageCaptionEditing, Paragraph, LegacyListEditing, HeadingEditing ]
 				} );
 
 			model = editor.model;

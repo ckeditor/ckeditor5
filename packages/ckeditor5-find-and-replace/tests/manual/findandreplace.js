@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,33 +15,41 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 
-// Note: We need to load paragraph because we don't have inline editors yet.
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, FindAndReplace, Highlight, ArticlePluginSet, FontColor, SourceEditing ],
-		toolbar: [ 'findAndReplace', '|', 'sourceEditing', '|', 'heading', 'undo', 'redo', 'highlight', 'bold', 'fontColor' ],
-		image: {
-			toolbar: [
-				'toggleImageCaption', 'imageTextAlternative'
-			]
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-		let isReadOnly = false;
+createEditor( '#editor-dropdown', {
+	uiType: 'dropdown'
+} );
+createEditor( '#editor-dialog' );
 
-		document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
-			isReadOnly = !isReadOnly;
+function createEditor( selector, featureConfig = {} ) {
+	// Note: We need to load paragraph because we don't have inline editors yet.
+	ClassicEditor
+		.create( document.querySelector( selector ), {
+			plugins: [ Essentials, Paragraph, FindAndReplace, Highlight, ArticlePluginSet, FontColor, SourceEditing ],
+			toolbar: [ 'findAndReplace', '|', 'sourceEditing', '|', 'heading', 'undo', 'redo', 'highlight', 'bold', 'fontColor' ],
+			image: {
+				toolbar: [
+					'toggleImageCaption', 'imageTextAlternative'
+				]
+			},
+			findAndReplace: featureConfig
+		} )
+		.then( editor => {
+			window.editor = editor;
+			let isReadOnly = false;
 
-			if ( isReadOnly ) {
-				editor.enableReadOnlyMode( 'manual-test' );
-			} else {
-				editor.disableReadOnlyMode( 'manual-test' );
-			}
+			document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
+				isReadOnly = !isReadOnly;
 
-			editor.editing.view.focus();
+				if ( isReadOnly ) {
+					editor.enableReadOnlyMode( 'manual-test' );
+				} else {
+					editor.disableReadOnlyMode( 'manual-test' );
+				}
+
+				editor.editing.view.focus();
+			} );
+		} )
+		.catch( err => {
+			console.error( err.stack );
 		} );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+}

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -176,6 +176,7 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand: LinkCommand = editor.commands.get( 'link' )!;
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
+		const allowCreatingEmptyLinks = editor.config.get( 'link.allowCreatingEmptyLinks' );
 
 		const formView = new ( CssTransitionDisablerMixin( LinkFormView ) )( editor.locale, linkCommand );
 
@@ -183,7 +184,13 @@ export default class LinkUI extends Plugin {
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
-		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand );
+
+		// Disable the "save" button if the command is disabled or the input is empty despite being required.
+		formView.saveButtonView.bind( 'isEnabled' ).to(
+			linkCommand, 'isEnabled',
+			formView.urlInputView, 'isEmpty',
+			( isCommandEnabled, isInputEmpty ) => isCommandEnabled && ( allowCreatingEmptyLinks || !isInputEmpty )
+		);
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
@@ -389,6 +396,9 @@ export default class LinkUI extends Plugin {
 			// Blur the input element before removing it from DOM to prevent issues in some browsers.
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
 			this.formView!.saveButtonView.focus();
+
+			// Reset the URL field to update the state of the submit button.
+			this.formView!.urlInputView.fieldView.reset();
 
 			this._balloon.remove( this.formView! );
 

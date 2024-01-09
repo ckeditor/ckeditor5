@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
 
 import ViewCollection from '../src/viewcollection.js';
 import View from '../src/view.js';
-import FocusCycler from '../src/focuscycler.js';
+import FocusCycler, { isViewWithFocusCycler } from '../src/focuscycler.js';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -183,7 +183,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
 			expect( cycler.first ).to.equal( focusables.get( 1 ) );
-			expect( cycler.next ).to.be.null;
+			expect( cycler.next ).to.equal( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
@@ -270,7 +270,7 @@ describe( 'FocusCycler', () => {
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 
 			expect( cycler.first ).to.equal( focusables.get( 1 ) );
-			expect( cycler.previous ).to.be.null;
+			expect( cycler.previous ).to.equal( focusables.get( 1 ) );
 		} );
 
 		it( 'should ignore items with an element detached from DOM', () => {
@@ -582,6 +582,16 @@ describe( 'FocusCycler', () => {
 		} );
 	} );
 
+	describe( 'isViewWithFocusCycler', () => {
+		it( 'should return true if the view has its own focus cycler instance', () => {
+			expect( isViewWithFocusCycler( viewWithFocusCycler() ) ).to.be.true;
+		} );
+
+		it( 'should return false if the view does not have a focus cycler instance', () => {
+			expect( isViewWithFocusCycler( new View() ) ).to.be.false;
+		} );
+	} );
+
 	function nonFocusable( { display = 'block', isDetached = false, hiddenParent = false } = {} ) {
 		const view = new View();
 		view.element = document.createElement( 'div' );
@@ -604,6 +614,23 @@ describe( 'FocusCycler', () => {
 		const view = nonFocusable( ...args );
 
 		view.focus = sinon.spy();
+
+		return view;
+	}
+
+	function viewWithFocusCycler() {
+		const view = new View();
+		view.element = document.createElement( 'div' );
+
+		const focusCycler = new FocusCycler( {
+			focusables: new ViewCollection( [ view ] ),
+			focusTracker: {
+				focusedElement: null
+			}
+		} );
+
+		view.focus = sinon.spy();
+		view.focusCycler = focusCycler;
 
 		return view;
 	}

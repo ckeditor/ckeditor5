@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist.js';
+import LegacyTodoList from '@ckeditor/ckeditor5-list/src/legacytodolist.js';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import {
@@ -1041,7 +1041,7 @@ describe( 'ImageResizeHandles', () => {
 		describe( 'to-do list integration', () => {
 			it( 'should set the list item as the resize host if an image is inside a to-do list', async () => {
 				editor = await createEditor( {
-					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, TodoList, Paragraph ]
+					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LegacyTodoList, Paragraph ]
 				} );
 
 				await setModelAndWaitForImages( editor,

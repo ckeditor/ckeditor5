@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
+import LegacyList from '@ckeditor/ckeditor5-list/src/legacylist.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
@@ -174,7 +174,7 @@ describe( 'Delete integration', () => {
 
 			return ClassicEditor
 				.create( element, {
-					plugins: [ Typing, Heading, List, Image, ImageCaption, Paragraph, BlockQuote ]
+					plugins: [ Typing, Heading, LegacyList, Image, ImageCaption, Paragraph, BlockQuote ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;

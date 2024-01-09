@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,12 +19,15 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize.js';
 
-import List from '../../src/list.js';
-import TodoList from '../../src/todolist.js';
+import LegacyList from '../../src/legacylist.js';
+import LegacyTodoList from '../../src/legacytodolist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo, List, TodoList, Clipboard, Link, FontSize, ShiftEnter ],
+		plugins: [
+			Enter, Typing, Heading, Highlight, Table, Bold, Paragraph, Undo,
+			LegacyList, LegacyTodoList, Clipboard, Link, FontSize, ShiftEnter
+		],
 		toolbar: [
 			'heading',
 			'|',

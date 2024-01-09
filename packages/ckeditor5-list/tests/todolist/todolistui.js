@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import TodoListEditing from '../../src/todolist/todolistediting.js';
+// TODO use new list
+import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
 import TodoListUI from '../../src/todolist/todolistui.js';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -20,7 +21,7 @@ describe( 'TodoListUI', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, TodoListEditing, TodoListUI ] } )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, LegacyTodoListEditing, TodoListUI ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;

@@ -1,17 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env node */
 
 'use strict';
-
-const CUSTOM_EXPORT_NAMES = {
-	'CKFinderUploadAdapter': 'UploadAdapter'
-};
 
 const fs = require( 'fs-extra' );
 const upath = require( 'upath' );
@@ -121,7 +117,7 @@ function getMissingExports( packageData ) {
 		return output;
 	}
 
-	const requiredExports = packageData.metadata.plugins.map( plugin => CUSTOM_EXPORT_NAMES[ plugin.className ] || plugin.className );
+	const requiredExports = packageData.metadata.plugins.map( plugin => plugin.className );
 
 	const ast = parser.parse( packageData.index, {
 		sourceType: 'module',
@@ -136,7 +132,6 @@ function getMissingExports( packageData ) {
 				return node.specifiers.map( specifier => specifier.exported.loc.identifierName );
 			}
 		} );
-
 	output.missingExports = requiredExports.filter( requiredExport => !exports.includes( requiredExport ) );
 
 	return output;
@@ -156,7 +151,7 @@ function getMissingIcons( packageData, options ) {
 				return `${ name } (\`${ uiComponentName }\`) has an empty \`iconPath\` value. Either define or remove it.`;
 			}
 
-			if ( iconPath.startsWith( '@ckeditor/' ) ) {
+			if ( iconPath.startsWith( 'ckeditor' ) || iconPath.startsWith( '@ckeditor/' ) ) {
 				return iconPath;
 			}
 

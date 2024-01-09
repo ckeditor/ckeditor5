@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ListEditing from '../../src/list/listediting.js';
+// TODO change to new ListEditing
+import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import ListUI from '../../src/list/listui.js';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -21,7 +22,7 @@ describe( 'ListUI', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListEditing, ListUI ] } )
+		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, LegacyListEditing, ListUI ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;

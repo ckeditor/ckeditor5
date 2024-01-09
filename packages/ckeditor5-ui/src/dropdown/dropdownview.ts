@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -451,7 +451,7 @@ export default class DropdownView extends View<HTMLDivElement> {
 	 *		       [ Button ]
 	 * ```
 	 *
-	 * Positioning functions are compatible with {@link module:utils/dom/position~Position}.
+	 * Positioning functions are compatible with {@link module:utils/dom/position~DomPoint}.
 	 *
 	 * The name that position function returns will be reflected in dropdown panel's class that
 	 * controls its placement. See {@link module:ui/dropdown/dropdownview~DropdownView#panelPosition}

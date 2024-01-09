@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,7 +19,7 @@
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
-	z-index: calc( var(--ck-z-modal) - 1 );
+	z-index: calc( var(--ck-z-panel) - 1 );
 
 	& .ck.ck-powered-by {
 		line-height: var(--ck-powered-by-line-height);

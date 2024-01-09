@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,8 +11,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor.js';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import DocumentListEditing from '@ckeditor/ckeditor5-list/src/documentlist/documentlistediting.js';
-import DocumentListPropertiesEditing from '@ckeditor/ckeditor5-list/src/documentlistproperties/documentlistpropertiesediting.js';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
@@ -181,7 +181,7 @@ describe( 'CodeBlock - integration', () => {
 				editor = await ClassicTestEditor
 					.create( '', {
 						plugins: [
-							CodeBlockEditing, DocumentListEditing, DocumentListPropertiesEditing, Enter, Paragraph, GeneralHtmlSupport
+							CodeBlockEditing, ListEditing, ListPropertiesEditing, Enter, Paragraph, GeneralHtmlSupport
 						],
 						htmlSupport: {
 							allow: [
