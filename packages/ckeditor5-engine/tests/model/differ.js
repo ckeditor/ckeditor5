@@ -46,7 +46,7 @@ describe( 'Differ', () => {
 				insert( element, position );
 
 				expectChanges( [
-					{ type: 'insert', name: 'imageBlock', length: 1, position, element }
+					{ type: 'insert', name: 'imageBlock', length: 1, position, _element: element }
 				] );
 			} );
 		} );
@@ -61,7 +61,7 @@ describe( 'Differ', () => {
 				const attributes = new Map( [ [ 'src', 'foo.jpg' ] ] );
 
 				expectChanges( [
-					{ type: 'insert', name: 'imageBlock', length: 1, position, attributes, element }
+					{ type: 'insert', name: 'imageBlock', length: 1, position, attributes, _element: element }
 				] );
 			} );
 		} );
@@ -75,8 +75,8 @@ describe( 'Differ', () => {
 				insert( [ image, paragraph ], position );
 
 				expectChanges( [
-					{ type: 'insert', name: 'imageBlock', length: 1, position, element: image },
-					{ type: 'insert', name: 'paragraph', length: 1, position: position.getShiftedBy( 1 ), element: paragraph }
+					{ type: 'insert', name: 'imageBlock', length: 1, position, _element: image },
+					{ type: 'insert', name: 'paragraph', length: 1, position: position.getShiftedBy( 1 ), _element: paragraph }
 				] );
 			} );
 		} );
@@ -147,7 +147,7 @@ describe( 'Differ', () => {
 				insert( new Text( 'foo' ), Position._createAt( caption, 0 ) );
 
 				expectChanges( [
-					{ type: 'insert', name: 'imageBlock', length: 1, position, element: image }
+					{ type: 'insert', name: 'imageBlock', length: 1, position, _element: image }
 				] );
 			} );
 		} );
@@ -163,8 +163,8 @@ describe( 'Differ', () => {
 
 				// Note that since renamed element is removed and then re-inserted, there is no diff for text inserted inside it.
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element },
-					{ type: 'insert', name: 'listItem', length: 1, position: new Position( root, [ 0 ] ), element }
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: element },
+					{ type: 'insert', name: 'listItem', length: 1, position: new Position( root, [ 0 ] ), _element: element }
 				] );
 			} );
 		} );
@@ -294,7 +294,7 @@ describe( 'Differ', () => {
 				remove( position, 1 );
 
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position, element }
+					{ type: 'remove', name: 'paragraph', length: 1, position, _element: element }
 				] );
 			} );
 		} );
@@ -308,8 +308,8 @@ describe( 'Differ', () => {
 				remove( position, 2 );
 
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position, element: element1 },
-					{ type: 'remove', name: 'paragraph', length: 1, position, element: element2 }
+					{ type: 'remove', name: 'paragraph', length: 1, position, _element: element1 },
+					{ type: 'remove', name: 'paragraph', length: 1, position, _element: element2 }
 				] );
 			} );
 		} );
@@ -329,7 +329,7 @@ describe( 'Differ', () => {
 				const attributes = new Map( [ [ 'align', 'center' ] ] );
 
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position, attributes, element }
+					{ type: 'remove', name: 'paragraph', length: 1, position, attributes, _element: element }
 				] );
 			} );
 		} );
@@ -649,8 +649,8 @@ describe( 'Differ', () => {
 				move( sourcePosition, 1, targetPosition );
 
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element },
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element }
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: element },
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: element }
 				] );
 			} );
 		} );
@@ -664,8 +664,8 @@ describe( 'Differ', () => {
 				move( sourcePosition, 1, targetPosition );
 
 				expectChanges( [
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 2 ] ), element }
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: element },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 2 ] ), _element: element }
 				] );
 			} );
 		} );
@@ -696,7 +696,7 @@ describe( 'Differ', () => {
 				move( sourcePosition, 1, targetPosition );
 
 				expectChanges( [
-					{ type: 'insert', name: 'listItem', length: 1, position: targetPosition, element }
+					{ type: 'insert', name: 'listItem', length: 1, position: targetPosition, _element: element }
 				] );
 			} );
 		} );
@@ -756,7 +756,7 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					// Only buffer "remove" from the loaded root.
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element }
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: element }
 				] );
 			} );
 		} );
@@ -775,7 +775,7 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					// Only buffer "insert" to the loaded root.
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( newRoot, [ 0 ] ), element }
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( newRoot, [ 0 ] ), _element: element }
 				] );
 			} );
 		} );
@@ -789,8 +789,8 @@ describe( 'Differ', () => {
 				rename( element, 'listItem' );
 
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element },
-					{ type: 'insert', name: 'listItem', length: 1, position: new Position( root, [ 1 ] ), element }
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: element },
+					{ type: 'insert', name: 'listItem', length: 1, position: new Position( root, [ 1 ] ), _element: element }
 				] );
 			} );
 		} );
@@ -1528,7 +1528,7 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					{ type: 'remove', name: '$text', length: 1, position },
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element }
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: element }
 				] );
 			} );
 		} );
@@ -1543,8 +1543,8 @@ describe( 'Differ', () => {
 				const sibling = element.nextSibling;
 
 				expectChanges( [
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element },
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element: sibling }
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: element },
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: sibling }
 				] );
 			} );
 		} );
@@ -1557,7 +1557,7 @@ describe( 'Differ', () => {
 				split( new Position( root, [ 0, 0, 1 ] ) );
 
 				expectChanges( [
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ), element: blockQuote }
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ), _element: blockQuote }
 				] );
 			} );
 		} );
@@ -1578,9 +1578,9 @@ describe( 'Differ', () => {
 				model.applyOperation( operation );
 
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ), element: gyElement },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ), _element: gyElement },
 					{ type: 'remove', name: '$text', length: 3, position: new Position( root, [ 0, 3 ] ) },
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element: gyElement }
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: gyElement }
 				], true );
 			} );
 		} );
@@ -1607,7 +1607,7 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0, 3 ] ) },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element }
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: element }
 				] );
 			} );
 		} );
@@ -1634,8 +1634,8 @@ describe( 'Differ', () => {
 				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 2 ] ) );
 
 				expectChanges( [
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element: newP },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element: oldP }
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: newP },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: oldP }
 				] );
 			} );
 		} );
@@ -1652,21 +1652,21 @@ describe( 'Differ', () => {
 				merge( new Position( root, [ 0, 1, 0 ] ), new Position( root, [ 0, 0, 2 ] ) );
 
 				expectChanges( [
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ), element: blockQuote }
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ), _element: blockQuote }
 				] );
 			} );
 		} );
 
 		it( 'should correctly mark a change in graveyard', () => {
 			model.change( () => {
-				const element = root.getChild( 1 );
+				const p = root.getChild( 1 );
 
 				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 3 ] ) );
 
 				expectChanges( [
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ), element },
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ), _element: p },
 					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0, 3 ] ) },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element }
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: p }
 				], true );
 			} );
 		} );
@@ -2520,8 +2520,8 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					{ type: 'insert', name: '$text', length: 2, position: new Position( root, [ 0, 3 ] ) },
-					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 1 ] ), element: imageBlock },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1, 0 ] ), element: paragraph }
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 1 ] ), _element: imageBlock },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1, 0 ] ), _element: paragraph }
 				] );
 			} );
 		} );
@@ -2546,8 +2546,8 @@ describe( 'Differ', () => {
 				insert( new Text( 'foo' ), new Position( root, [ 0, 0, 0 ] ) );
 
 				expectChanges( [
-					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 0 ] ), element: imageBlock },
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ), element: blockQuote }
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 0 ] ), _element: imageBlock },
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ), _element: blockQuote }
 				] );
 			} );
 		} );
@@ -2569,8 +2569,8 @@ describe( 'Differ', () => {
 				move( new Position( root, [ 0 ] ), 1, new Position( root, [ 1, 0 ] ) );
 
 				expectChanges( [
-					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 0 ] ), element: imageBlock },
-					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ), element: div }
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 0 ] ), _element: imageBlock },
+					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ), _element: div }
 				] );
 			} );
 		} );
@@ -2589,9 +2589,9 @@ describe( 'Differ', () => {
 				remove( writer.createPositionAt( root, 0 ), 3 );
 
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element: e1 },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element: e2 },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), element: e3 }
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: e1 },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: e2 },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ), _element: e3 }
 				] );
 			} );
 		} );
@@ -2775,8 +2775,8 @@ describe( 'Differ', () => {
 			differ._refreshItem( p );
 
 			expectChanges( [
-				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ), element: p },
-				{ type: 'insert', name: 'paragraph', length: 1, position: model.createPositionBefore( p ), element: p }
+				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ), _element: p },
+				{ type: 'insert', name: 'paragraph', length: 1, position: model.createPositionBefore( p ), _element: p }
 			], true );
 
 			const refreshedItems = Array.from( differ.getRefreshedItems() );
@@ -2809,7 +2809,7 @@ describe( 'Differ', () => {
 				differ._refreshItem( root.getChild( 2 ).getChild( 0 ) );
 
 				expectChanges( [
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ), element: blockQuote }
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ), _element: blockQuote }
 				] );
 
 				const refreshedItems = Array.from( differ.getRefreshedItems() );
@@ -2838,8 +2838,8 @@ describe( 'Differ', () => {
 			differ._refreshItem( element );
 
 			expectChanges( [
-				{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element },
-				{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), element }
+				{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: element },
+				{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ), _element: element }
 			] );
 
 			const markersToRemove = differ.getMarkersToRemove().map( entry => entry.name );
