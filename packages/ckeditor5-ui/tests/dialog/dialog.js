@@ -84,16 +84,6 @@ describe( 'Dialog', () => {
 			} );
 
 			describe( '`hide` event listeners', () => {
-				it( 'doing nothing if dialog is not visible ', () => {
-					expect( dialogPlugin._visibleDialogPlugin ).to.be.undefined;
-
-					const spy = sinon.spy( dialogPlugin, '_hide' );
-
-					dialogPlugin.fire( 'hide' );
-
-					sinon.assert.notCalled( spy );
-				} );
-
 				it( 'executing `_hide()` method ', () => {
 					dialogPlugin.show( {} );
 
@@ -247,12 +237,16 @@ describe( 'Dialog', () => {
 	describe( 'show()', () => {
 		describe( 'should hide the previously visible dialog', () => {
 			it( 'in the same editor instance', () => {
-				const spy = sinon.spy( dialogPlugin, 'hide' );
+				const methodSpy = sinon.spy( dialogPlugin, 'hide' );
+				const eventSpy = sinon.spy();
+
+				dialogPlugin.on( 'hide', eventSpy );
 
 				dialogPlugin.show( { id: 'first' } );
 				dialogPlugin.show( { id: 'second' } );
 
-				sinon.assert.calledOnce( spy );
+				sinon.assert.calledTwice( methodSpy );
+				sinon.assert.calledOnce( eventSpy );
 			} );
 
 			it( 'in another editor instance', async () => {
@@ -281,26 +275,14 @@ describe( 'Dialog', () => {
 			} );
 		} );
 
-		describe( 'should fire the `show` event', () => {
-			it( 'with id in namespace if provided', () => {
-				const spy = sinon.spy();
+		it( 'should fire the `show` event with id in namespace', () => {
+			const spy = sinon.spy();
 
-				dialogPlugin.on( 'show:first', spy );
+			dialogPlugin.on( 'show:first', spy );
 
-				dialogPlugin.show( { id: 'first' } );
+			dialogPlugin.show( { id: 'first' } );
 
-				sinon.assert.calledOnce( spy );
-			} );
-
-			it( 'without id if not provided', () => {
-				const spy = sinon.spy();
-
-				dialogPlugin.on( 'show', spy );
-
-				dialogPlugin.show( {} );
-
-				sinon.assert.calledOnce( spy );
-			} );
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
@@ -410,36 +392,28 @@ describe( 'Dialog', () => {
 	} );
 
 	describe( 'hide()', () => {
-		describe( 'should fire the `hide` event', () => {
-			it( 'with id in namespace if available', () => {
-				const spy = sinon.spy();
-				const stub = sinon.stub( dialogPlugin, '_hide' );
+		it( 'should do nothing if dialog is not visible', () => {
+			expect( dialogPlugin._visibleDialogPlugin ).to.be.undefined;
 
-				dialogPlugin.id = 'first';
-				dialogPlugin.on( 'hide:first', spy );
+			const spy = sinon.spy( dialogPlugin, '_hide' );
 
-				dialogPlugin.hide();
+			dialogPlugin.fire( 'hide' );
 
-				sinon.assert.calledOnce( spy );
+			sinon.assert.notCalled( spy );
+		} );
 
-				stub.restore();
-			} );
+		it( 'should fire the `hide` event with id in namespace', () => {
+			const spy = sinon.spy();
+			const stub = sinon.stub( dialogPlugin, '_hide' );
 
-			it( 'without id if not available', () => {
-				const spyNamespaced = sinon.spy();
-				const spyNotNamespaced = sinon.spy();
-				const stub = sinon.stub( dialogPlugin, '_hide' );
+			dialogPlugin.show( { id: 'first' } );
+			dialogPlugin.on( 'hide:first', spy );
 
-				dialogPlugin.on( 'hide:first', spyNamespaced );
-				dialogPlugin.on( 'hide', spyNotNamespaced );
+			dialogPlugin.hide();
 
-				dialogPlugin.hide();
+			sinon.assert.calledOnce( spy );
 
-				sinon.assert.notCalled( spyNamespaced );
-				sinon.assert.calledOnce( spyNotNamespaced );
-
-				stub.restore();
-			} );
+			stub.restore();
 		} );
 	} );
 

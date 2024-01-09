@@ -149,9 +149,7 @@ export default class Dialog extends Plugin {
 	 * This method is decorated to enable interacting on the `show` event.
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( Dialog._visibleDialogPlugin ) {
-			Dialog._visibleDialogPlugin.hide();
-		}
+		this.hide();
 
 		this.fire<DialogShowEvent>( `show:${ dialogDefinition.id }`, dialogDefinition );
 	}
@@ -227,7 +225,9 @@ export default class Dialog extends Plugin {
 	 * Hides the dialog. This method is decorated to enable interacting on the `hide` event.
 	 */
 	public hide(): void {
-		this.fire<DialogHideEvent>( `hide:${ this.id }` );
+		if ( Dialog._visibleDialogPlugin ) {
+			Dialog._visibleDialogPlugin.fire<DialogHideEvent>( `hide:${ this.id }` );
+		}
 	}
 
 	/**
