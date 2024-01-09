@@ -49,6 +49,26 @@ export interface LinkConfig {
 	defaultProtocol?: string;
 
 	/**
+	 * When set to `true`, the form will accept an empty value in the URL field, creating a link with an empty `href` (`<a href="">`).
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( editorElement, {
+	 * 		link: {
+	 * 			allowCreatingEmptyLinks: true
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * **NOTE:** This option only adds form validation. If a link with an empty `href` is loaded into the editor, it will be left as-is.
+	 *
+	 * @default false
+	 */
+	allowCreatingEmptyLinks?: boolean;
+
+	/**
 	 * When set to `true`, the `target="blank"` and `rel="noopener noreferrer"` attributes are automatically added to all external links
 	 * in the editor. "External links" are all links in the editor content starting with `http`, `https`, or `//`.
 	 *

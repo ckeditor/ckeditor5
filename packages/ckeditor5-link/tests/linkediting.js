@@ -633,8 +633,13 @@ describe( 'LinkEditing', () => {
 					url: 'tel:123456789'
 				}
 			];
-			it( 'link.addTargetToExternalLinks is predefined as false value', () => {
+
+			it( 'link.addTargetToExternalLinks has a default value of `false`', () => {
 				expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).to.be.false;
+			} );
+
+			it( 'link.allowCreatingEmptyLinks has a default value of `false`', () => {
+				expect( editor.config.get( 'link.allowCreatingEmptyLinks' ) ).to.be.false;
 			} );
 
 			describe( 'for link.addTargetToExternalLinks = false', () => {

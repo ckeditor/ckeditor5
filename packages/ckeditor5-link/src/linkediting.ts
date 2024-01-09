@@ -80,6 +80,7 @@ export default class LinkEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'link', {
+			allowCreatingEmptyLinks: false,
 			addTargetToExternalLinks: false
 		} );
 	}
