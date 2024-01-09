@@ -32,7 +32,7 @@ To address the first issue, add the following styles to your application:
  */
 :root {
 	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 ```
 
@@ -71,7 +71,7 @@ CKEditor&nbsp;5 requires some minor adjustments to the `z-index` of the UI to wo
  */
 :root {
 	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 ```
 
@@ -95,7 +95,7 @@ Use the following CSS to address the issues with the `z-index` and selector spec
  */
 :root {
 	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 
 /*
@@ -166,7 +166,7 @@ CKEditor&nbsp;5 works properly with [Semantic-UI](https://semantic-ui.com/) afte
  */
 :root {
 	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 ```
 

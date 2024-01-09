@@ -15,7 +15,8 @@ import {
 	View,
 	ViewCollection,
 	createLabeledInputText,
-	submitHandler
+	submitHandler,
+	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
@@ -64,7 +65,7 @@ export default class MediaFormView extends View {
 	/**
 	 * A collection of views that can be focused in the form.
 	 */
-	private readonly _focusables: ViewCollection;
+	private readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.

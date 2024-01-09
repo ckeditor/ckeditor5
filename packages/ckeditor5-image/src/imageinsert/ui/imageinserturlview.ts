@@ -15,7 +15,8 @@ import {
 	FocusCycler,
 	LabeledFieldView,
 	createLabeledInputText,
-	type InputTextView
+	type InputTextView,
+	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
@@ -79,7 +80,7 @@ export default class ImageInsertUrlView extends View {
 	/**
 	 * A collection of views that can be focused in the form.
 	 */
-	private readonly _focusables: ViewCollection;
+	private readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.

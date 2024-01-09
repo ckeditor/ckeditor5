@@ -7,5 +7,5 @@
 	/* Keep tooltips transparent for any interactions. */
 	pointer-events: none;
 
-	z-index: calc( var(--ck-z-modal) + 100 );
+	z-index: calc( var(--ck-z-dialog) + 100 );
 }

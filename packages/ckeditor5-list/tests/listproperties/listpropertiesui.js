@@ -509,6 +509,9 @@ describe( 'ListPropertiesUI', () => {
 						const listPropertiesView = numberedListDropdown.panelView.children.first;
 						const startIndexFieldView = listPropertiesView.startIndexFieldView;
 
+						// Force clear is necessary on CI.
+						listPropertiesView.focusTracker.focusedElement = null;
+
 						const spy = sinon.spy( startIndexFieldView, 'focus' );
 
 						numberedListDropdown.isOpen = true;
