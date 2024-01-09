@@ -20,25 +20,25 @@ Use the toolbar dropdowns in the demo below to control the font size {@icon @cke
 
 ## Additional feature information
 
-The font styles, just like the {@link features/basic-styles basic text styles}, can serve many purposes. Font size setting can be applied globally or to a selected part of the text only making it catch the eye of the reader. Using different font families can help differentiate between sections of the content that serve various purposes (like main text and a side quotation or a recap). Different font colors can work as markers and guides just like font background colors, that stand out even more and draw attention.
+The font styles, just like the {@link features/basic-styles basic text styles}, can serve many purposes. You can apply the font size setting globally or to a selected part of the text to make it catch the eye of the reader. Using different font families can help differentiate between sections of the content that serve various purposes (like main text and a side quotation or a recap). Different font colors can work as markers and guides just like font background colors that stand out even more and draw attention.
 
 The plugin enables the following features in the rich-text editor:
-* {@link module:font/fontfamily~FontFamily} &ndash; Allows to change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.
-* {@link module:font/fontsize~FontSize} &ndash; Lets you control the font size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
-* {@link module:font/fontcolor~FontColor} &ndash; Allows to control the font color by applying inline `<span>` elements with a `color` in the `style` attribute.
-* {@link module:font/fontbackgroundcolor~FontBackgroundColor} &ndash; Lets you control the font background color by applying inline `<span>` elements with a `background-color` in the `style` attribute.
+* {@link module:font/fontfamily~FontFamily} &ndash; Change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.
+* {@link module:font/fontsize~FontSize} &ndash; Control the font size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
+* {@link module:font/fontcolor~FontColor} &ndash; Control the font color by applying inline `<span>` elements with a `color` in the `style` attribute.
+* {@link module:font/fontbackgroundcolor~FontBackgroundColor} &ndash; Control the font background color by applying inline `<span>` elements with a `background-color` in the `style` attribute.
 
 <info-box info>
-	All font formatting can be removed with the {@link features/remove-format remove format} feature.
+	You can remove all font formatting with the {@link features/remove-format remove format} feature.
 </info-box>
 
 ## Configuring the font family feature
 
-It is possible to configure which font family options are supported by the WYSIWYG editor. Use the {@link module:font/fontconfig~FontFamilyConfig#options `config.fontFamily.options`} configuration option to do so.
+You can configure which font family options are supported by the WYSIWYG editor. Use the {@link module:font/fontconfig~FontFamilyConfig#options `config.fontFamily.options`} configuration option to do so.
 
 Use the special `'default'` keyword to use the default font family defined in the web page styles. It removes any custom font family.
 
-For example, the following editor supports only two font families besides the default one:
+For example, the following editor supports two font families besides the default one:
 
 ```js
 ClassicEditor
@@ -74,7 +74,7 @@ ClassicEditor
 			],
 			supportAllValues: true
 		},
-		// More of editor's config.
+		// More of editor's configuration.
         // ...
 	} )
 	.then( /* ... */ )
@@ -126,7 +126,7 @@ Here is an example of the font size CSS classes:
 }
 ```
 
-An example of the editor that supports only two font sizes:
+An example of an editor that supports two font sizes:
 
 ```js
 ClassicEditor
@@ -198,7 +198,7 @@ ClassicEditor
 			],
 			supportAllValues: true
 		},
-		// More of editor's config.
+		// More of editor's configuration.
         // ...
 	} )
 	.then( /* ... */ )
@@ -304,7 +304,7 @@ ClassicEditor
 				// ...
 			]
 
-			columns: 3, // so, you can display them in 3 columns.
+			columns: 3, // So, you can display them in 3 columns.
 
 			// Optional configuration of the number of document colors.
 			// ...
@@ -358,11 +358,11 @@ ClassicEditor
 
 ### Color picker
 
-Colors from outside of the preconfigured palette can be set using the "Color picker" option available at the bottom of the color selection dropdown.
+You can set colors from outside of the pre-configured palette using the "Color picker" option available at the bottom of the color selection dropdown.
 
-Color picker applies colors in the **HSL** format as it is default for the font color feature. This can be changed using the {@link module:ui/colorpicker/utils~ColorPickerConfig `config.fontColor.colorPicker.format`} option. Available color formats are defined in the {@link module:ui/colorpicker/utils~ColorPickerOutputFormat} type. Note that this change will not affect the color input &ndash; it always accepts only values given in the `hex` format (with or without the `#` sign at the beginning).
+Color picker applies colors in the **HSL** format as it is the default for the font color feature. You can change this using the {@link module:ui/colorpicker/utils~ColorPickerConfig `config.fontColor.colorPicker.format`} option. Available color formats are defined in the {@link module:ui/colorpicker/utils~ColorPickerOutputFormat} type. This change will not affect the color input &ndash; it always accepts only values given in the `hex` format (with or without the `#` sign at the beginning).
 
-To disable the color picker entirely for the given feature, set the {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontColor.colorPicker`} (or {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontBackgroundColor.colorPicker`}) option to `false`.
+To turn off the color picker entirely for the given feature, set the {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontColor.colorPicker`} (or {@link module:font/fontconfig~FontColorConfig#colorPicker `config.fontBackgroundColor.colorPicker`}) option to `false`.
 
 ```js
 ClassicEditor
@@ -374,7 +374,7 @@ ClassicEditor
 			}
 		},
 		fontBackgroundColor: {
-			// Don't display the color picker.
+			// Do not display the color picker.
 			colorPicker: false
 		},
 		toolbar: [
@@ -556,7 +556,7 @@ The {@link module:font/font~Font} plugin provides basic support for the deprecat
 
 While `<font color>` is always supported, to use `<font face>` and `<font size>` you need to enable the {@link module:font/fontconfig~FontFamilyConfig#supportAllValues `config.fontFamily.supportAllValues`} and {@link module:font/fontconfig~FontSizeConfig#supportAllValues `config.fontSize.supportAllValues`} options respectively.
 
-Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way only.
+Text formatted with `<font>` is accepted by the plugin, but the editor always returns the markup in a modern format, so the transformation is one way.
 
 ## Contribute
 

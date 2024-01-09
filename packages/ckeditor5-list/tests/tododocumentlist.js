@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,14 +21,16 @@ describe( 'TodoDocumentList', () => {
 	} );
 
 	it( 'should emit warning when instantiated', () => {
-		const expectedMessage = '`TodoDocumentList` plugin is obsolete. Use `TodoList` instead.';
-
 		sinon.stub( console, 'warn' );
 
 		// eslint-disable-next-line no-new
 		new TodoDocumentList();
 
 		sinon.assert.calledOnce( console.warn );
-		sinon.assert.calledWith( console.warn, sinon.match( expectedMessage ) );
+		sinon.assert.calledWithExactly( console.warn,
+			sinon.match( /^plugin-obsolete-tododocumentlist/ ),
+			{ pluginName: 'TodoDocumentList' },
+			sinon.match.string // Link to the documentation
+		);
 	} );
 } );

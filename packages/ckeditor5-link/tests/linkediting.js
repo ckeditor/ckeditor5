@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -633,8 +633,13 @@ describe( 'LinkEditing', () => {
 					url: 'tel:123456789'
 				}
 			];
-			it( 'link.addTargetToExternalLinks is predefined as false value', () => {
+
+			it( 'link.addTargetToExternalLinks has a default value of `false`', () => {
 				expect( editor.config.get( 'link.addTargetToExternalLinks' ) ).to.be.false;
+			} );
+
+			it( 'link.allowCreatingEmptyLinks has a default value of `false`', () => {
+				expect( editor.config.get( 'link.allowCreatingEmptyLinks' ) ).to.be.false;
 			} );
 
 			describe( 'for link.addTargetToExternalLinks = false', () => {

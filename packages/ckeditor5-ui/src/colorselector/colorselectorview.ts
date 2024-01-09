@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module ui/colorselector/colorselectorview
  */
 
-import FocusCycler from '../focuscycler.js';
+import FocusCycler, { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
 import ViewCollection from '../viewcollection.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
@@ -126,7 +126,7 @@ export default class ColorSelectorView extends View {
 	 *
 	 * @readonly
 	 */
-	protected _focusables: ViewCollection;
+	protected _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * The configuration of color picker sub-component.

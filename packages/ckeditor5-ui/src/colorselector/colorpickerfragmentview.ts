@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,6 +10,9 @@
 import View from '../view.js';
 import ButtonView from '../button/buttonview.js';
 import type ViewCollection from '../viewcollection.js';
+import type { FocusableView } from '../focuscycler.js';
+import type LabeledFieldView from '../labeledfield/labeledfieldview.js';
+import type InputTextView from '../inputtext/inputtextview.js';
 import {
 	default as ColorPickerView,
 	type ColorPickerColorSelectedEvent
@@ -83,7 +86,7 @@ export default class ColorPickerFragmentView extends View {
 	 *
 	 * @readonly
 	 */
-	protected _focusables: ViewCollection;
+	protected _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * A reference to the configuration of {@link #colorPickerView}. `false` when the view was
@@ -113,7 +116,7 @@ export default class ColorPickerFragmentView extends View {
 		}:
 		{
 			focusTracker: FocusTracker;
-			focusables: ViewCollection;
+			focusables: ViewCollection<FocusableView>;
 			keystrokes: KeystrokeHandler;
 			colorPickerViewConfig: ColorPickerViewConfig | false;
 		}
@@ -230,7 +233,7 @@ export default class ColorPickerFragmentView extends View {
 			this._focusables.add( slider );
 		}
 
-		const input = this.colorPickerView!.hexInputRow.children.get( 1 )!;
+		const input = this.colorPickerView!.hexInputRow.children.get( 1 ) as LabeledFieldView<InputTextView>;
 
 		if ( input.element! ) {
 			this.focusTracker.add( input.element );
