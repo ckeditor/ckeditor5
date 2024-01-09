@@ -11,7 +11,7 @@ import { Collection, type Locale } from 'ckeditor5/src/utils.js';
 import {
 	addListToDropdown,
 	createDropdown,
-	Model,
+	ViewModel,
 	FormHeaderView,
 	type DropdownView,
 	type ListDropdownButtonDefinition
@@ -86,7 +86,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		} );
 
 		dropdown.on( 'execute', evt => {
-			dropdown.value = ( evt.source as Model ).name as string;
+			dropdown.value = ( evt.source as ViewModel ).name as string;
 		} );
 
 		dropdown.delegate( 'execute' ).to( this );
@@ -113,7 +113,7 @@ export default class SpecialCharactersNavigationView extends FormHeaderView {
 		const groupDefs = new Collection<ListDropdownButtonDefinition>();
 
 		for ( const [ name, label ] of groupNames ) {
-			const model = new Model( {
+			const model = new ViewModel( {
 				name,
 				label,
 				withText: true,

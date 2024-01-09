@@ -11,7 +11,7 @@ import {
 	IconView,
 	LabeledFieldView,
 	ListView,
-	Model,
+	ViewModel,
 	SearchTextView,
 	SpinnerView,
 	SplitButtonView,
@@ -42,7 +42,7 @@ window.ButtonView = ButtonView;
 window.IconView = IconView;
 window.LabeledFieldView = LabeledFieldView;
 window.ListView = ListView;
-window.Model = Model;
+window.Model = ViewModel;
 window.SearchTextView = SearchTextView;
 window.SpinnerView = SpinnerView;
 window.SplitButtonView = SplitButtonView;
