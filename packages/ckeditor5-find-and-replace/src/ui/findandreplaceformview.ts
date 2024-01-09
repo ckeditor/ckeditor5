@@ -13,7 +13,7 @@ import {
 	FormHeaderView,
 	LabeledFieldView,
 
-	Model,
+	ViewModel,
 	FocusCycler,
 	createLabeledInputText,
 	submitHandler,
@@ -591,7 +591,7 @@ export default class FindAndReplaceFormView extends View {
 			tooltip: true
 		} );
 
-		const matchCaseModel = new Model( {
+		const matchCaseModel = new ViewModel( {
 			withText: true,
 			label: t( 'Match case' ),
 
@@ -599,7 +599,7 @@ export default class FindAndReplaceFormView extends View {
 			_isMatchCaseSwitch: true
 		} );
 
-		const wholeWordsOnlyModel = new Model( {
+		const wholeWordsOnlyModel = new ViewModel( {
 			withText: true,
 			label: t( 'Whole words only' )
 		} );

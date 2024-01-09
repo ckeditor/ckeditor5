@@ -75,7 +75,7 @@ export { default as ListView } from './list/listview.js';
 
 export { default as Notification } from './notification/notification.js';
 
-export { default as Model } from './model.js';
+export { default as ViewModel } from './model.js';
 export { default as BalloonPanelView } from './panel/balloon/balloonpanelview.js';
 export { default as ContextualBalloon } from './panel/balloon/contextualballoon.js';
 export { default as StickyPanelView } from './panel/sticky/stickypanelview.js';

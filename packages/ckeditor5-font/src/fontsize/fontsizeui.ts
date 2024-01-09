@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
-	Model,
+	ViewModel,
 	createDropdown,
 	addListToDropdown,
 	type ListDropdownItemDefinition
@@ -128,7 +128,7 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 	for ( const option of options ) {
 		const def = {
 			type: 'button' as const,
-			model: new Model( {
+			model: new ViewModel( {
 				commandName: FONT_SIZE,
 				commandParam: option.model,
 				label: option.title,

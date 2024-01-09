@@ -11,7 +11,7 @@ import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	DropdownButtonView,
-	Model,
+	ViewModel,
 	createDropdown,
 	addListToDropdown,
 	type ListDropdownItemDefinition
@@ -236,7 +236,7 @@ export default class ImageResizeButtons extends Plugin {
 			const optionValueWithUnit = option.value ? option.value + this._resizeUnit : null;
 			const definition: ListDropdownItemDefinition = {
 				type: 'button',
-				model: new Model( {
+				model: new ViewModel( {
 					commandName: 'resizeImage',
 					commandValue: optionValueWithUnit,
 					label: this._getOptionLabelValue( option ),
