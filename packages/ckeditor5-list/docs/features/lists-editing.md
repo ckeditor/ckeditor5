@@ -12,7 +12,7 @@ This article describes the functionality and behaviors of lists in CKEditor&nbsp
 
 ## Block lists
 
-As of 2024, the list feature allows any part of the content to be part of a list. You can put content blocks and elements &ndash; such as images, tables, paragraphs, headings, and others &ndash; inside a list item, ensuring the continuity of numbering and retaining indentation.
+Since version 41.0.0, the list feature allows any part of the content to be part of a list. You can put content blocks and elements &ndash; such as images, tables, paragraphs, headings, and others &ndash; inside a list item, ensuring the continuity of numbering and retaining indentation.
 
 To edit a block inside a list item, press <kbd>Enter</kbd> to create a new line and then <kbd>Backspace</kbd> to remove the new list item marker. Keep on entering content. Observe this behavior in the screencast below.
 
