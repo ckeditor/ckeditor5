@@ -142,7 +142,7 @@ Some exports names were changed due to possibility of name conflicts:
 * We renamed the export of `Model` from the `@ckeditor/ckeditor5-ui` package to `ViewModel`,
 * We renamed the export of `UploadAdapter` from the `@ckeditor/ckeditor5-adapter-ckfinder` package to `CKFinderUploadAdapter`,
 * We renamed the interface export of `Position` from the `@ckeditor/ckeditor5-utils` package to `DomPoint`,
-* We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package (exported function of the same name from the ``@ckeditor/ckeditor5-widget` package still stays as it is and should be used while creating features and widgets).
+* We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package (exported function of the same name from the `@ckeditor/ckeditor5-widget` package remains unchanged and should be used while creating features and widgets).
 
 ### Making CKEditor npm packages valid ES Modules
 
