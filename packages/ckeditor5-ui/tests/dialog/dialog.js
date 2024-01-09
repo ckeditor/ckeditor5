@@ -16,7 +16,7 @@ describe( 'Dialog', () => {
 	let editor, editorElement, dialogPlugin;
 
 	beforeEach( () => {
-		Dialog.visibleDialogPlugin = undefined;
+		Dialog._visibleDialogPlugin = undefined;
 
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
@@ -34,11 +34,11 @@ describe( 'Dialog', () => {
 	afterEach( () => {
 		editor.destroy();
 		editorElement.remove();
-		Dialog.visibleDialogPlugin = undefined;
+		Dialog._visibleDialogPlugin = undefined;
 	} );
 
-	it( 'should initialise without #visibleDialogPlugin set', () => {
-		expect( Dialog.visibleDialogPlugin ).to.be.undefined;
+	it( 'should initialise without #_visibleDialogPlugin set', () => {
+		expect( Dialog._visibleDialogPlugin ).to.be.undefined;
 	} );
 
 	describe( 'constructor()', () => {
@@ -84,7 +84,19 @@ describe( 'Dialog', () => {
 			} );
 
 			describe( '`hide` event listeners', () => {
+				it( 'doing nothing if dialog is not visible ', () => {
+					expect( dialogPlugin._visibleDialogPlugin ).to.be.undefined;
+
+					const spy = sinon.spy( dialogPlugin, '_hide' );
+
+					dialogPlugin.fire( 'hide' );
+
+					sinon.assert.notCalled( spy );
+				} );
+
 				it( 'executing `_hide()` method ', () => {
+					dialogPlugin.show( {} );
+
 					const spy = sinon.spy( dialogPlugin, '_hide' );
 
 					dialogPlugin.fire( 'hide' );
@@ -136,6 +148,8 @@ describe( 'Dialog', () => {
 						sinon.assert.calledOnce( _hideSpy );
 						sinon.assert.calledOnce( onHideSpy );
 					}, { priority: 'lowest' } );
+
+					dialogPlugin.show( {} );
 
 					dialogPlugin.fire( 'hide' );
 				} );
@@ -391,7 +405,7 @@ describe( 'Dialog', () => {
 
 			expect( dialogPlugin.id, 'id should be set' ).to.equal( 'foo' );
 			expect( dialogPlugin._onHide, '`_onHide` should be set' ).to.be.a( 'function' );
-			expect( Dialog.visibleDialogPlugin, '`visibleDialogPlugin` instance should be set' ).to.equal( dialogPlugin );
+			expect( Dialog._visibleDialogPlugin, '`_visibleDialogPlugin` instance should be set' ).to.equal( dialogPlugin );
 		} );
 	} );
 
@@ -469,7 +483,7 @@ describe( 'Dialog', () => {
 
 			expect( dialogPlugin.id, 'id should be reset' ).to.be.null;
 			expect( dialogPlugin._onHide, '`_onHide` should be reset' ).to.be.undefined;
-			expect( Dialog.visibleDialogPlugin, '`visibleDialogPlugin` instance should be reset' ).to.be.null;
+			expect( Dialog._visibleDialogPlugin, '`_visibleDialogPlugin` instance should be reset' ).to.be.null;
 		} );
 	} );
 } );

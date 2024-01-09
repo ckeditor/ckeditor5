@@ -38,7 +38,7 @@ export default class Dialog extends Plugin {
 	 * This is why we need to store it in a globally available space (static property).
 	 * This way every `Dialog` plugin in every editor is able to correctly close any open dialog window.
 	 */
-	public static visibleDialogPlugin: Dialog | null;
+	private static _visibleDialogPlugin: Dialog | null;
 
 	/**
 	 * A flag indicating whether the dialog is currently visible.
@@ -88,7 +88,9 @@ export default class Dialog extends Plugin {
 		}, { priority: 'low' } );
 
 		this.on<DialogHideEvent>( 'hide', () => {
-			this._hide();
+			if ( Dialog._visibleDialogPlugin ) {
+				Dialog._visibleDialogPlugin._hide();
+			}
 		} );
 
 		// 'low' priority allows to add custom callback between `_hide()` and `onHide()`.
@@ -147,8 +149,8 @@ export default class Dialog extends Plugin {
 	 * This method is decorated to enable interacting on the `show` event.
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
-		if ( Dialog.visibleDialogPlugin ) {
-			Dialog.visibleDialogPlugin.hide();
+		if ( Dialog._visibleDialogPlugin ) {
+			Dialog._visibleDialogPlugin.hide();
 		}
 
 		this.fire<DialogShowEvent>( `show:${ dialogDefinition.id }`, dialogDefinition );
@@ -218,7 +220,7 @@ export default class Dialog extends Plugin {
 		}
 
 		this.isOpen = true;
-		Dialog.visibleDialogPlugin = this;
+		Dialog._visibleDialogPlugin = this;
 	}
 
 	/**
@@ -256,7 +258,7 @@ export default class Dialog extends Plugin {
 
 		this.id = null;
 		this.isOpen = false;
-		Dialog.visibleDialogPlugin = null;
+		Dialog._visibleDialogPlugin = null;
 	}
 }
 
