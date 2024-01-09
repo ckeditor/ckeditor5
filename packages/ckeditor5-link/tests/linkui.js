@@ -289,6 +289,13 @@ describe( 'LinkUI', () => {
 
 			// Expect original value in the URL field.
 			expect( formView.urlInputView.fieldView.element.value ).to.equal( 'url' );
+
+			// Expect "save" button to be enabled, despite not making any changes.
+			expect( formView.saveButtonView.isEnabled ).to.equal( true );
+
+			// Expect entire content of the URL field to be selected.
+			const elem = formView.urlInputView.fieldView.element;
+			expect( elem.value.substring( elem.selectionStart, elem.selectionEnd ) ).to.equal( 'url' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
