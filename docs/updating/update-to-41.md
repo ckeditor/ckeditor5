@@ -139,6 +139,7 @@ The following icons were moved to the `@ckeditor/ckeditor5-core` package: `brows
 Some exports names were changed due to possibility of name conflicts:
 
 * We renamed the default export of `View` from the `@ckeditor/ckeditor5-engine` package to `EditingView`,
+* We renamed the default export of `Model` from the `@ckeditor/ckeditor5-ui` package to `ViewModel`,
 * We renamed the default export of `UploadAdapter` from the `@ckeditor/ckeditor5-adapter-ckfinder` package to `CKFinderUploadAdapter`,
 * We renamed the interface export of `Position` from the `@ckeditor/ckeditor5-utils` package to `DomPoint`,
 * We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package.
