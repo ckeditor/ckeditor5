@@ -351,20 +351,20 @@ export default class LinkUI extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
-		// Select input when form view is currently visible.
-		if ( this._balloon.visibleView === this.formView ) {
-			this.formView!.urlInputView.fieldView.select();
-		}
-
-		this.formView!.enableCssTransitions();
-
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView.fieldView#value` stays
 		// unaltered) and re-opened it without changing the value of the link command (e.g. because they
 		// clicked the same link), they would see the old value instead of the actual value of the command.
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
-		this.formView!.urlInputView.fieldView.element!.value = linkCommand.value || '';
+		this.formView!.urlInputView.fieldView.value = linkCommand.value || '';
+
+		// Select input when form view is currently visible.
+		if ( this._balloon.visibleView === this.formView ) {
+			this.formView!.urlInputView.fieldView.select();
+		}
+
+		this.formView!.enableCssTransitions();
 	}
 
 	/**
