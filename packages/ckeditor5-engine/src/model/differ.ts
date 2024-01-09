@@ -1467,8 +1467,8 @@ export interface DiffItemRemove {
 	 * {@link ~DiffItemRemove#attributes `DiffItemRemove#attributes`}, and {@link ~DiffItemRemove#position `DiffItemRemove#position`}.
 	 *
 	 * This property should be only used to check instance reference equality. For example, if you want to detect that some particular
-	 * element was removed, you can check `element` property. You can also check {@link ~DiffItemRemove#element `DiffItemRemove#element`}.
-	 * property with {@link ~DiffItemInsert#element `DiffItemInsert#element`} to detect move, or rename changes.
+	 * element was removed, you can check `_element` property. You can use it together with {@link ~DiffItemInsert#element `#_element`} on
+	 * insert diff items to detect move, refresh, or rename changes.
 	 *
 	 * @internal
 	 */
