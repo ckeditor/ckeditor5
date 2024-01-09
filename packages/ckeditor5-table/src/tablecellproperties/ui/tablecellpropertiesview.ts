@@ -200,12 +200,12 @@ export default class TableCellPropertiesView extends View {
 	/**
 	 * A toolbar with buttons that allow changing the horizontal text alignment in a table cell.
 	 */
-	public readonly horizontalAlignmentToolbar: View<HTMLElement>;
+	public readonly horizontalAlignmentToolbar: ToolbarView;
 
 	/**
 	 * A toolbar with buttons that allow changing the vertical text alignment in a table cell.
 	 */
-	public readonly verticalAlignmentToolbar: View<HTMLElement>;
+	public readonly verticalAlignmentToolbar: ToolbarView;
 
 	/**
 	 * The "Save" button view.
@@ -220,7 +220,7 @@ export default class TableCellPropertiesView extends View {
 	/**
 	 * A collection of views that can be focused in the form.
 	 */
-	protected readonly _focusables: ViewCollection;
+	protected readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.

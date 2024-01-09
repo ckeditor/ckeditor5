@@ -19,7 +19,7 @@
 	box-shadow: none;
 	background: var(--ck-powered-by-background);
 	min-height: unset;
-	z-index: calc( var(--ck-z-modal) - 1 );
+	z-index: calc( var(--ck-z-panel) - 1 );
 
 	& .ck.ck-powered-by {
 		line-height: var(--ck-powered-by-line-height);

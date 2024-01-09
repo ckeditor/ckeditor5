@@ -10,7 +10,7 @@
 /* global console */
 
 import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
-import { ButtonView } from 'ckeditor5/src/ui.js';
+import { ButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
@@ -134,6 +134,7 @@ export default class SourceEditing extends Plugin {
 		if ( this._isAllowedToHandleSourceEditingMode() ) {
 			this.on( 'change:isSourceEditingMode', ( evt, name, isSourceEditingMode ) => {
 				if ( isSourceEditingMode ) {
+					this._hideVisibleDialog();
 					this._showSourceEditing();
 					this._disableCommands();
 				} else {
@@ -368,6 +369,19 @@ export default class SourceEditing extends Plugin {
 
 		// Checks, if the editor's editable belongs to the editor's DOM tree.
 		return editable && !editable.hasExternalElement;
+	}
+
+	/**
+	 * If any {@link module:ui/dialog/dialogview~DialogView editor dialog} is currently visible, hide it.
+	 */
+	private _hideVisibleDialog(): void {
+		if ( this.editor.plugins.has( 'Dialog' ) ) {
+			const dialogPlugin: Dialog = this.editor.plugins.get( 'Dialog' );
+
+			if ( dialogPlugin.isOpen ) {
+				dialogPlugin.hide();
+			}
+		}
 	}
 }
 
