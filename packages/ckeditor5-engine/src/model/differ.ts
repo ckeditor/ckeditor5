@@ -1104,12 +1104,12 @@ export default class Differ {
 	): DiffItemInsert & DiffItemInternal {
 		return {
 			type: 'insert',
-			element: elementSnapshot.element,
 			position: Position._createAt( parent, offset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
 			length: 1,
-			changeCount: this._changeCount++
+			changeCount: this._changeCount++,
+			_element: elementSnapshot.element
 		};
 	}
 
@@ -1128,12 +1128,12 @@ export default class Differ {
 	): DiffItemRemove & DiffItemInternal {
 		return {
 			type: 'remove',
-			element: elementSnapshot.element,
 			position: Position._createAt( parent, offset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
 			length: 1,
-			changeCount: this._changeCount++
+			changeCount: this._changeCount++,
+			_element: elementSnapshot.element
 		};
 	}
 
@@ -1418,8 +1418,10 @@ export interface DiffItemInsert {
 	 * Reference to the model element that was inserted.
 	 *
 	 * Undefined if the diff item is related to text node insertion.
+	 *
+	 * @internal
 	 */
-	element?: Element;
+	_element?: Element;
 
 	/**
 	 * The name of the inserted elements or `'$text'` for a text node.
@@ -1467,8 +1469,10 @@ export interface DiffItemRemove {
 	 * This property should be only used to check instance reference equality. For example, if you want to detect that some particular
 	 * element was removed, you can check `element` property. You can also check {@link ~DiffItemRemove#element `DiffItemRemove#element`}.
 	 * property with {@link ~DiffItemInsert#element `DiffItemInsert#element`} to detect move, or rename changes.
+	 *
+	 * @internal
 	 */
-	element?: Element;
+	_element?: Element;
 
 	/**
 	 * The name of the removed element or `'$text'` for a text node.
