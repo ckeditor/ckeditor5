@@ -226,7 +226,7 @@ export default class Dialog extends Plugin {
 	 */
 	public hide(): void {
 		if ( Dialog._visibleDialogPlugin ) {
-			Dialog._visibleDialogPlugin.fire<DialogHideEvent>( `hide:${ this.id }` );
+			Dialog._visibleDialogPlugin.fire<DialogHideEvent>( `hide:${ Dialog._visibleDialogPlugin.id }` );
 		}
 	}
 

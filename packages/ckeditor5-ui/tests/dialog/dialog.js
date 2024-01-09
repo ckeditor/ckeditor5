@@ -235,6 +235,16 @@ describe( 'Dialog', () => {
 	} );
 
 	describe( 'show()', () => {
+		it( 'should fire the `show` event with id in namespace', () => {
+			const spy = sinon.spy();
+
+			dialogPlugin.on( 'show:first', spy );
+
+			dialogPlugin.show( { id: 'first' } );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
 		describe( 'should hide the previously visible dialog', () => {
 			it( 'in the same editor instance', () => {
 				const methodSpy = sinon.spy( dialogPlugin, 'hide' );
@@ -250,11 +260,12 @@ describe( 'Dialog', () => {
 			} );
 
 			it( 'in another editor instance', async () => {
-				const spy = sinon.spy( dialogPlugin, 'hide' );
 				const secondEditorElement = document.createElement( 'div' );
 				document.body.appendChild( secondEditorElement );
 
 				let secondEditor, secondDialogPlugin;
+
+				dialogPlugin.show( { id: 'first' } );
 
 				await ClassicTestEditor
 					.create( secondEditorElement, {
@@ -265,24 +276,30 @@ describe( 'Dialog', () => {
 						secondDialogPlugin = secondEditor.plugins.get( Dialog );
 					} );
 
-				dialogPlugin.show( {} );
-				secondDialogPlugin.show( {} );
+				const firstMethodSpy = sinon.spy( dialogPlugin, 'hide' );
+				const secondMethodSpy = sinon.spy( secondDialogPlugin, 'hide' );
 
-				sinon.assert.calledOnce( spy );
+				const firstEventSpy = sinon.spy();
+				const secondEventSpy = sinon.spy();
+
+				dialogPlugin.on( 'hide:first', firstEventSpy );
+				secondDialogPlugin.on( 'hide:second', secondEventSpy );
+
+				secondDialogPlugin.show( { id: 'second' } );
+
+				// A little explanation:
+				// 1. The first dialog is shown before the spies start, so its hide() method isn't called.
+				// 2. The second dialog is shown after the spies start, so its hide() method is called.
+				// 3. In the second dialog's hide() method, the first dialog fires its `hide` event.
+				// 4. The second dialog doesn't fire the `hide` event, because its dialog was not hidden.
+				sinon.assert.notCalled( firstMethodSpy );
+				sinon.assert.calledOnce( firstEventSpy );
+				sinon.assert.calledOnce( secondMethodSpy );
+				sinon.assert.notCalled( secondEventSpy );
 
 				secondEditor.destroy();
 				secondEditorElement.remove();
 			} );
-		} );
-
-		it( 'should fire the `show` event with id in namespace', () => {
-			const spy = sinon.spy();
-
-			dialogPlugin.on( 'show:first', spy );
-
-			dialogPlugin.show( { id: 'first' } );
-
-			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
