@@ -172,7 +172,7 @@ ClassicEditor
 
 Starting with this release, the UI of the {@link features/find-and-replace Find and replace feature} will be displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window} (previously, in a dropdown panel). This change is meant to improve the overall user experience of the feature and allow content creators to make most of the available tools.
 
-{@img assets/img/find-and-replace-in-dialog-v41.png 1610 The comparison of Find and replace UI types before and after v41.x}
+{@img assets/img/migration-to-dialogs-v41-find-and-replace.png 1610 The comparison of Find and replace UI before and after v41.x}
 
 To bring the previous user experience back, you can use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option:
 
@@ -203,6 +203,8 @@ The migration from a dropdown panel to a dialog window (default) brought some ch
 #### AI Assistant feature
 
 Starting with this release, the UI of the {@link features/ai-assistant-overview AI assistant feature} will be displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window} (previously, in a balloon panel).
+
+{@img assets/img/migration-to-dialogs-v41-ai-assistant.png 1610 The comparison of AI Assistant UI before and after v41.x}
 
 ##### Changes to the DOM structure
 
