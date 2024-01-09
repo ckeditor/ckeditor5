@@ -47,6 +47,10 @@ This is because it was injecting `DocumentList` and `DocumentListProperties` plu
 
 If you happen to encounter this error, please remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option and replace these with `List` and related plugins.
 
+<info-box>
+    Please note that we have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
+</info-box>
+
 #### Details of plugin renames
 
 <table>
