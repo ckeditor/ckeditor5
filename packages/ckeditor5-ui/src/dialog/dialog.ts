@@ -30,12 +30,13 @@ export default class Dialog extends Plugin {
 	public view?: DialogView;
 
 	/**
-	 * The dialog plugin instance controlling the currently visible dialog view.
+	 * The `Dialog` plugin instance which most recently showed the dialog.
 	 *
 	 * Only one dialog can be visible at once, even if there are many editor instances on the page.
-	 * If one editor wants to show a dialog, it should first check if there is no other visible dialog already.
-	 * But only the plugin that showed the dialog should be able to hide it
-	 * as it stores the {@link #_onHide()} callback and the proper editor reference.
+	 * If an editor wants to show a dialog, it should first hide the dialog that is already opened.
+	 * But only the `Dialog` instance that showed the dialog is able able to properly hide it.
+	 * This is why we need to store it in a globally available space (static property).
+	 * This way every `Dialog` plugin in every editor is able to correctly close any open dialog window.
 	 */
 	public static visibleDialogPlugin: Dialog | null;
 
