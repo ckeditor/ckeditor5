@@ -165,3 +165,47 @@ ClassicEditor
   .then( ... )
   .catch( ... );
 ```
+
+### UI migration to dialogs
+
+#### Find and replace feature
+
+Starting with this release, the UI of the {@link features/find-and-replace Find and replace feature} will be displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window} (previously, in a dropdown panel). This change is meant to improve the overall user experience of the feature and allow content creators to make most of the available tools.
+
+TODO IMG
+
+To bring the previous user experience back, you can use the {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig `config.findAndReplace.uiType`} configuration option.
+
+```diff
+ClassicEditor
+  .create( editorElement, {
++   findAndReplace: {
++      uiType: 'dropdown'
++   }
+  } )
+  .then( ... )
+  .catch( ... );
+```
+
+##### Changes to the DOM structure
+
+The migration from a dropdown panel to a dialog window (default) brought some changes to the DOM structure of the UI. Please keep in mind that customizations based on certain CSS selectors may not work anymore and may require adjustments.
+
+* The UI header element (`div.ck-form__header`) is no longer available inside the form (`form.ck-find-and-replace-form`) element. CSS customizations should be applied to the {@link framework/architecture/ui-library#header header element} of a dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
+* The fieldset (`fieldset.ck-find-and-replace-form__find`) element was removed from the form element (`form.ck-find-and-replace-form`). Its contents were distributed between new containers:
+  * "Find in text" input field, "Previous result", and "Next result buttons" buttons were moved to the `div.ck-find-and-replace-form__inputs` element.
+  * The "Find" button was moved to the `div.ck-find-and-replace-form__actions` element.
+* The fieldset (`fieldset.ck-find-and-replace-form__replace`) element was removed. Its contents were were distributed between new containers:
+  * "Replace with" input field was moved to the `div.ck-find-and-replace-form__inputs` element,
+  * "Replace" and "Replace all" buttons were moved to the `div.ck-find-and-replace-form__actions` element.
+* The "Advanced options" dropdown (rendered as the `div.ck-options-dropdown` element) was replaced with the {@link module:ui/collapsible/collapsibleview collapsible} component (rendered as `div.ck-collapsible` element). Switch buttons inside ("Match case" and "Whole words only") remain unchanged.
+
+#### AI Assistant feature
+
+Starting with this release, the UI of the {@link features/ai-assistant-overview AI assistant feature} will be displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window} (previously, in a balloon panel).
+
+##### Changes to the DOM structure
+
+The migration from a dropdown panel to a dialog window (default) brought some changes to the DOM structure of the UI. Please keep in mind that customizations based on certain CSS selectors may not work anymore and may require adjustments.
+
+* The UI header element (`div.ck-form__header`) is no longer available inside the form (`form.ck-ai-form`) element. CSS customizations should be applied to the {@link framework/architecture/ui-library#header header element} of a dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
