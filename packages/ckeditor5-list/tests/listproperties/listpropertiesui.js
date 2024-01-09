@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -508,6 +508,9 @@ describe( 'ListPropertiesUI', () => {
 
 						const listPropertiesView = numberedListDropdown.panelView.children.first;
 						const startIndexFieldView = listPropertiesView.startIndexFieldView;
+
+						// Force clear is necessary on CI.
+						listPropertiesView.focusTracker.focusedElement = null;
 
 						const spy = sinon.spy( startIndexFieldView, 'focus' );
 

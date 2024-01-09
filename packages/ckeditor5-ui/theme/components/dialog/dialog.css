@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-dialog-overlay {
+	user-select: none;
+	overscroll-behavior: none;
+
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+
+	&.ck-dialog-overlay__transparent {
+		pointer-events: none;
+		animation: none;
+		background: none;
+	}
+}
+
+.ck.ck-dialog {
+	overscroll-behavior: none;
+	width: fit-content;
+	position: absolute;
+
+	& .ck.ck-form__header  {
+		flex-shrink: 0;
+
+		& .ck-form__header__label {
+			cursor: grab;
+		}
+	}
+
+	@nest .ck.ck-dialog-overlay.ck-dialog-overlay__transparent & {
+		pointer-events: all;
+	}
+}

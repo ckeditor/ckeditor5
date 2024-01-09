@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -97,6 +97,12 @@ export default class StickyPanelView extends View {
 	declare public viewportTopOffset: number;
 
 	/**
+	 * The panel which accepts children into {@link #content} collection.
+	 * Also an element which is positioned when {@link #isSticky}.
+	 */
+	public contentPanelElement: HTMLElement;
+
+	/**
 	 * Controls the `margin-left` CSS style of the panel.
 	 *
 	 * @private
@@ -141,12 +147,6 @@ export default class StickyPanelView extends View {
 	private _contentPanelPlaceholder: HTMLElement;
 
 	/**
-	 * The panel which accepts children into {@link #content} collection.
-	 * Also an element which is positioned when {@link #isSticky}.
-	 */
-	private _contentPanel: HTMLElement;
-
-	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -184,7 +184,7 @@ export default class StickyPanelView extends View {
 			}
 		} ).render() as HTMLElement;
 
-		this._contentPanel = new Template( {
+		this.contentPanelElement = new Template( {
 			tag: 'div',
 
 			attributes: {
@@ -220,7 +220,7 @@ export default class StickyPanelView extends View {
 			},
 			children: [
 				this._contentPanelPlaceholder,
-				this._contentPanel
+				this.contentPanelElement
 			]
 		} );
 	}
@@ -382,11 +382,11 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
-	 * Returns the bounding rect of the {@link #_contentPanel}.
+	 * Returns the bounding rect of the {@link #contentPanelElement}.
 	 *
 	 * @private
 	 */
 	private get _contentPanelRect(): Rect {
-		return new Rect( this._contentPanel );
+		return new Rect( this.contentPanelElement );
 	}
 }

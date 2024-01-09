@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,8 @@ import {
 	FocusCycler,
 	CollapsibleView,
 	type FocusCyclerForwardCycleEvent,
-	type FocusCyclerBackwardCycleEvent
+	type FocusCyclerBackwardCycleEvent,
+	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
@@ -39,7 +40,7 @@ export default class ImageInsertFormView extends View {
 	/**
 	 * A collection of views that can be focused in the form.
 	 */
-	protected readonly _focusables: ViewCollection;
+	protected readonly _focusables: ViewCollection<FocusableView>;
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the form.
@@ -49,7 +50,7 @@ export default class ImageInsertFormView extends View {
 	/**
 	 * A collection of the defined integrations for inserting the images.
 	 */
-	private readonly children: ViewCollection;
+	private readonly children: ViewCollection<FocusableView>;
 
 	/**
 	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
@@ -57,7 +58,7 @@ export default class ImageInsertFormView extends View {
 	 * @param locale The localization services instance.
 	 * @param integrations An integrations object that contains components (or tokens for components) to be shown in the panel view.
 	 */
-	constructor( locale: Locale, integrations: Array<View> = [] ) {
+	constructor( locale: Locale, integrations: Array<FocusableView> = [] ) {
 		super( locale );
 
 		this.focusTracker = new FocusTracker();

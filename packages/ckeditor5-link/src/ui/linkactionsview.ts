@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module link/ui/linkactionsview
  */
 
-import { ButtonView, View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui.js';
+import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
 import { icons } from 'ckeditor5/src/core.js';
 
@@ -38,7 +38,7 @@ export default class LinkActionsView extends View {
 	/**
 	 * The href preview view.
 	 */
-	public previewButtonView: View;
+	public previewButtonView: ButtonView;
 
 	/**
 	 * The unlink button view.
@@ -60,7 +60,7 @@ export default class LinkActionsView extends View {
 	/**
 	 * A collection of views that can be focused in the view.
 	 */
-	private readonly _focusables = new ViewCollection();
+	private readonly _focusables: ViewCollection<FocusableView> = new ViewCollection();
 
 	/**
 	 * Helps cycling over {@link #_focusables} in the view.

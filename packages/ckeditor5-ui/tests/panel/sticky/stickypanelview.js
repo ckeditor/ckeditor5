@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import ViewCollection from '../../../src/viewcollection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'StickyPanelView', () => {
-	let view, element, contentElement, placeholderElement, limiterElement, locale;
+	let view, element, contentPanelElement, placeholderElement, limiterElement, locale;
 
 	testUtils.createSinonSandbox();
 
@@ -25,7 +25,7 @@ describe( 'StickyPanelView', () => {
 		view.render();
 
 		element = view.element;
-		contentElement = view.element.lastChild;
+		contentPanelElement = view.contentPanelElement;
 		placeholderElement = view.element.firstChild;
 
 		sinon.stub( global.window, 'innerWidth' ).value( 1000 );
@@ -52,9 +52,13 @@ describe( 'StickyPanelView', () => {
 			expect( placeholderElement.classList.contains( 'ck' ) ).to.true;
 			expect( placeholderElement.classList.contains( 'ck-sticky-panel__placeholder' ) ).to.true;
 
-			expect( contentElement.tagName ).to.equal( 'DIV' );
-			expect( contentElement.classList.contains( 'ck' ) ).to.true;
-			expect( contentElement.classList.contains( 'ck-sticky-panel__content' ) ).to.true;
+			expect( element.lastElementChild ).to.equal( contentPanelElement );
+		} );
+
+		it( 'should create #contentPanel from template', () => {
+			expect( view.contentPanelElement.tagName ).to.equal( 'DIV' );
+			expect( view.contentPanelElement.classList.contains( 'ck' ) ).to.true;
+			expect( view.contentPanelElement.classList.contains( 'ck-sticky-panel__content' ) ).to.true;
 		} );
 
 		it( 'sets view attributes', () => {
@@ -86,54 +90,54 @@ describe( 'StickyPanelView', () => {
 
 		it( 'update the class on view#isSticky change', () => {
 			view.isSticky = false;
-			expect( contentElement.classList.contains( 'ck-sticky-panel__content_sticky' ) ).to.be.false;
+			expect( contentPanelElement.classList.contains( 'ck-sticky-panel__content_sticky' ) ).to.be.false;
 
 			view.isSticky = true;
-			expect( contentElement.classList.contains( 'ck-sticky-panel__content_sticky' ) ).to.be.true;
+			expect( contentPanelElement.classList.contains( 'ck-sticky-panel__content_sticky' ) ).to.be.true;
 		} );
 
 		it( 'update the class on view#_isStickyToTheBottomOfLimiter change', () => {
 			view._isStickyToTheBottomOfLimiter = false;
-			expect( contentElement.classList.contains( 'ck-sticky-panel__content_sticky_bottom-limit' ) ).to.be.false;
+			expect( contentPanelElement.classList.contains( 'ck-sticky-panel__content_sticky_bottom-limit' ) ).to.be.false;
 
 			view._isStickyToTheBottomOfLimiter = true;
-			expect( contentElement.classList.contains( 'ck-sticky-panel__content_sticky_bottom-limit' ) ).to.be.true;
+			expect( contentPanelElement.classList.contains( 'ck-sticky-panel__content_sticky_bottom-limit' ) ).to.be.true;
 		} );
 
 		it( 'update the style.top on view#_stickyTopOffset change', () => {
 			view.viewportTopOffset = 100;
 
 			view._stickyTopOffset = 0;
-			expect( contentElement.style.top ).to.equal( '0px' );
+			expect( contentPanelElement.style.top ).to.equal( '0px' );
 
 			view._stickyTopOffset = 100;
-			expect( contentElement.style.top ).to.equal( '100px' );
+			expect( contentPanelElement.style.top ).to.equal( '100px' );
 		} );
 
 		it( 'update the style.width on view#isSticky change', () => {
 			testUtils.sinon.stub( view._contentPanelPlaceholder, 'getBoundingClientRect' ).returns( { width: 100 } );
 
 			view.isSticky = false;
-			expect( contentElement.style.width ).to.equal( '' );
+			expect( contentPanelElement.style.width ).to.equal( '' );
 
 			view.isSticky = true;
-			expect( contentElement.style.width ).to.equal( '100px' );
+			expect( contentPanelElement.style.width ).to.equal( '100px' );
 		} );
 
 		it( 'update the style.bottom on view#_stickyBottomOffset change', () => {
 			view._stickyBottomOffset = 0;
-			expect( contentElement.style.bottom ).to.equal( '0px' );
+			expect( contentPanelElement.style.bottom ).to.equal( '0px' );
 
 			view._stickyBottomOffset = 50;
-			expect( contentElement.style.bottom ).to.equal( '50px' );
+			expect( contentPanelElement.style.bottom ).to.equal( '50px' );
 		} );
 
 		it( 'update the style.marginLeft on view#marginLeft change', () => {
 			view._marginLeft = '30px';
-			expect( contentElement.style.marginLeft ).to.equal( '30px' );
+			expect( contentPanelElement.style.marginLeft ).to.equal( '30px' );
 
 			view._marginLeft = '10px';
-			expect( contentElement.style.marginLeft ).to.equal( '10px' );
+			expect( contentPanelElement.style.marginLeft ).to.equal( '10px' );
 		} );
 	} );
 
@@ -165,12 +169,12 @@ describe( 'StickyPanelView', () => {
 
 	describe( 'children', () => {
 		it( 'should react on view#content', () => {
-			expect( contentElement.childNodes.length ).to.equal( 0 );
+			expect( contentPanelElement.childNodes.length ).to.equal( 0 );
 
 			const label = new LabelView( { t() {} } );
 
 			view.content.add( label );
-			expect( contentElement.childNodes.length ).to.equal( 1 );
+			expect( contentPanelElement.childNodes.length ).to.equal( 1 );
 		} );
 	} );
 
@@ -279,7 +283,7 @@ describe( 'StickyPanelView', () => {
 
 		describe( 'view.isSticky', () => {
 			beforeEach( () => {
-				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+				testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 					height: 20
 				} );
 			} );
@@ -338,7 +342,7 @@ describe( 'StickyPanelView', () => {
 					right: 100
 				} );
 
-				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+				testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 					height: 20
 				} );
 
@@ -361,7 +365,7 @@ describe( 'StickyPanelView', () => {
 					right: 100
 				} );
 
-				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+				testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 					height: 20
 				} );
 
@@ -439,7 +443,7 @@ describe( 'StickyPanelView', () => {
 							right: 100
 						} );
 
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 							height: 20
 						} );
 
@@ -476,7 +480,7 @@ describe( 'StickyPanelView', () => {
 							right: 100
 						} );
 
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 							height: 20
 						} );
 
@@ -518,7 +522,7 @@ describe( 'StickyPanelView', () => {
 							right: 100
 						} );
 
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 							height: 20
 						} );
 
@@ -557,7 +561,7 @@ describe( 'StickyPanelView', () => {
 							right: 100
 						} );
 
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 							height: 100
 						} );
 
@@ -594,7 +598,7 @@ describe( 'StickyPanelView', () => {
 							right: 100
 						} );
 
-						testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 							height: 20
 						} );
 
@@ -666,7 +670,7 @@ describe( 'StickyPanelView', () => {
 						right: 100
 					} );
 
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 						height: 20
 					} );
 
@@ -712,7 +716,7 @@ describe( 'StickyPanelView', () => {
 						right: 100
 					} );
 
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 						height: 20
 					} );
 
@@ -758,7 +762,7 @@ describe( 'StickyPanelView', () => {
 						right: 100
 					} );
 
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 						height: 20
 					} );
 
@@ -804,7 +808,7 @@ describe( 'StickyPanelView', () => {
 						right: 100
 					} );
 
-					testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 						height: 20
 					} );
 
@@ -833,7 +837,7 @@ describe( 'StickyPanelView', () => {
 					right: 100
 				} );
 
-				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+				testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 					height: 20
 				} );
 
@@ -861,7 +865,7 @@ describe( 'StickyPanelView', () => {
 					right: 160
 				} );
 
-				testUtils.sinon.stub( contentElement, 'getBoundingClientRect' ).returns( {
+				testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
 					height: 20
 				} );
 
