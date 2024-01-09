@@ -22,33 +22,38 @@ Listed below are the most important changes that require your attention when upg
 
 ### Breaking changes to the list plugin
 
-As of the latest release, the current list plugin (often referred to as list v1) has been replaced with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list (v2).
+As of the latest release, we replaced the existing list plugin (often referred to as "list v1") with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list ("list v2").
 
-The list v2 (document list) feature was implemented in 2022 to add support for block content in list items. It supported extending list markup via GHS. It did not, however, support to-do lists back then. We concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality and the {@link features/lists-editing#simple-lists simple list} configuration setting.
+We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via General HTML Support (GHS). It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality so we were ready to switch.
 
-We introduced the new plugin in a manner that aims to be transparent for our users, namely by physically replacing the old plugin with the new one, but retaining all namespace intact. It means, starting with release v.41.0.0 all imports of various lists-related plugins will use the new version.
+We introduced the new plugin in a manner that aims to be transparent for the users:
+
+* We physically replaced the old plugin with the new one.
+* But we left the namespace intact.
+
+It means that starting with release v41.0.0 all imports of various list-related plugins will use the new version.
 
 Unless you need to specifically use the old plugin in your integration, there is no need to make changes in the configuration.
 
-If you do not want to utilize block elements in your lists, you can simply turn off this functionality with the {@link features/lists-editing#simple-lists simple list setting} instead of sticking to the old plugins.
+If you do not want to use block elements in your lists, you can {@link features/lists-editing#simple-lists turn off this functionality} with the configuration option instead of sticking to the old plugins.
 
 #### Renaming of the plugins
 
-With the new version becoming default, the `DocumentList` plugin (and all related plugins, [observe the table below](#details-of-plugin-renames)) has been renamed to simply `List`. The old plugin has been renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
+With the new version becoming the default, the `DocumentList` plugin (and all related plugins, [see the table below](#details-of-plugin-renames)) was renamed to `List`. The old plugin was renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
 
-If you previously included document lists in your integration and used the `removePlugins` option to exclude the old list plugin, it could lead to errors, such as these:
+If you included document lists in your integration and used the `removePlugins` option to exclude the old list plugin, it could lead to errors, such as these:
 
 ```
   ❌ CKEditorError: plugincollection-required {"plugin":"List","requiredBy":"DocumentList"}
     Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required
 ```
 
-This is because it was injecting `DocumentList` and `DocumentListProperties` plugins and passing the `removePlugins: [ List, ListProperties, TodoList ]` configuration option. After the change and renaming of the plugins, these two are the same.
+This is because your integration was injecting `DocumentList` and `DocumentListProperties` plugins, and passing the `removePlugins: [ List, ListProperties, TodoList ]` configuration option. After the change and renaming of the plugins, these two are the same.
 
-If you happen to encounter this error, please remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option and replace these with `List` and related plugins.
+If you happen to encounter this error, remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option. Replace these with `List` and related plugins.
 
 <info-box>
-    Please note that we have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
+    We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
 </info-box>
 
 #### Details of plugin renames
