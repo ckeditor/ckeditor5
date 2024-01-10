@@ -318,7 +318,7 @@ Inside a dropdown, you can put a list. To do so, you can use the {@link module:u
 import {
 	addListToDropdown,
 	createDropdown,
-	Model
+	ViewModel
 } from '@ckeditor/ckeditor5-ui';
 import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -327,14 +327,14 @@ const locale = new Locale();
 const collection = new Collection();
 collection.add( {
 	type: 'button',
-	model: new Model( {
+	model: new ViewModel( {
 		label: 'Button',
 		withText: true
 	} )
 } );
 collection.add( {
 	type: 'switchbutton',
-	model: new Model( {
+	model: new ViewModel( {
 		label: 'Switch button',
 		withText: true
 	} )

@@ -22,30 +22,39 @@ Listed below are the most important changes that require your attention when upg
 
 ### Breaking changes to the list plugin
 
-As of the latest release, the current list plugin (often referred to as list v1) has been replaced with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list (v2).
+As of the latest release, we replaced the existing list plugin (often referred to as "list v1") with the {@link features/lists newer and more advanced document list plugin}, formerly known as document list ("list v2").
 
-The list v2 (document list) feature was implemented in 2022 to add support for block content in list items. It supported extending list markup via GHS. It did not, however, support to-do lists back then. We concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality and the {@link features/lists-editing#simple-lists simple list} configuration setting.
+We implemented the list v2 (document list) feature in 2022 to add support for block content in list items. It supported extending list markup via General HTML Support (GHS). It did not, however, support to-do lists. Since then we concentrated on bringing full list v1 functionality to this plugin. The newest release brings in the to-do list functionality so we were ready to switch.
 
-We introduced the new plugin in a manner that aims to be transparent for our users, namely by physically replacing the old plugin with the new one, but retaining all namespace intact. It means, starting with release v.41.0.0 all imports of various lists-related plugins will use the new version.
+We introduced the new plugin in a manner that aims to be transparent for the users:
+
+* We physically replaced the old plugin with the new one.
+* But we left the namespace intact.
+
+It means that starting with release v41.0.0 all imports of various list-related plugins will use the new version.
 
 Unless you need to specifically use the old plugin in your integration, there is no need to make changes in the configuration.
 
-If you do not want to utilize block elements in your lists, you can simply turn off this functionality with the {@link features/lists-editing#simple-lists simple list setting} instead of sticking to the old plugins.
+If you do not want to use block elements in your lists, you can {@link features/lists-editing#simple-lists turn off this functionality} with the configuration option instead of sticking to the old plugins.
 
 #### Renaming of the plugins
 
-With the new version becoming default, the `DocumentList` plugin (and all related plugins, [observe the table below](#details-of-plugin-renames)) has been renamed to simply `List`. The old plugin has been renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
+With the new version becoming the default, the `DocumentList` plugin (and all related plugins, [see the table below](#details-of-plugin-renames)) was renamed to `List`. The old plugin was renamed to `LegacyList` instead. The same applies to all other list-related plugins, namely: `LegacyListProperties`, and `LegacyTodoList`.
 
-If you previously included document lists in your integration and used the `removePlugins` option to exclude the old list plugin, it could lead to errors, such as these:
+If you included document lists in your integration and used the `removePlugins` option to exclude the old list plugin, it could lead to errors, such as these:
 
 ```
   ❌ CKEditorError: plugincollection-required {"plugin":"List","requiredBy":"DocumentList"}
     Read more: https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-plugincollection-required
 ```
 
-This is because it was injecting `DocumentList` and `DocumentListProperties` plugins and passing the `removePlugins: [ List, ListProperties, TodoList ]` configuration option. After the change and renaming of the plugins, these two are the same.
+This is because your integration was injecting `DocumentList` and `DocumentListProperties` plugins, and passing the `removePlugins: [ List, ListProperties, TodoList ]` configuration option. After the change and renaming of the plugins, these two are the same.
 
-If you happen to encounter this error, please remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option and replace these with `List` and related plugins.
+If you happen to encounter this error, remove all imports of `DocumentList` and related plugins as well as the `removePlugins` configuration option. Replace these with `List` and related plugins.
+
+<info-box>
+    We have replaced the old list plugins in all {@link installation/getting-started/predefined-builds predefined builds} with the current ones.
+</info-box>
 
 #### Details of plugin renames
 
@@ -128,32 +137,49 @@ If you happen to encounter this error, please remove all imports of `DocumentLis
     </tbody>
 </table>
 
-### Icons paths changed
+### Icon paths changed
 
-Among other changes, some icons have been moved around the project. Observe these changes if you use custom UI elements that call these icons.
+Among other changes, some icons were moved around the project. Check these changes if you use custom UI elements that call these icons.
 
-The following icons were moved to the `@ckeditor/ckeditor5-core` package: `browse-files`, `bulletedlist`, `codeblock`, `color-palette`, `heading1`, `heading2`, `heading3`, `heading4`, `heading5`, `heading6`, `horizontalline`, `html`, `indent`, `next-arrow`, `numberedlist`, `outdent`, `previous-arrow`, `redo`, `table`,`todolist`, `undo`.
+The following icons were moved to the `@ckeditor/ckeditor5-core` package:
+* `browse-files`
+* `bulletedlist`
+* `codeblock`
+* `color-palette`
+* `heading1`, `heading2`, `heading3`, `heading4`, `heading5`, `heading6`
+* `horizontalline`
+* `html`
+* `indent`
+* `next-arrow`
+* `numberedlist`
+* `outdent`
+* `previous-arrow`
+* `redo`
+* `table`
+* `todolist`
+* `undo`
 
-### Exports renaming
+### Exports renamed
 
-Some exports names were changed due to possibility of name conflicts:
+Some export names were changed due to the possibility of name conflicts:
 
-* We renamed the default export of `View` from the `@ckeditor/ckeditor5-engine` package to `EditingView`,
-* We renamed the default export of `UploadAdapter` from the `@ckeditor/ckeditor5-adapter-ckfinder` package to `CKFinderUploadAdapter`,
-* We renamed the interface export of `Position` from the `@ckeditor/ckeditor5-utils` package to `DomPoint`,
-* We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package.
+* We renamed the default export of `View` from the `@ckeditor/ckeditor5-engine` package to `EditingView`.
+* We renamed the export of `Model` from the `@ckeditor/ckeditor5-ui` package to `ViewModel`.
+* We renamed the default export of `UploadAdapter` from the `@ckeditor/ckeditor5-adapter-ckfinder` package to `CKFinderUploadAdapter`.
+* We renamed the interface export of `Position` from the `@ckeditor/ckeditor5-utils` package to `DomPoint`.
+* We moved the `findOptimalInsertionRange` function to the `Schema` class as a method within the `@ckeditor/ckeditor5-engine` package. The exported function of the same name from the `@ckeditor/ckeditor5-widget` package remains unchanged and should be used while creating features and widgets.
 
-### Making CKEditor npm packages valid ES Modules
+### Making CKEditor npm packages valid ECMAScript modules (ESM)
 
-The code we distribute in our npm packages uses the [ES Module syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES module. In some cases this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor 5.  It required workarounds in their configuration.
+The code we distribute in our npm packages uses the [ECMAScript Module (ESM) syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) (for example, `import X from 'y'`). Until now it was not fully compliant with the standard and the packages were not properly marked as ES modules. Sometimes this resulted in bundlers (like Vite) and other tools (such as Vitest) failing to build or run the projects containing CKEditor&nbsp;5. It required workarounds in their configuration.
 
-In this release we fix these issues, meaning that our packages are now fully ESM compliant and these workarounds are no longer needed.
+This release fixes the ESM-compatibility issues. CKEditor&nbsp;5 packages are now fully ESM-compliant and these workarounds are no longer needed.
 
-### Added validation to the URL field in the Link form
+### Added validation to the URL field in the link form
 
-Until now, the form for adding a URL to the selected text accepted an empty value, leaving the `href` empty. We believe this is undesirable in most cases, so we've added a validation to prevent adding a link if the field is empty.
+Until now, the form for adding a URL to the selected text accepted an empty value, leaving the `href` empty. We believe this is undesirable in most cases. We have added a validation to prevent adding a link if the field is empty.
 
-However, if for some reason you want to allow empty links, you can do so using the new `allowCreatingEmptyLinks` configuration option we've added to the `link` plugin.
+However, if for some reason you want to allow empty links, you can do so using the new {@link module:link/linkconfig~LinkConfig#allowCreatingEmptyLinks `config.link.allowCreatingEmptyLinks`} configuration option added to the link plugin.
 
 ```diff
 ClassicEditor
