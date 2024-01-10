@@ -74,6 +74,12 @@ export default class Dialog extends Plugin {
 
 	/**
 	 * Initiates listeners for the `show` and `hide` events emitted by this plugin.
+	 *
+	 * We couldn't simply decorate the {@link #show} and {@link #hide} methods to fire events,
+	 * because they would be fired in the wrong order - first would be `show` and then `hide`
+	 * (because showing the dialog starts with hiding the previously visible one).
+	 * Hence, we added private methods {@link #_show} and {@link #_hide} which are fired on events
+	 * in the desired sequence.
 	 */
 	private _initShowHideListeners() {
 		this.on<DialogShowEvent>( 'show', ( evt, args ) => {
@@ -145,8 +151,54 @@ export default class Dialog extends Plugin {
 	}
 
 	/**
-	 * Shows the dialog. If another dialog is currently visible, it will be hidden.
-	 * This method is decorated to enable interacting on the `show` event.
+	 * First, it hides the currently visible dialog (if any) calling the {@link #hide} method
+	 * (which fires the {@link ~DialogHideEvent hide event}).
+	 * Then, the {@link ~DialogShowEvent show event} is fired. The dialog is shown using the {@link #_show} method
+	 * on `normal` priority. This allows for adding callbacks on higher and lower priority to customize the behavior.
+	 *
+	 * Using the {@link ~DialogDefinition}, you can customize the dialog's content, title, icon, action buttons, etc.
+	 * For example, the following definition will create a dialog with:
+	 * * a header consisting of an icon, a title and a "Close" button (it's added by default),
+	 * * a content consisting of a single view,
+	 * * a footer consisting of two buttons: "Yes" and "No".
+	 *
+	 * ```js
+	 * dialogPlugin.show( {
+	 *	id: 'myDialog',
+	 * 	icon: 'myIcon', // this should be an SVG string
+	 * 	title: 'My dialog',
+	 * 	content: myView, // create this view before calling the `show` method
+	 * 	actionButtons: [
+	 *		{
+	 *			label: t( 'Yes' ),
+	 *			class: 'ck-button-action',
+	 *			withText: true,
+	 *			onExecute: () => dialog.hide()
+	 *		},
+	 *		{
+	 *			label: t( 'No' ),
+	 *			withText: true,
+	 *			onExecute: () => dialog.hide()
+	 *		}
+	 *	]
+	 * } );
+	 * ```
+	 *
+	 * Using the {@link ~DialogDefinition} it's also possible to add callbacks that will be called when the dialog
+	 * is shown or hidden. For example, the following definition:
+	 * * moves the focus the "Ok" button,
+	 * * fires a custom event when the dialog is hidden.
+	 *
+	 * ```js
+	 * dialogPlugin.show( {
+	 * 	(...)
+	 * 	onShow: dialog => {
+	 * 		dialog.view.actionsView.focus();
+	 * 	},
+	 * 	onHide: dialog => {
+	 * 		dialog.fire( 'dialogDestroyed' );
+	 * 	}
+	 * } );
 	 */
 	public show( dialogDefinition: DialogDefinition ): void {
 		this.hide();
@@ -198,7 +250,7 @@ export default class Dialog extends Plugin {
 
 		view.set( {
 			position,
-			isVisible: true,
+			_isVisible: true,
 			className,
 			isModal
 		} );

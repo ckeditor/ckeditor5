@@ -81,6 +81,7 @@ class ModalWithText extends Plugin {
 				} );
 
 				dialog.show( {
+					id: 'modalWithText',
 					isModal: true,
 					title: t( 'Modal with text' ),
 					content: textView,
@@ -100,14 +101,17 @@ class ModalWithText extends Plugin {
 							}
 						},
 						{
-							label: t( 'Button is active until dialog is moved...' ),
+							label: t( 'This button is only active for 3 seconds' ),
 							withText: true,
 							onExecute: () => {
 								// eslint-disable-next-line no-alert
-								alert( 'Drag the dialog to see how the button disables' );
+								alert( 'You did it on time' );
 							},
 							onCreate: buttonView => {
-								buttonView.bind( 'isEnabled' ).to( dialog.view!, 'wasMoved', wasMoved => !wasMoved );
+								buttonView.isEnabled = true;
+								setTimeout( () => {
+									buttonView.isEnabled = false;
+								}, 3000 );
 							}
 						},
 						{
@@ -145,6 +149,7 @@ class YesNoModal extends Plugin {
 				const dialog = this.editor.plugins.get( 'Dialog' );
 
 				dialog.show( {
+					id: 'yesNoModal',
 					isModal: true,
 					title: 'Are you sure you want to do this?',
 					hasCloseButton: false,
@@ -202,6 +207,7 @@ class MinimalisticDialogs extends Plugin {
 					} );
 
 					dialog.show( {
+						id: position,
 						content: textView,
 						position: DialogViewPosition[ position as keyof typeof DialogViewPosition ]
 					} );
