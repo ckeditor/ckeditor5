@@ -136,7 +136,3 @@ msgstr ""
 msgctxt "The main text of the message shown to the user when no results are available."
 msgid "No searchable items"
 msgstr ""
-
-msgctxt "Label of an input field for typing colors in the HEX color format."
-msgid "HEX"
-msgstr ""

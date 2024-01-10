@@ -82,6 +82,11 @@ import { HtmlInsert } from './plugins/htmlInsert/index.js';
 export default class DecoupledEditor extends DecoupledEditorBase {
 	public static override builtinPlugins = [
 		Alignment,
+		FontSize,
+		FontFamily,
+		FontColor,
+		FontBackgroundColor,
+		CKFinderUploadAdapter,
 		Autoformat,
 		AutoImage,
 		BlockQuote,
@@ -141,7 +146,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 		TableToolbar,
 		TextTransformation,
 		Underline,
-		UploadAdapter
 	];
 
 	public static override defaultConfig = {
