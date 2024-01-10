@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -39,31 +39,31 @@ msgstr "تۈر نومۇرى تىزىمى ئۇسلۇبىدىكى قورال با�
 
 msgctxt "The ARIA label of the button that toggles the \"disc\" list style."
 msgid "Toggle the disc list style"
-msgstr ""
+msgstr "ئۇيۇل چەمبەر تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The ARIA label of the button that toggles the \"circle\" list style."
 msgid "Toggle the circle list style"
-msgstr ""
+msgstr "بوش چەمبەر تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The ARIA label of the button that toggles the \"square\" list style."
 msgid "Toggle the square list style"
-msgstr ""
+msgstr "ئۇيۇل كۋادرات تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal\" list style."
 msgid "Toggle the decimal list style"
-msgstr ""
+msgstr "ئونلۇق سان تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Toggle the decimal with leading zero list style"
-msgstr ""
+msgstr "نۆل بىلەن باشلانغان ئونلۇق سان تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–roman\" list style."
 msgid "Toggle the lower–roman list style"
-msgstr ""
+msgstr "كىچىك رىم رەقىمى تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–roman\" list style."
 msgid "Toggle the upper–roman list style"
-msgstr ""
+msgstr "چوڭ رىم رەقىمى تىزىم ئۇسلۇبىغا ئالماشتۇر"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–latin\" list style."
 msgid "Toggle the lower–latin list style"
