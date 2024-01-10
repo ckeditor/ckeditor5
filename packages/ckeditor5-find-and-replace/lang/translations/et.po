@@ -67,4 +67,4 @@ msgstr "Otsi esmalt tekst, mida asendada."
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "Rohkem valikuid"
