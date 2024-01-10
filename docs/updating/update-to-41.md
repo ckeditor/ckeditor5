@@ -194,7 +194,7 @@ ClassicEditor
 
 ### UI migration to dialogs
 
-#### The Find and replace feature
+#### The find and replace feature
 
 Starting with v41.0.0, the UI of the {@link features/find-and-replace find and replace} feature is displayed by default in a {@link framework/architecture/ui-library#dialogs-and-modals dialog window}. Before, it was displayed in a dropdown panel. This change is meant to improve the overall user experience of the feature and allow content creators to make most out of the available tools.
 
