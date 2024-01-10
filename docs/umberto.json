@@ -75,6 +75,7 @@
 		"api/module_list_todolistui-TodoListUI.html": "api/module_list_todolist_todolistui-TodoListUI.html",
 		"api/module_list_utils.html": "api/module_list_list_utils.html",
 		"api/video.html": "api/media-embed.html",
+		"api/module_ui_labeledview_labeledview-LabeledView.html": "api/module_ui_labeledfield_labeledfieldview-LabeledFieldView.html",
 		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
 		"builds/guides/development/custom-builds.html": "installation/getting-started/quick-start.html#creating-custom-builds",
 		"builds/guides/development/dll-builds.html": "installation/advanced/alternative-setups/dll-builds.html",

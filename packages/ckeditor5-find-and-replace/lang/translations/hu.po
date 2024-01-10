@@ -67,4 +67,4 @@ msgstr "Tipp: Először keressen egy szöveget, hogy lecserélhesse."
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "Speciális beállítások"

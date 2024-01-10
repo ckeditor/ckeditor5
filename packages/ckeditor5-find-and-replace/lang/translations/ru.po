@@ -67,4 +67,4 @@ msgstr "Совет: сначала найдите текст, чтобы зам�
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "Дополнительные параметры"

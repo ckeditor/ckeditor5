@@ -67,4 +67,4 @@ msgstr "İpucu: Değiştirmek için önce bir metin bul."
 
 msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
 msgid "Advanced options"
-msgstr ""
+msgstr "Gelişmiş seçenekler"

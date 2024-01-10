@@ -139,8 +139,8 @@ msgstr "কোনো অনুসন্ধানযোগ্য আইটেম 
 
 msgctxt "A default label of a dialog window displayed on top the editor."
 msgid "Editor dialog"
-msgstr ""
+msgstr "ইডিটর ডায়ালগ"
 
 msgctxt "The label and the tooltip for the close button in the dialog header."
 msgid "Close"
-msgstr ""
+msgstr "বন্ধ করুন"
