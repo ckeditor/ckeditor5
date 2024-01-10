@@ -19,9 +19,6 @@
       "@ckeditor/ckeditor-cloud-services-collaboration": [
         "external/ckeditor-cloud-services-collaboration"
       ],
-      "@ckeditor/ckeditor-cloud-services-collaboration": [
-        "external/ckeditor-cloud-services-collaboration"
-      ],
       "@ckeditor/ckeditor-cloud-services-collaboration/*": [
         "external/ckeditor-cloud-services-collaboration/*"
       ]
