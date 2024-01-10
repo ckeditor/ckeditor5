@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -65,6 +65,6 @@ msgctxt "A message displayed next to the replace field when disabled but user tr
 msgid "Tip: Find some text first in order to replace it."
 msgstr ""
 
-msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
-msgid "Show options"
+msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
+msgid "Advanced options"
 msgstr ""
