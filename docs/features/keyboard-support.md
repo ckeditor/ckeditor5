@@ -83,7 +83,7 @@ Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 an
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
 		<tr>
-			<td>Check/uncheck a to-do list item</td>
+			<td>Check or clear a to-do list item</td>
 			<td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td>
 			<td><kbd>Cmd</kbd> + <kbd>Enter</kbd></td>
 		</tr>
@@ -96,7 +96,7 @@ Below is a list of the most important keystrokes supported by CKEditor&nbsp;5 an
 			<td colspan="2"><kbd>Backspace</kbd></td>
 		</tr>
 		<tr>
-			<th colspan="3">When a widget is selected (for example: image, table, horizontal line, etc.)</th>
+			<th colspan="3">When you select a widget (for example: image, table, horizontal line, etc.)</th>
 		</tr>
 		<tr>
 			<td>Insert a new paragraph directly after a widget</td>
@@ -171,7 +171,7 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 			<td colspan="2"><kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd></td>
 		</tr>
 		<tr>
-			<td>Execute the currently focused button</td>
+			<td>Execute the focused button</td>
 			<td colspan="2"><kbd>Enter</kbd> / <kbd>Space</kbd></td>
 		</tr>
 	</tbody>
@@ -192,7 +192,7 @@ Use the following keystrokes for more efficient navigation in the CKEditor&nbsp;
 
 ## Related productivity features
 
-In addition to using keyboard shortcuts, you may want to check the following productivity features:
+Besides using keyboard shortcuts, you may want to check the following productivity features:
 
 * {@link features/autoformat Autoformatting} &ndash; Allows for using Markdown-like code to format text on the go.
 * {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.

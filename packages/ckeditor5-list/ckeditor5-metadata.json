@@ -1,7 +1,7 @@
 {
 	"plugins": [
 		{
-			"name": "Legacy List",
+			"name": "Legacy list",
 			"className": "LegacyList",
 			"description": "Implements bulleted and numbered list features. Add the to-do list plugin to bring support for inserting interactive checkboxes.",
 			"docs": "features/lists/lists.html",
@@ -32,7 +32,7 @@
 			]
 		},
 		{
-			"name": "Legacy To-do list",
+			"name": "Legacy to-do list",
 			"className": "LegacyTodoList",
 			"description": "Allows for creating a list of interactive checkboxes with labels. It supports all features of regular lists so you can nest a to-do list together with bulleted and numbered lists in any combination.",
 			"docs": "features/lists/todo-lists.html",
@@ -71,9 +71,9 @@
 			]
 		},
 		{
-			"name": "Legacy List properties",
+			"name": "Legacy list properties",
 			"className": "LegacyListProperties",
-			"description": "Enables styling the list item markers for both ordered and unordered lists. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting start index (initial marker value) and list reversal (from ascending to descending) for numbered lists. ",
+			"description": "Enables styling the list item markers for both ordered and unordered lists. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting the start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
 			"docs": "features/lists/lists.html#list-styles",
 			"path": "src/legacylistproperties.js",
 			"requires": [
@@ -126,7 +126,7 @@
 		{
 			"name": "To-do list",
 			"className": "TodoList",
-			"description": "Allows for creating a list of interactive checkboxes with labels. It supports all features of document lists so you can nest a to-do list together with bulleted and numbered lists in any combination.",
+			"description": "Allows for creating a list of interactive checkboxes with labels. Supports all features of lists so you can nest a to-do list together with bulleted and numbered lists in any combination.",
 			"docs": "features/lists/todo-lists.html",
 			"path": "src/todolist.js",
 			"requires": [
@@ -168,7 +168,7 @@
 		{
 			"name": "List properties",
 			"className": "ListProperties",
-			"description": "Enables styling the list item markers for both ordered and unordered lists created by the document list plugin. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
+			"description": "Enables styling the list item markers for both ordered and unordered lists created by the list plugin. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting the start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
 			"docs": "features/lists/lists.html#list-properties",
 			"path": "src/listproperties.js",
 			"requires": [
